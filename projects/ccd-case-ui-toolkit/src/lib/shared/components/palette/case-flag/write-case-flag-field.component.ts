@@ -38,6 +38,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   public displayContextParameter: string;
   public determinedLocation: FlagsWithFormGroupPath;
   private allCaseFlagStagesCompleted = false;
+  public navigatedTo = false;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
@@ -68,8 +69,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public ngOnInit(): void {
-    let navigatedTo: boolean = false;
-
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
@@ -78,7 +77,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
     } else {
-      navigatedTo = true;
+      this.navigatedTo = true;
     }
 
     // Reassign the form group from the case flag state service
@@ -121,12 +120,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       }
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
-        this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+        // there is an edge case in the navigation when going back, sometimes the case_fileds will lose values in the values which causes the flow to break before CYA
+        // below funciton ensures all data is correctly set.
+        const flagData = this.validateCaseFields(this.route.snapshot.data.eventTrigger.case_fields);
+        this.flagsData = ((flagData) as CaseField[])
           .reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField), []);
 
         // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
         this.displayContextParameter =
-          this.setDisplayContextParameter(this.route.snapshot.data.eventTrigger.case_fields as CaseField[]);
+          this.setDisplayContextParameter(flagData as CaseField[]);
 
         // Set boolean indicating the display_context_parameter is "update"
         this.isDisplayContextParameterUpdate = this.setDisplayContextParameterUpdate(this.displayContextParameter);
@@ -174,7 +176,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
     // If we've navigated to this page, then we know by default, we want to set the 
     // journey page number to the field state. 
-    if (navigatedTo) {
+    if (this.navigatedTo) {
       this.journeyPageNumber = this.fieldState;
       this.journeyPreviousPageNumber = this.journeyEndPageNumber++;
     }
@@ -192,6 +194,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     }
 
     this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
+  }
+
+  validateCaseFields(caseFields) {
+    caseFields.forEach((field) => {
+      if (field.formatted_value) {
+        Object.keys(field.formatted_value).forEach((valueKey) => {
+          if (field.formatted_value[valueKey] !== field.value[valueKey]) {
+            field.value[valueKey] = field.formatted_value[valueKey];
+          }
+        });
+      }
+    });
+    return caseFields;
   }
 
   public onPageChange(): void {
@@ -290,6 +305,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public previousPage(): void {
+    // if we are navigating away from the page, we should set the error messages to empty so the message dissapears
+    this.errorMessages = [];
     this.journeyPreviousPageNumber = this.fieldState;
     if (this.hasPrevious() && this.fieldState === CaseFlagFieldState.FLAG_COMMENTS && !this.flagType?.listOfValues) {
       this.fieldState = CaseFlagFieldState.FLAG_TYPE;
