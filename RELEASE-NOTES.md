@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.61
+**EXUI-EXUI-2220** add-task-completion-logs
+
 ### Version 7.0.60
 **EXUI-EXUI-2280** MV Upgrade to v4.0.8
 

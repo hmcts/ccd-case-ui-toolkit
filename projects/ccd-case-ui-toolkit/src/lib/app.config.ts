@@ -53,6 +53,7 @@ export abstract class AbstractAppConfig {
   public abstract getPrintServiceUrl(): string;
   public abstract getIcpEnable(): boolean;
   public abstract getIcpJurisdictions(): string[];
+  public abstract logMessage(logMessage: string): void;
 
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
