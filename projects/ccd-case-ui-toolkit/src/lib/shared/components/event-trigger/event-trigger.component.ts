@@ -63,6 +63,7 @@ export class EventTriggerComponent implements OnChanges, OnInit {
   }
 
   public triggerChange() {
+    this.isDisabled = false;
     this.onTriggerChange.emit(null);
   }
 

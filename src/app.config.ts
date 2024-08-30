@@ -48,6 +48,7 @@ export abstract class AbstractAppConfig {
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   abstract getPrintServiceUrl(): string;
+  abstract logMessage(logMessage: string): void;
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
    * @deprecated
