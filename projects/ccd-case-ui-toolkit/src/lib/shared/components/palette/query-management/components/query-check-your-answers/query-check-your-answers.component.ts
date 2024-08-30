@@ -25,6 +25,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
   private readonly RESPOND_TO_QUERY_EVENT_TRIGGER_ID = 'queryManagementRespondQuery';
 
+  private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
+  public readonly FIELD_TYPE_COMPLEX = 'Complex';
+
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
@@ -43,6 +46,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private caseId: string;
 
   public caseQueriesCollections: CaseQueriesCollection[];
+  public fieldId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -71,6 +75,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       }
     });
     this.isCaseQueriesClollectionDataPresent();
+
+    console.log('this.caseQueriesCollections', this.caseQueriesCollections);
+    console.log('this.isCaseQueriesClollectionDataPresent()', this.isCaseQueriesClollectionDataPresent());
   }
 
   public ngOnDestroy(): void {
@@ -144,9 +151,18 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
       : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails);
 
-    // Base data structure for the query
-    const newQueryData = {
-      qmCaseQueriesCollection: {
+    // Check if the field ID has been set dynamically
+    if (!this.fieldId) {
+      console.error('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
+      this.router.navigate(['/', 'service-down']);
+    }
+
+    // Dynamically determine the field ID
+    const dynamicFieldId = this.fieldId;
+
+    // Base data structure for the query with dynamic property name
+    const newQueryData: QmCaseQueriesCollection = {
+      [dynamicFieldId]: {
         partyName: '', // Not returned by CCD
         roleOnCase: '', // Not returned by CCD
         caseMessages: [
@@ -160,21 +176,27 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     // If caseQueriesCollections is not empty, append its data
     if (this.caseQueriesCollections && this.caseQueriesCollections.length > 0) {
-      newQueryData.qmCaseQueriesCollection.caseMessages.push(
+      newQueryData[dynamicFieldId].caseMessages.push(
         ...this.caseQueriesCollections.map((collection) => collection.caseMessages).flat()
       );
     }
-
     return newQueryData;
   }
 
   private isCaseQueriesClollectionDataPresent() {
+    console.log('this.route.snapshot?.data?.case?.tabs', this.route.snapshot?.data?.case?.tabs);
     if (this.route.snapshot?.data?.case?.tabs) {
       this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter((tab) => tab?.fields?.some(
           (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === 'QueryManagement1'))
         [0]?.fields?.reduce((acc, caseField) => {
           console.log('acc, caseField', acc, caseField);
+
+          console.log('caseField --- ', typeof caseField, caseField);
+
+          // Extract the ID based on conditions, updating this.fieldId dynamically
+          this.extractIdBasedOnConditions(caseField);
+
           const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
 
           if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
@@ -184,4 +206,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         }, []);
     }
   }
+
+  private extractIdBasedOnConditions(data) {
+    // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
+    if (
+      data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
+      data.field_type.type === this.FIELD_TYPE_COMPLEX
+    ) {
+      // Set the field ID dynamically based on the extracted data
+      this.fieldId = data.id; // Store the ID for use in generating newQueryData
+    }
+  }
 }
+

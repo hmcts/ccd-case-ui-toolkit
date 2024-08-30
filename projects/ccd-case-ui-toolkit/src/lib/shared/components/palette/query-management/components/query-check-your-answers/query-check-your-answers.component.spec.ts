@@ -432,6 +432,17 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
   });
 
+  it('should set querySubmitted to true when submit is called', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    fixture.detectChanges();
+    component.ngOnInit();
+
+    component.fieldId = null;
+    component.submit();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
   describe('searchAndCompleteTask', () => {
     it('should call search task', () => {
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;

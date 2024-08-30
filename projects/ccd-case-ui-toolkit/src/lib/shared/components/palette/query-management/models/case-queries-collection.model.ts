@@ -30,5 +30,5 @@ export interface CaseQueriesCollection {
 }
 
 export interface QmCaseQueriesCollection {
-  qmCaseQueriesCollection: CaseQueriesCollection
+  [key: string]: CaseQueriesCollection; // Allows dynamic key names: CaseQueriesCollection
 }
