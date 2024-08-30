@@ -75,9 +75,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       }
     });
     this.isCaseQueriesClollectionDataPresent();
-
-    console.log('this.caseQueriesCollections', this.caseQueriesCollections);
-    console.log('this.isCaseQueriesClollectionDataPresent()', this.isCaseQueriesClollectionDataPresent());
   }
 
   public ngOnDestroy(): void {
@@ -184,16 +181,11 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private isCaseQueriesClollectionDataPresent() {
-    console.log('this.route.snapshot?.data?.case?.tabs', this.route.snapshot?.data?.case?.tabs);
     if (this.route.snapshot?.data?.case?.tabs) {
       this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter((tab) => tab?.fields?.some(
           (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === 'QueryManagement1'))
         [0]?.fields?.reduce((acc, caseField) => {
-          console.log('acc, caseField', acc, caseField);
-
-          console.log('caseField --- ', typeof caseField, caseField);
-
           // Extract the ID based on conditions, updating this.fieldId dynamically
           this.extractIdBasedOnConditions(caseField);
 

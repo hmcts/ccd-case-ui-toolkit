@@ -5,16 +5,15 @@ import { CaseMessage, QueryListItem } from '../models';
 
 @Injectable()
 export class QueryManagementUtils {
-  private static readonly caseLevelCaseFieldId = 'qmCaseQueriesCollection';
+  private static readonly caseLevelCaseFieldId = 'CaseQueriesCollection';
   public static readonly FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly FIELD_TYPE_COMPLEX = 'Complex';
 
   public static extractCaseQueriesFromCaseField(caseField: CaseField, caseFieldId: string) {
-    const { field_type, value, id } = caseField;
-
+    const { field_type, value } = caseField;
     // Handle Complex type fields
     if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
-      if (id === QueryManagementUtils.caseLevelCaseFieldId || QueryManagementUtils.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId || QueryManagementUtils.isNonEmptyObject(value)) {
         return value;
       }
       return '';
