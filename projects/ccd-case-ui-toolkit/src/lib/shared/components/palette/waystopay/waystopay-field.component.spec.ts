@@ -79,6 +79,7 @@ const APP_CONFIG: AbstractAppConfig = {
   getEnableCaseFileViewVersion1_1: () => true,
   getIcpJurisdictions: () => ['IA'],
   getIcpEnable: () => true,
+  logMessage: () => {}
 };
 
 let paymentWebComponentMock;
