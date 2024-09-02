@@ -1,55 +1,53 @@
-import { DebugElement, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
-import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
+import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseEventCompletionTaskCancelledComponent } from './case-event-completion-task-cancelled.component';
+
+@Component({
+  template: '<app-case-event-completion-task-cancelled [context]="context"></app-case-event-completion-task-cancelled>'
+})
+class WrapperComponent {
+  @ViewChild(CaseEventCompletionTaskCancelledComponent, { static: true }) public appComponentRef: CaseEventCompletionTaskCancelledComponent;
+  @Input() public context: EventCompletionStateMachineContext;
+}
 
 describe('TaskCancelledComponent', () => {
   let component: CaseEventCompletionTaskCancelledComponent;
-  let mockParentComponent: any;
-  let fixture: ComponentFixture<CaseEventCompletionTaskCancelledComponent>;
-
-  mockParentComponent = {
-    context: {
-      task: {
-        assignee: '1234-1234-1234-1234'
-      },
-      caseId: '1620409659381330'
-    },
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
-  };
+  let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<WrapperComponent>;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
       ],
-      declarations: [CaseEventCompletionTaskCancelledComponent, MockRpxTranslatePipe],
-      providers: [
-        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: mockParentComponent}
-      ]
+      declarations: [CaseEventCompletionTaskCancelledComponent, MockRpxTranslatePipe, WrapperComponent],
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseEventCompletionTaskCancelledComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = fixture.componentInstance.appComponentRef;
+    const sessionStorageSpy = jasmine.createSpyObj('mockSessionStorageService', ['removeItem'])
+    wrapper.context = {caseId: '123456789', sessionStorageService: sessionStorageSpy} as EventCompletionStateMachineContext;
     fixture.detectChanges();
   });
 
   it('should display error message task cancelled', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
-    const headingHtml = heading.nativeElement as HTMLElement;
-    expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
+    const element = fixture.debugElement.nativeElement;
+    const heading = element.querySelector('.govuk-heading-m');
+    expect(heading.textContent).toBe('Task cancelled/marked as done');
   });
 
   it('should emit event can be completed true when clicked on continue button', () => {
-    spyOn(mockParentComponent.eventCanBeCompleted, 'emit');
+    spyOn(component.eventCanBeCompletedNotify, 'emit');
     component.onContinue();
-    expect(mockParentComponent.eventCanBeCompleted.emit).toHaveBeenCalledWith(true);
+    expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete')
+    expect(component.eventCanBeCompletedNotify.emit).toHaveBeenCalledWith(true);
   });
 
   afterAll(() => {

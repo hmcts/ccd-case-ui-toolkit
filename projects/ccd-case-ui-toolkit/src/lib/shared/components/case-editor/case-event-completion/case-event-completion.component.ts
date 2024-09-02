@@ -1,11 +1,10 @@
-import { ComponentPortal } from '@angular/cdk/portal';
-import { Component, EventEmitter, InjectionToken, Injector, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, InjectionToken, Injector, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { AlertService } from '../../../services/alert/alert.service';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
+import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
 import { EventCompletionComponentEmitter, EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
@@ -25,9 +24,12 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   @Output()
   public eventCanBeCompleted: EventEmitter<boolean> = new EventEmitter();
 
+  eventCompletionTaskStates = EventCompletionTaskStates;
+
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
-  public selectedComponentPortal: ComponentPortal<any>;
+  public taskState: EventCompletionTaskStates;
+  public eventCanBeCompletedSet: boolean = false;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
@@ -38,7 +40,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   }
 
   public ngOnChanges(changes?: SimpleChanges): void {
-    if (changes.eventCompletionParams && changes.eventCompletionParams.currentValue) {
+    if (changes.eventCompletionParams && changes.eventCompletionParams.currentValue && !this.eventCanBeCompletedSet) {
       // Setup the context
       this.context = {
         task: this.eventCompletionParams.task,
@@ -64,20 +66,12 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
     }
   }
 
-  public showPortal(portalType: number): void {
-    const injector = Injector.create({
-      providers: [
-        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: this}
-      ]
-    });
-    // tslint:disable-next-line:switch-default
-    switch (portalType) {
-      case EventCompletionPortalTypes.TaskCancelled:
-        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent, null, injector);
-        break;
-      case EventCompletionPortalTypes.TaskReassigned:
-        this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskReassignedComponent, null, injector);
-        break;
-    }
+  public setTaskState(taskState: number): void {
+    this.taskState = taskState;
+  }
+
+  public setEventCanBeCompleted(completable: boolean) {
+    this.eventCanBeCompletedSet = true;
+    this.eventCanBeCompleted.emit(completable);
   }
 }

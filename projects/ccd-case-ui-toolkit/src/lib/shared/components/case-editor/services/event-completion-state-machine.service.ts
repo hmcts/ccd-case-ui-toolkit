@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
 import { Task, TaskState } from '../../../domain/work-allocation/Task';
-import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
 import { EventCompletionStates } from '../domain/event-completion-states.enum.model';
+import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -94,10 +94,15 @@ export class EventCompletionStateMachineService {
               state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
               break;
             case TaskState.Assigned:
+              const assignNeeded = context.sessionStorageService.getItem('assignNeeded');
               // Task is in assigned state
               if (taskResponse.task.assignee === context.task.assignee) {
                 // Task still assigned to current user, complete event and task
                 state.trigger(EventCompletionStates.CompleteEventAndTask);
+              } else if (assignNeeded === 'true - override') {
+                // this will treat task as unassigned instead of reassigned to complete after user confirmation
+                // assignNeeded will also be immediately overwritten to true
+                state.trigger(EventCompletionStates.TaskUnassigned);
               } else {
                 // Task has been reassigned to another user, display error message
                 context.reassignedTask = taskResponse.task;
@@ -121,7 +126,7 @@ export class EventCompletionStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
     // Load case event completion task cancelled component
-    context.component.showPortal(EventCompletionPortalTypes.TaskCancelled);
+    context.component.setTaskState(EventCompletionTaskStates.TaskCancelled);
   }
 
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
@@ -143,7 +148,7 @@ export class EventCompletionStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
     // Load case event completion task reassigned component
-    context.component.showPortal(EventCompletionPortalTypes.TaskReassigned);
+    context.component.setTaskState(EventCompletionTaskStates.TaskReassigned);
   }
 
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {

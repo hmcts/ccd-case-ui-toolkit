@@ -1,9 +1,10 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, throwError } from 'rxjs';
 import { Task } from '../../../../../domain/work-allocation/Task';
 import { AlertService } from '../../../../../services/alert/alert.service';
 import { SessionStorageService } from '../../../../../services/session/session-storage.service';
+import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
 import { WorkAllocationService } from '../../../services/work-allocation.service';
@@ -14,6 +15,11 @@ import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '
   templateUrl: './case-event-completion-task-reassigned.html'
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
+  @Input()
+  context: EventCompletionStateMachineContext;
+  @Output()
+  public eventCanBeCompletedNotify: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public caseId: string;
   public assignedUserId: string;
   public assignedUserName: string;
@@ -21,8 +27,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
 
-  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private readonly parentComponent: CaseEventCompletionComponent,
-    private readonly route: ActivatedRoute,
+  constructor(private readonly route: ActivatedRoute,
     private readonly workAllocationService: WorkAllocationService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly judicialworkerService: JudicialworkerService,
@@ -32,8 +37,8 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
 
   public ngOnInit(): void {
     // Get case id and task from the parent component
-    this.caseId = this.parentComponent.context.caseId;
-    const task = this.parentComponent.context.reassignedTask;
+    this.caseId = this.context.caseId;
+    const task = this.context.reassignedTask;
 
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {
@@ -79,12 +84,12 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // Get task details
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      this.sessionStorageService.setItem('assignNeeded', 'true');
-      // set event can be completed to true
-      this.parentComponent.eventCanBeCompleted.emit(true);
+      // Set session to override reassignment settings so code flow does not return to this component
+      this.sessionStorageService.setItem('assignNeeded', 'true - override')
+      this.eventCanBeCompletedNotify.emit(true);
     } else {
       // Emit event cannot be completed event
-      this.parentComponent.eventCanBeCompleted.emit(false);
+      this.eventCanBeCompletedNotify.emit(false);
     }
   }
 }

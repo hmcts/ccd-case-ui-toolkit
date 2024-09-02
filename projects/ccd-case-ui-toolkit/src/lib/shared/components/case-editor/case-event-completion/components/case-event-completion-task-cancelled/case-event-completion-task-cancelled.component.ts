@@ -1,19 +1,26 @@
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../case-event-completion.component';
+import { EventCompletionStateMachineContext } from '../../../domain';
 
 @Component({
   selector: 'app-case-event-completion-task-cancelled',
   templateUrl: './case-event-completion-task-cancelled.html'
 })
-export class CaseEventCompletionTaskCancelledComponent {
+export class CaseEventCompletionTaskCancelledComponent implements OnInit {
+  @Input()
+  context: EventCompletionStateMachineContext;
+  @Output()
+  public eventCanBeCompletedNotify: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public caseId: string;
 
-  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private readonly parentComponent: CaseEventCompletionComponent) {
-    this.caseId = this.parentComponent.context.caseId;
+  public ngOnInit(): void {
+    this.caseId = this.context.caseId;
   }
 
   public onContinue(): void {
     // Emit event can be completed event
-    this.parentComponent.eventCanBeCompleted.emit(true);
+    this.context.sessionStorageService.removeItem('taskToComplete');
+    this.eventCanBeCompletedNotify.emit(true);
   }
 }
