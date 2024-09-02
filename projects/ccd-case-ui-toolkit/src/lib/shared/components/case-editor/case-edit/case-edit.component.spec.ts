@@ -19,6 +19,7 @@ import { CaseNotifier, WorkAllocationService } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
+import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
@@ -215,6 +216,7 @@ describe('CaseEditComponent', () => {
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
   let mockAlertService: jasmine.SpyObj<AlertService>;
+  let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -275,7 +277,8 @@ describe('CaseEditComponent', () => {
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
-      mockAlertService = createSpyObj<AlertService>('WorkAllocationService', ['error', 'setPreserveAlerts']);
+      mockAlertService = createSpyObj<AlertService>('AlertService', ['error', 'setPreserveAlerts']);
+      mockabstractConfig = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['logMessage']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
@@ -331,7 +334,8 @@ describe('CaseEditComponent', () => {
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            LinkedCasesService
+            LinkedCasesService,
+            { provide: AbstractAppConfig, useValue: mockabstractConfig }
           ]
         })
         .compileComponents();
@@ -1302,7 +1306,7 @@ describe('CaseEditComponent', () => {
           form: component.form,
           submit: mockClass.submit,
         });
-
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired with assignNeeded: taskId 12345 and event name Test Trigger');
         expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345', component.eventTrigger.name);
       });
 
@@ -1338,7 +1342,7 @@ describe('CaseEditComponent', () => {
           form: component.form,
           submit: mockClass.submit,
         });
-
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired: taskId 12345 and event name Test Trigger');
         expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345', component.eventTrigger.name);
       });
 
@@ -1562,6 +1566,7 @@ describe('CaseEditComponent', () => {
             SessionStorageService,
             WindowService,
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AbstractAppConfig, useValue: mockabstractConfig },
           ]
         })
         .compileComponents();
