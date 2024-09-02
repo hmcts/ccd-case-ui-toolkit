@@ -34,7 +34,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     // if the user has progressed to CYA and then navigated away, the flag they selected will be set as inactive, we need to reset this
     if (this.formGroup.get('selectedManageCaseLocation')) {
       const locationControl = this.formGroup.get('selectedManageCaseLocation');
-      originalStatus = locationControl.value.originalStatus;
+      originalStatus = locationControl.value?.originalStatus;
     }
     // Map flags instances to objects for display, filtering out any where the original status is either "Inactive" or
     // "Not approved"

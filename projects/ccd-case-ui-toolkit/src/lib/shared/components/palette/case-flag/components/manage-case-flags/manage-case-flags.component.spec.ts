@@ -362,7 +362,7 @@ describe('ManageCaseFlagsComponent', () => {
       pathToFlagsFormGroup: 'CaseFlag2'
     };
 
-    const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance);
+    const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance, '');
     expect(displayResult.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
     expect(displayResult.flagDetailDisplay.flagDetail.name).toEqual(flagDetail.name);
     expect(displayResult.flagDetailDisplay.flagDetail.flagComment).toEqual(flagDetail.flagComment);
@@ -465,7 +465,7 @@ describe('ManageCaseFlagsComponent', () => {
         }
       } as CaseField
     } as FlagsWithFormGroupPath;
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flag1Detail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flag1Detail, flagsInstance, '');
     expect(flagDetailMappedForDisplay.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail).toEqual(flag1Detail);
     expect(flagDetailMappedForDisplay.pathToFlagsFormGroup).toEqual(flagsInstance.pathToFlagsFormGroup);
@@ -515,7 +515,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
     flagsInstance.flags.details[0].otherDescription = 'A new description';
     flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionDetail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionDetail, flagsInstance, '');
     // Expect all four fields to have been reset to the original persisted values
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
       flagsInstance.caseField.formatted_value.details[0].value.flagComment);
@@ -578,7 +578,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
     flagsInstance.flags.details[0].otherDescription = 'A new description';
     flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionCyDetail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionCyDetail, flagsInstance, '');
     // Expect all four fields to have been reset to the original persisted values
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
       flagsInstance.caseField.formatted_value.partyFlags.details[0].value.flagComment);
