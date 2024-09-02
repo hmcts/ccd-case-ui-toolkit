@@ -103,7 +103,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public isAtStart(): boolean {
-    return this.multipageComponentStateService.isAtStart;
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
   }
 
   // This method will be triggered by the next button in the app component
