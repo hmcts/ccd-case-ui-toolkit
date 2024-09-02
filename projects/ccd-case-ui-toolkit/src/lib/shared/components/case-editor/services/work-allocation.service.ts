@@ -54,7 +54,7 @@ export class WorkAllocationService {
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
     const ftstr = JSON.stringify(this.features);
-    console.log(`isWAEnabled: ${ftstr}`)
+    this.appConfig.logMessage(`isWAEnabled: wa-service-config returning ${ftstr.length > 0}`);
     let enabled = false;
     if (!jurisdiction || !caseType) {
       const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
@@ -62,7 +62,7 @@ export class WorkAllocationService {
       caseType = caseInfo.caseType;
     }
     if (!this.features || !this.features.configurations) {
-      console.log('isWAEnabled: no features');
+      this.appConfig.logMessage('isWAEnabled: no features');
       return false;
     }
     this.features.configurations.forEach(serviceConfig => {
@@ -70,7 +70,7 @@ export class WorkAllocationService {
           enabled = true;
       }
     });
-    console.log(`isWAEnabled: returning ${enabled}`);
+    this.appConfig.logMessage(`isWAEnabled: returning ${enabled}`);
     return enabled;
   }
 
@@ -98,16 +98,16 @@ export class WorkAllocationService {
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public completeTask(taskId: string): Observable<any> {
+  public completeTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
       this.alertService.setPreserveAlerts(true);
       this.alertService.warning({ phrase:'completeTask: Work Allocation is not enabled, so the task could not be completed. Please complete the task associated with the case manually.'});
       return of(null);
     }
-    console.log(`completeTask: completing ${taskId}`);
+    this.appConfig.logMessage(`completeTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
-      .post(url, { actionByEvent: true })
+      .post(url, { actionByEvent: true, eventName: eventName })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -124,19 +124,21 @@ export class WorkAllocationService {
    * Call the API to assign and complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public assignAndCompleteTask(taskId: string): Observable<any> {
+  public assignAndCompleteTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
       this.alertService.setPreserveAlerts(true);
       this.alertService.warning({ phrase:'assignAndCompleteTask: Work Allocation is not enabled, so the task could not be completed. Please complete the task associated with the case manually.'});
       return of(null);
     }
+    this.appConfig.logMessage(`assignAndCompleteTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {
         completion_options: {
           assign_and_complete: true
         },
-        actionByEvent: true
+        actionByEvent: true,
+        eventName: eventName
       })
       .pipe(
         catchError(error => {
@@ -200,7 +202,7 @@ export class WorkAllocationService {
           const tasks: any[] = response.tasks;
           if (tasks && tasks.length > 0) {
             if (tasks.length === 1) {
-              this.completeTask(tasks[0].id).subscribe();
+              this.completeTask(tasks[0].id, eventId).subscribe();
             } else {
               // This is a problem. Throw an appropriate error.
               throw new Error(MULTIPLE_TASKS_FOUND);
@@ -224,6 +226,7 @@ export class WorkAllocationService {
       tasks: []
     };
     if (!this.isWAEnabled()) {
+      this.appConfig.logMessage(`isWAEnabled false for ${caseId} in event ${eventId}`);
       return of(defaultPayload);
     }
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
@@ -236,6 +239,7 @@ export class WorkAllocationService {
   if (!this.isWAEnabled()) {
     return of({task: null});
   }
+  this.appConfig.logMessage(`getTask: ${taskId}`);
   return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);
  }
 }

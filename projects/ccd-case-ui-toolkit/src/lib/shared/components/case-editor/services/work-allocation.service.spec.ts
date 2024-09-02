@@ -104,6 +104,7 @@ describe('WorkAllocationService', () => {
   const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
   const TASK_ASSIGN_URL = `${API_URL}/task/${MOCK_TASK_1.id}/assign`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
+  const GET_TASK_URL = `${API_URL}/task/${MOCK_TASK_1.id}`;
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -119,7 +120,7 @@ describe('WorkAllocationService', () => {
   let sessionStorageService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig', 'logMessage']);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
     appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
@@ -188,6 +189,7 @@ describe('WorkAllocationService', () => {
       const userId = getExampleUserDetails()[1].userInfo.id;
       workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
       expect(httpService.post).toHaveBeenCalledWith(TASK_ASSIGN_URL, {userId});
+      expect(appConfig.logMessage).toHaveBeenCalled();
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -220,8 +222,9 @@ describe('WorkAllocationService', () => {
     }));
 
     it('should call post with the correct parameters', () => {
-      workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true });
+      workAllocationService.completeTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`completeTask: completing ${MOCK_TASK_1.id}`);
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true, eventName: 'Add case number' });
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -254,8 +257,9 @@ describe('WorkAllocationService', () => {
     }));
 
     it('should call post with the correct parameters', () => {
-      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true});
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`assignAndCompleteTask: completing ${MOCK_TASK_1.id}`);
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true, eventName: 'Add case number'});
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -333,7 +337,7 @@ describe('WorkAllocationService', () => {
         tasks: [ MOCK_TASK_2 ]
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
-        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
+        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id, 'event');
         done();
       });
     });
@@ -362,10 +366,16 @@ describe('WorkAllocationService', () => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
-        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
+        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id, 'event');
         expect(error.message).toEqual(COMPLETE_ERROR.message); // The error for completing the task.
         done();
       });
+    });
+
+    it('should get the task for the task id given with log message', () => {
+      workAllocationService.getTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.get).toHaveBeenCalledWith(GET_TASK_URL);
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`getTask: ${MOCK_TASK_1.id}`);
     });
 
     it('should get task for the task id provided', (done) => {
