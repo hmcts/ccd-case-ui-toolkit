@@ -18,7 +18,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   @Input()
   context: EventCompletionStateMachineContext;
   @Output()
-  public eventCanBeCompletedNotify: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public notifyEventCompletionReassigned: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public caseId: string;
   public assignedUserId: string;
@@ -27,12 +27,9 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
 
-  constructor(private readonly route: ActivatedRoute,
-    private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService,
+  constructor(private readonly sessionStorageService: SessionStorageService,
     private readonly judicialworkerService: JudicialworkerService,
-    private readonly caseworkerService: CaseworkerService,
-    private readonly alertService: AlertService) {
+    private readonly caseworkerService: CaseworkerService) {
   }
 
   public ngOnInit(): void {
@@ -86,10 +83,10 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     if (taskStr) {
       // Set session to override reassignment settings so code flow does not return to this component
       this.sessionStorageService.setItem('assignNeeded', 'true - override')
-      this.eventCanBeCompletedNotify.emit(true);
+      this.notifyEventCompletionReassigned.emit(true);
     } else {
       // Emit event cannot be completed event
-      this.eventCanBeCompletedNotify.emit(false);
+      this.notifyEventCompletionReassigned.emit(false);
     }
   }
 }

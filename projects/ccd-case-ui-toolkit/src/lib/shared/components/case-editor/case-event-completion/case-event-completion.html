@@ -1,10 +1,10 @@
 <app-case-event-completion-task-cancelled
     *ngIf="taskState === eventCompletionTaskStates.TaskCancelled"
     [context]="context"
-    (setEventCanBeCompleted)="eventCanBeCompletedNotify($event)">
+    (setEventCanBeCompleted)="notifyEventCompletionCancelled($event)">
 </app-case-event-completion-task-cancelled>
 <app-case-event-completion-task-reassigned
     *ngIf="taskState === eventCompletionTaskStates.TaskReassigned"
     [context]="context"
-    (setEventCanBeCompleted)="eventCanBeCompletedNotify($event)">
+    (setEventCanBeCompleted)="notifyEventCompletionReassigned($event)">
 </app-case-event-completion-task-reassigned>

@@ -10,7 +10,7 @@ export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   @Input()
   context: EventCompletionStateMachineContext;
   @Output()
-  public eventCanBeCompletedNotify: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public notifyEventCompletionCancelled: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public caseId: string;
 
@@ -21,6 +21,6 @@ export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   public onContinue(): void {
     // Emit event can be completed event
     this.context.sessionStorageService.removeItem('taskToComplete');
-    this.eventCanBeCompletedNotify.emit(true);
+    this.notifyEventCompletionCancelled.emit(true);
   }
 }
