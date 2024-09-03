@@ -29,7 +29,6 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;
   public taskState: EventCompletionTaskStates;
-  public eventCanBeCompletedSet: boolean = false;
 
   constructor(private readonly service: EventCompletionStateMachineService,
     private readonly router: Router,
@@ -40,7 +39,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   }
 
   public ngOnChanges(changes?: SimpleChanges): void {
-    if (changes.eventCompletionParams && changes.eventCompletionParams.currentValue && !this.eventCanBeCompletedSet) {
+    if (changes.eventCompletionParams?.currentValue) {
       // Setup the context
       this.context = {
         task: this.eventCompletionParams.task,
