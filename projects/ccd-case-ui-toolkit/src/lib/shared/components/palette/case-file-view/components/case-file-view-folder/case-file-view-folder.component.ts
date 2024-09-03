@@ -130,12 +130,16 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
+          && document.upload_timestamp ? moment(this.convertUTCDateToLocalDate(new Date(document.upload_timestamp))).format('DD MMM YYYY HH:mm:ss') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
 
     return documentsToReturn;
+  }
+
+  private convertUTCDateToLocalDate(date): Date {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
   }
 
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
@@ -148,7 +152,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
+          && document.upload_timestamp ? moment(this.convertUTCDateToLocalDate(new Date(document.upload_timestamp))).format('DD MMM YYYY HH:mm:ss') : '';
 
       documents.push(documentTreeNode);
     });

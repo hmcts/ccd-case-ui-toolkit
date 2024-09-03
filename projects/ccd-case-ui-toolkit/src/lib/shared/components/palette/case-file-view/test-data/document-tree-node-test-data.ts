@@ -7,7 +7,7 @@ export const lagerEncyclopedia = {
   document_filename: 'Lager encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '11 May 2023 00:00:00'
+  upload_timestamp: '11 May 2023 12:15:10'
 };
 
 export const beersEncyclopedia = {
@@ -16,7 +16,7 @@ export const beersEncyclopedia = {
   document_filename: 'Beers encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '14 Apr 2023 00:00:00'
+  upload_timestamp: '14 Apr 2023 16:30:00'
 };
 
 export const aleEncyclopedia = {
@@ -48,7 +48,7 @@ export const whiskyLowland1 = {
   document_filename: 'Details about Whisky Lowland 1',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '21 Jun 2022 00:00:00'
+  upload_timestamp: '21 Jun 2022 01:00:00'
 };
 
 export const whiskyLowland = {
@@ -129,7 +129,7 @@ export const proseccoItalian = {
   document_filename: 'Details about Prosecco',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Apr 2023 00:00:00'
+  upload_timestamp: '12 Apr 2023 01:00:00'
 };
 
 export const pinotGrigioItalian = {
