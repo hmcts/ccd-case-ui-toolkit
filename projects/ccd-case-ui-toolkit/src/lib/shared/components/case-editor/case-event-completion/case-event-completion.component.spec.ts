@@ -125,6 +125,17 @@ describe('CaseEventCompletionComponent', () => {
     expect(eventCompletionStateMachineService.startStateMachine).toHaveBeenCalled();
   });
 
+  it('should emit false if there is now no task to complete in session storage', () => {
+    spyOn(component.eventCanBeCompleted, 'emit');
+    component.setEventCanBeCompleted(false);
+    expect(component.eventCanBeCompleted.emit).toHaveBeenCalledWith(false);
+  });
+
+  it('should set task state', () => {
+    component.setTaskState(1);
+    expect(component.taskState).toBe(1);
+  });
+
   afterAll(() => {
     TestBed.resetTestingModule();
   });

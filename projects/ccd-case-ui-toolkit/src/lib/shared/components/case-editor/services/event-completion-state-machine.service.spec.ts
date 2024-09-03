@@ -17,7 +17,7 @@ import { EventCompletionStateMachineService } from './event-completion-state-mac
 import createSpyObj = jasmine.createSpyObj;
 import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
 
-fdescribe('EventCompletionStateMachineService', () => {
+describe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
