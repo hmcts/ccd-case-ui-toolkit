@@ -76,7 +76,8 @@ import { CaseEventCompletionTaskReassignedComponent } from './case-event-complet
     CaseEditFormComponent,
     CaseEditSubmitComponent,
     CaseCreateComponent,
-    CaseProgressComponent
+    CaseProgressComponent,
+    CaseEditGenericErrorsComponent
   ],
   exports: [
     CaseEditConfirmComponent,
