@@ -71,7 +71,11 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   }
 
   public setEventCanBeCompleted(completable: boolean) {
-    this.eventCanBeCompletedSet = true;
-    this.eventCanBeCompleted.emit(completable);
+    // note: event not completed from here as will then skip task completion
+    if (!completable) {
+      // if event cannot be completed ensure that this is communicated
+      // otherwise this will be handled via onchanges
+      this.eventCanBeCompleted.emit(completable);
+    }
   }
 }

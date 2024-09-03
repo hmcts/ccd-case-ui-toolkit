@@ -44,10 +44,10 @@ describe('TaskCancelledComponent', () => {
   });
 
   it('should emit event can be completed true when clicked on continue button', () => {
-    spyOn(component.eventCanBeCompletedNotify, 'emit');
+    spyOn(component.notifyEventCompletionCancelled, 'emit');
     component.onContinue();
     expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete')
-    expect(component.eventCanBeCompletedNotify.emit).toHaveBeenCalledWith(true);
+    expect(component.notifyEventCompletionCancelled.emit).toHaveBeenCalledWith(true);
   });
 
   afterAll(() => {
