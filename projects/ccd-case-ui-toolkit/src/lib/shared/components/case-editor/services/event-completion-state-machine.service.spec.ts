@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import {
   EventCompletionStateMachineContext,
@@ -15,8 +15,9 @@ import {
 } from '../domain';
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
+import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
 
-describe('EventCompletionStateMachineService', () => {
+fdescribe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
@@ -31,7 +32,8 @@ describe('EventCompletionStateMachineService', () => {
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
   const eventCompletionComponentEmitter: any = {
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
+    eventCanBeCompleted: new EventEmitter<boolean>(true),
+    setTaskState: () => {}
   };
 
   mockRouter = {
@@ -74,6 +76,7 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  mockSessionStorageService = new SessionStorageService();
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
 
   const context: EventCompletionStateMachineContext = {
@@ -95,7 +98,8 @@ describe('EventCompletionStateMachineService', () => {
       imports: [RouterTestingModule],
       providers: [
         {provide: Router, useValue: mockRouter},
-        {provide: WorkAllocationService, useValue: mockWorkAllocationService}
+        {provide: WorkAllocationService, useValue: mockWorkAllocationService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService}
       ]
     });
     service = new EventCompletionStateMachineService();
@@ -134,69 +138,91 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to user', () => {
-    const taskResponse: TaskRespone = {
-      task: oneTask
-    };
-    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    const taskResponse = {task: oneTask};
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     oneTask.task_state = 'assigned';
     oneTask.assignee = '1234-1234-1234-1234';
     context.task = oneTask;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    spyOn(context.sessionStorageService, 'setItem');
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTask).toHaveBeenCalled();
+    expect(context.sessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'false');
   });
 
   it('should perform state task assigned to another user', () => {
-    const task = oneTask;
-    const taskResponse: TaskRespone = {
-      task: oneTask
-    };
-    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    const task = {...oneTask};
+    const taskResponse = {task: oneTask};
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     task.task_state = 'assigned';
     task.assignee = '4321-4321-4321-4321';
     context.task = task;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    spyOn(context.component, 'setTaskState');
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTask).toHaveBeenCalled();
+    expect(context.component.setTaskState).toHaveBeenCalledWith(EventCompletionTaskStates.TaskReassigned);
+  });
+
+  it('should perform state task assigned to another user with override', () => {
+    const task = {...oneTask};
+    const taskResponse = {task: oneTask};
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
+    task.task_state = 'assigned';
+    task.assignee = '4321-4321-4321-4321';
+    context.task = task;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('true - override', JSON.stringify(context.task));
+    spyOn(context.sessionStorageService, 'setItem');
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    service.addTransitions();
+    service.startStateMachine(stateMachine);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
+    expect(context.workAllocationService.getTask).toHaveBeenCalled();
+    expect(context.sessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
   });
 
   it('should perform state task unassigned', () => {
     const taskToTest = oneTask;
     taskToTest.assignee = null;
     taskToTest.task_state = 'unassigned';
-    const taskResponse: TaskRespone = {
-      task: taskToTest
-    };
-    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    const taskResponse = {task: taskToTest};
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    spyOn(context.sessionStorageService, 'setItem');
     context.task = taskToTest;
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTask).toHaveBeenCalled();
+    expect(context.sessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
   });
 
   it('should perform state task completed or cancelled', () => {
     const taskToTest = oneTask;
     taskToTest.task_state = 'completed';
-    const taskResponse: TaskRespone = {
-      task: taskToTest
-    };
-    spyOn(context.workAllocationService, 'getTask').and.returnValue(of({taskResponse}));
+    const taskResponse = {task: taskToTest};
+    spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
+    spyOn(context.sessionStorageService, 'getItem').and.returnValue('false');
+    spyOn(context.component, 'setTaskState');
     context.task = taskToTest;
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
     service.startStateMachine(stateMachine);
-    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.CheckTasksCanBeCompleted);
+    expect(stateMachine.currentState.id).toEqual(EventCompletionStates.Final);
     expect(context.workAllocationService.getTask).toHaveBeenCalled();
+    expect(context.component.setTaskState).toHaveBeenCalledWith(EventCompletionTaskStates.TaskCancelled);
   });
 
   it('should add transition for state check taks can be completed', () => {

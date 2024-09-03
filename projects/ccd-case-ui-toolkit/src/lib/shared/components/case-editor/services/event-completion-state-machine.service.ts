@@ -79,6 +79,7 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
+    const assignNeeded = context.sessionStorageService.getItem('assignNeeded');
     context.workAllocationService.getTask(context.task.id).subscribe(
       taskResponse => {
         if (taskResponse && taskResponse.task && taskResponse.task.task_state) {
@@ -94,7 +95,6 @@ export class EventCompletionStateMachineService {
               state.trigger(EventCompletionStates.TaskCompetedOrCancelled);
               break;
             case TaskState.Assigned:
-              const assignNeeded = context.sessionStorageService.getItem('assignNeeded');
               // Task is in assigned state
               if (taskResponse.task.assignee === context.task.assignee) {
                 // Task still assigned to current user, complete event and task
