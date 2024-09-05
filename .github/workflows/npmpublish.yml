@@ -101,3 +101,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
+  check-timezone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check current time zone
+        run: | 
+          echo 'Current Date and Time:' 
+          date 
+          echo 'Time Zone Info:' 
+          timedatectl
