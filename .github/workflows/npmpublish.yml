@@ -14,7 +14,6 @@ on:
       - '*'
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -23,16 +22,6 @@ jobs:
         with:
           node-version: 18
       - run: corepack enable && yarn --version
-      - run: |
-          echo "Current UTC Time:"
-          date
-          echo "Switching Time Zone to Europe/London (BST)"
-          export TZ="Europe/London"
-          echo "Current Local Time (BST):"
-          date
-        env:
-          TZ: Europe/London
-
       - run: yarn install
       - run: yarn lint
       - run: yarn build
