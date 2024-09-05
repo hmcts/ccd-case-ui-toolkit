@@ -7,7 +7,7 @@ export const lagerEncyclopedia = {
   document_filename: 'Lager encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: new Date(Date.UTC(2023, 4, 11, 11, 15, 0, 0)).toISOString(),
+  upload_timestamp: new Date(2023, 4, 11, 11, 15, 0, 0).toString(),
 };
 
 export const beersEncyclopedia = {
