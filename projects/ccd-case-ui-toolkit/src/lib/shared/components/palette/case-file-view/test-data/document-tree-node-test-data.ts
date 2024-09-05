@@ -7,7 +7,7 @@ export const lagerEncyclopedia = {
   document_filename: 'Lager encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '11 May 2023 12:15:10'
+  upload_timestamp: '2023-05-11T11:15:10.00'
 };
 
 export const beersEncyclopedia = {
@@ -16,7 +16,7 @@ export const beersEncyclopedia = {
   document_filename: 'Beers encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '14 Apr 2023 16:30:00'
+  upload_timestamp: '2023-04-14T15:30:00.00'
 };
 
 export const aleEncyclopedia = {
@@ -25,7 +25,7 @@ export const aleEncyclopedia = {
   document_filename: 'Ale encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Mar 2023 01:23:01'
+  upload_timestamp: '2023-03-12T01:23:01.00'
 };
 
 export const whiskyHighland = {
@@ -48,7 +48,7 @@ export const whiskyLowland1 = {
   document_filename: 'Details about Whisky Lowland 1',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '21 Jun 2022 01:00:00'
+  upload_timestamp: '2022-06-21T00:00:00.00'
 };
 
 export const whiskyLowland = {
@@ -79,7 +79,7 @@ export const whiskyIslayDetails = {
   document_filename: 'Details about Whisky Islay',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '04 Nov 2022 00:00:00'
+  upload_timestamp: '2022-11-04T00:00:00.00'
 };
 
 export const whiskyIslayMoreInformation = {
@@ -88,7 +88,7 @@ export const whiskyIslayMoreInformation = {
   document_filename: 'More information about Whisky Islay',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '28 Dec 2022 00:00:00'
+  upload_timestamp: '2022-12-28T00:00:00.00'
 };
 
 export const whiskySpeyside = {
@@ -120,7 +120,7 @@ export const whiteWineItalian = {
   document_filename: 'Details about white wine',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '10 Feb 2023 00:00:00'
+  upload_timestamp: '2023-02-10T00:00:00.00'
 };
 
 export const proseccoItalian = {
@@ -129,7 +129,7 @@ export const proseccoItalian = {
   document_filename: 'Details about Prosecco',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Apr 2023 01:00:00'
+  upload_timestamp: '2023-04-12T00:00:00.00'
 };
 
 export const pinotGrigioItalian = {
@@ -138,7 +138,7 @@ export const pinotGrigioItalian = {
   document_filename: 'Details about Pinot Grigio',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '16 Mar 2023 00:00:00'
+  upload_timestamp: '2023-03-16T00:00:00.00'
 };
 
 export const beersAlphabeticallyAsc = {
@@ -306,7 +306,7 @@ export const uncategorisedDocument1 = {
   document_filename: 'Uncategorised document 1',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '17 Nov 2022 00:00:00'
+  upload_timestamp: '2022-11-17T00:00:00.00'
 };
 
 export const uncategorisedDocument2 = {
@@ -315,7 +315,7 @@ export const uncategorisedDocument2 = {
   document_filename: 'Uncategorised document 2',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '23 Feb 2023 00:00:00'
+  upload_timestamp: '2023-02-23T00:00:00.00'
 };
 
 export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [

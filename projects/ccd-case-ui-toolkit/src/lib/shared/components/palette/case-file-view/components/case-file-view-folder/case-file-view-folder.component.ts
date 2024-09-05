@@ -129,20 +129,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
-      console.log('document details', document.document_filename);
-      console.log('document date', document.upload_timestamp);
-      console.log('document date in Local', moment(this.convertUTCDateToLocalDate(new Date(document.upload_timestamp))).format('DD MMM YYYY HH:mm:ss'));
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(this.convertUTCDateToLocalDate(new Date(document.upload_timestamp))).format('DD MMM YYYY HH:mm:ss') : '';
+          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
       documentsToReturn.push(documentTreeNode);
     });
 
     return documentsToReturn;
-  }
-
-  private convertUTCDateToLocalDate(date): Date {
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
   }
 
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
@@ -155,7 +148,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(this.convertUTCDateToLocalDate(new Date(document.upload_timestamp))).format('DD MMM YYYY HH:mm:ss') : '';
+          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
       documents.push(documentTreeNode);
     });

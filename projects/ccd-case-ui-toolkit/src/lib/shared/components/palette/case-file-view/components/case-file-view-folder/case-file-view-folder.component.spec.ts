@@ -97,7 +97,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
 
-    expect(treeData[3].children[0].upload_timestamp).toEqual('17 Nov 2022 00:00:00');
+    expect(treeData[3].children[0].upload_timestamp).toEqual('2022-11-17T00:00:00.00');
   });
 
   it('should generate tree data from categorised data', () => {
@@ -105,9 +105,19 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get documents from category with upload timestamp when feature toggle is on', () => {
-    const documents = categoriesAndDocumentsTestData.categories[0].documents;
-    fixture.detectChanges();
-    expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
+    const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
+    expect(timestampElements[0].textContent).toEqual('11 May 2023 12:15');
+    expect(timestampElements[1].textContent).toEqual('14 Apr 2023 16:30');
+    expect(timestampElements[2].textContent).toEqual('12 Mar 2023 01:23');
+    expect(timestampElements[3].textContent).toEqual('12 Apr 2023 01:00');
+    expect(timestampElements[4].textContent).toEqual('16 Mar 2023 00:00');
+    expect(timestampElements[5].textContent).toEqual('10 Feb 2023 00:00');    
+    expect(timestampElements[6].textContent).toEqual('');
+    expect(timestampElements[7].textContent).toEqual('21 Jun 2022 01:00');
+    expect(timestampElements[8].textContent).toEqual('28 Dec 2022 00:00');
+    expect(timestampElements[9].textContent).toEqual('04 Nov 2022 00:00');
+    expect(timestampElements[10].textContent).toEqual('23 Feb 2023 00:00');
+    expect(timestampElements[11].textContent).toEqual('17 Nov 2022 00:00');
   });
 
   it('should get uncategorised documents', () => {
