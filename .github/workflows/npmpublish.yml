@@ -14,6 +14,24 @@ on:
       - '*'
 
 jobs:
+
+  testing-local-timezone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Time Zone to BST (Europe/London)
+        run: |
+          echo "Current UTC Time:"
+          date
+          echo "Switching Time Zone to Europe/London (BST)"
+          export TZ="Europe/London"
+          echo "Current Local Time (BST):"
+          date
+        env:
+          TZ: Europe/London
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -101,12 +119,3 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
-  check-timezone:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check current time zone
-        run: | 
-          echo 'Current Date and Time:' 
-          date 
-          echo 'Time Zone Info:' 
-          timedatectl
