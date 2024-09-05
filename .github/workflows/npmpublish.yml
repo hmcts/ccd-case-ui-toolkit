@@ -15,14 +15,15 @@ on:
 
 jobs:
 
-  testing-local-timezone:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set Time Zone to BST (Europe/London)
-        run: |
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: corepack enable && yarn --version
+      - run: |
           echo "Current UTC Time:"
           date
           echo "Switching Time Zone to Europe/London (BST)"
@@ -32,14 +33,6 @@ jobs:
         env:
           TZ: Europe/London
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn lint
       - run: yarn build
