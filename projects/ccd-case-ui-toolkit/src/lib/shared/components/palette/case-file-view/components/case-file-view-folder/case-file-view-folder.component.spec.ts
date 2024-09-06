@@ -115,7 +115,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
-  fit('should render cdk nested tree and verify the timestamp values', () => {
+  it('should render cdk nested tree and verify the timestamp values', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
