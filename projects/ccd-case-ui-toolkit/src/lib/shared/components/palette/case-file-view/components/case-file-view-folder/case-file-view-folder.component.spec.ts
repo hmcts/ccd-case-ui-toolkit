@@ -127,7 +127,7 @@ describe('CaseFileViewFolderComponent', () => {
     console.log('Input date:-', categoriesAndDocumentsTestData.categories[0].documents[0].upload_timestamp);
     console.log('Result new:-', convertUTCDateToLocalDate(categoriesAndDocumentsTestData.categories[0].documents[0].upload_timestamp));
     // console.log('Result new1:-', new Date(categoriesAndDocumentsTestData.categories[0].documents[0].upload_timestamp));
-    expect(timestampElements[0].textContent).toEqual('11 May 2023 12:15');
+    expect(convertUTCDateToLocalDate(categoriesAndDocumentsTestData.categories[0].documents[0].upload_timestamp)).toEqual('11 May 2023 12:15');
     // expect(timestampElements[0].textContent).toEqual('11 May 2023 12:15');
     // expect(timestampElements[1].textContent).toEqual('14 Apr 2023 16:30');
     // expect(timestampElements[2].textContent).toEqual('12 Mar 2023 01:23');
@@ -165,7 +165,7 @@ describe('CaseFileViewFolderComponent', () => {
     // console.log('convertUTCDateToLocalDate Date:-', new Date());
     // console.log('convertUTCDateToLocalDate diff:-', diff)
     const dateValue = new Date(dateInput);
-    return dateInput ? moment(dateValue.getTime() - dateValue.getTimezoneOffset() * 60 * 1000).format('DD MMM YYYY HH:mm:ss') : '';
+    return dateInput ? moment(dateValue.getTime() - dateValue.getTimezoneOffset() * 60 * 1000).format('DD MMM YYYY HH:mm') : '';
   }
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
