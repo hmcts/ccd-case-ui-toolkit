@@ -135,28 +135,6 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
-  // it('should render cdk nested tree and verify the timestamp values', () => {
-  //   component.nestedDataSource = treeData;
-  //   fixture.detectChanges();
-  //   const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
-  //   expect(documentTreeContainerEl).toBeDefined();
-  //   const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
-  //   const diff = new Date().getTimezoneOffset();
-  //   console.log('Difference:-', diff);
-  //   expect(timestampElements[0].textContent).toEqual('11 May 2023 12:15');
-  //   expect(timestampElements[1].textContent).toEqual('14 Apr 2023 16:30');
-  //   expect(timestampElements[2].textContent).toEqual('12 Mar 2023 01:23');
-  //   expect(timestampElements[3].textContent).toEqual('');
-  //   expect(timestampElements[4].textContent).toEqual('10 Feb 2023 00:00');
-  //   expect(timestampElements[5].textContent).toEqual('12 Apr 2023 01:00');
-  //   expect(timestampElements[6].textContent).toEqual('16 Mar 2023 00:00');
-  //   expect(timestampElements[7].textContent).toEqual('21 Jun 2022 01:00');
-  //   expect(timestampElements[8].textContent).toEqual('04 Nov 2022 00:00');
-  //   expect(timestampElements[9].textContent).toEqual('28 Dec 2022 00:00');
-  //   expect(timestampElements[10].textContent).toEqual('17 Nov 2022 00:00');
-  //   expect(timestampElements[11].textContent).toEqual('23 Feb 2023 00:00');
-  // });
-
   it('should render cdk nested tree and verify the timestamp values', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
@@ -171,19 +149,6 @@ describe('CaseFileViewFolderComponent', () => {
     // Ensure the document exists at the current index
       const document = documents[index];
       if (!document) {
-        console.warn(`Document at index ${index} is undefined. Skipping verification.`);
-        return; // Skip this iteration
-      }
-
-      // Check if upload_timestamp is undefined
-      if (document.upload_timestamp === undefined) {
-        console.warn(`upload_timestamp for document at index ${index} is undefined. Skipping verification.`);
-        return; // Skip this iteration
-      }
-
-      // Check if the element's text content is empty
-      if (!element.textContent) {
-        console.warn(`Timestamp element at index ${index} is empty. Skipping verification.`);
         return; // Skip this iteration
       }
 
