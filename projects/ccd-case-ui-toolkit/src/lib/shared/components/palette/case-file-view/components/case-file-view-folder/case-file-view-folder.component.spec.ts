@@ -120,6 +120,8 @@ describe('CaseFileViewFolderComponent', () => {
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
     const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
+    const diff = new Date().getTimezoneOffset();
+    console.log('Difference:-', diff);
     expect(timestampElements[0].textContent).toEqual('11 May 2023 12:15');
     expect(timestampElements[1].textContent).toEqual('14 Apr 2023 16:30');
     expect(timestampElements[2].textContent).toEqual('12 Mar 2023 01:23');
