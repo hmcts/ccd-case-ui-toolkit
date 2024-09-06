@@ -121,8 +121,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
-    const diff = new Date().getTimezoneOffset();
-    console.log('Difference:-', diff);
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
       const documentTreeNode = new DocumentTreeNode();
