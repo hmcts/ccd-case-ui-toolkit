@@ -56,6 +56,10 @@ describe('CaseFileViewFolderComponent', () => {
     }
   ]);
 
+  // Method used to resolve discrepancies between GitHub Actions and local machine timezones.
+  // This function adjusts the given UTC date string to the local timezone of the machine
+  // running the code. It uses the Moment.js library to detect the current system's timezone
+  // dynamically and converts the date accordingly, formatting it to "D MMM YYYY HH:mm".
   function adjustDateToLocal(dateString: Date | string): string {
     // Determine the local time zone dynamically
     const localTimeZone = moment.tz.guess();
