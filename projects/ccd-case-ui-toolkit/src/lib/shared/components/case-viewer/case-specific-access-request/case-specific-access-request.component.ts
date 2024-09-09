@@ -103,6 +103,10 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
           () => {
             // Show the generic error message
             this.getSpecificAccessError = true;
+            this.errorMessage = {
+              title: 'Sorry, there is a problem with the service',
+              description: 'Try again later.'
+            };
           }
         );
     }

@@ -104,6 +104,24 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
+  it('should return error when API call fails', () => {
+    casesService.createSpecificAccessRequest.and.returnValue(of({
+      errorCode: '500',
+      status: '500',
+      errorMessage: 'Internal Server Error',
+      timeStamp: new Date()
+    }));
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
+    otherReason.value = 'Test';
+    otherReason.dispatchEvent(new Event('input'));
+    submitButton.click();
+    fixture.detectChanges();
+    expect(component.formGroup.invalid).toBe(false);
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    expect(errorMessageElement).toBeDefined();
+  });
+
   it('should go back to the page before previous one when the \"Cancel\" link is clicked', fakeAsync(() => {
     const cancelLink = fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
