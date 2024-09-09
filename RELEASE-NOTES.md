@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 7.0.62
-**EXUI-2146/EXUI-2230** Case file view time is 1 hour behind
-
 ### Version 7.0.61
 **EXUI-EXUI-2220** add-task-completion-logs
 
