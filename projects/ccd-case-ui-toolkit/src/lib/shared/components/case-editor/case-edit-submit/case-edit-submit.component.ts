@@ -102,7 +102,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
 
-    console.log(this.multipageComponentStateService.getInstigator());
     this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
     this.description = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.description');
   }
