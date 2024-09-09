@@ -118,7 +118,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(false);
-    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-grid-column-two-thirds');
     expect(errorMessageElement).toBeDefined();
   });
 

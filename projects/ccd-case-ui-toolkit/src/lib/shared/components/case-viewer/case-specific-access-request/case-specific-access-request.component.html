@@ -1,10 +1,14 @@
 <exui-error-message
-  *ngIf="(formGroup.invalid && submitted) || getSpecificAccessError === true"
+  *ngIf="formGroup.invalid && submitted"
   [error]="errorMessage"></exui-error-message>
 <cut-alert type="information">
   {{'Authorisation is needed to access this case.' | rpxTranslate}}<br />
   {{'This could be because it\'s outside your jurisdiction, or you may be excluded from the case. If you request access to this case, it will be logged for auditing purposes.' | rpxTranslate}}
 </cut-alert>
+<div *ngIf="getSpecificAccessError" class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+  <p class="govuk-body">Try again later.</p>
+</div>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"
     [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
