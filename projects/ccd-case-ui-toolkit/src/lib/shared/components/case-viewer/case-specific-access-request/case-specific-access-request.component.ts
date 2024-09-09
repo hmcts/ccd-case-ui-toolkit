@@ -32,6 +32,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   private readonly genericError = 'There is a problem';
   private readonly specificReasonControlName = 'specificReason';
+  public getSpecificAccessError = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -100,7 +101,8 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
             this.router.navigate(['success'], { relativeTo: this.route });
           },
           () => {
-            // Navigate to error page
+            // Show the generic error message
+            this.getSpecificAccessError = true;
           }
         );
     }

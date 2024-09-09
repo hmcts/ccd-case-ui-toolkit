@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.62-exui-2227-rc1
+**EXUI-EXUI-2227** error-handling-specific-access-request
+
 ### Version 7.0.61
 **EXUI-EXUI-2220** add-task-completion-logs
 
