@@ -6,8 +6,8 @@
   {{'This could be because it\'s outside your jurisdiction, or you may be excluded from the case. If you request access to this case, it will be logged for auditing purposes.' | rpxTranslate}}
 </cut-alert>
 <div *ngIf="getSpecificAccessError" class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
-  <p class="govuk-body">Try again later.</p>
+  <h1 class="govuk-heading-xl">{{'Sorry, there is a problem with the service' | rpxTranslate}}</h1>
+  <p class="govuk-body">{{'Try again later.' | rpxTranslate}}</p>
 </div>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"
