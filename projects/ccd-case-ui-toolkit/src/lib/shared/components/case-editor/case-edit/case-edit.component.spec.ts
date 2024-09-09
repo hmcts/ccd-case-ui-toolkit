@@ -1315,8 +1315,8 @@ describe('CaseEditComponent', () => {
           form: component.form,
           submit: mockClass.submit,
         });
-        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired with assignNeeded: taskId 12345 and event name Test Trigger');
-        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345', component.eventTrigger.name);
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired with assignNeeded: taskId 1 and event name Test Trigger');
+        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
       });
 
       it('should submit the case and complete task for an event submission', () => {
@@ -1352,7 +1352,7 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1');
+        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
       });
 
       it('should submit the case and not complete task for an event submission when service makes this clear', () => {
