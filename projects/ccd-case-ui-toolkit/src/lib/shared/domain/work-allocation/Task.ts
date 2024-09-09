@@ -31,6 +31,11 @@ export interface UserTask {
   complete_task: boolean
 }
 
+export interface TaskEvent {
+  taskId: string;
+  eventId: string;
+}
+
 export enum Permissions {
   Own= 'OWN',
   Execute= 'EXECUTE',

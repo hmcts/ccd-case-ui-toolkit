@@ -1,5 +1,52 @@
 ## RELEASE NOTES
 
+### Version 7.0.61
+**EXUI-EXUI-2220** add-task-completion-logs
+
+### Version 7.0.60
+**EXUI-EXUI-2280** MV Upgrade to v4.0.8
+
+### Version 7.0.58
+**EXUI-2235** add event name in task completion log
+
+### Version 7.0.57 
+**EXUI-2209** MV Upgrade to v4.0.7
+
+### Version 7.0.56 
+**EXUI-2224** 'Go' button doesn't re-activate
+
+### Version 7.0.55
+**EXUI-1775** Refdata intend to change
+
+### Version 7.0.54
+**EXUI-2085** Add Task completion logs in app insight
+
+### Version 7.0.53
+**EXUI-1540** revert this change
+
+### Version 7.0.52
+**EXUI-1117** Improve robustness to malformed dynamic list data
+
+### Version 7.0.51
+**EXUI-2051** Unable to Add documents
+
+### Version 7.0.50
+**EXUI-1298** MC - (Level-A) : DAC_No_Accessible_Name_01
+**EXUI-1540** Accessibilty issues
+
+### Version 7.0.49
+**EXUI-1538** MC - (Level-A) : DAC_Tables_01
+**EXUI-1539** MC - (Level-A) : DAC_Sortable_Tables_01
+
+### Version 7.0.48
+**EXUI-1952** Add time to date display in case file view
+
+### Version 7.0.47
+**EXUI-2082** Transparent background of calendar control
+
+### Version 7.0.46
+**EXUI-1984** Submit button greyed out on events
+
 ### Version 7.0.41
 **EXUI-1856** Unable to see Present (PED) button
 **EXUI-1598** auto-redirect to tabs as expected
