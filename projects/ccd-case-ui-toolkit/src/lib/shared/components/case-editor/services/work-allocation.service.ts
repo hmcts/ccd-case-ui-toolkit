@@ -53,8 +53,13 @@ export class WorkAllocationService {
 
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
-    const ftstr = JSON.stringify(this.features);
-    this.appConfig.logMessage(`isWAEnabled: wa-service-config returning ${ftstr.length > 0}`);
+    if (this.features) {
+      const ftstr = JSON.stringify(this.features);
+      this.appConfig?.logMessage(`isWAEnabled: wa-service-config returning ${ftstr?.length > 0}`);
+    } else {
+      this.appConfig?.logMessage(`isWAEnabled: wa-service-config returning no features`);
+      return false;
+    }
     let enabled = false;
     if (!jurisdiction || !caseType) {
       const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
