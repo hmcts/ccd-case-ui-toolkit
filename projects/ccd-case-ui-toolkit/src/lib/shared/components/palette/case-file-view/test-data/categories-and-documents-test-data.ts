@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { CategoriesAndDocuments } from '../../../../domain/case-file-view';
 
 export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
