@@ -2,7 +2,7 @@ import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StateMachine } from '@edium/fsm';
+import { State, StateMachine } from '@edium/fsm';
 import { of } from 'rxjs';
 import { WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -21,7 +21,7 @@ describe('EventCompletionStateMachineService', () => {
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
   // tslint:disable-next-line: prefer-const
-  let mockSessionStorageService: SessionStorageService;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let httpService: HttpService;
   let errorService: HttpErrorService;
@@ -38,6 +38,17 @@ describe('EventCompletionStateMachineService', () => {
     navigate: jasmine.createSpy('navigate'),
     routerState: {}
   };
+
+  const CLIENT_CONTEXT = { client_context: {
+    user_task: {
+      task_data: {
+        id: '1',
+        name: 'Example task',
+        case_id: '1234567890'
+      },
+      complete_task: true
+    }
+  }};
 
   const oneTask: Task = {
     assignee: '1234-1234-1234-1234',
@@ -74,6 +85,8 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
+  mockSessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
 
   const context: EventCompletionStateMachineContext = {
@@ -232,6 +245,22 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
+  });
+
+  it('should correctly set assignNeeded when checking task', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    const state = createSpyObj<State>('state', ['trigger']);
+    service.entryActionForStateCompleteEventAndTask(state, context);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'false');
+  });
+
+  it('should correctly set assignNeeded when checking unassigned task', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    const state = createSpyObj<State>('state', ['trigger']);
+    service.entryActionForStateTaskUnassigned(state, context);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
   });
 
   afterAll(() => {
