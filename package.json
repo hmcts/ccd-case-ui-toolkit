@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.2-query-management",
+  "version": "7.1.3-query-management",
   "engines": {
     "node": ">=18.19.0"
   },

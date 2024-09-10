@@ -184,7 +184,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     if (this.route.snapshot?.data?.case?.tabs) {
       this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter((tab) => tab?.fields?.some(
-          (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === 'QueryManagement1'))
+          (caseField) => caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID && caseField.field_type.type === this.FIELD_TYPE_COMPLEX))
         [0]?.fields?.reduce((acc, caseField) => {
           // Extract the ID based on conditions, updating this.fieldId dynamically
           this.extractIdBasedOnConditions(caseField);
@@ -201,8 +201,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private extractIdBasedOnConditions(data) {
     // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
-
-    console.log('data ------', data);
     if (
       data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
       data.field_type.type === this.FIELD_TYPE_COMPLEX
