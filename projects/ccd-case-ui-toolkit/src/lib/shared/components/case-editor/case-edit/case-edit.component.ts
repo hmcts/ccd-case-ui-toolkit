@@ -241,13 +241,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
-    let taskInSessionStorage: Task;
+    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const taskInSessionStorage = userTask ? userTask.task_data : null;
     let taskEventInSessionStorage: TaskEvent;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     const taskEventStr = this.sessionStorageService.getItem('taskEvent');
-    if (taskStr) {
-      taskInSessionStorage = JSON.parse(taskStr);
-    }
     if (taskEventStr) {
       taskEventInSessionStorage = JSON.parse(taskEventStr);
     }
@@ -475,14 +474,14 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private postCompleteTaskIfRequired(): Observable<any> {
-    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
-    if (taskStr && assignNeeded) {
-      const task: Task = JSON.parse(taskStr);
+    if (task && assignNeeded && taskToBeCompleted) {
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
-    } else if (taskStr) {
-      const task: Task = JSON.parse(taskStr);
+    } else if (task && taskToBeCompleted) {
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }

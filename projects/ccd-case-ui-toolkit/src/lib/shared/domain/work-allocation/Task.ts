@@ -26,6 +26,11 @@ export interface Task {
   work_type_id?: string;
 }
 
+export interface UserTask {
+  task_data: Task,
+  complete_task: boolean
+}
+
 export interface TaskEvent {
   taskId: string;
   eventId: string;
