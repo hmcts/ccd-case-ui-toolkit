@@ -166,7 +166,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     if (this.isDisplayContextParameterUpdate) {
       this.journeyStartPageNumber = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
       this.journeyEndPageNumber = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
-    } else {  
+    } else {
       this.journeyStartPageNumber = CaseFlagFieldState.FLAG_LOCATION;
       this.journeyEndPageNumber = CaseFlagFieldState.FLAG_STATUS;
     }
@@ -177,8 +177,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     // If we've navigated to this page, then we know by default, we want to set the 
     // journey page number to the field state. 
     if (this.navigatedTo) {
-      this.journeyPageNumber = this.fieldState;
-      this.journeyPreviousPageNumber = this.journeyEndPageNumber++;
+      const pageNo = this.fieldState === CaseFlagFieldState.FLAG_STATUS ? this.fieldState -1 : this.fieldState;
+      this.journeyPageNumber = pageNo;
+      this.journeyPreviousPageNumber = pageNo;
     }
 
     // Provided we have some stored state, i.e. when going backwards, we want 
