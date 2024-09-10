@@ -5,6 +5,7 @@ import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
 import { EventCompletionStates } from '../domain/event-completion-states.enum.model';
+import { FieldsUtils } from '../../../services';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -127,9 +128,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (userTask?.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'false');
       // just set event can be completed
       context.component.eventCanBeCompleted.emit(true);
@@ -149,10 +150,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    // Get task details
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (userTask?.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'true');
       context.component.eventCanBeCompleted.emit(true);
     } else {
@@ -215,5 +215,11 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.Final,
       this.stateFinal
     );
+  }
+
+  public taskPresentInSessionStorage(context: EventCompletionStateMachineContext): boolean {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    return !!userTask.task_data;
   }
 }

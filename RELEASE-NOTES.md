@@ -237,6 +237,9 @@
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
 
+### Version 7.0.63
+**EXUI-1838/39/40** Task Completion - EXUI Header
+
 ### Version 7.0.61
 **EXUI-EXUI-2220** add-task-completion-logs
 
