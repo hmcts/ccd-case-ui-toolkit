@@ -201,6 +201,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private extractIdBasedOnConditions(data) {
     // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
+
+    console.log('data ------', data);
     if (
       data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
       data.field_type.type === this.FIELD_TYPE_COMPLEX
