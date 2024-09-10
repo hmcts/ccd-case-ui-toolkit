@@ -8,6 +8,7 @@ import { FlagDetail, FlagsWithFormGroupPath } from '../../components/palette/cas
 import { CaseFlagDisplayContextParameter, CaseFlagStatus } from '../../components/palette/case-flag/enums';
 import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
+import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
 
 // @dynamic
@@ -632,6 +633,14 @@ export class FieldsUtils {
       default:
         return '';
     }
+  }
+
+  public static getUserTaskFromClientContext(clientContextStr: string): UserTask {
+    if (clientContextStr) {
+      let clientContext = JSON.parse(clientContextStr);
+      return clientContext.client_context.user_task;
+    }
+    return null;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

@@ -8,7 +8,7 @@ import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  public static readonly TASK_TO_COMPLETE = 'taskToComplete';
+  public static readonly CLIENT_CONTEXT = 'clientContext';
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
@@ -63,19 +63,28 @@ export class EventStartGuard implements CanActivate {
         task = tasksAssignedToUser[0];
       }
       // if one task assigned to user, allow user to complete event
-      this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+      const storeClientContext = {
+        client_context: {
+          user_task: {
+            task_data: task,
+            complete_task: true
+          }
+        }
+      };
+      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       return true;
     }
   }
 
   private removeTaskFromSessionStorage(): void {
-    this.sessionStorageService.removeItem(EventStartGuard.TASK_TO_COMPLETE);
+    this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
+
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
-        this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(task));
       } else {
         this.removeTaskFromSessionStorage();
       }
