@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.64
+**EXUI-2086** Within case file view
+
 ### Version 7.0.63
 **EXUI-1838/39/40** Task Completion - EXUI Header
 
