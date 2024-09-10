@@ -479,11 +479,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (task && assignNeeded && taskToBeCompleted) {
-      // const task: Task = JSON.parse(taskStr);
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (task && taskToBeCompleted) {
-      // const task: Task = JSON.parse(taskStr);
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }

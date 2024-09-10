@@ -219,7 +219,6 @@ export class EventCompletionStateMachineService {
 
   public taskPresentInSessionStorage(context: EventCompletionStateMachineContext): boolean {
     const clientContextStr = context.sessionStorageService.getItem('clientContext');
-    console.log('clienht cintedt ', clientContextStr)
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     return !!userTask.task_data;
   }
