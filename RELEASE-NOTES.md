@@ -3,6 +3,9 @@
 ### Version 7.0.62-exui-2227-rc1
 **EXUI-EXUI-2227** error-handling-specific-access-request
 
+### Version 7.0.63
+**EXUI-1838/39/40** Task Completion - EXUI Header
+
 ### Version 7.0.61
 **EXUI-EXUI-2220** add-task-completion-logs
 
