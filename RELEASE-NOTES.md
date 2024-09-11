@@ -1,4 +1,4 @@
-## RELEASE NOTES
+## RELEASE NOTES 
 
 ### Version 7.0.64
 **EXUI-2086** Within case file view
