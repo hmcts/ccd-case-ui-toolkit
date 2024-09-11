@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.55",
+  "version": "7.0.55-case-edit-add-ccs-class",
   "engines": {
     "node": ">=18.19.0"
   },
