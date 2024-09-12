@@ -110,6 +110,7 @@ export class LinkedCasesService {
             }),
           } as CaseLink;
         });
+        this.initialCaseLinks = this.linkedCases;
         this.serverLinkedApiError = null;
       },
       err => {

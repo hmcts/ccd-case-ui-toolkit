@@ -57,7 +57,6 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     this.initForm();
     if (!this.linkedCasesService.hasNavigatedInJourney){
       this.linkedCasesService.linkedCases = [];
-      this.linkedCasesService.caseFieldValue = [];
     }
     if (this.linkedCasesService.editMode || this.linkedCasesService.linkedCases.length) {
       // this may have includes the currently added one but yet to be submitted.
@@ -226,7 +225,6 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           };
-          this.linkedCasesService.caseFieldValue = [];
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
           this.linkCaseReasons.forEach(reason => reason.selected = false);
