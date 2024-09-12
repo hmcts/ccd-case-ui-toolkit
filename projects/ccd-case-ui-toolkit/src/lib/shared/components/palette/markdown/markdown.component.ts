@@ -17,6 +17,7 @@ export class MarkdownComponent implements OnInit {
   constructor(private router: Router, private renderer: Renderer2) { }
 
   public ngOnInit(): void {
+    this.content = this.content.replace(/  \n/g, '<br>');
     if (this.renderUrlToTextFeature) {
       this.renderUrlToText();
     }
