@@ -106,6 +106,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     return this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
   }
 
+  public isAtEnd(): boolean {
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyEndPageNumber;
+  }
+
   // This method will be triggered by the next button in the app component
   public nextStep(): void {
     this.multipageComponentStateService.next();
@@ -317,8 +321,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
   }
 
+  public checkForStagesCompleted() {
+    const dataControls = this.editForm.controls['data'];
+    if (dataControls) {
+      const flagLauncher = dataControls.get('flagLauncherInternal');
+      if (flagLauncher) {
+        if (flagLauncher.hasError('notAllCaseFlagStagesCompleted') && this.isAtEnd()) {
+          flagLauncher.setErrors(null);
+        }
+      }
+    }
+  }
+
   public submit(): void {
     this.caseEditDataService.clearFormValidationErrors();
+    this.checkForStagesCompleted();
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
