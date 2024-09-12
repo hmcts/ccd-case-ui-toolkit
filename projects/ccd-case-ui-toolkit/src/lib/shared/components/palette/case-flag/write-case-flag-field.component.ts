@@ -179,7 +179,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     if (this.navigatedTo) {
       const pageNo = this.fieldState === CaseFlagFieldState.FLAG_STATUS ? this.fieldState -1 : this.fieldState;
       this.journeyPageNumber = pageNo;
-      this.journeyPreviousPageNumber = pageNo;
+      this.journeyPreviousPageNumber = pageNo+1;
     }
 
     // Provided we have some stored state, i.e. when going backwards, we want 
