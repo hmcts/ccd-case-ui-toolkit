@@ -14,10 +14,11 @@ export class MarkdownComponent implements OnInit {
   @Input()
   public renderUrlToTextFeature?: boolean = true;
 
-  constructor(private router: Router, private renderer: Renderer2) {}
+  constructor(private router: Router, private renderer: Renderer2) { }
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
+    this.content = this.content.replace(/(?:\s,|<br>,)/g, '');
     if (this.renderUrlToTextFeature) {
       this.renderUrlToText();
     }
@@ -32,7 +33,7 @@ export class MarkdownComponent implements OnInit {
     return true;
   }
 
-  private renderUrlToText() : void {
+  private renderUrlToText(): void {
     const renderer = new marked.Renderer();
 
     renderer.link = (href, title, text) => {
