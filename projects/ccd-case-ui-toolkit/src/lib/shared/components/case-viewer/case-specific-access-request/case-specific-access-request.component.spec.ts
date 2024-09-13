@@ -38,6 +38,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
   beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
+    casesNotifier.fetchAndRefresh.and.returnValue(of(true));
     TestBed.configureTestingModule({
       declarations: [CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
         StubComponent],
@@ -118,8 +119,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.invalid).toBe(false);
-    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-grid-column-two-thirds');
-    expect(errorMessageElement).toBeDefined();
+    const errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    expect(errorBannerElement).toBeDefined();
   });
 
   it('should go back to the page before previous one when the \"Cancel\" link is clicked', fakeAsync(() => {

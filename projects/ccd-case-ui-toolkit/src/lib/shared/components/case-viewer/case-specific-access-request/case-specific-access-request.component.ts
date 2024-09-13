@@ -98,11 +98,16 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
           () => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2
+            this.getSpecificAccessError = false;
             this.router.navigate(['success'], { relativeTo: this.route });
           },
           () => {
             // Show the generic error message
             this.getSpecificAccessError = true;
+            this.errorMessage = {
+              title: this.genericError,
+              description: 'Sorry, there is a problem with the service; Try again later.'
+            };
           }
         );
     }
