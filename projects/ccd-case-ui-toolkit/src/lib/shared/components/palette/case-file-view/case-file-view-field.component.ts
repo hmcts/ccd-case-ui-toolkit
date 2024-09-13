@@ -26,6 +26,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public caseField: CaseField;
   public icp_jurisdictions: string[] = [];
   public icpEnabled: boolean = false;
+  public caseId: string;
 
   constructor(private readonly elementRef: ElementRef,
     private readonly route: ActivatedRoute,
@@ -38,8 +39,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   ) { }
 
   public ngOnInit(): void {
-    const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
-    this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
+    this.caseId = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
+    this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(this.caseId);
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$.subscribe({
       next: data => {
         this.caseVersion = data.case_version;
