@@ -12,8 +12,10 @@
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagDisplay of flagsDisplayData; index as i">
-          <input class="govuk-radios__input" id="flag-selection-{{i}}" [name]="selectedControlName"
-            type="radio" [value]="flagDisplay" [formControlName]="selectedControlName"/>
+          <input class="govuk-radios__input" id="flag-selection-{{i}}"
+            type="radio"
+            [checked]="isSelected(flagDisplay)"
+            (change)="onFlagSelectionChange(flagDisplay)"/>
           <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay | manageCaseFlagsLabelDisplay"></label>
         </div>
       </div>
