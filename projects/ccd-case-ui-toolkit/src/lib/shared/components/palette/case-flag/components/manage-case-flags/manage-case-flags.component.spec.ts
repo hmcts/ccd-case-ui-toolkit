@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseField, FieldType } from '../../../../../domain';
@@ -711,5 +711,37 @@ describe('ManageCaseFlagsComponent', () => {
   it('should return an empty string when any property is missing', () => {
     const flag: FlagDetailDisplayWithFormGroupPath = {} as FlagDetailDisplayWithFormGroupPath;
     expect(component.getFlagID(flag)).toBe('');
+  });
+
+  it('should call reapplyCachedControls when cached control flag ID matches form group selected control flag ID', () => {
+    spyOn(component, 'reapplyCachedControls');
+    spyOn(component, 'getFlagID').and.returnValue('flagID');
+    component.cachedControls = component.formGroup.controls;
+    component.cachedControls.selectedManageCaseLocation.setValue({ flagDetailDisplay: { flagDetail: { id: '456' } } });
+
+    component.formGroup.get('selectedManageCaseLocation').setValue({ flagDetailDisplay: { flagDetail: { id: '123' } } });
+    component.next();
+
+    expect(component.reapplyCachedControls).toHaveBeenCalled();
+  });
+
+  it('should not call reapplyCachedControls when cached control flag ID does not match form group selected control flag ID', () => {
+    spyOn(component, 'reapplyCachedControls');
+    spyOn(component, 'getFlagID').and.returnValues('flagID1', 'flagID2');
+
+    component.formGroup.get('selectedManageCaseLocation').setValue({ flagDetailDisplay: { flagDetail: { id: '123' } } });
+    component.cachedControls = component.formGroup.controls;
+
+    component.next();
+
+    expect(component.reapplyCachedControls).not.toHaveBeenCalled();
+  });
+
+  it('should reapply cachedcontrols if user does not change selection', () => {
+    const tempControls = component.formGroup;
+    tempControls.addControl('fakeComment', new FormControl('commentText'));
+    component.cachedControls = tempControls.controls;
+    component.reapplyCachedControls();
+    expect(component.formGroup.get('fakeComment')).toBeTruthy();
   });
 });
