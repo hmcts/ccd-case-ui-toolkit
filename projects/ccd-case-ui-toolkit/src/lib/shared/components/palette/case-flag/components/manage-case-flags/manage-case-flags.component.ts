@@ -37,8 +37,8 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     // if the user has progressed to CYA and then navigated away, the flag they selected will be set as inactive, we need to reset this
     const locationControl = this.formGroup.get(this.selectedControlName);
     if (locationControl) {
-      originalStatus = locationControl.value?.originalStatus;
-      originalPathToFlag = locationControl.value?.pathToFlagsFormGroup;
+      originalStatus = locationControl?.value?.originalStatus;
+      originalPathToFlag = locationControl?.value?.pathToFlagsFormGroup;
       this.cachedControls = cloneDeep(this.formGroup.controls);
       Object.keys(this.formGroup.controls).forEach((controlName) => {
         if (controlName !== this.selectedControlName) {

@@ -50,7 +50,7 @@ describe('SelectFlagLocationComponent', () => {
             }
           ] as FlagDetail[]
         },
-        pathToFlagsFormGroup: ''
+        pathToFlagsFormGroup: 'flag1'
       },
       {
         flags: {
@@ -71,7 +71,7 @@ describe('SelectFlagLocationComponent', () => {
           groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
           visibility: null
         },
-        pathToFlagsFormGroup: ''
+        pathToFlagsFormGroup: 'flag2'
       },
       {
         flags: {
@@ -92,7 +92,7 @@ describe('SelectFlagLocationComponent', () => {
           groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
           visibility: 'External'
         },
-        pathToFlagsFormGroup: ''
+        pathToFlagsFormGroup: 'flag3'
       },
       {
         flags: {
