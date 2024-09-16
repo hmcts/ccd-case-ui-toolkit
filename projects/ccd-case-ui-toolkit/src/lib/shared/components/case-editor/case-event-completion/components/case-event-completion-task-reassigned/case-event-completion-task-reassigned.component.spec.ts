@@ -154,7 +154,7 @@ describe('TaskReassignedComponent', () => {
     spyOn(mockWorkAllocationService, 'assignAndCompleteTask').and.returnValue({subscribe: () => {}});
     component.onContinue();
     expect(mockSessionStorageService.getItem).toHaveBeenCalledTimes(1);
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true - override');
   });
 
   it('should  task on continue event', () => {

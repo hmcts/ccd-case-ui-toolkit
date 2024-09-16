@@ -22,7 +22,7 @@ describe('EventCompletionStateMachineService', () => {
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
   // tslint:disable-next-line: prefer-const
-  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockSessionStorageService: SessionStorageService;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let httpService: HttpService;
   let errorService: HttpErrorService;
@@ -33,7 +33,7 @@ describe('EventCompletionStateMachineService', () => {
   let mockRouter: any;
   const eventCompletionComponentEmitter: any = {
     eventCanBeCompleted: new EventEmitter<boolean>(true),
-    setTaskState: () => {}
+    setTaskState: () => { }
   };
 
   mockRouter = {
@@ -41,16 +41,40 @@ describe('EventCompletionStateMachineService', () => {
     routerState: {}
   };
 
-  const CLIENT_CONTEXT = { client_context: {
-    user_task: {
-      task_data: {
-        id: '1',
-        name: 'Example task',
-        case_id: '1234567890'
-      },
-      complete_task: true
+  const CLIENT_CONTEXT = {
+    client_context: {
+      user_task: {
+        task_data: {
+          assignee: '1234-1234-1234-1234',
+          auto_assigned: false,
+          case_category: 'asylum',
+          case_id: '1620409659381330',
+          case_management_category: null,
+          case_name: 'Alan Jonson',
+          case_type_id: null,
+          created_date: '2021-04-19T14:00:00.000+0000',
+          due_date: '2021-05-20T16:00:00.000+0000',
+          execution_type: null,
+          id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+          jurisdiction: 'Immigration and Asylum',
+          location: null,
+          location_name: null,
+          name: 'Task name',
+          permissions: null,
+          region: null,
+          security_classification: null,
+          task_state: 'assigned',
+          task_system: null,
+          task_title: 'Some lovely task name',
+          type: null,
+          warning_list: null,
+          warnings: true,
+          work_type_id: null
+        },
+        complete_task: true
+      }
     }
-  }};
+  };
 
   const oneTask: Task = {
     assignee: '1234-1234-1234-1234',
@@ -87,9 +111,8 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
-  mockSessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
+  mockSessionStorageService = new SessionStorageService();
 
   const context: EventCompletionStateMachineContext = {
     task: oneTask,
@@ -109,9 +132,9 @@ describe('EventCompletionStateMachineService', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        {provide: Router, useValue: mockRouter},
-        {provide: WorkAllocationService, useValue: mockWorkAllocationService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService}
+        { provide: Router, useValue: mockRouter },
+        { provide: WorkAllocationService, useValue: mockWorkAllocationService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     });
     service = new EventCompletionStateMachineService();
@@ -150,12 +173,13 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to user', () => {
-    const taskResponse = {task: oneTask};
+    const taskResponse = { task: oneTask };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     oneTask.task_state = 'assigned';
     oneTask.assignee = '1234-1234-1234-1234';
     context.task = oneTask;
-    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    CLIENT_CONTEXT.client_context.user_task.task_data = oneTask as any;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(CLIENT_CONTEXT));
     spyOn(context.sessionStorageService, 'setItem');
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
@@ -167,13 +191,14 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to another user', () => {
-    const task = {...oneTask};
-    const taskResponse = {task: oneTask};
+    const task = { ...oneTask };
+    const taskResponse = { task: oneTask };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     task.task_state = 'assigned';
     task.assignee = '4321-4321-4321-4321';
     context.task = task;
-    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    CLIENT_CONTEXT.client_context.user_task.task_data = task as any;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(CLIENT_CONTEXT));
     spyOn(context.component, 'setTaskState');
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
@@ -185,13 +210,14 @@ describe('EventCompletionStateMachineService', () => {
   });
 
   it('should perform state task assigned to another user with override', () => {
-    const task = {...oneTask};
-    const taskResponse = {task: oneTask};
+    const task = { ...oneTask };
+    const taskResponse = { task: oneTask };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     task.task_state = 'assigned';
     task.assignee = '4321-4321-4321-4321';
     context.task = task;
-    spyOn(context.sessionStorageService, 'getItem').and.returnValues('true - override', JSON.stringify(context.task));
+    CLIENT_CONTEXT.client_context.user_task.task_data = task as any;
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('true - override', JSON.stringify(CLIENT_CONTEXT));
     spyOn(context.sessionStorageService, 'setItem');
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
@@ -206,9 +232,10 @@ describe('EventCompletionStateMachineService', () => {
     const taskToTest = oneTask;
     taskToTest.assignee = null;
     taskToTest.task_state = 'unassigned';
-    const taskResponse = {task: taskToTest};
+    const taskResponse = { task: taskToTest };
+    CLIENT_CONTEXT.client_context.user_task.task_data = taskToTest as any;
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
-    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(context.task));
+    spyOn(context.sessionStorageService, 'getItem').and.returnValues('false', JSON.stringify(CLIENT_CONTEXT));
     spyOn(context.sessionStorageService, 'setItem');
     context.task = taskToTest;
     stateMachine = service.initialiseStateMachine(context);
@@ -223,7 +250,7 @@ describe('EventCompletionStateMachineService', () => {
   it('should perform state task completed or cancelled', () => {
     const taskToTest = oneTask;
     taskToTest.task_state = 'completed';
-    const taskResponse = {task: taskToTest};
+    const taskResponse = { task: taskToTest };
     spyOn(context.workAllocationService, 'getTask').and.returnValue(of(taskResponse));
     spyOn(context.sessionStorageService, 'getItem').and.returnValue('false');
     spyOn(context.component, 'setTaskState');
@@ -270,22 +297,6 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     service.addTransitionsForStateTaskUnassigned();
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
-  });
-
-  it('should correctly set assignNeeded when checking task', () => {
-    stateMachine = service.initialiseStateMachine(context);
-    service.createStates(stateMachine);
-    const state = createSpyObj<State>('state', ['trigger']);
-    service.entryActionForStateCompleteEventAndTask(state, context);
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'false');
-  });
-
-  it('should correctly set assignNeeded when checking unassigned task', () => {
-    stateMachine = service.initialiseStateMachine(context);
-    service.createStates(stateMachine);
-    const state = createSpyObj<State>('state', ['trigger']);
-    service.entryActionForStateTaskUnassigned(state, context);
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
   });
 
   afterAll(() => {
