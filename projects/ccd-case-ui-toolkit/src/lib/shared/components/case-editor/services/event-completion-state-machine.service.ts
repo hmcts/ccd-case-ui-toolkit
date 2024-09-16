@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
-import { Task, TaskState } from '../../../domain/work-allocation/Task';
+import { TaskState } from '../../../domain/work-allocation/Task';
+import { FieldsUtils } from '../../../services';
 import { EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
 import { EventCompletionStates } from '../domain/event-completion-states.enum.model';
 import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
@@ -132,9 +133,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (userTask?.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'false');
       // just set event can be completed
       context.component.eventCanBeCompleted.emit(true);
@@ -154,10 +155,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    // Get task details
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (userTask?.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'true');
       context.component.eventCanBeCompleted.emit(true);
     } else {
@@ -220,5 +220,11 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.Final,
       this.stateFinal
     );
+  }
+
+  public taskPresentInSessionStorage(context: EventCompletionStateMachineContext): boolean {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    return !!userTask.task_data;
   }
 }

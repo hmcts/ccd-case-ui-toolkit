@@ -1,14 +1,12 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, throwError } from 'rxjs';
-import { Task } from '../../../../../domain/work-allocation/Task';
-import { AlertService } from '../../../../../services/alert/alert.service';
-import { SessionStorageService } from '../../../../../services/session/session-storage.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
+import {
+  FieldsUtils,
+  SessionStorageService
+} from '../../../../../services';
 import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
-import { WorkAllocationService } from '../../../services/work-allocation.service';
-import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../case-event-completion.component';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
@@ -79,8 +77,12 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
 
   public onContinue(): void {
     // Get task details
-    const taskStr = this.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const task = userTask ? userTask.task_data : null;
+    // not complete_task not utilised here as related to event completion
+    // service wanting task associated with event to not be completed not directly relevant
+    if (task) {
       // Set session to override reassignment settings so code flow does not return to this component
       this.sessionStorageService.setItem('assignNeeded', 'true - override')
       this.notifyEventCompletionReassigned.emit(true);
