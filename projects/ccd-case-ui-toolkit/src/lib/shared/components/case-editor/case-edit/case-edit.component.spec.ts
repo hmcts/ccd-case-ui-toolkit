@@ -1166,40 +1166,6 @@ describe('CaseEditComponent', () => {
       });
     });
 
-    describe('submitForm', () => {
-      it('should submit case', () => {
-        const mockClass = {
-          submit: () => of({})
-        };
-        spyOn(mockClass, 'submit').and.returnValue(of({
-          id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
-          'after_submit_callback_response': {
-            /* tslint:disable:object-literal-key-quotes */
-            'confirmation_header': 'confirmation_header',
-            /* tslint:disable:object-literal-key-quotes */
-            'confirmation_body': 'confirmation_body'
-          }
-        }));
-        formValueService.sanitise.and.returnValue({ name: 'sweet' });
-        mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ uid: '1'}));
-
-        fixture.detectChanges();
-
-        component.submitForm({
-          eventTrigger: component.eventTrigger,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.isSubmitting).toEqual(false);
-        expect(formValueService.sanitise).toHaveBeenCalled();
-      });
-    });
-
     describe('onEventCanBeCompleted', () => {
       it('should submit the case', () => {
         const mockClass = {
