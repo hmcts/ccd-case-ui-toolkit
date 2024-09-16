@@ -24,8 +24,12 @@ export class SelectFlagLocationComponent extends AbstractJourneyComponent implem
   public readonly selectedLocationControlName = 'selectedLocation';
   public readonly caseLevelFlagLabel = 'Case level';
   private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  public cachedLocation: string;
 
   public ngOnInit(): void {
+    if (this.formGroup.get(this.selectedLocationControlName)){
+      this.cachedLocation = this.formGroup.get(this.selectedLocationControlName).value.pathToFlagsFormGroup;
+    }
     this.flagLocationTitle = this.isDisplayContextParameterExternal ?
       CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION_EXTERNAL : CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
 
@@ -63,6 +67,14 @@ export class SelectFlagLocationComponent extends AbstractJourneyComponent implem
   public onNext(): void {
     // Validate flag location selection
     this.validateSelection();
+    //check if the user has changed their location selection
+    if (this.cachedLocation !== this.formGroup.get(this.selectedLocationControlName).value.pathToFlagsFormGroup) {
+      Object.keys(this.formGroup.controls).forEach((controlName) => {
+        if (controlName !== this.selectedLocationControlName) {
+          this.formGroup.removeControl(controlName);
+        }
+      });
+    }
     // Return case flag field state, error messages, and selected FlagsWithFormGroupPath instance (i.e. flag location) to
     // the parent
     this.caseFlagStateEmitter.emit({
