@@ -1166,6 +1166,42 @@ describe('CaseEditComponent', () => {
       });
     });
 
+    describe('submitForm', () => {
+      it('should submit case', () => {
+        const userInfo = {id: "id"};
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), JSON.stringify(mockTaskEventCompletionInfo), JSON.stringify({userInfo}))
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          userInfo: {id: 'id'},
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+            /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+            /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
+
+        fixture.detectChanges();
+
+        component.submitForm({
+          eventTrigger: component.eventTrigger,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(component.isSubmitting).toEqual(false);
+        expect(formValueService.sanitise).toHaveBeenCalled();
+      });
+    });
+
     describe('onEventCanBeCompleted', () => {
       it('should submit the case', () => {
         const mockClass = {
