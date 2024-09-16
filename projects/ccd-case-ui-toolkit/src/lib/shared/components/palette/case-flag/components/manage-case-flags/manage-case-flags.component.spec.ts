@@ -696,4 +696,20 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.onNext).toHaveBeenCalled();
     expect(component.next).toHaveBeenCalledTimes(1);
   });
+
+  it('should return the correct flag ID when all properties are present', () => {
+    const flag: FlagDetailDisplayWithFormGroupPath = {
+      flagDetailDisplay: {
+        flagDetail: {
+          id: '123'
+        }
+      }
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(component.getFlagID(flag)).toBe('123');
+  });
+
+  it('should return an empty string when any property is missing', () => {
+    const flag: FlagDetailDisplayWithFormGroupPath = {} as FlagDetailDisplayWithFormGroupPath;
+    expect(component.getFlagID(flag)).toBe('');
+  });
 });
