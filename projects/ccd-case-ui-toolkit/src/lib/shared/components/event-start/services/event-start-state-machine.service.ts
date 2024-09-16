@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
+import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
+import { UserInfo } from '../../../domain/user/user-info.model';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
@@ -194,6 +196,20 @@ export class EventStartStateMachineService {
       }
     };
     context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
+    let userInfo: UserInfo;
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+    console.log('entryActionForStateOneTaskAssignedToUser: setting taskToComplete to ' + taskStr);
+    // Store task to session
+    const taskEventCompletionInfo: TaskEventCompletionInfo = {
+      caseId: context.caseId,
+      eventId: context.eventId,
+      userId: userInfo.id ? userInfo.id : userInfo.uid,
+      taskId: task.id,
+      createdTimestamp: Date.now()};
+    context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });

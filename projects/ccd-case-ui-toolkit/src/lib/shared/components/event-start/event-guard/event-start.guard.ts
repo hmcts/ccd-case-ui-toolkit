@@ -5,6 +5,8 @@ import { switchMap } from 'rxjs/operators';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -19,15 +21,20 @@ export class EventStartGuard implements CanActivate {
     const caseId = route.params['cid'];
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
-
+    let userId: string;
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr);
+      userId = userInfo.id ? userInfo.id : userInfo.uid;
+    }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
         return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
           .pipe(
-          switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
-        );
+            switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
+          );
       }
     }
     return of(false);
@@ -80,10 +87,19 @@ export class EventStartGuard implements CanActivate {
     this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
 
-  private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
+  private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
+        // Store task to session
+        const taskEventCompletionInfo: TaskEventCompletionInfo = {
+          caseId: caseId,
+          eventId: eventId,
+          userId: userId,
+          taskId: task.id,
+          createdTimestamp: Date.now()
+        };
+        this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
         this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(task));
       } else {
         this.removeTaskFromSessionStorage();
