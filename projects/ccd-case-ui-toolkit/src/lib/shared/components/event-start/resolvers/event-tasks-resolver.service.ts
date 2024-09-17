@@ -6,12 +6,14 @@ import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { WorkAllocationService } from '../../case-editor/services/work-allocation.service';
+import { AbstractAppConfig } from '../../../../app.config';
 
 @Injectable()
 export class EventTasksResolverService implements Resolve<Task[]> {
 
   constructor(private readonly service: WorkAllocationService,
-              private readonly sessionStorageService: SessionStorageService) {
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly abstractConfig: AbstractAppConfig) {
   }
 
   public resolve(route: ActivatedRouteSnapshot): Observable<Task[]> {
@@ -24,6 +26,8 @@ export class EventTasksResolverService implements Resolve<Task[]> {
       .pipe(
         map((payload: TaskPayload) => payload.tasks)
       );
+    } else {
+      this.abstractConfig.logMessage(`EventTasksResolverService: caseInfo details not available in session storage for ${caseId}`);
     }
   }
 }
