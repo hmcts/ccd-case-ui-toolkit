@@ -201,7 +201,6 @@ export class EventStartStateMachineService {
     if (userInfoStr) {
       userInfo = JSON.parse(userInfoStr);
     }
-    console.log('entryActionForStateOneTaskAssignedToUser: setting taskToComplete to ' + taskStr);
     // Store task to session
     const taskEventCompletionInfo: TaskEventCompletionInfo = {
       caseId: context.caseId,

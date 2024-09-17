@@ -455,8 +455,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
-        // on event completion ensure the previous event taskToComplete/taskEventCompletionInfo removed
-        this.sessionStorageService.removeItem('taskToComplete');
+        // on event completion ensure the previous event clientContext/taskEventCompletionInfo removed
+        this.sessionStorageService.removeItem('clientContext');
         this.sessionStorageService.removeItem('taskEventCompletionInfo')
         this.isSubmitting = false;
       }))
@@ -526,7 +526,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  // checks whether current taskToComplete relevant for the event
+  // checks whether current clientContext relevant for the event
   public taskExistsForThisEvent(taskInSessionStorage: Task, taskEventCompletionInfo: TaskEventCompletionInfo, eventDetails: EventDetails): boolean {
     if (!taskInSessionStorage || taskInSessionStorage.case_id !== eventDetails.caseId) {
       return false;
@@ -542,7 +542,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
         // if the session storage not related to event, ignore it and remove
-        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('clientContext');
         this.sessionStorageService.removeItem('taskEventCompletionInfo');
         return false;
       }

@@ -32,7 +32,7 @@ describe('TaskCancelledComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = fixture.componentInstance.appComponentRef;
-    const sessionStorageSpy = jasmine.createSpyObj('mockSessionStorageService', ['removeItem'])
+    const sessionStorageSpy = jasmine.createSpyObj('mockSessionStorageService', ['removeItem']);
     wrapper.context = {caseId: '123456789', sessionStorageService: sessionStorageSpy} as EventCompletionStateMachineContext;
     fixture.detectChanges();
   });
@@ -46,7 +46,7 @@ describe('TaskCancelledComponent', () => {
   it('should emit event can be completed true when clicked on continue button', () => {
     spyOn(component.notifyEventCompletionCancelled, 'emit');
     component.onContinue();
-    expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete')
+    expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith('clientContext')
     expect(component.notifyEventCompletionCancelled.emit).toHaveBeenCalledWith(true);
   });
 
