@@ -20,7 +20,7 @@ export class CaseEventCompletionTaskCancelledComponent implements OnInit {
 
   public onContinue(): void {
     // Removes task to complete so event completes without task
-    this.context.sessionStorageService.removeItem('taskToComplete');
+    this.context.sessionStorageService.removeItem('clientContext');
     // may be able to remove this call below since it is now unneccesary
     this.notifyEventCompletionCancelled.emit(true);
   }

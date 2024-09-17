@@ -1242,7 +1242,7 @@ describe('CaseEditComponent', () => {
         expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
         // check that tasks removed from session storage once event has been completed
-        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete');
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('clientContext');
         expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskEventCompletionInfo');
       });
 
