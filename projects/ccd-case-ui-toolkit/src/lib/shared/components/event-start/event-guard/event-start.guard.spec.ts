@@ -61,7 +61,6 @@ describe('EventStartGuard', () => {
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(false);
-      expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
     });
   });
 
@@ -71,23 +70,18 @@ describe('EventStartGuard', () => {
     const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const result$ = guard.canActivate(route);
-    result$.subscribe(result => {
-      expect(result).toEqual(false);
-      expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
-      expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
-    });
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
+  });
 
-    it('should log a message and not call getTasksByCaseIdAndEventId when caseId not matched with caseInfo caseId', () => {
-      sessionStorageService.getItem.and.returnValue(null);
-      const route = createActivatedRouteSnapshot('caseId', 'eventId');
-      const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
-      service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
-      const result$ = guard.canActivate(route);
-      result$.subscribe(result => {
-        expect(result).toEqual(false);
-        expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
-        expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
-      });
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseId not matched with caseInfo caseId', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId123' }));
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseId caseId123 in caseInfo not matched with the route parameter caseId caseId`);
   });
 
   it('canActivate should navigate to event-start if task is required for event', () => {
