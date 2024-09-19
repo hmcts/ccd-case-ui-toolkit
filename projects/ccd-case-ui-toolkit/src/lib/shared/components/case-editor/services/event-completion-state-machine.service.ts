@@ -82,7 +82,7 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
     context.workAllocationService.getTask(context.task.id).subscribe(
       taskResponse => {
-        if (taskResponse && taskResponse.task && taskResponse.task.task_state) {
+        if (taskResponse?.task?.task_state) {
           switch (taskResponse.task.task_state.toUpperCase()) {
             case TaskState.Unassigned:
               // Task unassigned
@@ -110,6 +110,12 @@ export class EventCompletionStateMachineService {
               state.trigger(EventCompletionStates.CompleteEventAndTask);
               break;
           }
+        } else if (!taskResponse?.task) {
+            context.alertService.setPreserveAlerts(true);
+            context.alertService.warning({ phrase: 'Task statecheck : no task available for completion', replacements: {} });
+        } else {
+          context.alertService.setPreserveAlerts(true);
+          context.alertService.warning({ phrase: 'Task statecheck : no task state available for completion', replacements: {} });
         }
       },
       error => {
@@ -135,6 +141,8 @@ export class EventCompletionStateMachineService {
       // just set event can be completed
       context.component.eventCanBeCompleted.emit(true);
     } else {
+      context.alertService.setPreserveAlerts(true);
+      context.alertService.warning({phrase: 'CompleteEventAndTask : no task available for completion', replacements: {}});
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
     }
@@ -156,7 +164,9 @@ export class EventCompletionStateMachineService {
       context.sessionStorageService.setItem('assignNeeded', 'true');
       context.component.eventCanBeCompleted.emit(true);
     } else {
-      // Emit event cannot be completed event
+      context.alertService.setPreserveAlerts(true);
+      context.alertService.warning({phrase: 'Unassigned task : no task available for completion', replacements: {}});
+      // Emit event cannot be completed event      
       context.component.eventCanBeCompleted.emit(false);
     }
   }
