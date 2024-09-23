@@ -9,8 +9,10 @@ import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
 import createSpyObj = jasmine.createSpyObj;
+import { SessionStorageService } from '../../../../services';
 
 describe('EventLogTableComponent', () => {
+  const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
   const EVENTS: CaseViewEvent[] = [
     {
@@ -58,6 +60,12 @@ describe('EventLogTableComponent', () => {
   const $TABLE_ROW_LINKS_STANDALONE = By.css('table>tbody>tr>td>div:not(.tooltip)>a');
   const $TABLE_COLUMNS = By.css('table>tbody>tr>td');
 
+  const USER = {
+    roles: [
+      'caseworker'
+    ]
+  };
+
   const COL_EVENT = 0;
   const COL_DATE = 1;
   const COL_AUTHOR = 2;
@@ -76,12 +84,15 @@ describe('EventLogTableComponent', () => {
             DatePipe,
             MockRpxTranslatePipe
           ],
-          providers: [FormatTranslatorService]
+          providers: [FormatTranslatorService,
+            { provide: SessionStorageService, useValue: mockSessionStorageService }
+          ]
         })
         .compileComponents();
 
       fixture = TestBed.createComponent(EventLogTableComponent);
       component = fixture.componentInstance;
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
 
       component.events = EVENTS;
       component.selected = SELECTED_EVENT;
@@ -213,12 +224,16 @@ describe('EventLogTableComponent', () => {
             DatePipe,
             MockRpxTranslatePipe
           ],
-          providers: [FormatTranslatorService]
+          providers: [FormatTranslatorService,
+            { provide: SessionStorageService, useValue: mockSessionStorageService }
+
+          ]
         })
         .compileComponents();
 
       fixture = TestBed.createComponent(EventLogTableComponent);
       component = fixture.componentInstance;
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
 
       component.events = EVENTS;
       component.selected = SELECTED_EVENT;
