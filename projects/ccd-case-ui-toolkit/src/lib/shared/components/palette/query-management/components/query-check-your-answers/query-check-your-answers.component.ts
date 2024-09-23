@@ -40,12 +40,10 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
-  private caseId: string;
-
   public caseQueriesCollections: CaseQueriesCollection[];
   public fieldId: string;
 
-  @Input() eventData: CaseEventTrigger | null = null;
+  eventData: CaseEventTrigger | null = null;
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -54,7 +52,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     private readonly casesService: CasesService,
     private readonly caseNotifier: CaseNotifier,
     private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly eventTriggerService: EventTriggerService
   ) {}
 
   public ngOnInit(): void {
@@ -72,12 +71,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       );
     });
 
-    this.setCaseQueriesCollectionData();
+    this.subscription = this.eventTriggerService.eventTriggerSource.subscribe((eventTrigger) => {
+      this.eventData = eventTrigger;
+      this.setCaseQueriesCollectionData();
+    });
   }
 
   public ngOnDestroy(): void {
     this.createEventSubscription?.unsubscribe();
     this.searchTasksSubscription?.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   public goBack(): void {

@@ -16,13 +16,8 @@ export class QueryManagementUtils {
       if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId || QueryManagementUtils.isNonEmptyObject(value)) {
         return value;
       }
-      return '';
+      return {};
     }
-
-    // Handle Collection type fields
-    // if (field_type.type === QueryManagementUtils.FIELD_TYPE_COLLECTION) {
-    //   return [];
-    // }
   }
 
   public static documentToCollectionFormDocument(document: Document): { id: string; value: FormDocument } {
