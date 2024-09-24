@@ -7,6 +7,7 @@ import {
   CaseEventTrigger,
   CaseView,
   CaseViewTrigger,
+  ErrorMessage,
   TaskSearchParameter
 } from '../../../../../../../lib/shared/domain';
 import { SessionStorageService } from '../../../../../services';
@@ -29,6 +30,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
+  @Input() public eventData: CaseEventTrigger | null = null;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
 
@@ -43,8 +45,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public caseQueriesCollections: CaseQueriesCollection[];
   public fieldId: string;
 
-  eventData: CaseEventTrigger | null = null;
-  private subscription: Subscription = new Subscription();
+  public errorMessages: ErrorMessage[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -71,16 +72,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       );
     });
 
-    this.subscription = this.eventTriggerService.eventTriggerSource.subscribe((eventTrigger) => {
-      this.eventData = eventTrigger;
-      this.setCaseQueriesCollectionData();
-    });
+    this.setCaseQueriesCollectionData();
   }
 
   public ngOnDestroy(): void {
     this.createEventSubscription?.unsubscribe();
     this.searchTasksSubscription?.unsubscribe();
-    this.subscription?.unsubscribe();
   }
 
   public goBack(): void {
@@ -88,6 +85,19 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+    // Check if fieldId is null or undefined
+    if (!this.fieldId) {
+      console.error('Error: Field ID is missing. Cannot proceed with submission.');
+      this.errorMessages = [
+        {
+          title: 'Error',
+          description: 'Something unexpected happened. please try again later.',
+          fieldId: 'field-id'
+        }
+      ];
+      return;
+    }
+
     const data = this.generateCaseQueriesCollectionData();
     this.createEventSubscription = this.casesService.createEvent(this.caseDetails, {
       data,
@@ -174,10 +184,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     if (this.eventData?.case_fields?.length) {
       this.caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
         // Extract the ID based on conditions, updating this.fieldId dynamically
-        this.extractIdBasedOnConditions(caseField);
 
-        const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
-
+        this.extractCaseQueryId(caseField);
+        const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
         if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
           acc.push(extractedCaseQueriesFromCaseField);
         }
@@ -186,7 +195,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private extractIdBasedOnConditions(data): void {
+  private extractCaseQueryId(data): void {
     // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
     if (
       data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&

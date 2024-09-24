@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CaseField, CaseView, FieldType, TaskSearchParameter } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
@@ -475,9 +475,29 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
-  it('should query submission failure navigate to service down page', () => {
+  it('should navigate to service-down page on event creation error', () => {
+    component.fieldId = 'validFieldId';
+    casesService.createEvent.and.returnValue(throwError('Error'));
+
     component.submit();
+
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should log an error and set errorMessages when fieldId is missing', () => {
+    component.fieldId = null;
+    spyOn(console, 'error');
+
+    component.submit();
+
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
+    expect(component.errorMessages).toEqual([
+      {
+        title: 'Error',
+        description: 'Something unexpected happened. please try again later.',
+        fieldId: 'field-id'
+      }
+    ]);
   });
 
   it('should set querySubmitted to true when submit is called', () => {
@@ -491,17 +511,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.submit();
 
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
-  });
-
-  it('should set querySubmitted to true when submit is called', () => {
-    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
-    fixture.detectChanges();
-    component.ngOnInit();
-
-    component.fieldId = null;
-    component.submit();
-
-    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
 
   describe('searchAndCompleteTask', () => {
