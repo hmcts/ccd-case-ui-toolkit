@@ -1,5 +1,9 @@
 ## RELEASE NOTES 
 
+### Version 7.0.65
+**EXUI-2148** Additional checks on task completion from session storage
+**EXUI-2057** A frozen screen is seen when attempting to complete a current task...
+
 ### Version 7.0.64
 **EXUI-2086** Within case file view
 
