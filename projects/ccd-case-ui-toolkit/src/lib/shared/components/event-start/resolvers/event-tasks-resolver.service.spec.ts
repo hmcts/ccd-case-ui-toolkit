@@ -7,6 +7,7 @@ import { HttpErrorService, HttpService, SessionStorageService } from '../../../s
 import { WorkAllocationService } from '../../case-editor';
 import { EventTasksResolverService } from './event-tasks-resolver.service';
 import createSpyObj = jasmine.createSpyObj;
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('EventTaskResolverService', () => {
   // tslint:disable-next-line: prefer-const
@@ -15,6 +16,7 @@ describe('EventTaskResolverService', () => {
   let errorService: any;
   let workAllocationService: WorkAllocationService;
   let alertService: any;
+  let mockAbstractConfig: any;
 
   const taskPayload: TaskPayload = {
     task_required_for_event: true,
@@ -54,12 +56,14 @@ describe('EventTaskResolverService', () => {
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
   workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
+  mockAbstractConfig = createSpyObj('abstractConfig', ['logMessage']);
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       EventTasksResolverService,
       { provide: WorkAllocationService, useValue: workAllocationService },
-      { provide: SessionStorageService, useValue: sessionStorageService }
+      { provide: SessionStorageService, useValue: sessionStorageService },
+      { provide: AbstractAppConfig, useValue: mockAbstractConfig }
     ]
   }));
 
@@ -81,5 +85,22 @@ describe('EventTaskResolverService', () => {
         expect(value).toEqual(taskPayload.tasks);
         expect(workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
       });
+  }));
+
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseInfo is not available', waitForAsync(() => {
+    const service = TestBed.inject(EventTasksResolverService);
+    const route = {
+      queryParamMap: {
+        get: (key: string) => {
+          const params = { eventId: 'event123', caseId: 'case123' } ;
+          return params[key];
+        }
+      }
+    } as ActivatedRouteSnapshot;
+    spyOn(workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of(taskPayload));
+    sessionStorageService.getItem.and.returnValue(null);
+    service.resolve(route);
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith('EventTasksResolverService: caseInfo details not available in session storage for case123');
+    expect(workAllocationService.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
   }));
 });
