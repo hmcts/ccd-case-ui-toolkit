@@ -13,10 +13,10 @@ export class QueryManagementUtils {
     const { field_type, value } = caseField;
     // Handle Complex type fields
     if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId || QueryManagementUtils.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId && QueryManagementUtils.isNonEmptyObject(value)) {
         return value;
       }
-      return '';
+      return null;
     }
 
     // Handle Collection type fields
