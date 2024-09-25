@@ -26,7 +26,11 @@ export interface Task {
   work_type_id?: string;
 }
 
-// Query: UserID will be removed on logout/login (is it necessary)?
+export interface UserTask {
+  task_data: Task,
+  complete_task: boolean
+}
+
 export interface TaskEventCompletionInfo {
   taskId: string;
   eventId: string;

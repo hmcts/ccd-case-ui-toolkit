@@ -2,19 +2,21 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
+import { AbstractAppConfig } from '../../../../app.config';
+import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
-import { UserInfo } from '../../../domain/user/user-info.model';
-import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  public static readonly TASK_TO_COMPLETE = 'taskToComplete';
+  public static readonly CLIENT_CONTEXT = 'clientContext';
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService) {
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly abstractConfig: AbstractAppConfig) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -35,7 +37,11 @@ export class EventStartGuard implements CanActivate {
           .pipe(
             switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
           );
+      } else {
+        this.abstractConfig.logMessage(`EventStartGuard: caseId ${caseInfo.cid} in caseInfo not matched with the route parameter caseId ${caseId}`);
       }
+    } else {
+      this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in session storage for ${caseId}`);
     }
     return of(false);
   }
@@ -70,14 +76,23 @@ export class EventStartGuard implements CanActivate {
         task = tasksAssignedToUser[0];
       }
       // if one task assigned to user, allow user to complete event
-      this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+      const storeClientContext = {
+        client_context: {
+          user_task: {
+            task_data: task,
+            complete_task: true
+          }
+        }
+      };
+      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       return true;
     }
   }
 
   private removeTaskFromSessionStorage(): void {
-    this.sessionStorageService.removeItem(EventStartGuard.TASK_TO_COMPLETE);
+    this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
+
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
@@ -91,7 +106,7 @@ export class EventStartGuard implements CanActivate {
           createdTimestamp: Date.now()
         };
         this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-        this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(task));
       } else {
         this.removeTaskFromSessionStorage();
       }

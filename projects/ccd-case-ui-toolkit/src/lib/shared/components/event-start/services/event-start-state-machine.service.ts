@@ -127,8 +127,8 @@ export class EventStartStateMachineService {
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = context.tasks.filter(x =>
-        x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
-      );
+      x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+    );
 
     // Check if user initiated the event from task tab
     const isEventInitiatedFromTaskTab = context.taskId !== undefined && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
@@ -184,7 +184,7 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr= JSON.stringify(task);
+    const taskStr = JSON.stringify(task);
     let userInfo: UserInfo;
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -197,9 +197,18 @@ export class EventStartStateMachineService {
       eventId: context.eventId,
       userId: userInfo.id ? userInfo.id : userInfo.uid,
       taskId: task.id,
-      createdTimestamp: Date.now()};
+      createdTimestamp: Date.now()
+    };
+    const clientContext = {
+      client_context: {
+        user_task: {
+          task_data: task,
+          complete_task: true
+        }
+      }
+    };
     context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-    context.sessionStorageService.setItem('taskToComplete', taskStr );
+    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });

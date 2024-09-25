@@ -19,6 +19,7 @@ import { CaseNotifier, WorkAllocationService } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
+import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { EventDetails, Task } from '../../../domain/work-allocation/Task';
 
@@ -177,6 +178,17 @@ describe('CaseEditComponent', () => {
     case_field_id: CASE_FIELD_3_COLLECTION.id
   };
 
+  const CLIENT_CONTEXT = { client_context: {
+    user_task: {
+      task_data: {
+        id: '1',
+        name: 'Example task',
+        case_id: '1234567890'
+      },
+      complete_task: true
+    }
+  }};
+
   let fixture: ComponentFixture<CaseEditComponent>;
   let component: CaseEditComponent;
   let de: DebugElement;
@@ -215,6 +227,7 @@ describe('CaseEditComponent', () => {
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
   let mockAlertService: jasmine.SpyObj<AlertService>;
+  let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -275,7 +288,8 @@ describe('CaseEditComponent', () => {
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
-      mockAlertService = createSpyObj<AlertService>('WorkAllocationService', ['error', 'setPreserveAlerts']);
+      mockAlertService = createSpyObj<AlertService>('AlertService', ['error', 'setPreserveAlerts']);
+      mockabstractConfig = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['logMessage']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
@@ -331,6 +345,7 @@ describe('CaseEditComponent', () => {
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AbstractAppConfig, useValue: mockabstractConfig },
           ]
         })
         .compileComponents();
@@ -1271,7 +1286,7 @@ describe('CaseEditComponent', () => {
       });
 
       it('should submit the case and assign and complete task for an event submission', () => {
-        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'true');
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), 'true');
         fixture.detectChanges();
         const mockClass = {
           submit: () => of({})
@@ -1302,12 +1317,12 @@ describe('CaseEditComponent', () => {
           form: component.form,
           submit: mockClass.submit,
         });
-
-        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345');
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired with assignNeeded: taskId 1 and event name Test Trigger');
+        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
       });
 
       it('should submit the case and complete task for an event submission', () => {
-        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'false');
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), 'false');
         fixture.detectChanges();
         const mockClass = {
           submit: () => of({})
@@ -1339,7 +1354,44 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345');
+        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
+      });
+
+      it('should submit the case and not complete task for an event submission when service makes this clear', () => {
+        CLIENT_CONTEXT.client_context.user_task.complete_task = false;
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), 'false');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(mockWorkAllocationService.completeTask).not.toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
@@ -1580,6 +1632,7 @@ describe('CaseEditComponent', () => {
             SessionStorageService,
             WindowService,
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AbstractAppConfig, useValue: mockabstractConfig },
           ]
         })
         .compileComponents();

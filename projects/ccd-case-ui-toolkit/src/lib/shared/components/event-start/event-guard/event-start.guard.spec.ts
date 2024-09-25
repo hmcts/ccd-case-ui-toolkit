@@ -1,10 +1,12 @@
-import { EventStartGuard } from './event-start.guard';
-import { WorkAllocationService } from '../../case-editor';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { SessionStorageService } from '../../../services';
 import { TestBed } from '@angular/core/testing';
-import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { SessionStorageService } from '../../../services';
+import { WorkAllocationService } from '../../case-editor';
+import { EventStartGuard } from './event-start.guard';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('EventStartGuard', () => {
   const tasks: any[] = [
@@ -28,18 +30,21 @@ describe('EventStartGuard', () => {
   let service: jasmine.SpyObj<WorkAllocationService>;
   let router: jasmine.SpyObj<Router>;
   let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockAbstractConfig: jasmine.SpyObj<AbstractAppConfig>;
 
   beforeEach(() => {
     service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
     router = jasmine.createSpyObj('Router', ['navigate']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+    mockAbstractConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
 
     TestBed.configureTestingModule({
       providers: [
         EventStartGuard,
         { provide: WorkAllocationService, useValue: service },
         { provide: Router, useValue: router },
-        { provide: SessionStorageService, useValue: sessionStorageService }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: AbstractAppConfig, useValue: mockAbstractConfig }
       ]
     });
 
@@ -57,6 +62,26 @@ describe('EventStartGuard', () => {
     result$.subscribe(result => {
       expect(result).toEqual(false);
     });
+  });
+
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseInfo is not available', () => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
+  });
+
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseId not matched with caseInfo caseId', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId123' }));
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseId caseId123 in caseInfo not matched with the route parameter caseId caseId`);
   });
 
   it('canActivate should navigate to event-start if task is required for event', () => {
@@ -84,6 +109,18 @@ describe('EventStartGuard', () => {
 
   // Add more test cases for canActivate function to cover other scenarios...
 
+  function getExampleUserInfo(): UserInfo {
+    return {
+      id: '1',
+      forename: 'T',
+      surname: 'Testing',
+      email: 'testing@mail.com',
+      active: true,
+      roles: [],
+      roleCategories: []
+    };
+  }
+
   describe('checkTaskInEventNotRequired', () => {
     const caseId = '1234567890';
 
@@ -92,7 +129,53 @@ describe('EventStartGuard', () => {
       expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
     });
 
-    // Add more test cases for checkTaskInEventNotRequired function...
+    it('should return true if there are no tasks assigned to the user', () => {
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+    });
+
+    it('should return true and navigate to event trigger if one task is assigned to user', () => {
+      const clientContext = {
+        client_context: {
+          user_task: {
+            task_data: tasks[0],
+            complete_task: true
+          }
+        }
+      }
+      tasks[0].assignee = '1';
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+    });
+
+    it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
+      tasks[0].assignee = '1';
+      tasks.push(tasks[0]);
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+    });
+
+    it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      const clientContext = {
+        client_context: {
+          user_task: {
+            task_data: tasks[0],
+            complete_task: true
+          }
+        }
+      }
+      tasks[0].assignee = '1';
+      tasks.push(tasks[0]);
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+    });
 
   });
 

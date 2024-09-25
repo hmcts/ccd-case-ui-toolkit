@@ -1,4 +1,22 @@
-## RELEASE NOTES
+## RELEASE NOTES 
+
+### Version 7.0.65
+**EXUI-2320** Intermittent missing call of search for completable
+
+### Version 7.0.64
+**EXUI-2086** Within case file view
+
+### Version 7.0.63
+**EXUI-1838/39/40** Task Completion - EXUI Header
+
+### Version 7.0.61
+**EXUI-EXUI-2220** add-task-completion-logs
+
+### Version 7.0.60
+**EXUI-EXUI-2280** MV Upgrade to v4.0.8
+
+### Version 7.0.58
+**EXUI-2235** add event name in task completion log
 
 ### Version 7.0.57 
 **EXUI-2209** MV Upgrade to v4.0.7
