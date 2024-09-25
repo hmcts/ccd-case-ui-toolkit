@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Document, FormDocument, CaseField } from '../../../../domain';
 import { CaseMessage, QueryListItem } from '../models';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class QueryManagementUtils {
@@ -44,7 +45,7 @@ export class QueryManagementUtils {
       : null;
     const attachments = formGroup.get('attachments').value;
     return {
-      id: null,
+      id: uuidv4(),
       subject,
       name: currentUserName,
       body,
@@ -64,7 +65,7 @@ export class QueryManagementUtils {
     queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';
 
     return {
-      id: null,
+      id: uuidv4(),
       subject: queryItem.subject,
       name: currentUserName,
       body,
