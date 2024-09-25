@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
+import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
+import { UserInfo } from '../../../domain/user/user-info.model';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
@@ -125,8 +127,8 @@ export class EventStartStateMachineService {
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = context.tasks.filter(x =>
-        x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
-      );
+      x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+    );
 
     // Check if user initiated the event from task tab
     const isEventInitiatedFromTaskTab = context.taskId !== undefined && tasksAssignedToUser.findIndex(x => x.id === context.taskId) > -1;
@@ -182,9 +184,21 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr= JSON.stringify(task);
-    console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
+    const taskStr = JSON.stringify(task);
+    let userInfo: UserInfo;
+    const userInfoStr = context.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
+    }
+    console.log('entryActionForStateOneTaskAssignedToUser: setting taskToComplete to ' + taskStr);
     // Store task to session
+    const taskEventCompletionInfo: TaskEventCompletionInfo = {
+      caseId: context.caseId,
+      eventId: context.eventId,
+      userId: userInfo.id ? userInfo.id : userInfo.uid,
+      taskId: task.id,
+      createdTimestamp: Date.now()
+    };
     const clientContext = {
       client_context: {
         user_task: {
@@ -193,6 +207,7 @@ export class EventStartStateMachineService {
         }
       }
     };
+    context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
     context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
