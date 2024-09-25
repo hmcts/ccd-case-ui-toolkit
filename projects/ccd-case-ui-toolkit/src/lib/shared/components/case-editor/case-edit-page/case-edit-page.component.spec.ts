@@ -63,6 +63,7 @@ import { CaseEditPageComponent } from './case-edit-page.component';
 import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -109,7 +110,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     validPageListCaseFieldsService = {},
     multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {},
-    linkedCasesService = {}
+    linkedCasesService = {},
+    caseFlagStateService = new CaseFlagStateService()
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -125,7 +127,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     validPageListCaseFieldsService as ValidPageListCaseFieldsService,
     multipageComponentStateService as MultipageComponentStateService,
     addressesService as AddressesService,
-    linkedCasesService as LinkedCasesService
+    linkedCasesService as LinkedCasesService,
+    caseFlagStateService as CaseFlagStateService
   );
 
   it('should create', () => {
@@ -453,7 +456,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
-  
+  const caseFlagStateService = new CaseFlagStateService();
 
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
@@ -575,8 +578,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
-            { provide: LinkedCasesService, useValue: linkedCasesService }
-
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -974,8 +977,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
-            { provide: LinkedCasesService, useValue: linkedCasesService }
-
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1143,7 +1146,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
-            { provide: LinkedCasesService, useValue: linkedCasesService }
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1316,7 +1320,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
-            { provide: LinkedCasesService, useValue: linkedCasesService }
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1664,7 +1669,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock},
-            { provide: LinkedCasesService, useValue: linkedCasesService }
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1884,8 +1890,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
-            { provide: LinkedCasesService, useValue: linkedCasesService }
-
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })

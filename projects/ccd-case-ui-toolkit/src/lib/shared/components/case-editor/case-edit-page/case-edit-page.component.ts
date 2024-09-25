@@ -24,6 +24,7 @@ import { PageValidationService } from '../services/page-validation.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { JourneyInstigator } from '../../../domain/journey';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -90,6 +91,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly multipageComponentStateService: MultipageComponentStateService,
     private readonly addressService: AddressesService,
     private readonly linkedCasesService: LinkedCasesService,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
     this.multipageComponentStateService.setInstigator(this);
   }
@@ -103,11 +105,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public isAtStart(): boolean {
-    return this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
   }
 
   public isAtEnd(): boolean {
-    return this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyEndPageNumber;
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyEndPageNumber;
   }
 
   // This method will be triggered by the next button in the app component
@@ -334,6 +336,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public submit(): void {
+    // in some scenarios the fieldstate can be set to 0 even though the user is at the end of a journey, check for this case and set vars
+    if ((this.caseFlagStateService.fieldStateToNavigate === 0) && (this.caseFlagStateService.fieldStateToNavigate !== this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber)){
+      this.caseFlagStateService.fieldStateToNavigate = this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber;
+      this.caseFlagStateService.lastPageFieldState = this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber;
+    }
     this.caseEditDataService.clearFormValidationErrors();
     this.checkForStagesCompleted();
     if (this.currentPageIsNotValid()) {

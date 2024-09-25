@@ -32,6 +32,7 @@ import { ServiceOrg } from '../../../domain/case-view/service-org-response.model
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
 import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
 import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -91,7 +92,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const fieldUtils = new FieldsUtils();
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
   const multipageComponentStateService = new MultipageComponentStateService();
-
   const CASE_TYPES_2 = [
     {
         id: 'Benefit_Xui',
@@ -124,7 +124,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
     validPageListCaseFieldsService,
     multipageComponentStateService,
     new AddressesService(null, null),
-    new LinkedCasesService(jurisdictionService as any, searchService));
+    new LinkedCasesService(jurisdictionService as any, searchService),
+    new CaseFlagStateService());
   const caseInfo = {
     case_id: '1682374819203471',
     case_type: {

@@ -12,4 +12,5 @@ export interface Journey {
     journeyEndPageNumber: number;
     journeyPreviousPageNumber: number;
     childJourney: Journey;
+    fieldState?: number;
 }
