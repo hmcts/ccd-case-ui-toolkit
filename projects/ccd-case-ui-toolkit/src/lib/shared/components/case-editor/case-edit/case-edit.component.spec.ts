@@ -1184,7 +1184,7 @@ describe('CaseEditComponent', () => {
           }
         }));
         formValueService.sanitise.and.returnValue({ name: 'sweet' });
-        mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ uid: '1'}));
+        mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ client_context: {user_task: {id: '1'}}}));
 
         fixture.detectChanges();
 

@@ -106,7 +106,15 @@ export class EventStartGuard implements CanActivate {
           createdTimestamp: Date.now()
         };
         this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(task));
+        const storeClientContext = {
+          client_context: {
+            user_task: {
+              task_data: task,
+              complete_task: true
+            }
+          }
+        };
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       } else {
         this.removeTaskFromSessionStorage();
       }
