@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
+import { AbstractAppConfig } from '../../../../app.config';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -12,7 +13,8 @@ export class EventStartGuard implements CanActivate {
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService) {
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly abstractConfig: AbstractAppConfig) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -28,7 +30,11 @@ export class EventStartGuard implements CanActivate {
           .pipe(
           switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
         );
+      } else {
+        this.abstractConfig.logMessage(`EventStartGuard: caseId ${caseInfo.cid} in caseInfo not matched with the route parameter caseId ${caseId}`);
       }
+    } else {
+      this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in session storage for ${caseId}`);
     }
     return of(false);
   }
