@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.0.65
+**EXUI-2320** Intermittent missing call of search for completable
+
 ### Version 7.0.64
 **EXUI-2086** Within case file view
 
