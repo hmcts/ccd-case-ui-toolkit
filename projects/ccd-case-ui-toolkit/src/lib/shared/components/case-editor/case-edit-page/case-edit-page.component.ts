@@ -212,7 +212,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             if (casefield.id === 'AddressLine1') {
               // EUI-1067 - Display more relevant error message to user and correctly navigate to the field
               this.addressService.setMandatoryError(true);
-              this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `An address is required` });
+              this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `%FIELDLABEL% is required`, label: 'Address' });
             } else {
               this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             }
