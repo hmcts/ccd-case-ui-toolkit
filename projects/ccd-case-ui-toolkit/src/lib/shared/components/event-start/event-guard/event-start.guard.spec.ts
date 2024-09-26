@@ -183,7 +183,7 @@ describe('EventStartGuard', () => {
     it('should return true and store task if taskId is provided and task is found in payload', () => {
       const payload: TaskPayload = { task_required_for_event: false, tasks: tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
-      const result$ = guard['checkForTasks'](payload, 'caseId', 'eventId', 'taskId');
+      const result$ = guard['checkForTasks'](payload, 'caseId', 'eventId', 'taskId', 'userId');
       result$.subscribe(result => {
         expect(result).toBe(true);
       });

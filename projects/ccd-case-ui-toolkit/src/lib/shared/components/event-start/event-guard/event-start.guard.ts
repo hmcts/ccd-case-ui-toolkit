@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
+import { AbstractAppConfig } from '../../../../app.config';
+import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
-import { AbstractAppConfig } from '../../../../app.config';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -21,15 +23,20 @@ export class EventStartGuard implements CanActivate {
     const caseId = route.params['cid'];
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
-
+    let userId: string;
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr);
+      userId = userInfo.id ? userInfo.id : userInfo.uid;
+    }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
         return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
           .pipe(
-          switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
-        );
+            switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
+          );
       } else {
         this.abstractConfig.logMessage(`EventStartGuard: caseId ${caseInfo.cid} in caseInfo not matched with the route parameter caseId ${caseId}`);
       }
@@ -86,11 +93,28 @@ export class EventStartGuard implements CanActivate {
     this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
 
-  private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
+  private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(task));
+        // Store task to session
+        const taskEventCompletionInfo: TaskEventCompletionInfo = {
+          caseId: caseId,
+          eventId: eventId,
+          userId: userId,
+          taskId: task.id,
+          createdTimestamp: Date.now()
+        };
+        const storeClientContext = {
+          client_context: {
+            user_task: {
+              task_data: task,
+              complete_task: true
+            }
+          }
+        };
+        this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       } else {
         this.removeTaskFromSessionStorage();
       }
