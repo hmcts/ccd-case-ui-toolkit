@@ -1,22 +1,23 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, throwError } from 'rxjs';
-import { Task } from '../../../../../domain/work-allocation/Task';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
-  AlertService,
   FieldsUtils,
   SessionStorageService
 } from '../../../../../services';
+import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
-import { WorkAllocationService } from '../../../services/work-allocation.service';
-import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../case-event-completion.component';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
   templateUrl: './case-event-completion-task-reassigned.html'
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
+  @Input()
+  context: EventCompletionStateMachineContext;
+  @Output()
+  public notifyEventCompletionReassigned: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public caseId: string;
   public assignedUserId: string;
   public assignedUserName: string;
@@ -24,19 +25,15 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
 
-  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private readonly parentComponent: CaseEventCompletionComponent,
-    private readonly route: ActivatedRoute,
-    private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService,
+  constructor(private readonly sessionStorageService: SessionStorageService,
     private readonly judicialworkerService: JudicialworkerService,
-    private readonly caseworkerService: CaseworkerService,
-    private readonly alertService: AlertService) {
+    private readonly caseworkerService: CaseworkerService) {
   }
 
   public ngOnInit(): void {
     // Get case id and task from the parent component
-    this.caseId = this.parentComponent.context.caseId;
-    const task = this.parentComponent.context.reassignedTask;
+    this.caseId = this.context.caseId;
+    const task = this.context.reassignedTask;
 
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {
@@ -86,12 +83,12 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // not complete_task not utilised here as related to event completion
     // service wanting task associated with event to not be completed not directly relevant
     if (task) {
-      this.sessionStorageService.setItem('assignNeeded', 'true');
-      // set event can be completed to true
-      this.parentComponent.eventCanBeCompleted.emit(true);
+      // Set session to override reassignment settings so code flow does not return to this component
+      this.sessionStorageService.setItem('assignNeeded', 'true - override')
+      this.notifyEventCompletionReassigned.emit(true);
     } else {
       // Emit event cannot be completed event
-      this.parentComponent.eventCanBeCompleted.emit(false);
+      this.notifyEventCompletionReassigned.emit(false);
     }
   }
 }

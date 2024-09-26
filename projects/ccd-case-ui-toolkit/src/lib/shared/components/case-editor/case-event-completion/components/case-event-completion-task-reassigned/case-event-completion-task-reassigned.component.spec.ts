@@ -1,4 +1,4 @@
-import { DebugElement, EventEmitter } from '@angular/core';
+import { Component, DebugElement, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -10,15 +10,24 @@ import { Judicialworker } from '../../../../../domain/work-allocation/judicial-w
 import { Task } from '../../../../../domain/work-allocation/Task';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../../../services';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseworkerService, JudicialworkerService, WorkAllocationService } from '../../../services';
-import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
 import { CaseEventCompletionTaskReassignedComponent } from './case-event-completion-task-reassigned.component';
 import createSpyObj = jasmine.createSpyObj;
+
+@Component({
+  template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>'
+})
+class WrapperComponent {
+  @ViewChild(CaseEventCompletionTaskReassignedComponent, { static: true }) public appComponentRef: CaseEventCompletionTaskReassignedComponent;
+  @Input() public context: EventCompletionStateMachineContext;
+}
 
 describe('TaskReassignedComponent', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let component: CaseEventCompletionTaskReassignedComponent;
-  let fixture: ComponentFixture<CaseEventCompletionTaskReassignedComponent>;
+  let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<WrapperComponent>;
   let mockSessionStorageService: any;
   let appConfig: any;
   let httpService: HttpService;
@@ -27,7 +36,6 @@ describe('TaskReassignedComponent', () => {
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
   let mockWorkAllocationService: WorkAllocationService;
-  let parentComponent: any;
 
   const task: Task = {
     assignee: '1234-1234-1234-1234',
@@ -105,37 +113,29 @@ describe('TaskReassignedComponent', () => {
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
 
-  parentComponent = {
-    context: {
-      reassignedTask: {
-        assignee: '1234-1234-1234-1234'
-      }
-    },
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
-  };
-
   beforeEach(async () => {
     mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [CaseEventCompletionTaskReassignedComponent, MockRpxTranslatePipe],
+      declarations: [CaseEventCompletionTaskReassignedComponent, MockRpxTranslatePipe, WrapperComponent],
       providers: [
         {provide: ActivatedRoute, useValue: mockRoute},
         {provide: AlertService, useValue: alertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: WorkAllocationService, useValue: mockWorkAllocationService},
         {provide: CaseworkerService, useValue: mockCaseworkerService},
-        {provide: JudicialworkerService, useValue: mockJudicialworkerService},
-        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: parentComponent}
+        {provide: JudicialworkerService, useValue: mockJudicialworkerService}
       ]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseEventCompletionTaskReassignedComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = fixture.componentInstance.appComponentRef;
+    wrapper.context = {caseId: '1620409659381330', reassignedTask: task} as EventCompletionStateMachineContext;
     spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of(null));
     spyOn(mockJudicialworkerService, 'getJudicialworkers').and.returnValue(of([judicialworker]));
     fixture.detectChanges();
@@ -154,7 +154,7 @@ describe('TaskReassignedComponent', () => {
     spyOn(mockWorkAllocationService, 'assignAndCompleteTask').and.returnValue({subscribe: () => {}});
     component.onContinue();
     expect(mockSessionStorageService.getItem).toHaveBeenCalledTimes(1);
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true - override');
   });
 
   it('should  task on continue event', () => {
