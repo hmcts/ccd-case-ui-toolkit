@@ -16,7 +16,6 @@ export class QueryManagementUtils {
     // Handle Complex type fields
     if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
       if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId && QueryManagementUtils.isNonEmptyObject(value)) {
-        console.log('field_type, value ', field_type, value);
         return value;
       }
       return null;
