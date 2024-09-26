@@ -31,9 +31,20 @@ export interface UserTask {
   complete_task: boolean
 }
 
-export interface TaskEvent {
+// Query: UserID will be removed on logout/login (is it necessary)?
+export interface TaskEventCompletionInfo {
   taskId: string;
   eventId: string;
+  caseId: string;
+  userId: string;
+  createdTimestamp: number;
+}
+
+export interface EventDetails {
+  eventId: string;
+  caseId: string;
+  userId: string;
+  assignNeeded?: string;
 }
 
 export enum Permissions {
