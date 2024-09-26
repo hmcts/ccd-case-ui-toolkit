@@ -337,9 +337,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public submit(): void {
     // in some scenarios the fieldstate can be set to 0 even though the user is at the end of a journey, check for this case and set vars
-    if ((this.caseFlagStateService.fieldStateToNavigate === 0) && (this.caseFlagStateService.fieldStateToNavigate !== this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber)){
-      this.caseFlagStateService.fieldStateToNavigate = this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber;
-      this.caseFlagStateService.lastPageFieldState = this.multipageComponentStateService.getJourneyCollection()[0].journeyPageNumber;
+    const journeyPageNumber = this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber;
+    const fieldState = this.caseFlagStateService?.fieldStateToNavigate;
+    if (this.eventTrigger.id === 'c100ManageFlags'){
+      if ((fieldState === 0 || fieldState === undefined || journeyPageNumber > fieldState) && fieldState !== journeyPageNumber) {
+        this.caseFlagStateService.fieldStateToNavigate = journeyPageNumber;
+        this.caseFlagStateService.lastPageFieldState = journeyPageNumber;
+      }
     }
     this.caseEditDataService.clearFormValidationErrors();
     this.checkForStagesCompleted();
