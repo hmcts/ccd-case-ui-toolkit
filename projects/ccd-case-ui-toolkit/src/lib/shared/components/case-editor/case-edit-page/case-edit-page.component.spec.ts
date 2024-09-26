@@ -463,6 +463,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       case_fields: [caseField1],
       name: 'Test event trigger name',
       can_save_draft: true,
+      id: 'c100ManageFlags'
     };
     let loadingServiceMock: LoadingService;
 
@@ -858,6 +859,14 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validateSub.unsubscribe).toHaveBeenCalled();
       expect(comp.saveDraftSub.unsubscribe).toHaveBeenCalled();
       expect(comp.caseFormValidationErrorsSub.unsubscribe).toHaveBeenCalled();
+    });
+
+    it('should set the fieldStateToNavigate and lastPageFieldState when conditions are met', () => {
+      caseFlagStateService.fieldStateToNavigate = 0;
+      spyOn(multipageComponentStateService, 'getJourneyCollection').and.returnValue([{ journeyPageNumber: 3 }]);
+      comp.ngOnInit();
+      expect(caseFlagStateService.fieldStateToNavigate).toEqual(3);
+      expect(caseFlagStateService.lastPageFieldState).toEqual(3);
     });
   });
 
