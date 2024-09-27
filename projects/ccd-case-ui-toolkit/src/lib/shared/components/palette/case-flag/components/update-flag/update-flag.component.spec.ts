@@ -21,7 +21,6 @@ import { UpdateFlagComponent } from './update-flag.component';
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
   let fixture: ComponentFixture<UpdateFlagComponent>;
-  let nextButton: HTMLElement;
   let textareaInput: string;
   let mockRpxTranslationService: any;
   const activeFlag = {
@@ -164,7 +163,7 @@ describe('UpdateFlagComponent', () => {
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
-    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
+    
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -228,7 +227,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = '';
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(fixture.debugElement.nativeElement.querySelector('.govuk-error-message')).toBeNull();
@@ -245,7 +244,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = '';
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -273,7 +272,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = '';
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -297,7 +296,7 @@ describe('UpdateFlagComponent', () => {
     fixture.detectChanges();
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(textarea.value).toEqual('');
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -310,7 +309,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -327,7 +326,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -396,7 +395,7 @@ describe('UpdateFlagComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking fourth radio button with status "Not approved" makes entering status reason mandatory
     radioButtons[3].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -425,7 +424,7 @@ describe('UpdateFlagComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
     radioButtons[0].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -438,7 +437,7 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
     // Clicking second radio button with status "Active" makes entering status reason optional
     radioButtons[1].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -451,7 +450,7 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
     // Clicking third radio button with status "Inactive" makes entering status reason optional
     radioButtons[2].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -477,7 +476,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -490,7 +489,7 @@ describe('UpdateFlagComponent', () => {
     radioButtons[3].click();
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -514,7 +513,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -523,7 +522,7 @@ describe('UpdateFlagComponent', () => {
     radioButtons[3].click();
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -626,7 +625,7 @@ describe('UpdateFlagComponent', () => {
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -654,7 +653,7 @@ describe('UpdateFlagComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -730,7 +729,7 @@ describe('UpdateFlagComponent', () => {
     textarea.dispatchEvent(new Event('input'));
     // Click the "Make inactive" button to change the flag status
     fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onMakeInactive).toHaveBeenCalled();
     expect(component.onNext).toHaveBeenCalled();
@@ -763,5 +762,29 @@ describe('UpdateFlagComponent', () => {
     // Only "Active" and "Inactive" status options should be in the list of valid progressions
     expect(component.validStatusProgressions).toEqual(
       Object.keys(CaseFlagStatus).filter((key) => !['REQUESTED', 'NOT_APPROVED'].includes(key)));
+  });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
   });
 });

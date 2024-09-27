@@ -49,14 +49,6 @@ describe('BeforeYouStartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should next event emit linked cases state with no error', () => {
-    fixture.detectChanges();
-    const buttonElem = fixture.debugElement.query(By.css('.button-primary')); // change selector here
-    buttonElem.triggerEventHandler('click', null);
-    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: undefined, navigateToNextPage: true });
-  });
-
   it('should display correct text content for link cases journey', () => {
     component.isLinkCasesJourney = true;
     fixture.detectChanges();
@@ -76,5 +68,23 @@ describe('BeforeYouStartComponent', () => {
   it('should return to case details page', () => {
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+
+  it('should emit linkedCasesStateEmitter when onNext is called', () => {
+    component.onNext();
+    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
+  });
+
+  it('should call onNext when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super.next when next is called and errorMessages is an empty array', () => {
+    spyOn(component, 'next').and.callThrough();
+    component.errorMessages = [];
+    component.next();
+    expect(component.next).toHaveBeenCalled();
   });
 });

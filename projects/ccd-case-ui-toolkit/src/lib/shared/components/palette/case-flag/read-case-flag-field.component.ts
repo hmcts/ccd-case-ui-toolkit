@@ -65,25 +65,25 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // internal and external flags data for each party
       if (!this.caseFlagsExternalUser) {
         const groupedFlagsData = this.partyLevelCaseFlagData
-        .filter((f) => f.flags.groupId)
-        .reduce((mergedFlagDetails, f) => {
-          mergedFlagDetails[f.flags.groupId] = mergedFlagDetails[f.flags.groupId] || [];
-          // The flags.details property (which should be an array) could be falsy; spread an empty array if so
-          mergedFlagDetails[f.flags.groupId].push(...(f.flags.details || []));
-          return mergedFlagDetails;
-        }, Object.create(null));
+          .filter((f) => f.flags.groupId)
+          .reduce((mergedFlagDetails, f) => {
+            mergedFlagDetails[f.flags.groupId] = mergedFlagDetails[f.flags.groupId] || [];
+            // The flags.details property (which should be an array) could be falsy; spread an empty array if so
+            mergedFlagDetails[f.flags.groupId].push(...(f.flags.details || []));
+            return mergedFlagDetails;
+          }, Object.create(null));
         // Remove duplicate flags objects with the same groupId (which are going to be treated as one for display
         // purposes)
         const uniquePartyData = this.partyLevelCaseFlagData
-        .filter((f) => f.flags.groupId)
-        .reduce((flagsUniqueByGroupId, f) => {
-          if (flagsUniqueByGroupId.findIndex(flag => flag.flags.groupId === f.flags.groupId) === -1) {
+          .filter((f) => f.flags.groupId)
+          .reduce((flagsUniqueByGroupId, f) => {
+            if (flagsUniqueByGroupId.findIndex(flag => flag.flags.groupId === f.flags.groupId) === -1) {
             // Set the corresponding grouped flags data
-            f.flags.details = groupedFlagsData[f.flags.groupId];
-            flagsUniqueByGroupId.push(f);
-          }
-          return flagsUniqueByGroupId;
-        }, []);
+              f.flags.details = groupedFlagsData[f.flags.groupId];
+              flagsUniqueByGroupId.push(f);
+            }
+            return flagsUniqueByGroupId;
+          }, []);
         // Append flags objects with no groupId
         this.partyLevelCaseFlagData.filter((f) => !f.flags.groupId).forEach((f) => uniquePartyData.push(f));
         this.partyLevelCaseFlagData = uniquePartyData;
@@ -104,17 +104,23 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlagsLocation) {
-            this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
-            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-              flagLauncherComponent.selectedFlagsLocation);
+          this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
+          this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+            flagLauncherComponent.selectedFlagsLocation);
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
-          flagLauncherComponent.selectedFlag) {
+          (flagLauncherComponent.selectedFlag ||
+            (this.caseFlagStateService.formGroup.get('selectedManageCaseLocation').value.flagDetailDisplay && this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1))) {
+          if (this.formGroup.get(flagLauncherControlName)['component']?.selectedFlag?.flagDetailDisplay !== undefined){
             this.flagForSummaryDisplay =
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
+          } else {
+            this.flagForSummaryDisplay =
+              this.caseFlagStateService.formGroup.get('selectedManageCaseLocation').value.flagDetailDisplay;
+          }
           // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
           // in Create Case Flag it already has all fields
           const caseFlagFormGroupValue = this.caseFlagStateService.formGroup?.value;
