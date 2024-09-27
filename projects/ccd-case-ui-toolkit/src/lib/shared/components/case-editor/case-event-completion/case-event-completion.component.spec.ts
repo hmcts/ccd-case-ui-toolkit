@@ -1,9 +1,7 @@
 import { PortalModule } from '@angular/cdk/portal';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, SimpleChange } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -11,18 +9,16 @@ import { Task } from '../../../domain/work-allocation/Task';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { CaseworkerService, JudicialworkerService } from '../services';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
-import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from './case-event-completion.component';
+import { CaseEventCompletionComponent } from './case-event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventCompletionComponent', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let fixture: ComponentFixture<CaseEventCompletionComponent>;
   let component: CaseEventCompletionComponent;
-  let de: DebugElement;
   let appConfig: any;
   let httpService: HttpService;
   let errorService: HttpErrorService;
@@ -32,11 +28,6 @@ describe('CaseEventCompletionComponent', () => {
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
   let eventCompletionStateMachineService: any;
-  let parentComponent: any;
-  // tslint:disable-next-line: prefer-const
-  let mockRouter: Router;
-  // tslint:disable-next-line: prefer-const
-  let mockRoute: ActivatedRoute;
 
   const task: Task = {
     assignee: null,
@@ -85,25 +76,6 @@ describe('CaseEventCompletionComponent', () => {
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);
 
-  const context = {
-    task,
-    caseId: '1620409659381330',
-    eventId: null,
-    reassignedTask: null,
-    router: mockRouter,
-    route: mockRoute,
-    sessionStorageService: null,
-    workAllocationService: mockWorkAllocationService,
-    alertService,
-    canBeCompleted: false,
-    component: this
-  };
-
-  parentComponent = {
-    context,
-    eventCanBeCompleted: new EventEmitter<boolean>(true)
-  };
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -123,8 +95,7 @@ describe('CaseEventCompletionComponent', () => {
         { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
         { provide: CaseworkerService, useValue: mockCaseworkerService },
-        { provide: JudicialworkerService, useValue: mockJudicialworkerService },
-        { provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: parentComponent }
+        { provide: JudicialworkerService, useValue: mockJudicialworkerService }
       ],
     })
     .compileComponents();
@@ -132,7 +103,6 @@ describe('CaseEventCompletionComponent', () => {
     fixture = TestBed.createComponent(CaseEventCompletionComponent);
     component = fixture.componentInstance;
     component.eventCompletionParams = eventCompletionParams;
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
@@ -155,11 +125,15 @@ describe('CaseEventCompletionComponent', () => {
     expect(eventCompletionStateMachineService.startStateMachine).toHaveBeenCalled();
   });
 
-  it('should load task cancelled component in cdk portal', () => {
-    component.context = context;
-    component.showPortal(EventCompletionPortalTypes.TaskCancelled);
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
-    expect(component.selectedComponentPortal).toBeTruthy();
+  it('should emit false if there is now no task to complete in session storage', () => {
+    spyOn(component.eventCanBeCompleted, 'emit');
+    component.setEventCanBeCompleted(false);
+    expect(component.eventCanBeCompleted.emit).toHaveBeenCalledWith(false);
+  });
+
+  it('should set task state', () => {
+    component.setTaskState(1);
+    expect(component.taskState).toBe(1);
   });
 
   afterAll(() => {
