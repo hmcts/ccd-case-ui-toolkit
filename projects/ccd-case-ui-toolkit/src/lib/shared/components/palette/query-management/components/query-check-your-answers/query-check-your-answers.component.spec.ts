@@ -4,8 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of } from 'rxjs';
-import { CaseView, TaskSearchParameter } from '../../../../../../shared/domain';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { CaseField, CaseView, FieldType, TaskSearchParameter } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
@@ -317,14 +317,73 @@ describe('QueryCheckYourAnswersComponent', () => {
     name: 'Smith Solicitor'
   };
 
+  const eventData = {
+    ...eventTrigger,
+    case_fields: [
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'ComponentLauncher',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'ComponentLauncher'
+        } as FieldType,
+        id: 'QueryManagement1',
+        label: 'Query management component'
+      } as CaseField,
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'CaseQueriesCollection',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'Complex'
+        } as FieldType,
+        id: 'qmCaseQueriesCollection',
+        label: 'Query management case queries collection',
+        value: {
+          caseMessages: [{
+            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+            value: {
+              attachments: [],
+              body: 'testing by olu',
+              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+              createdOn: '2024-08-27T15:44:50.700Z',
+              hearingDate: '2023-01-10',
+              id: null,
+              isHearingRelated: 'Yes',
+              name: 'Piran Sam',
+              parentId: 'ca',
+              subject: 'Review attached document'
+            }
+          }],
+          partyName: '',
+          roleOnCase: ''
+        }
+      } as CaseField
+    ],
+    wizard_pages: [],
+    hasFields(): boolean {
+      return true;
+    },
+    hasPages(): boolean {
+      return false;
+    }
+  };
+
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
     workAllocationService.searchTasks.and.returnValue(of(response));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-    casesService = jasmine.createSpyObj('casesService', ['getEventTrigger', 'createEvent', 'getCaseViewV2']);
-    casesService.getEventTrigger.and.returnValue(of(eventTrigger));
+    casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);
     casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
@@ -416,13 +475,35 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
-  it('should query submission failure navigate to service down page', () => {
+  it('should navigate to service-down page on event creation error', () => {
+    component.fieldId = 'validFieldId';
+    casesService.createEvent.and.returnValue(throwError('Error'));
+
     component.submit();
+
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should log an error and set errorMessages when fieldId is missing', () => {
+    component.fieldId = null;
+    spyOn(console, 'error');
+
+    component.submit();
+
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
+    expect(component.errorMessages).toEqual([
+      {
+        title: 'Error',
+        description: 'Something unexpected happened. please try again later.',
+        fieldId: 'field-id'
+      }
+    ]);
   });
 
   it('should set querySubmitted to true when submit is called', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+
+    component.eventData = eventData;
     fixture.detectChanges();
     component.ngOnInit();
 
@@ -430,17 +511,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.submit();
 
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
-  });
-
-  it('should set querySubmitted to true when submit is called', () => {
-    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
-    fixture.detectChanges();
-    component.ngOnInit();
-
-    component.fieldId = null;
-    component.submit();
-
-    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
 
   describe('searchAndCompleteTask', () => {

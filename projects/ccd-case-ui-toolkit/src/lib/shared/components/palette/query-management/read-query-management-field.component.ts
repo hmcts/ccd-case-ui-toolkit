@@ -34,7 +34,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
           .filter((tab) => tab.fields?.some(
             (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === this.caseField.id))
           [0].fields?.reduce((acc, caseField) => {
-            const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+            const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
 
             if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
               acc.push(extractedCaseQueriesFromCaseField);

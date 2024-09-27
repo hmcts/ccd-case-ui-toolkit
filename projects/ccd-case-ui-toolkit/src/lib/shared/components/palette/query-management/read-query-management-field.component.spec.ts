@@ -148,7 +148,7 @@ describe('ReadQueryManagementFieldComponent', () => {
           component: DummyComponent
         },
         {
-          path: `query-management/query/${caseId}/4`,
+          path: `query-management/query/${caseId}/4/:dataid`,
           component: DummyComponent
         }
       ])],
@@ -205,12 +205,13 @@ describe('ReadQueryManagementFieldComponent', () => {
 
       it('should display and navigate to query details page on click', fakeAsync(() => {
         component.query.children = [new QueryListItem()];
+        component.query.id = 'id-007';
         fixture.detectChanges();
         spyOn(router, 'navigate');
         const followUpButton = fixture.nativeElement.querySelector('#ask-follow-up-question');
         followUpButton.click();
         tick();
-        expect(router.url).toBe(`/query-management/query/${caseId}/4`);
+        expect(router.url).toBe(`/query-management/query/${caseId}/4/id-007`);
       }));
     });
   });

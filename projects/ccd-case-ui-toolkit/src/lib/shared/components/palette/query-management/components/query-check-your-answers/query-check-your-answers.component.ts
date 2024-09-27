@@ -1,19 +1,18 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import {
-  CaseEventData,
   CaseEventTrigger,
-  CaseTab,
   CaseView,
   CaseViewTrigger,
+  ErrorMessage,
   TaskSearchParameter
 } from '../../../../../../../lib/shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 @Component({
@@ -31,22 +30,22 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
+  @Input() public eventData: CaseEventTrigger | null = null;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
 
   private caseViewTrigger: CaseViewTrigger;
   private caseDetails: CaseView;
   private queryId: string;
-  private getEventTrigger$: Observable<CaseEventTrigger>;
   private createEventSubscription: Subscription;
-  private searchTasksSubsciption: Subscription;
+  private searchTasksSubscription: Subscription;
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
-  private caseId: string;
-
   public caseQueriesCollections: CaseQueriesCollection[];
   public fieldId: string;
+
+  public errorMessages: ErrorMessage[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -54,32 +53,31 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     private readonly casesService: CasesService,
     private readonly caseNotifier: CaseNotifier,
     private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService) {
-  }
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly eventTriggerService: EventTriggerService
+  ) {}
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
-      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
-        // Find raise a query event trigger from the list, will be used when submitting the query
-        this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id === this.RAISE_A_QUERY_EVENT_TRIGGER_ID);
-        // Initialise getEventTrigger observable, will be used when submitting the query
-        this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      } else {
-        // Raise a query and Follow-up query uses the same event trigger id
-        // Find raise a query event trigger from the list, will be used when submitting the query
-        this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id === this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID);
-        // Initialise getEventTrigger observable, will be used when submitting the query
-        this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      }
+
+      // Find the appropriate event trigger based on the queryCreateContext
+      this.caseViewTrigger = this.caseDetails.triggers.find((trigger) =>
+        this.queryCreateContext !== QueryCreateContext.RESPOND
+        // If the context is not 'RESPOND', find the trigger with the ID for raising a query
+          ? trigger.id === this.RAISE_A_QUERY_EVENT_TRIGGER_ID
+        // If the context is 'RESPOND', find the trigger with the ID for responding to a query
+          : trigger.id === this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID
+      );
     });
-    this.isCaseQueriesClollectionDataPresent();
+
+    this.setCaseQueriesCollectionData();
   }
 
   public ngOnDestroy(): void {
     this.createEventSubscription?.unsubscribe();
-    this.searchTasksSubsciption?.unsubscribe();
+    this.searchTasksSubscription?.unsubscribe();
   }
 
   public goBack(): void {
@@ -87,27 +85,30 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
-    // Generate case queries collection data for submission
+    // Check if fieldId is null or undefined
+    if (!this.fieldId) {
+      console.error('Error: Field ID is missing. Cannot proceed with submission.');
+      this.errorMessages = [
+        {
+          title: 'Error',
+          description: 'Something unexpected happened. please try again later.',
+          fieldId: 'field-id'
+        }
+      ];
+      return;
+    }
+
     const data = this.generateCaseQueriesCollectionData();
-    // Actual submission of query
-    this.createEventSubscription = this.getEventTrigger$.pipe(
-      switchMap((caseEventTrigger: CaseEventTrigger) => {
-        // Setup CaseEventData
-        const caseEventData: CaseEventData = {
-          data,
-          event: {
-            id: this.caseViewTrigger.id,
-            summary: '',
-            description: this.caseViewTrigger.description
-          },
-          event_token: caseEventTrigger.event_token,
-          ignore_warning: false
-        };
-        // Complete event
-        return this.casesService.createEvent(this.caseDetails, caseEventData);
-      })
-    ).subscribe(
-      // Successful response
+    this.createEventSubscription = this.casesService.createEvent(this.caseDetails, {
+      data,
+      event: {
+        id: this.caseViewTrigger?.id,
+        summary: '',
+        description: this.caseViewTrigger?.description
+      },
+      event_token: this.eventData?.event_token,
+      ignore_warning: false
+    }).subscribe(
       () => {
         // Search and complete task
         this.searchAndCompleteTask();
@@ -122,23 +123,25 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public searchAndCompleteTask(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
-    this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
-      .subscribe((response: any) => {
-        // Filter task by query id
-        const filteredtask = response.tasks?.find((task) => {
-          return Object.values(task.additional_properties).some((value) => {
-            if (value === this.queryId) {
-              return task;
-            }
-          });
-        });
-        // Trigger event completion
-        this.eventCompletionParams = {
-          caseId: this.caseDetails.case_id,
-          eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
-          task: filteredtask
-        };
-      });
+    this.searchTasksSubscription = this.workAllocationService.searchTasks(searchParameter)
+      .subscribe(
+        (response: any) => {
+          // Filter task by query id
+          const filteredTask = response.tasks?.find((task) =>
+            Object.values(task.additional_properties).some((value) => value === this.queryId)
+          );
+          // Trigger event completion
+          this.eventCompletionParams = {
+            caseId: this.caseDetails.case_id,
+            eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
+            task: filteredTask
+          };
+        },
+        (error) => {
+          console.error('Error in searchTasksSubscription:', error);
+          // Handle error appropriately
+        }
+      );
   }
 
   private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
@@ -154,12 +157,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       this.router.navigate(['/', 'service-down']);
     }
 
-    // Dynamically determine the field ID
-    const dynamicFieldId = this.fieldId;
-
     // Base data structure for the query with dynamic property name
     const newQueryData: QmCaseQueriesCollection = {
-      [dynamicFieldId]: {
+      [this.fieldId]: {
         partyName: '', // Not returned by CCD
         roleOnCase: '', // Not returned by CCD
         caseMessages: [
@@ -172,34 +172,30 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     };
 
     // If caseQueriesCollections is not empty, append its data
-    if (this.caseQueriesCollections && this.caseQueriesCollections.length > 0) {
-      newQueryData[dynamicFieldId].caseMessages.push(
-        ...this.caseQueriesCollections.map((collection) => collection.caseMessages).flat()
+    if (this.caseQueriesCollections?.length) {
+      newQueryData[this.fieldId].caseMessages.push(
+        ...this.caseQueriesCollections.flatMap((collection) => collection.caseMessages)
       );
     }
     return newQueryData;
   }
 
-  private isCaseQueriesClollectionDataPresent() {
-    if (this.route.snapshot?.data?.case?.tabs) {
-      this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter((tab) => tab?.fields?.some(
-          (caseField) => caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID && caseField.field_type.type === this.FIELD_TYPE_COMPLEX))
-        [0]?.fields?.reduce((acc, caseField) => {
-          // Extract the ID based on conditions, updating this.fieldId dynamically
-          this.extractIdBasedOnConditions(caseField);
+  public setCaseQueriesCollectionData(): void {
+    if (this.eventData?.case_fields?.length) {
+      this.caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
+        // Extract the ID based on conditions, updating this.fieldId dynamically
 
-          const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
-
-          if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
-            acc.push(extractedCaseQueriesFromCaseField);
-          }
-          return acc;
-        }, []);
+        this.extractCaseQueryId(caseField);
+        const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
+        if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
+          acc.push(extractedCaseQueriesFromCaseField);
+        }
+        return acc;
+      }, []);
     }
   }
 
-  private extractIdBasedOnConditions(data) {
+  private extractCaseQueryId(data): void {
     // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
     if (
       data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&

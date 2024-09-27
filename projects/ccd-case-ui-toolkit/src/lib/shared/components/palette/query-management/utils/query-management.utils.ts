@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Document, FormDocument, CaseField } from '../../../../domain';
 import { CaseMessage, QueryListItem } from '../models';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class QueryManagementUtils {
@@ -9,8 +10,9 @@ export class QueryManagementUtils {
   public static readonly FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly FIELD_TYPE_COMPLEX = 'Complex';
 
-  public static extractCaseQueriesFromCaseField(caseField: CaseField, caseFieldId: string) {
+  public static extractCaseQueriesFromCaseField(caseField: CaseField) {
     const { field_type, value } = caseField;
+
     // Handle Complex type fields
     if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
       if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId && QueryManagementUtils.isNonEmptyObject(value)) {
@@ -18,11 +20,6 @@ export class QueryManagementUtils {
       }
       return null;
     }
-
-    // Handle Collection type fields
-    // if (field_type.type === QueryManagementUtils.FIELD_TYPE_COLLECTION) {
-    //   return [];
-    // }
   }
 
   public static documentToCollectionFormDocument(document: Document): { id: string; value: FormDocument } {
@@ -47,7 +44,7 @@ export class QueryManagementUtils {
       : null;
     const attachments = formGroup.get('attachments').value;
     return {
-      id: null,
+      id: uuidv4(),
       subject,
       name: currentUserName,
       body,
@@ -67,7 +64,7 @@ export class QueryManagementUtils {
     queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';
 
     return {
-      id: null,
+      id: uuidv4(),
       subject: queryItem.subject,
       name: currentUserName,
       body,

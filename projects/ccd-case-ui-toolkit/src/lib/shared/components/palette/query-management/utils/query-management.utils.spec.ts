@@ -133,7 +133,7 @@ describe('QueryManagementUtils', () => {
           roleOnCase: ''
         }
       } as CaseField;
-      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
       expect(result).toEqual(caseField.value);
     });
 
@@ -147,7 +147,7 @@ describe('QueryManagementUtils', () => {
         value: null
       } as CaseField;
 
-      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
       expect(result).toEqual(caseField.value);
     });
 
@@ -160,7 +160,7 @@ describe('QueryManagementUtils', () => {
         } as FieldType,
         value: null
       } as CaseField;
-      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
       expect(result).toEqual(null);
     });
   });
