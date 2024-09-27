@@ -32,7 +32,6 @@ export class EventLogTableComponent implements OnInit {
   public ngOnInit(): void {
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
     this.isUserExternal = JSON.parse(this.sessionStorage.getItem('userDetails')).roles.includes('pui-case-manager');
-    console.log(this.isUserExternal);
   }
 
   public select(event: CaseViewEvent): void {
