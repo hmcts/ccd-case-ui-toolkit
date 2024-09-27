@@ -44,6 +44,9 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
 
   public getLinkedCases(): void {
     this.caseId = this.linkedCasesService.caseId;
+    if (this.linkedCasesService.cachedFieldValues && this.linkedCasesService.linkedCases){
+      this.linkedCasesService.caseFieldValue = this.linkedCasesService.cachedFieldValues;
+    }
     if (this.linkedCasesService.linkedCases.length > 0) {
       this.linkedCases = this.linkedCasesService.linkedCases;
       this.getAllLinkedCaseInformation();

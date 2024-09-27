@@ -13,4 +13,5 @@ export interface Journey {
     journeyPreviousPageNumber: number;
     childJourney: Journey;
     fieldState?: number;
+    linkedCasesPage?: number;
 }

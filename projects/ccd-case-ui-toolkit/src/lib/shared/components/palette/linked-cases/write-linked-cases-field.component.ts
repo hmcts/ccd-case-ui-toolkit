@@ -151,6 +151,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
 
   public submitLinkedCases(): void {
     if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
+      this.linkedCasesService.cachedFieldValues = this.linkedCasesService.caseFieldValue;
       const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
       const caseFieldValue = this.linkedCasesService.caseFieldValue;
       this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);

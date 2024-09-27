@@ -28,6 +28,7 @@ export class LinkedCasesService {
   public storedCaseNumber = '';
   public cameFromFinalStep = false;
   public hasNavigatedInJourney = false;
+  public cachedFieldValues;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {

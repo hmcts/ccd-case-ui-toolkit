@@ -105,7 +105,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public isAtStart(): boolean {
-    return this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
+    const pageNumberToUse = this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage !== undefined ? this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage : this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState;
+    return pageNumberToUse === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
   }
 
   public isAtEnd(): boolean {
