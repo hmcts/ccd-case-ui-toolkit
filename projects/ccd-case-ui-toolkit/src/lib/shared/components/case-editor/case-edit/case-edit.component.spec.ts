@@ -22,6 +22,7 @@ import { CaseEditComponent } from './case-edit.component';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { EventDetails, Task } from '../../../domain/work-allocation/Task';
 
 describe('CaseEditComponent', () => {
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -1169,11 +1170,14 @@ describe('CaseEditComponent', () => {
 
     describe('submitForm', () => {
       it('should submit case', () => {
+        const userInfo = {id: "id"};
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), JSON.stringify(mockTaskEventCompletionInfo), JSON.stringify({userInfo}))
         const mockClass = {
           submit: () => of({})
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
-          id: 'id',
+          userInfo: {id: 'id'},
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
@@ -1240,8 +1244,8 @@ describe('CaseEditComponent', () => {
         expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
         // check that tasks removed from session storage once event has been completed
-        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete');
-        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskEvent');
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('clientContext');
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskEventCompletionInfo');
       });
 
       it('should submit the case for a Case Flags submission', () => {
@@ -1473,46 +1477,64 @@ describe('CaseEditComponent', () => {
     });
 
     describe('taskExistsForThisEventAndCase', () => {
-      const mockEventId = 'testEvent';
-      const mockCaseId = '123456789';
-      const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
+      const mockEventDetails: EventDetails = { eventId: 'testEvent', caseId: '123456789', userId: '1' };
       it('should return false when there is no task present', () => {
-        expect(component.taskExistsForThisEventAndCase(null, null, mockEventId, mockCaseId)).toBe(false);
+        expect(component.taskExistsForThisEvent(null, null, mockEventDetails)).toBe(false);
       });
 
       it('should return false when there is a task present that does not match the current case', () => {
         const mockTask = {id: '123', case_id: '987654321'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, null, mockEventId, mockCaseId)).toBe(false);
+        expect(component.taskExistsForThisEvent(mockTask as Task, null, mockEventDetails)).toBe(false);
       });
 
       it('should return true when there is a task present that matches the current case when there is no event in session storage', () => {
         const mockTask = {id: '123', case_id: '123456789'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, null, mockEventId, mockCaseId)).toBe(true);
+        expect(component.taskExistsForThisEvent(mockTask as Task, null, mockEventDetails)).toBe(true);
       });
 
       it('should return true when there is a task present that matches the current case and current event', () => {
         const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
 
       it('should return false when there is a task present that matches the current case but does not match the event', () => {
         const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEvent = {taskId: '123', eventId: 'testEvent2'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(false);
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent2', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
       });
 
       it('should return true when there is a task present that matches the current case, does not match the event but does not match the task associated with the event in session storage', () => {
         // highly unlikely to occur but feasible scenario
         const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEvent = {taskId: '1234', eventId: 'testEvent2'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
+        const mockTaskEventCompletionInfo = {taskId: '1234', eventId: 'testEvent2', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
 
       it('should return true when there is a task present that matches the current case, matches the event and does not match the task associated with the event in session storage', () => {
         const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
-        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
+        const mockTaskEventCompletionInfo = {taskId: '1234', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
+      });
+
+      it('should return false when there is a task present that matches the current case, matches the event but does not match the user', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '2', createdTimestamp: Date.now()};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
+      });
+
+      it('should return false when there is a task present that matches the current case, matches the event but the timestamp is older than day ago', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const dayAndTwoHoursAgo = new Date().getTime() - (26*60*60*1000);
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: dayAndTwoHoursAgo};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
+      });
+
+      it('should return true when there is a task present that matches the current case, matches the event but the timestamp is less than day ago', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const twoHoursAgo = new Date().getTime() - (2*60*60*1000);
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: twoHoursAgo};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
     });
   });

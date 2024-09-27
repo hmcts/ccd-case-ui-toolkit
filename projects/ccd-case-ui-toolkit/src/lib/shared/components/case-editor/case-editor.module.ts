@@ -52,6 +52,7 @@ import { CaseFlagStateService } from './services/case-flag-state.service';
 import { CaseworkerService } from './services/case-worker.service';
 import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseFields.service';
 import { MultipageComponentStateService } from '../../services';
+import { CaseEventCompletionTaskReassignedComponent } from './case-event-completion';
 
 @NgModule({
   imports: [
@@ -117,7 +118,7 @@ import { MultipageComponentStateService } from '../../services';
     CaseworkerService,
     SessionStorageService,
     EventCompletionStateMachineService,
-    CaseFlagStateService,  
+    CaseFlagStateService,
     ValidPageListCaseFieldsService,
     MultipageComponentStateService
   ]
