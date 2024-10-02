@@ -151,15 +151,61 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
       : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails);
 
+    const messageId = this.route.snapshot.params.dataid; // Get the message ID from route params (if present)
+    const isNewQuery = this.queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query
+
     // Check if the field ID has been set dynamically
     if (!this.fieldId) {
       console.error('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
       this.router.navigate(['/', 'service-down']);
     }
 
-    // Base data structure for the query with dynamic property name
-    const newQueryData: QmCaseQueriesCollection = {
-      [this.fieldId]: {
+    // Initialize new query data structure
+    const newQueryData: QmCaseQueriesCollection = {};
+
+    if (this.caseQueriesCollections?.length) {
+      let matchedCollection;
+
+      // If it's not a new query, try to find the existing collection with the message ID
+      if (!isNewQuery && messageId) {
+        matchedCollection = this.caseQueriesCollections.find((collection) =>
+          collection.caseMessages.some((message) => message.value.id === messageId)
+        );
+      }
+
+      if (matchedCollection) {
+        // Append the new case message to the matched collection's caseMessages
+        matchedCollection.caseMessages.push({
+          id: null,
+          value: caseMessage
+        });
+
+        // Add the matched collection to newQueryData
+        newQueryData[this.fieldId] = {
+          ...matchedCollection, // Keep existing data intact
+          caseMessages: [...matchedCollection.caseMessages] // Append the updated messages array
+        };
+      } else {
+        // If no collection matches, or it's a new query
+        newQueryData[this.fieldId] = {
+          partyName: '', // Not returned by CCD
+          roleOnCase: '', // Not returned by CCD
+          caseMessages: [
+            {
+              id: null,
+              value: caseMessage
+            }
+          ]
+        };
+
+        // If caseQueriesCollections is not empty, append its data
+        newQueryData[this.fieldId].caseMessages.push(
+          ...this.caseQueriesCollections.flatMap((collection) => collection.caseMessages)
+        );
+      }
+    } else {
+      // If there are no existing collections, create a new one (e.g., for new queries)
+      newQueryData[this.fieldId] = {
         partyName: '', // Not returned by CCD
         roleOnCase: '', // Not returned by CCD
         caseMessages: [
@@ -168,14 +214,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             value: caseMessage
           }
         ]
-      }
-    };
-
-    // If caseQueriesCollections is not empty, append its data
-    if (this.caseQueriesCollections?.length) {
-      newQueryData[this.fieldId].caseMessages.push(
-        ...this.caseQueriesCollections.flatMap((collection) => collection.caseMessages)
-      );
+      };
     }
     return newQueryData;
   }
@@ -196,13 +235,28 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private extractCaseQueryId(data): void {
-    // Check if field_type.id is 'CaseQueriesCollection' and field_type.type is 'Complex'
-    if (
-      data.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-      data.field_type.type === this.FIELD_TYPE_COMPLEX
-    ) {
-      // Set the field ID dynamically based on the extracted data
-      this.fieldId = data.id; // Store the ID for use in generating newQueryData
+    const { id, value } = data;
+    const messageId = this.route.snapshot.params.dataid;
+
+    // Check if the field_type matches CaseQueriesCollection and type is Complex
+    if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
+      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
+        // Set the field ID dynamically based on the extracted data
+        this.fieldId = id; // Store the ID for use in generating newQueryData
+      }
+
+      // If messageId is present, find the corresponding case message
+      if (messageId && value?.caseMessages) {
+        // Check for a message that has the specified messageId
+        const matchedMessage = value.caseMessages.find(
+          (message) => message.value.id === messageId
+        );
+
+        // If a matching message is found, set the fieldId to the corresponding id
+        if (matchedMessage) {
+          this.fieldId = id; // This assumes you still want to use the same id
+        }
+      }
     }
   }
 }
