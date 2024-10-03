@@ -7,11 +7,6 @@
 </ng-container>
 
 <ng-template #singleQueryDetails>
-  <br>
-  <p>
-    <a class="govuk-link" href="javascript:void(0)" (click)="backToQueryListPage()">{{ 'Back to queries' | rpxTranslate }}</a>
-  </p>
-
   <ccd-query-details
     [query]="query"
     (backClicked)="showQueryList = true"
@@ -34,8 +29,6 @@
     </ng-template>
   </ng-container>
 
-
-  <br >{{query?.children?.length}}<br >
   <ng-container *ngIf="query?.children?.length > 0 && isCaseworker() && query?.children?.length % 2 === 0">
     <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
     [routerLink]="['/query-management', 'query', caseId, '3', query.id]"
