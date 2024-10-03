@@ -29,7 +29,7 @@
     </ng-template>
   </ng-container>
 
-  <ng-container *ngIf="query?.children?.length > 0 && isCaseworker() && query?.children?.length % 2 === 0">
+  <ng-container *ngIf="query?.children?.length >= 0 && isCaseworker() && query?.children?.length % 2 === 0">
     <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
     [routerLink]="['/query-management', 'query', caseId, '3', query.id]"
     >
