@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.66-show-condition-read-field-table",
+  "version": "7.0.66-unavailable-date-show",
   "engines": {
     "node": ">=18.19.0"
   },
