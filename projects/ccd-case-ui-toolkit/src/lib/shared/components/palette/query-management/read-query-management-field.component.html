@@ -7,28 +7,33 @@
 </ng-container>
 
 <ng-template #singleQueryDetails>
-  <br>
-  <p>
-    <a class="govuk-link" href="javascript:void(0)" (click)="backToQueryListPage()">{{ 'Back to queries' | rpxTranslate }}</a>
-  </p>
-
   <ccd-query-details
     [query]="query"
     (backClicked)="showQueryList = true"
     [caseId]="caseId"
   ></ccd-query-details>
-  <ng-container *ngIf="query?.children?.length > 0; else queryIsInReview">
-    <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
-            [routerLink]="['/query-management', 'query', caseId, '4', query.id]"
-    >
-      {{ 'Ask a follow-up question' | rpxTranslate }}
-    </button>
+
+  <ng-container *ngIf="!isCaseworker()">
+    <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
+      <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
+              [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
+        {{ 'Ask a follow-up question' | rpxTranslate }}
+      </button>
+    </ng-container>
+
+    <ng-template #queryIsInReview>
+      <div>
+        <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
+        <p>{{ 'Our team will read your query and will respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
+      </div>
+    </ng-template>
   </ng-container>
 
-  <ng-template #queryIsInReview>
-    <div>
-      <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
-      <p>{{ 'Our team will read your query and will respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
-    </div>
-  </ng-template>
+  <ng-container *ngIf="query?.children?.length >= 0 && isCaseworker() && query?.children?.length % 2 === 0">
+    <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
+    [routerLink]="['/query-management', 'query', caseId, '3', query.id]"
+    >
+    {{ 'Response to a query' | rpxTranslate }}
+    </button>
+  </ng-container>
 </ng-template>

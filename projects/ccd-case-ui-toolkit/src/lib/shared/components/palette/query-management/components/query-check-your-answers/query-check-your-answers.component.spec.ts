@@ -500,6 +500,15 @@ describe('QueryCheckYourAnswersComponent', () => {
     ]);
   });
 
+  it('should navigate to service-down page if fieldId is not set', () => {
+    component.fieldId = null;
+    spyOn(console, 'error');
+    component.submit();
+
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
   it('should set querySubmitted to true when submit is called', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
 
@@ -511,6 +520,20 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.submit();
 
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+  });
+
+  describe('form validation', () => {
+    it('should be invalid when form controls are empty', () => {
+      component.formGroup.get('name')?.setValue('');
+      component.formGroup.get('body')?.setValue('');
+      expect(component.formGroup.valid).toBeFalsy();
+    });
+
+    it('should be valid when form controls are filled', () => {
+      component.formGroup.get('name')?.setValue('Valid Name');
+      component.formGroup.get('body')?.setValue('Valid Body');
+      expect(component.formGroup.valid).toBeTruthy();
+    });
   });
 
   describe('searchAndCompleteTask', () => {
@@ -537,6 +560,13 @@ describe('QueryCheckYourAnswersComponent', () => {
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);
+    });
+
+    it('should log an error when fieldId is missing', () => {
+      spyOn(console, 'error');
+      component.fieldId = null;
+      component.submit();
+      expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
     });
   });
 });

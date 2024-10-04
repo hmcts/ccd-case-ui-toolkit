@@ -5,6 +5,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
+import { SessionStorageService } from '../../../services';
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html'
@@ -15,7 +16,9 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public showQueryList: boolean = true;
   public caseId: string;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(private readonly route: ActivatedRoute,
+    private sessionStorageService: SessionStorageService
+  ) {
     super();
   }
 
@@ -56,5 +59,12 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public backToQueryListPage(): void {
     this.showQueryList = true;
     this.query = null;
+  }
+
+  public isCaseworker(): boolean {
+    const userDetails = JSON.parse(this.sessionStorageService?.getItem('userDetails'));
+    return userDetails && userDetails.roles
+      && !(userDetails.roles.includes('pui-case-manager')
+        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
   }
 }

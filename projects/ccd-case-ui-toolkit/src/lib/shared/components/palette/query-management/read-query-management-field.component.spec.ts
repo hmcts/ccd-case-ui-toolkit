@@ -6,6 +6,7 @@ import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 import { CaseField } from '../../../domain';
 import { FormGroup } from '@angular/forms';
+import { SessionStorageService } from '../../../services';
 
 @Component({
   selector: 'dummy-component',
@@ -25,6 +26,7 @@ describe('ReadQueryManagementFieldComponent', () => {
   let fixture: ComponentFixture<ReadQueryManagementFieldComponent>;
   const caseId = '12345';
   let route: ActivatedRoute;
+  const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
   const componentLauncherId = 'ComponentLauncher';
   const componentLauncher1CaseField: CaseField = {
@@ -135,7 +137,15 @@ describe('ReadQueryManagementFieldComponent', () => {
     }
   } as unknown as FormGroup;
 
+  
+  const USER = {
+    roles: [
+      'caseworker'
+    ]
+  };
+
   beforeEach(waitForAsync(() => {
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -153,7 +163,8 @@ describe('ReadQueryManagementFieldComponent', () => {
         }
       ])],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     })
       .compileComponents();
@@ -197,6 +208,8 @@ describe('ReadQueryManagementFieldComponent', () => {
 
     describe('follow-up button', () => {
       it('should not display if query has no children', () => {
+        USER.roles.push('pui-case-manager');
+        mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
         component.query.children = [];
         fixture.detectChanges();
         const followUpButton = fixture.nativeElement.querySelector('#ask-follow-up-question');
@@ -213,6 +226,23 @@ describe('ReadQueryManagementFieldComponent', () => {
         tick();
         expect(router.url).toBe(`/query-management/query/${caseId}/4/id-007`);
       }));
+    });
+  });
+
+  describe('isCaseworker', () => {
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('pui-case-manager');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
+      USER.roles.pop();
+    });
+
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('Civil-Judge');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
     });
   });
 });
