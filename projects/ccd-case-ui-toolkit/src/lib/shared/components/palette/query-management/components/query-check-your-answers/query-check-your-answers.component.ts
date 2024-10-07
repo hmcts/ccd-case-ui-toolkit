@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
+  CaseField,
   CaseView,
   CaseViewTrigger,
   ErrorMessage,
@@ -31,6 +32,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public eventData: CaseEventTrigger | null = null;
+  @Input() public roleName: string;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
 
@@ -221,10 +223,19 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public setCaseQueriesCollectionData(): void {
     if (this.eventData?.case_fields?.length) {
+
+      // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
+      // Counts number qmCaseQueriesCollections
+      const numberOfCaseQueriesCollections = this.eventData?.case_fields?.filter(
+        (caseField) =>
+          caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
+          caseField.field_type.type === this.FIELD_TYPE_COMPLEX
+      )?.length || 0;
+
       this.caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
         // Extract the ID based on conditions, updating this.fieldId dynamically
+        this.extractCaseQueryId(caseField, numberOfCaseQueriesCollections);
 
-        this.extractCaseQueryId(caseField);
         const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
         if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
           acc.push(extractedCaseQueriesFromCaseField);
@@ -234,27 +245,33 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private extractCaseQueryId(data): void {
-    const { id, value } = data;
+  private extractCaseQueryId(data: CaseField, count: number): void {
+    const { id, value, acls } = data;
     const messageId = this.route.snapshot.params.dataid;
 
     // Check if the field_type matches CaseQueriesCollection and type is Complex
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
-      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
-        // Set the field ID dynamically based on the extracted data
-        this.fieldId = id; // Store the ID for use in generating newQueryData
+      if (this.queryCreateContext === QueryCreateContext.NEW_QUERY) {
+
+        //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
+        if (count > 1) {
+          const matchingRole = acls?.find((acl) => acl.role === this.roleName);
+          if (matchingRole) {
+            this.fieldId = id;
+          }
+        } else {
+          // Set the field ID dynamically based on the extracted data
+          this.fieldId = id; // Store the ID for use in generating newQueryData
+        }
       }
 
       // If messageId is present, find the corresponding case message
       if (messageId && value?.caseMessages) {
-        // Check for a message that has the specified messageId
-        const matchedMessage = value.caseMessages.find(
-          (message) => message.value.id === messageId
-        );
-
         // If a matching message is found, set the fieldId to the corresponding id
+        const matchedMessage = value?.caseMessages?.find((message) => message.value.id === messageId);
+
         if (matchedMessage) {
-          this.fieldId = id; // This assumes you still want to use the same id
+          this.fieldId = id;
         }
       }
     }
