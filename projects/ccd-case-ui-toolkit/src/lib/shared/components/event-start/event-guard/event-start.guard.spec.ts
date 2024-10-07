@@ -6,6 +6,7 @@ import { UserInfo } from '../../../domain/user/user-info.model';
 import { SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
 import { EventStartGuard } from './event-start.guard';
+import { AbstractAppConfig } from '../../../../app.config';
 
 describe('EventStartGuard', () => {
   const tasks: any[] = [
@@ -29,18 +30,21 @@ describe('EventStartGuard', () => {
   let service: jasmine.SpyObj<WorkAllocationService>;
   let router: jasmine.SpyObj<Router>;
   let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockAbstractConfig: jasmine.SpyObj<AbstractAppConfig>;
 
   beforeEach(() => {
     service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
     router = jasmine.createSpyObj('Router', ['navigate']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+    mockAbstractConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
 
     TestBed.configureTestingModule({
       providers: [
         EventStartGuard,
         { provide: WorkAllocationService, useValue: service },
         { provide: Router, useValue: router },
-        { provide: SessionStorageService, useValue: sessionStorageService }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: AbstractAppConfig, useValue: mockAbstractConfig }
       ]
     });
 
@@ -58,6 +62,26 @@ describe('EventStartGuard', () => {
     result$.subscribe(result => {
       expect(result).toEqual(false);
     });
+  });
+
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseInfo is not available', () => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in session storage for caseId`);
+  });
+
+  it('should log a message and not call getTasksByCaseIdAndEventId when caseId not matched with caseInfo caseId', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId123' }));
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
+    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseId caseId123 in caseInfo not matched with the route parameter caseId caseId`);
   });
 
   it('canActivate should navigate to event-start if task is required for event', () => {
@@ -159,7 +183,7 @@ describe('EventStartGuard', () => {
     it('should return true and store task if taskId is provided and task is found in payload', () => {
       const payload: TaskPayload = { task_required_for_event: false, tasks: tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
-      const result$ = guard['checkForTasks'](payload, 'caseId', 'eventId', 'taskId');
+      const result$ = guard['checkForTasks'](payload, 'caseId', 'eventId', 'taskId', 'userId');
       result$.subscribe(result => {
         expect(result).toBe(true);
       });
