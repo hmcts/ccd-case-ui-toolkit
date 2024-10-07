@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.66-unavailable-date-show-fields",
+  "version": "7.0.67-unavailable-date-show-fields",
   "engines": {
     "node": ">=18.19.0"
   },
