@@ -58,7 +58,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Send slack
         if: failure()
-        uses: sonots/slack-notice-action@v3
+        uses: sonots/slack-notice-action@v3.2.0
         with:
           status: ${{ job.status }}
         env:
