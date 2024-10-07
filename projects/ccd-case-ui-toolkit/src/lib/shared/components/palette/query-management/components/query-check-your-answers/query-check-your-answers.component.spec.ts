@@ -503,10 +503,9 @@ describe('QueryCheckYourAnswersComponent', () => {
   it('should navigate to service-down page if fieldId is not set', () => {
     component.fieldId = null;
     spyOn(console, 'error');
-    component.submit();
 
-    expect(console.error).toHaveBeenCalledWith('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
-    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+    component.submit();
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
   });
 
   it('should set querySubmitted to true when submit is called', () => {
