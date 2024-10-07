@@ -3407,7 +3407,7 @@ __metadata:
     marked: ^12.0.1
     mem: ^6.0.0
     merge-stream: ^1.0.0
-    minimist: 1.2.3
+    minimist: 1.2.8
     mocha: ^8.1.1
     moment: ^2.30.1
     moment-timezone: ^0.5.31
@@ -20252,7 +20252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.3":
+"minimist@npm:1.2.8":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
