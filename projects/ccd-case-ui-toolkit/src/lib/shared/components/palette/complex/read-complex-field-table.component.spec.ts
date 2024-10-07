@@ -254,6 +254,126 @@ describe('ReadComplexFieldTableComponent', () => {
 
       expect(compoundRowsValues[0].componentInstance.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
     });
+
+    it('should set the dummy path for child fields correctly', () => {
+      component.idPrefix = 'testString';
+      component.ngOnInit();
+      expect(component.path).toBe(ReadComplexFieldTableComponent.DUMMY_STRING_PRE + component.idPrefix + ReadComplexFieldTableComponent.DUMMY_STRING_POST);
+    });
+
+    it('should show child fields based on show conditions', () => {
+      component.caseField = (({
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [
+            {
+              id: 'unavailableDateType',
+              display_context: 'MANDATORY',
+              field_type: {
+                type: 'FixedRadioList'
+              }
+            },
+            {
+              id: 'date',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"SINGLE_DATE\"',
+              field_type: {
+                type: 'Date'
+              }
+            },
+            {
+              id: 'fromDate',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"DATE_RANGE\"',
+              field_type: {
+                type: 'Date'
+              }
+            },
+            {
+              id: 'toDate',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"DATE_RANGE\"',
+              field_type: {
+                type: 'Date'
+              }
+            }
+          ],
+          id: 'MediationUnavailableDate',
+          type: 'Complex',
+        },
+        hidden: false,
+        id: 0,
+        label: 'Unavailable dates 1',
+        value: {
+          unavailableDateType: 'DATE_RANGE',
+          date: null,
+          fromDate: '2025-01-01',
+          toDate: '2025-01-03'
+        }
+      }) as unknown as CaseField);
+      fixture.detectChanges();
+
+      const rangeValues = de.queryAll($COMPLEX_PANEL_ALL_VALUES);
+
+      // values will be date type, fromDate and toDate (date hidden)
+      expect(rangeValues.length).toEqual(3);
+
+      component.caseField = (({
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [
+            {
+              id: 'unavailableDateType',
+              display_context: 'MANDATORY',
+              field_type: {
+                type: 'FixedRadioList'
+              }
+            },
+            {
+              id: 'date',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"SINGLE_DATE\"',
+              field_type: {
+                type: 'Date'
+              }
+            },
+            {
+              id: 'fromDate',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"DATE_RANGE\"',
+              field_type: {
+                type: 'Date'
+              }
+            },
+            {
+              id: 'toDate',
+              display_context: 'MANDATORY',
+              show_condition: 'parent.unavailableDatesForMediation.unavailableDateType=\"DATE_RANGE\"',
+              field_type: {
+                type: 'Date'
+              }
+            }
+          ],
+          id: 'MediationUnavailableDate',
+          type: 'Complex',
+        },
+        hidden: false,
+        id: 0,
+        label: 'Unavailable dates 1',
+        value: {
+          unavailableDateType: 'SINGLE_DATE',
+          date: '2025-01-01',
+          fromDate: null,
+          toDate: null
+        }
+      }) as unknown as CaseField);
+      fixture.detectChanges();
+
+      const singleValues = de.queryAll($COMPLEX_PANEL_ALL_VALUES);
+
+      // values will be date type and date (fromDate and toDate hidden)
+      expect(singleValues.length).toEqual(2);
+    })
   });
 
   describe('when values as object in root field', () => {
