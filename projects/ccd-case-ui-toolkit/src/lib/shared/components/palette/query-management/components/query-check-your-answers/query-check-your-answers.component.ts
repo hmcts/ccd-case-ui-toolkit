@@ -223,6 +223,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public setCaseQueriesCollectionData(): void {
     if (this.eventData?.case_fields?.length) {
+
       // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
       // Counts number qmCaseQueriesCollections
       const numberOfCaseQueriesCollections = this.eventData?.case_fields?.filter(
