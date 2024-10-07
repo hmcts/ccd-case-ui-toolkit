@@ -128,7 +128,8 @@ describe('QueryCheckYourAnswersComponent', () => {
   const snapshotActivatedRoute = {
     snapshot: {
       params: {
-        qid: '1'
+        qid: '1',
+        dataid: 'id-007'
       },
       data: {
         case: {
@@ -486,6 +487,8 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should log an error and set errorMessages when fieldId is missing', () => {
     component.fieldId = null;
+    fixture.detectChanges();
+    component.ngOnInit();
     spyOn(console, 'error');
 
     component.submit();
@@ -508,17 +511,43 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
   });
 
+  it('should navigate to service-down page on error during submission', () => {
+    component.fieldId = 'someFieldId';
+    casesService.createEvent.and.returnValue(throwError('error'));
+
+    component.submit();
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
   it('should set querySubmitted to true when submit is called', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    component.fieldId = 'someFieldId';
+    component.eventData = { event_token: 'token' } as any;
 
-    component.eventData = eventData;
-    fixture.detectChanges();
-    component.ngOnInit();
+    casesService.createEvent.and.returnValue(of({}));
 
     spyOn(component.querySubmitted, 'emit');
     component.submit();
 
+    expect(casesService.createEvent).toHaveBeenCalled();
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should set fieldId to undefined when eventData is unavailable', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+
+    component.eventData = null;
+    fixture.detectChanges();
+    component.ngOnInit();
+    component.submit();
+
+    expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should call setCaseQueriesCollectionData on init', () => {
+    spyOn(component, 'setCaseQueriesCollectionData');
+    component.ngOnInit();
+    expect(component.setCaseQueriesCollectionData).toHaveBeenCalled();
   });
 
   describe('form validation', () => {
@@ -567,5 +596,98 @@ describe('QueryCheckYourAnswersComponent', () => {
       component.submit();
       expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
     });
+  });
+
+  it('should set caseQueriesCollections and fieldId correctly when case_fields are present', () => {
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }]
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }]
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.roleName = 'userRole';
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(component.fieldId).toBe('field1');
+  });
+
+  it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
+    component.eventData = null;
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections).toBeUndefined();
+    expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should set fieldId based on messageId when found', () => {
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'targetMessageId' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', create: true, read: true, update: true, delete: true }]
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.roleName = 'userRole';
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.fieldId).toBe('field1');
+  });
+
+  it('should initialize newQueryData correctly when fieldId is set', () => {
+    component.fieldId = 'someFieldId';
+    component.caseQueriesCollections = [
+      {
+        caseMessages: [{ value: { id: 'messageId1' } }]
+      }
+    ] as any;
+
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
+  });
+
+  it('should create a new query data structure when no existing collection matches', () => {
+    casesService.createEvent.and.returnValue(of({}));
+    component.fieldId = 'someFieldId';
+    component.caseQueriesCollections = [];
+
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
   });
 });
