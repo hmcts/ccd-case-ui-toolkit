@@ -18,7 +18,8 @@
         <div *ngSwitchCase="false">
           <a [routerLink]="['./', 'event', event.id, 'history']"
               [target]="'_blank'"
-              *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name | rpxTranslate}}</a>
+              *ngIf="event.state_id !== 'Draft' && !isUserExternal" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name | rpxTranslate}}</a>
+          <span *ngIf="isUserExternal" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name | rpxTranslate}}</span>
         </div>
       </ng-container>
       <span *ngIf="event.state_id === 'Draft'">{{event.event_name}}</span>
