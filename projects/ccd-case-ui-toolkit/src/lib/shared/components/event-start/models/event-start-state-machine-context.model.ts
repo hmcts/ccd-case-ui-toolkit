@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
+import { ReadCookieService, SessionStorageService } from '../../../services';
 
 export interface EventStartStateMachineContext {
   tasks: Task[];
@@ -10,4 +10,5 @@ export interface EventStartStateMachineContext {
   router: Router;
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService;
+  cookieService: ReadCookieService;
 }

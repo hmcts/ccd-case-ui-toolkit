@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../../services';
+import { ReadCookieService, SessionStorageService } from '../../../services';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
 import { EventStartStateMachineService } from './event-start-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
@@ -11,6 +11,7 @@ import createSpyObj = jasmine.createSpyObj;
 describe('EventStartStateMachineService', () => {
   let service: EventStartStateMachineService;
   let stateMachine: StateMachine;
+  let mockReadCookieService: any;
   let mockSessionStorageService: any;
   // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
@@ -109,6 +110,7 @@ describe('EventStartStateMachineService', () => {
   ];
 
   mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
+  mockReadCookieService = createSpyObj<ReadCookieService>('readCookieService', ['getCookie']);
   mockSessionStorageService.getItem.and.returnValue(`{"id": "test-user-id", "forename": "Test", "surname": "User",
     "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com", "token": null}`);
 
@@ -119,7 +121,8 @@ describe('EventStartStateMachineService', () => {
     taskId: '1122-3344-5566-7788',
     router: mockRouter,
     route: mockRoute,
-    sessionStorageService: mockSessionStorageService
+    sessionStorageService: mockSessionStorageService,
+    cookieService: mockReadCookieService
   };
 
   beforeEach(async () => {

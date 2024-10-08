@@ -406,59 +406,9 @@ export class CasesService {
   }
 
   private updateClientContextStorage(headers: HttpHeaders): void {
-    // for mocking - TODO: Kasi Remove/Uncomment for testing
-    // headers = this.setMockClientContextHeader(headers);
     if (headers && headers.get('Client-Context')) {
       const clientContextString = window.atob(headers.get('Client-Context'));
       this.sessionStorageService.setItem('clientContext', clientContextString);
     }
   }
-
-  // for mocking - TODO: Kasi Remove/Uncomment for testing
-  /* private setMockClientContextHeader(headers: HttpHeaders): HttpHeaders {
-    const mockClientContext = { client_context: {
-      user_task: {
-        task_data: {
-          // Replace with relevant task id to complete other/current task
-          id: "2c7e03cc-18e8-11ef-bfd0-763319b21cea",
-          // Can edit other details to check they update
-          name: "Review the appeal - Test mocked",
-          assignee: "dfd4c2d1-67b1-40f9-8680-c9551632f5d9",
-          type: "reviewTheAppeal",
-          task_state: "assigned",
-          task_system: "SELF",
-          security_classification: "PUBLIC",
-          task_title: "Review the appeal",
-          created_date: "2024-05-23T09:38:12+0000",
-          due_date: "2024-05-28T09:39:00+0000",
-          location_name: "Taylor House",
-          location: "765324",
-          execution_type: "Case Management Task",
-          jurisdiction: "IA",
-          region: "1",
-          case_type_id: "Asylum",
-          case_id: "1716456926502698",
-          case_category: "Protection",
-          case_name: "Aipp Check",
-          auto_assigned: false,
-          warnings: false,
-          warning_list: { values: [] },
-          case_management_category: "Protection",
-          work_type_id: "decision_making_work",
-          work_type_label: "Decision-making work",
-          permissions: { values : ["Read","Own","Manage","Execute","Cancel","Complete","Claim","Assign","Unassign"] },
-          description: "[Request respondent evidence](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/requestRespondentEvidence)",
-          role_category: "LEGAL_OPERATIONS",
-          minor_priority: 500,
-          major_priority: 5000,
-          priority_date: "2024-05-28T09:39:00+0000"
-        },
-        // determines whether task will be completed - sets default to true via EXUI
-        complete_task: true
-      }
-    }};
-    const encodedMockedClientContext = window.btoa(JSON.stringify(mockClientContext));
-    headers = headers.set('Client-Context', encodedMockedClientContext);
-    return headers;
-  } */
 }

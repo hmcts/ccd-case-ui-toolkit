@@ -5,6 +5,7 @@ export * from './auth';
 export * from './case-fields';
 export * from './case-file-view';
 export * from './case-flag';
+export * from './cookie';
 export * from './document-management';
 export * from './draft';
 export * from './error';
