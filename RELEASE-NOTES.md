@@ -1,6 +1,6 @@
 ## RELEASE NOTES 
 
-### Version 7.0.66-exui-2227-rc2
+### Version 7.0.67-exui-2227-rc1
 **EXUI-EXUI-2227** error-handling-specific-access-request
 
 ### Version 7.0.66
