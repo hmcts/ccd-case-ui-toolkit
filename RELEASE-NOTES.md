@@ -3,6 +3,11 @@
 ### Version 7.0.66-exui-2227-rc2
 **EXUI-EXUI-2227** error-handling-specific-access-request
 
+### Version 7.0.67
+**EXUI-2146** Case file view time is 1 hour behind
+**EXUI-2230** Case File View date/time as GMT rather than Local BST
+
+
 ### Version 7.0.66
 **EXUI-2148** Additional checks on task completion from session storage
 **EXUI-2057** A frozen screen is seen when attempting to complete a current task...
