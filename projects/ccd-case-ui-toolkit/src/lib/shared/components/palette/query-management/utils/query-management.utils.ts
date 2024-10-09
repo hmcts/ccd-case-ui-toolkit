@@ -34,8 +34,8 @@ export class QueryManagementUtils {
   }
 
   public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
-    const currentUserId = currentUserDetails?.uid;
-    const currentUserName = currentUserDetails?.name;
+    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id ;
+    const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const subject = formGroup.get('subject').value;
     const body = formGroup.get('body').value;
     const isHearingRelated = formGroup.get('isHearingRelated').value ? 'Yes' : 'No';
@@ -57,8 +57,8 @@ export class QueryManagementUtils {
   }
 
   public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
-    const currentUserId = currentUserDetails?.uid;
-    const currentUserName = currentUserDetails?.name;
+    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id ;
+    const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
     queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';

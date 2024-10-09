@@ -93,7 +93,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       this.errorMessages = [
         {
           title: 'Error',
-          description: 'Something unexpected happened. please try again later.',
+          description: 'This case is not configured for query management.',
           fieldId: 'field-id'
         }
       ];

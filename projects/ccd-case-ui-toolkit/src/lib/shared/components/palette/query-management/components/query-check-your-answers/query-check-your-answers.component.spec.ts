@@ -497,7 +497,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.errorMessages).toEqual([
       {
         title: 'Error',
-        description: 'Something unexpected happened. please try again later.',
+        description: 'This case is not configured for query management.',
         fieldId: 'field-id'
       }
     ]);
