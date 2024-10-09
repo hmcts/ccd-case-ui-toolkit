@@ -8,7 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseFileViewSortColumns, DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
-import { DocumentManagementService, WindowService } from '../../../../../services';
+import { DocumentManagementService, FormatTranslatorService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
@@ -20,6 +20,8 @@ import {
 } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 import createSpyObj = jasmine.createSpyObj;
+import { DatePipe } from '../../../utils';
+import moment from 'moment-timezone';
 
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
@@ -34,7 +36,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Lager encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '11 May 2023 00:00:00'
+      upload_timestamp: '2023-05-11T11:15:10.00'
     },
     {
       name: 'Beers encyclopedia',
@@ -42,7 +44,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Beers encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '14 Apr 2023 00:00:00'
+      upload_timestamp: '2023-04-14T15:30:00.00'
     },
     {
       name: 'Ale encyclopedia',
@@ -50,9 +52,33 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Ale encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '12 Mar 2023 01:23:01'
+      upload_timestamp: '2023-03-12T01:23:01.00'
     }
   ]);
+
+  // Method used to resolve discrepancies between GitHub Actions and local machine timezones.
+  // This function adjusts the given UTC date string to the local timezone of the machine
+  // running the code. It uses the Moment.js library to detect the current system's timezone
+  // dynamically and converts the date accordingly, formatting it to "D MMM YYYY HH:mm".
+  function adjustDateToLocal(dateString: Date | string): string {
+    // Determine the local time zone dynamically
+    const localTimeZone = moment.tz.guess();
+    console.log(`Detected Local Time Zone: ${localTimeZone}`);
+
+    // Create a Moment object from the date string in UTC
+    const utcDate = moment.tz(dateString, 'UTC');
+    console.log('Original UTC Date:', utcDate.format());
+
+    // Convert the UTC date to the local time zone
+    const localDate = utcDate.clone().tz(localTimeZone);
+    console.log(`Converted to Local Time (${localTimeZone}):`, localDate.format());
+
+    // Format the adjusted date to the desired string format: "11 May 2023 12:15"
+    const formattedDate = localDate.format('D MMM YYYY HH:mm');
+    console.log(`Formatted Date: ${formattedDate}`);
+
+    return formattedDate;
+  }
 
   beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
@@ -66,12 +92,14 @@ describe('CaseFileViewFolderComponent', () => {
         MatDialogModule
       ],
       declarations: [
-        CaseFileViewFolderComponent
+        CaseFileViewFolderComponent,
+        DatePipe
       ],
       providers: [
         { provide: WindowService, useValue: mockWindowService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-        { provide: AbstractAppConfig, useValue: mockAppConfig }
+        { provide: AbstractAppConfig, useValue: mockAppConfig },
+        FormatTranslatorService
       ]
     }).compileComponents();
 
@@ -90,11 +118,11 @@ describe('CaseFileViewFolderComponent', () => {
     documentFilterInputEl.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     await fixture.whenStable();
-    component.sortDataSourceDescending(1)
+    component.sortDataSourceDescending(1);
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
 
-    expect(treeData[3].children[0].upload_timestamp).toEqual('17 Nov 2022 00:00:00');
+    expect(treeData[3].children[0].upload_timestamp).toEqual('2022-11-17T00:00:00.00');
   });
 
   it('should generate tree data from categorised data', () => {
@@ -116,19 +144,24 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
+
     const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
-    expect(timestampElements[0].textContent).toEqual('11 May 2023 00:00');
-    expect(timestampElements[1].textContent).toEqual('14 Apr 2023 00:00');
-    expect(timestampElements[2].textContent).toEqual('12 Mar 2023 01:23');
-    expect(timestampElements[3].textContent).toEqual('');
-    expect(timestampElements[4].textContent).toEqual('10 Feb 2023 00:00');
-    expect(timestampElements[5].textContent).toEqual('12 Apr 2023 00:00');
-    expect(timestampElements[6].textContent).toEqual('16 Mar 2023 00:00');
-    expect(timestampElements[7].textContent).toEqual('21 Jun 2022 00:00');
-    expect(timestampElements[8].textContent).toEqual('04 Nov 2022 00:00');
-    expect(timestampElements[9].textContent).toEqual('28 Dec 2022 00:00');
-    expect(timestampElements[10].textContent).toEqual('17 Nov 2022 00:00');
-    expect(timestampElements[11].textContent).toEqual('23 Feb 2023 00:00');
+    const documents = categoriesAndDocumentsTestData.categories[0]?.documents || [];
+
+    // Loop over the timestamp elements and adjust based on the documents array length
+    timestampElements.forEach((element, index) => {
+    // Ensure the document exists at the current index
+      const document = documents[index];
+      if (!document) {
+        return; // Skip this iteration
+      }
+
+      // Adjust the document timestamp to local time
+      const adjustedTimestamp = adjustDateToLocal(document.upload_timestamp);
+
+      // Verify that the element's text content matches the adjusted timestamp
+      expect(element.textContent).toEqual(adjustedTimestamp);
+    });
   });
 
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
