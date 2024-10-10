@@ -7,6 +7,8 @@ import { ReadQueryManagementFieldComponent } from './read-query-management-field
 import { CaseField } from '../../../domain';
 import { FormGroup } from '@angular/forms';
 import { SessionStorageService } from '../../../services';
+import { CaseNotifier } from '../..';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'dummy-component',
@@ -27,6 +29,7 @@ describe('ReadQueryManagementFieldComponent', () => {
   const caseId = '12345';
   let route: ActivatedRoute;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+  const casesNotifier = jasmine.createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
 
   const componentLauncherId = 'ComponentLauncher';
   const componentLauncher1CaseField: CaseField = {
@@ -137,7 +140,6 @@ describe('ReadQueryManagementFieldComponent', () => {
     }
   } as unknown as FormGroup;
 
-  
   const USER = {
     roles: [
       'caseworker'
@@ -146,6 +148,8 @@ describe('ReadQueryManagementFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+    casesNotifier.fetchAndRefresh.and.returnValue(of({}));
+
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -164,7 +168,8 @@ describe('ReadQueryManagementFieldComponent', () => {
       ])],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseNotifier, useValue: casesNotifier }
       ]
     })
       .compileComponents();
