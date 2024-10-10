@@ -6,6 +6,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { SessionStorageService } from '../../../services';
+import { CaseNotifier } from '../../case-editor';
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html'
@@ -17,7 +18,8 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public caseId: string;
 
   constructor(private readonly route: ActivatedRoute,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private caseNotifier: CaseNotifier
   ) {
     super();
   }

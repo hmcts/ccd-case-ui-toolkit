@@ -7,6 +7,7 @@ import { ReadQueryManagementFieldComponent } from './read-query-management-field
 import { CaseField } from '../../../domain';
 import { FormGroup } from '@angular/forms';
 import { SessionStorageService } from '../../../services';
+import { CaseNotifier } from '../..';
 
 @Component({
   selector: 'dummy-component',
@@ -27,6 +28,7 @@ describe('ReadQueryManagementFieldComponent', () => {
   const caseId = '12345';
   let route: ActivatedRoute;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+  const casesNotifier = jasmine.createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
 
   const componentLauncherId = 'ComponentLauncher';
   const componentLauncher1CaseField: CaseField = {
@@ -164,7 +166,8 @@ describe('ReadQueryManagementFieldComponent', () => {
       ])],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseNotifier, useValue: casesNotifier }
       ]
     })
       .compileComponents();
