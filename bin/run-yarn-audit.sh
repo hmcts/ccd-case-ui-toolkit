@@ -32,7 +32,7 @@ if [[ -n "$diff_output" ]]; then
   echo "To ignore these vulnerabilities, run:"
   echo 'yarn npm audit --recursive --environment production --json > yarn-audit-known-issues'
   echo
-  echo "$diff_output"
+  echo "$diff_output" | grep -o '{.*}' | jq '.'
   
   exit 1
 else
