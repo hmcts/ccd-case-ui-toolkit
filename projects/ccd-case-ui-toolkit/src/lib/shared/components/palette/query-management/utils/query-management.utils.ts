@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Document, FormDocument, CaseField } from '../../../../domain';
 import { CaseMessage, QueryListItem } from '../models';
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
 @Injectable()
 export class QueryManagementUtils {
@@ -34,13 +35,13 @@ export class QueryManagementUtils {
   }
 
   public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
-    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id ;
+    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const subject = formGroup.get('subject').value;
     const body = formGroup.get('body').value;
     const isHearingRelated = formGroup.get('isHearingRelated').value ? 'Yes' : 'No';
-    const hearingDate = (isHearingRelated as string)
-      ? formGroup.get('hearingDate').value
+    const hearingDate = (isHearingRelated === 'Yes')
+      ? this.formattedDate(formGroup.get('hearingDate').value)
       : null;
     const attachments = formGroup.get('attachments').value;
     return {
@@ -57,7 +58,7 @@ export class QueryManagementUtils {
   }
 
   public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
-    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id ;
+    const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
@@ -83,5 +84,10 @@ export class QueryManagementUtils {
 
   public static isNonEmptyObject(elem: any): boolean {
     return this.isObject(elem) && Object.keys(elem).length !== 0;
+  }
+
+  private static formattedDate(date): string {
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+    return formattedDate;
   }
 }
