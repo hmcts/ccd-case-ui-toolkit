@@ -6,7 +6,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { SessionStorageService } from '../../../services';
-import { CaseNotifier } from '../../case-editor';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html'
@@ -19,7 +19,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
-    private caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier
   ) {
     super();
   }
@@ -33,20 +33,24 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // TODO: Actual implementation once the CCD API and data contract is available
       // Each parties will have a separate collection of party messages
       // Find whether queries tab is available in the case data
+      this.caseNotifier.fetchAndRefresh(this.caseId)
+        .subscribe({
+          next: (caseDetails) => {
+            if (this.route.snapshot.data.case?.tabs) {
+              this.caseQueriesCollections = (caseDetails.tabs as CaseTab[])
+                .filter((tab) => tab.fields?.some(
+                  (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === this.caseField.id))
+                [0].fields?.reduce((acc, caseField) => {
+                  const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
 
-      if (this.route.snapshot.data.case?.tabs) {
-        this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
-          .filter((tab) => tab.fields?.some(
-            (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === this.caseField.id))
-          [0].fields?.reduce((acc, caseField) => {
-            const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
-
-            if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
-              acc.push(extractedCaseQueriesFromCaseField);
+                  if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
+                    acc.push(extractedCaseQueriesFromCaseField);
+                  }
+                  return acc;
+                }, []);
             }
-            return acc;
-          }, []);
-      }
+          }
+        });
 
       // Loop through the list of parties and their case queries collections
       // QueryManagementUtils.extractCaseQueriesFromCaseField();

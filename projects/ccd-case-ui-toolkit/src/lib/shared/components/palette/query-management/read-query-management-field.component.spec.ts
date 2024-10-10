@@ -8,6 +8,7 @@ import { CaseField } from '../../../domain';
 import { FormGroup } from '@angular/forms';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'dummy-component',
@@ -139,7 +140,6 @@ describe('ReadQueryManagementFieldComponent', () => {
     }
   } as unknown as FormGroup;
 
-  
   const USER = {
     roles: [
       'caseworker'
@@ -148,6 +148,8 @@ describe('ReadQueryManagementFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+    casesNotifier.fetchAndRefresh.and.returnValue(of({}));
+
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
