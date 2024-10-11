@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.7-query-management-cqc-workaround",
+  "version": "7.1.8-query-management-cqc-workaround",
   "engines": {
     "node": ">=18.19.0"
   },
