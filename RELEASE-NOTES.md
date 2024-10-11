@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.0.67-exui-2354-rc1
+**EXUI-2354** Flakyness/slow login/Search issue
+
 ### Version 7.0.67
 **EXUI-2146** Case file view time is 1 hour behind
 **EXUI-2230** Case File View date/time as GMT rather than Local BST
