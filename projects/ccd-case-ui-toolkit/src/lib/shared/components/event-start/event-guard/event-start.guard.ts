@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { SessionStorageService } from '../../../services';
+import { ReadCookieService, SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
@@ -16,7 +16,8 @@ export class EventStartGuard implements CanActivate {
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly abstractConfig: AbstractAppConfig) {
+    private readonly abstractConfig: AbstractAppConfig,
+    private readonly cookieService: ReadCookieService) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -75,12 +76,16 @@ export class EventStartGuard implements CanActivate {
       } else {
         task = tasksAssignedToUser[0];
       }
+      const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
       // if one task assigned to user, allow user to complete event
       const storeClientContext = {
         client_context: {
           user_task: {
             task_data: task,
             complete_task: true
+          },
+          user_language: {
+            language: currentLanguage
           }
         }
       };
@@ -105,11 +110,15 @@ export class EventStartGuard implements CanActivate {
           taskId: task.id,
           createdTimestamp: Date.now()
         };
+        const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
         const storeClientContext = {
           client_context: {
             user_task: {
               task_data: task,
               complete_task: true
+            },
+            user_language: {
+              language: currentLanguage
             }
           }
         };
