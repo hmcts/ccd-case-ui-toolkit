@@ -5,7 +5,7 @@
         {{ 'Day' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-2" [id]="formControlName + '-day'"
-             [name]="formControlName + '-day'" type="text" inputmode="numeric"
+             [name]="formControlName + '-day'" type="text" inputmode="numeric" maxlength="2"
              [(ngModel)]="day" (input)="updateDate()" [disabled]="disabled">
     </div>
   </div>
@@ -15,7 +15,7 @@
         {{ 'Month' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-2" [id]="formControlName + '-month'"
-             [name]="formControlName + '-month'" type="text" inputmode="numeric"
+             [name]="formControlName + '-month'" type="text" inputmode="numeric" maxlength="2"
              [(ngModel)]="month" (input)="updateDate()" [disabled]="disabled">
     </div>
   </div>
@@ -25,7 +25,7 @@
         {{ 'Year' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="formControlName + '-year'"
-             [name]="formControlName + '-year'" type="text" inputmode="numeric"
+             [name]="formControlName + '-year'" type="text" inputmode="numeric" maxlength="4"
              [(ngModel)]="year" (input)="updateDate()" [disabled]="disabled">
     </div>
   </div>
