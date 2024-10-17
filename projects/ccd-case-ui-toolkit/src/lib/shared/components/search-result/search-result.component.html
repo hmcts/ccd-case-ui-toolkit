@@ -29,7 +29,7 @@
       <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
-          <label class="govuk-label govuk-checkboxes__label" for="select-all" aria-labelledby="select-all">
+          <label class="govuk-label govuk-checkboxes__label" for="select-all" [attr.aria-labelledby]="select-all">
           </label>
         </div>
       </th>
@@ -56,7 +56,7 @@
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" aria-labelledby="select-{{ result.case_id }}">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
             </label>
           </div>
         </td>
@@ -92,7 +92,7 @@
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" aria-labelledby="select-{{ result.case_id }}">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
             </label>
           </div>
         </td>
