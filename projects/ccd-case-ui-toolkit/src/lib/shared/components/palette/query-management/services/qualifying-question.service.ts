@@ -14,5 +14,10 @@ export class QualifyingQuestionService {
   public getQualifyingQuestionSelection(): QualifyingQuestion | null {
     return this.qualifyingQuestionSelection;
   }
+
+  // Clear the selected qualifying question (reset the selection)
+  public clearQualifyingQuestionSelection(): void {
+    this.qualifyingQuestionSelection = null;
+  }
 }
 
