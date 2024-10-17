@@ -33,7 +33,7 @@ export class QualifyingQuestionOptionsComponent implements OnInit {
   }
 
   public click(): void {
-    this.router.navigate(['cases', 'case-details', this.caseId], { fragment: 'Queries' });
+    this.router.navigate(['cases', 'case-details', this.caseId], { fragment: 'Query Management' });
   }
 
   public get displayError(): boolean {

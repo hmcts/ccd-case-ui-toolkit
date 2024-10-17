@@ -103,8 +103,7 @@
         </dd>
       </div>
     </dl>
-
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0" *ngIf="this.formGroup.get('attachments').value.length > 0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY ? 'Upload a file to the query' : 'Document attached' | rpxTranslate }}
