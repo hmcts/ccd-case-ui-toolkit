@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
-import { CaseField, Document, FieldType } from '../../../../../domain';
-import { QueryManagementUtils } from '../../utils/query-management.utils';
+import { CaseField, FieldType, FormDocument } from '../../../../../domain';
 
 @Component({
   selector: 'ccd-query-attachments-read',
@@ -9,11 +8,11 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
   encapsulation: ViewEncapsulation.None
 })
 export class QueryAttachmentsReadComponent implements OnChanges {
-  @Input() public attachments: Document[];
-  public mockCaseFieldWithAttachments: CaseField;
+  @Input() public attachments: FormDocument[];
+  public caseFieldWithAttachments: CaseField;
 
   public ngOnChanges(): void {
-    this.mockCaseFieldWithAttachments = Object.assign(new CaseField(), {
+    this.caseFieldWithAttachments = Object.assign(new CaseField(), {
       id: '',
       label: '',
       hint_text: '',
@@ -40,7 +39,6 @@ export class QueryAttachmentsReadComponent implements OnChanges {
       value: []
     });
 
-    this.mockCaseFieldWithAttachments.value = this.attachments ?
-      this.attachments.map(QueryManagementUtils.documentToCollectionFormDocument) : [];
+    this.caseFieldWithAttachments.value = this.attachments;
   }
 }

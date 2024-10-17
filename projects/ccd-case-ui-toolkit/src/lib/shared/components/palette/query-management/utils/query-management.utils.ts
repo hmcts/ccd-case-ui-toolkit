@@ -35,6 +35,8 @@ export class QueryManagementUtils {
   }
 
   public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
+    const attachments = formGroup.get('attachments').value;
+    const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const subject = formGroup.get('subject').value;
@@ -43,13 +45,12 @@ export class QueryManagementUtils {
     const hearingDate = (isHearingRelated === 'Yes')
       ? this.formattedDate(formGroup.get('hearingDate').value)
       : null;
-    const attachments = formGroup.get('attachments').value;
     return {
       id: uuidv4(),
       subject,
       name: currentUserName,
       body,
-      attachments,
+      attachments: formDocument,
       isHearingRelated,
       hearingDate,
       createdOn: new Date(),
@@ -62,6 +63,7 @@ export class QueryManagementUtils {
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
+    const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
     queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';
 
     return {
@@ -69,7 +71,7 @@ export class QueryManagementUtils {
       subject: queryItem.subject,
       name: currentUserName,
       body,
-      attachments,
+      attachments: formDocument,
       isHearingRelated: queryItem.isHearingRelated,
       hearingDate: queryItem.hearingDate,
       createdOn: new Date(),
