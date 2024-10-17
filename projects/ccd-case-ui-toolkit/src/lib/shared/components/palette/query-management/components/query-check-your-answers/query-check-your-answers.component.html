@@ -112,7 +112,7 @@
         <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
           <ccd-query-attachments-read
             *ngIf="this.formGroup.get('attachments').value"
-            [attachments]="this.formGroup.get('attachments').value"
+            [attachments]="attachments"
           >
           </ccd-query-attachments-read>
         </dd>
