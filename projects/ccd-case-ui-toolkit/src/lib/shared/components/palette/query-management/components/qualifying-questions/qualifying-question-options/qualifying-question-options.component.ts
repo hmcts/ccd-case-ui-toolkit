@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestion } from '../../../models';
+import { QualifyingQuestionService } from '../../../services';
 
 @Component({
   selector: 'ccd-qualifying-question-options',
@@ -17,11 +18,18 @@ export class QualifyingQuestionOptionsComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly router: Router) {
+    private readonly router: Router,
+    private readonly qualifyingQuestionService: QualifyingQuestionService) {
   }
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
+
+    // Check if there's already a selected qualifying question from the service
+    const savedSelection = this.qualifyingQuestionService.getQualifyingQuestionSelection();
+    if (savedSelection) {
+      this.qualifyingQuestionsControl.setValue(savedSelection);
+    }
   }
 
   public click(): void {
