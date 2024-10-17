@@ -122,7 +122,6 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import {
   QualifyingQuestionDetailComponent,
   QualifyingQuestionOptionsComponent,
-  QualifyingQuestionService,
   QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
@@ -135,6 +134,7 @@ import {
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent
 } from './query-management';
+import { QualifyingQuestionService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
