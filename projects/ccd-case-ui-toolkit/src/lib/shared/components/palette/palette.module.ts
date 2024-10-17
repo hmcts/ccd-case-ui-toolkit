@@ -122,6 +122,7 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import {
   QualifyingQuestionDetailComponent,
   QualifyingQuestionOptionsComponent,
+  QualifyingQuestionService,
   QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
@@ -347,6 +348,7 @@ const PALETTE_COMPONENTS = [
     WindowService,
     CommonDataService,
     LinkedCasesService,
+    QualifyingQuestionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

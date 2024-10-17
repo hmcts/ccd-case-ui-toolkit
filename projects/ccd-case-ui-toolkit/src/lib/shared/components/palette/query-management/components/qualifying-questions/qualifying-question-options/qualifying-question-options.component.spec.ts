@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
+import { QualifyingQuestionService } from '../../../services';
 
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
@@ -23,6 +24,8 @@ describe('QualifyingQuestionOptionsComponent', () => {
     }
   };
 
+  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['getQualifyingQuestionSelection']);
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -32,7 +35,8 @@ describe('QualifyingQuestionOptionsComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        { provide: QualifyingQuestionService, useValue: qualifyingQuestionService }
       ]
     })
       .compileComponents();
