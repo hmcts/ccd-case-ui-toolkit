@@ -378,6 +378,14 @@ describe('QueryCheckYourAnswersComponent', () => {
     }
   };
 
+  const mockAttachment = {
+    originalDocumentName: 'blank.docx',
+    _links: {
+      binary: { href: 'http://dm-store-aat.service.core-compute-aat.inter…ments/718288ed-517f-4348-b27d-3cbabf2aaff0/binary' },
+      self: { href: 'http://dm-store-aat.service.core-compute-aat.internal/documents/718288ed-517f-4348-b27d-3cbabf2aaff0' }
+    }
+  };
+
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
@@ -416,7 +424,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      attachments: new FormControl([])
+      attachments: new FormControl([mockAttachment])
     });
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
