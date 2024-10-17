@@ -29,7 +29,7 @@
       <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
-          <label class="govuk-label govuk-checkboxes__label" for="select-all" [attr.aria-labelledby]="select-all">
+          <label class="govuk-label govuk-checkboxes__label" for="select-all" [attr.aria-labelledby]="'select-all'">
           </label>
         </div>
       </th>
