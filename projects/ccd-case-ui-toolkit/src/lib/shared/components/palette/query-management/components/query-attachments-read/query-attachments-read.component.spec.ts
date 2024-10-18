@@ -37,24 +37,6 @@ describe('QueryAttachmentsReadComponent', () => {
         document_filename: 'another-test-file.txt'
       }
     ];
-    // const formDocuments: { id: string; value: FormDocument }[] = [
-    //   {
-    //     id: null,
-    //     value: {
-    //       document_filename: 'test.txt',
-    //       document_url: 'http://localhost:3451/documents/123',
-    //       document_binary_url: 'http://localhost:3451/documents/123/binary'
-    //     }
-    //   },
-    //   {
-    //     id: null,
-    //     value: {
-    //       document_filename: 'another-test-file.txt',
-    //       document_url: 'http://localhost:3451/documents/another-test-file',
-    //       document_binary_url: 'http://localhost:3451/documents/another-test-file/binary'
-    //     }
-    //   }
-    // ];
 
     component.ngOnChanges();
     expect(component.caseFieldWithAttachments.value).toEqual(component.attachments);
