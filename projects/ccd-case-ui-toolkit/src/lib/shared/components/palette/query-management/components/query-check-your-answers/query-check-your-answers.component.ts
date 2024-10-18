@@ -16,6 +16,7 @@ import { EventCompletionParams } from '../../../../case-editor/domain/event-comp
 import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
+import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -46,6 +47,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public eventCompletionParams: EventCompletionParams;
   public caseQueriesCollections: CaseQueriesCollection[];
   public fieldId: string;
+  public attachments: FormDocument[];
 
   public errorMessages: ErrorMessage[] = [];
 
@@ -73,6 +75,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           : trigger.id === this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID
       );
     });
+
+    // Get the document attachments
+    this.getDocumentAttachments();
 
     this.setCaseQueriesCollectionData();
   }
@@ -223,7 +228,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public setCaseQueriesCollectionData(): void {
     if (this.eventData?.case_fields?.length) {
-
       // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
       // Counts number qmCaseQueriesCollections
       const numberOfCaseQueriesCollections = this.eventData?.case_fields?.filter(
@@ -252,7 +256,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     // Check if the field_type matches CaseQueriesCollection and type is Complex
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
       if (this.queryCreateContext === QueryCreateContext.NEW_QUERY) {
-
         //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
         if (count > 1) {
           const matchingRole = acls?.find((acl) => acl.role === this.roleName);
@@ -274,6 +277,14 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           this.fieldId = id;
         }
       }
+    }
+  }
+
+  private getDocumentAttachments(): void {
+    const attachmentsValue = this.formGroup.get('attachments').value;
+    if (attachmentsValue && attachmentsValue.length > 0) {
+      const documents = attachmentsValue;
+      this.attachments = documents.map(QueryManagementUtils.documentToCollectionFormDocument);
     }
   }
 }
