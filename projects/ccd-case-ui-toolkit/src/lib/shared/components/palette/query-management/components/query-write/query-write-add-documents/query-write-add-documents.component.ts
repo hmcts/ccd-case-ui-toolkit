@@ -20,7 +20,7 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
   public mockDocumentCaseField: CaseField;
   private documentFormControlSubscription: Subscription;
 
-  @Output() public documentCollectionUpdate =  new EventEmitter<FormDocument[]>();
+  @Output() public documentCollectionUpdate = new EventEmitter<FormDocument[]>();
 
   public ngOnInit(): void {
     // This field is mocked to allow the document component to be used in isolation
@@ -46,9 +46,9 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null,
+          collection_field_type: null
         })
-      }),
+      })
     });
 
     this.mockDocumentCaseField.value = this.formGroup.get('attachments')?.value
@@ -60,11 +60,11 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
     if (documentFormControl) {
       this.documentFormControlSubscription = (documentFormControl.valueChanges as Observable<{ id: string, value: FormDocument}[]>)
         .pipe(
-          map(documents => (
+          map((documents) => (
             documents.filter((document) => !!document?.value?.document_url))
           ),
-          map(documents => documents.map(document => document?.value)),
-          tap(documents => this.documentCollectionUpdate.emit(documents)),
+          map((documents) => documents.map((document) => document?.value)),
+          tap((documents) => this.documentCollectionUpdate.emit(documents)),
         )
         .subscribe();
     }

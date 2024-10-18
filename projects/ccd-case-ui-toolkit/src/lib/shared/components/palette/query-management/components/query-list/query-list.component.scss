@@ -16,6 +16,24 @@
       width: 33%;
     }
   }
+
+  &__table {
+    border: 1px solid #b1b4b6;
+    border-top: none;
+  }
+
+  &__caption {
+    background-color: #dee0e2;
+    border: 1px solid #b1b4b6;
+    border-bottom: none;
+    font-weight: 700;
+    margin-bottom: 0;
+    padding: 10px;
+  }
+
+  &__caption {
+    font-size: 18px;
+  }
 }
 
 [aria-sort] button,

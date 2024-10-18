@@ -596,7 +596,6 @@ let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
-
 describe('CaseFullAccessViewComponent', () => {
   let caseViewData: CaseView;
   let FIELDS: CaseField[];

@@ -1,7 +1,7 @@
 import { RoleCategory } from '../case-view';
 
 export interface UserInfo {
-  uid?: string ;
+  uid?: string;
   id: string;
   forename: string;
   surname: string;
