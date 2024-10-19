@@ -31,7 +31,7 @@
       </ng-template>
     </h1>
     <div class="govuk-!-margin-bottom-4">
-      <ccd-query-case-details-header></ccd-query-case-details-header>
+      <ccd-query-case-details-header [caseDetails]="caseDetails"></ccd-query-case-details-header>
     </div>
 
     <dl *ngIf="queryCreateContext !== queryCreateContextEnum.FOLLOWUP" class="govuk-summary-list govuk-!-margin-bottom-0">
@@ -130,7 +130,7 @@
         (click)="goBack()">
         {{ 'Previous' | rpxTranslate }}
       </button>
-      <button class="govuk-button" data-module="govuk-button" (click)="submit()">
+      <button class="govuk-button" data-module="govuk-button" type="submit" (click)="submit()">
         {{ 'Submit' | rpxTranslate }}
       </button>
     </div>

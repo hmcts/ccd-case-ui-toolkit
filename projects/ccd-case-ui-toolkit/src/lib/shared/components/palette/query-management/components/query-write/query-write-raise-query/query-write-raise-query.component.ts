@@ -8,6 +8,7 @@ import { RaiseQueryErrorMessage } from '../../../enums';
 export class QueryWriteRaiseQueryComponent {
   @Input() public formGroup: FormGroup;
   @Input() public submitted: boolean;
+  @Input() public caseDetails;
 
   public raiseQueryErrorMessage = RaiseQueryErrorMessage;
 }
