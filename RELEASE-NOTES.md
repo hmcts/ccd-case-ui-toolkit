@@ -1,6 +1,6 @@
 ## RELEASE NOTES 
 
-### Version 7.0.67-exui-2354-rc1
+### Version 7.0.68
 **EXUI-2354** Flakyness/slow login/Search issue
 
 ### Version 7.0.67
