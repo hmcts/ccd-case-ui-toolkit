@@ -72,7 +72,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.complete();
-      this.subscription.unsubscribe();
     }
     this.activityPollingService.stopPolling();
   }
