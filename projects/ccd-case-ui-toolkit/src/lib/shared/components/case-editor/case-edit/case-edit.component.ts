@@ -115,7 +115,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
     this.checkPageRefresh();
-    /* istanbul ignore else */
 
     this.form = this.fb.group({
       data: new FormGroup({}),
