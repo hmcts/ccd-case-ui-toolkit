@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewTrigger } from '../../domain';
 import { OrderService } from '../../services';
 import { attr, text } from '../../test/helpers';
@@ -29,6 +30,12 @@ describe('EventTriggerComponent', () => {
       name: 'Create a bundle',
       description: 'Create a bundle',
       order: 3
+    },
+    {
+      id: 'queryManagementRespondQuery',
+      name: 'QueryManagementRespondQuery',
+      description: 'Query Management Respond to a query',
+      order: 4
     }
   ];
 
@@ -52,7 +59,7 @@ describe('EventTriggerComponent', () => {
   const $EVENT_TRIGGER_FORM = By.css('.event-trigger');
 
   let orderService: any;
-
+  let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let fixture: ComponentFixture<EventTriggerComponent>;
   let component: EventTriggerComponent;
   let de: DebugElement;
@@ -61,6 +68,8 @@ describe('EventTriggerComponent', () => {
     beforeEach(waitForAsync(() => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue(SORTED_TRIGGERS);
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      appConfig.getEventsToHide.and.returnValue(['']);
 
       TestBed
         .configureTestingModule({
@@ -72,7 +81,8 @@ describe('EventTriggerComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: OrderService, useValue: orderService}
+            {provide: OrderService, useValue: orderService},
+            {provide: AbstractAppConfig, useValue: appConfig}
           ]
         })
         .compileComponents();
@@ -106,7 +116,7 @@ describe('EventTriggerComponent', () => {
     it('should render a <select> with an <option> for every trigger', () => {
       const options = de.queryAll($SELECT_OPTIONS);
 
-      expect(options.length).toBe(3);
+      expect(options.length).toBe(4);
 
       TRIGGERS.forEach(trigger => {
         const optionDe = options.find(option => text(option) === trigger.name);
@@ -222,6 +232,8 @@ describe('EventTriggerComponent', () => {
     beforeEach(waitForAsync(() => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue([ TRIGGERS[0] ]);
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
 
       TestBed
         .configureTestingModule({
@@ -233,7 +245,8 @@ describe('EventTriggerComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: OrderService, useValue: orderService}
+            {provide: OrderService, useValue: orderService},
+            {provide: AbstractAppConfig, useValue: appConfig}
           ]
         })
         .compileComponents();
@@ -259,6 +272,56 @@ describe('EventTriggerComponent', () => {
         trigger: TRIGGERS[0]
       });
       expect(component.triggerForm.valid).toBeTruthy();
+    });
+  });
+
+  describe('Hide events', () => {
+    beforeEach(waitForAsync(() => {
+      orderService = createSpyObj<OrderService>('orderService', ['sort']);
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule
+        ],
+        declarations: [
+          EventTriggerComponent,
+          MockRpxTranslatePipe
+        ],
+        providers: [
+          {provide: OrderService, useValue: orderService},
+          {provide: AbstractAppConfig, useValue: appConfig}
+        ]
+      })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(EventTriggerComponent);
+      component = fixture.componentInstance;
+      component.triggerForm = new FormGroup({
+        trigger: new FormControl('')
+      });
+      component.triggers = TRIGGERS;
+      fixture.detectChanges();
+    }));
+
+    it('should hide the respond to query event from the dropdown', () => {
+      orderService.sort.and.returnValue([TRIGGERS[0], TRIGGERS[1]]);
+      appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      const triggerIds = component.triggers.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(false);
+      expect(component.triggers.length).toEqual(2);
+    });
+
+    it('should show the respond to query event from the dropdown', () => {
+      orderService.sort.and.returnValue(TRIGGERS);
+      appConfig.getEventsToHide.and.returnValue(['']);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      const triggerIds = component.triggers.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
+      expect(component.triggers.length).toEqual(4);
     });
   });
 });

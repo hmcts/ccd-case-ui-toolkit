@@ -28,3 +28,7 @@ export interface CaseQueriesCollection {
   roleOnCase: string;
   caseMessages: QueryMessage[];
 }
+
+export interface QmCaseQueriesCollection {
+  [key: string]: CaseQueriesCollection; // Allows dynamic key names: CaseQueriesCollection
+}

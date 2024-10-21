@@ -4,10 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
+import { CaseField } from '../../../domain';
+import { FormGroup } from '@angular/forms';
+import { SessionStorageService } from '../../../services';
+import { CaseNotifier } from '../..';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'dummy-component',
-  template: ``
+  template: ''
 })
 class DummyComponent { }
 
@@ -22,6 +27,19 @@ describe('ReadQueryManagementFieldComponent', () => {
   let component: ReadQueryManagementFieldComponent;
   let fixture: ComponentFixture<ReadQueryManagementFieldComponent>;
   const caseId = '12345';
+  let route: ActivatedRoute;
+  const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+  const casesNotifier = jasmine.createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
+
+  const componentLauncherId = 'ComponentLauncher';
+  const componentLauncher1CaseField: CaseField = {
+    id: 'QueryManagement1',
+    field_type: {
+      id: componentLauncherId,
+      type: componentLauncherId
+    }
+  } as CaseField;
+
   const mockRoute = {
     snapshot: {
       params: {
@@ -31,24 +49,107 @@ describe('ReadQueryManagementFieldComponent', () => {
         case: {
           tabs: [
             {
-              id: 'Data',
-              fields: []
+              fields: [],
+              id: 'QueryManagement2',
+              label: 'Queries (writeable view)',
+              order: 8,
+              show_condition: null
             },
             {
-              id: 'History',
-              fields: []
-            },
-            {
-              id: 'QueryManagement',
+              fields: [
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'ComponentLauncher',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'ComponentLauncher'
+                  },
+                  id: 'QueryManagement1',
+                  label: 'Query management component'
+                },
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'CaseQueriesCollection',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'Complex'
+                  },
+                  id: 'qmCaseQueriesCollection',
+                  label: 'Query management case queries collection',
+                  value: {
+                    caseMessages: [{
+                      id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+                      value: {
+                        attachments: [],
+                        body: 'testing by olu',
+                        createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+                        createdOn: '2024-08-27T15:44:50.700Z',
+                        hearingDate: '2023-01-10',
+                        id: null,
+                        isHearingRelated: 'Yes',
+                        name: 'Piran Sam',
+                        parentId: 'ca',
+                        subject: 'Review attached document'
+                      }
+                    }],
+                    partyName: '',
+                    roleOnCase: ''
+                  }
+                }
+
+              ],
+              id: 'QueryManagement1',
+              label: 'Queries (read-only view)',
+              order: 7,
+              show_condition: null
             }
           ]
         }
+
       }
     }
   };
   let router: Router;
 
+  const formGroup = {
+    controls: {
+      ['QueryManagement1']: {
+        controls: {
+          partyName: null,
+          roleOnCase: null
+        },
+        caseField: {
+          id: 'QueryManagement1',
+          field_type: {
+            id: 'ComponentLauncher',
+            type: 'Complex'
+          }
+        }
+      }
+    },
+    get: (controlName: string) => {
+      return formGroup.controls[controlName];
+    }
+  } as unknown as FormGroup;
+
+  const USER = {
+    roles: [
+      'caseworker'
+    ]
+  };
+
   beforeEach(waitForAsync(() => {
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+    casesNotifier.fetchAndRefresh.and.returnValue(of({}));
+
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -57,25 +158,30 @@ describe('ReadQueryManagementFieldComponent', () => {
       ],
       imports: [RouterTestingModule.withRoutes([
         {
-          path: ``,
+          path: '',
           component: DummyComponent
         },
         {
-          path: `query-management/query/${caseId}/4`,
+          path: `query-management/query/${caseId}/4/:dataid`,
           component: DummyComponent
-        },
+        }
       ])],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseNotifier, useValue: casesNotifier }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadQueryManagementFieldComponent);
     component = fixture.componentInstance;
+    component.caseField = componentLauncher1CaseField;
+    component.formGroup = formGroup;
     router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   });
 
@@ -93,6 +199,12 @@ describe('ReadQueryManagementFieldComponent', () => {
     expect(component.query).toEqual(new QueryListItem());
   });
 
+  it('should show query list page when back link is clicked', () => {
+    component.backToQueryListPage();
+    expect(component.showQueryList).toEqual(true);
+    expect(component.query).toBeNull();
+  });
+
   describe('query is set', () => {
     beforeEach(() => {
       component.setQuery(new QueryListItem());
@@ -101,6 +213,8 @@ describe('ReadQueryManagementFieldComponent', () => {
 
     describe('follow-up button', () => {
       it('should not display if query has no children', () => {
+        USER.roles.push('pui-case-manager');
+        mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
         component.query.children = [];
         fixture.detectChanges();
         const followUpButton = fixture.nativeElement.querySelector('#ask-follow-up-question');
@@ -109,13 +223,31 @@ describe('ReadQueryManagementFieldComponent', () => {
 
       it('should display and navigate to query details page on click', fakeAsync(() => {
         component.query.children = [new QueryListItem()];
+        component.query.id = 'id-007';
         fixture.detectChanges();
         spyOn(router, 'navigate');
         const followUpButton = fixture.nativeElement.querySelector('#ask-follow-up-question');
         followUpButton.click();
         tick();
-        expect(router.url).toBe(`/query-management/query/${caseId}/4`);
+        expect(router.url).toBe(`/query-management/query/${caseId}/4/id-007`);
       }));
+    });
+  });
+
+  describe('isCaseworker', () => {
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('pui-case-manager');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
+      USER.roles.pop();
+    });
+
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('Civil-Judge');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
     });
   });
 });

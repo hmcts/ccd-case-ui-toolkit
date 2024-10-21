@@ -1,5 +1,22 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
+    <!-- Error message summary -->
+    <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
+      aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+      data-module="govuk-error-summary">
+     <h2 class="govuk-error-summary__title" id="error-summary-title">
+       {{ 'There is a problem' | rpxTranslate }}
+     </h2>
+     <div class="govuk-error-summary__body">
+       <ul class="govuk-list govuk-error-summary__list">
+         <li *ngFor="let errorMessage of errorMessages">
+           <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
+             class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
+         </li>
+       </ul>
+     </div>
+   </div>
+
     <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
       <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
     </ng-container>
@@ -14,7 +31,7 @@
       </ng-template>
     </h1>
     <div class="govuk-!-margin-bottom-4">
-      <ccd-query-case-details-header></ccd-query-case-details-header>
+      <ccd-query-case-details-header [caseDetails]="caseDetails"></ccd-query-case-details-header>
     </div>
 
     <dl *ngIf="queryCreateContext !== queryCreateContextEnum.FOLLOWUP" class="govuk-summary-list govuk-!-margin-bottom-0">
@@ -86,8 +103,7 @@
         </dd>
       </div>
     </dl>
-
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0" *ngIf="this.formGroup.get('attachments').value.length > 0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY ? 'Upload a file to the query' : 'Document attached' | rpxTranslate }}
@@ -95,7 +111,7 @@
         <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
           <ccd-query-attachments-read
             *ngIf="this.formGroup.get('attachments').value"
-            [attachments]="this.formGroup.get('attachments').value"
+            [attachments]="attachments"
           >
           </ccd-query-attachments-read>
         </dd>
@@ -114,7 +130,7 @@
         (click)="goBack()">
         {{ 'Previous' | rpxTranslate }}
       </button>
-      <button class="govuk-button" data-module="govuk-button" (click)="submit()">
+      <button class="govuk-button" data-module="govuk-button" type="submit" (click)="submit()">
         {{ 'Submit' | rpxTranslate }}
       </button>
     </div>

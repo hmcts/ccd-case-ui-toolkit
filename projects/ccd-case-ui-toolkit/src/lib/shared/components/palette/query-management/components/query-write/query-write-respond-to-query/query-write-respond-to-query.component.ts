@@ -19,12 +19,15 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
   public caseId: string;
-
+  public caseDetails;
+  
   constructor(private readonly caseNotifier: CaseNotifier) { }
 
   public ngOnInit(): void {
     this.caseNotifier.caseView.pipe(take(1)).subscribe(caseDetails => {
       this.caseId = caseDetails.case_id;
+
+      this.caseDetails = caseDetails;
     });
   }
 }

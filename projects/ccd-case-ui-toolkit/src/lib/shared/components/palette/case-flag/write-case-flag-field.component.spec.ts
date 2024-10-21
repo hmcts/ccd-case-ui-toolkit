@@ -965,6 +965,18 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.proceedToNextState).not.toHaveBeenCalled();
   });
 
+  it('should move to the final review stage if no validation errors and current state is FLAG_UPDATE_WELSH_TRANSLATION', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION,
+      errorMessages: []
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
   it('should proceed to next state if no validation errors, state not FLAG_STATUS or FLAG_UPDATE, and non-parent flag type', () => {
     const caseFlagState: CaseFlagState = {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
