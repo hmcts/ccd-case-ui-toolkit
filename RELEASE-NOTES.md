@@ -1,6 +1,6 @@
 ## RELEASE NOTES 
 
-### Version 7.0.68
+### Version 7.0.69
 **EXUI-2354** Flakyness/slow login/Search issue
 
 ### Version 7.0.67
