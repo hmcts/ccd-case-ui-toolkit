@@ -38,7 +38,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Output() public querySubmitted = new EventEmitter<boolean>();
 
   private caseViewTrigger: CaseViewTrigger;
-  private caseDetails: CaseView;
+  public caseDetails: CaseView;
   private queryId: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
