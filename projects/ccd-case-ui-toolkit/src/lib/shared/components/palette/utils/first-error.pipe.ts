@@ -35,7 +35,7 @@ export class FirstErrorPipe implements PipeTransform, OnDestroy {
 
     let errorMessage: string;
     if (keys[0] === 'required') {
-      errorMessage = '%FIELDLABEL% is required';
+      errorMessage = '%FIELDLABEL% previous'; //For weslh translation testing purpose;
     } else if (keys[0] === 'pattern') {
       errorMessage = 'The data entered is not valid for %FIELDLABEL%';
     } else if (keys[0] === 'markDownPattern') {
