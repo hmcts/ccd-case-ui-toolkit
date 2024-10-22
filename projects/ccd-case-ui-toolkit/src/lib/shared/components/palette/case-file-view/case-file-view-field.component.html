@@ -1,11 +1,11 @@
 <ng-container *ngIf="errorMessages?.length">
   <div
     id="case-file-view-field-errors"
-    class="govuk-error-summary govuk-!-margin-bottom-4" data-module="govuk-error-summary">
+    class="govuk-error-summary govuk-!-margin-bottom-4"
+    data-module="govuk-error-summary"
+  >
     <div role="alert">
-      <h2 class="govuk-error-summary__title">
-        There is a problem
-      </h2>
+      <h2 class="govuk-error-summary__title">There is a problem</h2>
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngFor="let errorMessage of errorMessages">
@@ -17,7 +17,10 @@
   </div>
 </ng-container>
 
-<div *ngIf="getCategoriesAndDocumentsError" class="govuk-grid-column-two-thirds">
+<div
+  *ngIf="getCategoriesAndDocumentsError"
+  class="govuk-grid-column-two-thirds"
+>
   <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
   <p class="govuk-body">Try again later.</p>
 </div>
@@ -39,15 +42,18 @@
     <!-- Media viewer -->
     <div class="media-viewer-container">
       <ng-container *ngIf="currentDocument">
-        <mv-media-viewer [url]="currentDocument.document_binary_url"
-                         [downloadFileName]="currentDocument.document_filename"
-                         [showToolbar]="true"
-                         [contentType]="currentDocument.content_type"
-                         [enableAnnotations]="true"
-                         [enableRedactions]="true"
-                         [height]="'94.5vh'"
-                         [caseId]="caseId"
-                         [enableICP]="isIcpEnabled()">
+        <mv-media-viewer
+          [url]="currentDocument.document_binary_url"
+          [downloadFileName]="currentDocument.document_filename"
+          [showToolbar]="true"
+          [contentType]="currentDocument.content_type"
+          [enableAnnotations]="true"
+          [enableRedactions]="true"
+          [height]="'94.5vh'"
+          [caseId]="caseId"
+          [multimediaPlayerEnabled]="true"
+          [enableICP]="isIcpEnabled()"
+        >
         </mv-media-viewer>
       </ng-container>
     </div>
