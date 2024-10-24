@@ -124,7 +124,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       } else {
         cond = ShowCondition.getInstance(field.show_condition);
       }
-      field.hidden = !cond.match(formValue, path);
+      if (path) {
+        // EXUI-2460 - evaluate with and without path to ensure validity
+        field.hidden = !cond.match(formValue, path) ? !cond.match(formValue) : false;
+      } else {
+        // if no path there is no need to evaluate twice
+        field.hidden = !cond.match(formValue);
+      }
     } else {
       field.hidden = false;
     }
