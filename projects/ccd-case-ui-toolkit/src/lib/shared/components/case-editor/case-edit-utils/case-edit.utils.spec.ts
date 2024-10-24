@@ -2,7 +2,7 @@ import { CaseEditUtils, editNonASCIICharacter } from "./case-edit.utils";
 
 describe('CaseEditUtils', () => {
   const caseUtils: CaseEditUtils = new CaseEditUtils();
-  const LONG_ASCII_STRING = 'abcdefghijklmnopqrstuvwxyz1234567890!@£$%^&*()-=[];\,./`<>?:"|{}_+';
+  const LONG_ASCII_STRING = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@£$%^&*()-=[];\,./`<>?:"|{}_+';
   const LONG_PRE_STRING: string = 'Examples of non-ASCII characters: éこ¥🌍';
   const LONG_POST_STRING: string = 'Examples of non-ASCII characters: &#{233}&;&#{12371}&;&#{165}&;&#{55356}&;&#{57101}&;';
 
