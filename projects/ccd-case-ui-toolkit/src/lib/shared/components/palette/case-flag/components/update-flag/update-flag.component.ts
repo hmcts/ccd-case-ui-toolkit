@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import {
   CaseFlagDisplayContextParameter,
@@ -12,12 +12,14 @@ import {
   UpdateFlagErrorMessage,
   UpdateFlagStep
 } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from "../../../../../services";
 
 @Component({
   selector: 'ccd-update-flag',
   templateUrl: './update-flag.component.html'
 })
-export class UpdateFlagComponent implements OnInit {
+export class UpdateFlagComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
   @Input() public displayContextParameter: string;
 
@@ -46,7 +48,12 @@ export class UpdateFlagComponent implements OnInit {
     return this.selectedFlag.flagDetailDisplay.visibility?.toLowerCase() === 'external';
   }
 
-  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
+  constructor(
+    private readonly rpxTranslationService: RpxTranslationService, 
+    multipageComponentStateService: MultipageComponentStateService
+  ) {
+    super(multipageComponentStateService);
+   }
 
   public ngOnInit(): void {
     // Set whether this is an external, internal, or internal Case Flags v2.1 enabled user update
@@ -205,6 +212,14 @@ export class UpdateFlagComponent implements OnInit {
         description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
         fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
       });
+    }
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
     }
   }
 }

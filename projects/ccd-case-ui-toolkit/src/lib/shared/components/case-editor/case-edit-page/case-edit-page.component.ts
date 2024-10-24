@@ -9,7 +9,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { AddressesService, LoadingService } from '../../../services';
+import { AddressesService, LoadingService, MultipageComponentStateService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -22,13 +22,16 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { JourneyInstigator } from '../../../domain/journey';
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
   styleUrls: ['./case-edit-page.scss']
 })
-export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy, JourneyInstigator {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
@@ -85,8 +88,39 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly caseEditDataService: CaseEditDataService,
     private readonly loadingService: LoadingService,
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
-    private readonly addressService: AddressesService
+    private readonly multipageComponentStateService: MultipageComponentStateService,
+    private readonly addressService: AddressesService,
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
+    this.multipageComponentStateService.setInstigator(this);
+  }
+
+  public onFinalNext(): void {
+    this.submit();
+  }
+
+  public onFinalPrevious(): void {
+    this.cancel();
+  }
+
+  public isAtStart(): boolean {
+    const pageNumberToUse = this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage !== undefined ? this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage : this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState;
+    return pageNumberToUse === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
+  }
+
+  public isAtEnd(): boolean {
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyEndPageNumber;
+  }
+
+  // This method will be triggered by the next button in the app component
+  public nextStep(): void {
+    this.multipageComponentStateService.next();
+  }
+
+  // This method will be triggered by the previous button in the app component
+  public previousStep(): void {
+    this.multipageComponentStateService.previous();
   }
 
   public ngOnInit(): void {
@@ -148,6 +182,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.dialogRefAfterClosedSub?.unsubscribe();
     this.saveDraftSub?.unsubscribe();
     this.caseFormValidationErrorsSub?.unsubscribe();
+    this.multipageComponentStateService.reset();
   }
 
   public applyValuesChanged(valuesChanged: boolean): void {
@@ -175,11 +210,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    */
   public toPreviousPage(): void {
     this.caseEditDataService.clearFormValidationErrors();
-
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
+    this.previousStep();
     CaseEditPageComponent.setFocusToTop();
   }
 
@@ -289,8 +324,30 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
   }
 
+  public checkForStagesCompleted() {
+    const dataControls = this.editForm.controls['data'];
+    if (dataControls) {
+      const flagLauncher = dataControls.get('flagLauncherInternal');
+      if (flagLauncher) {
+        if (flagLauncher.hasError('notAllCaseFlagStagesCompleted') && this.isAtEnd()) {
+          flagLauncher.setErrors(null);
+        }
+      }
+    }
+  }
+
   public submit(): void {
+    // in some scenarios the fieldstate can be set to 0 even though the user is at the end of a journey, check for this case and set vars
+    const journeyPageNumber = this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber;
+    const fieldState = this.caseFlagStateService?.fieldStateToNavigate;
+    if (this.eventTrigger.id === 'c100ManageFlags'){
+      if ((fieldState === 0 || fieldState === undefined || journeyPageNumber > fieldState) && fieldState !== journeyPageNumber) {
+        this.caseFlagStateService.fieldStateToNavigate = journeyPageNumber;
+        this.caseFlagStateService.lastPageFieldState = journeyPageNumber;
+      }
+    }
     this.caseEditDataService.clearFormValidationErrors();
+    this.checkForStagesCompleted();
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
@@ -434,6 +491,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public cancel(): void {
+    if (this.isLinkedCasesJourney()){
+      this.linkedCasesService.resetLinkedCaseData();
+    }
     if (this.eventTrigger.can_save_draft) {
       if (this.formValuesChanged) {
         const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
@@ -457,6 +517,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     this.caseEditDataService.clearFormValidationErrors();
+    this.multipageComponentStateService.reset();
   }
 
   public submitting(): boolean {
