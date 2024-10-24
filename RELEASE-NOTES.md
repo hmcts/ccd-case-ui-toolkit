@@ -1,5 +1,10 @@
 ## RELEASE NOTES 
 
+### Version 7.0.70
+**EXUI-2193** Get rid of mc-menu-items LD flag
+**EXUI-2346** Not able to see unavailable dates on check your answers page
+**EXUI-2460** Describe your evidence' free text boxes not being
+
 ### Version 7.0.69
 **EXUI-2354** Flakyness/slow login/Search issue
 
