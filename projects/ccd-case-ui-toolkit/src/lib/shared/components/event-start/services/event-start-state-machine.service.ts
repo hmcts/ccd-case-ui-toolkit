@@ -184,7 +184,7 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr= JSON.stringify(task);
+    const taskStr = JSON.stringify(task);
     console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
     const clientContext = {
