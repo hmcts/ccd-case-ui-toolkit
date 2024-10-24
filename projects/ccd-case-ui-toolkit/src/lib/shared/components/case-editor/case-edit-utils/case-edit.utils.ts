@@ -16,7 +16,7 @@ export class CaseEditUtils {
   public static readonly SUFFIX = '}&;';
 
   public editNonASCIICharacters(rawString: string): string {
-    return rawString ? rawString.replace(/[^\x1A-\x7F]/g, function (c) {
+    return rawString ? rawString.replace(/[^\x20-\x7F]/g, function (c) {
       return editNonASCIICharacter(c);
     }) : '';
   }
