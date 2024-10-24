@@ -38,6 +38,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
   beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
+    casesNotifier.fetchAndRefresh.and.returnValue(of(true));
     TestBed.configureTestingModule({
       declarations: [CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
         StubComponent],
@@ -102,6 +103,24 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorBannerElement).toBeNull();
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
+  });
+
+  it('should return error when API call fails', () => {
+    casesService.createSpecificAccessRequest.and.returnValue(of({
+      errorCode: '500',
+      status: '500',
+      errorMessage: 'Internal Server Error',
+      timeStamp: new Date()
+    }));
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
+    otherReason.value = 'Test';
+    otherReason.dispatchEvent(new Event('input'));
+    submitButton.click();
+    fixture.detectChanges();
+    expect(component.formGroup.invalid).toBe(false);
+    const errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
+    expect(errorBannerElement).toBeDefined();
   });
 
   it('should go back to the page before previous one when the \"Cancel\" link is clicked', fakeAsync(() => {
