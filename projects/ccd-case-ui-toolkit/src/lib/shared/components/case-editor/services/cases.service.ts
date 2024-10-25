@@ -403,7 +403,6 @@ export class CasesService {
       // below changes non-ASCII characters 
       const editedClientContext = caseEditUtils.editNonASCIICharacters(clientContextDetails);
       const clientContext = window.btoa(editedClientContext);
-      console.log(clientContext, 'post btoa')
       if (clientContext) {
         headers = headers.set('Client-Context', clientContext);
       }
