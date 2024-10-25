@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.69-yarn-upgrade",
+  "version": "7.0.71-yarn-upgrade",
   "engines": {
     "node": ">=18.19.0"
   },
