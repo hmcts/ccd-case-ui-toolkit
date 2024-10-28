@@ -162,7 +162,7 @@ describe('FieldReadComponent', () => {
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, false);
   });
 
-  xit('should inject component instance as child', () => {
+  it('should inject component instance as child', () => {
     fixture.detectChanges();
 
     const fieldReadLabelComponent = de.query($FIELD_READ_LABEL);

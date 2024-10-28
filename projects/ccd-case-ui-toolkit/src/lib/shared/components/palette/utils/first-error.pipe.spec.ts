@@ -65,7 +65,7 @@ describe('FirstErrorPipe', () => {
     expect(message).toBe(ERROR_MESSAGE);
   });
 
-  xit('should return exact error along with label name when field value is MANDATORY', () => {
+  it('should return exact error along with label name when field value is MANDATORY', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
       (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
     const message = firstError.transform({

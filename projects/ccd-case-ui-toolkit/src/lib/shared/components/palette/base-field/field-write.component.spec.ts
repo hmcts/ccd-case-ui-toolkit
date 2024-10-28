@@ -131,7 +131,7 @@ describe('FieldWriteComponent', () => {
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
   });
 
-  xit('should inject component instance as child', () => {
+  it('should inject component instance as child', () => {
     const divWrapper = de.children[0];
     const ngContent = divWrapper.children[0];
     expect(ngContent.children.length).toBe(1);

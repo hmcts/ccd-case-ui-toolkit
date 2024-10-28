@@ -1812,7 +1812,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
     });
 
-    xit('should validate mandatory fields and log error message', () => {
+    it('should validate mandatory fields and log error message', () => {
       wizardPage.case_fields = [
         aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null),
         aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null),
@@ -1951,7 +1951,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
-    xit('should validate mandatory complex type fields and log error message', () => {
+    it('should validate mandatory complex type fields and log error message', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',
         'childField1',
