@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.0.71
+**EXUI-EXUI-2227** error-handling-specific-access-request
+
 ### Version 7.0.70
 **EXUI-2193** Get rid of mc-menu-items LD flag
 **EXUI-2346** Not able to see unavailable dates on check your answers page
@@ -11,6 +14,7 @@
 ### Version 7.0.67
 **EXUI-2146** Case file view time is 1 hour behind
 **EXUI-2230** Case File View date/time as GMT rather than Local BST
+
 
 ### Version 7.0.66
 **EXUI-2148** Additional checks on task completion from session storage
