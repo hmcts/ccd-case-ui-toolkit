@@ -1,6 +1,6 @@
 ## RELEASE NOTES 
 
-### Version 7.0.73
+### Version 7.0.74
 **EXUI-1108** Fix yarn npm audit in ccd-case-ui-toolkit
 
 ### Version 7.0.71
