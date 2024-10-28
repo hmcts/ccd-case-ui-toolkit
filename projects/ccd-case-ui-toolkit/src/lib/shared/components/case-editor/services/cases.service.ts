@@ -401,7 +401,7 @@ export class CasesService {
       clientContextEdit.client_context.user_task.task_data.name = 'Review ㅪ the ㋚ appeal \`';
       const caseEditUtils = new CaseEditUtils();
       // below changes non-ASCII characters 
-      const editedClientContext = caseEditUtils.editNonASCIICharacters(clientContextDetails);
+      const editedClientContext = caseEditUtils.convertNonASCIICharacters(clientContextDetails);
       const clientContext = window.btoa(editedClientContext);
       if (clientContext) {
         headers = headers.set('Client-Context', clientContext);
@@ -415,7 +415,7 @@ export class CasesService {
       const caseEditUtils = new CaseEditUtils();
       const clientContextString = window.atob(headers.get('Client-Context'));
       // below reverts non-ASCII characters 
-      const editedClientContextString = caseEditUtils.revertEditNonASCIICharacters(clientContextString);
+      const editedClientContextString = caseEditUtils.convertHTMLEntities(clientContextString);
       this.sessionStorageService.setItem('clientContext', editedClientContextString);
     }
   }
