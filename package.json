@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.71",
+  "version": "7.0.73",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -237,5 +237,5 @@
     "sourceMap": false,
     "instrument": false
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@4.5.0"
 }

@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.0.73
+**EXUI-1108** Fix yarn npm audit in ccd-case-ui-toolkit
+
 ### Version 7.0.71
 **EXUI-EXUI-2227** error-handling-specific-access-request
 
