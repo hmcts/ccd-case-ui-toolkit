@@ -214,7 +214,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
               this.addressService.setMandatoryError(true);
               this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `An address is required` });
             } else {
-              this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% previous`, label });
+              this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             }
             fieldElement.markAsDirty();
             // For the JudicialUser field type, an error needs to be set on the component so that an error message
