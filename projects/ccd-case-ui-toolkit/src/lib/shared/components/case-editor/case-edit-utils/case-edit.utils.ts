@@ -11,12 +11,11 @@ export function convertNonASCIICharacter(character: string): string {
 
 export class CaseEditUtils {
 
-  // Note: Made these purposely odd to avoid possible data conflicts
   public static readonly PREFIX = '&#';
   public static readonly SUFFIX = ';';
 
   public convertNonASCIICharacters(rawString: string): string {
-    return rawString ? rawString.replace(/[^\x20-\x7F]/g, function (c) {
+    return rawString ? rawString.replace(/[^\x20-\x7E]/g, function (c) {
       return convertNonASCIICharacter(c);
     }) : '';
   }
