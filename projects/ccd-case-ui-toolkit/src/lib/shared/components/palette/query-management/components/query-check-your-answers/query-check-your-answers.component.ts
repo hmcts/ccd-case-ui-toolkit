@@ -17,6 +17,7 @@ import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService 
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
+import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -58,7 +59,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     private readonly caseNotifier: CaseNotifier,
     private readonly workAllocationService: WorkAllocationService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly eventTriggerService: EventTriggerService
+    private readonly qualifyingQuestionService: QualifyingQuestionService
   ) {}
 
   public ngOnInit(): void {
@@ -121,6 +122,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         this.searchAndCompleteTask();
         // Emit query submitted event
         this.querySubmitted.emit(true);
+        this.qualifyingQuestionService.clearQualifyingQuestionSelection();
       },
       // Error
       () => this.router.navigate(['/', 'service-down'])

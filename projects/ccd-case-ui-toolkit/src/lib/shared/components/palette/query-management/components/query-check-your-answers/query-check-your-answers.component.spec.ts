@@ -11,6 +11,7 @@ import { EventCompletionParams } from '../../../../case-editor/domain/event-comp
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
+import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -386,6 +387,8 @@ describe('QueryCheckYourAnswersComponent', () => {
     }
   };
 
+  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['clearQualifyingQuestionSelection']);
+
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
@@ -410,7 +413,8 @@ describe('QueryCheckYourAnswersComponent', () => {
         { provide: CasesService, useValue: casesService },
         { provide: WorkAllocationService, useValue: workAllocationService },
         { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        { provide: QualifyingQuestionService , useValue: qualifyingQuestionService  }
       ]
     })
       .compileComponents();
