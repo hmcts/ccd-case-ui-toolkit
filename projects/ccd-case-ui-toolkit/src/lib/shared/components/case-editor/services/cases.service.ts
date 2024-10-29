@@ -397,8 +397,6 @@ export class CasesService {
   private addClientContextHeader(headers: HttpHeaders): HttpHeaders {
     const clientContextDetails = this.sessionStorageService.getItem('clientContext');
     if (clientContextDetails) {
-      let clientContextEdit = JSON.parse(clientContextDetails);
-      clientContextEdit.client_context.user_task.task_data.name = 'Review ㅪ the ㋚ appeal \`';
       const caseEditUtils = new CaseEditUtils();
       // below changes non-ASCII characters 
       const editedClientContext = caseEditUtils.convertNonASCIICharacters(clientContextDetails);
