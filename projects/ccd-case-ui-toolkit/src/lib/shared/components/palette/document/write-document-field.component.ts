@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
@@ -18,7 +18,8 @@ import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html'
+  templateUrl: './write-document-field.html',
+  styleUrls: ['./../base-field/field-write.component.scss']
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';
@@ -44,6 +45,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
+  public fileName = 'No file chosen';
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -119,9 +121,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public fileChangeEvent(fileInput: any): void {
-
     if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
+      this.fileName = fileInput.target.files[0].name;
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
@@ -249,7 +251,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
-    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+    if (this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)) {
       this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
     }
   }
@@ -261,7 +263,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -283,7 +285,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
