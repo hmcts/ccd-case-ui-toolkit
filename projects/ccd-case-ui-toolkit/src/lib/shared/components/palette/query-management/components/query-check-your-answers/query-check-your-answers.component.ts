@@ -215,7 +215,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     } else {
       // If there are no existing collections, create a new one (e.g., for new queries)
       newQueryData[this.fieldId] = {
-        partyName: '', // Not returned by CCD
+        partyName: currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`, // Not returned by CCD
         roleOnCase: '', // Not returned by CCD
         caseMessages: [
           {
