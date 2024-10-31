@@ -32,21 +32,16 @@ export class ValidPageListCaseFieldsService {
     validPageList.forEach(page => {
       if (this.isShown(page, eventTriggerFields, formFields)) {
         page.case_fields.forEach(field => {
-          if (form && form.controls['data']['controls'][field.id]?.controls) {
+          if (form?.controls['data']['controls'][field.id]?.controls) {
             Object.keys(form.controls['data']['controls'][field.id]?.controls).forEach((item) => {
               const fieldCheck = form.controls['data']['controls'][field.id]?.controls[item].caseField;
               if (fieldCheck?.hidden === true && fieldCheck?.retain_hidden_value !== true) {
-                switch (field.field_type.type) {
-                  case 'Complex':
-                    const objWithIdIndex = field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id);
-                    if (objWithIdIndex >= 0) {
-                      field.field_type.complex_fields[objWithIdIndex].hidden = true;
-                    }
-                    break;
-                  default:
-                    break;
+                if (field.field_type.type === 'Complex') {
+                  if (field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id) >= 0) {
+                    field.field_type.complex_fields[field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id)].hidden = true;
+                  }
                 }
-              };
+              }
             });
           }
           validPageListCaseFields.push(field);
