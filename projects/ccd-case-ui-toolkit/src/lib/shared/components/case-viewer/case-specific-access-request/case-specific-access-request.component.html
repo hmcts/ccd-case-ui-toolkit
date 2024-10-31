@@ -1,5 +1,5 @@
 <exui-error-message
-  *ngIf="formGroup.invalid && submitted"
+  *ngIf="(formGroup.invalid && submitted) || getSpecificAccessError"
   [error]="errorMessage"></exui-error-message>
 <cut-alert type="information">
   {{'Authorisation is needed to access this case.' | rpxTranslate}}<br />
@@ -18,7 +18,6 @@
       <details class="govuk-details" data-module="govuk-details" role="group">
         <summary
           class="govuk-details__summary"
-          role="button"
           aria-expanded="false">
           <span class="govuk-details__summary-text">
             {{'Help with requesting case access' | rpxTranslate}}
