@@ -37,8 +37,9 @@ export class ValidPageListCaseFieldsService {
               const fieldCheck = form.controls['data']['controls'][field.id]?.controls[item].caseField;
               if (fieldCheck?.hidden === true && fieldCheck?.retain_hidden_value !== true) {
                 if (field.field_type.type === 'Complex') {
-                  if (field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id) >= 0) {
-                    field.field_type.complex_fields[field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id)].hidden = true;
+                  const caseFields = field.field_type.complex_fields;
+                  if (caseFields.findIndex((obj) => obj.id === fieldCheck.id) >= 0) {
+                    caseFields[caseFields.findIndex((obj) => obj.id === fieldCheck.id)].hidden = true;
                   }
                 }
               }
