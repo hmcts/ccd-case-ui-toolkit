@@ -32,23 +32,31 @@ export class ValidPageListCaseFieldsService {
     validPageList.forEach(page => {
       if (this.isShown(page, eventTriggerFields, formFields)) {
         page.case_fields.forEach(field => {
-          if (form?.controls['data']['controls'][field.id]?.controls) {
-            Object.keys(form.controls['data']['controls'][field.id]?.controls).forEach((item) => {
-              const fieldCheck = form.controls['data']['controls'][field.id]?.controls[item].caseField;
-              if (fieldCheck?.hidden === true && fieldCheck?.retain_hidden_value !== true) {
-                if (field.field_type.type === 'Complex') {
-                  const objWithIdIndex = field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id);
-                  if (objWithIdIndex >= 0) {
-                    field.field_type.complex_fields[objWithIdIndex].hidden = true;
-                  }
-                }
-              }
-            });
-          }
+          this.setHiddenFlagOnHiddenFormControls(form, field);
           validPageListCaseFields.push(field);
         });
       }
     });
     return validPageListCaseFields;
+  }
+
+  private setHiddenFlagOnHiddenFormControls(form: any, field: CaseField) {
+    try {
+      if (form?.controls['data']['controls'][field.id]?.controls) {
+        Object.keys(form.controls['data']['controls'][field.id]?.controls).forEach((item) => {
+          const fieldCheck = form.controls['data']['controls'][field.id]?.controls[item].caseField;
+          if (fieldCheck?.hidden === true && fieldCheck?.retain_hidden_value !== true) {
+            if (field.field_type.type === 'Complex') {
+              const objWithIdIndex = field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id);
+              if (objWithIdIndex >= 0) {
+                field.field_type.complex_fields[objWithIdIndex].hidden = true;
+              }
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.log("error setHiddenFalgsOnHiddenFormControls");
+    }
   }
 }
