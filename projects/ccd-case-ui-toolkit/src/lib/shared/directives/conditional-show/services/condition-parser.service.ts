@@ -190,7 +190,9 @@ export class ConditionParser {
         }
       }
     } else {
-      console.error('Path in formArray should start with ', head, ', full path: ', path);
+      // EXUI-2460 - if path present then show error, otherwise log message to stop unnecessary console errors
+      path ? console.error('Path in formArray should start with ', head, ', full path: ', path) :
+        console.log('Path not present in formArray');
     }
   }
 
