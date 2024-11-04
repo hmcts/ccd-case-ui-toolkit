@@ -499,7 +499,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         // Cache the *original* status of the flag before it is modified. This is needed if the user changes the flag status
         // then decides to return to any part of the flag update journey. The ManageCaseFlagsComponent and UpdateFlagComponent
         // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
-        this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
+        if (!this.selectedFlag.originalStatus){
+          this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
+        }
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
         // If their FormControls don't exist, it means these fields weren't visited as part of the "Update Flag" journey, so do
         // *not* update their values (otherwise they will become undefined)

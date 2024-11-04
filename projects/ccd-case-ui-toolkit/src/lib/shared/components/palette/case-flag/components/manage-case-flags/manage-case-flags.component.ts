@@ -53,6 +53,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
         /* istanbul ignore else */
+        console.log(displayData, flagsInstance);
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,

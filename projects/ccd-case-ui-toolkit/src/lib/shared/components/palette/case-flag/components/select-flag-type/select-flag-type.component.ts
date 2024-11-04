@@ -180,6 +180,14 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
         this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(value, { emitEvent: false });
       }
       this.subJourneyIndex++;
+    } else {
+      // this code will run only when the sub journey is complete
+      const currentSelectedFlag = this.formGroup.controls.flagType;
+      const addedFlagValue = this.selectedFlagsLocation['caseField'].value.details;
+      if (addedFlagValue[Object.keys(addedFlagValue).length]?.name !== currentSelectedFlag.value.name) {
+        this.selectedFlagsLocation['caseField'].value.details.pop();
+        this.selectedFlagsLocation['caseField'].formatted_value?.details.pop();
+      }
     }
   }
 

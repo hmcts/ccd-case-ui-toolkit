@@ -104,6 +104,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlagsLocation) {
+          this.cleanupNavigationFormAdditions(flagLauncherComponent.selectedFlagsLocation);
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
             flagLauncherComponent.selectedFlagsLocation);
@@ -134,6 +135,25 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         }
       }
     }
+  }
+
+  private cleanupNavigationFormAdditions(selectedFlagsLocation: FlagsWithFormGroupPath){
+    const path = selectedFlagsLocation.pathToFlagsFormGroup;
+    Object.keys(this.formGroup.controls).forEach((controlName) => {
+      const control = this.formGroup.get(controlName);
+      if ((controlName !== path)) {
+        if (control['caseField'].formatted_value?.details){
+          // we want to loop through the current flag details to ensure that there are no additional data from the usre restarting the flow that have been added.
+          for (const value in control['caseField'].formatted_value?.details){
+            // if the id is undefined then the user has added this as part of their current flow and we should remove it so it doesnt get added to the case
+            if (!control['caseField'].formatted_value?.details[value].id){
+              control['caseField'].value.details.pop();
+              control['caseField'].formatted_value.details.pop();
+            }
+          }
+        }
+      }
+    });
   }
 
   private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {

@@ -194,6 +194,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public currentPageIsNotValid(): boolean {
+    this.editForm.updateValueAndValidity();
     this.failingCaseFields = this.pageValidationService.getInvalidFields(this.currentPage, this.editForm);
     return this.failingCaseFields.length > 0 ||
       (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
@@ -346,6 +347,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         this.caseFlagStateService.lastPageFieldState = journeyPageNumber;
       }
     }
+
     this.caseEditDataService.clearFormValidationErrors();
     this.checkForStagesCompleted();
     if (this.currentPageIsNotValid()) {
