@@ -61,11 +61,11 @@ describe('QueryDetailsComponent', () => {
       hearingDate: '',
       createdOn: new Date('2023-06-01'),
       createdBy: 'Person D',
-      parentId: '444-444',
+      parentId: '444-444'
     }
   ];
 
-  const childrenItems = items.map(item => {
+  const childrenItems = items.map((item) => {
     const listItem = new QueryListItem();
     Object.assign(listItem, item);
     return listItem;
@@ -95,14 +95,55 @@ describe('QueryDetailsComponent', () => {
     createdOn: new Date('2023-06-25'),
     createdBy: 'Person A',
     children: [
-      childrenItems[0],
-      childrenItems[1],
       {
-        ...childrenItems[2],
-        children: [
-          // lastSubmittedBy
-          childrenItems[3]
-        ]
+        attachments: [
+          {
+            _links: {
+              self: {
+                href: 'https://hmcts.internal/documents/111-111'
+              },
+              binary: {
+                href: 'https://hmcts.internal/documents/111-111/binary'
+              }
+            },
+            originalDocumentName: 'Document 1'
+          }
+        ],
+        body: 'wqqwwq',
+        children: [],
+        createdBy: 'b05ee329-2d86-4e8a-b3fb-732739ed0a86',
+        createdOn: '2024-11-06T00:14:39.074Z',
+        hearingDate: null,
+        id: 'de95f8b1-961a-4d99-a487-77afb1ce4634',
+        isHearingRelated: 'No',
+        name: 'Name 1',
+        parentId: '111-111',
+        subject: 'tets'
+      },
+      {
+        attachments: [
+          {
+            _links: {
+              self: {
+                href: 'https://hmcts.internal/documents/111-111'
+              },
+              binary: {
+                href: 'https://hmcts.internal/documents/111-111/binary'
+              }
+            },
+            originalDocumentName: 'Document 1'
+          }
+        ],
+        body: 'wqqwwq',
+        children: [],
+        createdBy: 'b05ee329-',
+        createdOn: '2024-11-06T00:14:39.074Z',
+        hearingDate: null,
+        id: 'de95f8b1',
+        isHearingRelated: 'No',
+        name: 'Name 1',
+        parentId: '111-111',
+        subject: 'tets'
       }
     ]
   });
@@ -121,9 +162,9 @@ describe('QueryDetailsComponent', () => {
         MockRpxTranslatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [ {provide: SessionStorageService, useValue: mockSessionStorageService } ]
+      providers: [{ provide: SessionStorageService, useValue: mockSessionStorageService }]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

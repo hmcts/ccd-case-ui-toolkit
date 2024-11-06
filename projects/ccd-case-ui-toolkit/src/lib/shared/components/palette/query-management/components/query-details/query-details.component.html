@@ -72,7 +72,7 @@
               <td class="govuk-table__cell">{{ child.body }}</td>
             </tr>
 
-          <tr class="govuk-table__row">
+          <tr class="govuk-table__row" *ngIf="child.attachments.length > 0">
             <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
             <td class="govuk-table__cell">
               <ccd-query-attachments-read
@@ -109,7 +109,7 @@
               <td class="govuk-table__cell">{{ child.body }}</td>
             </tr>
 
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" *ngIf="child.attachments.length > 0">
               <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
               <td class="govuk-table__cell">
                 <ccd-query-attachments-read
