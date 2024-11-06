@@ -1,4 +1,10 @@
-## RELEASE NOTES 
+## RELEASE NOTES
+
+### Version 7.0.76
+**EXUI-2144** noc date issue
+
+### Version 7.0.75
+**EXUI-2415** Redirect to an new event by a hyperlink
 
 ### Version 7.0.74
 **EXUI-1108** Fix yarn npm audit in ccd-case-ui-toolkit
