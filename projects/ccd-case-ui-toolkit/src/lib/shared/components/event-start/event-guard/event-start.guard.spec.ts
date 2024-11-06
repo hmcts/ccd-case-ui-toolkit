@@ -67,6 +67,19 @@ describe('EventStartGuard', () => {
     });
   });
 
+  it('client context should be set with language regardless whether task is attached to event', () => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const mockClientContext = { client_context: { user_language: { language: 'cookieString' } } };
+    mockCookieService.getCookie.and.returnValue('cookieString');
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(false);
+      // check client contesxt is set correctly
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
+    });
+  });
+
   it('should log a message and not call getTasksByCaseIdAndEventId when caseInfo is not available', () => {
     sessionStorageService.getItem.and.returnValue(null);
     const route = createActivatedRouteSnapshot('caseId', 'eventId');

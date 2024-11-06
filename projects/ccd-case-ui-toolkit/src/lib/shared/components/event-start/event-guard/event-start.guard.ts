@@ -31,6 +31,16 @@ export class EventStartGuard implements CanActivate {
       userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
+    const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
+    // if one task assigned to user, allow user to complete event
+    const storeClientContext = {
+      client_context: {
+        user_language: {
+          language: currentLanguage
+        }
+      }
+    };
+    this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
