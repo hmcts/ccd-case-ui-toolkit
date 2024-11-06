@@ -43,7 +43,7 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
 
     protected previousPage(): void {
       if (this.hasPrevious()) {
-        if (!this.childJourney['searchLanguageInterpreterHint']){
+        if (!this.childJourney?.searchLanguageInterpreterHint){
           this.journeyPageNumber--;
         }
         this.onPageChange();
@@ -52,7 +52,7 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
 
     protected nextPage(): void {
       if (this.hasNext()) {
-        if (!this.childJourney['searchLanguageInterpreterHint']){
+        if (!this.childJourney?.searchLanguageInterpreterHint){
           this.journeyPageNumber++;
         }
         this.onPageChange();

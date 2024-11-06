@@ -14,4 +14,5 @@ export interface Journey {
     childJourney: Journey;
     fieldState?: number;
     linkedCasesPage?: number;
+    searchLanguageInterpreterHint?;
 }

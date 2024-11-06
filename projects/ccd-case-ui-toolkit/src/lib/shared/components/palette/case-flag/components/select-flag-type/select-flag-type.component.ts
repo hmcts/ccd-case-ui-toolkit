@@ -183,8 +183,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
     } else {
       // this code will run only when the sub journey is complete
       const currentSelectedFlag = this.formGroup.controls.flagType;
-      const addedFlagValue = this.selectedFlagsLocation['caseField'].value.details;
-      if (addedFlagValue[Object.keys(addedFlagValue).length]?.name !== currentSelectedFlag.value.name) {
+      const addedFlagValue = this.selectedFlagsLocation?.caseField?.value?.details;
+      if (addedFlagValue && (addedFlagValue[Object.keys(addedFlagValue).length]?.name !== currentSelectedFlag.value.name)) {
         this.selectedFlagsLocation['caseField'].value.details.pop();
         this.selectedFlagsLocation['caseField'].formatted_value?.details.pop();
       }
