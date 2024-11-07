@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.75-exui-2515-rc1
+**EXUI-2515** case-link-issue
+
 ### Version 7.0.76
 **EXUI-2144** noc date issue
 
