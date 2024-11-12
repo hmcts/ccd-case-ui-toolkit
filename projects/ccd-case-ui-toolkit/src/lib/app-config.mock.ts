@@ -226,7 +226,7 @@ export class AppMockConfig implements AbstractAppConfig {
   public getIcpJurisdictions(): string[] {
     return ['', ''];
   }
-  public logMessage(): void {
-    
+  public logMessage(msg: string): void {
+    console.log(msg);
   }
 }
