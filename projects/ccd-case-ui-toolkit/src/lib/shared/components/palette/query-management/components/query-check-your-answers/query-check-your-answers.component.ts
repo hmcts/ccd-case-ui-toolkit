@@ -18,6 +18,7 @@ import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, Que
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
+import { AccessControlList } from '../../../../../domain/definition/access-control-list.model';
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -259,26 +260,32 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
       if (this.queryCreateContext === QueryCreateContext.NEW_QUERY) {
         //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
-        if (count > 1) {
-          const matchingRole = acls?.find((acl) => acl.role === this.roleName);
-          if (matchingRole) {
-            this.fieldId = id;
-          }
-        } else {
-          // Set the field ID dynamically based on the extracted data
-          this.fieldId = id; // Store the ID for use in generating newQueryData
-        }
+        this.setFieldId(count, acls, id);
       }
-
       // If messageId is present, find the corresponding case message
-      if (messageId && value?.caseMessages) {
-        // If a matching message is found, set the fieldId to the corresponding id
-        const matchedMessage = value?.caseMessages?.find((message) => message.value.id === messageId);
+      this.setMessageFieldId(messageId, value, id);
+    }
+  }
 
-        if (matchedMessage) {
-          this.fieldId = id;
-        }
+  private setMessageFieldId(messageId, value, id: string) {
+    if (messageId && value?.caseMessages) {
+      // If a matching message is found, set the fieldId to the corresponding id
+      const matchedMessage = value?.caseMessages?.find((message) => message.value.id === messageId);
+      if (matchedMessage) {
+        this.fieldId = id;
       }
+    }
+  }
+
+  private setFieldId(count: number, acls: AccessControlList[], id: string) {
+    if (count > 1) {
+      const matchingRole = acls?.find((acl) => acl.role === this.roleName);
+      if (matchingRole) {
+        this.fieldId = id;
+      }
+    } else {
+      // Set the field ID dynamically based on the extracted data
+      this.fieldId = id; // Store the ID for use in generating newQueryData
     }
   }
 
