@@ -58,16 +58,18 @@ describe('EventTriggerComponent', () => {
   const $SUBMIT_BUTTON = By.css('form button[type=submit]');
   const $EVENT_TRIGGER_FORM = By.css('.event-trigger');
 
-  let orderService: any;
+
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let fixture: ComponentFixture<EventTriggerComponent>;
   let component: EventTriggerComponent;
   let de: DebugElement;
+  let orderService: OrderService;
 
   describe('with multiple triggers', () => {
     beforeEach(waitForAsync(() => {
-      orderService = createSpyObj<OrderService>('orderService', ['sort']);
-      orderService.sort.and.returnValue(SORTED_TRIGGERS);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
+
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
       appConfig.getEventsToHide.and.returnValue(['']);
 
@@ -102,7 +104,7 @@ describe('EventTriggerComponent', () => {
 
     it('should sort triggers', () => {
       expect(orderService.sort).toHaveBeenCalledWith(TRIGGERS);
-      expect(component.triggers).toBe(SORTED_TRIGGERS);
+      expect(component.triggers).toEqual(SORTED_TRIGGERS);
     });
 
     it('should hide when there are no triggers', () => {
@@ -200,28 +202,28 @@ describe('EventTriggerComponent', () => {
     it('should return true if ids of both triggers match', () => {
       const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
       const trigger2 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
-  
+
       const result = component.compareFn(trigger1, trigger2);
-  
+
       expect(result).toBe(true);
     });
-  
+
     it('should return false if ids of triggers do not match', () => {
       const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
       const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
-  
+
       const result = component.compareFn(trigger1, trigger2);
-  
+
       expect(result).toBe(false);
     });
-  
+
     it('should return false if one or both triggers are null or undefined', () => {
       const trigger1 = null;
       const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
-  
+
       const result1 = component.compareFn(trigger1, trigger2);
       const result2 = component.compareFn(trigger2, trigger1);
-  
+
       expect(result1).toBe(false);
       expect(result2).toBe(false);
     });
@@ -230,10 +232,10 @@ describe('EventTriggerComponent', () => {
 
   describe('with a single trigger', () => {
     beforeEach(waitForAsync(() => {
-      orderService = createSpyObj<OrderService>('orderService', ['sort']);
-      orderService.sort.and.returnValue([ TRIGGERS[0] ]);
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
       appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
 
       TestBed
         .configureTestingModule({
@@ -277,8 +279,9 @@ describe('EventTriggerComponent', () => {
 
   describe('Hide events', () => {
     beforeEach(waitForAsync(() => {
-      orderService = createSpyObj<OrderService>('orderService', ['sort']);
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
 
       TestBed.configureTestingModule({
         imports: [
@@ -305,23 +308,33 @@ describe('EventTriggerComponent', () => {
     }));
 
     it('should hide the respond to query event from the dropdown', () => {
-      orderService.sort.and.returnValue([TRIGGERS[0], TRIGGERS[1]]);
       appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
+      component.triggers = TRIGGERS;
+      expect(component.triggers?.length).toEqual(TRIGGERS.length);
       component.ngOnChanges(trigersChangeDummy(TRIGGERS));
       fixture.detectChanges();
-      const triggerIds = component.triggers.map((trigger) => trigger.id);
+      expect(component.triggers?.length).toEqual(TRIGGERS.length-1);
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
       expect(triggerIds.includes('queryManagementRespondQuery')).toBe(false);
-      expect(component.triggers.length).toEqual(2);
     });
 
     it('should show the respond to query event from the dropdown', () => {
-      orderService.sort.and.returnValue(TRIGGERS);
       appConfig.getEventsToHide.and.returnValue(['']);
       component.ngOnChanges(trigersChangeDummy(TRIGGERS));
       fixture.detectChanges();
-      const triggerIds = component.triggers.map((trigger) => trigger.id);
+      console.log('triggers: ' + component.triggers?.join(' '));
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
       expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
-      expect(component.triggers.length).toEqual(4);
+      expect(component.triggers.length).toEqual(TRIGGERS.length);
+    });
+
+    it('should show the respond to query event from the dropdown when eventsToHide is null', () => {
+      appConfig.getEventsToHide.and.returnValue(null);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
+      expect(component.triggers.length).toEqual(TRIGGERS.length);
     });
   });
 });

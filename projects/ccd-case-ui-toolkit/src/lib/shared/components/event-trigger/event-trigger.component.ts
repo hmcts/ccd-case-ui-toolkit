@@ -48,8 +48,9 @@ export class EventTriggerComponent implements OnChanges, OnInit {
   public ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.triggers?.currentValue) {
       const eventsToHide = this.appConfig.getEventsToHide();
-      this.triggers = this.triggers?.filter((event) => !eventsToHide.includes(event.id));
-      this.triggers = this.orderService.sort(this.triggers);
+      const filteredTriggers = this.triggers
+        ?.filter((event) => !eventsToHide || !eventsToHide.includes(event.id));
+      this.triggers = this.orderService.sort(filteredTriggers);
       this.triggerForm = this.fb.group({
         trigger: [this.getDefault(), Validators.required]
       });
@@ -74,6 +75,6 @@ export class EventTriggerComponent implements OnChanges, OnInit {
   }
 
   private getDefault(): any {
-    return this.triggers.length === 1 ? this.triggers[0] : '';
+    return this.triggers?.length === 1 ? this.triggers[0] : '';
   }
 }
