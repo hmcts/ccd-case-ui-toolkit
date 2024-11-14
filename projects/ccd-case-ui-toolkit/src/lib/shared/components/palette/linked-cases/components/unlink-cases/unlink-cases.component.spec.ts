@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { PipesModule } from '../../../../../pipes';
@@ -8,6 +8,7 @@ import { CaseEditComponent, CasesService } from '../../../../case-editor';
 import { CaseLink } from '../../domain/linked-cases.model';
 import { LinkedCasesService } from '../../services';
 import { UnLinkCasesComponent } from './unlink-cases.component';
+import { MultipageComponentStateService } from '../../../../../services';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('UnLinkCasesComponent', () => {
@@ -216,5 +217,44 @@ describe('UnLinkCasesComponent', () => {
     component.next();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not set the journeyPageNumber if the linkedCasePage is not less than the journeyPageNumber', () => {
+    let service: MultipageComponentStateService;
+    const mockJourney = {
+      journeyId: 'test',
+      journeyPageNumber: 4,
+      journeyStartPageNumber: 0,
+      journeyPreviousPageNumber: 0,
+      journeyEndPageNumber: 4,
+      linkedCasesPage: 3,
+      next: () => { },
+      previous: () => { },
+      hasNext: () => true,
+      hasPrevious: () => true,
+      isFinished: () => false,
+      isStart: () => false,
+      childJourney: undefined,
+      onPageChange: () => { }
+    };
+
+    const mockInstigator = {
+      onFinalNext: () => { },
+      onFinalPrevious: () => { }
+    };
+
+    service = new MultipageComponentStateService();
+    service.setJourneyCollection([mockJourney]);
+    service.setInstigator(mockInstigator);
+
+    component = new UnLinkCasesComponent(
+      TestBed.inject(FormBuilder),
+      TestBed.inject(CasesService),
+      TestBed.inject(LinkedCasesService),
+      service
+    );
+
+    component.ngOnInit();
+    expect(component.getJourneyCollection().journeyPageNumber).toEqual(3);
   });
 });
