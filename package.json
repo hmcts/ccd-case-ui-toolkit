@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.75",
+  "version": "7.0.75-exui-2537-rc1",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -64,7 +64,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.8",
+    "@hmcts/media-viewer": "4.0.8-exui-2537-rc3",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
