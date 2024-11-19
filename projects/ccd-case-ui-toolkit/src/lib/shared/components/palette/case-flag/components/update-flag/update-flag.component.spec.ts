@@ -29,7 +29,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active',
@@ -38,7 +38,7 @@ describe('UpdateFlagComponent', () => {
   const inactiveFlag = {
     name: 'Flag 2',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'

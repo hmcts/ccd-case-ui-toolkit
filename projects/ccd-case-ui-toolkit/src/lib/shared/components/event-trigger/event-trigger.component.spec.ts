@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewTrigger } from '../../domain';
 import { OrderService } from '../../services';
 import { attr, text } from '../../test/helpers';
@@ -29,6 +30,12 @@ describe('EventTriggerComponent', () => {
       name: 'Create a bundle',
       description: 'Create a bundle',
       order: 3
+    },
+    {
+      id: 'queryManagementRespondQuery',
+      name: 'QueryManagementRespondQuery',
+      description: 'Query Management Respond to a query',
+      order: 4
     }
   ];
 
@@ -51,16 +58,20 @@ describe('EventTriggerComponent', () => {
   const $SUBMIT_BUTTON = By.css('form button[type=submit]');
   const $EVENT_TRIGGER_FORM = By.css('.event-trigger');
 
-  let orderService: any;
 
+  let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let fixture: ComponentFixture<EventTriggerComponent>;
   let component: EventTriggerComponent;
   let de: DebugElement;
+  let orderService: OrderService;
 
   describe('with multiple triggers', () => {
     beforeEach(waitForAsync(() => {
-      orderService = createSpyObj<OrderService>('orderService', ['sort']);
-      orderService.sort.and.returnValue(SORTED_TRIGGERS);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
+
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      appConfig.getEventsToHide.and.returnValue(['']);
 
       TestBed
         .configureTestingModule({
@@ -72,7 +83,8 @@ describe('EventTriggerComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: OrderService, useValue: orderService}
+            {provide: OrderService, useValue: orderService},
+            {provide: AbstractAppConfig, useValue: appConfig}
           ]
         })
         .compileComponents();
@@ -92,7 +104,7 @@ describe('EventTriggerComponent', () => {
 
     it('should sort triggers', () => {
       expect(orderService.sort).toHaveBeenCalledWith(TRIGGERS);
-      expect(component.triggers).toBe(SORTED_TRIGGERS);
+      expect(component.triggers).toEqual(SORTED_TRIGGERS);
     });
 
     it('should hide when there are no triggers', () => {
@@ -106,7 +118,7 @@ describe('EventTriggerComponent', () => {
     it('should render a <select> with an <option> for every trigger', () => {
       const options = de.queryAll($SELECT_OPTIONS);
 
-      expect(options.length).toBe(3);
+      expect(options.length).toBe(4);
 
       TRIGGERS.forEach(trigger => {
         const optionDe = options.find(option => text(option) === trigger.name);
@@ -190,28 +202,28 @@ describe('EventTriggerComponent', () => {
     it('should return true if ids of both triggers match', () => {
       const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
       const trigger2 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
-  
+
       const result = component.compareFn(trigger1, trigger2);
-  
+
       expect(result).toBe(true);
     });
-  
+
     it('should return false if ids of triggers do not match', () => {
       const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
       const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
-  
+
       const result = component.compareFn(trigger1, trigger2);
-  
+
       expect(result).toBe(false);
     });
-  
+
     it('should return false if one or both triggers are null or undefined', () => {
       const trigger1 = null;
       const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
-  
+
       const result1 = component.compareFn(trigger1, trigger2);
       const result2 = component.compareFn(trigger2, trigger1);
-  
+
       expect(result1).toBe(false);
       expect(result2).toBe(false);
     });
@@ -220,8 +232,10 @@ describe('EventTriggerComponent', () => {
 
   describe('with a single trigger', () => {
     beforeEach(waitForAsync(() => {
-      orderService = createSpyObj<OrderService>('orderService', ['sort']);
-      orderService.sort.and.returnValue([ TRIGGERS[0] ]);
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
 
       TestBed
         .configureTestingModule({
@@ -233,7 +247,8 @@ describe('EventTriggerComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: OrderService, useValue: orderService}
+            {provide: OrderService, useValue: orderService},
+            {provide: AbstractAppConfig, useValue: appConfig}
           ]
         })
         .compileComponents();
@@ -259,6 +274,67 @@ describe('EventTriggerComponent', () => {
         trigger: TRIGGERS[0]
       });
       expect(component.triggerForm.valid).toBeTruthy();
+    });
+  });
+
+  describe('Hide events', () => {
+    beforeEach(waitForAsync(() => {
+      appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getEventsToHide']);
+      orderService = new OrderService();
+      spyOn(orderService, 'sort').and.callThrough();
+
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule
+        ],
+        declarations: [
+          EventTriggerComponent,
+          MockRpxTranslatePipe
+        ],
+        providers: [
+          {provide: OrderService, useValue: orderService},
+          {provide: AbstractAppConfig, useValue: appConfig}
+        ]
+      })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(EventTriggerComponent);
+      component = fixture.componentInstance;
+      component.triggerForm = new FormGroup({
+        trigger: new FormControl('')
+      });
+      component.triggers = TRIGGERS;
+      fixture.detectChanges();
+    }));
+
+    it('should hide the respond to query event from the dropdown', () => {
+      appConfig.getEventsToHide.and.returnValue(['queryManagementRespondQuery']);
+      component.triggers = TRIGGERS;
+      expect(component.triggers?.length).toEqual(TRIGGERS.length);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      expect(component.triggers?.length).toEqual(TRIGGERS.length-1);
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(false);
+    });
+
+    it('should show the respond to query event from the dropdown', () => {
+      appConfig.getEventsToHide.and.returnValue(['']);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      console.log('triggers: ' + component.triggers?.join(' '));
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
+      expect(component.triggers.length).toEqual(TRIGGERS.length);
+    });
+
+    it('should show the respond to query event from the dropdown when eventsToHide is null', () => {
+      appConfig.getEventsToHide.and.returnValue(null);
+      component.ngOnChanges(trigersChangeDummy(TRIGGERS));
+      fixture.detectChanges();
+      const triggerIds = component.triggers?.map((trigger) => trigger.id);
+      expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
+      expect(component.triggers.length).toEqual(TRIGGERS.length);
     });
   });
 });
