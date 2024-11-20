@@ -98,6 +98,10 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     this.caseEditDataService.clearFormValidationErrors();
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
+      // when the user navigates with change link the journey page number should be set to the linkedCasesPage
+      if (this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber > this.linkedCasesPage){
+        this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber = this.linkedCasesPage;
+      }
       this.proceedToNextPage();
     } else {
       if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {

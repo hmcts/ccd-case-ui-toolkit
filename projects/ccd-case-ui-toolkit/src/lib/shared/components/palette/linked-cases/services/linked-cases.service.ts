@@ -84,9 +84,10 @@ export class LinkedCasesService {
   public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
     const linkedCaseIds = this.groupLinkedCasesByCaseType(this.caseFieldValue, 'CaseType');
+    const caseTypeId = this.caseDetails.case_type.id;
     Object.keys(linkedCaseIds).forEach(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100);
-      const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
+      const query = this.searchService.searchCasesByIds(caseTypeId, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
     });
     if (searchCasesResponse.length) {

@@ -59,6 +59,10 @@ export class MultipageComponentStateService {
     this.journeyState.clear();
   }
 
+  getJourneyCollectionMainObject(){
+    return this.journeyCollection[0];
+  }
+
   //reset will be called to ensure that the entire state is reset
   reset(): void {
     this.isJourneyAtStart = false;
