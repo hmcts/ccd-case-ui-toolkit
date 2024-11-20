@@ -1,6 +1,6 @@
 ## RELEASE NOTES 
 
-### Version 7.0.75-exui-2536-rc-1
+### Version 7.0.75-exui-2536-rc-2
 **EXUI-2536** issue with DynamicMultiSelectList
 
 ### Version 7.0.75-exui-2462-rc1
