@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.0.75-exui-2536-rc-1
+**EXUI-2536** issue with DynamicMultiSelectList
+
 ### Version 7.0.75-exui-2462-rc1
 **EXUI-2462** DynamicRadioList incorrectly selects the wrong radio button
 

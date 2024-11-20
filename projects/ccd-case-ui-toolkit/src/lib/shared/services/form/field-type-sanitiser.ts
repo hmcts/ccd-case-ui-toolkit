@@ -59,17 +59,39 @@ export class FieldTypeSanitiser {
       if (field.field_type.type !== 'Complex') {
         return field;
       }
-      const complexFieldsUpdated = field.field_type.complex_fields.map((complexField) =>
-        complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST && complexField.display_context !== 'HIDDEN' && field._value?.[complexField.id]
-          ? { ...complexField, list_items: field._value[complexField.id]?.list_items } : complexField
-      );
-      return { ...field, field_type: { ...field.field_type, complex_fields: complexFieldsUpdated } } as CaseField;
+      const caseFieldData = field._value;
+      // Process each complex field
+      field.field_type.complex_fields.forEach((complexField) => {
+        if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
+          this.checkNestedDynamicList(complexField, caseFieldData?.[complexField.id]);
+        } else if (
+          complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST &&
+          complexField.display_context !== 'HIDDEN' &&
+          field._value?.[complexField.id]
+        ) {
+          complexField.list_items = field._value[complexField.id]?.list_items;
+        }
+      });
+      // Final transformation: construct updated field object
+      return { ...field, field_type: { ...field?.field_type } } as CaseField;
+    });
+  }
+  private checkNestedDynamicList(caseField: CaseField, fieldData: any = null): void {
+    caseField.field_type.complex_fields.forEach((complexField) => {
+      if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
+        this.checkNestedDynamicList(complexField, fieldData?.[complexField.id]);
+      } else if (
+        complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST &&
+        complexField.display_context !== 'HIDDEN' &&
+        fieldData?.[complexField.id]
+      ) {
+        complexField.list_items = fieldData?.[complexField.id]?.list_items;
+      }
     });
   }
 
   private convertArrayToDynamicListOutput(field: CaseField, data: any): void {
     const values = data[field.id];
-
     if (Array.isArray(values)) {
       const listItems = this.getListItems(field);
       const matches = listItems.filter(item => values.map(v => v.code).indexOf(item.code) !== -1);

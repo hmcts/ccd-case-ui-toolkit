@@ -216,6 +216,36 @@ describe('FieldTypeSanitiser', () => {
               display_context: 'MANDATORY'
             }]
           }
+        },
+        {
+          id: 'field1',
+          field_type: {
+            type: 'Complex',
+            complex_fields: [
+              {
+                id: 'subfield1',
+                field_type: {
+                  type: 'Complex',
+                  complex_fields: [
+                    {
+                      id: 'subsubfield1',
+                      field_type: {
+                        type: 'DynamicMultiSelectList',
+                      },
+                      display_context: 'MANDATORY',
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          _value: {
+            subfield1: {
+              subsubfield1: {
+                list_items: ['nestedItem1', 'nestedItem2'],
+              },
+            },
+          },
         }
       ] as unknown as CaseField[];
     });
@@ -273,6 +303,11 @@ describe('FieldTypeSanitiser', () => {
         { code: '789', label: 'Peter Piper' },
         { code: '192', label: 'Peter Pan' }
       ]);
+    });
+
+    it('should add list_items to type DynamicMultiSelectList in deeply nested field', () => {
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toEqual(['nestedItem1', 'nestedItem2']);
     });
   });
 });
