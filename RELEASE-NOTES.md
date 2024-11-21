@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.75-exui-2515-rc2
+### Version 7.0.75-exui-2515-rc3
 **EXUI-2515** case-link-issue
 
 ### Version 7.0.75-exui-2462-rc1
