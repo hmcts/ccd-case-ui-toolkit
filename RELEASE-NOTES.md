@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.0.75-exui-2515-rc1
+### Version 7.0.75-exui-2515-rc2
 **EXUI-2515** case-link-issue
+
+### Version 7.0.75-exui-2462-rc1
+**EXUI-2462** DynamicRadioList incorrectly selects the wrong radio button
 
 ### Version 7.0.75
 **EXUI-2415** Redirect to an new event by a hyperlink
