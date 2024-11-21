@@ -3,7 +3,6 @@ import { WindowService } from './window.service';
 describe('WindowService', () => {
   const windowService: WindowService = new WindowService();
   const userName = 'test user';
-  const organisationDetails = 'test organisation';
 
   it('should remove from local storage', () => {
     windowService.setLocalStorage('user', userName);
