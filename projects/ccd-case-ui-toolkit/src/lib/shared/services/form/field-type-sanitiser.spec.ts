@@ -309,5 +309,23 @@ describe('FieldTypeSanitiser', () => {
       const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
       expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toEqual(['nestedItem1', 'nestedItem2']);
     });
+
+    it('should add list_items to type DynamicRadioButtonList in deeply nested field', () => {
+      mockCaseFields[2].field_type.complex_fields[0].field_type.complex_fields[0].field_type.type = 'DynamicRadioList';
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toEqual(['nestedItem1', 'nestedItem2']);
+    });
+
+    it('should add list_items to type DynamicList in deeply nested field', () => {
+      mockCaseFields[2].field_type.complex_fields[0].field_type.complex_fields[0].field_type.type = 'DynamicList';
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toEqual(['nestedItem1', 'nestedItem2']);
+    });
+
+    it('should add list_items to type FixedList in deeply nested field', () => {
+      mockCaseFields[2].field_type.complex_fields[0].field_type.complex_fields[0].field_type.type = 'FixedList';
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toBeUndefined();
+    });
   });
 });
