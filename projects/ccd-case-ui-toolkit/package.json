@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.64-regex-update-to-remove-unneeded-commas",
+  "version": "7.1.19-regex-update-to-remove-unneeded-commas",
   "engines": {
     "node": ">=18.19.0"
   },
