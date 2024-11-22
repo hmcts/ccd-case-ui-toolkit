@@ -1,5 +1,34 @@
 ## RELEASE NOTES 
 
+### Version 7.0.75
+**EXUI-2415** Redirect to an new event by a hyperlink
+
+### Version 7.0.74
+**EXUI-1108** Fix yarn npm audit in ccd-case-ui-toolkit
+
+### Version 7.0.71
+**EXUI-EXUI-2227** error-handling-specific-access-request
+
+### Version 7.0.70
+**EXUI-2193** Get rid of mc-menu-items LD flag
+**EXUI-2346** Not able to see unavailable dates on check your answers page
+**EXUI-2460** Describe your evidence' free text boxes not being
+
+### Version 7.0.69
+**EXUI-2354** Flakyness/slow login/Search issue
+
+### Version 7.0.67
+**EXUI-2146** Case file view time is 1 hour behind
+**EXUI-2230** Case File View date/time as GMT rather than Local BST
+
+
+### Version 7.0.66
+**EXUI-2148** Additional checks on task completion from session storage
+**EXUI-2057** A frozen screen is seen when attempting to complete a current task...
+
+### Version 7.0.65
+**EXUI-2320** Intermittent missing call of search for completable
+
 ### Version 7.0.64
 **EXUI-2086** Within case file view
 

@@ -7,7 +7,7 @@ import { WorkAllocationService } from '../services/work-allocation.service';
 
 export interface EventCompletionComponentEmitter {
   eventCanBeCompleted: EventEmitter<boolean>;
-  showPortal(portalType: number);
+  setTaskState(taskState: number);
 }
 
 export interface EventCompletionStateMachineContext {

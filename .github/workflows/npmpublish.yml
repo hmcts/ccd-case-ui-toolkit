@@ -23,6 +23,7 @@ jobs:
           node-version: 18
       - run: corepack enable && yarn --version
       - run: yarn install
+      - run: yarn test:audit
       - run: yarn lint
       - run: yarn build
       - run: yarn test
@@ -52,7 +53,7 @@ jobs:
           name: code-coverage-report
           path: coverage
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
