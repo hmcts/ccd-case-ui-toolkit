@@ -17,6 +17,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
 
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
   private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
+  private static readonly LINKED_CASES_TAB_ID_2 = 'caseLinksTab';
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -63,7 +64,9 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
       this.getAllLinkedCaseInformation();
     } else {
       this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
-        const linkedCasesTab = caseView.tabs.find(tab => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
+        const linkedCasesTab = caseView.tabs.find((tab) => {
+          return tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID || tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID_2;
+        });
         if (linkedCasesTab) {
           const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
           this.linkedCases = linkedCases;
@@ -74,28 +77,44 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
     }
   }
 
+  public getLinkedCaseId(linkedCase): string {
+    // challenged access doesnt return props in the same format, account for this
+    return linkedCase.caseReference ? linkedCase.caseReference : linkedCase['id'];
+  }
+
   public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
-    this.linkedCases.forEach(linkedCase => {
-      searchCasesResponse.push(this.casesService.getCaseViewV2(linkedCase.caseReference));
+    this.linkedCases.forEach((linkedCase) => {
+      const caseRefToSearch = this.getLinkedCaseId(linkedCase);
+      searchCasesResponse.push(this.casesService.getCaseViewV2(caseRefToSearch));
     });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
         searchCases.forEach((response: CaseView) => {
-          const linkedCaseFromList = this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id);
+          const linkedCaseFromList = this.linkedCases.find((linkedCase) => {
+            const caseRefToUse = this.getLinkedCaseId(linkedCase);
+            return caseRefToUse === response.case_id;
+          });
           if (linkedCaseFromList) {
             const caseName = this.linkedCasesService.getCaseName(response);
-            this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id).caseName = caseName;
+            const linkedCase = this.linkedCases.find((linkedCase) => {
+              const caseRefToUse = this.getLinkedCaseId(linkedCase);
+              return caseRefToUse === response.case_id;
+            });
+            if (linkedCase) {
+              linkedCase.caseName = caseName;
+              linkedCase.caseReference = response.case_id;
+            }
           }
         });
         this.initForm();
         this.linkedCasesService.linkedCases = this.linkedCases;
         this.isServerError = false;
       },
-        err => {
-          this.isServerError = true;
-          this.notifyAPIFailure.emit(true);
-        });
+      err => {
+        this.isServerError = true;
+        this.notifyAPIFailure.emit(true);
+      });
     }
   }
 

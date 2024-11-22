@@ -75,6 +75,16 @@ describe('UnLinkCasesComponent', () => {
     ]
   };
 
+  const caseInfoChallengedAccess = {
+    case_id: '1682374819203471',
+    case_type: {
+      name: 'SSCS type',
+      jurisdiction: { name: '' }
+    },
+    state: { name: 'With FTA' },
+    tabs: []
+  };
+
   const linkedCases: CaseLink[] = [
     {
       caseReference: '1682374819203471',
@@ -170,6 +180,15 @@ describe('UnLinkCasesComponent', () => {
   });
 
   it('should getLinkedCases populate linked cases', () => {
+    component.getLinkedCases();
+    expect(component.linkedCases.length).toEqual(2);
+    expect(component.linkedCases[0].caseReference).toEqual('1682374819203471');
+    expect(component.linkedCases[1].caseReference).toEqual('1682897456391875');
+  });
+
+  it('should getLinkedCases populate linked cases if there is challenged access cases', () => {
+    casesService.getCaseViewV2.and.returnValue(of(caseInfoChallengedAccess));
+    linkedCasesService.linkedCases = [];
     component.getLinkedCases();
     expect(component.linkedCases.length).toEqual(2);
     expect(component.linkedCases[0].caseReference).toEqual('1682374819203471');
