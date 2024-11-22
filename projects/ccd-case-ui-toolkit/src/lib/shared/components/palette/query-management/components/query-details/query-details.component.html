@@ -1,4 +1,5 @@
 <ng-container *ngIf="query">
+  <br/>
   <p>
     <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</a>
   </p>
@@ -29,13 +30,13 @@
           {{ 'Is the query hearing related?' | rpxTranslate }}
         </th>
         <td class="govuk-table__cell" [class.govuk-table__cell--no-border]="query.isHearingRelated">
-          {{ 'Is the query hearing related?' | rpxTranslate: null : (query.isHearingRelated ? 'Yes' : 'No') }}</td>
+          {{ 'Is the query hearing related?' | rpxTranslate: null : (query.isHearingRelated) }}</td>
       </tr>
-      <tr class="govuk-table__row govuk-table__row--isHearingRelated" *ngIf="query.isHearingRelated">
+      <tr class="govuk-table__row govuk-table__row--isHearingRelated" *ngIf="query.isHearingRelated === 'Yes'">
         <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ query.hearingDate | date: 'dd MMM yyyy' }}</td>
       </tr>
-      <tr class="govuk-table__row">
+      <tr class="govuk-table__row" *ngIf="query.attachments.length > 0">
         <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
         <td class="govuk-table__cell">
           <ccd-query-attachments-read
@@ -48,7 +49,6 @@
       </tbody>
     </table>
   </div>
-
   <ng-container *ngIf="query.children?.length > 0">
     <ng-container *ngFor="let child of query.children; let i = index;">
       <ng-container *ngIf="i % 2 === 0; else followUpMessage">
@@ -72,7 +72,7 @@
               <td class="govuk-table__cell">{{ child.body }}</td>
             </tr>
 
-          <tr class="govuk-table__row">
+          <tr class="govuk-table__row" *ngIf="child.attachments.length > 0">
             <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
             <td class="govuk-table__cell">
               <ccd-query-attachments-read
@@ -87,7 +87,7 @@
       </ng-container>
 
       <ng-template #followUpMessage>
-        <div class="query_details_caption">{{ 'Follow-up' | rpxTranslate }}</div>
+        <!-- <div class="query_details_caption">{{ 'Follow-up' | rpxTranslate }}</div> -->
         <table class="govuk-table query-details-table"
                [attr.aria-describedby]="'Follow-up of the response' | rpxTranslate">
           <caption class="govuk-table__caption govuk-table__caption--l">
@@ -109,7 +109,7 @@
               <td class="govuk-table__cell">{{ child.body }}</td>
             </tr>
 
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" *ngIf="child.attachments.length > 0">
               <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
               <td class="govuk-table__cell">
                 <ccd-query-attachments-read
