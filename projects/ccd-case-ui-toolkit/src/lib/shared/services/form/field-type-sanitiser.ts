@@ -65,8 +65,7 @@ export class FieldTypeSanitiser {
       field.field_type.complex_fields.forEach((complexField) => {
         if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
           this.checkNestedDynamicList(complexField, caseFieldData?.[complexField.id]);
-        } else if (
-          FieldTypeSanitiser.DYNAMIC_LIST_TYPE.indexOf(complexField.field_type.type) !== -1 &&
+        } else if (this.isDynamicList(complexField.field_type.type) &&
           complexField.display_context !== 'HIDDEN' &&
           field._value?.[complexField.id]
         ) {
@@ -81,14 +80,17 @@ export class FieldTypeSanitiser {
     caseField.field_type.complex_fields.forEach((complexField) => {
       if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
         this.checkNestedDynamicList(complexField, fieldData?.[complexField.id]);
-      } else if (
-        FieldTypeSanitiser.DYNAMIC_LIST_TYPE.indexOf(complexField.field_type.type) !== -1 &&
+      } else if (this.isDynamicList(complexField.field_type.type) &&
         complexField.display_context !== 'HIDDEN' &&
         fieldData?.[complexField.id]
       ) {
         complexField.list_items = fieldData?.[complexField.id]?.list_items;
       }
     });
+  }
+
+  private isDynamicList(fieldType: FieldTypeEnum): boolean {
+    return FieldTypeSanitiser.DYNAMIC_LIST_TYPE.indexOf(fieldType) !== -1;
   }
 
   private convertArrayToDynamicListOutput(field: CaseField, data: any): void {
