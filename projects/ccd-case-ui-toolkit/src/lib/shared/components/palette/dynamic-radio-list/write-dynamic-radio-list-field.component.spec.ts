@@ -98,4 +98,29 @@ describe('WriteDynamicRadioListFieldComponent', () => {
     expect(attr(options[1], 'id')).toEqual('MaritalStatus_F');
     expect(attr(options[2], 'id')).toEqual('MaritalStatus_O');
   });
+
+  // Note: Currently unknown why this is the default for a parent with relevant value
+  it('test parent value sets element ID', () => {
+    component.parent = {value: {id: '1', value: 'value'}} as any;
+    fixture.detectChanges();
+    const options = de.queryAll($RADIO);
+
+    expect(options.length).toEqual(3);
+    expect(attr(options[0], 'type')).toEqual('radio');
+    expect(attr(options[0], 'id')).toEqual('1value');
+    expect(attr(options[1], 'id')).toEqual('1value');
+    expect(attr(options[2], 'id')).toEqual('1value');
+  });
+
+  it('test parent value not present', () => {
+    component.parent = {value: null} as any;
+    fixture.detectChanges();
+    const options = de.queryAll($RADIO);
+
+    expect(options.length).toEqual(3);
+    expect(attr(options[0], 'type')).toEqual('radio');
+    expect(attr(options[0], 'id')).toEqual('MaritalStatus_M');
+    expect(attr(options[1], 'id')).toEqual('MaritalStatus_F');
+    expect(attr(options[2], 'id')).toEqual('MaritalStatus_O');
+  });
 });
