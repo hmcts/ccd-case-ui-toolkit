@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { SessionStorageService } from '../../../services';
+import { ReadCookieService, SessionStorageService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
 import { EventStartGuard } from './event-start.guard';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -30,12 +30,14 @@ describe('EventStartGuard', () => {
   let service: jasmine.SpyObj<WorkAllocationService>;
   let router: jasmine.SpyObj<Router>;
   let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockCookieService: jasmine.SpyObj<ReadCookieService>;
   let mockAbstractConfig: jasmine.SpyObj<AbstractAppConfig>;
 
   beforeEach(() => {
     service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
     router = jasmine.createSpyObj('Router', ['navigate']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+    mockCookieService = jasmine.createSpyObj('readCookieService', ['getCookie']);
     mockAbstractConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
 
     TestBed.configureTestingModule({
@@ -44,7 +46,8 @@ describe('EventStartGuard', () => {
         { provide: WorkAllocationService, useValue: service },
         { provide: Router, useValue: router },
         { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: AbstractAppConfig, useValue: mockAbstractConfig }
+        { provide: AbstractAppConfig, useValue: mockAbstractConfig },
+        { provide: ReadCookieService, useValue: mockCookieService }
       ]
     });
 
@@ -61,6 +64,19 @@ describe('EventStartGuard', () => {
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(false);
+    });
+  });
+
+  it('client context should be set with language regardless whether task is attached to event', () => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const mockClientContext = { client_context: { user_language: { language: 'cookieString' } } };
+    mockCookieService.getCookie.and.returnValue('cookieString');
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(false);
+      // check client contesxt is set correctly
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
     });
   });
 
@@ -136,17 +152,22 @@ describe('EventStartGuard', () => {
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
+      const mockLanguage = 'en';
       const clientContext = {
         client_context: {
           user_task: {
             task_data: tasks[0],
             complete_task: true
+          },
+          user_language: {
+            language: mockLanguage
           }
         }
       }
       tasks[0].assignee = '1';
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      mockCookieService.getCookie.and.returnValue(mockLanguage);
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
     });
@@ -161,11 +182,15 @@ describe('EventStartGuard', () => {
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      const mockLanguage = 'cy';
       const clientContext = {
         client_context: {
           user_task: {
             task_data: tasks[0],
             complete_task: true
+          },
+          user_language: {
+            language: mockLanguage
           }
         }
       }
@@ -173,6 +198,7 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      mockCookieService.getCookie.and.returnValue(mockLanguage);
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
     });
