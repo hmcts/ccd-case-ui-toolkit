@@ -16,7 +16,7 @@ export class PageValidationService {
     page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
-      .map(caseField => {
+      .forEach(caseField => {
         const theControl = FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])
           ? editForm.controls['data'].get(`${caseField.id}_judicialUserControl`)
           : editForm.controls['data'].get(caseField.id);

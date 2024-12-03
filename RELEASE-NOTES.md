@@ -1,4 +1,10 @@
-## RELEASE NOTES 
+## RELEASE NOTES
+
+### Version 7.0.75-exui-2315
+**EXUI-2315** etrieve current user language selection
+
+### Version 7.0.75-exui-2515
+**EXUI-2515** case-link-issue
 
 ### Version 7.0.75-exui-2462-rc1
 **EXUI-2462** DynamicRadioList incorrectly selects the wrong radio button
