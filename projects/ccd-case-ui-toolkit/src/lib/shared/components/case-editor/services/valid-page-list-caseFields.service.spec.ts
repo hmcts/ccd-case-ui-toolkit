@@ -1,4 +1,4 @@
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain';
 import { ValidPageListCaseFieldsService } from './valid-page-list-caseFields.service';
 import { WizardPage } from '../../case-editor/domain/wizard-page.model';
 import { FieldsUtils } from '../../../services';
@@ -10,7 +10,7 @@ describe('ValidPageListCaseFieldsService', () => {
   const caseField2 = buildCaseField('caseField2', 'someValue2');
   const caseField3 = buildCaseField('caseField3', 'someValue3');
   const caseField4 = buildCaseField('caseField4', 'someValue4');
-  const caseField5 = buildCaseField('caseField5', 'someValue5');
+  const caseField5 = buildComplexCaseField('caseField5', 'someValue5');
   const caseField6 = buildCaseField('caseField6', 'someValue6');
   const caseField7 = buildCaseField('caseField7', 'someValue7');
   const caseField8 = buildCaseField('caseField8', 'someValue8');
@@ -30,6 +30,36 @@ describe('ValidPageListCaseFieldsService', () => {
     caseField10 : 'someValue10'
   }
   let caseEventData;
+  const form = {
+    controls: {
+      data: {
+        controls: {
+          caseField5: {
+            controls: {
+              field1: {
+                caseField: {
+                  id: 'id1',
+                  label: 'id1',
+                  hidden: true,
+                  retain_hidden_value: null,
+                  value: 'val1'
+                }
+              },
+              field2: {
+                caseField: {
+                  id: 'id2',
+                  label: 'id2',
+                  hidden: null,
+                  retain_hidden_value: null,
+                  value: 'val2'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   beforeEach(() => {
     caseEventData = {
       caseField1: 'someValue1',
@@ -61,6 +91,12 @@ describe('ValidPageListCaseFieldsService', () => {
     expect(caseField.length).toBe(8);
   });
 
+  it('should return caseField list of valid page list with hidden set to true and its marked as hidden', () => {
+    const caseField = validPageListCaseFieldsService.validPageListCaseFields(validPageList, eventTriggerFields, formFields, form);
+    const cf = caseField.filter(field => field.id === 'caseField5');
+    expect(cf[0].field_type.complex_fields[0].hidden).toBe(true);
+  });
+
   function buildPage(pageId: string, label: string, order: number, caseFields?: CaseField[], condition?: string): WizardPage {
     const wp = new WizardPage();
     wp.id = pageId;
@@ -75,6 +111,40 @@ describe('ValidPageListCaseFieldsService', () => {
     const cField = new CaseField();
     cField.id = caseFieldId;
     cField.value = caseFieldValue;
+    return cField;
+  }
+
+  function buildComplexCaseField(caseFieldId: string, caseFieldValue: any) {
+    const cField = new CaseField();
+    cField.id = caseFieldId;
+    cField.value = caseFieldValue;
+    cField.field_type = {
+      id: 'ParentField',
+      type: 'Complex',
+      complex_fields: [
+        {
+          id: 'id1',
+          label: 'id1',
+          display_context: null,
+          field_type: {
+            id: 'Text',
+            type: 'Text',
+          },
+          hidden: null,
+          retain_hidden_value: null
+        } as CaseField,
+        {
+          id: 'id2',
+          label: 'id2',
+          display_context: null,
+          field_type: {
+            id: 'Text',
+            type: 'Text',
+          },
+          hidden: null,
+          retain_hidden_value: null
+        } as CaseField
+      ]} as FieldType;
     return cField;
   }
 });

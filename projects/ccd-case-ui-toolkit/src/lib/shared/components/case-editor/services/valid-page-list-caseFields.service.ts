@@ -27,13 +27,36 @@ export class ValidPageListCaseFieldsService {
     }
   }
 
-  public validPageListCaseFields(validPageList: WizardPage[], eventTriggerFields: CaseField[], formFields: object) : CaseField[] {
+  public validPageListCaseFields(validPageList: WizardPage[], eventTriggerFields: CaseField[], formFields: object, form?: any) : CaseField[] {
     const validPageListCaseFields: CaseField[] = [];
     validPageList.forEach(page => {
       if (this.isShown(page, eventTriggerFields, formFields)) {
-        page.case_fields.forEach(field => validPageListCaseFields.push(field));
+        page.case_fields.forEach(field => {
+          this.setHiddenFlagOnHiddenFormControls(form, field);
+          validPageListCaseFields.push(field);
+        });
       }
     });
     return validPageListCaseFields;
+  }
+
+  private setHiddenFlagOnHiddenFormControls(form: any, field: CaseField) {
+    try {
+      if (form?.controls['data']['controls'][field.id]?.controls) {
+        Object.keys(form.controls['data']['controls'][field.id]?.controls).forEach((item) => {
+          const fieldCheck = form.controls['data']['controls'][field.id]?.controls[item].caseField;
+          if (fieldCheck?.hidden === true && fieldCheck?.retain_hidden_value !== true) {
+            if (field.field_type.type === 'Complex') {
+              const objWithIdIndex = field.field_type.complex_fields.findIndex((obj) => obj.id === fieldCheck.id);
+              if (objWithIdIndex >= 0) {
+                field.field_type.complex_fields[objWithIdIndex].hidden = true;
+              }
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.log("error setHiddenFalgsOnHiddenFormControls");
+    }
   }
 }
