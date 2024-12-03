@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.0.75-exui-2536-rc-4
+### Version 7.0.75-exui-2575
 **EXUI-2536** issue with DynamicMultiSelectList
+**EXUI-2431** Special characters stopping events
+**EXUI-2469** HiddenFieldData Retained
+
+### Version 7.0.75-exui-2315
+**EXUI-2315** etrieve current user language selection
+
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue
