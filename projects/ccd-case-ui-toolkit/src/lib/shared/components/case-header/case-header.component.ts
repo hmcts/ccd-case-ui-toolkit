@@ -10,17 +10,25 @@ import { Draft } from '../../domain/draft.model';
 })
 
 export class CaseHeaderComponent implements OnInit {
-  @Input() public caseDetails: CaseView;
+
+  @Input()
+  public caseDetails: CaseView;
   public caseTitle: CaseField;
   public caseFields: CaseField[];
 
   public ngOnInit(): void {
     this.caseTitle = new CaseField();
-    this.caseTitle.label = this.caseDetails.state.title_display;
-    this.caseFields = this.getCaseFieldsInfo();
+    if (!this.isDraft() && this.caseDetails.state.title_display) {
+      this.caseTitle.label = this.caseDetails.state.title_display;
+      this.caseFields = this.getCaseFields();
+    }
   }
 
-  private getCaseFieldsInfo(): CaseField[] {
+  public isDraft(): boolean {
+    return Draft.isDraft(this.caseDetails.case_id);
+  }
+
+  private getCaseFields(): CaseField[] {
     const caseDataFields = this.caseDetails.tabs.reduce((acc, tab) => {
       return acc.concat(tab.fields);
     }, []);
