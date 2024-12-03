@@ -66,7 +66,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
 
   it('should have the link to case details queries tab', () => {
     component.click();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Query Management' });
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Queries' });
   });
 
   describe('displayError', () => {
