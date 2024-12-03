@@ -4,6 +4,8 @@
 **EXUI-2536** issue with DynamicMultiSelectList
 **EXUI-2431** Special characters stopping events
 **EXUI-2469** HiddenFieldData Retained
+**EXUI-2537** upgrade pdf-dist in media viewer
+**EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
 **EXUI-2315** etrieve current user language selection
