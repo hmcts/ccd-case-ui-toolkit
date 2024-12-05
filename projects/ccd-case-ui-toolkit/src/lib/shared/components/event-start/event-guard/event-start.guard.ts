@@ -32,15 +32,33 @@ export class EventStartGuard implements CanActivate {
     }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
-    // if one task assigned to user, allow user to complete event
-    const storeClientContext = {
-      client_context: {
-        user_language: {
-          language: currentLanguage
+    const preClientContext = this.sessionStorageService.getItem(EventStartGuard.CLIENT_CONTEXT);
+    if (!preClientContext) {
+      // creates client context for language if not already existing
+      const storeClientContext = {
+        client_context: {
+          user_language: {
+            language: currentLanguage
+          }
         }
+      };
+      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+    } else {
+      const clientContextObj = JSON.parse(preClientContext);
+      if (!clientContextObj?.client_context?.user_language) {
+        const user_task = clientContextObj?.client_context?.user_task ? clientContextObj.client_context.user_task : {};
+        // creates new client context with existing as well as new language info
+        const clientContext = {
+          client_context: {
+            user_task: user_task,
+            user_language: {
+              language: currentLanguage
+            }
+          }
+        };
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(clientContext));
       }
-    };
-    this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+    }
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
