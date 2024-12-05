@@ -31,7 +31,8 @@ export class EventStartGuard implements CanActivate {
       userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
+    const languageCookie = this.cookieService.getCookie('exui-preferred-language');
+    const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
     const preClientContext = this.sessionStorageService.getItem(EventStartGuard.CLIENT_CONTEXT);
     if (!preClientContext) {
       // creates client context for language if not already existing
@@ -46,17 +47,16 @@ export class EventStartGuard implements CanActivate {
     } else {
       const clientContextObj = JSON.parse(preClientContext);
       if (!clientContextObj?.client_context?.user_language) {
-        const user_task = clientContextObj?.client_context?.user_task ? clientContextObj.client_context.user_task : {};
-        // creates new client context with existing as well as new language info
-        const clientContext = {
+        const clientContextAddLanguage = {
+          ...clientContextObj,
           client_context: {
-            user_task: user_task,
+            ...clientContextObj.client_context,
             user_language: {
               language: currentLanguage
             }
           }
-        };
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(clientContext));
+        }
+        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
     if (caseInfoStr) {
