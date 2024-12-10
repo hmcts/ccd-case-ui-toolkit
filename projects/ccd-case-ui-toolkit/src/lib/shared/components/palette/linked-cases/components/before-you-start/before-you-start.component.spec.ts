@@ -7,7 +7,7 @@ import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { BeforeYouStartComponent } from './before-you-start.component';
 
-fdescribe('BeforeYouStartComponent', () => {
+describe('BeforeYouStartComponent', () => {
   let component: BeforeYouStartComponent;
   let fixture: ComponentFixture<BeforeYouStartComponent>;
 
@@ -103,7 +103,7 @@ fdescribe('BeforeYouStartComponent', () => {
   });
 });
 
-fdescribe('BeforeYouStartComponent - secondary checks', () => {
+describe('BeforeYouStartComponent - secondary checks', () => {
   let component: BeforeYouStartComponent;
   let fixture: ComponentFixture<BeforeYouStartComponent>;
 
