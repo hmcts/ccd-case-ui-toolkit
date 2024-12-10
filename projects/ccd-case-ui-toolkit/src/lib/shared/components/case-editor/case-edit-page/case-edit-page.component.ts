@@ -494,6 +494,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public cancel(): void {
     if (this.isLinkedCasesJourney()){
+      // if the user cancels the journey we need to clean up the data
+      const linkedCasesTab = this.caseEdit.caseDetails.tabs.find((tab) =>
+        tab?.fields?.some((field) => field.id === 'caseLinks')
+      )?.fields?.[0] ?? null;
+      const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
+      if (linkedCasesTab && linkedCasesTab?.value.length !== initalLinks.length){
+        const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
+        linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
+          initialCaseRefs.includes(item.value.CaseReference)
+        );
+      }
       this.linkedCasesService.resetLinkedCaseData();
     }
     if (this.eventTrigger.can_save_draft) {

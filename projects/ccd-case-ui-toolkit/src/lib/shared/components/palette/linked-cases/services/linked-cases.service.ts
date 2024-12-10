@@ -28,7 +28,9 @@ export class LinkedCasesService {
   public storedCaseNumber = '';
   public cameFromFinalStep = false;
   public hasNavigatedInJourney = false;
+  public hasContinuedFromStart = false;
   public cachedFieldValues;
+  public initialCaseLinkRefs = [];
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {
@@ -58,11 +60,16 @@ export class LinkedCasesService {
   }
 
   public resetLinkedCaseData(): void {
+    //remove the newly added linked case using the linked case
     this.caseFieldValue = [];
     this.linkedCases = [];
+    this.initialCaseLinks = [];
+    this.initialCaseLinkRefs = [];
     this.storedCaseNumber = '';
     this.cameFromFinalStep = false;
     this.hasNavigatedInJourney = false;
+    this.caseDetails = null;
+    this.hasContinuedFromStart = false;
   }
 
   public mapResponse(esSearchCasesResponse): any {

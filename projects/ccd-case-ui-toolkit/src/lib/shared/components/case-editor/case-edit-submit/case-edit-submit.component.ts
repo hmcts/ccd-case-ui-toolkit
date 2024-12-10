@@ -115,6 +115,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     if (this.summary.valid && this.description.valid) {
+      if (this.caseEdit.isLinkedCasesSubmission){
+        // once the user submits the linked cases we need to reset the service so data isnt retained if they open the event again
+        this.linkedCasesService.resetLinkedCaseData();
+      }
       this.caseEdit.submitForm({
         eventTrigger: this.eventTrigger,
         form: this.editForm,
@@ -174,6 +178,17 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public cancel(): void {
     if (this.caseEdit.isLinkedCasesSubmission){
+      // if they cancel on the last CYA page we should ensure there is no unsubmitted data in the caseDetails
+      const linkedCasesTab = this.caseEdit.caseDetails.tabs.find((tab) =>
+        tab?.fields?.some((field) => field.id === 'caseLinks')
+      )?.fields?.[0] ?? null;
+      const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
+      if (linkedCasesTab && linkedCasesTab?.value.length !== initalLinks.length){
+        const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
+        linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
+          initialCaseRefs.includes(item.value.CaseReference)
+        );
+      }
       this.linkedCasesService.resetLinkedCaseData();
     }
     if (this.eventTrigger.can_save_draft) {

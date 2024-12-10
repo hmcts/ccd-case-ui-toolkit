@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
-import { CaseField, Jurisdiction, Profile } from '../../../domain';
+import { CaseField, CaseTab, Jurisdiction, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
@@ -132,6 +132,7 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier: ProfileNotifier;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
   let formValidatorsService: jasmine.SpyObj<FormValidatorsService>;
+  let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
@@ -802,6 +803,26 @@ describe('CaseEditSubmitComponent', () => {
       expect(comp.caseEdit.isCaseFlagSubmission).toBe(false);
       const previousButton = de.query(By.css('.button-secondary'));
       expect(previousButton.nativeElement.textContent).toContain('Previous');
+    });
+
+    it('should remove any unsibmitted data on cancel', () => {
+      comp.caseEdit.caseDetails.tabs = [{
+        id: '123',
+        fields: [
+          {
+            id: 'caseLinks',
+            value: [
+              { value: { CaseReference: 'REF1' } },
+              { value: { CaseReference: 'REF2' } },
+              { value: { CaseReference: 'REF3' } }
+            ]
+          }
+        ]
+      }] as CaseTab[];
+      caseEditComponent.isLinkedCasesSubmission = true;
+      linkedCasesService.initialCaseLinkRefs = ['REF1'];
+      comp.cancel();
+      expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
     });
   });
 

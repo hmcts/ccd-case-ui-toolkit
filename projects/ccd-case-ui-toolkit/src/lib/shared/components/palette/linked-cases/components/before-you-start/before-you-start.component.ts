@@ -27,13 +27,22 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
     // re-initiate the state based on the casefield value
-    const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
-    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter
-    (item => linkedCaseRefereneIds.indexOf(item.caseReference) !== -1);
-    this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
+    const linkedCaseReferenceIds = this.linkedCasesService.caseFieldValue.filter((item) => item).map((item) => item.id);
+    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => linkedCaseReferenceIds.indexOf(item.caseReference) !== -1);
+    if (this.linkedCasesService.linkedCases.length === 0 && this.linkedCasesService.caseFieldValue.length !== 0 && !this.linkedCasesService.hasContinuedFromStart) {
+      this.linkedCasesService.caseFieldValue.forEach((item) => {
+        this.linkedCasesService.initialCaseLinkRefs.push(item.id);
+      });
+    } else {
+      this.linkedCasesService.linkedCases.forEach((item) => {
+        this.linkedCasesService.initialCaseLinkRefs.push(item.caseReference);
+      });
+      this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
+    }
   }
 
   public onNext(): void {
+    this.linkedCasesService.hasContinuedFromStart = true;
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
       errorMessages: this.errorMessages,

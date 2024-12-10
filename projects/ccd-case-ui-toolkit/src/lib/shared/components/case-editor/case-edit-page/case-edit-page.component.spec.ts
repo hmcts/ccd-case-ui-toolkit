@@ -64,6 +64,7 @@ import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { CaseTab } from 'ccd-case-ui-toolkit';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -77,11 +78,11 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
   const CASE_TYPES_2 = [
     {
-        id: 'Benefit_Xui',
-        name: 'Benefit_Xui',
-        description: '',
-        states: [],
-        events: [],
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
     }];
   const MOCK_JURISDICTION: Jurisdiction[] = [{
     id: 'JURI_1',
@@ -113,7 +114,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     linkedCasesService = {},
     caseFlagStateService = new CaseFlagStateService()
   }) =>
-  new CaseEditPageComponent(
+    new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
     route as ActivatedRoute,
     formValueService as FormValueService,
@@ -129,7 +130,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     addressesService as AddressesService,
     linkedCasesService as LinkedCasesService,
     caseFlagStateService as CaseFlagStateService
-  );
+    );
 
   it('should create', () => {
     component = initializeComponent({});
@@ -175,7 +176,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   });
 
   describe('updateEventTriggerCaseFields', () => {
-    it(`should NOT update event trigger's case fields as eventTrigger is null`, () => {
+    it('should NOT update event trigger\'s case fields as eventTrigger is null', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {} as unknown as CaseEventData;
@@ -186,7 +187,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock).toBeNull();
     });
 
-    it(`should NOT update event trigger's case fields as eventTrigger has no case fields`, () => {
+    it('should NOT update event trigger\'s case fields as eventTrigger has no case fields', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {} as unknown as CaseEventData;
@@ -197,7 +198,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock).toEqual(jasmine.objectContaining({ id: 'noCaseFields' }));
     });
 
-    it(`should update event trigger's case fields value`, () => {
+    it('should update event trigger\'s case fields value', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {
@@ -219,7 +220,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(true);
     });
 
-    it(`should update event trigger's case fields value with jsonData's object`, () => {
+    it('should update event trigger\'s case fields value with jsonData\'s object', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -246,7 +247,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should NOT update event trigger's case fields value as jsonData's value is null`, () => {
+    it('should NOT update event trigger\'s case fields value as jsonData\'s value is null', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -279,7 +280,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should NOT update event trigger's case fields value as jsonData's value is undefined`, () => {
+    it('should NOT update event trigger\'s case fields value as jsonData\'s value is undefined', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -310,7 +311,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should update event trigger's case fields value as jsonData's value is present`, () => {
+    it('should update event trigger\'s case fields value as jsonData\'s value is present', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -438,11 +439,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
   const CASE_TYPES_2 = [
     {
-        id: 'Benefit_Xui',
-        name: 'Benefit_Xui',
-        description: '',
-        states: [],
-        events: [],
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
     }];
   const MOCK_JURISDICTION: Jurisdiction[] = [{
     id: 'JURI_1',
@@ -457,6 +458,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
   const caseFlagStateService = new CaseFlagStateService();
+  let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
 
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
@@ -576,7 +578,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
             { provide: LinkedCasesService, useValue: linkedCasesService },
@@ -868,6 +870,29 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(caseFlagStateService.fieldStateToNavigate).toEqual(3);
       expect(caseFlagStateService.lastPageFieldState).toEqual(3);
     });
+
+    it('should remove any unsibmitted data on cancel', () => {
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
+      comp.currentPage = wizardPage;
+      comp.caseEdit.caseDetails.tabs = [{
+        id: '123',
+        fields: [
+          {
+            id: 'caseLinks',
+            value: [
+              { value: { CaseReference: 'REF1' } },
+              { value: { CaseReference: 'REF2' } },
+              { value: { CaseReference: 'REF3' } }
+            ]
+          }
+        ]
+      }] as CaseTab[];
+      linkedCasesServiceSpy = TestBed.inject(LinkedCasesService) as jasmine.SpyObj<LinkedCasesService>;
+      spyOn(comp, 'isLinkedCasesJourney').and.returnValues(true);
+      linkedCasesService.initialCaseLinkRefs = ['REF1'];
+      comp.cancel();
+      expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
+    });
   });
 
   describe('Save and Resume disabled', () => {
@@ -984,7 +1009,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
             { provide: CaseFlagStateService, useValue: caseFlagStateService }
@@ -1153,7 +1178,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
             { provide: CaseFlagStateService, useValue: caseFlagStateService }
@@ -1327,7 +1352,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
             { provide: CaseFlagStateService, useValue: caseFlagStateService }
@@ -1676,8 +1701,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
             { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
@@ -1732,7 +1757,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         const value = control.value;
 
         if (!value) {
-          return {mockRequired:true};
+          return { mockRequired: true };
         }
       }
     }
@@ -1787,7 +1812,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       id: 'AddressLine1',
       label: 'AddressLine1',
       display_context: 'MANDATORY',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '',
     } as CaseField;
 
@@ -1897,7 +1922,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
             { provide: CaseFlagStateService, useValue: caseFlagStateService }
@@ -1944,7 +1969,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(3);
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% is required`);
+        expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
 
@@ -1977,7 +2002,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form`
+          'The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form'
         );
       });
     });
@@ -1997,7 +2022,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `The field that is causing the error cannot be determined but there is an error present`
+          'The field that is causing the error cannot be determined but there is an error present'
         );
       });
     });
@@ -2031,7 +2056,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `%FIELDLABEL% is below the minimum length`
+          '%FIELDLABEL% is below the minimum length'
         );
       });
     });
@@ -2064,7 +2089,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% exceeds the maximum length`);
+        expect(error.message).toEqual('%FIELDLABEL% exceeds the maximum length');
       });
     });
 
@@ -2112,7 +2137,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
 
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% is required`);
+        expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
 
@@ -2157,7 +2182,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
+        expect(error.message).toEqual('There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present');
       });
     });
 

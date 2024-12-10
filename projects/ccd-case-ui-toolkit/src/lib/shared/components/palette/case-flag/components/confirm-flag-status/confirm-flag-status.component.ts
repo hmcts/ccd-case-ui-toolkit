@@ -42,6 +42,9 @@ export class ConfirmFlagStatusComponent extends AbstractJourneyComponent impleme
     this.formGroup.addControl(this.selectedStatusControlName, new FormControl(this.flagCreationStatuses.find(
       key => CaseFlagStatus[key] === this.defaultStatus)));
     this.formGroup.addControl(this.statusReasonControlName, new FormControl(''));
+    if (this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber === CaseFlagFieldState.FLAG_STATUS) {
+      this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber = CaseFlagFieldState.FLAG_COMMENTS;
+    }
   }
 
   public onNext(): void {
