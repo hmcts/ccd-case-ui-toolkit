@@ -25,6 +25,7 @@ import {
   DraftService,
   ErrorNotifierService,
   FieldsUtils,
+  LoadingService,
   NavigationNotifierService,
   NavigationOrigin,
   OrderService,
@@ -96,7 +97,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe
+    private readonly rpxTranslationPipe: RpxTranslatePipe,
+    private loadingService: LoadingService
   ) {
   }
 
@@ -194,6 +196,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
+    const spinner = this.loadingService.register();
+    this.loadingService.storedSpinner = spinner;
     this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 
