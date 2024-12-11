@@ -75,7 +75,21 @@ describe('EventStartGuard', () => {
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(false);
-      // check client contesxt is set correctly
+      // check client context is set correctly
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
+    });
+  });
+
+  it('client context should be set with language regardless if client context already exists', () => {
+    const mockClientContext: any = { client_context: { user_task: {}, additional_field: 'test' } };
+    sessionStorageService.getItem.and.returnValues(null, null, JSON.stringify(mockClientContext));
+    mockCookieService.getCookie.and.returnValue('cookieString');
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const result$ = guard.canActivate(route);
+    mockClientContext.client_context.user_language = { language: 'cookieString' };
+    result$.subscribe(result => {
+      expect(result).toEqual(false);
+      // check client context is set correctly
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
     });
   });
