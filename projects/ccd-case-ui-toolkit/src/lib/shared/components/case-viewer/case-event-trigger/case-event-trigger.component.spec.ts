@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, FieldsUtils, SessionStorageService } from '../../../services';
+import { ActivityPollingService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -178,7 +178,8 @@ describe('CaseEventTriggerComponent', () => {
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivityPollingService, useValue: activityPollingService },
-          { provide: SessionStorageService, useValue: sessionStorageService }
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          LoadingService
         ]
       })
       .compileComponents();
