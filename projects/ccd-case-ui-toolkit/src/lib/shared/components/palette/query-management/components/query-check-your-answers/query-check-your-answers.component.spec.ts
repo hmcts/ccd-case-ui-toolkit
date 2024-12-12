@@ -2,13 +2,16 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
-import { CaseView, TaskSearchParameter } from '../../../../../../shared/domain';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { CaseField, CaseView, FieldType, TaskSearchParameter } from '../../../../../../shared/domain';
+import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
+import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -23,7 +26,9 @@ describe('QueryCheckYourAnswersComponent', () => {
   let nativeElement: any;
   let casesService: any;
   let caseNotifier: any;
+  let router: Router;
   let workAllocationService: any;
+  let sessionStorageService: any;
 
   const items = [
     {
@@ -75,11 +80,11 @@ describe('QueryCheckYourAnswersComponent', () => {
       hearingDate: '',
       createdOn: new Date('2023-06-01'),
       createdBy: 'Person D',
-      parentId: '444-444',
+      parentId: '444-444'
     }
   ];
 
-  const childrenItems = items.map(item => {
+  const childrenItems = items.map((item) => {
     const listItem = new QueryListItem();
     Object.assign(listItem, item);
     return listItem;
@@ -124,7 +129,78 @@ describe('QueryCheckYourAnswersComponent', () => {
   const snapshotActivatedRoute = {
     snapshot: {
       params: {
-        qid: '1'
+        qid: '1',
+        dataid: 'id-007'
+      },
+      data: {
+        case: {
+          tabs: [
+            {
+              fields: [],
+              id: 'QueryManagement2',
+              label: 'Queries (writeable view)',
+              order: 8,
+              show_condition: null
+            },
+            {
+              fields: [
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'ComponentLauncher',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'ComponentLauncher'
+                  },
+                  id: 'QueryManagement1',
+                  label: 'Query management component'
+                },
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'CaseQueriesCollection',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'Complex'
+                  },
+                  id: 'qmCaseQueriesCollection',
+                  label: 'Query management case queries collection',
+                  value: {
+                    caseMessages: [{
+                      id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+                      value: {
+                        attachments: [],
+                        body: 'testing by olu',
+                        createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+                        createdOn: '2024-08-27T15:44:50.700Z',
+                        hearingDate: '2023-01-10',
+                        id: null,
+                        isHearingRelated: 'Yes',
+                        name: 'Piran Sam',
+                        parentId: 'ca',
+                        subject: 'Review attached document'
+                      }
+                    }],
+                    partyName: '',
+                    roleOnCase: ''
+                  }
+                }
+
+              ],
+              id: 'QueryManagement1',
+              label: 'Queries (read-only view)',
+              order: 7,
+              show_condition: null
+            }
+          ]
+        }
+
       }
     }
   };
@@ -136,7 +212,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test',
+        name: 'Test'
       }
     },
     channels: [],
@@ -144,8 +220,71 @@ describe('QueryCheckYourAnswersComponent', () => {
       id: 'CaseCreated',
       name: 'Case created'
     },
-    tabs: [],
-    triggers: [],
+    tabs: [
+      {
+        fields: [],
+        id: 'QueryManagement2',
+        label: 'Queries (writeable view)',
+        order: 8,
+        show_condition: null
+      },
+      {
+        fields: [],
+        id: 'QueryManagement1',
+        label: 'Queries (read-only view)',
+        order: 8,
+        show_condition: null
+      }
+    ],
+    triggers: [
+    ],
+    events: []
+  };
+  const CASE_VIEW_OTHER: CaseView = {
+    case_id: '1',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [
+      {
+        fields: [],
+        id: 'QueryManagement2',
+        label: 'Queries (writeable view)',
+        order: 8,
+        show_condition: null
+      },
+      {
+        fields: [],
+        id: 'QueryManagement1',
+        label: 'Queries (read-only view)',
+        order: 8,
+        show_condition: null
+      }
+    ],
+    triggers: [
+      {
+        description: 'Raise a query',
+        id: 'queryManagementRaiseQuery',
+        name: 'Raise a query',
+        order: 14
+      },
+      {
+        description: 'Respond to a query (not intended to be visible)',
+        id: 'queryManagementRespondQuery',
+        name: 'Respond to a query',
+        order: 15
+      }
+    ],
     events: []
   };
 
@@ -167,23 +306,115 @@ describe('QueryCheckYourAnswersComponent', () => {
     }]
   };
 
+  const eventTrigger = {
+    id: 'queryManagementRaiseQuery',
+    name: 'queryManagementRaiseQuery',
+    description: 'Respond to a query',
+    event_token: 'token0011223344'
+  };
+
+  const userDetails = {
+    email: 'smith_solicitor@test.com',
+    uid: '1111-2222-3333-4444',
+    name: 'Smith Solicitor'
+  };
+
+  const eventData = {
+    ...eventTrigger,
+    case_fields: [
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'ComponentLauncher',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'ComponentLauncher'
+        } as FieldType,
+        id: 'QueryManagement1',
+        label: 'Query management component'
+      } as CaseField,
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'CaseQueriesCollection',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'Complex'
+        } as FieldType,
+        id: 'qmCaseQueriesCollection',
+        label: 'Query management case queries collection',
+        value: {
+          caseMessages: [{
+            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+            value: {
+              attachments: [],
+              body: 'testing by olu',
+              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+              createdOn: '2024-08-27T15:44:50.700Z',
+              hearingDate: '2023-01-10',
+              id: null,
+              isHearingRelated: 'Yes',
+              name: 'Piran Sam',
+              parentId: 'ca',
+              subject: 'Review attached document'
+            }
+          }],
+          partyName: '',
+          roleOnCase: ''
+        }
+      } as CaseField
+    ],
+    wizard_pages: [],
+    hasFields(): boolean {
+      return true;
+    },
+    hasPages(): boolean {
+      return false;
+    }
+  };
+
+  const mockAttachment = {
+    originalDocumentName: 'blank.docx',
+    _links: {
+      binary: { href: 'http://dm-store-aat.service.core-compute-aat.inter…ments/718288ed-517f-4348-b27d-3cbabf2aaff0/binary' },
+      self: { href: 'http://dm-store-aat.service.core-compute-aat.internal/documents/718288ed-517f-4348-b27d-3cbabf2aaff0' }
+    }
+  };
+
+  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['clearQualifyingQuestionSelection']);
+
   beforeEach(async () => {
+    router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
     workAllocationService.searchTasks.and.returnValue(of(response));
-    casesService = jasmine.createSpyObj('casesService', ['getCaseViewV2']);
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);
+    casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
       ],
       providers: [
         { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
+        { provide: CaseNotifier, useValue: caseNotifier },
+        { provide: CasesService, useValue: casesService },
         { provide: WorkAllocationService, useValue: workAllocationService },
-        { provide: CaseNotifier, useValue: caseNotifier }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: Router, useValue: router },
+        { provide: QualifyingQuestionService , useValue: qualifyingQuestionService  }
       ]
     })
       .compileComponents();
@@ -197,9 +428,9 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      attachments: new FormControl([])
+      attachments: new FormControl([mockAttachment])
     });
-    component.formGroup.get('isHearingRelated').setValue(true);
+    component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
@@ -217,6 +448,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for raise a query', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption.innerText).toEqual('Raise a query');
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -232,6 +464,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for respond to a query', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption).toBeNull();
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -245,6 +478,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for following up a query', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption).toBeNull();
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -254,23 +488,218 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
+  it('should navigate to service-down page on event creation error', () => {
+    component.fieldId = 'validFieldId';
+    casesService.createEvent.and.returnValue(throwError('Error'));
+
+    component.submit();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should log an error and set errorMessages when fieldId is missing', () => {
+    component.fieldId = null;
+    fixture.detectChanges();
+    component.ngOnInit();
+    spyOn(console, 'error');
+
+    component.submit();
+
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
+    expect(component.errorMessages).toEqual([
+      {
+        title: 'Error',
+        description: 'This case is not configured for query management.',
+        fieldId: 'field-id'
+      }
+    ]);
+  });
+
+  it('should navigate to service-down page if fieldId is not set', () => {
+    component.fieldId = null;
+    spyOn(console, 'error');
+
+    component.submit();
+    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
+  });
+
+  it('should navigate to service-down page on error during submission', () => {
+    component.fieldId = 'someFieldId';
+    casesService.createEvent.and.returnValue(throwError('error'));
+
+    component.submit();
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should set querySubmitted to true when submit is called', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    component.fieldId = 'someFieldId';
+    component.eventData = { event_token: 'token' } as any;
+
+    casesService.createEvent.and.returnValue(of({}));
+
+    spyOn(component.querySubmitted, 'emit');
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
+    expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should set fieldId to undefined when eventData is unavailable', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+
+    component.eventData = null;
+    fixture.detectChanges();
+    component.ngOnInit();
+    component.submit();
+
+    expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should call setCaseQueriesCollectionData on init', () => {
+    spyOn(component, 'setCaseQueriesCollectionData');
+    component.ngOnInit();
+    expect(component.setCaseQueriesCollectionData).toHaveBeenCalled();
+  });
+
+  describe('form validation', () => {
+    it('should be invalid when form controls are empty', () => {
+      component.formGroup.get('name')?.setValue('');
+      component.formGroup.get('body')?.setValue('');
+      expect(component.formGroup.valid).toBeFalsy();
+    });
+
+    it('should be valid when form controls are filled', () => {
+      component.formGroup.get('name')?.setValue('Valid Name');
+      component.formGroup.get('body')?.setValue('Valid Body');
+      expect(component.formGroup.valid).toBeTruthy();
+    });
+  });
+
+  describe('searchAndCompleteTask', () => {
+    it('should call search task', () => {
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+      component.searchAndCompleteTask();
+    });
+  });
+
   describe('submit', () => {
     it('should call search task', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
       expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
     });
 
     it('should trigger event completion', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const eventCompletionParams: EventCompletionParams = {
         caseId: '1',
-        eventId: 'respondToQuery',
+        eventId: 'queryManagementRespondQuery',
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);
     });
+
+    it('should log an error when fieldId is missing', () => {
+      spyOn(console, 'error');
+      component.fieldId = null;
+      component.submit();
+      expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
+    });
+  });
+
+  it('should set caseQueriesCollections and fieldId correctly when case_fields are present', () => {
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }]
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }]
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.roleName = 'userRole';
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(component.fieldId).toBe('field1');
+  });
+
+  it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
+    component.eventData = null;
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections).toBeUndefined();
+    expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should set fieldId based on messageId when found', () => {
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'targetMessageId' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', create: true, read: true, update: true, delete: true }]
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.roleName = 'userRole';
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.fieldId).toBe('field1');
+  });
+
+  it('should initialize newQueryData correctly when fieldId is set', () => {
+    component.fieldId = 'someFieldId';
+    component.caseQueriesCollections = [
+      {
+        caseMessages: [{ value: { id: 'messageId1' } }]
+      }
+    ] as any;
+
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
+  });
+
+  it('should create a new query data structure when no existing collection matches', () => {
+    casesService.createEvent.and.returnValue(of({}));
+    component.fieldId = 'someFieldId';
+    component.caseQueriesCollections = [];
+
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
   });
 });
