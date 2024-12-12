@@ -33,6 +33,8 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
   }
 
   public createElementId(name: string): string {
-    return this.parent && this.parent.value ? this.parent.value.id + this.parent.value.value : super.createElementId(name);
+    // EXUI-2462 - parent may not always have value with content
+    // this is independent from the caseField.list_items so is irrelevant to event journey
+    return this.parent?.value?.id ? this.parent.value.id + this.parent.value.value : super.createElementId(name);
   }
 }
