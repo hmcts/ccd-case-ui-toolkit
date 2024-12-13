@@ -163,7 +163,7 @@ describe('QueryListItem', () => {
     it('should return "No response required" when it has no children', () => {
       queryListItem.children = [];
       expect(queryListItem.children).toEqual([]);
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.Awaiting);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
 
     it('should return "Awaiting Response" when it has children and is for Follow up question', () => {
@@ -193,7 +193,7 @@ describe('QueryListItem', () => {
       // Assign these new children to queryListItem
       queryListItem.children = additionalChildren;
       expect(queryListItem.children.length).toEqual(4);
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.Awaiting);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
   });
 });
