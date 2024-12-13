@@ -100,9 +100,10 @@ describe('WriteLinkedCasesFieldComponent', () => {
     state: { name: 'With FTA' },
     tabs: [
       {
-        id: 'caseLinks',
+        id: 'CaseLinksTab',
         fields: [
           {
+            id: 'caseLinks',
             field_type: {
               collection_field_type: {
                 id: 'CaseLink'
@@ -179,11 +180,44 @@ describe('WriteLinkedCasesFieldComponent', () => {
     }
   ];
 
+  const caseFieldValue = [
+    {
+      id: '1682897456391875',
+      value: {
+        CaseReference: '1682897456391875',
+        CaseType: 'SSCS',
+        CreatedDateTime: '2024-12-11T10:20:31.549',
+        ReasonForLink: [{
+          id: '1b2ff4a8-df50-4a15-a476-90ed324de0aa',
+          value: {
+            OtherDescription: '',
+            Reason: 'CLRC002'
+          }
+        }]
+      }
+    },
+    {
+      id: '1682374819203471',
+      value: {
+        CaseReference: '1682374819203471',
+        CaseType: 'SSCS',
+        CreatedDateTime: '2024-12-11T10:20:31.549',
+        ReasonForLink: [{
+          id: '1d2ff4a8-df50-4a15-a476-90ed324de0aa',
+          value: {
+            OtherDescription: '',
+            Reason: 'CLRC002'
+          }
+        }]
+      }
+    }
+  ];
+
   const linkedCasesService = {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: true,
+    caseFieldValue,
     linkedCases,
-    caseFieldValue: linkedCases,
     getAllLinkedCaseInformation() { },
     getCaseName() { }
   };
@@ -376,7 +410,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     linkedCasesService.isLinkedCasesEventTrigger = true;
     component.caseEditForm = FORM_GROUP;
     component.submitLinkedCases();
-    expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
+    expect(component.formGroup.value.data.caseLinks).toEqual(caseFieldValue);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
   });
 
@@ -386,7 +420,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     linkedCasesService.linkedCases = linkedCases;
     component.caseEditForm = FORM_GROUP;
     component.submitLinkedCases();
-    expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
+    expect(component.formGroup.value.data.caseLinks[0]).toEqual(caseFieldValue[0]);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
   });
 
