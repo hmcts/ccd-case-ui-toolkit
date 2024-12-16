@@ -56,11 +56,11 @@ describe('QueryListItem', () => {
         hearingDate: '',
         createdOn: new Date('2023-06-01'),
         createdBy: 'Person D',
-        parentId: '444-444',
+        parentId: '444-444'
       }
     ];
 
-    const childrenItems = items.map(item => {
+    const childrenItems = items.map((item) => {
       const listItem = new QueryListItem();
       Object.assign(listItem, item);
       return listItem;
@@ -163,7 +163,37 @@ describe('QueryListItem', () => {
     it('should return "No response required" when it has no children', () => {
       queryListItem.children = [];
       expect(queryListItem.children).toEqual([]);
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.NEW);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return "Awaiting Response" when it has children and is for Follow up question', () => {
+      // Create additional child items
+      const additionalChildren = [
+        new QueryListItem(),
+        new QueryListItem(),
+        new QueryListItem(),
+        new QueryListItem()
+      ].map((child, index) => {
+        Object.assign(child, {
+          id: `child-${index + 1}`,
+          subject: `Subject ${index + 2}`,
+          name: `Name ${index + 2}`,
+          body: `Body ${index + 2}`,
+          attachments: [],
+          isHearingRelated: false,
+          hearingDate: '',
+          createdOn: new Date(`2021-0${index + 2}-01`),
+          createdBy: `Person ${String.fromCharCode(65 + index + 1)}`,
+          parentId: queryListItem.id,
+          children: []
+        });
+        return child;
+      });
+
+      // Assign these new children to queryListItem
+      queryListItem.children = additionalChildren;
+      expect(queryListItem.children.length).toEqual(4);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
   });
 });

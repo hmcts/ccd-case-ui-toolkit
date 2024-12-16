@@ -50,6 +50,11 @@ export class QueryListItem implements CaseMessage {
   }
 
   public get responseStatus(): QueryItemResponseStatus {
-    return this.children?.length > 0 ? QueryItemResponseStatus.RESPONDED : QueryItemResponseStatus.NEW;
+    if (this.children?.length > 0) {
+      return this.children.length % 2 === 1
+        ? QueryItemResponseStatus.RESPONDED
+        : QueryItemResponseStatus.AWAITING;
+    }
+    return QueryItemResponseStatus.AWAITING;
   }
 }

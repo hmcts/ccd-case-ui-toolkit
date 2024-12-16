@@ -27,10 +27,6 @@
               type="radio" [formControl]="qualifyingQuestionsControl" [value]="qualifyingQuestion">
             <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name |
               rpxTranslate }}</label>
-            <div *ngIf="isLast" class="govuk-hint govuk-radios__hint">
-              {{ '(To follow-up on an existing query' | rpxTranslate }}
-              <a class="govuk-link" href="javascript:void(0)" (click)="click()">{{ 'click here' | rpxTranslate }}</a>.)
-            </div>
           </div>
         </ng-container>
       </div>
