@@ -43,17 +43,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name: Download code coverage results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: code-coverage-report
           path: coverage
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@3.0.0
+        uses: sonarsource/sonarcloud-github-action@v4.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
