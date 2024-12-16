@@ -59,7 +59,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Send slack
         if: failure()
-        uses: sonots/slack-notice-action@v4.0.0
+        uses: sonots/slack-notice-action@v3.2.0
         with:
           status: ${{ job.status }}
         env:
@@ -71,8 +71,8 @@ jobs:
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.0.0
-      - uses: actions/setup-node@v4.0.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
@@ -89,8 +89,8 @@ jobs:
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.0.0
-      - uses: actions/setup-node@v4.0.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
