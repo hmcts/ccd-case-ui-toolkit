@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.25-sonarCloud-gitub-config-update",
+  "version": "7.1.27-sonarCloud-gitub-config-update",
   "engines": {
     "node": ">=18.19.0"
   },
