@@ -61,9 +61,7 @@ describe('LoadingService', () => {
     const token = loadingService.register();
     loadingService.storedSpinner = token;
     loadingService.unregisterStoredSpinner();
-    subscription = loadingService.isLoading.subscribe((value) => {
-      expect(value).toBeFalsy();
-    });
+    expect(loadingService.storedSpinner).toBeNull();
   }));
 
   afterEach(() => {
