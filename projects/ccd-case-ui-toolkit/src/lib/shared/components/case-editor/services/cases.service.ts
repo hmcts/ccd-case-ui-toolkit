@@ -21,6 +21,7 @@ import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-ca
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
 
 @Injectable()
 export class CasesService {
@@ -396,8 +397,10 @@ export class CasesService {
   private addClientContextHeader(headers: HttpHeaders): HttpHeaders {
     const clientContextDetails = this.sessionStorageService.getItem('clientContext');
     if (clientContextDetails) {
-      // may require URI encoding in certain circumstances
-      const clientContext = window.btoa(clientContextDetails);
+      const caseEditUtils = new CaseEditUtils();
+      // below changes non-ASCII characters 
+      const editedClientContext = caseEditUtils.convertNonASCIICharacters(clientContextDetails);
+      const clientContext = window.btoa(editedClientContext);
       if (clientContext) {
         headers = headers.set('Client-Context', clientContext);
       }
@@ -407,8 +410,11 @@ export class CasesService {
 
   private updateClientContextStorage(headers: HttpHeaders): void {
     if (headers && headers.get('Client-Context')) {
+      const caseEditUtils = new CaseEditUtils();
       const clientContextString = window.atob(headers.get('Client-Context'));
-      this.sessionStorageService.setItem('clientContext', clientContextString);
+      // below reverts non-ASCII characters 
+      const editedClientContextString = caseEditUtils.convertHTMLEntities(clientContextString);
+      this.sessionStorageService.setItem('clientContext', editedClientContextString);
     }
   }
 }
