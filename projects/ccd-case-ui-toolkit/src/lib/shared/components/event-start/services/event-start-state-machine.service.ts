@@ -184,14 +184,18 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr= JSON.stringify(task);
+    const taskStr = JSON.stringify(task);
     console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
+    const currentLanguage = context.cookieService.getCookie('exui-preferred-language');
     const clientContext = {
       client_context: {
         user_task: {
           task_data: task,
           complete_task: true
+        },
+        user_language: {
+          language: currentLanguage
         }
       }
     };

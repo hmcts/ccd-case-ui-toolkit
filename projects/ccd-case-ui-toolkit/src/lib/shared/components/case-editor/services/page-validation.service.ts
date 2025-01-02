@@ -14,15 +14,15 @@ export class PageValidationService {
   public getInvalidFields(page: WizardPage, editForm: FormGroup): CaseField[] {
     const failingCaseFields = [];
     page.case_fields
-      .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
-      .filter(caseField => !this.isHidden(caseField, editForm))
-      .map(caseField => {
+      .filter((caseField) => !this.caseFieldService.isReadOnly(caseField))
+      .filter((caseField) => !this.isHidden(caseField, editForm))
+      .forEach((caseField) => {
         const theControl = FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])
-          ? editForm.controls['data'].get(`${caseField.id}_judicialUserControl`)
-          : editForm.controls['data'].get(caseField.id);
+          ? editForm.controls.data.get(`${caseField.id}_judicialUserControl`)
+          : editForm.controls.data.get(caseField.id);
         if (!(this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl))) {
           failingCaseFields.push(caseField);
-        };
+        }
       });
     return failingCaseFields;
   }
@@ -46,9 +46,8 @@ export class PageValidationService {
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {
     if (!theControl) {
       return this.caseFieldService.isOptional(caseField);
-    } else {
-      return theControl.valid || theControl.disabled;
     }
+    return theControl.valid || theControl.disabled;
   }
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {

@@ -118,10 +118,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       next: (reasons) => {
         // Sort in ascending order
         const linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-
-        this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter((reason) => reason.value_en !== 'Other');
+        if (linkCaseReasons?.filter((reason) => reason.value_en !== 'Other').length > 0) {
+          this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter((reason) => reason.value_en !== 'Other');
+        }
         // Move Other option to the end of the list
-        this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find((reason) => reason.value_en === 'Other'));
+        if (linkCaseReasons?.find((reason) => reason.value_en === 'Other')) {
+          this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find((reason) => reason.value_en === 'Other'));
+        }
       }
     });
   }

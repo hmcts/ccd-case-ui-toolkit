@@ -123,8 +123,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         // there is an edge case in the navigation when going back, sometimes the case_fileds will lose values in the values which causes the flow to break before CYA
         // below funciton ensures all data is correctly set.
         const flagData = this.validateCaseFields(this.route.snapshot.data.eventTrigger.case_fields);
-        this.flagsData = ((flagData) as CaseField[])
-          .reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField), []);
+        this.flagsData = (this.route.snapshot.data.eventTrigger.case_fields as CaseField[])
+          .reduce((flags: FlagsWithFormGroupPath[], caseField: CaseField) => {
+            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+          }, [] as FlagsWithFormGroupPath[]);
 
         // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
         this.displayContextParameter =
@@ -399,51 +401,51 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
    */
   public determineLocationForFlag(isInternalUser: boolean, selectedFlagsLocation: FlagsWithFormGroupPath,
     formValues: any): FlagsWithFormGroupPath {
-      if (isInternalUser && selectedFlagsLocation?.flags?.groupId) {
-        if ((formValues?.flagType?.flagCode === this.otherFlagTypeCode && !formValues?.flagIsVisibleInternallyOnly) ||
+    if (isInternalUser && selectedFlagsLocation?.flags?.groupId) {
+      if ((formValues?.flagType?.flagCode === this.otherFlagTypeCode && !formValues?.flagIsVisibleInternallyOnly) ||
           (formValues?.flagType?.flagCode !== this.otherFlagTypeCode && formValues?.flagType?.externallyAvailable)) {
-            // If necessary, find the corresponding flags object with the same groupId and external visibility (should be
-            // only one unless misconfigured)
-            const location = selectedFlagsLocation.flags.visibility?.toLowerCase() === 'external'
-              ? selectedFlagsLocation
-              : this.flagsData.filter(
-                (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
+        // If necessary, find the corresponding flags object with the same groupId and external visibility (should be
+        // only one unless misconfigured)
+        const location = selectedFlagsLocation.flags.visibility?.toLowerCase() === 'external'
+          ? selectedFlagsLocation
+          : this.flagsData.filter(
+            (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
                 f.flags?.visibility?.toLowerCase() === 'external')?.[0];
-            // If location is not truthy, set an error message and make caseFlagParentFormGroup invalid to prevent
-            // navigation to the summary page (by not triggering the submit event)
-            if (!location) {
-              this.errorMessages.push({
-                title: '',
-                description: CaseFlagErrorMessage.NO_EXTERNAL_FLAGS_COLLECTION
-              });
-              this.caseFlagParentFormGroup.setErrors({
-                noExternalCollection: true
-              });
-            }
-            return location;
-        } else {
-          // If necessary, find the corresponding flags object with the same groupId and internal visibility (should be
-          // only one unless misconfigured); assumed to be internal if visibility attribute is null or undefined
-          const location = selectedFlagsLocation.flags.visibility?.toLowerCase() !== 'external'
-            ? selectedFlagsLocation
-            : this.flagsData.filter(
-              (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
+        // If location is not truthy, set an error message and make caseFlagParentFormGroup invalid to prevent
+        // navigation to the summary page (by not triggering the submit event)
+        if (!location) {
+          this.errorMessages.push({
+            title: '',
+            description: CaseFlagErrorMessage.NO_EXTERNAL_FLAGS_COLLECTION
+          });
+          this.caseFlagParentFormGroup.setErrors({
+            noExternalCollection: true
+          });
+        }
+        return location;
+      } else {
+        // If necessary, find the corresponding flags object with the same groupId and internal visibility (should be
+        // only one unless misconfigured); assumed to be internal if visibility attribute is null or undefined
+        const location = selectedFlagsLocation.flags.visibility?.toLowerCase() !== 'external'
+          ? selectedFlagsLocation
+          : this.flagsData.filter(
+            (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
               f.flags?.visibility?.toLowerCase() !== 'external')?.[0];
           // If location is not truthy, set an error message and make caseFlagParentFormGroup invalid to prevent
           // navigation to the summary page (by not triggering the submit event)
-          if (!location) {
-            this.errorMessages.push({
-              title: '',
-              description: CaseFlagErrorMessage.NO_INTERNAL_FLAGS_COLLECTION
-            });
-            this.caseFlagParentFormGroup.setErrors({
-              noInternalCollection: true
-            });
-          }
-          return location;
+        if (!location) {
+          this.errorMessages.push({
+            title: '',
+            description: CaseFlagErrorMessage.NO_INTERNAL_FLAGS_COLLECTION
+          });
+          this.caseFlagParentFormGroup.setErrors({
+            noInternalCollection: true
+          });
         }
+        return location;
       }
-      return selectedFlagsLocation;
+    }
+    return selectedFlagsLocation;
   }
 
   public updateFlagInCollection(): void {
@@ -527,10 +529,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         // *not* update its value (otherwise it will be overridden) - unless the user is external AND working in Welsh
         if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH) || this.rpxTranslationService.language === 'cy') {
           flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
-          : this.rpxTranslationService.language === 'cy'
-            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
-            : null;
+            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+            : this.rpxTranslationService.language === 'cy'
+              ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
+              : null;
         }
         flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
@@ -577,10 +579,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
           ? manualLangEntry
           : null,
       subTypeValue_cy: langSearchTerm && this.rpxTranslationService.language === 'cy'
-      ? langSearchTerm?.value_cy
-      : manualLangEntry && this.rpxTranslationService.language === 'cy'
-        ? manualLangEntry
-        : null,
+        ? langSearchTerm?.value_cy
+        : manualLangEntry && this.rpxTranslationService.language === 'cy'
+          ? manualLangEntry
+          : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
       subTypeKey: langSearchTerm
         ? langSearchTerm.key
@@ -588,7 +590,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       otherDescription: flagType?.flagCode === this.otherFlagTypeCode &&
         otherDesc && this.rpxTranslationService.language === 'en'
         ? otherDesc
-          : null,
+        : null,
       otherDescription_cy: flagType?.flagCode === this.otherFlagTypeCode &&
         otherDesc && this.rpxTranslationService.language === 'cy'
         ? otherDesc
@@ -641,7 +643,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
   public get manageFlagFinalState() {
     return this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value
-    ? CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : CaseFlagFieldState.FLAG_UPDATE;
+      ? CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : CaseFlagFieldState.FLAG_UPDATE;
   }
 
   public setDisplayContextParameter(caseFields: CaseField[]): string {

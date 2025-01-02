@@ -118,6 +118,7 @@ export abstract class AbstractAppConfig {
   public abstract getCaseFlagsRefdataApiUrl(): string;
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
+  public abstract getEventsToHide(): string[];
   public abstract getEnableRestrictedCaseAccessConfig(): boolean;
   public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }
@@ -194,4 +195,5 @@ export class CaseEditorConfig {
   public enable_case_file_view_version_1_1: boolean;
   public icp_enabled: boolean;
   public icp_jurisdictions: string[];
+  public events_to_hide: string[];
 }
