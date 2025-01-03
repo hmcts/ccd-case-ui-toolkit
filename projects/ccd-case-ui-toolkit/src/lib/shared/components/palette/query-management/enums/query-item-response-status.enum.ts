@@ -1,4 +1,5 @@
 export enum QueryItemResponseStatus {
   NEW = 'New',
-  RESPONDED = 'Responded'
+  RESPONDED = 'Responded',
+  AWAITING = 'Awaiting Response'
 }
