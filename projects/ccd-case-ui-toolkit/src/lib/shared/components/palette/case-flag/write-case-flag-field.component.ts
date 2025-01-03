@@ -115,8 +115,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
-        this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-          .reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField), []);
+        this.flagsData = (this.route.snapshot.data.eventTrigger.case_fields as CaseField[])
+        .reduce((flags: FlagsWithFormGroupPath[], caseField: CaseField) => {
+          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+        }, [] as FlagsWithFormGroupPath[]);
 
         // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
         this.displayContextParameter =
