@@ -121,7 +121,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (previousUrl) {
       if (previousUrl.indexOf('#') > -1) {
         const url = previousUrl.split('#')[0];
-        const fragment = previousUrl.split('#')[1].replace('%20', ' ');
+        const fragment = previousUrl.split('#')[1].replace(/%20/g, ' ');
         return this.router.navigate([url], { fragment: fragment });
       } else {
         return this.router.navigate([previousUrl]);
