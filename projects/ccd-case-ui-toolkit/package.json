@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.29-qm-style-update",
+  "version": "7.1.32-qm-style-update",
   "engines": {
     "node": ">=18.19.0"
   },
