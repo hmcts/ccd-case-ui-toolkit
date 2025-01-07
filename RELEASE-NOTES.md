@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.1.24
+### Version 7.1.25
 **EXUI-1951** etrieve current user language selection
+
+### Version 7.1.24
+Taken by PR
 
 ### Version 7.0.75-exui-2575
 **EXUI-2536** issue with DynamicMultiSelectList
