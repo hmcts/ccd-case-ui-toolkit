@@ -5,7 +5,9 @@
   <h1 class="govuk-heading-l">
     {{ qualifyingQuestion.name | rpxTranslate }}
   </h1>
-  <ccd-markdown
+  <div class="qm-qualifying-question">
+    <ccd-markdown
     [content]="qualifyingQuestion.markdown | rpxTranslate">
   </ccd-markdown>
+  </div>
 </ng-container>
