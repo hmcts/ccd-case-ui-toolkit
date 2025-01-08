@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseEventData } from '../../../domain/case-event-data.model';
@@ -30,6 +30,7 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 import createSpyObj = jasmine.createSpyObj;
 import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
+import { By } from '@angular/platform-browser';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -445,6 +446,12 @@ describe('WriteLinkedCasesFieldComponent', () => {
     };
     component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
     expect(component.getNextPage(linkedCasesState2)).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+  });
+
+  it('should fetch caseView, filter tabs, and initialize linked cases correctly', () => {
+    component.getLinkedCases();
+
+    expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
   });
 
   function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
