@@ -53,8 +53,8 @@ export class QueryListItem implements CaseMessage {
     if (this.children?.length > 0) {
       return this.children.length % 2 === 1
         ? QueryItemResponseStatus.RESPONDED
-        : QueryItemResponseStatus.Awaiting;
+        : QueryItemResponseStatus.AWAITING;
     }
-    return QueryItemResponseStatus.Awaiting;
+    return QueryItemResponseStatus.AWAITING;
   }
 }

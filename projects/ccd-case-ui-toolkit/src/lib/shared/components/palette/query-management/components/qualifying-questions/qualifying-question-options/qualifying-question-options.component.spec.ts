@@ -109,5 +109,15 @@ describe('QualifyingQuestionOptionsComponent', () => {
       expect(errorMessageEl).toBeTruthy();
       expect(errorMessageEl.nativeElement.textContent.trim()).toBe(`Error: ${QualifyingQuestionsErrorMessage.SELECT_AN_OPTION}`);
     });
+
+    it('should initialize qualifyingQuestionsControl with saved selection if available', () => {
+      const savedSelection = 'saved-option';
+      qualifyingQuestionService.getQualifyingQuestionSelection.and.returnValue(savedSelection);
+
+      component.ngOnInit();
+
+      expect(qualifyingQuestionService.getQualifyingQuestionSelection).toHaveBeenCalled();
+      expect(component.qualifyingQuestionsControl.value).toBe(savedSelection);
+    });
   });
 });
