@@ -26,7 +26,7 @@
   </caption>
   <thead>
     <tr scope="row">
-      <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
+      <th *ngIf="selectionEnabled" class="govuk-table__checkbox">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
           <label class="govuk-label govuk-checkboxes__label" for="select-all">
@@ -34,7 +34,7 @@
         </div>
       </th>
       <th *ngFor="let col of resultView.columns" class="search-result-column-header"
-        [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')">
+        [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')" scope="col">
         <div>
           <div class="search-result-column-label" (click)="sort(col)" (keyup)="noop()">
             {{col.label | rpxTranslate}}
@@ -44,7 +44,7 @@
           </div>
         </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;">&ZeroWidthSpace;</th>
+      <th *ngIf="activityEnabled()" scope="col" style="width: 110px;">&ZeroWidthSpace;</th>
     </tr>
   </thead>
 
