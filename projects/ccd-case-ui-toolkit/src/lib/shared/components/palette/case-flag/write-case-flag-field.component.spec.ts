@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
@@ -359,7 +359,8 @@ describe('WriteCaseFlagFieldComponent', () => {
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
         { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
-        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
+        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy },
+        Router
       ]
     })
       .compileComponents();
