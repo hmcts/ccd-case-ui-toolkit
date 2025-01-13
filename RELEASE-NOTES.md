@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.1.23-exui-2551-rc4
+**EXUI-2551** Case File view too small not loading with correct size
+
 ### Version 7.1.25
-**EXUI-1951** etrieve current user language selection
+**EXUI-1951** Inconsistent text sizes
 
 ### Version 7.1.24
 Taken by PR
@@ -13,7 +16,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
+**EXUI-2315** Retrieve current user language selection
 
 
 ### Version 7.0.75-exui-2515
