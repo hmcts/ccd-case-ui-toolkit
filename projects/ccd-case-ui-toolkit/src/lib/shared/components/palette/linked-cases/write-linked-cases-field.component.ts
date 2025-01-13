@@ -11,6 +11,7 @@ import { LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { Subscription } from 'rxjs';
 import { MultipageComponentStateService } from '../../../services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ccd-write-linked-cases-field',
@@ -31,11 +32,16 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService,
     private readonly caseEditDataService: CaseEditDataService,
+    private router: Router,
     multipageComponentStateService: MultipageComponentStateService) {
     super(multipageComponentStateService);
+    this.handleBackButton = this.handleBackButton.bind(this);
   }
 
   public ngOnInit(): void {
+    const trigUrl = location.href;
+    this.addState(null, this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/'));
+    this.addState(0, trigUrl);
     // This is required to enable Continue button validation
     // Continue button should be enabled only at check your answers page
     this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(false);
@@ -65,6 +71,20 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     }
 
     this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
+    window.addEventListener('popstate', this.handleBackButton);
+  }
+
+  public handleBackButton(event) {
+    event.preventDefault();
+    if (this.linkedCasesPage === 0){
+      this.router.navigate([this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/')]);
+    } else {
+      this.previousPage();
+    }
+  }
+
+  public addState(data, url?): void {
+    history.pushState(data, '', url);
   }
 
   public onPageChange(): void {
@@ -102,6 +122,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       if (this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber > this.linkedCasesPage){
         this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber = this.linkedCasesPage;
       }
+      this.addState(this.linkedCasesPage);
       this.proceedToNextPage();
     } else {
       if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
@@ -211,6 +232,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
   }
 
   ngOnDestroy() {
+    window.removeEventListener('popstate', this.handleBackButton);
     this.subscriptions.unsubscribe();
   }
 

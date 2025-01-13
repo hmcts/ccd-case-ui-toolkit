@@ -35,7 +35,8 @@
         [isDisplayContextParameter2Point1Enabled]="isDisplayContextParameter2Point1Enabled"
         [selectedFlagsLocation]="selectedFlagsLocation" 
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
-        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)">
+        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"
+        (flagTypeSubJourneyEmitter)="updateFlagTypeSubJourney($event)">
       </ccd-select-flag-type>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">

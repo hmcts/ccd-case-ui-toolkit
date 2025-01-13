@@ -44,6 +44,9 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   @Output()
   public flagCommentsOptionalEmitter: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  public flagTypeSubJourneyEmitter: EventEmitter<any> = new EventEmitter();
+
   public flagTypes: FlagType[];
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
@@ -69,6 +72,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
   public constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService, pageStateService: MultipageComponentStateService) {
     super(pageStateService);
+    this.handleBackButtonSubJourney = this.handleBackButtonSubJourney.bind(this);
   }
 
   public get selectedFlagType(): FlagType | null {
@@ -81,6 +85,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
   public ngOnInit(): void {
     this.isCaseLevelFlag = this.selectedFlagsLocation?.flags?.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
     this.flagTypes = [];
     const flagType = this.isCaseLevelFlag ? RefdataCaseFlagType.CASE : RefdataCaseFlagType.PARTY;
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
@@ -126,6 +132,17 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
           error: (error) => this.onRefdataError(error)
         });
     }
+    this.addState(this.subJourneyIndex);
+    window.addEventListener('popstate', this.handleBackButtonSubJourney);
+  }
+
+  public handleBackButtonSubJourney(event) {
+    event.preventDefault();
+    this.previous();
+  }
+
+  public addState(data, url?): void {
+    history.pushState('1'+data, '', url);
   }
 
   public ngOnDestroy(): void {
@@ -134,6 +151,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
     // check if the user has an existing path when navigating away from the page
     // if so we may need to ensure the values are set correctly.
     this.checkForExistingPath();
+    window.removeEventListener('popstate', this.handleBackButtonSubJourney);
   }
 
   public checkForExistingPath() {
@@ -189,6 +207,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
         this.selectedFlagsLocation['caseField'].formatted_value?.details.pop();
       }
     }
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
   }
 
   // Simplified version of the onPrevious method with optimized code
@@ -212,6 +232,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
       }
     }
     this.subJourneyIndex = Math.max(0, this.subJourneyIndex - 1);
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
   }
 
   // Identity function for trackBy use by *ngFor for flagTypes in HTML template
@@ -281,6 +302,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
         this.subJourneyIndex = this.cachedPath.length-1;
       }
     }
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
   }
 
   private onRefdataError(error: any): void {
@@ -294,7 +317,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
   public next() {
     this.onNext();
-
+    this.addState(this.subJourneyIndex);
     if (this.errorMessages.length === 0) {
       super.next();
     }

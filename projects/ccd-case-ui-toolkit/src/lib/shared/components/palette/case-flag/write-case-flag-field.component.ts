@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
@@ -43,6 +43,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   private readonly otherFlagTypeCode = 'OT0001';
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
   public readonly caseNameMissing = 'Case name missing';
+  flagTypeSubJourneyIndex: any;
 
   public get flagType(): FlagType | null {
     return this.caseFlagParentFormGroup?.value.flagType;
@@ -63,12 +64,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     private readonly caseEditDataService: CaseEditDataService,
     private readonly caseFlagStateService: CaseFlagStateService,
     private readonly rpxTranslationService: RpxTranslationService,
+    private readonly router: Router,
     multipageComponentStateService: MultipageComponentStateService
   ) {
     super(multipageComponentStateService);
+    this.handleBackButton = this.handleBackButton.bind(this);
   }
 
   public ngOnInit(): void {
+    const trigUrl = location.href;
+    this.addState(null, this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/'));
+    this.addState(0, trigUrl);
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
@@ -197,6 +203,26 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     }
 
     this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
+    window.addEventListener('popstate', this.handleBackButton);
+  }
+
+  public handleBackButton(event) {
+    event.preventDefault();
+    if (this.fieldState === 0){
+      this.router.navigate([this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/')]);
+    } else if (this.fieldState === 1 && this.flagTypeSubJourneyIndex === 0){
+      this.previousPage();
+    } else if (this.fieldState !== 1) {
+      this.previousPage();
+    }
+  }
+
+  public addState(data, url?): void {
+    history.pushState(data, '', url);
+  }
+
+  public updateFlagTypeSubJourney(event): void {
+    this.flagTypeSubJourneyIndex = event;
   }
 
   validateCaseFields(caseFields) {
@@ -214,6 +240,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
   public onPageChange(): void {
     this.multipageComponentStateService.isAtStart = this.fieldState === this.caseFlagFieldState.FLAG_LOCATION;
+    this.addState(this.fieldState);
   }
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
@@ -635,7 +662,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public ngOnDestroy(): void {
-    this.multipageComponentStateService.setJourneyState(this);   
+    this.multipageComponentStateService.setJourneyState(this);
+    window.removeEventListener('popstate', this.handleBackButton);
     // Reset the fieldstateToNavigate as the write journey completes at this point
     this.caseFlagStateService.fieldStateToNavigate = undefined;
     this.caseTitleSubscription?.unsubscribe();
