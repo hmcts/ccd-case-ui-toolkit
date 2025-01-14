@@ -4399,7 +4399,6 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.0.9"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
-    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@storybook/addon-actions": "npm:^6.5.10"
     "@storybook/addon-essentials": "npm:^6.5.10"
     "@storybook/addon-interactions": "npm:^6.5.10"
@@ -5854,18 +5853,6 @@ __metadata:
     typescript: ">=5.2 <5.5"
     webpack: ^5.54.0
   checksum: 10/b608d11566c8cb85fe500a042b2230c12d36a995d0d26b5bb5135782cb3d48a2c0970dc2ae2022fa52ab1b204c2bec14d23bdd5a8ea8319a6ee61f760ae43cfc
-  languageName: node
-  linkType: hard
-
-"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^14.0.0
-    "@angular/core": ^14.0.0
-  checksum: 10/f3aa11a64e2d0267dce1850af769de0f9caa133008e048975970afd9b0e37ba5d517fd09a6f4303e3a5f579b6460f6274d73a7406d2d988a8d3c352940912e1e
   languageName: node
   linkType: hard
 
