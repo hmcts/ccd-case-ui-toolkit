@@ -4487,7 +4487,6 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.0.2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -14039,13 +14038,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^3.2.2":
-  version: 3.2.4
-  resolution: "dexie@npm:3.2.4"
-  checksum: 10/361f7e05fda5db20d9d90ce3e39f4539d1a56acad35a6e4ba26e48ab74c55d81e6daba502a7412be6c0e67ebad3e232e6dbbc1b50426f5743cc0f166cd4e8671
-  languageName: node
-  linkType: hard
-
 "dfa@npm:^1.2.0":
   version: 1.2.0
   resolution: "dfa@npm:1.2.0"
@@ -21297,13 +21289,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^2.4.0":
-  version: 2.5.2
-  resolution: "luxon@npm:2.5.2"
-  checksum: 10/9090506a702dac0edefbe87ad29836a842721b2ae255974b410ca705766502173b773ddfd1c918b2e19041679e2659b811d23085f8b23e28be54f063e6c1237a
-  languageName: node
-  linkType: hard
-
 "lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
@@ -26393,20 +26378,6 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 10/2320fe653cfd5e3d72ecab2f1d52d47e7b624a6ab02919f53c1ad1c5efa3b66e277c3ecfef03bb97651e79cef04bfefd34ad1f6e648f496572bf76c834f19599
-  languageName: node
-  linkType: hard
-
-"rpx-xui-translation@npm:1.0.2":
-  version: 1.0.2
-  resolution: "rpx-xui-translation@npm:1.0.2"
-  dependencies:
-    dexie: "npm:^3.2.2"
-    luxon: "npm:^2.4.0"
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/common": ^15.2.9
-    "@angular/core": ^15.2.9
-  checksum: 10/851abb2a89223c3bde4572015385822dec2a60e38fb8c2e620d6d60d56c99e686be5ec77e3d36540e2f185835646639032d5a4141f1630a13a4e37f2c78f2804
   languageName: node
   linkType: hard
 
