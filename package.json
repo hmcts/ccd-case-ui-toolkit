@@ -112,7 +112,7 @@
     "@storybook/addon-essentials": "^6.5.10",
     "@storybook/addon-interactions": "^6.5.10",
     "@storybook/addon-links": "^6.5.10",
-    "@storybook/angular": "^6.5.10",
+    "@storybook/angular": "^8.4.7",
     "@storybook/builder-webpack4": "^6.5.10",
     "@storybook/manager-webpack4": "^6.5.10",
     "@storybook/preset-scss": "^1.0.3",
