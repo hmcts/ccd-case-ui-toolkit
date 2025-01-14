@@ -1,5 +1,5 @@
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
@@ -32,7 +32,7 @@ describe('FieldWriteComponent', () => {
       type: 'Text'
     },
     display_context: 'OPTIONAL',
-    label: 'First name',
+    label: 'First name'
   });
 
   let fixture: ComponentFixture<FieldWriteComponent>;
@@ -67,7 +67,7 @@ describe('FieldWriteComponent', () => {
   // const pageValidationService = new PageValidationService(caseFieldService);
   // const dialog: any = '';
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
@@ -91,7 +91,7 @@ describe('FieldWriteComponent', () => {
       cancelled,
       validate: (caseEventData: CaseEventData) => of(caseEventData),
       saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
+      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] }
     };
     route = {
       params: of({ id: 123 }),
@@ -111,7 +111,7 @@ describe('FieldWriteComponent', () => {
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },
-          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: FormValidatorsService, useValue: formValidatorService }
         ]
       })
       .compileComponents();
@@ -125,7 +125,7 @@ describe('FieldWriteComponent', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
-  });
+  }));
 
   it('should get field write class from PaletteService', () => {
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
