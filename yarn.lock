@@ -365,6 +365,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-material-components/datetime-picker@npm:16.0.1":
+  version: 16.0.1
+  resolution: "@angular-material-components/datetime-picker@npm:16.0.1"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ^16.0.0
+    "@angular/common": ^16.0.0
+    "@angular/core": ^16.0.0
+    "@angular/forms": ^16.0.0
+    "@angular/material": ^16.0.0
+    "@angular/platform-browser": ^16.0.0
+  checksum: 10/df57c89ce7d3ec5f319bdd321d44c05d4307d920bf7e1dffc4719422a59128dbcc2fefedc2ac81edebd73602802a6a13ecbf6990c39e4b816e354bf243226894
+  languageName: node
+  linkType: hard
+
+"@angular-material-components/moment-adapter@npm:16.0.1":
+  version: 16.0.1
+  resolution: "@angular-material-components/moment-adapter@npm:16.0.1"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^16.0.0
+    "@angular/core": ^16.0.0
+    moment: ^2.18.1
+  checksum: 10/5335b53ae0363deeb7c2cb78237825e6070e6526e784572cc4c0b6daf44e9b82763a07bbb318703b0bfba1025ee4a081cb6ee028968c12bbbbe7968828bc8d10
+  languageName: node
+  linkType: hard
+
 "@angular/animations@npm:~18.2.13":
   version: 18.2.13
   resolution: "@angular/animations@npm:18.2.13"
@@ -4696,6 +4725,8 @@ __metadata:
     "@angular-eslint/eslint-plugin-template": "npm:17.3.0"
     "@angular-eslint/schematics": "npm:18.0.0"
     "@angular-eslint/template-parser": "npm:17.3.0"
+    "@angular-material-components/datetime-picker": "npm:16.0.1"
+    "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:~18.2.13"
     "@angular/cdk": "npm:17.3.5"
     "@angular/cli": "npm:^18.2.12"
@@ -4713,10 +4744,12 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^2.1.2"
+    "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.9"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
+    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@storybook/addon-actions": "npm:^6.5.10"
     "@storybook/addon-essentials": "npm:^6.5.10"
     "@storybook/addon-interactions": "npm:^6.5.10"
@@ -4805,6 +4838,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
+    rpx-xui-translation: "npm:1.0.2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -4833,6 +4867,18 @@ __metadata:
     zone.js: "npm:^0.14.10"
   languageName: unknown
   linkType: soft
+
+"@hmcts/ccpay-web-component@npm:6.2.1":
+  version: 6.2.1
+  resolution: "@hmcts/ccpay-web-component@npm:6.2.1"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^16.1.6
+    "@angular/core": ^16.1.6
+  checksum: 10/09baca8c7020ecb31b9197133fdf0833e9a82f5c7df88ff421bf49af6b2d7fc0101adbda44d301f9cee932835941f3d6e74a3a595e3b2f10ca577d46071c91fa
+  languageName: node
+  linkType: hard
 
 "@hmcts/frontend@npm:0.0.50-alpha":
   version: 0.0.50-alpha
@@ -6478,6 +6524,18 @@ __metadata:
     puppeteer:
       built: true
   checksum: 10/1a7d0c0b8ebd402e5bd1f9407d2dfe9e3af32adb215c3ce38d4fc56436fd5ee12faaa78d32ce85ea79d1f1b28fd3a28fad4f6218de7902c8f989c62189bff47c
+  languageName: node
+  linkType: hard
+
+"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^14.0.0
+    "@angular/core": ^14.0.0
+  checksum: 10/f3aa11a64e2d0267dce1850af769de0f9caa133008e048975970afd9b0e37ba5d517fd09a6f4303e3a5f579b6460f6274d73a7406d2d988a8d3c352940912e1e
   languageName: node
   linkType: hard
 
@@ -14819,6 +14877,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dexie@npm:^3.2.2":
+  version: 3.2.7
+  resolution: "dexie@npm:3.2.7"
+  checksum: 10/e70dae162b1589ff02b98810d1cdc157be0e0f66710be28ab2477db4ccd5cc7364f8c681e3f21883c3835ea800f8100ec975b015fa3ac6cdcb5686d187b31043
+  languageName: node
+  linkType: hard
+
 "dfa@npm:^1.2.0":
   version: 1.2.0
   resolution: "dfa@npm:1.2.0"
@@ -22241,6 +22306,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: 10/9090506a702dac0edefbe87ad29836a842721b2ae255974b410ca705766502173b773ddfd1c918b2e19041679e2659b811d23085f8b23e28be54f063e6c1237a
+  languageName: node
+  linkType: hard
+
 "lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
@@ -27628,6 +27700,20 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 10/f5d240a76a8c3cd7918f7dc97b7eaec5d97d27b3901e3843f74e18b4e9195c77abe8aa61575cd64ad7897f6a6dea6c68a7ad1a8073e3cf3139529e9fa7d06c2b
+  languageName: node
+  linkType: hard
+
+"rpx-xui-translation@npm:1.0.2":
+  version: 1.0.2
+  resolution: "rpx-xui-translation@npm:1.0.2"
+  dependencies:
+    dexie: "npm:^3.2.2"
+    luxon: "npm:^2.4.0"
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/common": ^15.2.9
+    "@angular/core": ^15.2.9
+  checksum: 10/851abb2a89223c3bde4572015385822dec2a60e38fb8c2e620d6d60d56c99e686be5ec77e3d36540e2f185835646639032d5a4141f1630a13a4e37f2c78f2804
   languageName: node
   linkType: hard
 
