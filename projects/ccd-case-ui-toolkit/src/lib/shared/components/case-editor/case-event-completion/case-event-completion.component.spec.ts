@@ -1,5 +1,5 @@
 import { PortalModule } from '@angular/cdk/portal';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,6 +13,7 @@ import { CaseworkerService, JudicialworkerService } from '../services';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
 import { CaseEventCompletionComponent } from './case-event-completion.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventCompletionComponent', () => {
@@ -78,26 +79,25 @@ describe('CaseEventCompletionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        PortalModule
-      ],
-      declarations: [
+    declarations: [
         CaseEventCompletionComponent,
         CaseEventCompletionTaskCancelledComponent,
         CaseEventCompletionTaskReassignedComponent
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [RouterTestingModule,
+        PortalModule],
+    providers: [
         SessionStorageService,
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
         { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
         { provide: CaseworkerService, useValue: mockCaseworkerService },
-        { provide: JudicialworkerService, useValue: mockJudicialworkerService }
-      ],
-    })
+        { provide: JudicialworkerService, useValue: mockJudicialworkerService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(CaseEventCompletionComponent);

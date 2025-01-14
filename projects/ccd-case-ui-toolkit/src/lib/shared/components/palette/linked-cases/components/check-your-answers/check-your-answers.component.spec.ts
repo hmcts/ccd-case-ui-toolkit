@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,6 +9,7 @@ import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { CheckYourAnswersComponent } from './check-your-answers.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CheckYourAnswersComponent', () => {
   let component: CheckYourAnswersComponent;
@@ -109,14 +110,11 @@ describe('CheckYourAnswersComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        PipesModule,
-        HttpClientTestingModule
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [CheckYourAnswersComponent],
-      providers: [
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    declarations: [CheckYourAnswersComponent],
+    imports: [RouterTestingModule,
+        PipesModule],
+    providers: [
         JurisdictionService,
         SearchService,
         AbstractAppConfig,
@@ -126,8 +124,10 @@ describe('CheckYourAnswersComponent', () => {
         RequestOptionsBuilder,
         LoadingService,
         { provide: LinkedCasesService, useValue: linkedCasesService },
-      ]
-    })
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+})
     .compileComponents();
   }));
 

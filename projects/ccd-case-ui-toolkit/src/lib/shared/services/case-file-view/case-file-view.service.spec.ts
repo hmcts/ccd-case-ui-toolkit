@@ -1,5 +1,5 @@
-import { HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments } from '../../domain/case-file-view';
@@ -85,17 +85,17 @@ describe('Case File View service', () => {
     // so a mock is needed
     authService = createSpyObj<AuthService>('authService', ['signIn']);
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [],
+    providers: [
         CaseFileViewService,
         HttpService,
         HttpErrorService,
         { provide: AbstractAppConfig, useValue: appConfig },
-        { provide: AuthService, useValue: authService }
-      ]
-    });
+        { provide: AuthService, useValue: authService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9
     service = TestBed.get(CaseFileViewService);
     httpMock = TestBed.get(HttpTestingController);

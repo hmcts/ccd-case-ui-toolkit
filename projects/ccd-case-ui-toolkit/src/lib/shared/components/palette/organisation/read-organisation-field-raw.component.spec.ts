@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
 import { of } from 'rxjs';
@@ -17,6 +17,7 @@ import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
@@ -104,28 +105,27 @@ describe('ReadOrganisationFieldRawComponent', () => {
   beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     TestBed.configureTestingModule({
-      imports: [
-        ConditionalShowModule,
-        CommonModule,
-        HttpClientTestingModule,
-        ReactiveFormsModule,
-        PaletteUtilsModule
-      ],
-      declarations: [
+    declarations: [
         CaseReferencePipe,
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
         MockRpxTranslatePipe,
         fieldReadComponentMock
-      ],
-      providers: [
+    ],
+    imports: [ConditionalShowModule,
+        CommonModule,
+        ReactiveFormsModule,
+        PaletteUtilsModule],
+    providers: [
         PaletteService,
         { provide: OrganisationService, useValue: mockOrganisationService },
         { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-        OrganisationConverter
-      ]
-    })
+        OrganisationConverter,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

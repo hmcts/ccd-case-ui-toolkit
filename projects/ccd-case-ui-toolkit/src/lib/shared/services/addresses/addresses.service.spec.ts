@@ -1,9 +1,10 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { AddressesService } from './addresses.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AddressesService', () => {
 
@@ -24,12 +25,12 @@ describe('AddressesService', () => {
     const postCodeResponse = validPostCodeResults;
     httpService.get.and.returnValue(of(postCodeResponse));
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AddressesService, {provide: AbstractAppConfig, useValue: appConfig}, {
-        provide: HttpService,
-        useValue: httpService
-      }]
-    });
+    imports: [],
+    providers: [AddressesService, { provide: AbstractAppConfig, useValue: appConfig }, {
+            provide: HttpService,
+            useValue: httpService
+        }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     injector = getTestBed();
     addressesService = injector.get(AddressesService);
     httpMock = injector.get(HttpTestingController);

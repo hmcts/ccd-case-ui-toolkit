@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
 import { CaseEditConfirmComponent } from './case-edit-confirm.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseEditConfirmComponent', () => {
   let fixture: ComponentFixture<CaseEditConfirmComponent>;
@@ -68,25 +69,24 @@ describe('CaseEditConfirmComponent', () => {
     };
     TestBed
       .configureTestingModule({
-        imports: [
-          HttpClientTestingModule,
-          ReactiveFormsModule,
-          RouterTestingModule,
-          PipesModule,
-        ],
-        declarations: [
-          CaseEditConfirmComponent,
-          MarkdownComponent,
-          MockRpxTranslatePipe
-        ],
-        providers: [
-          { provide: CaseEditComponent, useValue: caseEditComponentStub },
-          { provide: Router, useValue: routerStub },
-          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          FieldsUtils,
-          PlaceholderService
-        ]
-      })
+    declarations: [
+        CaseEditConfirmComponent,
+        MarkdownComponent,
+        MockRpxTranslatePipe
+    ],
+    imports: [ReactiveFormsModule,
+        RouterTestingModule,
+        PipesModule],
+    providers: [
+        { provide: CaseEditComponent, useValue: caseEditComponentStub },
+        { provide: Router, useValue: routerStub },
+        { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+        FieldsUtils,
+        PlaceholderService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
       .compileComponents();
     fixture = TestBed.createComponent(CaseEditConfirmComponent);
     component = fixture.componentInstance;

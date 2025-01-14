@@ -1,10 +1,11 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { AbstractAppConfig } from '../../../app.config';
 import { FlagType, HmctsServiceDetail } from '../../domain/case-flag';
 import { HttpErrorService, HttpService } from '../http';
 import { CaseFlagRefdataService } from './case-flag-refdata.service';
 import { RefdataCaseFlagType } from './refdata-case-flag-type.enum';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -67,16 +68,16 @@ describe('Case Flag Refdata Service', () => {
     // Although not used in any tests, HttpErrorService is a dependency (introduced by HttpService) so a mock is needed
     httpErrorService = createSpyObj<HttpErrorService>('httpErrorService', ['setError']);
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [],
+    providers: [
         CaseFlagRefdataService,
         HttpService,
         { provide: AbstractAppConfig, useValue: appConfig },
-        { provide: HttpErrorService, useValue: httpErrorService }
-      ]
-    });
+        { provide: HttpErrorService, useValue: httpErrorService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9
     service = TestBed.get(CaseFlagRefdataService);
     httpMock = TestBed.get(HttpTestingController);

@@ -1,7 +1,8 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { CommonDataService, LovRefDataByServiceModel, LovRefDataModel } from './common-data-service';
 import { ServiceOrg } from '../../domain/case-view/service-org-response.model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CommonDataService', () => {
   let service: CommonDataService;
@@ -57,13 +58,13 @@ describe('CommonDataService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        CommonDataService
-      ]
-    });
+    imports: [],
+    providers: [
+        CommonDataService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(CommonDataService);
     httpMock = TestBed.inject(HttpTestingController);
   });
