@@ -343,19 +343,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-material-components/moment-adapter@npm:16.0.1":
-  version: 16.0.1
-  resolution: "@angular-material-components/moment-adapter@npm:16.0.1"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^16.0.0
-    "@angular/core": ^16.0.0
-    moment: ^2.18.1
-  checksum: 10/5335b53ae0363deeb7c2cb78237825e6070e6526e784572cc4c0b6daf44e9b82763a07bbb318703b0bfba1025ee4a081cb6ee028968c12bbbbe7968828bc8d10
-  languageName: node
-  linkType: hard
-
 "@angular/animations@npm:~17.3.5":
   version: 17.3.11
   resolution: "@angular/animations@npm:17.3.11"
@@ -4391,7 +4378,6 @@ __metadata:
     "@angular-eslint/eslint-plugin-template": "npm:17.3.0"
     "@angular-eslint/schematics": "npm:18.0.0"
     "@angular-eslint/template-parser": "npm:17.3.0"
-    "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:~17.3.5"
     "@angular/cdk": "npm:17.3.5"
     "@angular/cli": "npm:^17.3.5"
