@@ -67,6 +67,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
+    if (this.loadingService.storedSpinner){
+      this.loadingService.unregisterStoredSpinner();
+    }
   }
 
   public postEditActivity(): Observable<Activity[]> {

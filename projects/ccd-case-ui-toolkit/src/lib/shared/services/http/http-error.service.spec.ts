@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth/auth.service';
 import { HttpErrorService } from './http-error.service';
+import { LoadingService } from '../loading';
 
 describe('HttpErrorService', () => {
   const CURRENT_URL = 'http://core-case-data.common-components.reform';
@@ -64,11 +65,13 @@ describe('HttpErrorService', () => {
 
   let authService: any;
   let errorService: HttpErrorService;
+  let loadingService: LoadingService;
 
   beforeEach(() => {
     authService = jasmine.createSpyObj<AuthService>('authService', ['signIn']);
+    loadingService = new LoadingService();
 
-    errorService = new HttpErrorService(authService);
+    errorService = new HttpErrorService(authService, loadingService);
 
     jasmine.clock().uninstall();
     jasmine.clock().install();
