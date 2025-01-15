@@ -19,6 +19,7 @@ import { EventDetails, Task, TaskEventCompletionInfo } from '../../../domain/wor
 import {
   AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
+  ReadCookieService,
   SessionStorageService, WindowService
 } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
@@ -106,7 +107,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
     private readonly workAllocationService: WorkAllocationService,
     private readonly alertService: AlertService,
-    private readonly abstractConfig: AbstractAppConfig
+    private readonly abstractConfig: AbstractAppConfig,
+    private readonly cookieService: ReadCookieService
   ) {}
 
   public ngOnInit(): void {
@@ -460,6 +462,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
         // on event completion ensure the previous event clientContext/taskEventCompletionInfo removed
+        // Note - Not removeTaskFromClientContext because could interfere with other logic
         this.sessionStorageService.removeItem('clientContext');
         this.sessionStorageService.removeItem('taskEventCompletionInfo')
         this.isSubmitting = false;
@@ -537,7 +540,14 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
     if (!taskEventCompletionInfo) {
       // if no task event present then there is no task to complete from previous event present
-      return true;
+      // EXUI-2668 - Add additional logic to confirm the task is relevant to the event
+      if (this.taskIsForEvent(taskInSessionStorage, eventDetails)) {
+        return true;
+      } else {
+        // client context still needed for language
+        this.removeTaskFromClientContext();
+        return false;
+      }
     } else {
       if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
         return true;
@@ -546,7 +556,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
         // if the session storage not related to event, ignore it and remove
-        this.sessionStorageService.removeItem('clientContext');
+        this.removeTaskFromClientContext();
         this.sessionStorageService.removeItem('taskEventCompletionInfo');
         return false;
       }
@@ -593,4 +603,24 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+
+  private taskIsForEvent(task: Task, eventDetails: EventDetails): boolean {
+    // EXUI-2668 - Ensure description for task includes event ID
+    // Note - This is a failsafe for an edge case that may never occur again
+    // Description may not include eventId in some cases which may mean task not completed (however this will be easy to check)
+    this.abstractConfig.logMessage(`checking taskIsForEvent: task ID ${task.id}, task description ${task.description}, event name ${eventDetails.eventId}`);
+    return task.case_id === eventDetails.caseId && (task.description && task.description.includes(eventDetails.eventId));
+  }
+
+  private removeTaskFromClientContext(): void {
+    const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
+    const clientContext = {
+      client_context: {
+        user_language: {
+          language: currentLanguage
+        }
+      }
+    };
+    this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
+  } 
 }

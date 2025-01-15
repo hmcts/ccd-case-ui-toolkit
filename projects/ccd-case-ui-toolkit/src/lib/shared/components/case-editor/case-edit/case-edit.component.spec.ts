@@ -11,7 +11,7 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { AlertService, FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
+import { AlertService, FieldsPurger, FieldsUtils, LoadingService, ReadCookieService, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
@@ -227,6 +227,7 @@ describe('CaseEditComponent', () => {
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
   let mockAlertService: jasmine.SpyObj<AlertService>;
+  let mockCookieService: jasmine.SpyObj<ReadCookieService>;
   let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
@@ -289,6 +290,7 @@ describe('CaseEditComponent', () => {
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
       mockAlertService = createSpyObj<AlertService>('AlertService', ['error', 'setPreserveAlerts']);
+      mockCookieService = createSpyObj<ReadCookieService>('ReadCookieService', ['getCookie']);
       mockabstractConfig = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['logMessage']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
@@ -342,6 +344,7 @@ describe('CaseEditComponent', () => {
             { provide: WorkAllocationService, useValue: mockWorkAllocationService},
             { provide: SessionStorageService, useValue: mockSessionStorageService},
             { provide: AlertService, useValue: mockAlertService },
+            { provide: ReadCookieService, useValue: mockCookieService },
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1526,7 +1529,7 @@ describe('CaseEditComponent', () => {
       });
 
       it('should return true when there is a task present that matches the current case when there is no event in session storage', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTask = {id: '123', case_id: '123456789', description: 'test test test [testEvent]'};
         expect(component.taskExistsForThisEvent(mockTask as Task, null, mockEventDetails)).toBe(true);
       });
 

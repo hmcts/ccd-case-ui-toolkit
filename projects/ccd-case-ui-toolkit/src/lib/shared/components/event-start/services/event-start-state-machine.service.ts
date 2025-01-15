@@ -199,7 +199,6 @@ export class EventStartStateMachineService {
         }
       }
     };
-    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     let userInfo: UserInfo;
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -213,6 +212,8 @@ export class EventStartStateMachineService {
       taskId: task.id,
       createdTimestamp: Date.now()};
     context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
+    // EXUI-2668 - Only add client context when taskEventCompletionInfo is set - stops auto completing incorrect tasks
+    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });
