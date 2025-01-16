@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.27
+**EXUI-2672** Incorrect Timestamp in CaseFileView
+
 ### Version 7.1.26
 **EXUI-2223** Accessibility-issue
 
