@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.27",
+  "version": "7.1.33-qm-wa",
   "engines": {
     "node": ">=18.19.0"
   },
