@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.75-exui-1717-rc2
+**EXUI-1717** add-task-failure-logs
+
 ### Version 7.0.75-exui-2575
 **EXUI-2536** issue with DynamicMultiSelectList
 **EXUI-2431** Special characters stopping events
@@ -8,7 +11,6 @@
 
 ### Version 7.0.75-exui-2315
 **EXUI-2315** etrieve current user language selection
-
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue
