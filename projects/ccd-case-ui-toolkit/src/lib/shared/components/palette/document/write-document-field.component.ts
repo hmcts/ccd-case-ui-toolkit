@@ -121,7 +121,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public fileChangeEvent(fileInput: any, allowedRegex?: string): void {
     let fileTypeRegex;
-    console.log('Service specified regex: ', allowedRegex);
     if (allowedRegex){
       fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`);
     }
