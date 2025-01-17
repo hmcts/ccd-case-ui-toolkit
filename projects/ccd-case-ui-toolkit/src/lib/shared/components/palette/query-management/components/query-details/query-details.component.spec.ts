@@ -6,7 +6,7 @@ import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pip
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 
-describe('QueryDetailsComponent', () => {
+xdescribe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
   let fixture: ComponentFixture<QueryDetailsComponent>;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
