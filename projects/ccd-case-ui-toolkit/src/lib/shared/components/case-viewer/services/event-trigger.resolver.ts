@@ -71,7 +71,6 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
           this.router.navigate([`/cases/case-details/${cid}/tasks`]);
-          this.loadingService.unregisterStoredSpinner();
           return throwError(error);
         })
       ).toPromise();

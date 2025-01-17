@@ -138,7 +138,7 @@ describe('CaseEventTriggerComponent', () => {
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
-    loadingService = createSpyObj<LoadingService>('loadingService', ['storedSpinner', 'unregisterStoredSpinner']);
+    loadingService = new LoadingService();
     casesService.createEvent.and.returnValue(of(true));
     casesService.validateCase.and.returnValue(of(true));
 
@@ -377,8 +377,10 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should call unregisterStoredSpinner if there is a stored spinnter', () => {
-    loadingService.storedSpinner = 'storedSpinner';
+    spyOn(loadingService, 'hasSharedSpinner').and.returnValue(true);
+    spyOn(loadingService, 'unregisterSharedSpinner');
     component.ngOnInit();
-    expect(loadingService.unregisterStoredSpinner).toHaveBeenCalled();
+    expect(loadingService.hasSharedSpinner).toBeTruthy();
+    expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   });
 });

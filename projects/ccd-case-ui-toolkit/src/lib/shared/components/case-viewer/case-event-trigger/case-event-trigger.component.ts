@@ -37,8 +37,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    if (this.loadingService.storedSpinner){
-      this.loadingService.unregisterStoredSpinner();
+    if (this.loadingService.hasSharedSpinner()){
+      this.loadingService.unregisterSharedSpinner();
     }
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
@@ -66,9 +66,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     }
     if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
-    }
-    if (this.loadingService.storedSpinner){
-      this.loadingService.unregisterStoredSpinner();
     }
   }
 

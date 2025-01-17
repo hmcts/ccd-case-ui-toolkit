@@ -197,7 +197,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
     const spinner = this.loadingService.register();
-    this.loadingService.storedSpinner = spinner;
+    this.loadingService.addSharedSpinner(spinner);
     this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 

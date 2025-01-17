@@ -6,7 +6,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 export class LoadingService {
   private readonly registered = new Map<string, string>();
   private readonly loading = new BehaviorSubject<boolean>(false);
-  public storedSpinner;
+  private readonly sharedSpinners = [];
 
   public get isLoading(): Observable<boolean> {
     return this.loading.pipe(distinctUntilChanged());
@@ -24,9 +24,17 @@ export class LoadingService {
     this.loading.next(this.registered.size > 0);
   }
 
-  public unregisterStoredSpinner(): void {
-    this.registered.delete(this.storedSpinner);
-    this.storedSpinner = null;
+  public addSharedSpinner(spinnerId: string){
+    this.sharedSpinners.push(spinnerId);
+  }
+
+  public hasSharedSpinner(): boolean {
+    return this.sharedSpinners.length > 0;
+  }
+
+  public unregisterSharedSpinner(): void {
+    this.registered.delete(this.sharedSpinners[0]);
+    this.sharedSpinners.shift();
     this.loading.next(this.registered.size > 0);
   }
 

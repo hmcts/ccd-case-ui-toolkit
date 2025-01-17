@@ -57,8 +57,8 @@ export class HttpErrorService {
   public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
     console.error('Handling error in http error service.');
     console.error(error);
-    if (this.loadingService.storedSpinner){
-      this.loadingService.unregisterStoredSpinner();
+    if (this.loadingService.hasSharedSpinner()){
+      this.loadingService.unregisterSharedSpinner();
     }
     const httpError: HttpError = HttpErrorService.convertToHttpError(error);
     if (redirectIfNotAuthorised && httpError.status === 401) {
