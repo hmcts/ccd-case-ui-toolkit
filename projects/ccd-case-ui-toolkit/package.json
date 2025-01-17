@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.31-event-spinner-2",
+  "version": "7.1.27-event-spinner",
   "engines": {
     "node": ">=18.19.0"
   },
