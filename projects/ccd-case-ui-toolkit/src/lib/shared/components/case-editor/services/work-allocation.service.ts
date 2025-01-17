@@ -105,6 +105,8 @@ export class WorkAllocationService {
    */
   public completeTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
+      this.alertService.setPreserveAlerts(true);
+      this.alertService.warning({ phrase:'completeTask: Work Allocation is not enabled, so the task could not be completed. Please complete the task associated with the case manually.'});
       return of(null);
     }
     this.appConfig.logMessage(`completeTask: completing ${taskId}`);
@@ -129,6 +131,8 @@ export class WorkAllocationService {
    */
   public assignAndCompleteTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
+      this.alertService.setPreserveAlerts(true);
+      this.alertService.warning({ phrase:'assignAndCompleteTask: Work Allocation is not enabled, so the task could not be completed. Please complete the task associated with the case manually.'});
       return of(null);
     }
     this.appConfig.logMessage(`assignAndCompleteTask: completing ${taskId}`);

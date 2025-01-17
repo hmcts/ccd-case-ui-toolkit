@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.27-exui-1717-rc1
+**EXUI-1717** add-task-failure-logs
+
 ### Version 7.1.27
 **EXUI-2672** Incorrect Timestamp in CaseFileView
 
