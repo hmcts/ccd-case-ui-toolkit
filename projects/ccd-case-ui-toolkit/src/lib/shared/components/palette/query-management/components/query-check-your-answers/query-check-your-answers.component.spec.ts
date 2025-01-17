@@ -391,8 +391,10 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
+    workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks', 'getTask', 'getTasksByCaseIdAndEventId']);
     workAllocationService.searchTasks.and.returnValue(of(response));
+    workAllocationService.getTask.and.returnValue(of(response));
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(true));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);

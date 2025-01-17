@@ -82,6 +82,31 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     this.getDocumentAttachments();
 
     this.setCaseQueriesCollectionData();
+
+    this.workAllocationService.getTasksByCaseIdAndEventId('queryManagementRespondToQuery', '1737119867172641', this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
+      .subscribe(
+        (response: any) => {
+          console.log('response:-queryManagementRespondToQ', response);
+        }
+      );
+
+    this.workAllocationService.getTask('95041595-d4d5-11ef-896e-82ef3d5e280d').subscribe(
+      (response: any) => {
+        console.log('response------:', response);
+      },
+      (error) => {
+        console.error('Error in searchTasksSubscription:', error);
+      // Handle error appropriately
+      }
+    );
+
+    const searchParameter = { ccdId: '1737119867172641' };
+    this.workAllocationService.searchTasks(searchParameter)
+      .subscribe(
+        (response: any) => {
+          console.log('response:searchTasks', response);
+        },
+      );
   }
 
   public ngOnDestroy(): void {
