@@ -26,6 +26,7 @@ import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -36,6 +37,8 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 export class CaseEditComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   public static readonly ALERT_MESSAGE = 'Page is being refreshed so you will be redirected to the first page of this event.';
+  public static readonly CLIENT_CONTEXT = 'clientContext';
+  public static readonly TASK_EVENT_COMPLETION_INFO = 'taskEventCompletionInfo';
 
   @Input()
   public eventTrigger: CaseEventTrigger;
@@ -130,6 +133,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
+    removeTaskFromClientContext(this.sessionStorageService);
   }
 
   public ngOnDestroy(): void {
@@ -240,12 +244,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
-    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const clientContextStr = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     const taskInSessionStorage = userTask ? userTask.task_data : null;
     let taskEventCompletionInfo: TaskEventCompletionInfo;
     let userInfo: UserInfo;
-    const taskEventCompletionStr = this.sessionStorageService.getItem('taskEventCompletionInfo');
+    const taskEventCompletionStr = this.sessionStorageService.getItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded');
     if (taskEventCompletionStr) {
@@ -274,7 +278,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         userId,
         taskId: taskInSessionStorage.id,
         createdTimestamp: Date.now()};
-      this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
+      this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
       this.isEventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
@@ -463,8 +467,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         this.loadingService.unregister(loadingSpinnerToken);
         // on event completion ensure the previous event clientContext/taskEventCompletionInfo removed
         // Note - Not removeTaskFromClientContext because could interfere with other logic
-        this.sessionStorageService.removeItem('clientContext');
-        this.sessionStorageService.removeItem('taskEventCompletionInfo')
+        this.sessionStorageService.removeItem(CaseEditComponent.CLIENT_CONTEXT);
+        this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO)
         this.isSubmitting = false;
       }))
       .subscribe(
@@ -495,7 +499,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private postCompleteTaskIfRequired(): Observable<any> {
-    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const clientContextStr = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
@@ -545,7 +549,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         return true;
       } else {
         // client context still needed for language
-        this.removeTaskFromClientContext();
+        removeTaskFromClientContext(this.sessionStorageService);
         return false;
       }
     } else {
@@ -556,8 +560,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
         // if the session storage not related to event, ignore it and remove
-        this.removeTaskFromClientContext();
-        this.sessionStorageService.removeItem('taskEventCompletionInfo');
+        removeTaskFromClientContext(this.sessionStorageService);
+        this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
         return false;
       }
       if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
@@ -611,16 +615,4 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.abstractConfig.logMessage(`checking taskIsForEvent: task ID ${task.id}, task description ${task.description}, event name ${eventDetails.eventId}`);
     return task.case_id === eventDetails.caseId && (task.description && task.description.includes(eventDetails.eventId));
   }
-
-  private removeTaskFromClientContext(): void {
-    const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
-    const clientContext = {
-      client_context: {
-        user_language: {
-          language: currentLanguage
-        }
-      }
-    };
-    this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
-  } 
 }

@@ -1245,8 +1245,8 @@ describe('CaseEditComponent', () => {
         expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
         // check that tasks removed from session storage once event has been completed
-        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('clientContext');
-        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskEventCompletionInfo');
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT);
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
       });
 
       it('should submit the case for a Case Flags submission', () => {

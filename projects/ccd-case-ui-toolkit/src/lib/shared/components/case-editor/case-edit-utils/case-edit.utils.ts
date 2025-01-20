@@ -1,3 +1,5 @@
+import { SessionStorageService } from "../../../services";
+import { CaseEditComponent } from "../case-edit/case-edit.component";
 
 export function convertNonASCIICharacter(character: string): string {
   if (character === '£') {
@@ -36,3 +38,17 @@ export class CaseEditUtils {
     return rawString;
   }
 }
+
+export function removeTaskFromClientContext(sessionStorageService: SessionStorageService): void {
+  if (!sessionStorageService) {
+    return;
+  }
+  const clientContextString = sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
+  const clientContext = clientContextString ? JSON.parse(clientContextString) : null;
+  if (clientContext?.client_context?.user_task) {
+    delete clientContext.client_context.user_task;
+  } else {
+    return;
+  }
+  sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
+} 
