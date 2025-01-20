@@ -47,8 +47,6 @@ export function removeTaskFromClientContext(sessionStorageService: SessionStorag
   const clientContext = clientContextString ? JSON.parse(clientContextString) : null;
   if (clientContext?.client_context?.user_task) {
     delete clientContext.client_context.user_task;
-  } else {
-    return;
+    sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
   }
-  sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
 } 
