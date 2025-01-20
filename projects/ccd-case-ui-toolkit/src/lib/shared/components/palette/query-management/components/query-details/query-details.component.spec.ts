@@ -5,13 +5,12 @@ import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
   let fixture: ComponentFixture<QueryDetailsComponent>;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
-  let activatedRoute: ActivatedRoute;
 
   const items = [
     {
@@ -221,20 +220,14 @@ describe('QueryDetailsComponent', () => {
     expect(component.toggleLinkVisibility).toHaveBeenCalled();
   });
 
-  it('should set showLink to true if queryItemId is not QUERY_ITEM_RESPOND', () => {
+  it('should set showLink to true when user is navigated to follow up to a query', () => {
     component.toggleLinkVisibility();
     expect(component['queryItemId']).toBe('123');
     expect(component.showLink).toBe(true);
   });
 
-  it('should set showLink to false if queryItemId equals QUERY_ITEM_RESPOND', () => {
-    activatedRoute.snapshot = {
-      ...activatedRoute.snapshot,
-      params: {
-        ...activatedRoute.snapshot.params,
-        qid: '3'
-      }
-    } as unknown as ActivatedRouteSnapshot;
+  it('should set showLink to false when user is navigated to response to a query', () => {
+    component['route'].snapshot.params.qid = '3';
     component.ngOnChanges();
     component.toggleLinkVisibility();
     expect(component.showLink).toBe(false);

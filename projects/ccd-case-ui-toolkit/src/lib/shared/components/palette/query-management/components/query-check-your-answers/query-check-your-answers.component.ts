@@ -66,7 +66,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
-    this.tid = this.route.snapshot.queryParams.tid;
+    this.tid = this.route.snapshot.queryParams?.tid;
 
     console.log('tid:', this.tid);
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
@@ -95,25 +95,17 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.workAllocationService.getTask('95041595-d4d5-11ef-896e-82ef3d5e280d').subscribe(
-      (response: any) => {
-        console.log('response------:', response);
-      },
-      (error) => {
-        console.error('Error in searchTasksSubscription:', error);
-      // Handle error appropriately
-      }
-    );
-
-    this.workAllocationService.getTask(this.tid).subscribe(
-      (response: any) => {
-        console.log('response-tid------:', response);
-      },
-      (error) => {
-        console.error('Error in getTask:', error);
-      // Handle error appropriately
-      }
-    );
+    if (this.tid) {
+      this.workAllocationService.getTask(this.tid).subscribe(
+        (response: any) => {
+          console.log('response-tid------:', response);
+        },
+        (error) => {
+          console.error('Error in getTask:', error);
+          // Handle error appropriately
+        }
+      );
+    }
 
     const searchParameter = { ccdId: this.caseDetails.case_id };
     this.workAllocationService.searchTasks(searchParameter)
