@@ -42,6 +42,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
   private queryId: string;
+  private tid: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
 
@@ -65,8 +66,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
+    this.tid = this.route.snapshot.queryParams.tid;
+
+    console.log('tid:', this.tid);
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
+      console.log('caseDetails:', this.caseDetails.case_id, this.caseDetails);
 
       // Find the appropriate event trigger based on the queryCreateContext
       this.caseViewTrigger = this.caseDetails.triggers.find((trigger) =>
@@ -83,7 +88,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     this.setCaseQueriesCollectionData();
 
-    this.workAllocationService.getTasksByCaseIdAndEventId('queryManagementRespondToQuery', '1737119867172641', this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
+    this.workAllocationService.getTasksByCaseIdAndEventId('queryManagementRespondToQuery', this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
       .subscribe(
         (response: any) => {
           console.log('response:-queryManagementRespondToQ', response);
@@ -100,7 +105,17 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       }
     );
 
-    const searchParameter = { ccdId: '1737119867172641' };
+    this.workAllocationService.getTask(this.tid).subscribe(
+      (response: any) => {
+        console.log('response-tid------:', response);
+      },
+      (error) => {
+        console.error('Error in getTask:', error);
+      // Handle error appropriately
+      }
+    );
+
+    const searchParameter = { ccdId: this.caseDetails.case_id };
     this.workAllocationService.searchTasks(searchParameter)
       .subscribe(
         (response: any) => {
