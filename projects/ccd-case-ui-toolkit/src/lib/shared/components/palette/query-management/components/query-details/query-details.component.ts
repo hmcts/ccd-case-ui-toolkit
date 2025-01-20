@@ -2,10 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { SessionStorageService } from '../../../../../services';
 import { QueryListItem } from '../../models';
 import { ActivatedRoute } from '@angular/router';
-import {
-  CaseView
-} from '../../../../../../../lib/shared/domain';
-
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -21,7 +17,7 @@ export class QueryDetailsComponent implements OnChanges{
   private queryItemId: string;
 
   constructor(
-    private sessionStorageService: SessionStorageService,
+    private readonly sessionStorageService: SessionStorageService,
     private readonly route: ActivatedRoute) { }
 
   public onBack(): void {
