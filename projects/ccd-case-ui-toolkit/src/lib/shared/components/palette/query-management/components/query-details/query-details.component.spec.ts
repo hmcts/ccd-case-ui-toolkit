@@ -5,11 +5,13 @@ import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
   let fixture: ComponentFixture<QueryDetailsComponent>;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+  let activatedRoute: ActivatedRoute;
 
   const items = [
     {
@@ -154,6 +156,14 @@ describe('QueryDetailsComponent', () => {
     ]
   };
 
+  const snapshotActivatedRoute = {
+    snapshot: {
+      params: {
+        qid: '123'
+      }
+    }
+  };
+
   beforeEach(async () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
     await TestBed.configureTestingModule({
@@ -162,7 +172,10 @@ describe('QueryDetailsComponent', () => {
         MockRpxTranslatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: SessionStorageService, useValue: mockSessionStorageService }]
+      providers: [
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute }
+      ]
     })
       .compileComponents();
   });
@@ -200,6 +213,31 @@ describe('QueryDetailsComponent', () => {
     expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Last submitted by');
     expect(columnHeaders[2].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Attachments');
+  });
+
+  it('should call toggleLinkVisibility when ngOnChanges is called', () => {
+    spyOn(component, 'toggleLinkVisibility');
+    component.ngOnChanges();
+    expect(component.toggleLinkVisibility).toHaveBeenCalled();
+  });
+
+  it('should set showLink to true if queryItemId is not QUERY_ITEM_RESPOND', () => {
+    component.toggleLinkVisibility();
+    expect(component['queryItemId']).toBe('123');
+    expect(component.showLink).toBe(true);
+  });
+
+  it('should set showLink to false if queryItemId equals QUERY_ITEM_RESPOND', () => {
+    activatedRoute.snapshot = {
+      ...activatedRoute.snapshot,
+      params: {
+        ...activatedRoute.snapshot.params,
+        qid: '3'
+      }
+    } as unknown as ActivatedRouteSnapshot;
+    component.ngOnChanges();
+    component.toggleLinkVisibility();
+    expect(component.showLink).toBe(false);
   });
 
   describe('isCaseworker', () => {
