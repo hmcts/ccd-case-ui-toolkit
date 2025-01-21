@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
+### Version 7.1.27
+**EXUI-2672** Incorrect Timestamp in CaseFileView
+
+### Version 7.1.26
+**EXUI-2223** Accessibility-issue
+
 ### Version 7.1.25
-**EXUI-1951** etrieve current user language selection
+**EXUI-1951** Retrieve current user language selection
 
 ### Version 7.1.24
 Taken by PR
