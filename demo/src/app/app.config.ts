@@ -34,7 +34,10 @@ export class AppConfig extends AbstractAppConfig {
     'access_management_mode': true,
     'refunds_url': '/api/refunds',
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
-    'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid'
+    'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid',
+    'events_to_hide': [
+      'queryManagementRespondQuery'
+    ]
   };
 
   constructor(private http: HttpClient) {
@@ -186,5 +189,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseFlagsRefdataApiUrl(): string {
     return this.config.case_flags_refdata_api_url;
+  }
+
+  public getEventsToHide(): string[] {
+    return this.config.events_to_hide;
   }
 }

@@ -41,7 +41,7 @@
       type="file"
       class="input-upload-file"
       (keydown.Tab)="fileValidationsOnTab()"
-      (change)="fileChangeEvent($event)"
+      (change)="fileChangeEvent($event, caseField.field_type.regular_expression)"
       accept="{{caseField.field_type.regular_expression}}"
       #fileInput
     />

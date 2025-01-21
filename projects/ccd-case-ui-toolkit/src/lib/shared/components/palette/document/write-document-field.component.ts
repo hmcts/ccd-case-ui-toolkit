@@ -29,6 +29,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_TIMESTAMP = 'upload_timestamp';
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
+  public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
 
@@ -120,8 +121,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public fileChangeEvent(fileInput: any): void {
-    if (fileInput.target.files[0]) {
+  public fileChangeEvent(fileInput: any, allowedRegex?: string): void {
+    let fileTypeRegex;
+    if (allowedRegex){
+      fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`);
+    }
+    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)){
+      this.invalidFileFormat();
+    } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
       this.fileName = fileInput.target.files[0].name;
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
@@ -156,6 +163,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return true;
     }
     return false;
+  }
+
+  public invalidFileFormat(): void {
+    this.updateDocumentForm(null, null, null);
+    this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_INVALID_FORMAT);
   }
 
   public getUploadedFileName(): any {
