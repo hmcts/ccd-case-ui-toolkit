@@ -281,6 +281,8 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
+
+    expect(component.fileName).toBe('test.pdf')
     expect(component.caseField.value.document_filename).toBe('test.pdf');
   });
 
