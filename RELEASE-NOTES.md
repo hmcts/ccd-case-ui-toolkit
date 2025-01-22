@@ -1,4 +1,46 @@
-## RELEASE NOTES 
+## RELEASE NOTES
+
+### Version 7.1.27
+**EXUI-2672** Incorrect Timestamp in CaseFileView
+
+### Version 7.1.26
+**EXUI-2223** Accessibility-issue
+
+### Version 7.1.25
+**EXUI-1951** Retrieve current user language selection
+
+### Version 7.1.24
+Taken by PR
+
+### Version 7.0.75-exui-2575
+**EXUI-2536** issue with DynamicMultiSelectList
+**EXUI-2431** Special characters stopping events
+**EXUI-2537** upgrade pdf-dist in media viewer
+**EXUI-2389** PED and Media Viewer
+
+### Version 7.0.75-exui-2315
+**EXUI-2315** etrieve current user language selection
+
+
+### Version 7.0.75-exui-2515
+**EXUI-2515** case-link-issue
+
+### Version 7.0.75-exui-2462-rc1
+**EXUI-2462** DynamicRadioList incorrectly selects the wrong radio button
+
+### Version 7.0.75
+**EXUI-2415** Redirect to an new event by a hyperlink
+
+### Version 7.0.74
+**EXUI-1108** Fix yarn npm audit in ccd-case-ui-toolkit
+
+### Version 7.0.71
+**EXUI-EXUI-2227** error-handling-specific-access-request
+
+### Version 7.0.70
+**EXUI-2193** Get rid of mc-menu-items LD flag
+**EXUI-2346** Not able to see unavailable dates on check your answers page
+**EXUI-2460** Describe your evidence' free text boxes not being
 
 ### Version 7.0.69
 **EXUI-2354** Flakyness/slow login/Search issue
@@ -6,6 +48,7 @@
 ### Version 7.0.67
 **EXUI-2146** Case file view time is 1 hour behind
 **EXUI-2230** Case File View date/time as GMT rather than Local BST
+
 
 ### Version 7.0.66
 **EXUI-2148** Additional checks on task completion from session storage
