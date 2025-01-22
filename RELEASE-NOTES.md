@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.1.29
+**EXUI-1227** Issue in CaseFileView
+
+### Version 7.1.28
+**EXUI-2698** User is able to upload restricted file type to Civil case
+
 ### Version 7.1.27
 **EXUI-2672** Incorrect Timestamp in CaseFileView
 
