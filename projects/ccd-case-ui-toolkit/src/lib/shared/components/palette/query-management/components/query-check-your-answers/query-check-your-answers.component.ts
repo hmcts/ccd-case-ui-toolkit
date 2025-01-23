@@ -13,7 +13,7 @@ import {
 } from '../../../../../../../lib/shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
@@ -88,7 +88,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     this.setCaseQueriesCollectionData();
 
-    this.workAllocationService.getTasksByCaseIdAndEventId('queryManagementRespondToQuery', this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
+    this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
       .subscribe(
         (response: any) => {
           console.log('response:-queryManagementRespondToQ', response);
