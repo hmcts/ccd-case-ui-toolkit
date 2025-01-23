@@ -454,6 +454,53 @@ describe('WriteDocumentFieldComponent', () => {
 
     expect(result).toBeFalsy();
   });
+
+  it('should not allow a user to change the allowed files to upload', () => {
+    const allowedFileTypes = '.pdf,.txt,.doc,.dot,.docx,.rtf,.xls,.xlt,.xla,.xlsx,.xltx,.xlsb,.ppt,.pot,.pps,.ppa,.pptx,.potx,.ppsx,.jpg,.jpeg,.bmp,.tif,.tiff,.png,.csv';
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.mp3');
+    const dummyEvent = {
+      target: {
+        files: [
+          file
+        ]
+      }
+    };
+    component.fileChangeEvent(dummyEvent, allowedFileTypes);
+    expect(component.fileUploadMessages).toEqual('Document format is not supported');
+  });
+
+  it('should allow user to upload if there is no file types specified', () => {
+    spyOn(component, 'invalidFileFormat');
+    const allowedFileTypes = '';
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.mp3');
+    const dummyEvent = {
+      target: {
+        files: [
+          file
+        ]
+      }
+    };
+    component.fileChangeEvent(dummyEvent, allowedFileTypes);
+    expect(component.invalidFileFormat).not.toHaveBeenCalled();
+  });
+
+  it('should not break if allowedFileTypes is undefined', () => {
+    spyOn(component, 'invalidFileFormat');
+    const allowedFileTypes = undefined;
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.mp3');
+    const dummyEvent = {
+      target: {
+        files: [
+          file
+        ]
+      }
+    };
+    component.fileChangeEvent(dummyEvent, allowedFileTypes);
+    expect(component.invalidFileFormat).not.toHaveBeenCalled();
+  });
 });
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
@@ -715,5 +762,4 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     // Expect the UPLOAD_TIMESTAMP control to be removed
     expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
   });
-
 });

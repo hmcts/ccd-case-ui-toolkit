@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.1.29
+**EXUI-1717** Add logs for auto task completion failure
+
+### Version 7.1.28
+**EXUI-2698** User is able to upload restricted file type to Civil case
+
+### Version 7.1.27
+**EXUI-2672** Incorrect Timestamp in CaseFileView
+
+### Version 7.1.26
+**EXUI-2223** Accessibility-issue
+
+### Version 7.1.25
+**EXUI-1951** Retrieve current user language selection
+
+### Version 7.1.24
+Taken by PR
+
 ### Version 7.0.75-exui-2575
 **EXUI-2536** issue with DynamicMultiSelectList
 **EXUI-2431** Special characters stopping events
