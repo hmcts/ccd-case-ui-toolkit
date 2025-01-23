@@ -164,14 +164,11 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public searchAndCompleteTask(): void {
     // Search Task
-    const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
     this.searchTasksSubscription = this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
       .subscribe(
         (response: any) => {
           // Filter task by query id
-          const filteredTask = response.tasks?.find((task) =>
-            Object.values(task.additional_properties).some((value) => value === this.queryId)
-          );
+          const filteredTask = response.tasks?.find((task) => task.case_id === this.queryId);
           // Trigger event completion
           this.eventCompletionParams = {
             caseId: this.caseDetails.case_id,

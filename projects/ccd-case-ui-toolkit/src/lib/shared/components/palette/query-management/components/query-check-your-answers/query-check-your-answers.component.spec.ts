@@ -208,11 +208,11 @@ describe('QueryCheckYourAnswersComponent', () => {
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {
-      id: 'TestAddressBookCase',
+      id: 'asylum',
       name: 'Test Address Book Case',
       jurisdiction: {
-        id: 'TEST',
-        name: 'Test'
+        id: 'Immigration and Asylum',
+        name: 'asylum'
       }
     },
     channels: [],
@@ -243,11 +243,11 @@ describe('QueryCheckYourAnswersComponent', () => {
   const CASE_VIEW_OTHER: CaseView = {
     case_id: '1',
     case_type: {
-      id: 'TestAddressBookCase',
+      id: 'asylum',
       name: 'Test Address Book Case',
       jurisdiction: {
-        id: 'TEST',
-        name: 'Test'
+        id: 'Immigration and Asylum',
+        name: 'asylum'
       }
     },
     channels: [],
@@ -394,7 +394,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks', 'getTask', 'getTasksByCaseIdAndEventId']);
     workAllocationService.searchTasks.and.returnValue(of(response));
     workAllocationService.getTask.and.returnValue(of(response));
-    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(true));
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(response));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);
@@ -590,7 +590,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       component.searchAndCompleteTask();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
-      expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
+      expect(workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
     });
 
     it('should trigger event completion', () => {
