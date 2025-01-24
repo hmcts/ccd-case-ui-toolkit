@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -21,8 +22,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   constructor(
     private readonly fieldsUtils: FieldsUtils,
-    private readonly placeholderService: PlaceholderService
-  ) { }
+    private readonly placeholderService: PlaceholderService,
+    private readonly rpxTranslationPipe: RpxTranslatePipe
+  ) {}
 
   public ngOnInit(): void {
     this.initialLabel = this.caseField.label;
@@ -32,7 +34,18 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
-      this.caseField.label = this.resolvePlaceholders(fields, this.caseField.label);
+      const oldLabel = this.caseField.label;
+      const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
+      if (oldLabel && oldLabel !== substitutedLabel) {
+        // we need to translate the uninterpolated data then substitute the values in translated string
+        const translated = this.rpxTranslationPipe.transform(oldLabel)
+        const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
+        this.caseField.label = transSubstitutedLabel;
+        this.caseField.isTranslated = true;
+      } else {
+        this.caseField.label = substitutedLabel;
+        this.caseField.isTranslated = false;
+      }
     }
     if (this.shouldSubstitute('hint_text')) {
       this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);

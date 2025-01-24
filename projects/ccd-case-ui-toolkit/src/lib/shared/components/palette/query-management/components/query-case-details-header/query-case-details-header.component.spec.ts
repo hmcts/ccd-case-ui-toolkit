@@ -14,6 +14,8 @@ import { CaseReferencePipe } from '../../../../../pipes';
 import { FieldsUtils } from '../../../../../services';
 import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 @Pipe({ name: 'ccdCaseReference' })
 class MockCaseReferencePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
@@ -51,7 +53,12 @@ describe('QueryCaseDetailsHeaderComponent', () => {
         FieldsUtils,
         PlaceholderService,
         CaseReferencePipe,
-        { provide: ActivatedRoute, useValue: { snapshot: snapshotActivatedRoute } }
+        { provide: ActivatedRoute, useValue: { snapshot: snapshotActivatedRoute } },
+        RpxTranslatePipe,
+        RpxTranslationService,
+        RpxTranslationConfig,
+        HttpClient,
+        HttpHandler
       ]
     })
     .compileComponents();
@@ -77,7 +84,7 @@ describe('QueryCaseDetailsHeaderComponent', () => {
     expect(text(header)).toEqual('#1234-5678-9012-3456');
   });
 
-  it('should render a header with markdown element when title display is not empty', async() => {
+  it('should render a qm header with markdown element when title display is not empty', async() => {
     component.caseDetails.state.title_display = 'Title';
     component.ngOnInit();
 

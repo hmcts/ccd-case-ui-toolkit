@@ -9,6 +9,8 @@ import { FieldsUtils } from '../../services';
 import { text } from '../../test/helpers';
 import { LabelFieldComponent } from '../palette';
 import { CaseHeaderComponent } from './case-header.component';
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('CaseHeaderComponent', () => {
   const markdownComponentMock: any = MockComponent({
@@ -32,14 +34,18 @@ describe('CaseHeaderComponent', () => {
           CaseReferencePipe,
           LabelSubstitutorDirective,
           LabelFieldComponent,
-
           // Mocks
           markdownComponentMock
         ],
         providers: [
           FieldsUtils,
           PlaceholderService,
-          CaseReferencePipe
+          CaseReferencePipe,
+          RpxTranslatePipe,
+          RpxTranslationService,
+          RpxTranslationConfig,
+          HttpClient,
+          HttpHandler
         ]
       }).compileComponents();
 

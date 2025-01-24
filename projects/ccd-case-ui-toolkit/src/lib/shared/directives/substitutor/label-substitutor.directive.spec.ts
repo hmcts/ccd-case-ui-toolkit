@@ -8,6 +8,8 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { PlaceholderService } from './services/placeholder.service';
 import createSpyObj = jasmine.createSpyObj;
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
   template: `
@@ -68,6 +70,11 @@ describe('LabelSubstitutorDirective', () => {
       providers: [
         FieldsUtils,
         FormatTranslatorService,
+        RpxTranslatePipe,
+        RpxTranslationService,
+        RpxTranslationConfig,
+        HttpClient,
+        HttpHandler,
         { provide: PlaceholderService, useValue: placeholderService }]
     }).compileComponents();
 
@@ -89,7 +96,9 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseFields = [comp.caseField];
 
       placeholderService.resolvePlaceholders.and
-        .returnValues('Label B with valueA=ValueA and valueA=ValueA:1',
+        .returnValues(
+          'Label B with valueA=ValueA and valueA=ValueA:1',
+          'Label B with valueA=ValueA and valueA=ValueA:1', // directive calls it twice for label
           'Label B with valueA=ValueA and valueA=ValueA:2',
           'Label B with valueA=ValueA and valueA=ValueA:3');
       fixture.detectChanges();
