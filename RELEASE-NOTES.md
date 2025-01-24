@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.30
+**EXUI-2667** MediaViewer partial failure to render PDF on Chrome
+
 ### Version 7.1.29
 **EXUI-1717** Add logs for auto task completion failure
 
