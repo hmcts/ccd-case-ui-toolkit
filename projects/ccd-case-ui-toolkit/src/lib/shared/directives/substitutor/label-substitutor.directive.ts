@@ -37,12 +37,16 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       const oldLabel = this.caseField.label;
       const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
       if (oldLabel && oldLabel !== substitutedLabel) {
+        console.log(`placeholders present: ${oldLabel} -> ${substitutedLabel}`);
         // we need to translate the uninterpolated data then substitute the values in translated string
         const translated = this.rpxTranslationPipe.transform(oldLabel)
+        console.log(`translated: ${translated}`);
         const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
+        console.log(`translated and substituted: ${transSubstitutedLabel}`);
         this.caseField.label = transSubstitutedLabel;
         this.caseField.isTranslated = true;
       } else {
+        console.log(`no placeholders present: ${oldLabel}`);
         this.caseField.label = substitutedLabel;
         this.caseField.isTranslated = false;
       }
