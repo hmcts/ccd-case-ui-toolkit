@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.1.23-exui-2551-rc4
+### Version 7.1.31-exui-2551-rc1
 **EXUI-2551** Case File view too small not loading with correct size
 
 ### Version 7.1.31
