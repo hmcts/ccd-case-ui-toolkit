@@ -9,6 +9,7 @@ export class QueryWriteRaiseQueryComponent {
   @Input() public formGroup: FormGroup;
   @Input() public submitted: boolean;
   @Input() public caseDetails;
+  @Input() public showForm: boolean;
 
   public raiseQueryErrorMessage = RaiseQueryErrorMessage;
 }
