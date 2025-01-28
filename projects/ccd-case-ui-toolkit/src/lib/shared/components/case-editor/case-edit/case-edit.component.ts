@@ -612,6 +612,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // EXUI-2668 - Ensure description for task includes event ID
     // Note - This is a failsafe for an edge case that may never occur again
     // Description may not include eventId in some cases which may mean task not completed (however this will be easy to check)
+    // In instances of the above taskEventCompletionInfo will be created to block this check from occurring
     this.abstractConfig.logMessage(`checking taskIsForEvent: task ID ${task.id}, task description ${task.description}, event name ${eventDetails.eventId}`);
     return task.case_id === eventDetails.caseId && (task.description && task.description.includes(eventDetails.eventId));
   }
