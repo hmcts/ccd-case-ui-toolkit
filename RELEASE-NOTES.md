@@ -1,7 +1,12 @@
 ## RELEASE NOTES
 
-### Version 7.1.31-exui-2551-rc1
+### Version 7.1.32-rc1
 **EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+
+### Version 7.1.32
+**EXUI-2729** Query Management - Callback error handling.
 
 ### Version 7.1.31
 **EXUI-2609** Manage case links: Issue with change button on CYA page
