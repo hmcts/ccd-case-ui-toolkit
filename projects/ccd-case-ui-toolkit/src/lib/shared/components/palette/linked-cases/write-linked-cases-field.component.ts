@@ -2,13 +2,12 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
-import { ErrorMessage } from '../../../domain';
 import { CaseView } from '../../../domain/case-view';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../base-field';
 import { CaseLink, LinkedCasesState } from './domain';
-import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { Subscription } from 'rxjs';
 
@@ -44,14 +43,16 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.linkedCasesService.editMode = false;
     this.subscriptions.add(this.caseEditDataService.caseDetails$.subscribe(
       {
-        next: caseDetails => { this.initialiseCaseDetails(caseDetails); }
+        next: (caseDetails) => {
+          this.initialiseCaseDetails(caseDetails);
+        }
       }));
     this.getOrgService();
     this.subscriptions.add(this.caseEditDataService.caseEventTriggerName$.subscribe({
-      next: name => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
+      next: (name) => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
     }));
     this.subscriptions.add(this.caseEditDataService.caseEditForm$.subscribe({
-      next: editForm => this.caseEditForm = editForm
+      next: (editForm) => this.caseEditForm = editForm
     }));
   }
 
@@ -98,10 +99,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       next: (reasons) => {
         // Sort in ascending order
         const linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-
-        this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter((reason) => reason.value_en !== 'Other');
+        if (linkCaseReasons?.filter((reason) => reason.value_en !== 'Other').length > 0) {
+          this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter((reason) => reason.value_en !== 'Other');
+        }
         // Move Other option to the end of the list
-        this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find((reason) => reason.value_en === 'Other'));
+        if (linkCaseReasons?.find((reason) => reason.value_en === 'Other')) {
+          this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find((reason) => reason.value_en === 'Other'));
+        }
       }
     });
   }
@@ -130,13 +134,35 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public submitLinkedCases(): void {
+    let caseFieldValue = [...(this.linkedCasesService.caseFieldValue || [])];
+
     if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
-      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
-      const caseFieldValue = this.linkedCasesService.caseFieldValue;
-      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
+      const unlinkedCaseReferenceIds = this.linkedCasesService.linkedCases
+        .filter((item) => item.unlink)
+        .map((item) => item.caseReference);
+
+      caseFieldValue = caseFieldValue.filter(
+        (item) => !unlinkedCaseReferenceIds.includes(item.id)
+      );
     }
-    this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
-    (this.caseEditForm.controls['data'] as any) = new FormGroup({ caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || []) });
+    // Replace the caseLinks value in this.formGroup
+    this.formGroup.patchValue({
+      caseLinks: caseFieldValue
+    });
+
+    // Replace the caseLinks control in caseEditForm.controls.data
+    const dataFormGroup = this.caseEditForm.controls.data as FormGroup;
+    if (dataFormGroup) {
+      // Remove the existing caseLinks control (if it exists)
+      if (dataFormGroup.contains('caseLinks')) {
+        dataFormGroup.removeControl('caseLinks');
+      }
+
+      // Add the new control with the replacement value
+      dataFormGroup.addControl('caseLinks', new FormControl(caseFieldValue || []));
+    }
+
+    // Set the updated form in the caseEditDataService
     this.caseEditDataService.setCaseEditForm(this.caseEditForm);
   }
 
@@ -156,14 +182,14 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-      const caseViewFiltered = caseView.tabs.filter(tab => {
+      const caseViewFiltered = caseView.tabs.filter((tab) => {
         return tab.fields.some(
           ({ field_type }) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
         );
       });
       if (caseViewFiltered) {
-        const caseLinkFieldValue = caseViewFiltered.map(filtered =>
-          filtered.fields?.length > 0 && filtered.fields.filter(field => field.id === 'caseLinks')[0].value
+        const caseLinkFieldValue = caseViewFiltered.map((filtered) =>
+          filtered.fields?.length > 0 && filtered.fields.filter((field) => field.id === 'caseLinks')[0].value
         );
         this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
         this.linkedCasesService.getAllLinkedCaseInformation();

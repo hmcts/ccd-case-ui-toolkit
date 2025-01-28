@@ -115,10 +115,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
     this.checkPageRefresh();
-    /* istanbul ignore else */
-    if (this.router.url && !this.isPageRefreshed) {
-      this.sessionStorageService.setItem('eventUrl', this.router.url);
-    }
 
     this.form = this.fb.group({
       data: new FormGroup({}),
@@ -405,44 +401,52 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       const caseField: CaseField = caseFieldsLookup[key];
       // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
       // both null and undefined are equal to *neither false nor true*)
-      if (caseField && caseField.retain_hidden_value &&
-        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+      if (caseField?.retain_hidden_value &&
+        (caseField?.hidden || (caseField?.hidden !== false && parentField?.hidden))) {
         if (caseField.field_type.type === 'Complex') {
-          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
-          // handle both null and undefined values
-          if (caseField.value != null) {
-            // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
-            // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
-            // parent)
-            // Update rawFormValueData for this field
-            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
-            const form: FormGroup = new FormGroup({});
-            if (formGroup.controls[key].value) {
-              Object.keys(formGroup.controls[key].value).forEach((item) => {
-                form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
-              });
-            }
-            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
-              form, caseField.field_type.complex_fields, caseField);
-          }
+          this.handleComplexField(caseField, formGroup, key, rawFormValueData);
         } else {
-          // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
-          // replaced with the original from formatted_value
-          // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
-          // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
-          // from the CaseField itself.
-          if (parentField && parentField.formatted_value) {
-            rawFormValueData[key] = parentField.formatted_value[caseField.id];
-          } else {
-            if (!(caseField.hidden && caseField.retain_hidden_value)) {
-              rawFormValueData[key] = caseField.formatted_value;
-            }
-          }
+          this.handleNonComplexField(parentField, rawFormValueData, key, caseField);
         }
       }
     });
 
     return rawFormValueData;
+  }
+
+  private handleNonComplexField(parentField: CaseField, rawFormValueData, key: string, caseField: CaseField) {
+    // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+    // replaced with the original from formatted_value
+    // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+    // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+    // from the CaseField itself.
+    if (parentField && parentField.formatted_value) {
+      rawFormValueData[key] = parentField.formatted_value[caseField.id];
+    } else {
+      if (!(caseField.hidden && caseField.retain_hidden_value)) {
+        rawFormValueData[key] = caseField.formatted_value;
+      }
+    }
+  }
+
+  private handleComplexField(caseField: CaseField, formGroup: FormGroup<any>, key: string, rawFormValueData) {
+    // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+    // handle both null and undefined values
+    if (caseField.value != null) {
+      // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+      // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+      // parent)
+      // Update rawFormValueData for this field
+      // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
+      const form: FormGroup = new FormGroup({});
+      if (formGroup.controls[key].value) {
+        Object.keys(formGroup.controls[key].value).forEach((item) => {
+          form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
+        });
+      }
+      rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+        form, caseField.field_type.complex_fields, caseField);
+    }
   }
 
   private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit): void {
