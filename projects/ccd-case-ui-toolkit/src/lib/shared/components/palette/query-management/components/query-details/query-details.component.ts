@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { SessionStorageService } from '../../../../../services';
-import { CaseQueriesCollection, QueryListData, QueryListItem } from '../../models';
+import { QueryListItem } from '../../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../../../commons/constants';
 @Component({
@@ -19,7 +19,6 @@ export class QueryDetailsComponent implements OnChanges{
   private static readonly QUERY_ITEM_RESPOND = '3';
   private queryItemId: string;
   public message: string;
-  public queryListData: QueryListData | undefined;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
