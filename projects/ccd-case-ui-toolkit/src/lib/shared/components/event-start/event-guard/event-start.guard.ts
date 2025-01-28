@@ -134,6 +134,7 @@ export class EventStartGuard implements CanActivate {
     }
   }
 
+  // EXUI-2743 - Make taskEventCompletionInfo always available in session storage with client context
   private setClientContextStorage(task: Task, caseId: string, eventId: string, userId: string): void {
     // Store task to session
     const taskEventCompletionInfo: TaskEventCompletionInfo = {
