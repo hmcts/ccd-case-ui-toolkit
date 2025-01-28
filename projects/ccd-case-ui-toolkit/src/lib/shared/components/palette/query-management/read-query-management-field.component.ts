@@ -16,6 +16,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public query: QueryListItem;
   public showQueryList: boolean = true;
   public caseId: string;
+  public totalNumberOfQueryChildren: number;
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
@@ -60,6 +61,9 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
+    if (query?.children?.length) {
+      this.totalNumberOfQueryChildren = query.children.length;
+    }
   }
 
   public backToQueryListPage(): void {
