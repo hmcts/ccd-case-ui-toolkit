@@ -253,7 +253,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     isLinkedCasesEventTrigger: true,
     caseFieldValue,
     linkedCases,
-    caseFieldValue: linkedCases,
     cameFromFinalStep: false,
     getAllLinkedCaseInformation() { },
     getCaseName() { }
