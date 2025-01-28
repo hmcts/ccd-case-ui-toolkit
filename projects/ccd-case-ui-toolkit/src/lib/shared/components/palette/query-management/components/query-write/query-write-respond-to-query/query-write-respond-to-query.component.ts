@@ -17,6 +17,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   @Input() public submitted = false;
   @Input() public caseQueriesCollections: CaseQueriesCollection[];
   @Output() public hasRespondedToQueryTask: EventEmitter<boolean> = new EventEmitter();
+  @Input() public showForm;
 
   public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
