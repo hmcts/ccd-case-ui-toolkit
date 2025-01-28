@@ -150,58 +150,6 @@ describe('QueryDetailsComponent', () => {
     ]
   });
 
-  const queryListItemOne = new QueryListItem();
-  Object.assign(queryListItemOne, {
-    id: '111-111',
-    subject: 'Subject 1',
-    name: 'Name 1',
-    body: 'Body 1',
-    attachments: [
-      {
-        _links: {
-          self: {
-            href: 'https://hmcts.internal/documents/111-111'
-          },
-          binary: {
-            href: 'https://hmcts.internal/documents/111-111/binary'
-          }
-        },
-        originalDocumentName: 'Document 1'
-      }
-    ],
-    isHearingRelated: true,
-    hearingDate: new Date('2023-06-29'),
-    createdOn: new Date('2023-06-25'),
-    createdBy: 'Person A',
-    children: [
-      {
-        attachments: [
-          {
-            _links: {
-              self: {
-                href: 'https://hmcts.internal/documents/111-111'
-              },
-              binary: {
-                href: 'https://hmcts.internal/documents/111-111/binary'
-              }
-            },
-            originalDocumentName: 'Document 1'
-          }
-        ],
-        body: 'wqqwwq',
-        children: [],
-        createdBy: 'b05ee329-2d86-4e8a-b3fb-732739ed0a86',
-        createdOn: '2024-11-06T00:14:39.074Z',
-        hearingDate: null,
-        id: 'de95f8b1-961a-4d99-a487-77afb1ce4634',
-        isHearingRelated: 'No',
-        name: 'Name 1',
-        parentId: '111-111',
-        subject: 'tets'
-      }
-    ]
-  });
-
   const USER = {
     roles: [
       'caseworker'
@@ -313,7 +261,7 @@ describe('QueryDetailsComponent', () => {
       spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
       spyOn(component.hasResponded, 'emit');
 
-      component.query = queryListItemOne;
+      component.totalNumberOfQueryChildren = 1;
 
       const result = component.hasRespondedToQuery();
 

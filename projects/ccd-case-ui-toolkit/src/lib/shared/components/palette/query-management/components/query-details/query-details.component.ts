@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SessionStorageService } from '../../../../../services';
-import { QueryListItem } from '../../models';
+import { CaseQueriesCollection, QueryListData, QueryListItem } from '../../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../../../commons/constants';
 @Component({
@@ -13,11 +13,13 @@ export class QueryDetailsComponent implements OnChanges{
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   @Input() public caseId: string;
   @Output() public hasResponded: EventEmitter<boolean> = new EventEmitter();
+  @Input() public totalNumberOfQueryChildren: number;
 
   public showLink: boolean = true;
   private static readonly QUERY_ITEM_RESPOND = '3';
   private queryItemId: string;
   public message: string;
+  public queryListData: QueryListData | undefined;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
@@ -35,7 +37,7 @@ export class QueryDetailsComponent implements OnChanges{
         || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges() {
     this.toggleLinkVisibility();
     this.hasRespondedToQuery();
   }
@@ -46,7 +48,7 @@ export class QueryDetailsComponent implements OnChanges{
   }
 
   public hasRespondedToQuery(): boolean {
-    if (this.query?.children?.length >= 0 && this.isCaseworker() && this.query?.children?.length % 2 !== 0) {
+    if (this.totalNumberOfQueryChildren >= 0 && this.isCaseworker() && this.totalNumberOfQueryChildren % 2 !== 0) {
       this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;
