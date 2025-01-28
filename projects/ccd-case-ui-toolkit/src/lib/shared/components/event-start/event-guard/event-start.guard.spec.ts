@@ -153,16 +153,18 @@ describe('EventStartGuard', () => {
 
   describe('checkTaskInEventNotRequired', () => {
     const caseId = '1234567890';
+    const eventId = 'eventId';
+    const userId = 'testUser';
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
-      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null, null, null)).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
@@ -182,7 +184,7 @@ describe('EventStartGuard', () => {
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       mockCookieService.getCookie.and.returnValue(mockLanguage);
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
     });
 
@@ -191,7 +193,7 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
     });
 
@@ -208,12 +210,20 @@ describe('EventStartGuard', () => {
           }
         }
       }
+      const mockTaskEventCompletionInfo = {
+        caseId,
+        eventId,
+        userId,
+        taskId: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+        createdTimestamp: new Date().getTime()
+      }
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       mockCookieService.getCookie.and.returnValue(mockLanguage);
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6', eventId, userId)).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskEventCompletionInfo', JSON.stringify(mockTaskEventCompletionInfo));
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
     });
 
