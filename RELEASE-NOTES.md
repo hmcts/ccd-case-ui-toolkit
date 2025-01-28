@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.32
+**EXUI-2729** Query Management - Callback error handling.
+
 ### Version 7.1.31
 **EXUI-2609** Manage case links: Issue with change button on CYA page
 
