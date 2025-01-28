@@ -21,6 +21,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
+
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
 
@@ -129,7 +130,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
   }
 
   public get getLinkedCasesFormArray(): FormArray {
-    const formFieldArray = this.linkedCases.map(val => this.fb.group({
+    const formFieldArray = this.linkedCases.map((val) => this.fb.group({
       caseReference: val.caseReference,
       reasons: val.reasons,
       createdDateTime: val.createdDateTime,
@@ -144,7 +145,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
 
   public onChange(caseSelected: any): void {
     this.resetErrorMessages();
-    const selectedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
+    const selectedCase = this.linkedCases.find((linkedCase) => linkedCase.caseReference === caseSelected.value);
     if (selectedCase) {
       selectedCase.unlink = caseSelected.checked ? true : false;
     }
@@ -153,7 +154,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
   public onNext(): void {
     this.resetErrorMessages();
     let navigateToNextPage = true;
-    const casesMarkedToUnlink = this.linkedCases.find(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
+    const casesMarkedToUnlink = this.linkedCases.find((linkedCase) => linkedCase.unlink && linkedCase.unlink === true);
     if (!casesMarkedToUnlink) {
       this.errorMessages.push({
         title: 'case-selection',
@@ -180,7 +181,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,
       errorMessages: this.errorMessages,
-      navigateToNextPage: isNavigateToNextPage,
+      navigateToNextPage: isNavigateToNextPage
     });
   }
 
