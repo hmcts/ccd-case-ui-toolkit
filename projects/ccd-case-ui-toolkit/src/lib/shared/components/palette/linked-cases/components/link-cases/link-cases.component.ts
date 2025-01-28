@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import moment from 'moment';
 import { throwError } from 'rxjs';
-import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { CaseView, ErrorMessage, HttpError, Journey } from '../../../../../domain';
 import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
@@ -15,13 +15,15 @@ import {
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
   templateUrl: './link-cases.component.html'
 })
-export class LinkCasesComponent implements OnInit {
+export class LinkCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
@@ -38,19 +40,25 @@ export class LinkCasesComponent implements OnInit {
   public linkCaseReasons: LovRefDataModel[];
   public showComments = false;
   private readonly ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
-
   constructor(
     private readonly casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly linkedCasesService: LinkedCasesService) { }
+    private readonly linkedCasesService: LinkedCasesService,
+    multipageComponentStateService: MultipageComponentStateService
+  ) {
+    super(multipageComponentStateService);
+  }
 
   public ngOnInit(): void {
     this.caseId = this.linkedCasesService.caseId;
     this.caseName = this.linkedCasesService.caseName;
     this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
     this.initForm();
-    if (this.linkedCasesService.editMode) {
+    if (!this.linkedCasesService.hasNavigatedInJourney){
+      this.linkedCasesService.linkedCases = [];
+    }
+    if (this.linkedCasesService.editMode || this.linkedCasesService.linkedCases.length) {
       // this may have includes the currently added one but yet to be submitted.
       this.selectedCases = this.linkedCasesService.linkedCases;
     } else if (this.linkedCasesService.initialCaseLinks.length !== this.linkedCasesService.caseFieldValue.length) {
@@ -59,8 +67,9 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public initForm(): void {
+    const caseNumber = this.linkedCasesService.storedCaseNumber ?? '';
     this.linkCaseForm = this.fb.group({
-      caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
+      caseNumber: [caseNumber, [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
       otherDescription: ['', [Validators.maxLength(100)]]
     });
@@ -103,6 +112,8 @@ export class LinkCasesComponent implements OnInit {
       !this.isCaseSelectedSameAsCurrentCase() &&
       !this.isOtherOptionSelectedButOtherDescriptionNotEntered()
     ) {
+      this.linkedCasesService.storedCaseNumber = '';
+      this.linkedCasesService.hasNavigatedInJourney = true;
       this.getCaseInfo();
     } else {
       this.showErrorInfo();
@@ -214,9 +225,6 @@ export class LinkCasesComponent implements OnInit {
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           };
-          if (!this.linkedCasesService.caseFieldValue) {
-            this.linkedCasesService.caseFieldValue = [];
-          }
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
           this.linkCaseReasons.forEach((reason) => reason.selected = false);
@@ -298,6 +306,7 @@ export class LinkCasesComponent implements OnInit {
     this.caseSelectionError = null;
     this.noSelectedCaseError = null;
     let navigateToNextPage = true;
+    this.linkedCasesService.storedCaseNumber = this.linkCaseForm.value.caseNumber ?? '';
     if (this.selectedCases.length) {
       this.linkedCasesService.linkedCases = this.selectedCases;
     } else {
@@ -310,5 +319,13 @@ export class LinkCasesComponent implements OnInit {
       navigateToNextPage = false;
     }
     this.emitLinkedCasesState(navigateToNextPage);
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }

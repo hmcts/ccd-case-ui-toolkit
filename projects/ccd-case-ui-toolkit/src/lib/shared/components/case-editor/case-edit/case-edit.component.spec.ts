@@ -21,6 +21,7 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 import { CaseEditComponent } from './case-edit.component';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { EventDetails, Task } from '../../../domain/work-allocation/Task';
 
 describe('CaseEditComponent', () => {
@@ -345,7 +346,8 @@ describe('CaseEditComponent', () => {
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AbstractAppConfig, useValue: mockabstractConfig },
+            LinkedCasesService,
+            { provide: AbstractAppConfig, useValue: mockabstractConfig }
           ]
         })
         .compileComponents();

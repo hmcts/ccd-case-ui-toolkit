@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -11,7 +13,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, Ca
   styleUrls: ['./manage-case-flags.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ManageCaseFlagsComponent implements OnInit {
+export class ManageCaseFlagsComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
@@ -26,9 +28,24 @@ export class ManageCaseFlagsComponent implements OnInit {
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
   private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
+  public cachedControls;
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
+    let originalStatus;
+    let originalPathToFlag;
+    // if the user has progressed to CYA and then navigated away, the flag they selected will be set as inactive, we need to reset this
+    const locationControl = this.formGroup.get(this.selectedControlName);
+    if (locationControl) {
+      originalStatus = locationControl?.value?.originalStatus;
+      originalPathToFlag = locationControl?.value?.pathToFlagsFormGroup;
+      this.cachedControls = cloneDeep(this.formGroup.controls);
+      Object.keys(this.formGroup.controls).forEach((controlName) => {
+        if (controlName !== this.selectedControlName) {
+          this.formGroup.removeControl(controlName);
+        }
+      });
+    }
 
     // Map flags instances to objects for display, filtering out any where the original status is either "Inactive" or
     // "Not approved"
@@ -39,7 +56,7 @@ export class ManageCaseFlagsComponent implements OnInit {
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance))
+            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance, originalStatus, originalPathToFlag))
           ];
         }
         return displayData;
@@ -56,7 +73,20 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
   }
 
-  public mapFlagDetailForDisplay(flagDetail: FlagDetail, flagsInstance: FlagsWithFormGroupPath): FlagDetailDisplayWithFormGroupPath {
+  onFlagSelectionChange(selectedFlag: FormControl): void {
+    this.formGroup.get(this.selectedControlName).setValue(selectedFlag);
+  }
+
+  isSelected(flagDisplay: FlagDetailDisplayWithFormGroupPath): boolean {
+    const selectedFlag = this.formGroup.get(this.selectedControlName)?.value;
+    return selectedFlag && this.getFlagID(selectedFlag) === this.getFlagID(flagDisplay);
+  }
+
+  getFlagID(flag: FlagDetailDisplayWithFormGroupPath){
+    return flag?.flagDetailDisplay?.flagDetail?.id || '';
+  }
+
+  public mapFlagDetailForDisplay(flagDetail: FlagDetail, flagsInstance: FlagsWithFormGroupPath, originalStatusFromFG: string, originalPathToFlag: string): FlagDetailDisplayWithFormGroupPath {
     // Reset the flag status with the original persisted status. This is needed because ngOnInit() needs to filter
     // out any "Inactive" or "Not approved" flags based on their status *before* modification. If the user changes a
     // flag's status then decides to return to the start of the flag update journey, the flag's status would no
@@ -79,8 +109,14 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
     if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
       const originalFlagDetail = formattedValue.details?.find((detail) => detail.id === flagDetail.id);
+      let statusToUse;
+      if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag){
+        statusToUse = originalStatusFromFG ? (originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG) : originalFlagDetail.value?.status;
+      } else {
+        statusToUse = originalFlagDetail.value?.status;
+      }
       if (originalFlagDetail) {
-        originalStatus = originalFlagDetail.value?.status;
+        originalStatus = statusToUse;
         flagDetail.flagComment = originalFlagDetail.value?.flagComment;
         flagDetail.flagComment_cy = originalFlagDetail.value?.flagComment_cy;
         flagDetail.otherDescription = originalFlagDetail.value?.otherDescription;
@@ -153,5 +189,27 @@ export class ManageCaseFlagsComponent implements OnInit {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages
     });
+  }
+
+  public next() {
+    this.onNext();
+    const cachedControl = this.cachedControls?.[this.selectedControlName];
+    if (cachedControl && this.getFlagID(cachedControl.value) === this.getFlagID(this.formGroup.value[this.selectedControlName])) {
+      this.reapplyCachedControls();
+    }
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
+  }
+
+  public reapplyCachedControls(): void {
+    if (this.cachedControls) {
+      Object.keys(this.cachedControls).forEach((controlName) => {
+        if (!this.formGroup.contains(controlName)) {
+          this.formGroup.addControl(controlName, this.cachedControls[controlName]);
+        }
+      });
+    }
   }
 }
