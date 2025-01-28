@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { SessionStorageService } from '../../../../../services';
 import { QueryListItem } from '../../models';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Constants } from '../../../../../commons/constants';
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -11,14 +12,17 @@ export class QueryDetailsComponent implements OnChanges{
   @Input() public query: QueryListItem;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   @Input() public caseId: string;
+  @Output() public hasResponded: EventEmitter<boolean> = new EventEmitter();
 
   public showLink: boolean = true;
   private static readonly QUERY_ITEM_RESPOND = '3';
   private queryItemId: string;
+  public message: string;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
-    private readonly route: ActivatedRoute) { }
+    private readonly route: ActivatedRoute,
+    private readonly router: Router) { }
 
   public onBack(): void {
     this.backClicked.emit(true);
@@ -33,10 +37,21 @@ export class QueryDetailsComponent implements OnChanges{
 
   ngOnChanges(): void {
     this.toggleLinkVisibility();
+    this.hasRespondedToQuery();
   }
 
   public toggleLinkVisibility(): void {
     this.queryItemId = this.route.snapshot.params.qid;
     this.showLink = this.queryItemId !== QueryDetailsComponent.QUERY_ITEM_RESPOND;
+  }
+
+  public hasRespondedToQuery(): boolean {
+    if (this.query?.children?.length >= 0 && this.isCaseworker() && this.query?.children?.length % 2 !== 0) {
+      this.message = Constants.TASK_COMPLETION_ERROR;
+      this.hasResponded.emit(true);
+      return true;
+    }
+    this.hasResponded.emit(false);
+    return false;
   }
 }

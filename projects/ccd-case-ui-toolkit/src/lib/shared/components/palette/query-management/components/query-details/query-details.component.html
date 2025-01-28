@@ -1,3 +1,7 @@
+<cut-alert type="error" *ngIf="hasRespondedToQuery()">
+  <ng-container>{{message}}</ng-container>
+</cut-alert>
+
 <ng-container *ngIf="query">
   <br/>
   <p>
