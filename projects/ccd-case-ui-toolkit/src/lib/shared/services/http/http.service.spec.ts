@@ -8,6 +8,7 @@ import { HttpService, OptionsType } from './http.service';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { LoadingService } from '../loading';
 
 describe('HttpService', () => {
   const URL = 'http://ccd.reform/';
@@ -37,11 +38,10 @@ describe('HttpService', () => {
   });
   const EXPECTED_RESPONSE = of(new HttpResponse());
   let httpService: HttpService;
-
   let httpMock: jasmine.SpyObj<HttpClient>;
   let httpErrorService: jasmine.SpyObj<HttpErrorService>;
   let catchObservable: jasmine.SpyObj<Observable<any>>;
-  const realHttpErrorService = new HttpErrorService(null);
+  const realHttpErrorService = new HttpErrorService(null, new LoadingService());
 
   beforeEach(waitForAsync(() => {
     catchObservable = createSpyObj<Observable<any>>('observable', ['pipe']);

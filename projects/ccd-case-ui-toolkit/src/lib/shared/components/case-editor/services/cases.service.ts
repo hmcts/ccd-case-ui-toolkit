@@ -417,5 +417,4 @@ export class CasesService {
       this.sessionStorageService.setItem('clientContext', editedClientContextString);
     }
   }
-
 }
