@@ -13,7 +13,7 @@ import {
 } from '../../../../../../../lib/shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';

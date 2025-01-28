@@ -1,5 +1,16 @@
 ## RELEASE NOTES
 
+### Version 7.1.32-rc1
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+
+### Version 7.1.32
+**EXUI-2729** Query Management - Callback error handling.
+
+### Version 7.1.31
+**EXUI-2609** Manage case links: Issue with change button on CYA page
+
 ### Version 7.1.30
 **EXUI-2667** MediaViewer partial failure to render PDF on Chrome
 
@@ -28,7 +39,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
+**EXUI-2315** Retrieve current user language selection
 
 
 ### Version 7.0.75-exui-2515
