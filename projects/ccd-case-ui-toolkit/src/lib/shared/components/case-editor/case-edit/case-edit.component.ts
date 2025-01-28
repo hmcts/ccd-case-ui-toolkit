@@ -613,6 +613,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // Note - This is a failsafe for an edge case that may never occur again
     // Description may not include eventId in some cases which may mean task not completed (however this will be easy to check)
     this.abstractConfig.logMessage(`checking taskIsForEvent: task ID ${task.id}, task description ${task.description}, event name ${eventDetails.eventId}`);
-    return task.case_id === eventDetails.caseId && (task.description && task.description.includes(eventDetails.eventId));
+    return task.case_id === eventDetails.caseId && task.description?.includes(eventDetails.eventId);
   }
 }
