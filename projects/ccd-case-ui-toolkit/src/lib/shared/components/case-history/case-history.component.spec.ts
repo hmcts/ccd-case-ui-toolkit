@@ -205,7 +205,7 @@ describe('CaseHistoryComponent', () => {
   it('should render each field value using FieldReadComponent', () => {
     const readFields = de
       .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tr td>ccd-field-read'));
+      .queryAll(By.css('tr th>ccd-field-read'));
 
     FIELDS.forEach(field => {
       const readField = readFields.find(f => {

@@ -7,11 +7,11 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { ReadCookieService, SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { CaseEditComponent, WorkAllocationService } from '../../case-editor';
+import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  public static readonly CLIENT_CONTEXT = 'clientContext';
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
@@ -33,7 +33,7 @@ export class EventStartGuard implements CanActivate {
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     const languageCookie = this.cookieService.getCookie('exui-preferred-language');
     const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
-    const preClientContext = this.sessionStorageService.getItem(EventStartGuard.CLIENT_CONTEXT);
+    const preClientContext = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     if (!preClientContext) {
       // creates client context for language if not already existing
       const storeClientContext = {
@@ -43,7 +43,7 @@ export class EventStartGuard implements CanActivate {
           }
         }
       };
-      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+      this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
     } else {
       const clientContextObj = JSON.parse(preClientContext);
       if (!clientContextObj?.client_context?.user_language) {
@@ -56,7 +56,7 @@ export class EventStartGuard implements CanActivate {
             }
           }
         }
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
+        this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
     if (caseInfoStr) {
@@ -117,13 +117,9 @@ export class EventStartGuard implements CanActivate {
           }
         }
       };
-      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+      this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       return true;
     }
-  }
-
-  private removeTaskFromSessionStorage(): void {
-    this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
@@ -150,10 +146,10 @@ export class EventStartGuard implements CanActivate {
             }
           }
         };
-        this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+        this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
+        this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
       } else {
-        this.removeTaskFromSessionStorage();
+        removeTaskFromClientContext(this.sessionStorageService);
       }
     }
     if (payload.task_required_for_event) {
