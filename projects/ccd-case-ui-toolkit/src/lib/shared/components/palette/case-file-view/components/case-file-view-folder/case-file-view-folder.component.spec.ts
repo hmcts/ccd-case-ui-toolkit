@@ -36,7 +36,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Lager encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '2023-05-11T11:15:10.00'
+      upload_timestamp: '2024-12-31T09:56:00'
     },
     {
       name: 'Beers encyclopedia',
