@@ -6,6 +6,7 @@ import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pip
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 import { ActivatedRoute } from '@angular/router';
+import { Constants } from '../../../../../commons/constants';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -149,6 +150,58 @@ describe('QueryDetailsComponent', () => {
     ]
   });
 
+  const queryListItemOne = new QueryListItem();
+  Object.assign(queryListItemOne, {
+    id: '111-111',
+    subject: 'Subject 1',
+    name: 'Name 1',
+    body: 'Body 1',
+    attachments: [
+      {
+        _links: {
+          self: {
+            href: 'https://hmcts.internal/documents/111-111'
+          },
+          binary: {
+            href: 'https://hmcts.internal/documents/111-111/binary'
+          }
+        },
+        originalDocumentName: 'Document 1'
+      }
+    ],
+    isHearingRelated: true,
+    hearingDate: new Date('2023-06-29'),
+    createdOn: new Date('2023-06-25'),
+    createdBy: 'Person A',
+    children: [
+      {
+        attachments: [
+          {
+            _links: {
+              self: {
+                href: 'https://hmcts.internal/documents/111-111'
+              },
+              binary: {
+                href: 'https://hmcts.internal/documents/111-111/binary'
+              }
+            },
+            originalDocumentName: 'Document 1'
+          }
+        ],
+        body: 'wqqwwq',
+        children: [],
+        createdBy: 'b05ee329-2d86-4e8a-b3fb-732739ed0a86',
+        createdOn: '2024-11-06T00:14:39.074Z',
+        hearingDate: null,
+        id: 'de95f8b1-961a-4d99-a487-77afb1ce4634',
+        isHearingRelated: 'No',
+        name: 'Name 1',
+        parentId: '111-111',
+        subject: 'tets'
+      }
+    ]
+  });
+
   const USER = {
     roles: [
       'caseworker'
@@ -253,6 +306,43 @@ describe('QueryDetailsComponent', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isCaseworker()).toBeFalsy();
+    });
+  });
+  describe('hasRespondedToQuery', () => {
+    it('should emit true and return true if conditions are met', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit');
+
+      component.query = queryListItemOne;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTruthy();
+    });
+
+    it('should emit false and return false if children length is even', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if query is not defined', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
+      component.query = null; // Set the query to null
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
     });
   });
 });

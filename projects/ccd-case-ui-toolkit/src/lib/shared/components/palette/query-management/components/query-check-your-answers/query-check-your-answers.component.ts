@@ -85,6 +85,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     this.getDocumentAttachments();
 
     this.setCaseQueriesCollectionData();
+
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       this.searchTasksSubscription = this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
         .subscribe({
@@ -135,13 +136,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       );
       this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
         next: ([createEventResponse, tasksResponse]: [any, any]) => {
-          if (tasksResponse?.tasks?.length) {
-            this.eventCompletionParams = {
-              caseId: this.caseDetails.case_id,
-              eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
-              task: tasksResponse
-            };
-          }
           this.finaliseSubmission();
         },
         error: (error) => this.handleError(error)
