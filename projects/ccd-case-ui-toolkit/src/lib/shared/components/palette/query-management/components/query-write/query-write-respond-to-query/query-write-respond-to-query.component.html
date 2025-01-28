@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div class="query-respond">
+<div class="query-respond" *ngIf="showForm">
   <div>
     <h1 class="govuk-heading-m">
       {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
