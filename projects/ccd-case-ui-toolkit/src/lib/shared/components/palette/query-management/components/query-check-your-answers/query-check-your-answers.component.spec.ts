@@ -585,24 +585,6 @@ describe('QueryCheckYourAnswersComponent', () => {
   });
 
   describe('submit', () => {
-    // it('should call search task', () => {
-    //   component.searchAndCompleteTask();
-    //   fixture.detectChanges();
-    //   const searchParameter = { ccdId: '1' } as TaskSearchParameter;
-    //   expect(workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
-    // });
-
-    // it('should trigger event completion', () => {
-    //   component.searchAndCompleteTask();
-    //   fixture.detectChanges();
-    //   const eventCompletionParams: EventCompletionParams = {
-    //     caseId: '1',
-    //     eventId: 'queryManagementRespondQuery',
-    //     task: response.tasks[0]
-    //   };
-    //   expect(component.eventCompletionParams).toEqual(eventCompletionParams);
-    // });
-
     it('should log an error when fieldId is missing', () => {
       spyOn(console, 'error');
       component.fieldId = null;

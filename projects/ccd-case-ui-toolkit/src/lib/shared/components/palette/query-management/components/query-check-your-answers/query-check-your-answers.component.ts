@@ -114,6 +114,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+    // Check if fieldId is null or undefined
     if (!this.fieldId) {
       console.error('Error: Field ID is missing. Cannot proceed with submission.');
       this.errorMessages = [
