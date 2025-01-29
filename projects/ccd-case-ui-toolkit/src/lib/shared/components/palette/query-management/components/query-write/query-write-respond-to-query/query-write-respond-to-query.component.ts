@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { CaseNotifier } from '../../../../../case-editor/services';
 import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
@@ -24,10 +25,12 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public caseId: string;
   public caseDetails;
   public totalNumberOfQueryChildren: number;
+  public queryItemDisplay: QueryListItem;
 
   public hasRespondedToQuery: boolean = false;
 
-  constructor(private readonly caseNotifier: CaseNotifier) { }
+  constructor(private readonly caseNotifier: CaseNotifier,
+    private readonly route: ActivatedRoute,) { }
 
   public ngOnInit(): void {
     this.caseNotifier.caseView.pipe(take(1)).subscribe({
@@ -44,6 +47,23 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     const numberOfQueryChildren = new QueryListData(this.caseQueriesCollections[0]);
     this.totalNumberOfQueryChildren = numberOfQueryChildren.queries[0].children.length;
+    const messageId = this.route.snapshot.params.dataid;
+    const filteredMessages = this.caseQueriesCollections
+      .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
+      .flat() // Flatten into a single array of messages
+      .filter((message) => message.value.id === messageId);
+
+    if (filteredMessages.length > 0) {
+      // Access matching message
+      const matchingMessage = filteredMessages[0]?.value;
+
+      if (matchingMessage) {
+        this.queryItemDisplay = new QueryListItem();
+
+        // Assign the matching message to queryItem
+        Object.assign(this.queryItemDisplay, matchingMessage);
+      }
+    }
   }
 
   public hasResponded(value: boolean): void {
