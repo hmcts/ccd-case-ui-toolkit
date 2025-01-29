@@ -150,14 +150,14 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
     window.scrollTo(0, 0);
   }
 
-  public validateTranslationNeeded(){
+  public validateTranslationNeeded(): void {
     // it is possible that the user can select to have translation and then navigate back to remove the required translation in the same journey
     // this function will check the user does not have any of the translation fields applied and remove if they do
     console.log('validateTranslateNeeded');
     const flagDetails = this.selectedFlag.flagDetailDisplay.flagDetail;
     const isTranslationRequired = this.formGroup.value.flagIsWelshTranslationNeeded;
     const hasTranslationFields = (flagDetails.flagComment_cy || flagDetails.otherDescription || flagDetails.otherDescription_cy);
-    if (!isTranslationRequired && hasTranslationFields){
+    if (!isTranslationRequired && hasTranslationFields) {
       flagDetails.flagComment_cy = null;
       flagDetails.otherDescription = null;
       flagDetails.otherDescription_cy = null;

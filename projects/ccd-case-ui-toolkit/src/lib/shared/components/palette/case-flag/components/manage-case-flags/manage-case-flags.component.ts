@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 import { ErrorMessage, Journey } from '../../../../../domain';
 import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { AbstractJourneyComponent } from '../../../base-field';
-import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -28,12 +28,14 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
   private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
-  public cachedControls;
+  public cachedControls:{
+    [key: string]: AbstractControl;
+  };
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
-    let originalStatus;
-    let originalPathToFlag;
+    let originalStatus: string;
+    let originalPathToFlag: string;
     // if the user has progressed to CYA and then navigated away, the flag they selected will be set as inactive, we need to reset this
     const locationControl = this.formGroup.get(this.selectedControlName);
     if (locationControl) {
@@ -82,7 +84,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     return selectedFlag && this.getFlagID(selectedFlag) === this.getFlagID(flagDisplay);
   }
 
-  getFlagID(flag: FlagDetailDisplayWithFormGroupPath){
+  getFlagID(flag: FlagDetailDisplayWithFormGroupPath) {
     return flag?.flagDetailDisplay?.flagDetail?.id || '';
   }
 
@@ -110,8 +112,12 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
       const originalFlagDetail = formattedValue.details?.find((detail) => detail.id === flagDetail.id);
       let statusToUse;
-      if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag){
-        statusToUse = originalStatusFromFG ? (originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG) : originalFlagDetail.value?.status;
+      if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag) {
+        if (originalStatusFromFG) {
+          statusToUse = originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG;
+        } else {
+          statusToUse = originalFlagDetail.value?.status;
+        }
       } else {
         statusToUse = originalFlagDetail.value?.status;
       }

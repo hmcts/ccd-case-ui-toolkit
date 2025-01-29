@@ -12,9 +12,9 @@ import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle, Select
 import { FlagFieldDisplayPipe } from '../../pipes/flag-field-display.pipe';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
+import { MultipageComponentStateService } from '../../../../../services';
 
 import createSpyObj = jasmine.createSpyObj;
-import { MultipageComponentStateService } from '../../../../../services';
 
 describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;

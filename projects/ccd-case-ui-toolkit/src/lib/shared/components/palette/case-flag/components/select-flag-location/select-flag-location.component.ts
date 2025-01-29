@@ -20,14 +20,14 @@ export class SelectFlagLocationComponent extends AbstractJourneyComponent implem
   public errorMessages: ErrorMessage[] = [];
   public flagLocationNotSelectedErrorMessage: SelectFlagLocationErrorMessage = null;
   public filteredFlagsData: FlagsWithFormGroupPath[];
+  public cachedLocation: string;
   public caseFlagsConfigError = false;
   public readonly selectedLocationControlName = 'selectedLocation';
   public readonly caseLevelFlagLabel = 'Case level';
   private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
-  public cachedLocation: string;
 
   public ngOnInit(): void {
-    if (this.formGroup.get(this.selectedLocationControlName)){
+    if (this.formGroup.get(this.selectedLocationControlName)) {
       this.cachedLocation = this.formGroup.get(this.selectedLocationControlName).value?.pathToFlagsFormGroup;
     }
     this.flagLocationTitle = this.isDisplayContextParameterExternal ?
@@ -68,7 +68,7 @@ export class SelectFlagLocationComponent extends AbstractJourneyComponent implem
     // Validate flag location selection
     this.validateSelection();
     //check if the user has changed their location selection
-    if (this.cachedLocation !== this.formGroup.get(this.selectedLocationControlName).value?.pathToFlagsFormGroup) {
+    if (this.cachedLocation !== this.formGroup.get(this.selectedLocationControlName)?.value?.pathToFlagsFormGroup) {
       Object.keys(this.formGroup.controls).forEach((controlName) => {
         if (controlName !== this.selectedLocationControlName) {
           this.formGroup.removeControl(controlName);

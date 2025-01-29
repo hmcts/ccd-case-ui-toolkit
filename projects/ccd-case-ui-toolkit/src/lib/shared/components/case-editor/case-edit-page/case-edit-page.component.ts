@@ -341,7 +341,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     // in some scenarios the fieldstate can be set to 0 even though the user is at the end of a journey, check for this case and set vars
     const journeyPageNumber = this.multipageComponentStateService.getJourneyCollection()[0]?.journeyPageNumber;
     const fieldState = this.caseFlagStateService?.fieldStateToNavigate;
-    if (this.eventTrigger.id === 'c100ManageFlags'){
+    if (this.eventTrigger.id === 'c100ManageFlags') {
       if ((fieldState === 0 || fieldState === undefined || journeyPageNumber > fieldState) && fieldState !== journeyPageNumber) {
         this.caseFlagStateService.fieldStateToNavigate = journeyPageNumber;
         this.caseFlagStateService.lastPageFieldState = journeyPageNumber;
@@ -493,19 +493,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public cancel(): void {
-    if (this.isLinkedCasesJourney()){
-      // if the user cancels the journey we need to clean up the data
-      const linkedCasesTab = this.caseEdit.caseDetails.tabs.find((tab) =>
-        tab?.fields?.some((field) => field.id === 'caseLinks')
-      )?.fields?.[0] ?? null;
-      const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
-      if (linkedCasesTab && linkedCasesTab?.value.length !== initalLinks.length){
-        const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
-        linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
-          initialCaseRefs.includes(item.value.CaseReference)
-        );
-      }
-      this.linkedCasesService.resetLinkedCaseData();
+    if (this.isLinkedCasesJourney()) {
+      this.resetLinkedCaseJourney();
     }
     if (this.eventTrigger.can_save_draft) {
       if (this.formValuesChanged) {
@@ -531,6 +520,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.caseEditDataService.clearFormValidationErrors();
     this.multipageComponentStateService.reset();
+  }
+
+  public resetLinkedCaseJourney(): void {
+    // if the user cancels the journey we need to clean up the data
+    const linkedCasesTab = this.caseEdit?.caseDetails?.tabs?.find((tab) =>
+      tab?.fields?.some((field) => field.id === 'caseLinks')
+    )?.fields?.[0] ?? null;
+    const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
+    if (linkedCasesTab && linkedCasesTab?.value?.length !== initalLinks?.length) {
+      const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
+      linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
+        initialCaseRefs.includes(item.value.CaseReference)
+      );
+    }
+    this.linkedCasesService.resetLinkedCaseData();
   }
 
   public submitting(): boolean {

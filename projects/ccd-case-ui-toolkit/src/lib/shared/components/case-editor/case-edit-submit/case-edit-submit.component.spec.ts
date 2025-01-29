@@ -36,11 +36,10 @@ import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
-
-import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
-import exp from 'constants';
+
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -805,7 +804,7 @@ describe('CaseEditSubmitComponent', () => {
       expect(previousButton.nativeElement.textContent).toContain('Previous');
     });
 
-    it('should remove any unsibmitted data on cancel', () => {
+    it('should remove any unsubmitted data on cancel', () => {
       comp.caseEdit.caseDetails.tabs = [{
         id: '123',
         fields: [

@@ -59,7 +59,7 @@ export class MultipageComponentStateService {
     this.journeyState.clear();
   }
 
-  getJourneyCollectionMainObject(){
+  getJourneyCollectionMainObject(): Journey {
     return this.journeyCollection[0];
   }
 

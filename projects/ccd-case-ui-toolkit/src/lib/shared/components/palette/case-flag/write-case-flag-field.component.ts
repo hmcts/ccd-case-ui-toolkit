@@ -208,9 +208,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
   public handleBackButton(event) {
     event.preventDefault();
-    if (this.fieldState === 0){
+    if (this.fieldState === 0) {
       this.router.navigate([this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/')]);
-    } else if (this.fieldState === 1 && this.flagTypeSubJourneyIndex === 0){
+    } else if (this.fieldState === 1 && this.flagTypeSubJourneyIndex === 0) {
       this.previousPage();
     } else if (this.fieldState !== 1) {
       this.previousPage();
@@ -528,7 +528,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         // Cache the *original* status of the flag before it is modified. This is needed if the user changes the flag status
         // then decides to return to any part of the flag update journey. The ManageCaseFlagsComponent and UpdateFlagComponent
         // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
-        if (!this.selectedFlag.originalStatus){
+        if (!this.selectedFlag.originalStatus) {
           this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
         }
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type

@@ -41,17 +41,13 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
     }
   }
 
-  public onNext(): void {
+  public next(): void {
     this.linkedCasesService.hasContinuedFromStart = true;
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
       errorMessages: this.errorMessages,
       navigateToNextPage: true
     });
-  }
-
-  public next() {
-    this.onNext();
 
     const isAnArray: boolean = Array.isArray(this.errorMessages);
     const isNotAnArray: boolean = !isAnArray;

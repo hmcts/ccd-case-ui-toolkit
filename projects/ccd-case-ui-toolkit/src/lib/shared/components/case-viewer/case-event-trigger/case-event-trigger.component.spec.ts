@@ -133,6 +133,7 @@ describe('CaseEventTriggerComponent', () => {
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
+  const finalUrl = '/cases/case-details/1707912713167104#Claim%20details';
 
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
@@ -152,7 +153,7 @@ describe('CaseEventTriggerComponent', () => {
       getCurrentNavigation: jasmine.createSpy('getCurrentNavigation')
     };
     router.navigate.and.returnValue({ then: (f) => f() });
-    router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: '/cases/case-details/1707912713167104#Claim%20details' } });
+    router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: finalUrl } });
 
     TestBed
       .configureTestingModule({

@@ -97,6 +97,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
       // i) the parent FormGroup for the Flags instance where changes have been made;
       // ii) the currently selected flag (selectedFlag) if one exists
+      const caseFlagLocationControl = 'selectedManageCaseLocation';
       if (flagLauncherComponent) {
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
@@ -114,13 +115,13 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           (flagLauncherComponent.selectedFlag ||
-            (this.caseFlagStateService.formGroup.get('selectedManageCaseLocation').value.flagDetailDisplay && this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1))) {
-          if (this.formGroup.get(flagLauncherControlName)['component']?.selectedFlag?.flagDetailDisplay !== undefined){
+            (this.caseFlagStateService.formGroup.get(caseFlagLocationControl).value.flagDetailDisplay && this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1))) {
+          if (this.formGroup.get(flagLauncherControlName)['component']?.selectedFlag?.flagDetailDisplay !== undefined) {
             this.flagForSummaryDisplay =
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
           } else {
             this.flagForSummaryDisplay =
-              this.caseFlagStateService.formGroup.get('selectedManageCaseLocation').value.flagDetailDisplay;
+              this.caseFlagStateService.formGroup.get(caseFlagLocationControl).value.flagDetailDisplay;
           }
           // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
           // in Create Case Flag it already has all fields
@@ -137,16 +138,16 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     }
   }
 
-  private cleanupNavigationFormAdditions(selectedFlagsLocation: FlagsWithFormGroupPath){
+  private cleanupNavigationFormAdditions(selectedFlagsLocation: FlagsWithFormGroupPath): void{
     const path = selectedFlagsLocation.pathToFlagsFormGroup;
     Object.keys(this.formGroup.controls).forEach((controlName) => {
       const control = this.formGroup.get(controlName);
       if ((controlName !== path)) {
-        if (control['caseField'].formatted_value?.details){
+        if (control['caseField'].formatted_value?.details) {
           // we want to loop through the current flag details to ensure that there are no additional data from the usre restarting the flow that have been added.
-          for (const value in control['caseField'].formatted_value?.details){
+          for (const value in control['caseField'].formatted_value?.details) {
             // if the id is undefined then the user has added this as part of their current flow and we should remove it so it doesnt get added to the case
-            if (!control['caseField'].formatted_value?.details[value].id){
+            if (!control['caseField'].formatted_value?.details[value].id) {
               control['caseField'].value.details.pop();
               control['caseField'].formatted_value.details.pop();
             }

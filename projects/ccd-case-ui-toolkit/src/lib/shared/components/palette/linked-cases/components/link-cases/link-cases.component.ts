@@ -55,7 +55,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     this.caseName = this.linkedCasesService.caseName;
     this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
     this.initForm();
-    if (!this.linkedCasesService.hasNavigatedInJourney){
+    if (!this.linkedCasesService.hasNavigatedInJourney) {
       this.linkedCasesService.linkedCases = [];
     }
     if (this.linkedCasesService.editMode || this.linkedCasesService.linkedCases.length) {
