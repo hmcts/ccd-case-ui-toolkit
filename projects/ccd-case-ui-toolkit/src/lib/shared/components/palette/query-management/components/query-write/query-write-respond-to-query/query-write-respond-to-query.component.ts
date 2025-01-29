@@ -23,16 +23,21 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
   public caseId: string;
+  public queryItemId: string;
   public caseDetails;
   public totalNumberOfQueryChildren: number;
   public queryItemDisplay: QueryListItem;
 
   public hasRespondedToQuery: boolean = false;
 
+  private static readonly QUERY_ITEM_RESPOND = '3';
+  private static readonly QUERY_ITEM_FOLLOWUP = '4';
+
   constructor(private readonly caseNotifier: CaseNotifier,
     private readonly route: ActivatedRoute,) { }
 
   public ngOnInit(): void {
+    this.queryItemId = this.route.snapshot.params.qid;
     this.caseNotifier.caseView.pipe(take(1)).subscribe({
       next: (caseDetails) => {
         this.caseId = caseDetails?.case_id ?? '';
@@ -45,23 +50,36 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(): void {
-    const numberOfQueryChildren = new QueryListData(this.caseQueriesCollections[0]);
-    this.totalNumberOfQueryChildren = numberOfQueryChildren.queries[0].children.length;
-    const messageId = this.route.snapshot.params.dataid;
-    const filteredMessages = this.caseQueriesCollections
-      .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
-      .flat() // Flatten into a single array of messages
-      .filter((message) => message.value.id === messageId);
+    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND
+      && this.caseQueriesCollections?.length > 0
+    ) {
+      if (!this.caseQueriesCollections[0]) {
+        console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
+        return;
+      }
 
-    if (filteredMessages.length > 0) {
-      // Access matching message
-      const matchingMessage = filteredMessages[0]?.value;
+      const numberOfQueryChildren = new QueryListData(this.caseQueriesCollections[0]);
+      this.totalNumberOfQueryChildren = numberOfQueryChildren?.queries?.[0]?.children?.length || 0;
 
-      if (matchingMessage) {
-        this.queryItemDisplay = new QueryListItem();
+      const messageId = this.route.snapshot.params.dataid;
+      if (!messageId) {
+        console.warn('No messageId found in route params:', this.route.snapshot.params);
+        return;
+      }
 
-        // Assign the matching message to queryItem
-        Object.assign(this.queryItemDisplay, matchingMessage);
+      const filteredMessages = this.caseQueriesCollections
+        .map((caseData) => caseData?.caseMessages || []) // Ensure caseMessages is always an array
+        .flat() // Flatten into a single array of messages
+        .filter((message) => message?.value?.id === messageId); // Safe access
+
+      if (filteredMessages.length > 0) {
+        const matchingMessage = filteredMessages[0]?.value;
+
+        if (matchingMessage) {
+          this.queryItemDisplay = new QueryListItem();
+          Object.assign(this.queryItemDisplay, matchingMessage);
+          this.queryItem = this.queryItemDisplay;
+        }
       }
     }
   }

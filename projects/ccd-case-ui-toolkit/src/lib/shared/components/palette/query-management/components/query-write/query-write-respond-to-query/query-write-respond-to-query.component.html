@@ -9,12 +9,12 @@
   </div>
 
   <div>
-    <ccd-query-details [query]="queryItemDisplay"
+    <ccd-query-details [query]="queryItem"
       [totalNumberOfQueryChildren]="totalNumberOfQueryChildren"
       (hasResponded)="hasResponded($event)"></ccd-query-details>
   </div>
 </div>
-<div class="query-respond">
+<div class="query-respond"  *ngIf="showForm">
   <div *ngIf="!hasRespondedToQuery">
     <h1 class="govuk-heading-m">
       {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
