@@ -1,0 +1,34 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable quotes */
+import { Component, EventEmitter, Output, OnInit } from "@angular/core";
+import { AbstractAppConfig } from "../../../../../../../app.config";
+import { CaseFileViewOverlayMenuItem } from "../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model";
+
+@Component({
+  selector: "ccd-case-file-view-folder-toggle",
+  templateUrl: "./case-file-view-folder-toggle.component.html",
+  styleUrls: ["./case-file-view-folder-toggle.component.scss"],
+})
+export class CaseFileViewFolderToggleComponent implements OnInit {
+  public isOpen = false;
+
+  @Output() public expandAll = new EventEmitter<boolean>();
+  @Output() public collapseAll = new EventEmitter<boolean>();
+
+  public overlayMenuItems: CaseFileViewOverlayMenuItem[] = [
+    {
+      actionText: "Expand All",
+      iconSrc: "/assets/images/folder-open.png",
+      actionFn: () => this.expandAll.emit(true),
+    },
+    {
+      actionText: "Collapse All",
+      iconSrc: "/assets/images/folder-close.png",
+      actionFn: () => this.collapseAll.emit(true),
+    },
+  ];
+
+  constructor(private readonly appConfig: AbstractAppConfig) {}
+
+  public ngOnInit(): void {}
+}
