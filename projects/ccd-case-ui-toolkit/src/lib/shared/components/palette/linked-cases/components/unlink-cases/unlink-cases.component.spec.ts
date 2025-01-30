@@ -170,9 +170,18 @@ describe('UnLinkCasesComponent', () => {
 
   it('should getLinkedCases populate linked cases', () => {
     component.getLinkedCases();
+    expect(component.caseId).toEqual('1682374819203471');
     expect(component.linkedCases.length).toEqual(2);
     expect(component.linkedCases[0].caseReference).toEqual('1682374819203471');
     expect(component.linkedCases[1].caseReference).toEqual('1682897456391875');
+  });
+
+  it('should fetch linked cases from case service when service is empty', () => {
+    linkedCasesService.linkedCases = [];
+    component.getLinkedCases();
+    expect(casesService.getCaseViewV2).toHaveBeenCalledWith('1682374819203471');
+    expect(component.linkedCases.length).toBe(3);
+    expect(component.linkedCases[0].caseReference).toBe('1652112127295261');
   });
 
   it('should update the unlink property of linked case with correct value', () => {
@@ -192,5 +201,12 @@ describe('UnLinkCasesComponent', () => {
     component.onChange(caseSelected2);
     expect(component.linkedCases[0].unlink).toBeUndefined();
     expect(component.linkedCases[1].unlink).toBe(true);
+  });
+
+  it('should fetch and update linked case information', () => {
+    component.getAllLinkedCaseInformation();
+
+    expect(linkedCasesService.linkedCases).toEqual(component.linkedCases);
+    expect(component.isServerError).toBeFalsy();
   });
 });

@@ -401,8 +401,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       const caseField: CaseField = caseFieldsLookup[key];
       // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
       // both null and undefined are equal to *neither false nor true*)
-      if (caseField && caseField.retain_hidden_value &&
-        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+      if (caseField?.retain_hidden_value &&
+        (caseField?.hidden || (caseField?.hidden !== false && parentField?.hidden))) {
         if (caseField.field_type.type === 'Complex') {
           this.handleComplexField(caseField, formGroup, key, rawFormValueData);
         } else {
