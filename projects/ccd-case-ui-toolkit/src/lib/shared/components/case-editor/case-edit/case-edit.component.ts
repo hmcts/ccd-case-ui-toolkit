@@ -133,7 +133,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
-    removeTaskFromClientContext(this.sessionStorageService);
   }
 
   public ngOnDestroy(): void {
