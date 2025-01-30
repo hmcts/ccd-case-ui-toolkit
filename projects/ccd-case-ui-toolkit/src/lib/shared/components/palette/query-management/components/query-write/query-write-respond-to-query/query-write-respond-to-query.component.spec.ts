@@ -139,7 +139,6 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
   it('should log error if caseNotifier emits an error', () => {
     spyOn(console, 'error'); // Spy on the console.error to verify the log output
-    // const errorNotifier = new BehaviorSubject<CaseView | null>(null);
 
     // Spy on the mockCaseNotifier's caseView to simulate an error
     spyOn(mockCaseNotifier.caseView, 'subscribe').and.callFake((observer: any) => {
