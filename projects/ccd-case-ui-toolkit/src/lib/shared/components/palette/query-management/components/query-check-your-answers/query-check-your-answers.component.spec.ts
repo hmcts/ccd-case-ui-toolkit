@@ -577,13 +577,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     });
   });
 
-  describe('searchAndCompleteTask', () => {
-    it('should call search task', () => {
-      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-      // component.searchAndCompleteTask();
-    });
-  });
-
   describe('submit', () => {
     it('should log an error when fieldId is missing', () => {
       spyOn(console, 'error');
