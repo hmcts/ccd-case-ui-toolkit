@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { QueryListItem } from '../../models';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../../../../../commons/constants';
 @Component({
   selector: 'ccd-query-details',
@@ -16,9 +16,10 @@ export class QueryDetailsComponent implements OnChanges{
   @Input() public totalNumberOfQueryChildren: number;
 
   public showLink: boolean = true;
+  public message: string;
+
   private static readonly QUERY_ITEM_RESPOND = '3';
   private queryItemId: string;
-  public message: string;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
@@ -36,7 +37,7 @@ export class QueryDetailsComponent implements OnChanges{
         || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
   }
 
-  public ngOnChanges() {
+  public ngOnChanges(): void {
     this.toggleLinkVisibility();
     this.hasRespondedToQuery();
   }

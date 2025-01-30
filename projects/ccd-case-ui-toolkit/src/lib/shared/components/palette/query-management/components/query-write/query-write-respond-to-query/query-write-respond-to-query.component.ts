@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { CaseNotifier } from '../../../../../case-editor/services';
 import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
-import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
@@ -17,8 +17,8 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public submitted = false;
   @Input() public caseQueriesCollections: CaseQueriesCollection[];
-  @Output() public hasRespondedToQueryTask: EventEmitter<boolean> = new EventEmitter();
   @Input() public showForm;
+  @Output() public hasRespondedToQueryTask: EventEmitter<boolean> = new EventEmitter();
 
   public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
@@ -34,7 +34,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   private static readonly QUERY_ITEM_FOLLOWUP = '4';
 
   constructor(private readonly caseNotifier: CaseNotifier,
-    private readonly route: ActivatedRoute,) { }
+    private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.queryItemId = this.route.snapshot.params.qid;

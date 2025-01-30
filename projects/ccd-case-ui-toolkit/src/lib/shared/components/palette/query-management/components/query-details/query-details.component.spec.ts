@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
-import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../../../../../commons/constants';
 
 describe('QueryDetailsComponent', () => {
