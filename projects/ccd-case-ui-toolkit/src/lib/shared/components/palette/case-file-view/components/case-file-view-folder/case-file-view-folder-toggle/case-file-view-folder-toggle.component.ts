@@ -18,12 +18,12 @@ export class CaseFileViewFolderToggleComponent implements OnInit {
   public overlayMenuItems: CaseFileViewOverlayMenuItem[] = [
     {
       actionText: "Expand All",
-      iconSrc: "/assets/images/folder-open.png",
+      iconSrc: "/assets/img/accordion-plus.png",
       actionFn: () => this.expandAll.emit(true),
     },
     {
       actionText: "Collapse All",
-      iconSrc: "/assets/images/folder-close.png",
+      iconSrc: "/assets/img/accordion-minus.png",
       actionFn: () => this.collapseAll.emit(true),
     },
   ];

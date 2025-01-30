@@ -76,14 +76,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return 0;
   }
 
-  public expandAll(expand: boolean) {
-    this.nestedTreeControl.expandAll();
-  }
-
-  public collapseAll(expand: boolean) {
-    this.nestedTreeControl.collapseAll();
-  }
-
   constructor(
     private readonly windowService: WindowService,
     private readonly router: Router,
@@ -94,6 +86,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(
       this.getChildren
     );
+  }
+
+  public expandAll(expand: boolean) {
+    this.nestedTreeControl.expandDescendants(this.nestedDataSource[0]);
+  }
+
+  public collapseAll(expand: boolean) {
+    this.nestedTreeControl.collapseAll();
   }
 
   public ngOnInit(): void {
