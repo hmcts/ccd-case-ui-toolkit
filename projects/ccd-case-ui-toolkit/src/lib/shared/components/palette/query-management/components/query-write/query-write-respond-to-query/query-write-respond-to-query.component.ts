@@ -16,6 +16,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public submitted = false;
+  @Input() public showForm;
   public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
   public caseId: string;
