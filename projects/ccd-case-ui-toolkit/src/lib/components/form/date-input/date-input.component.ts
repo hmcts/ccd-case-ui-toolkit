@@ -191,15 +191,30 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   }
 
   public dayId() {
-    return `${this.id}-day`;
+    const idString = `${this.id}`;
+    if (idString.includes("Date")) {
+      return `${this.id}-day`;
+    } else {
+      return `${this.id}Date-day`;
+    }
   }
 
   public monthId() {
-    return `${this.id}-month`;
+    const idString = `${this.id}`;
+    if (idString.includes("Date")) {
+      return `${this.id}-month`;
+    } else {
+      return `${this.id}Date-month`;
+    }
   }
 
   public yearId() {
-    return `${this.id}-year`;
+    const idString = `${this.id}`;
+    if (idString.includes("Date")) {
+      return `${this.id}-year`;
+    } else {
+      return `${this.id}Date-year`;
+    }
   }
 
   public hourId() {
