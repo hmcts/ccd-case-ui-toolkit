@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.31",
+  "version": "7.1.31-expand-all-folders",
   "engines": {
     "node": ">=18.19.0"
   },
