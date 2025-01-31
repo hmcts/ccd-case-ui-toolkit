@@ -23,7 +23,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public id: string;
 
   @Input() 
-  public labelPrefix: CaseField;
+  public labelPrefix: string;
 
   @Input()
   public mandatory: boolean;
