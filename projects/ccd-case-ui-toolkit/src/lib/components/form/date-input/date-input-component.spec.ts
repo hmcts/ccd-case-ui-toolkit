@@ -52,6 +52,28 @@ describe('Date input component', () => {
     fixture.detectChanges();
   }));
 
+  it('should initialize displayHour, displayMinute, displaySecond, hour, minute, and second if mandatory and isDateTime are true', () => {
+    component.mandatory = true;
+    component.isDateTime = true;
+
+    component.ngOnInit();
+
+    expect(component.displayHour).toBe('00');
+    expect(component.displayMinute).toBe('00');
+    expect(component.displaySecond).toBe('00');
+  });
+
+  it('should not initialize displayHour, displayMinute, displaySecond, hour, minute, and second if mandatory or isDateTime are false', () => {
+    component.mandatory = false;
+    component.isDateTime = true;
+
+    component.ngOnInit();
+
+    expect(component.displayHour).toBeNull();
+    expect(component.displayMinute).toBeNull();
+    expect(component.displaySecond).toBeNull();
+  });
+
   it('should verify day, month, year value from date', async () => {
     component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
