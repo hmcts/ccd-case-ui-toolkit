@@ -21,6 +21,9 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   @Input()
   public id: string;
 
+  @Input() 
+  public labelPrefix: string;
+
   @Input()
   public mandatory: boolean;
 
@@ -193,31 +196,28 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
 
   public dayId() {
     const idString = `${this.id}`;
-    this.randString = `${Math.floor(Math.random() * (0 - 999 + 1)) + 0}`;
     if (idString.includes("Date")) {
-      return `${this.id}${this.randString}-day`;
+      return `${this.labelPrefix + this.id}-day`;
     } else {
-      return `${this.id}Date${this.randString}-day`;
+      return `${this.labelPrefix + this.id}Date-day`;
     }
   }
 
   public monthId() {
     const idString = `${this.id}`;
-    this.randString = `${Math.floor(Math.random() * (0 - 999 + 1)) + 0}`;
     if (idString.includes("Date")) {
-      return `${this.id}${this.randString}-month`;
+      return `${this.labelPrefix + this.id}-month`;
     } else {
-      return `${this.id}Date${this.randString}-month`;
+      return `${this.labelPrefix + this.id}Date-month`;
     }
   }
 
   public yearId() {
     const idString = `${this.id}`;
-    this.randString = `${Math.floor(Math.random() * (0 - 999 + 1)) + 0}`;
     if (idString.includes("Date")) {
-      return `${this.id}${this.randString}-year`;
+      return `${this.labelPrefix + this.id}-year`;
     } else {
-      return `${this.id}Date${this.randString}-year`;
+      return `${this.labelPrefix + this.id}Date-year`;
     }
   }
 
