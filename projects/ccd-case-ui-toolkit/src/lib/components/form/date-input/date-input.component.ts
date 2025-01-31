@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { CaseField } from '../../../shared';
 
 @Component({
   selector: 'cut-date-input',
@@ -22,7 +23,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public id: string;
 
   @Input() 
-  public labelPrefix: string;
+  public labelPrefix: CaseField;
 
   @Input()
   public mandatory: boolean;
@@ -59,7 +60,6 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   private hour: string;
   private minute: string;
   private second: string;
-  private randString: string;
 
   public ngOnInit() {
     if (this.mandatory && this.isDateTime) {
