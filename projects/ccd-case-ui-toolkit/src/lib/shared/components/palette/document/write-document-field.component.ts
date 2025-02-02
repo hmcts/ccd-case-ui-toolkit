@@ -15,6 +15,7 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -32,6 +33,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
+  public static readonly NO_FILE_CHOSED = 'No file chosen';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -46,7 +48,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
-  public fileName = 'No file chosen';
+  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSED;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -62,12 +64,18 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
+    private readonly rpxTranslationService : RpxTranslationService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
+    if (this.rpxTranslationService.language === 'cy'){
+      this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSED).subscribe((translation) => {
+        this.fileName = translation;
+      });
+    }
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
