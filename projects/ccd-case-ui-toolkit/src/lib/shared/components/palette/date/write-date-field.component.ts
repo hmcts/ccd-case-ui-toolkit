@@ -13,8 +13,8 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
     this.dateControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 
-  public getCaseFieldLabel(): string {
-    return this.caseField.id + this.caseField.label;
+  public getParentFieldLabel(): string {
+    return this.parent.value.label;
   }
 
   public isDateTime(): boolean {
