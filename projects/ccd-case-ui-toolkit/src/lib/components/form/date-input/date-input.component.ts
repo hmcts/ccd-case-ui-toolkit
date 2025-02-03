@@ -195,28 +195,34 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
 
   public dayId() {
     const idString = `${this.id}`;
+    const labelPrefix = this.labelPrefix.replace(/\s+/g, ''); 
+    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
     if (idString.includes("Date")) {
-      return `${this.labelPrefix + this.id}-day`;
+      return `${labelPrefix + this.id}-day`;
     } else {
-      return `${this.labelPrefix + this.id}Date-day`;
+      return `${labelPrefix + this.id}Date-day`;
     }
   }
 
   public monthId() {
     const idString = `${this.id}`;
+    const labelPrefix = this.labelPrefix.replace(/\s+/g, ''); 
+    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
     if (idString.includes("Date")) {
-      return `${this.labelPrefix + this.id}-month`;
+      return `${labelPrefix + this.id}-month`;
     } else {
-      return `${this.labelPrefix + this.id}Date-month`;
+      return `${labelPrefix + this.id}Date-month`;
     }
   }
 
   public yearId() {
     const idString = `${this.id}`;
+    const labelPrefix = this.labelPrefix.replace(/\s+/g, '');
+    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
     if (idString.includes("Date")) {
-      return `${this.labelPrefix + this.id}-year`;
+      return `${labelPrefix + this.id}-year`;
     } else {
-      return `${this.labelPrefix + this.id}Date-year`;
+      return `${labelPrefix + this.id}Date-year`;
     }
   }
 

@@ -14,7 +14,7 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
   }
 
   public getCaseFieldLabel(): string {
-    return this.caseField.label;
+    return this.caseField.id + this.caseField.label;
   }
 
   public isDateTime(): boolean {
