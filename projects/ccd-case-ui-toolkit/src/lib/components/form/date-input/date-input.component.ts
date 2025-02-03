@@ -195,34 +195,37 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
 
   public dayId() {
     const idString = `${this.id}`;
-    const labelPrefix = this.labelPrefix.replace(/\s+/g, ''); 
-    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelPrefix + this.id}-day`;
+      return `${labelString + this.id}-day`;
     } else {
-      return `${labelPrefix + this.id}Date-day`;
+      return `${labelString + this.id}Date-day`;
     }
   }
 
   public monthId() {
     const idString = `${this.id}`;
-    const labelPrefix = this.labelPrefix.replace(/\s+/g, ''); 
-    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelPrefix + this.id}-month`;
+      return `${labelString + this.id}-month`;
     } else {
-      return `${labelPrefix + this.id}Date-month`;
+      return `${labelString + this.id}Date-month`;
     }
   }
 
   public yearId() {
     const idString = `${this.id}`;
-    const labelPrefix = this.labelPrefix.replace(/\s+/g, '');
-    String(labelPrefix).charAt(0).toLowerCase() + String(labelPrefix).slice(1);
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelPrefix + this.id}-year`;
+      return `${labelString + this.id}-year`;
     } else {
-      return `${labelPrefix + this.id}Date-year`;
+      return `${labelString + this.id}Date-year`;
     }
   }
 
