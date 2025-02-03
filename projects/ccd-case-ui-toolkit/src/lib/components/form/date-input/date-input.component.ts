@@ -197,11 +197,11 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     const idString = `${this.id}`;
     const labelPrefix = `${this.labelPrefix}`;
     const labelString = labelPrefix.replace(/\s+/g, ''); 
-    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelString + this.id}-day`;
+      return `${label + this.id}-day`;
     } else {
-      return `${labelString + this.id}Date-day`;
+      return `${label + this.id}Date-day`;
     }
   }
 
@@ -209,11 +209,11 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     const idString = `${this.id}`;
     const labelPrefix = `${this.labelPrefix}`;
     const labelString = labelPrefix.replace(/\s+/g, ''); 
-    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelString + this.id}-month`;
+      return `${label + this.id}-month`;
     } else {
-      return `${labelString + this.id}Date-month`;
+      return `${label + this.id}Date-month`;
     }
   }
 
@@ -221,11 +221,11 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     const idString = `${this.id}`;
     const labelPrefix = `${this.labelPrefix}`;
     const labelString = labelPrefix.replace(/\s+/g, ''); 
-    String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
     if (idString.includes("Date")) {
-      return `${labelString + this.id}-year`;
+      return `${label + this.id}-year`;
     } else {
-      return `${labelString + this.id}Date-year`;
+      return `${label + this.id}Date-year`;
     }
   }
 
