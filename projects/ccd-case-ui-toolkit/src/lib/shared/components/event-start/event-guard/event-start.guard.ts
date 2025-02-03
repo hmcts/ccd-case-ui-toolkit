@@ -4,9 +4,8 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
+import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { Task } from '../../../domain/work-allocation/Task';
 import { ReadCookieService, SessionStorageService } from '../../../services';
 import { CaseEditComponent, WorkAllocationService } from '../../case-editor';
 import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
