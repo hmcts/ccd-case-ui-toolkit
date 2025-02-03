@@ -14,7 +14,7 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
   }
 
   public getParentFieldLabel(): string {
-    return this.parent.value.label;
+    return `${this.formGroup.controls.key}`;
   }
 
   public isDateTime(): boolean {
