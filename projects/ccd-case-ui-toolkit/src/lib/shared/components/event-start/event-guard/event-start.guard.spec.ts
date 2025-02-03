@@ -198,6 +198,7 @@ describe('EventStartGuard', () => {
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      let baseTime = new Date(2025, 3, 2);
       const mockLanguage = 'cy';
       const clientContext = {
         client_context: {
@@ -215,13 +216,15 @@ describe('EventStartGuard', () => {
         eventId,
         userId,
         taskId: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
-        createdTimestamp: new Date().getTime()
+        createdTimestamp: baseTime.getTime()
       }
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       mockCookieService.getCookie.and.returnValue(mockLanguage);
+      // mock the time so we get the correct timestamp
+      jasmine.clock().mockDate(baseTime);
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6', eventId, userId)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(mockTaskEventCompletionInfo));
       expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
