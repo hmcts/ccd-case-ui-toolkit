@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.32-rc1",
+  "version": "7.1.32-srt-fix-task-completion",
   "engines": {
     "node": ">=18.19.0"
   },

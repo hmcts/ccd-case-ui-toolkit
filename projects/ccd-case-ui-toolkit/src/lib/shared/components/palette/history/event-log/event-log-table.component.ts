@@ -26,7 +26,7 @@ export class EventLogTableComponent implements OnInit {
   public isUserExternal: boolean;
 
   constructor(
-    private sessionStorage: SessionStorageService
+    private readonly sessionStorage: SessionStorageService
   ){}
 
   public ngOnInit(): void {
