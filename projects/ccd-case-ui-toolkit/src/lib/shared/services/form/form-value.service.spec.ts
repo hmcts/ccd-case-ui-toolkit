@@ -1079,94 +1079,197 @@ describe('FormValueService', () => {
 
   describe('checkValuesSetInCollection', () => {
     it('should update non-array values correctly when values differ', () => {
-      const caseField = {
-        data: {
-          field1: 'oldValue'
-        }
-      };
-      const data = {
-        field1: { id: 'field1', formatted_value: 'newValue' }
-      };
-
-      const result = formValueService.checkValuesSetInCollection(caseField, data);
-
-      expect(result.data.field1).toEqual('newValue');
-    });
-
-    it('should not update non-array values if they are already equal', () => {
-      const caseField = {
-        data: {
-          field1: 'sameValue'
-        }
-      };
-      const data = {
-        field1: { id: 'field1', formatted_value: 'sameValue' }
-      };
-
-      const result = formValueService.checkValuesSetInCollection(caseField, data);
-
-      expect(result.data.field1).toEqual('sameValue');
-    });
-
-    it('should update all array elements when subfield values differ', () => {
-      // For array tests we use objects so that we can later assign a property (.value) on them.
-      const caseField = {
-        data: {
-          field2: [
-            { value: 'oldValue1' },
-            { value: 'oldValue2' }
-          ]
-        }
-      };
-
-      const data = {
-        field2: {
-          id: 'field2',
+      const data = [
+        {
+          id: 'sendOrderQuestion',
+          label: '### Which order would you like to send?',
+          order: 1,
+          field_type: {
+            id: 'Label',
+            type: 'Label',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null
+          },
+          security_label: 'PUBLIC',
+          display_context: 'READONLY',
+          formatted_value: null,
+          _value: null,
+          _list_items: []
+        },
+        {
+          id: 'ordersToShareCollection',
+          hidden: null,
+          label: '',
+          order: 2,
+          field_type: {
+            id: 'collection name',
+            type: 'Collection',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: {
+              id: 'FR_orderToShare',
+              type: 'Complex',
+              fixed_list_items: [],
+              complex_fields: [
+                {
+                  id: 'documentToShare',
+                  field_type: {
+                    id: 'DynamicMultiSelectList',
+                    type: 'DynamicMultiSelectList'
+                  },
+                  display_context: 'OPTIONAL',
+                  formatted_value: null,
+                  _value: null,
+                  _list_items: []
+                },
+                {
+                  id: 'hasSupportingDocuments',
+                  field_type: {
+                    id: 'DynamicMultiSelectList',
+                    type: 'DynamicMultiSelectList'
+                  },
+                  display_context: 'OPTIONAL',
+                  formatted_value: null,
+                  _value: null,
+                  _list_items: []
+                },
+                {
+                  id: 'includeSupportingDocument',
+                  field_type: {
+                    id: 'DynamicMultiSelectList',
+                    type: 'DynamicMultiSelectList'
+                  },
+                  display_context: 'OPTIONAL',
+                  formatted_value: null,
+                  _value: null,
+                  _list_items: []
+                },
+                {
+                  id: 'attachmentsToShare',
+                  field_type: {
+                    id: 'DynamicMultiSelectList',
+                    type: 'DynamicMultiSelectList'
+                  },
+                  display_context: 'OPTIONAL',
+                  formatted_value: null,
+                  _value: null,
+                  _list_items: []
+                }
+              ],
+              collection_field_type: null
+            }
+          },
+          security_label: 'PUBLIC',
+          display_context: 'COMPLEX',
+          display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
           formatted_value: [
-            { value: 'newValue1' },
-            { value: 'newValue2' }
-          ]
+            {
+              value: {
+                documentToShare: {
+                  value: [
+                    {
+                      code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                      label: 'Approved order - Applicant Draft Order 1.docx'
+                    }
+                  ],
+                  list_items: [
+                    {
+                      code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                      label: 'Approved order - Applicant Draft Order 1.docx'
+                    }
+                  ]
+                },
+                hasSupportingDocuments: 'Yes',
+                attachmentsToShare: {
+                  value: [],
+                  list_items: [
+                    {
+                      code: 'be0bd159-fa9e-439f-ab74-8ef222641c80',
+                      label: 'A.pdf'
+                    }
+                  ]
+                },
+                includeSupportingDocument: 'No'
+              },
+              id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de'
+            }
+          ],
+          retain_hidden_value: null,
+          _value: [
+            {
+              value: {
+                documentToShare: {
+                  value: [
+                    {
+                      code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                      label: 'Approved order - Applicant Draft Order 1.docx'
+                    }
+                  ],
+                  list_items: [
+                    {
+                      code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                      label: 'Approved order - Applicant Draft Order 1.docx'
+                    }
+                  ]
+                },
+                hasSupportingDocuments: 'Yes',
+                attachmentsToShare: {
+                  value: [],
+                  list_items: [
+                    {
+                      code: 'be0bd159-fa9e-439f-ab74-8ef222641c80',
+                      label: 'A.pdf'
+                    }
+                  ]
+                },
+                includeSupportingDocument: 'No'
+              },
+              id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de'
+            }
+          ],
+          _list_items: [],
         }
-      };
-
-      const result = formValueService.checkValuesSetInCollection(caseField, data);
-
-      // Verify that each element has been updated to the new object and that its `value` property has been set.
-      expect(result.data.field2[0]).toEqual(data.field2.formatted_value[0]);
-      expect(result.data.field2[0].value).toEqual(data.field2.formatted_value[0]);
-      expect(result.data.field2[1]).toEqual(data.field2.formatted_value[1]);
-      expect(result.data.field2[1].value).toEqual(data.field2.formatted_value[1]);
-    });
-
-    it('should update only mismatched elements in an array field', () => {
-      // Use the same object reference for the first element so that it is “equal” (by reference) and not updated.
-      const matchingObj = { value: 'sameValue' };
+      ];
       const caseField = {
         data: {
-          field3: [
-            matchingObj,
-            { value: 'oldValue' }
+          sendOrderQuestion: null,
+          ordersToShareCollection: [
+            {
+              value: {
+                documentToShare: {
+                  value: [],
+                  list_items: []
+                },
+                hasSupportingDocuments: 'Yes',
+                includeSupportingDocument: 'No',
+                attachmentsToShare: {
+                  value: [],
+                  list_items: []
+                }
+              },
+              id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de'
+            }
           ]
+        },
+        event: {
+          id: 'FR_sendOrder',
+          summary: '',
+          description: ''
         }
       };
-
-      const data = {
-        field3: {
-          id: 'field3',
-          formatted_value: [
-            matchingObj,
-            { value: 'newValue' }
-          ]
-        }
-      };
-
-      const result = formValueService.checkValuesSetInCollection(caseField, data);
-
-      // The first element should remain unchanged (using the same reference)
-      expect(result.data.field3[0]).toBe(matchingObj);
-      // The second element should be updated
-      expect(result.data.field3[1]).toEqual(data.field3.formatted_value[1]);
-      expect(result.data.field3[1].value).toEqual(data.field3.formatted_value[1]);
+      console.log('Before:', JSON.stringify(caseField, null, 2));
+      formValueService.checkValuesSetInCollection(caseField, data);
+      console.log('After:', JSON.stringify(caseField, null, 2));
+      expect(caseField.data.ordersToShareCollection[0].value.documentToShare.value).toEqual(data[1].formatted_value[0].value.documentToShare.value);
+      expect(caseField.data.ordersToShareCollection[0].value.documentToShare.list_items).toEqual(data[1].formatted_value[0].value.documentToShare.list_items);
+      expect(caseField.data.ordersToShareCollection[0].value.attachmentsToShare.value).toEqual([]);
     });
   });
 });

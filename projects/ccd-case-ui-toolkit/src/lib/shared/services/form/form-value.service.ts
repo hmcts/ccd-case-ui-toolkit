@@ -305,7 +305,6 @@ export class FormValueService {
         for (const subField in caseField.data[fieldId]){
           if (caseField.data[fieldId][subField] !== data[field].formatted_value[subField]){
             caseField.data[fieldId][subField] = data[field].formatted_value[subField];
-            // caseField.data[fieldId][subField].value = data[field].formatted_value[subField];
           }
         }
       } else {

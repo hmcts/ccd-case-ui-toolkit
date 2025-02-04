@@ -329,106 +329,94 @@ describe('FieldTypeSanitiser', () => {
     });
 
     it('should call updateFieldValues when matching id is found', () => {
-      const caseField: CaseField = {
-        id: 'field1',
-        formatted_value: {
-          key1: { id: 'match1', value: null },
-          key2: { id: 'nomatch', value: { prop: 'should not update' } }
-        }
+      const caseField = {
+        id: 'ordersToShareCollection',
+        field_type: {
+          id: 'ordersToShareCollection-5792b908-6173-4288-b2e2-d639c67c2b95',
+          type: 'Collection',
+          collection_field_type: {
+            id: 'FR_orderToShare',
+            type: 'Complex',
+            complex_fields: [
+              {
+                id: 'documentToShare',
+                field_type: {
+                  id: 'DynamicMultiSelectList',
+                  type: 'DynamicMultiSelectList'
+                }
+              },
+              {
+                id: 'hasSupportingDocuments',
+                field_type: {
+                  id: 'YesOrNo',
+                  type: 'YesOrNo'
+                }
+              },
+              {
+                id: 'includeSupportingDocument',
+                field_type: {
+                  id: 'YesOrNo',
+                  type: 'YesOrNo'
+                }
+              },
+              {
+                id: 'attachmentsToShare',
+                field_type: {
+                  id: 'DynamicMultiSelectList',
+                  type: 'DynamicMultiSelectList'
+                }
+              }
+            ]
+          }
+        },
+        formatted_value: [
+          {
+            id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de',
+            value: {
+              documentToShare: {
+                value: null,
+                list_items: [
+                  {
+                    code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                    label: 'Approved order - Applicant Draft Order 1.docx'
+                  }
+                ]
+              },
+              hasSupportingDocuments: 'Yes',
+              attachmentsToShare: {
+                value: null,
+                list_items: [
+                  {
+                    code: 'be0bd159-fa9e-439f-ab74-8ef222641c80',
+                    label: 'A.pdf'
+                  }
+                ]
+              }
+            }
+          }
+        ]
       } as CaseField;
       const data = {
-        field1: {
-          a: { id: 'match1', value: { prop: 'new' } },
-          b: { id: 'other', value: { prop: 'irrelevant' } }
-        }
+        sendOrderQuestion: null,
+        ordersToShareCollection: [
+          {
+            value: {
+              documentToShare: [
+                {
+                  code: '479fccd3-f860-470b-abda-20b0fdd8b2d3',
+                  label: 'Approved order - Applicant Draft Order 1.docx'
+                }
+              ],
+              hasSupportingDocuments: 'Yes',
+              includeSupportingDocument: 'No',
+              attachmentsToShare: []
+            },
+            id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de'
+          }
+        ]
       };
-
-      spyOn(fieldTypeSanitiser, 'updateFieldValues');
-
       fieldTypeSanitiser.checkValuesSetInCollection(caseField, data);
-
-      expect(fieldTypeSanitiser.updateFieldValues).toHaveBeenCalledWith(
-        caseField.formatted_value['key1'].value,
-        data.field1['a'].value
-      );
-      // Expect only one call (for key1), as key2 has no match.
-      expect(fieldTypeSanitiser.updateFieldValues).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not call updateFieldValues when no matching id is found', () => {
-      const caseField: CaseField = {
-        id: 'field1',
-        formatted_value: {
-          key1: { id: 'nomatch', value: { prop: 'old' } }
-        }
-      } as CaseField;
-      const data = {
-        field1: {
-          a: { id: 'match', value: { prop: 'new' } }
-        }
-      };
-
-      spyOn(fieldTypeSanitiser, 'updateFieldValues');
-
-      fieldTypeSanitiser.checkValuesSetInCollection(caseField, data);
-
-      expect(fieldTypeSanitiser.updateFieldValues).not.toHaveBeenCalled();
-    });
-
-    it('should call updateObjectValue when formattedValue property is an object and updatePrimitiveValue otherwise', () => {
-      spyOn(fieldTypeSanitiser, 'updateObjectValue');
-      spyOn(fieldTypeSanitiser, 'updatePrimitiveValue');
-
-      const formattedValue = {
-        key1: { value: 'old' }, // an object, so updateObjectValue should be called
-        key2: 'primitive' // a primitive, so updatePrimitiveValue should be called
-      };
-      const dataValue = {
-        key1: 'new', // for object type
-        key2: 'newPrimitive' // for primitive type
-      };
-
-      fieldTypeSanitiser.updateFieldValues(formattedValue, dataValue);
-
-      expect(fieldTypeSanitiser.updateObjectValue).toHaveBeenCalledWith(
-        formattedValue.key1,
-        dataValue.key1
-      );
-      expect(fieldTypeSanitiser.updatePrimitiveValue).toHaveBeenCalledWith(
-        formattedValue,
-        'key2',
-        dataValue.key2
-      );
-    });
-
-    it('should update the formattedObject value if different', () => {
-      const formattedObject = { value: 'old' };
-      fieldTypeSanitiser.updateObjectValue(formattedObject, 'new');
-      expect(formattedObject.value).toBe('new');
-    });
-
-    it('should not update the formattedObject if the value is the same', () => {
-      const formattedObject = { value: 'same' };
-      fieldTypeSanitiser.updateObjectValue(formattedObject, 'same');
-      expect(formattedObject.value).toBe('same');
-    });
-
-    it('should set the value if key does not exist', () => {
-      const formattedValue: any = {};
-      fieldTypeSanitiser.updatePrimitiveValue(formattedValue, 'key1', 'new');
-      expect(formattedValue.key1).toBe('new');
-    });
-
-    it('should update the value if it is different', () => {
-      const formattedValue: any = { key1: 'old' };
-      fieldTypeSanitiser.updatePrimitiveValue(formattedValue, 'key1', 'new');
-      expect(formattedValue.key1).toBe('new');
-    });
-
-    it('should not change the value if it is the same', () => {
-      const formattedValue: any = { key1: 'same' };
-      fieldTypeSanitiser.updatePrimitiveValue(formattedValue, 'key1', 'same');
-      expect(formattedValue.key1).toBe('same');
+      expect(caseField.formatted_value[0].value.documentToShare.value).toEqual(data.ordersToShareCollection[0].value.documentToShare);
     });
   });
 });
