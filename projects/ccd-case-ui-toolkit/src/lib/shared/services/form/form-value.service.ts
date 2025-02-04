@@ -298,6 +298,25 @@ export class FormValueService {
     }
   }
 
+  public checkValuesSetInCollection(caseField: any, data: any): any {
+    for (const field in data) {
+      const fieldId = data[field].id;
+      if (Array.isArray(caseField.data[fieldId])) {
+        for (const subField in caseField.data[fieldId]){
+          if (caseField.data[fieldId][subField] !== data[field].formatted_value[subField]){
+            caseField.data[fieldId][subField] = data[field].formatted_value[subField];
+            // caseField.data[fieldId][subField].value = data[field].formatted_value[subField];
+          }
+        }
+      } else {
+        if (caseField.data[fieldId] !== data[field].formatted_value){
+          caseField.data[fieldId] = data[field].formatted_value;
+        }
+      }
+    }
+    return caseField;
+  }
+
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
   public removeNullLabels(data: object, caseFields: CaseField[]) {
     if (data && caseFields && caseFields.length > 0) {

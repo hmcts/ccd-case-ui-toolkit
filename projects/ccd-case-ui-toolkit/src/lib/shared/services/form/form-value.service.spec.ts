@@ -1076,4 +1076,97 @@ describe('FormValueService', () => {
       });
     });
   });
+
+  describe('checkValuesSetInCollection', () => {
+    it('should update non-array values correctly when values differ', () => {
+      const caseField = {
+        data: {
+          field1: 'oldValue'
+        }
+      };
+      const data = {
+        field1: { id: 'field1', formatted_value: 'newValue' }
+      };
+
+      const result = formValueService.checkValuesSetInCollection(caseField, data);
+
+      expect(result.data.field1).toEqual('newValue');
+    });
+
+    it('should not update non-array values if they are already equal', () => {
+      const caseField = {
+        data: {
+          field1: 'sameValue'
+        }
+      };
+      const data = {
+        field1: { id: 'field1', formatted_value: 'sameValue' }
+      };
+
+      const result = formValueService.checkValuesSetInCollection(caseField, data);
+
+      expect(result.data.field1).toEqual('sameValue');
+    });
+
+    it('should update all array elements when subfield values differ', () => {
+      // For array tests we use objects so that we can later assign a property (.value) on them.
+      const caseField = {
+        data: {
+          field2: [
+            { value: 'oldValue1' },
+            { value: 'oldValue2' }
+          ]
+        }
+      };
+
+      const data = {
+        field2: {
+          id: 'field2',
+          formatted_value: [
+            { value: 'newValue1' },
+            { value: 'newValue2' }
+          ]
+        }
+      };
+
+      const result = formValueService.checkValuesSetInCollection(caseField, data);
+
+      // Verify that each element has been updated to the new object and that its `value` property has been set.
+      expect(result.data.field2[0]).toEqual(data.field2.formatted_value[0]);
+      expect(result.data.field2[0].value).toEqual(data.field2.formatted_value[0]);
+      expect(result.data.field2[1]).toEqual(data.field2.formatted_value[1]);
+      expect(result.data.field2[1].value).toEqual(data.field2.formatted_value[1]);
+    });
+
+    it('should update only mismatched elements in an array field', () => {
+      // Use the same object reference for the first element so that it is “equal” (by reference) and not updated.
+      const matchingObj = { value: 'sameValue' };
+      const caseField = {
+        data: {
+          field3: [
+            matchingObj,
+            { value: 'oldValue' }
+          ]
+        }
+      };
+
+      const data = {
+        field3: {
+          id: 'field3',
+          formatted_value: [
+            matchingObj,
+            { value: 'newValue' }
+          ]
+        }
+      };
+
+      const result = formValueService.checkValuesSetInCollection(caseField, data);
+
+      // The first element should remain unchanged (using the same reference)
+      expect(result.data.field3[0]).toBe(matchingObj);
+      // The second element should be updated
+      expect(result.data.field3[1]).toEqual(data.field3.formatted_value[1]);
+      expect(result.data.field3[1].value).toEqual(data.field3.formatted_value[1]);
+    });
+  });
 });
