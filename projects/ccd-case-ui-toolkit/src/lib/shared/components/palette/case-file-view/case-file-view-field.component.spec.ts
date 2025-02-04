@@ -14,6 +14,7 @@ import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from '../../case-editor';
 import { AbstractAppConfig } from '../../../../app.config';
+import { CaseFileViewFolderSortComponent } from './components';
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
@@ -78,7 +79,8 @@ describe('CaseFileViewFieldComponent', () => {
         RouterTestingModule
       ],
       declarations: [
-        CaseFileViewFieldComponent
+        CaseFileViewFieldComponent,
+        CaseFileViewFolderSortComponent
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
