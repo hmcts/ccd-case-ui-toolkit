@@ -1,13 +1,5 @@
-<ccd-case-file-view-overlay-menu
-  [title]="'Toggle list'"
-  [menuItems]="overlayMenuItems"
-  [(isOpen)]="isOpen"
->
+<ccd-case-file-view-overlay-menu [title]="'Toggle list'" [menuItems]="overlayMenuItems" [(isOpen)]="isOpen">
   <ng-container trigger>
-    <img
-      class="toggle-button-icon" 
-      src="/assets/images/folder-open.png"
-      alt="Toggle list"
-    />
+    <img class="toggle-button-icon" src="/assets/images/folder-open.png" alt="Toggle list" />
   </ng-container>
 </ccd-case-file-view-overlay-menu>

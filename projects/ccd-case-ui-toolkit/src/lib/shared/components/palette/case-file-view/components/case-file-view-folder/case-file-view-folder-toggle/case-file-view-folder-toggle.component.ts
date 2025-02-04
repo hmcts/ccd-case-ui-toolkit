@@ -1,5 +1,3 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
 import { Component, EventEmitter, Output, OnInit } from "@angular/core";
 import { AbstractAppConfig } from "../../../../../../../app.config";
 import { CaseFileViewOverlayMenuItem } from "../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model";
