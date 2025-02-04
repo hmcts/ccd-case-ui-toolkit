@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.32-data-loss-cya",
+  "version": "7.1.33-data-loss-cya",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -36,9 +36,8 @@
     "prebuild:watch": "rimraf dist tmp",
     "preversion": "npm run ci",
     "build:ng:test": "ng build",
-    "test": "ng test ccd-case-ui-toolkit-lib  --code-coverage",
+    "test": "ng test ccd-case-ui-toolkit-lib --code-coverage",
     "test:codacy-upload": "echo `cat ./coverage/ccd-case-ui-toolkit/lcov-report/lcov.info | codacy-coverage`",
-    "test:coverage": "ng test ccd-case-ui-toolkit-lib --code-coverage",
     "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "tslint": "tslint",
