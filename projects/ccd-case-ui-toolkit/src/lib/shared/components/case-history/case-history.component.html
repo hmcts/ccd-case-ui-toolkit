@@ -49,15 +49,13 @@
                     <tr *ngSwitchCase="true">
                       <th id="case-viewer-label-header">
                         <div class="case-viewer-label">{{field.label}}</div>
-                      </th>
-                      <td>
                         <ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read>
-                      </td>
+                      </th>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <td colspan="2">
+                      <th>
                         <ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read>
-                      </td>
+                      </th>
                     </tr>
                   </ng-container>
                 </div>
