@@ -1264,9 +1264,7 @@ describe('FormValueService', () => {
           description: ''
         }
       };
-      console.log('Before:', JSON.stringify(caseField, null, 2));
       formValueService.checkValuesSetInCollection(caseField, data);
-      console.log('After:', JSON.stringify(caseField, null, 2));
       expect(caseField.data.ordersToShareCollection[0].value.documentToShare.value).toEqual(data[1].formatted_value[0].value.documentToShare.value);
       expect(caseField.data.ordersToShareCollection[0].value.documentToShare.list_items).toEqual(data[1].formatted_value[0].value.documentToShare.list_items);
       expect(caseField.data.ordersToShareCollection[0].value.attachmentsToShare.value).toEqual([]);
