@@ -17,6 +17,7 @@ import {
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { CaseTab } from 'ccd-case-ui-toolkit';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseEditValidationError } from '../../../commons/case-edit-data/case-edit-validation.model';
@@ -64,7 +65,6 @@ import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
-import { CaseTab } from 'ccd-case-ui-toolkit';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -871,7 +871,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(caseFlagStateService.lastPageFieldState).toEqual(3);
     });
 
-    it('should remove any unsibmitted data on cancel', () => {
+    it('should remove any unsubmitted data on cancel', () => {
       comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       comp.caseEdit.caseDetails.tabs = [{
