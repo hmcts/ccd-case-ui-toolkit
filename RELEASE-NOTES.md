@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.33
+**EXUI-2696** Improve release process
+
 ### Version 7.1.32
 **EXUI-2729** Query Management - Callback error handling.
 
