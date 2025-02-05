@@ -109,6 +109,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
       !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
+      !this.isCaseInInitial(this.linkCaseForm.value.caseNumber) &&
       !this.isCaseSelectedSameAsCurrentCase() &&
       !this.isOtherOptionSelectedButOtherDescriptionNotEntered()
     ) {
@@ -128,6 +129,16 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     return !!linkedCases.find(
       (caseLink) => caseLink.caseReference.split('-').join('') === caseNumber.split('-').join('')
     );
+  }
+
+  public isCaseInInitial(proposedCaseLink: string){
+    if (proposedCaseLink){
+      // initial case links will not have - in them, account for the case where a user may type with -
+      proposedCaseLink = proposedCaseLink.replace(/-/g, '');
+      const initialCaseLinks = this.linkedCasesService.initialCaseLinkRefs;
+      return initialCaseLinks.includes(proposedCaseLink);
+    }
+    return false;
   }
 
   private isCaseSelectedSameAsCurrentCase(): boolean {
@@ -183,6 +194,14 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       });
     }
     if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
+      this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCasesErrorMessages.CasesLinkedError,
+        fieldId: 'caseNumber'
+      });
+    }
+    if (this.isCaseInInitial(this.linkCaseForm.value.caseNumber)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
