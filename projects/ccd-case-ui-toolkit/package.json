@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.33-accessible-tab-description",
+  "version": "7.1.33-accessible-tab-description-v2",
   "engines": {
     "node": ">=18.19.0"
   },
