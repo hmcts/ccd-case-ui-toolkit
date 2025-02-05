@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
+import { Constants } from '../../../../../commons/constants';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -154,6 +156,14 @@ describe('QueryDetailsComponent', () => {
     ]
   };
 
+  const snapshotActivatedRoute = {
+    snapshot: {
+      params: {
+        qid: '123'
+      }
+    }
+  };
+
   beforeEach(async () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
     await TestBed.configureTestingModule({
@@ -162,7 +172,10 @@ describe('QueryDetailsComponent', () => {
         MockRpxTranslatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: SessionStorageService, useValue: mockSessionStorageService }]
+      providers: [
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute }
+      ]
     })
       .compileComponents();
   });
@@ -202,6 +215,25 @@ describe('QueryDetailsComponent', () => {
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Attachments');
   });
 
+  it('should call toggleLinkVisibility when ngOnChanges is called', () => {
+    spyOn(component, 'toggleLinkVisibility');
+    component.ngOnChanges();
+    expect(component.toggleLinkVisibility).toHaveBeenCalled();
+  });
+
+  it('should set showLink to true when user is navigated to follow up to a query', () => {
+    component.toggleLinkVisibility();
+    expect(component['queryItemId']).toBe('123');
+    expect(component.showLink).toBe(true);
+  });
+
+  it('should set showLink to false when user is navigated to response to a query', () => {
+    component['route'].snapshot.params.qid = '3';
+    component.ngOnChanges();
+    component.toggleLinkVisibility();
+    expect(component.showLink).toBe(false);
+  });
+
   describe('isCaseworker', () => {
     it('should return true if the user doesnt have pui-case-manager', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
@@ -222,6 +254,43 @@ describe('QueryDetailsComponent', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isCaseworker()).toBeFalsy();
+    });
+  });
+  describe('hasRespondedToQuery', () => {
+    it('should emit true and return true if conditions are met', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit');
+
+      component.totalNumberOfQueryChildren = 1;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTruthy();
+    });
+
+    it('should emit false and return false if children length is even', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if query is not defined', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
+      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
+      component.query = null; // Set the query to null
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
     });
   });
 });
