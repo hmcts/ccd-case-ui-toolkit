@@ -80,7 +80,7 @@ describe('LinkCasesComponent', () => {
     linkedCases: [],
     linkCaseReasons,
     caseFieldValue: [],
-    initialCaseLinks: [],
+    initialCaseLinkRefs: ['123456'],
     mapLookupIDToValueFromJurisdictions() {},
     getCaseName() {}
   };
@@ -210,19 +210,16 @@ describe('LinkCasesComponent', () => {
   });
 
   it('should return true if the proposed case link is in the initial case links', () => {
-    linkedCasesService.initialCaseLinks = ['123-456'];
     const result = component.isCaseInInitial('123-456');
     expect(result).toBe(true);
   });
 
   it('should return false if the proposed case link is not in the initial case links', () => {
-    linkedCasesService.initialCaseLinks = ['123-456'];
     const result = component.isCaseInInitial('654321');
     expect(result).toBe(false);
   });
 
   it('should return false if the proposed case link is null or empty', () => {
-    linkedCasesService.initialCaseLinks = ['123-456'];
     expect(component.isCaseInInitial(null)).toBe(false);
     expect(component.isCaseInInitial('')).toBe(false);
   });
