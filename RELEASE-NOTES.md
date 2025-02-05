@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.35
+**EXUI-2711** Review font and grammer in the query management screens
+
 ### Version 7.1.34
 **EXUI-2524** Review font and grammer in the query management screens
 
