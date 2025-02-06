@@ -399,7 +399,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       }
       // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
       // location
-      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+      if (!flagsCaseFieldValue.details){
+        flagsCaseFieldValue.details = [];
+      }
+      flagsCaseFieldValue.details.push({ value: this.populateNewFlagDetailInstance() });
     }
   }
 
