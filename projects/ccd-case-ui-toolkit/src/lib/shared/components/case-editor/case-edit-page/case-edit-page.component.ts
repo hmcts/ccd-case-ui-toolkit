@@ -533,6 +533,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
         initialCaseRefs.includes(item.value.CaseReference)
       );
+      linkedCasesTab.formatted_value = linkedCasesTab.formatted_value.filter((item) =>
+        initialCaseRefs.includes(item.value.CaseReference)
+      );
     }
     if (linkedCasesTab && (linkedCasesTab?.formatted_value?.length !== initalLinks?.length)) {
       linkedCasesTab.value = linkedCasesTab.formatted_value;
