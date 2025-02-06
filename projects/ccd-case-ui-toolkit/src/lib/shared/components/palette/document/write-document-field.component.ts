@@ -124,7 +124,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (allowedRegex){
       fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`);
     }
-    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)){
+    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name.toLowerCase()?.match(fileTypeRegex)){
       this.invalidFileFormat();
     } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
