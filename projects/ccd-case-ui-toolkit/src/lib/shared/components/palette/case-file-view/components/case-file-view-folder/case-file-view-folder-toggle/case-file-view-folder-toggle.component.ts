@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { AbstractAppConfig } from "../../../../../../../app.config";
 import { CaseFileViewOverlayMenuItem } from "../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model";
 
@@ -7,7 +7,7 @@ import { CaseFileViewOverlayMenuItem } from "../../shared/case-file-view-overlay
   templateUrl: "./case-file-view-folder-toggle.component.html",
   styleUrls: ["./case-file-view-folder-toggle.component.scss"],
 })
-export class CaseFileViewFolderToggleComponent implements OnInit {
+export class CaseFileViewFolderToggleComponent {
   public isOpen = false;
 
   @Output() public expandAll = new EventEmitter<boolean>();
@@ -27,6 +27,4 @@ export class CaseFileViewFolderToggleComponent implements OnInit {
   ];
 
   constructor(private readonly appConfig: AbstractAppConfig) {}
-
-  public ngOnInit(): void {}
 }
