@@ -879,17 +879,19 @@ describe('CaseEditPageComponent - all other tests', () => {
         fields: [
           {
             id: 'caseLinks',
+            formatted_value: [
+              { value: { CaseReference: 'REF1' } }
+            ],
             value: [
               { value: { CaseReference: 'REF1' } },
-              { value: { CaseReference: 'REF2' } },
-              { value: { CaseReference: 'REF3' } }
+              { value: { CaseReference: 'REF2' } }
             ]
           }
         ]
       }] as CaseTab[];
       linkedCasesServiceSpy = TestBed.inject(LinkedCasesService) as jasmine.SpyObj<LinkedCasesService>;
       spyOn(comp, 'isLinkedCasesJourney').and.returnValues(true);
-      linkedCasesService.initialCaseLinkRefs = ['REF1'];
+      linkedCasesService.initialCaseLinkRefs = ['REF1', 'REF2'];
       comp.cancel();
       expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
     });

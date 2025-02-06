@@ -528,11 +528,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       tab?.fields?.some((field) => field.id === 'caseLinks')
     )?.fields?.[0] ?? null;
     const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
-    if (linkedCasesTab && linkedCasesTab?.value?.length !== initalLinks?.length) {
-      const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
-      linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
-        initialCaseRefs.includes(item.value.CaseReference)
-      );
+    if (linkedCasesTab && (linkedCasesTab?.formatted_value?.length !== initalLinks?.length)) {
+      linkedCasesTab.value = linkedCasesTab.formatted_value;
     }
     this.linkedCasesService.resetLinkedCaseData();
   }
