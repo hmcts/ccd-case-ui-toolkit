@@ -9,7 +9,7 @@
           {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
         </a>
         <span *ngIf="p.isFirstPage()">
-          {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
+          {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ 'Page ' + screenReaderPageLabel | rpxTranslate }}</span>
         </span>
       </li>
       <li class="small-screen">
@@ -20,11 +20,11 @@
         <a tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)"
           *ngIf="p.getCurrent() !== page.value">
           <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }} </span>
-          <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+          <span>{{ (page.label === '...') ? 'Page ' + page.label : ('Page ' + page.label | number:'') }}</span>
         </a>
         <ng-container *ngIf="p.getCurrent() === page.value">
           <span class="show-for-sr">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
-          <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+          <span>{{ (page.label === '...') ? 'Page ' + page.label : ('Page ' + page.label | number:'') }}</span>
         </ng-container>
       </li>
       <li class="pagination-next" [class.disabled]="p.isLastPage()" *ngIf="directionLinks">
