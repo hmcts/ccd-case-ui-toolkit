@@ -9,7 +9,7 @@
       {{(dateControl.errors | ccdFirstError:caseField.label)}}
     </span>
     <cut-date-input [id]="id()"
-                    [labelPrefix]="createElementId(caseField.label)"
+                    [labelPrefix]="getPrefix()"
                     [isDateTime]="isDateTime()"
                     [mandatory]="caseField | ccdIsMandatory"
                     [isInvalid]="dateControl.errors && (dateControl.dirty || dateControl.touched)"

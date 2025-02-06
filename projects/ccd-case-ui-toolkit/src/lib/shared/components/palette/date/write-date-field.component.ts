@@ -7,6 +7,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
   templateUrl: './write-date-field.html'
 })
 export class WriteDateFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+
   public dateControl: FormControl;
 
   public ngOnInit() {
@@ -15,6 +16,10 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
 
   public isDateTime(): boolean {
     return this.caseField.field_type.id === 'DateTime';
+  }
+
+  public getPrefix() {
+    return this.caseField.getPath(`${this.id}`);
   }
 
 }
