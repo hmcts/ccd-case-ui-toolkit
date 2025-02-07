@@ -56,12 +56,11 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <div class="govuk-hint" id="tab-instruction">To use tabbed navigation, please use left and right arrow keys</div>
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" aria-describedby="tab-instruction">
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [attr.aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
           <ng-template matTabContent>
             <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
@@ -99,7 +98,7 @@
             </table>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate" aria-describedby="tab-instruction">
+        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
       </mat-tab-group>
       <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
