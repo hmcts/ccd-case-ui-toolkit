@@ -14,6 +14,7 @@ export class CaseField implements Orderable {
   public hiddenCannotChange: boolean;
   public label: string;
   public order?: number;
+  public parent?: CaseField;
 
   @Type(() => FieldType)
   public field_type: FieldType;
@@ -166,5 +167,14 @@ export class CaseField implements Orderable {
         }
       }
       return null;
+  }
+
+  @Expose()
+  public getPath(curr: string): string {
+    if (this.parent) {
+      this.parent.getPath(curr + '_' + this.id );
+    } else {
+      return this.id;
+    }
   }
 }

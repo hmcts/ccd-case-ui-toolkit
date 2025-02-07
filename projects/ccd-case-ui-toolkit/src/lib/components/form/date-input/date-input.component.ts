@@ -21,6 +21,9 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   @Input()
   public id: string;
 
+  @Input() 
+  public labelPrefix: string;
+
   @Input()
   public mandatory: boolean;
 
@@ -191,15 +194,39 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   }
 
   public dayId() {
-    return `${this.id}-day`;
+    const idString = `${this.id}`;
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    if (idString.includes("Date")) {
+      return `${label + this.id}-day`;
+    } else {
+      return `${label + this.id}Date-day`;
+    }
   }
 
   public monthId() {
-    return `${this.id}-month`;
+    const idString = `${this.id}`;
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    if (idString.includes("Date")) {
+      return `${label + this.id}-month`;
+    } else {
+      return `${label + this.id}Date-month`;
+    }
   }
 
   public yearId() {
-    return `${this.id}-year`;
+    const idString = `${this.id}`;
+    const labelPrefix = `${this.labelPrefix}`;
+    const labelString = labelPrefix.replace(/\s+/g, ''); 
+    const label = String(labelString).charAt(0).toLowerCase() + String(labelString).slice(1);
+    if (idString.includes("Date")) {
+      return `${label + this.id}-year`;
+    } else {
+      return `${label + this.id}Date-year`;
+    }
   }
 
   public hourId() {
