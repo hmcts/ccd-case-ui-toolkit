@@ -22,6 +22,7 @@ import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
+import { CaseEditComponent } from '../case-edit';
 
 @Injectable()
 export class CasesService {
@@ -395,7 +396,7 @@ export class CasesService {
   }
 
   private addClientContextHeader(headers: HttpHeaders): HttpHeaders {
-    const clientContextDetails = this.sessionStorageService.getItem('clientContext');
+    const clientContextDetails = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     if (clientContextDetails) {
       const caseEditUtils = new CaseEditUtils();
       // below changes non-ASCII characters 
@@ -414,7 +415,7 @@ export class CasesService {
       const clientContextString = window.atob(headers.get('Client-Context'));
       // below reverts non-ASCII characters 
       const editedClientContextString = caseEditUtils.convertHTMLEntities(clientContextString);
-      this.sessionStorageService.setItem('clientContext', editedClientContextString);
+      this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, editedClientContextString);
     }
   }
 }
