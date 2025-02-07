@@ -1,7 +1,7 @@
 <pagination-template #p="paginationApi" [id]="id" [maxSize]="maxSize" (pageChange)="pageChange.emit($event)"
   (pageBoundsCorrection)="pageBoundsCorrection.emit($event)">
   <nav role="navigation" [attr.aria-label]="'Pagination' | rpxTranslate">
-    <ul class="ngx-pagination" role="navigation" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate"
+    <ul class="ngx-pagination" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate"
       [class.responsive]="responsive" *ngIf="!(autoHide && p.pages.length <= 1)">
       <li class="pagination-previous" [class.disabled]="p.isFirstPage()" *ngIf="directionLinks">
         <a tabindex="0" *ngIf="1 < p.getCurrent()" (keyup.enter)="p.previous()" (click)="p.previous()"
