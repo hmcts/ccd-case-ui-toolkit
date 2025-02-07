@@ -1,9 +1,18 @@
 ## RELEASE NOTES
 
-### Version 7.1.32-rc1
-**EXUI-2551** Case File view too small not loading with correct size
+### Version 7.1.35-rc1
 **EXUI-2104** Event History Summary - ExUI Changes
 **EXUI-2668** when Update Referral event completed (incorrect)
+
+### Version 7.1.35
+**EXUI-2711** Review font and grammer in the query management screens
+
+### Version 7.1.34
+**EXUI-2524** Review font and grammer in the query management screens
+
+### Version 7.1.33
+**EXUI-2696** Improve release process
+**EXUI-2734** Improve usability of the event history screen
 
 ### Version 7.1.32
 **EXUI-2729** Query Management - Callback error handling.
