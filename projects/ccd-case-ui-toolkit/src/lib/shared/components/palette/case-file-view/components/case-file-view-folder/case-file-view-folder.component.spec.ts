@@ -1,4 +1,4 @@
-import { CdkTreeModule } from '@angular/cdk/tree';
+import { CdkTreeModule, NestedTreeControl } from '@angular/cdk/tree';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
@@ -22,6 +22,45 @@ import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './ca
 import createSpyObj = jasmine.createSpyObj;
 import { DatePipe } from '../../../utils';
 import moment from 'moment-timezone';
+
+describe('CaseFileViewFolderComponent', () => {
+  let component: CaseFileViewFolderComponent;
+  let fixture: ComponentFixture<CaseFileViewFolderComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [CaseFileViewFolderComponent],
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CaseFileViewFolderComponent);
+    component = fixture.componentInstance;
+    component.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(node => node.children);
+    component.nestedDataSource = [
+      {
+        name: 'Root',
+        children: [
+          { name: 'Child 1', children: [] },
+          { name: 'Child 2', children: [] }
+        ]
+      }
+    ] as DocumentTreeNode[];
+    fixture.detectChanges();
+  });
+
+  it('should expand all folders when expandAll is called', () => {
+    spyOn(component.nestedTreeControl, 'expandDescendants');
+    component.expandAll(true);
+    expect(component.nestedTreeControl.expandDescendants).toHaveBeenCalledWith(component.nestedDataSource[0]);
+  });
+
+  it('should collapse all folders when collapseAll is called', () => {
+    spyOn(component.nestedTreeControl, 'collapseAll');
+    component.collapseAll(true);
+    expect(component.nestedTreeControl.collapseAll).toHaveBeenCalled();
+  });
+});
 
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
