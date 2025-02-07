@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth/auth.service';
+import { LoadingService } from '../loading';
 
 
 @Injectable()
 export class HttpErrorService {
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+        private loadingService: LoadingService
+  ) {}
 
   private static readonly CONTENT_TYPE = 'Content-Type';
   private static readonly JSON = 'json';
@@ -54,6 +57,9 @@ export class HttpErrorService {
   public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
     console.error('Handling error in http error service.');
     console.error(error);
+    if (this.loadingService.hasSharedSpinner()){
+      this.loadingService.unregisterSharedSpinner();
+    }
     const httpError: HttpError = HttpErrorService.convertToHttpError(error);
     if (redirectIfNotAuthorised && httpError.status === 401) {
       this.authService.signIn();

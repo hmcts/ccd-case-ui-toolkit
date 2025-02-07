@@ -418,5 +418,4 @@ export class CasesService {
       this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, editedClientContextString);
     }
   }
-
 }
