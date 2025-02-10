@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.36
+**EXUI-1562** accessibility issue
+
 ### Version 7.1.35
 **EXUI-2711** Review font and grammer in the query management screens
 
