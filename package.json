@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.35-ungrey-back-button-4",
+  "version": "7.1.36-ungrey-back-button",
   "engines": {
     "node": ">=18.19.0"
   },
