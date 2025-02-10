@@ -12,7 +12,7 @@ export class MultipageComponentStateService {
   //the instigator references the case-edit-page component that will invoke the next and previous methods
   private instigator: JourneyInstigator | null = null;
   //each journey will store its state here. this could include form data if needed
-  private journeyState: Map<string, Journey> = new Map<string, Journey>();
+  private readonly journeyState: Map<string, Journey> = new Map<string, Journey>();
 
   //setJourneyComponent will be called by the app component to update the journey collection
   setJourneyCollection(journeyCollection: Journey[]): void {

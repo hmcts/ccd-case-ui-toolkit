@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
-import { ErrorMessage, Journey } from '../../../../../domain';
+import { CaseField, ErrorMessage, Journey } from '../../../../../domain';
 import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
@@ -111,16 +111,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     }
     if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
       const originalFlagDetail = formattedValue.details?.find((detail) => detail.id === flagDetail.id);
-      let statusToUse;
-      if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag) {
-        if (originalStatusFromFG) {
-          statusToUse = originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG;
-        } else {
-          statusToUse = originalFlagDetail.value?.status;
-        }
-      } else {
-        statusToUse = originalFlagDetail.value?.status;
-      }
+      const statusToUse = this.getStatusToUse(flagsInstance, originalPathToFlag, originalStatusFromFG, originalFlagDetail);
       if (originalFlagDetail) {
         originalStatus = statusToUse;
         flagDetail.flagComment = originalFlagDetail.value?.flagComment;
@@ -141,6 +132,20 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
       roleOnCase: flagsInstance.flags?.roleOnCase,
       originalStatus
     };
+  }
+
+  public getStatusToUse(flagsInstance: FlagsWithFormGroupPath, originalPathToFlag: string, originalStatusFromFG: string, originalFlagDetail: CaseField): string{
+    let statusToUse = '';
+    if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag) {
+      if (originalStatusFromFG) {
+        statusToUse = originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG;
+      } else {
+        statusToUse = originalFlagDetail.value?.status;
+      }
+    } else {
+      statusToUse = originalFlagDetail.value?.status;
+    }
+    return statusToUse;
   }
 
   public onNext(): void {

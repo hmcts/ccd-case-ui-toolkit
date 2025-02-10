@@ -12,7 +12,6 @@ export abstract class AbstractJourneyComponent implements Journey {
     @Input()
   public journeyId: string = 'journey';
 
-    // todo...
     @ViewChild('journeyChild')
     public childJourney!: Journey;
 

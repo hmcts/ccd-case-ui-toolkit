@@ -32,7 +32,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService,
     private readonly caseEditDataService: CaseEditDataService,
-    private router: Router,
+    private readonly router: Router,
     multipageComponentStateService: MultipageComponentStateService
   ) {
     super(multipageComponentStateService);
@@ -276,14 +276,12 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       } else {
         this.linkedCasesPage --;
       }
+    } else if (this.linkedCasesPage === LinkedCasesPages.UNLINK_CASE) {
+      this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+    } else if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
+      this.linkedCasesPage = this.linkedCasesPages.UNLINK_CASE;
     } else {
-      if (this.linkedCasesPage === LinkedCasesPages.UNLINK_CASE) {
-        this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
-      } else if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
-        this.linkedCasesPage = this.linkedCasesPages.UNLINK_CASE;
-      } else {
-        this.linkedCasesPage --;
-      }
+      this.linkedCasesPage --;
     }
     super.previousPage();
   }
