@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AbstractAppConfig } from "../../../../../../../app.config";
 import { CaseFileViewOverlayMenuComponent } from "../../shared";
 import { CaseFileViewFolderToggleComponent } from "./case-file-view-folder-toggle.component";
+import { WindowService } from '../../../../../../services';
 
 describe("CaseFileViewFolderToggleComponent", () => {
   let component: CaseFileViewFolderToggleComponent;
@@ -20,7 +21,7 @@ describe("CaseFileViewFolderToggleComponent", () => {
         CaseFileViewOverlayMenuComponent,
       ],
       imports: [OverlayModule],
-      providers: [{ provide: AbstractAppConfig, useValue: mockAppConfig }],
+      providers: [WindowService, { provide: AbstractAppConfig, useValue: mockAppConfig }],
     }).compileComponents();
   });
 

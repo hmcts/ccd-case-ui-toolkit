@@ -30,6 +30,7 @@ describe('CaseFileViewFolderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CaseFileViewFolderComponent],
+      providers: [WindowService]
     }).compileComponents();
   });
 
