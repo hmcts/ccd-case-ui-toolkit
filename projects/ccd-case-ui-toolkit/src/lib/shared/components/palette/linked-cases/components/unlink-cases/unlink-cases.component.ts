@@ -45,7 +45,6 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
     // the journey can become broken in some  situations as the journeyPageNumber is not correct, account for this and set to the correct value
     const journeyPageNumber = this.getJourneyCollection()['journeyPageNumber'];
     const linkedCasesPageNumber = this.getJourneyCollection()['linkedCasesPage'];
-    console.log(journeyPageNumber, linkedCasesPageNumber)
     if (linkedCasesPageNumber < journeyPageNumber) {
       this.getJourneyCollection()['journeyPageNumber'] = linkedCasesPageNumber;
     }

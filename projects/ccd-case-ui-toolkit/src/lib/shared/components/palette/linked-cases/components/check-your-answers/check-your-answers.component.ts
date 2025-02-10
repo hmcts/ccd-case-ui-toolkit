@@ -21,7 +21,7 @@ export class CheckYourAnswersComponent extends AbstractJourneyComponent implemen
   public isLinkCasesJourney: boolean;
   public linkedCasesTableCaption: string;
 
-  constructor(private linkedCasesService: LinkedCasesService, multipageComponentStateService: MultipageComponentStateService) {
+  constructor(private readonly linkedCasesService: LinkedCasesService, multipageComponentStateService: MultipageComponentStateService) {
     super(multipageComponentStateService);
   }
 

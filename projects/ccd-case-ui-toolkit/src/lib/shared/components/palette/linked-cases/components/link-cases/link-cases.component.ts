@@ -136,8 +136,6 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       // initial case links will not have - in them, account for the case where a user may type with -
       proposedCaseLink = proposedCaseLink.replace(/-/g, '');
       const initialCaseLinks = this.linkedCasesService.initialCaseLinkRefs || [];
-      console.log(initialCaseLinks);
-      console.log(proposedCaseLink);
       return initialCaseLinks.includes(proposedCaseLink);
     }
     return false;
