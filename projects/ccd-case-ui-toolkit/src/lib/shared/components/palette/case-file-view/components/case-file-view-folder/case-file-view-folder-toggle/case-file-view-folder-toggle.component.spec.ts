@@ -1,44 +1,38 @@
 import { OverlayModule } from "@angular/cdk/overlay";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { AbstractAppConfig } from "../../../../../../../app.config";
 import { CaseFileViewOverlayMenuComponent } from "../../shared";
 import { CaseFileViewFolderToggleComponent } from "./case-file-view-folder-toggle.component";
-import { DocumentManagementService, FormatTranslatorService, WindowService } from '../../../../../../services';
+import { WindowService } from '../../../../../../services';
 
 describe("CaseFileViewFolderToggleComponent", () => {
   let component: CaseFileViewFolderToggleComponent;
   let fixture: ComponentFixture<CaseFileViewFolderToggleComponent>;
   let mockAppConfig: any;
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>(
       "AbstractAppConfig",
       ["getEnableCaseFileViewVersion1_1"]
     );
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       declarations: [
         CaseFileViewFolderToggleComponent,
         CaseFileViewOverlayMenuComponent,
       ],
       imports: [OverlayModule],
       providers: [
-        DocumentManagementService, 
-        FormatTranslatorService, 
         WindowService, { provide: AbstractAppConfig, useValue: mockAppConfig }
       ],
     }).compileComponents();
-  });
+  }));
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(CaseFileViewFolderToggleComponent);
     component = fixture.componentInstance;
     component.isOpen = true;
     fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  }));
 
   it('should emit expandAll event when Expand All action is triggered', () => {
     spyOn(component.expandAll, 'emit');

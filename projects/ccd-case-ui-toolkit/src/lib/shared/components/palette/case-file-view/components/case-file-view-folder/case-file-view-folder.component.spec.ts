@@ -26,46 +26,6 @@ import moment from 'moment-timezone';
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [CaseFileViewFolderComponent],
-      providers: [WindowService]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseFileViewFolderComponent);
-    component = fixture.componentInstance;
-    component.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(node => node.children);
-    component.nestedDataSource = [
-      {
-        name: 'Root',
-        children: [
-          { name: 'Child 1', children: [] },
-          { name: 'Child 2', children: [] }
-        ]
-      }
-    ] as DocumentTreeNode[];
-    fixture.detectChanges();
-  });
-
-  it('should expand all folders when expandAll is called', () => {
-    spyOn(component.nestedTreeControl, 'expandDescendants');
-    component.expandAll(true);
-    expect(component.nestedTreeControl.expandDescendants).toHaveBeenCalledWith(component.nestedDataSource[0]);
-  });
-
-  it('should collapse all folders when collapseAll is called', () => {
-    spyOn(component.nestedTreeControl, 'collapseAll');
-    component.collapseAll(true);
-    expect(component.nestedTreeControl.collapseAll).toHaveBeenCalled();
-  });
-});
-
-describe('CaseFileViewFolderComponent', () => {
-  let component: CaseFileViewFolderComponent;
-  let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
   let mockAppConfig: any;
 
@@ -480,5 +440,17 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
     expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
+  });
+
+  it('should expand all folders when expandAll event fired', () => {
+    spyOn(component.nestedTreeControl, 'expandDescendants');
+    component.expandAll(true);
+    expect(component.nestedTreeControl.expandDescendants).toHaveBeenCalledWith(component.nestedDataSource[0]);
+  });
+
+  it('should collapse all folders when collapseAll event fired', () => {
+    spyOn(component.nestedTreeControl, 'collapseAll');
+    component.collapseAll(true);
+    expect(component.nestedTreeControl.collapseAll).toHaveBeenCalled();
   });
 });
