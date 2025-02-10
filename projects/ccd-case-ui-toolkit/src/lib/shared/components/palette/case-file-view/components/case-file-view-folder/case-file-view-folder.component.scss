@@ -9,13 +9,13 @@
 }
 
 .document-filter-container {
-  border-bottom: 2px solid #C9C9C9;
+  border-bottom: 2px solid #c9c9c9;
 
   .document-filter {
     padding: 10px;
 
     .document-search {
-      background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
+      background: url(/assets/images/icon-search-black.svg) no-repeat right #fff;
       background-position-x: calc(100% - 4px);
       padding-right: 30px;
       width: 100%;
@@ -33,11 +33,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #C9C9C9;
+  border-bottom: 2px solid #c9c9c9;
   padding: 10px;
 
   &__title {
     font-weight: 700;
+  }
+
+  &__flex {
+    display: flex;
+    flex-direction: row;
   }
 }
 
@@ -74,7 +79,7 @@
     border: 4px solid rgba(0, 0, 0, 0);
     background-clip: padding-box;
     border-radius: 9999px;
-    background-color: #AAAAAA;
+    background-color: #aaaaaa;
   }
 
   &::-webkit-scrollbar-button {
@@ -82,11 +87,11 @@
   }
 
   &::-webkit-scrollbar-track-piece {
-    background: #EEE;
+    background: #eee;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #CCC;
+    background: #ccc;
   }
 }
 
@@ -94,7 +99,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #C9C9C9;
+  border-bottom: 2px solid #c9c9c9;
   padding: 10px;
 
   &__title {

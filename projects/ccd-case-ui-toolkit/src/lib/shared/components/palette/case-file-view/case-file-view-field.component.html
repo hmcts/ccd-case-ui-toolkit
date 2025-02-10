@@ -1,7 +1,6 @@
 <ng-container *ngIf="errorMessages?.length">
-  <div
-    id="case-file-view-field-errors"
-    class="govuk-error-summary govuk-!-margin-bottom-4" data-module="govuk-error-summary">
+  <div id="case-file-view-field-errors" class="govuk-error-summary govuk-!-margin-bottom-4"
+    data-module="govuk-error-summary">
     <div role="alert">
       <h2 class="govuk-error-summary__title">
         There is a problem
@@ -26,13 +25,10 @@
   <div class="govuk-form-group" id="case-file-view">
     <!-- Document tree -->
     <div class="document-tree-container">
-      <ccd-case-file-view-folder
-        class="document-tree-container__tree"
+      <ccd-case-file-view-folder class="document-tree-container__tree"
         [categoriesAndDocuments]="categoriesAndDocuments$"
-        (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()"
-        (moveDocument)="moveDocument($event)"
-        [allowMoving]="allowMoving"
-      ></ccd-case-file-view-folder>
+        (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()" (moveDocument)="moveDocument($event)"
+        [allowMoving]="allowMoving"></ccd-case-file-view-folder>
     </div>
     <!-- Slider -->
     <div class="slider"></div>
@@ -40,14 +36,9 @@
     <div class="media-viewer-container">
       <ng-container *ngIf="currentDocument">
         <mv-media-viewer [url]="currentDocument.document_binary_url"
-                         [downloadFileName]="currentDocument.document_filename"
-                         [showToolbar]="true"
-                         [contentType]="currentDocument.content_type"
-                         [enableAnnotations]="true"
-                         [enableRedactions]="true"
-                         [height]="'94.5vh'"
-                         [caseId]="caseId"
-                         [enableICP]="isIcpEnabled()">
+          [downloadFileName]="currentDocument.document_filename" [showToolbar]="true"
+          [contentType]="currentDocument.content_type" [enableAnnotations]="true" [enableRedactions]="true"
+          [height]="'94.5vh'" [caseId]="caseId" [enableICP]="isIcpEnabled()">
         </mv-media-viewer>
       </ng-container>
     </div>

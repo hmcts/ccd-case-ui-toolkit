@@ -1,4 +1,4 @@
-import { CdkTreeModule } from '@angular/cdk/tree';
+import { CdkTreeModule, NestedTreeControl } from '@angular/cdk/tree';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
@@ -440,5 +440,17 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
     expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
+  });
+
+  it('should expand all folders when expandAll event fired', () => {
+    spyOn(component.nestedTreeControl, 'expandDescendants');
+    component.expandAll(true);
+    expect(component.nestedTreeControl.expandDescendants).toHaveBeenCalledWith(component.nestedDataSource[0]);
+  });
+
+  it('should collapse all folders when collapseAll event fired', () => {
+    spyOn(component.nestedTreeControl, 'collapseAll');
+    component.collapseAll(true);
+    expect(component.nestedTreeControl.collapseAll).toHaveBeenCalled();
   });
 });

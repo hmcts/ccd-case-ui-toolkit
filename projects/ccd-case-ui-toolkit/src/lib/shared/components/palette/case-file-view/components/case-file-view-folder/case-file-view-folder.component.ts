@@ -58,6 +58,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
+  public expandAll(expand: boolean) {
+    this.nestedTreeControl.expandDescendants(this.nestedDataSource[0]);
+  }
+
+  public collapseAll(expand: boolean) {
+    this.nestedTreeControl.collapseAll();
+  }
+
   constructor(
     private readonly windowService: WindowService,
     private readonly router: Router,
