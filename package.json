@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.36-update-pagination-role",
+  "version": "7.1.36",
   "engines": {
     "node": ">=18.19.0"
   },
