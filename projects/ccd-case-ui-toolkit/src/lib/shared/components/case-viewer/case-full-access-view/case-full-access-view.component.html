@@ -58,47 +58,54 @@
     <ng-container *ngIf="hasTabsPresent()">
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
         [selectedIndex]="selectedTabIndex">
-        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
+        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
-          <ng-template matTabContent>
-            <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
-              <tbody>
-              <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup?.controls['data']">
-                <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
-                  <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-                    <tr *ngSwitchCase="true">
-                      <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
-                        <div class="case-viewer-label text-16">
-                          {{field.label | rpxTranslate}}</div>
-                      </th>
-                      <td [id]="'case-viewer-field-read--' + field.id" scope="col">
-                        <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
-                                          [caseField]="field" [caseReference]="caseDetails.case_id"
-                                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
-                          </ccd-field-read>
-                        </span>
-                      </td>
-                    </tr>
-                    <tr *ngSwitchCase="false" class="compound-field">
-                      <th [id]="'case-viewer-field-read--' + field.id" scope="col">
-                        <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                                          [caseField]="field" [caseReference]="caseDetails.case_id"
-                                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
-                          </ccd-field-read>
-                        </span>
-                      </th>
-                    </tr>
-                  </ng-container>
-                </div>
-              </ng-container>
-              </tbody>
-            </table>
-          </ng-template>
-        </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
+        <ng-container *ngFor="let tab of sortedTabs; let curIdx=index">
+          <ng-container *ngIf="isFirst; else notFirstTab">
+            <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
+          </ng-container>
+          <ng-container id="notFirstTab">
+            <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate">
+          </ng-container>    
+            <ng-template matTabContent>
+              <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
+                <tbody>
+                <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup?.controls['data']">
+                  <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
+                    <ng-container [ngSwitch]="!(field | ccdIsCompound)">
+                      <tr *ngSwitchCase="true">
+                        <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
+                          <div class="case-viewer-label text-16">
+                            {{field.label | rpxTranslate}}</div>
+                        </th>
+                        <td [id]="'case-viewer-field-read--' + field.id" scope="col">
+                          <span class="text-16">
+                            <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
+                                            [caseField]="field" [caseReference]="caseDetails.case_id"
+                                            [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+                            </ccd-field-read>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngSwitchCase="false" class="compound-field">
+                        <th [id]="'case-viewer-field-read--' + field.id" scope="col">
+                          <span class="text-16">
+                            <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                                            [caseField]="field" [caseReference]="caseDetails.case_id"
+                                            [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+                            </ccd-field-read>
+                          </span>
+                        </th>
+                      </tr>
+                    </ng-container>
+                  </div>
+                </ng-container>
+                </tbody>
+              </table>
+            </ng-template>
+          </mat-tab>
+        </ng-container>
+        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
       </mat-tab-group>
       <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
