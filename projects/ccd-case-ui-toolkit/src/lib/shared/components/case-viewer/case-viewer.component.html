@@ -1,13 +1,15 @@
 <div *ngIf="isDataLoaded()">
   <ccd-case-basic-access-view *ngIf="!hasStandardAccess()"
                               [accessType]="userAccessType"
-                              [caseDetails]="caseDetails">
+                              [caseDetails]="caseDetails"
+                              id="content">
   </ccd-case-basic-access-view>
   <ccd-case-full-access-view *ngIf="hasStandardAccess()"
                              [caseDetails]="caseDetails"
                              [hasPrint]="hasPrint"
                              [hasEventSelector]="hasEventSelector"
                              [prependedTabs]="prependedTabs"
-                             [appendedTabs]="appendedTabs">
+                             [appendedTabs]="appendedTabs"
+                             id="content">
   </ccd-case-full-access-view>
 </div>
