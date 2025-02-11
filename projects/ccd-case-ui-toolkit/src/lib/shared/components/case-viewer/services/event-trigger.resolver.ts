@@ -10,6 +10,7 @@ import { ProfileService } from '../../../services/profile/profile.service';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
+import { LoadingService } from '../../../services';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -27,6 +28,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     private router: Router,
     private appConfig: AbstractAppConfig,
     private errorNotifier: ErrorNotifierService,
+    private readonly loadingService: LoadingService
     ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
@@ -62,8 +64,8 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     return this.casesService
       .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
       .pipe(
-        map(eventTrigger => this.cachedEventTrigger = eventTrigger),
-        catchError(error => {
+        map((eventTrigger) => this.cachedEventTrigger = eventTrigger),
+        catchError((error) => {
           error.details = { eventId: eventTriggerId, ...error.details };
           this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);

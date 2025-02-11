@@ -4,14 +4,14 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
+import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { ReadCookieService, SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { CaseEditComponent, WorkAllocationService } from '../../case-editor';
+import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  public static readonly CLIENT_CONTEXT = 'clientContext';
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
@@ -33,7 +33,7 @@ export class EventStartGuard implements CanActivate {
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     const languageCookie = this.cookieService.getCookie('exui-preferred-language');
     const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
-    const preClientContext = this.sessionStorageService.getItem(EventStartGuard.CLIENT_CONTEXT);
+    const preClientContext = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     if (!preClientContext) {
       // creates client context for language if not already existing
       const storeClientContext = {
@@ -43,7 +43,7 @@ export class EventStartGuard implements CanActivate {
           }
         }
       };
-      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+      this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
     } else {
       const clientContextObj = JSON.parse(preClientContext);
       if (!clientContextObj?.client_context?.user_language) {
@@ -56,7 +56,7 @@ export class EventStartGuard implements CanActivate {
             }
           }
         }
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
+        this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
     if (caseInfoStr) {
@@ -75,7 +75,7 @@ export class EventStartGuard implements CanActivate {
     return of(false);
   }
 
-  public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
+  public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string, eventId: string, userId: string): boolean {
     if (!payload || !payload.tasks) {
       return true;
     }
@@ -104,56 +104,18 @@ export class EventStartGuard implements CanActivate {
       } else {
         task = tasksAssignedToUser[0];
       }
-      const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
-      // if one task assigned to user, allow user to complete event
-      const storeClientContext = {
-        client_context: {
-          user_task: {
-            task_data: task,
-            complete_task: true
-          },
-          user_language: {
-            language: currentLanguage
-          }
-        }
-      };
-      this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+      this.setClientContextStorage(task, caseId, eventId, userId);
       return true;
     }
-  }
-
-  private removeTaskFromSessionStorage(): void {
-    this.sessionStorageService.removeItem(EventStartGuard.CLIENT_CONTEXT);
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
-        // Store task to session
-        const taskEventCompletionInfo: TaskEventCompletionInfo = {
-          caseId: caseId,
-          eventId: eventId,
-          userId: userId,
-          taskId: task.id,
-          createdTimestamp: Date.now()
-        };
-        const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
-        const storeClientContext = {
-          client_context: {
-            user_task: {
-              task_data: task,
-              complete_task: true
-            },
-            user_language: {
-              language: currentLanguage
-            }
-          }
-        };
-        this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-        this.sessionStorageService.setItem(EventStartGuard.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+        this.setClientContextStorage(task, caseId, eventId, userId);
       } else {
-        this.removeTaskFromSessionStorage();
+        removeTaskFromClientContext(this.sessionStorageService);
       }
     }
     if (payload.task_required_for_event) {
@@ -167,7 +129,33 @@ export class EventStartGuard implements CanActivate {
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
-      return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
+      return of(this.checkTaskInEventNotRequired(payload, caseId, taskId, eventId, userId));
     }
+  }
+
+  // EXUI-2743 - Make taskEventCompletionInfo always available in session storage with client context
+  private setClientContextStorage(task: Task, caseId: string, eventId: string, userId: string): void {
+    // Store task to session
+    const taskEventCompletionInfo: TaskEventCompletionInfo = {
+      caseId: caseId,
+      eventId: eventId,
+      userId: userId,
+      taskId: task.id,
+      createdTimestamp: Date.now()
+    };
+    const currentLanguage = this.cookieService.getCookie('exui-preferred-language');
+    const storeClientContext = {
+      client_context: {
+        user_task: {
+          task_data: task,
+          complete_task: true
+        },
+        user_language: {
+          language: currentLanguage
+        }
+      }
+    };
+    this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
+    this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
   }
 }

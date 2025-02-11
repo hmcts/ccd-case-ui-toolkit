@@ -9,6 +9,7 @@ import { HttpErrorService, HttpService } from '../http';
 import { CaseFileViewService } from './case-file-view.service';
 
 import createSpyObj = jasmine.createSpyObj;
+import { LoadingService } from '../loading';
 
 describe('Case File View service', () => {
   const categoriesAndDocumentsUrl = '/categoriesAndDocuments';
@@ -93,7 +94,8 @@ describe('Case File View service', () => {
         HttpService,
         HttpErrorService,
         { provide: AbstractAppConfig, useValue: appConfig },
-        { provide: AuthService, useValue: authService }
+        { provide: AuthService, useValue: authService },
+        LoadingService
       ]
     });
     // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9

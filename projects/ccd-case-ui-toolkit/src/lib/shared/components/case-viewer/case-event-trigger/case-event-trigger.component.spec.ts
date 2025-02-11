@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, FieldsUtils, SessionStorageService } from '../../../services';
+import { ActivityPollingService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -130,6 +130,7 @@ describe('CaseEventTriggerComponent', () => {
   let alertService: any;
   let caseNotifier: any;
   let casesService: any;
+  let loadingService: any;
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
@@ -137,6 +138,7 @@ describe('CaseEventTriggerComponent', () => {
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
+    loadingService = new LoadingService();
     casesService.createEvent.and.returnValue(of(true));
     casesService.validateCase.and.returnValue(of(true));
 
@@ -178,7 +180,8 @@ describe('CaseEventTriggerComponent', () => {
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivityPollingService, useValue: activityPollingService },
-          { provide: SessionStorageService, useValue: sessionStorageService }
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: LoadingService, useValue: loadingService }
         ]
       })
       .compileComponents();
@@ -371,5 +374,13 @@ describe('CaseEventTriggerComponent', () => {
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
+  });
+
+  it('should call unregisterStoredSpinner if there is a stored spinnter', () => {
+    spyOn(loadingService, 'hasSharedSpinner').and.returnValue(true);
+    spyOn(loadingService, 'unregisterSharedSpinner');
+    component.ngOnInit();
+    expect(loadingService.hasSharedSpinner).toBeTruthy();
+    expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   });
 });

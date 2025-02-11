@@ -57,6 +57,13 @@ describe('LoadingService', () => {
     }, 1);
   }));
 
+  it('should delete stored spinner token and return observable of false', waitForAsync(() => {
+    const token = loadingService.register();
+    loadingService.addSharedSpinner(token);
+    loadingService.unregisterSharedSpinner();
+    expect(loadingService.hasSharedSpinner()).toBeFalsy();
+  }));
+
   afterEach(() => {
     if (subscription) {
       subscription.unsubscribe();

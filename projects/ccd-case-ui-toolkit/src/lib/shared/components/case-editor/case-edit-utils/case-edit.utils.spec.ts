@@ -1,4 +1,5 @@
-import { CaseEditUtils, convertNonASCIICharacter } from "./case-edit.utils";
+import { SessionStorageService } from "../../../services";
+import { CaseEditUtils, convertNonASCIICharacter, removeTaskFromClientContext } from "./case-edit.utils";
 
 describe('CaseEditUtils', () => {
   const caseUtils: CaseEditUtils = new CaseEditUtils();
@@ -58,6 +59,36 @@ describe('CaseEditUtils', () => {
     it('should revert relevant strings', () => {
       const response = caseUtils.convertHTMLEntities(LONG_POST_STRING);
       expect(response).toEqual(LONG_PRE_STRING);
+    });
+  });
+
+  describe('removeTaskFromClientContext', () => {
+    const fullMockClientContext = { client_context: { user_task: 'task', user_language: 'language' } };
+    const partialMockClientContext = { client_context: { user_language: 'language' } };
+
+    let mockSessionStorageService;
+
+    beforeEach(() => {
+      mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+    })
+
+    it('should correctly remove task from client context', () => {
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(fullMockClientContext));
+      removeTaskFromClientContext(mockSessionStorageService);
+      expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(partialMockClientContext));
+    });
+
+    it('should do nothing if there is no session storage service', () => {
+      removeTaskFromClientContext(null);
+      mockSessionStorageService.getItem.and.returnValue(null);
+      removeTaskFromClientContext(mockSessionStorageService);
+      expect(mockSessionStorageService.setItem).not.toHaveBeenCalled();
+    });
+
+    it('should do nothing if there is no user_task', () => {
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(partialMockClientContext));
+      removeTaskFromClientContext(mockSessionStorageService);
+      expect(mockSessionStorageService.setItem).not.toHaveBeenCalled();
     });
   });
 
