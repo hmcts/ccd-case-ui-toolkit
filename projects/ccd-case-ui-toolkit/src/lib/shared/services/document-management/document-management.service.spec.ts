@@ -6,6 +6,7 @@ import { AbstractAppConfig } from '../../../app.config';
 import { CaseField, DocumentData, FieldType } from '../../domain';
 import { HttpService } from '../http';
 import { DocumentManagementService } from './document-management.service';
+import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
 
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
@@ -15,23 +16,25 @@ describe('DocumentManagementService', () => {
 
   let appConfig: any;
   let httpService: any;
-
+  let caseNotifier: any;
   let documentManagementService: DocumentManagementService;
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
-      'getAnnotationApiUrl', 'getDocumentSecureMode'
+      'getAnnotationApiUrl', 'getDocumentSecureMode', 'getDocumentSecureModeCaseTypeExclusions', 'getDocumentManagementUrlV2'
     ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
     appConfig.getRemoteHrsUrl.and.returnValue(REMOTE_HRS_URL);
     appConfig.getHrsUrl.and.returnValue(HRS_URL);
     appConfig.getDocumentSecureMode.and.returnValue(false);
-
+    appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue('');
+    caseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['caseView']);
     httpService = createSpyObj<HttpService>('httpService', ['post']);
-    documentManagementService = new DocumentManagementService(httpService, appConfig);
+    caseNotifier.caseView = of({ case_type: { id: 'test' } });
+    documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
   }));
 
   describe('uploadFile', () => {
@@ -82,6 +85,65 @@ describe('DocumentManagementService', () => {
           expect(documentMetadata).toEqual(RESPONSE);
         });
     }));
+  });
+
+  describe('getDocStoreUrl', () => {
+    const CASE_TYPE_ID = 'caseType1';
+    const EXCLUDED_CASE_TYPE_ID = 'excludedCaseType';
+    const EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES = 'excludedCaseType,excludedCaseType2';
+    const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/documents';
+    const DOCUMENT_MANAGEMENT_URL_V2 = 'https://www.example.com/documents/v2';
+
+    beforeEach(() => {
+      caseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['caseView']);
+      appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
+      appConfig.getDocumentManagementUrlV2.and.returnValue(DOCUMENT_MANAGEMENT_URL_V2);
+    });
+
+    it('should return DocumentManagementUrlV2 when document secure mode is enabled and case type is not in exclusion list', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(EXCLUDED_CASE_TYPE_ID);
+      caseNotifier.caseView = of({ case_type: { id: CASE_TYPE_ID } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
+    });
+
+    it('should return DocumentManagementUrl when document secure mode is enabled and case type is in exclusion list', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(EXCLUDED_CASE_TYPE_ID);
+      caseNotifier.caseView = of({ case_type: { id: EXCLUDED_CASE_TYPE_ID } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
+    });
+
+    it('should return DocumentManagementUrl when document secure mode is disabled', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(false);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(EXCLUDED_CASE_TYPE_ID);
+      caseNotifier.caseView = of({ case_type: { id: CASE_TYPE_ID } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
+    });
+
+    it('should return DocumentManagementUrlV2 when exclusions contains multiple values and file is not excluded', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
+      caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType3' } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
+    });
+
+    it('should return DocumentManagementUrl when exclusions contains multiple values and file is excluded', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
+      caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType2' } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
+    });
   });
 
   describe('Media viewer', () => {
