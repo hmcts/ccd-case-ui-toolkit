@@ -34,10 +34,13 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
         this.linkedCasesService.initialCaseLinkRefs.push(item.id);
       });
     } else {
-      this.linkedCasesService.linkedCases.forEach((item) => {
-        this.linkedCasesService.initialCaseLinkRefs.push(item.caseReference);
-      });
-      this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
+      //prevent unsubmitted linked cases from being applied as if they are the initial linked cases
+      if (!this.linkedCasesService.hasContinuedFromStart){
+        this.linkedCasesService.linkedCases.forEach((item) => {
+          this.linkedCasesService.initialCaseLinkRefs.push(item.caseReference);
+        });
+        this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
+      }
     }
   }
 
