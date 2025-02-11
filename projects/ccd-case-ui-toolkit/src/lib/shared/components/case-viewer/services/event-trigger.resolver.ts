@@ -28,7 +28,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     private router: Router,
     private appConfig: AbstractAppConfig,
     private errorNotifier: ErrorNotifierService,
-    private loadingService: LoadingService
+    private readonly loadingService: LoadingService
     ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {

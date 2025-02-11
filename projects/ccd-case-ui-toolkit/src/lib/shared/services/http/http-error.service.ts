@@ -10,7 +10,7 @@ import { LoadingService } from '../loading';
 export class HttpErrorService {
 
   constructor(private readonly authService: AuthService,
-        private loadingService: LoadingService
+        private readonly loadingService: LoadingService
   ) {}
 
   private static readonly CONTENT_TYPE = 'Content-Type';

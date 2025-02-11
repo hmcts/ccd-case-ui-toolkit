@@ -32,7 +32,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService,
-    private loadingService: LoadingService
+    private readonly loadingService: LoadingService
   ) {
   }
 
