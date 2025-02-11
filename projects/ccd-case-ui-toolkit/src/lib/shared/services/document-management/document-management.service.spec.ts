@@ -89,6 +89,7 @@ describe('DocumentManagementService', () => {
 
   describe('getDocStoreUrl', () => {
     const CASE_TYPE_ID = 'caseType1';
+    const NO_EXCLUDED_CASE_TYPE_ID = '';
     const EXCLUDED_CASE_TYPE_ID = 'excludedCaseType';
     const EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES = 'excludedCaseType,excludedCaseType2';
     const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/documents';
@@ -143,6 +144,15 @@ describe('DocumentManagementService', () => {
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
+    });
+
+    it('should handle when there is no files in exclusion list', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getDocumentSecureModeCaseTypeExclusions.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
+      caseNotifier.caseView = of({ case_type: { id: 'caseType2' } });
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
   });
 
