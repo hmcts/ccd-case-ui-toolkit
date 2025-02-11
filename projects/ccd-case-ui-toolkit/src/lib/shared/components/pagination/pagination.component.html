@@ -5,7 +5,7 @@
       [class.responsive]="responsive" *ngIf="!(autoHide && p.pages.length <= 1)">
       <li class="pagination-previous" [class.disabled]="p.isFirstPage()" *ngIf="directionLinks">
         <a tabindex="0" *ngIf="1 < p.getCurrent()" (keyup.enter)="p.previous()" (click)="p.previous()"
-          [attr.aria-label]="previousLabel + ' page' | rpxTranslate">
+          [attr.aria-label]="previousLabel + ' ' + screenReaderPageLabel | rpxTranslate">
           {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
         </a>
         <span *ngIf="p.isFirstPage()" [attr.aria-label]="previousLabel + ' page' | rpxTranslate">
@@ -29,7 +29,7 @@
       </li>
       <li class="pagination-next" [class.disabled]="p.isLastPage()" *ngIf="directionLinks">
         <a tabindex="0" *ngIf="!p.isLastPage()" (keyup.enter)="p.next()" (click)="p.next()"
-          [attr.aria-label]="nextLabel + ' page' | rpxTranslate">
+          [attr.aria-label]="nextLabel + ' ' + screenReaderPageLabel | rpxTranslate">
           {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
         </a>
         <span *ngIf="p.isLastPage()">
