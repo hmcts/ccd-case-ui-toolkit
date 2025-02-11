@@ -60,13 +60,7 @@
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
-        <ng-container *ngFor="let tab of sortedTabs; let curIdx=index">
-          <ng-container *ngIf="isFirst; else notFirstTab">
-            <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate">
-          </ng-container>
-          <ng-container id="notFirstTab">
-            <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate">
-          </ng-container>    
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate"  isFirst ? [aria-label]="'To use tabbed navigation, please use left and right arrow keys' | rpxTranslate" : undefined>
             <ng-template matTabContent>
               <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
                 <tbody>
@@ -103,8 +97,7 @@
                 </tbody>
               </table>
             </ng-template>
-          </mat-tab>
-        </ng-container>
+        </mat-tab>
         <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
       </mat-tab-group>
