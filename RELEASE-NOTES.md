@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.37-exui-2789-rc1
+**EXUI-2789** ccpay-upgrade
+
 ### Version 7.1.37
 **EXUI-2766** User getting error when upload valid file
 
