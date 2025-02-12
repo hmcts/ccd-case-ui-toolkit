@@ -106,7 +106,8 @@ export class DocumentManagementService {
   private getDocStoreUrl(): string {
     let docStoreUrl = '';
     this.caseNotifierService.caseView.subscribe((caseDetails) => {
-      const caseType = caseDetails.case_type.id;
+      console.log(caseDetails);
+      const caseType = caseDetails?.case_type?.id;
       const documentSecureModeCaseTypeExclusions = this.appConfig.getDocumentSecureModeCaseTypeExclusions()?.split(',');
       const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(caseType);
       const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
