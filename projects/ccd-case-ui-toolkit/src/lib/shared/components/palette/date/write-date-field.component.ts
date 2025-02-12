@@ -19,6 +19,6 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
   }
 
   public getId() {
-    return this.caseField.getPath();
+    return this.caseField.getHierachicalId();
   }
 }

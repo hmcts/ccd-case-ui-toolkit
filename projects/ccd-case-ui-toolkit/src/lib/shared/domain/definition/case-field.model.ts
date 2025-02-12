@@ -171,11 +171,11 @@ export class CaseField implements Orderable {
 
   // Ascend the hierarchy to get the full path of the field
   @Expose()
-  public getPath(curr?: string): string {
-    const prefix = curr ? curr + "_" : "";
+  public getHierachicalId(curr?: string): string {
+    const prefix: string = curr ? curr + "_" : "";
     if (prefix.length < 1024) {
       if (this.parent) {
-        this.parent.getPath(prefix + this.id);
+        return this.parent.getHierachicalId(prefix + this.id);
       } else {
         return prefix + this.id;
       }
