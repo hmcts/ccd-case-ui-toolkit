@@ -18,8 +18,7 @@ export class WriteDateFieldComponent extends AbstractFieldWriteComponent impleme
     return this.caseField.field_type.id === 'DateTime';
   }
 
-  public getPrefix() {
-    return this.caseField.getPath(`${this.id}`);
+  public getId() {
+    return this.caseField.getPath();
   }
-
 }

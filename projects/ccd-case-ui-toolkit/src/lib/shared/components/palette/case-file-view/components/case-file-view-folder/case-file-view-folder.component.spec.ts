@@ -96,10 +96,10 @@ describe('CaseFileViewFolderComponent', () => {
         DatePipe
       ],
       providers: [
-        { provide: WindowService, useValue: mockWindowService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
         { provide: AbstractAppConfig, useValue: mockAppConfig },
-        FormatTranslatorService
+        FormatTranslatorService,
+        WindowService
       ]
     }).compileComponents();
 

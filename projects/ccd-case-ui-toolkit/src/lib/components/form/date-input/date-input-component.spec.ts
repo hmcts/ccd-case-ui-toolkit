@@ -201,56 +201,50 @@ describe('Date input component', () => {
 
     it('should return the correct dayId when id includes "Date"', () => {
       component.id = 'startDate';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.dayId();
-  
-      expect(result).toBe('prefix-startDate-day');
+
+      expect(result).toBe('startDate-day');
     });
-  
+
     it('should return the correct dayId when id does not include "Date"', () => {
       component.id = 'start';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.dayId();
-  
-      expect(result).toBe('prefix-startDate-day');
+
+      expect(result).toBe('start-day');
     });
 
     it('should return the correct monthId when id includes "Date"', () => {
       component.id = 'startDate';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.monthId();
-  
-      expect(result).toBe('prefix-startDate-month');
+
+      expect(result).toBe('startDate-month');
     });
-  
+
     it('should return the correct monthId when id does not include "Date"', () => {
       component.id = 'start';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.monthId();
-  
-      expect(result).toBe('prefix-startDate-month');
+
+      expect(result).toBe('start-month');
     });
 
     it('should return the correct yearId when id includes "Date"', () => {
       component.id = 'startDate';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.yearId();
-  
-      expect(result).toBe('prefix-startDate-year');
+
+      expect(result).toBe('startDate-year');
     });
-  
+
     it('should return the correct yearId when id does not include "Date"', () => {
       component.id = 'start';
-      component.labelPrefix = 'prefix-';
-  
+
       const result = component.yearId();
-  
-      expect(result).toBe('prefix-startDate-year');
+
+      expect(result).toBe('start-year');
     });
   });
 });

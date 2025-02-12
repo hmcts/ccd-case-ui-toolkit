@@ -169,11 +169,18 @@ export class CaseField implements Orderable {
       return null;
   }
 
+  // Ascend the hierarchy to get the full path of the field
   @Expose()
-  public getPath(curr: string): string {
-    if (this.parent) {
-      this.parent.getPath(curr + '_' + this.id );
+  public getPath(curr?: string): string {
+    const prefix = curr ? curr + "_" : "";
+    if (prefix.length < 1024) {
+      if (this.parent) {
+        this.parent.getPath(prefix + this.id);
+      } else {
+        return prefix + this.id;
+      }
     } else {
+      console.log("Path too long, possible circular reference in case field hierarchy");
       return this.id;
     }
   }

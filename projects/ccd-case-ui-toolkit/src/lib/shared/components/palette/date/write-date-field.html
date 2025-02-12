@@ -8,8 +8,7 @@
     <span class="error-message" *ngIf="dateControl && dateControl.errors && (dateControl.dirty || dateControl.touched)">
       {{(dateControl.errors | ccdFirstError:caseField.label)}}
     </span>
-    <cut-date-input [id]="id()"
-                    [labelPrefix]="getPrefix()"
+    <cut-date-input [id]="getId()"
                     [isDateTime]="isDateTime()"
                     [mandatory]="caseField | ccdIsMandatory"
                     [isInvalid]="dateControl.errors && (dateControl.dirty || dateControl.touched)"
