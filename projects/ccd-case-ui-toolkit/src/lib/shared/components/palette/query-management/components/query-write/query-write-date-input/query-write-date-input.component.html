@@ -24,7 +24,7 @@
       <label class="govuk-label govuk-date-input__label" [for]="formControlName + '-year'">
         {{ 'Year' | rpxTranslate }}
       </label>
-      <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="formControlName + '-year'"
+      <input class="govuk-input govuk-date-input__input govuk-input--width-4" [id]="formControlName + '-year'"
              [name]="formControlName + '-year'" type="text" inputmode="numeric" maxlength="4"
              [(ngModel)]="year" (input)="updateDate()" [disabled]="disabled">
     </div>
