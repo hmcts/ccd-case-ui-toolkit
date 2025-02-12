@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.37
+**EXUI-2766** User getting error when upload valid file
+
 ### Version 7.1.36
 **EXUI-1562** accessibility issue
 
