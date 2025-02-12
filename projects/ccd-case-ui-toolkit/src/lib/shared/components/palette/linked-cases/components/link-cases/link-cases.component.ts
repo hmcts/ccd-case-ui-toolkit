@@ -127,14 +127,14 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     }
     const caseNumber = this.linkCaseForm.value.caseNumber;
     return !!linkedCases.find(
-      (caseLink) => caseLink.caseReference.split('-').join('') === caseNumber.split('-').join('')
+      (caseLink) => caseLink.caseReference.split('-').join('').trim() === caseNumber.split('-').join('').trim()
     );
   }
 
   public isCaseInInitial(proposedCaseLink: string){
     if (proposedCaseLink){
       // initial case links will not have - in them, account for the case where a user may type with -
-      proposedCaseLink = proposedCaseLink.replace(/-/g, '');
+      proposedCaseLink = proposedCaseLink.replace(/-/g, '').trim();
       const initialCaseLinks = this.linkedCasesService.initialCaseLinkRefs || [];
       return initialCaseLinks.includes(proposedCaseLink);
     }
@@ -142,7 +142,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
   }
 
   private isCaseSelectedSameAsCurrentCase(): boolean {
-    return this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('');
+    return this.linkCaseForm.value.caseNumber.split('-').join('').trim() === this.linkedCasesService.caseId.split('-').join('').trim();
   }
 
   private isOtherOptionSelectedButOtherDescriptionNotEntered(): boolean {
@@ -209,7 +209,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
         fieldId: 'caseNumber'
       });
     }
-    if (this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('')) {
+    if (this.linkCaseForm.value.caseNumber.split('-').join('').trim() === this.linkedCasesService.caseId.split('-').join('').trim()) {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.ProposedCaseWithIn,
@@ -221,7 +221,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
   }
 
   public getCaseInfo(): void {
-    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '');
+    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '').trim();
     this.casesService
       .getCaseViewV2(caseNumberData)
       .subscribe(
