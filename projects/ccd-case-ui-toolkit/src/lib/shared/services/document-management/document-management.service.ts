@@ -107,8 +107,8 @@ export class DocumentManagementService {
     let docStoreUrl = '';
     this.caseNotifierService.caseView.subscribe((caseDetails) => {
       const caseType = caseDetails.case_type.id;
-      const documentSecureModeCaseTypeExclusions = this.appConfig.getDocumentSecureModeCaseTypeExclusions().split(',');
-      const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions.includes(caseType);
+      const documentSecureModeCaseTypeExclusions = this.appConfig.getDocumentSecureModeCaseTypeExclusions()?.split(',');
+      const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(caseType);
       const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
       docStoreUrl = (documentSecureModeEnabled && !isDocumentOnExclusionList) ? this.appConfig.getDocumentManagementUrlV2() : this.appConfig.getDocumentManagementUrl();
     }).unsubscribe();
