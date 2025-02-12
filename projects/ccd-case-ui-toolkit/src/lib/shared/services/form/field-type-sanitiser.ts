@@ -84,9 +84,7 @@ export class FieldTypeSanitiser {
   }
 
   public updatePrimitiveValue(formattedValue: any, key: string, dataValue: any): void {
-    if (!formattedValue[key]) {
-      formattedValue[key] = dataValue;
-    } else if (formattedValue[key] !== dataValue) {
+    if ((!formattedValue[key]) || (formattedValue[key] !== dataValue)) {
       formattedValue[key] = dataValue;
     }
   }

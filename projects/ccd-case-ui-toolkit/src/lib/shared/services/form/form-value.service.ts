@@ -302,15 +302,13 @@ export class FormValueService {
     for (const field in data) {
       const fieldId = data[field].id;
       if (Array.isArray(caseField.data[fieldId])) {
-        for (const subField in caseField.data[fieldId]){
-          if (caseField.data[fieldId][subField] !== data[field].formatted_value[subField]){
+        for (const subField in caseField.data[fieldId]) {
+          if (caseField.data[fieldId][subField] !== data[field].formatted_value[subField]) {
             caseField.data[fieldId][subField] = data[field].formatted_value[subField];
           }
         }
-      } else {
-        if (caseField.data[fieldId] !== data[field].formatted_value){
-          caseField.data[fieldId] = data[field].formatted_value;
-        }
+      } else if (caseField.data[fieldId] !== data[field].formatted_value) {
+        caseField.data[fieldId] = data[field].formatted_value;
       }
     }
     return caseField;
