@@ -3,18 +3,21 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagState, Language } from '../../domain';
 import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from "../../../../../services";
+
 
 @Component({
   selector: 'ccd-search-language-interpreter',
   templateUrl: './search-language-interpreter.component.html',
   styleUrls: ['./search-language-interpreter.component.scss']
 })
-export class SearchLanguageInterpreterComponent implements OnInit {
+export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent implements OnInit, Journey {
   public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
     return SearchLanguageInterpreterStep;
   }
@@ -43,7 +46,10 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
 
-  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
+  constructor(private readonly rpxTranslationService: RpxTranslationService, 
+    multipageComponentStateService: MultipageComponentStateService) { 
+    super(multipageComponentStateService);
+  }
 
   public ngOnInit(): void {
     this.searchLanguageInterpreterHint = this.flagType.flagCode === this.signLanguageFlagCode
@@ -149,5 +155,13 @@ export class SearchLanguageInterpreterComponent implements OnInit {
         !language.value_cy && language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
         !language.value && language.value_cy.toLowerCase().includes(searchTerm.toLowerCase(), 0))
       : [];
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }
