@@ -15,6 +15,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,18 +27,30 @@ jobs:
       - run: yarn test:audit
       - run: yarn lint
       - run: yarn build
-      - run: yarn test
       - name: Create code coverage report
-        run: yarn test:coverage
+        run: yarn test
       - name: Change Report Path
         run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: code-coverage-report
           path: coverage
 
+  release-build:
+    if: startsWith(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: corepack enable && yarn --version
+      - run: yarn install
+      - run: yarn build
+
   sonarcloud:
+    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
     needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
@@ -48,12 +61,12 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name: Download code coverage results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: code-coverage-report
           path: coverage
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@v4.0.0
+        uses: SonarSource/sonarqube-scan-action@v4.2.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -68,7 +81,7 @@ jobs:
 
   publish-npm:
     if: startsWith(github.ref, 'refs/tags')
-    needs: sonarcloud
+    needs: release-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +99,7 @@ jobs:
 
   publish-gpr:
     if: startsWith(github.ref, 'refs/tags')
-    needs: sonarcloud
+    needs: release-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
