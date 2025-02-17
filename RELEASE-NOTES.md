@@ -6,6 +6,9 @@
 **EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
 **EXUI-2743** Check Application Task is supposed to AutoClose
 
+### Version 7.1.37
+**EXUI-2766** User getting error when upload valid file
+
 ### Version 7.1.36
 **EXUI-1562** accessibility issue
 
