@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.39
+**EXUI-123** test commit
+
 ### Version 7.1.37
 **EXUI-2766** User getting error when upload valid file
 
