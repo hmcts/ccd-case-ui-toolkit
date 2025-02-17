@@ -99,7 +99,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
     private readonly rpxTranslationPipe: RpxTranslatePipe,
-    private loadingService: LoadingService
+    private readonly loadingService: LoadingService
   ) {
   }
 
