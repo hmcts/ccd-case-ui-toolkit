@@ -52,4 +52,9 @@ export class PaginationComponent {
   public set responsive(value: boolean) {
     this.pResponsive = coerceToBoolean(value);
   }
+
+  public getSrLabel(prefix: string): string {
+    let labelToRead = this.screenReaderPageLabel !== 'page' ? 'page' : this.screenReaderPageLabel;
+    return `${prefix} ${labelToRead}`;
+  }
 }
