@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from "@angular/core";
-import { AbstractAppConfig } from "../../../../../../../app.config";
-import { CaseFileViewOverlayMenuItem } from "../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model";
+import { Component, EventEmitter, Output } from '@angular/core';
+import { AbstractAppConfig } from '../../../../../../../app.config';
+import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
 
 @Component({
   selector: "ccd-case-file-view-folder-toggle",
