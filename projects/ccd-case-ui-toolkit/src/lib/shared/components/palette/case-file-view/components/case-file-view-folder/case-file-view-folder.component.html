@@ -1,7 +1,9 @@
 <div class="document-filter-container">
   <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
-    <input class="form-control document-search" 
-      type="search" id="document-search" 
+    <input 
+      class="form-control document-search" 
+      type="search" 
+      id="document-search" 
       name="documentSearchFormControl"
       formControlName="documentSearchFormControl" 
       placeholder="Search by document name"
@@ -64,7 +66,10 @@
         </button>
       </cdk-nested-tree-node>
       <!-- folder-->
-      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">
+      <cdk-nested-tree-node 
+        class="document-tree-container__node document-tree-container__folder" 
+        *cdkTreeNodeDef="let node; when: nestedChildren"
+      >
         <button class="node" cdkTreeNodeToggle>
           <div class="node__icon" [attr.aria-label]="'toggle ' + node.name">
             <img class="node__iconImg" 
@@ -76,7 +81,6 @@
           </div>
           <span class="node__name node__name--folder">{{ node.name }}</span>
         </button>
-
         <div [class.document-tree-invisible]="!nestedTreeControl.isExpanded(node)">
           <ng-container cdkTreeNodeOutlet></ng-container>
         </div>
