@@ -9,7 +9,7 @@
 }
 
 .document-filter-container {
-  border-bottom: 2px solid #c9c9c9;
+  border-bottom: 2px solid #C9C9C9;
 
   .document-filter {
     padding: 10px;
@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #c9c9c9;
+  border-bottom: 2px solid #C9C9C9;
   padding: 10px;
 
   &__title {
@@ -87,11 +87,11 @@
   }
 
   &::-webkit-scrollbar-track-piece {
-    background: #eee;
+    background: #EEE;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: #CCC;
   }
 }
 
@@ -99,7 +99,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #c9c9c9;
+  border-bottom: 2px solid #C9C9C9;
   padding: 10px;
 
   &__title {
@@ -118,7 +118,7 @@
   white-space: nowrap;
 
   &--selected {
-    background: #fff2cc;
+    background: #FFF2CC;
   }
 
   &__icon {
@@ -127,7 +127,7 @@
   }
 
   &__count {
-    color: #fff;
+    color: #FFF;
     position: absolute;
     top: 50%;
     left: 50%;
