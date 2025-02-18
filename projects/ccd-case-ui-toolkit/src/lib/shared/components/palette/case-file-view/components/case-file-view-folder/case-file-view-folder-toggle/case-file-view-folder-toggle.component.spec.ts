@@ -1,8 +1,8 @@
-import { OverlayModule } from "@angular/cdk/overlay";
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { AbstractAppConfig } from "../../../../../../../app.config";
-import { CaseFileViewOverlayMenuComponent } from "../../shared";
-import { CaseFileViewFolderToggleComponent } from "./case-file-view-folder-toggle.component";
+import { OverlayModule } from '@angular/cdk/overlay';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { AbstractAppConfig } from '../../../../../../../app.config';
+import { CaseFileViewOverlayMenuComponent } from '../../shared';
+import { CaseFileViewFolderToggleComponent } from './case-file-view-folder-toggle.component';
 import { WindowService } from '../../../../../../services';
 
 describe("CaseFileViewFolderToggleComponent", () => {
