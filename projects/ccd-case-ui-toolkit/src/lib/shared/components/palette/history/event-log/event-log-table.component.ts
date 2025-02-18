@@ -75,7 +75,10 @@ export class EventLogTableComponent implements OnInit {
     return `you are on event ${event.event_name} row, press tab key to navigate to columns`;
   }
 
-  public getAriaLabelforLink(event: CaseViewEvent): string {
+  public getAriaLabelforLink(event: CaseViewEvent, isExternalUser: boolean): string {
+    if (isExternalUser) {
+      return `${event.event_name}`;
+    }
     return `press enter key to open event ${event.event_name} link in separate window`;
   }
 }
