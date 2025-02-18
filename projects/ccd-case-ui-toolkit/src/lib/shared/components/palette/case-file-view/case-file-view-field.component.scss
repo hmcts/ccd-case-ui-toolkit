@@ -26,4 +26,15 @@
     flex: 1 1 0;
     overflow: hidden;
   }
+
+  ::ng-deep .comments-panel {
+    margin-top: 2.9rem !important;
+  }
+
+  @media (max-width: 1200px) {
+    ::ng-deep .comments-panel {
+      margin-top: 5rem !important;
+    }
+  }
+
 }
