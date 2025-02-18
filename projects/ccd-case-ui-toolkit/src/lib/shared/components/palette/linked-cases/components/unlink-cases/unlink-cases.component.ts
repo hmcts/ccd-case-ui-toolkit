@@ -93,6 +93,9 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
         searchCases.forEach((response: CaseView) => {
           const linkedCaseFromList = this.linkedCases.find((linkedCase) => {
             const caseRefToUse = this.getLinkedCaseId(linkedCase);
+            if (this.linkedCasesService.casesToUnlink.indexOf(caseRefToUse) > -1) {
+              linkedCase.unlink = true;
+            }
             return caseRefToUse === response.case_id;
           });
           if (linkedCaseFromList) {
@@ -147,6 +150,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
     const selectedCase = this.linkedCases.find((linkedCase) => linkedCase.caseReference === caseSelected.value);
     if (selectedCase) {
       selectedCase.unlink = caseSelected.checked ? true : false;
+      caseSelected.checked ? this.linkedCasesService.casesToUnlink.push(selectedCase.caseReference) : this.linkedCasesService.casesToUnlink = this.linkedCasesService.casesToUnlink.filter((caseRef) => caseRef !== selectedCase.caseReference);
     }
   }
 

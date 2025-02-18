@@ -31,6 +31,7 @@ export class LinkedCasesService {
   public hasContinuedFromStart = false;
   public cachedFieldValues;
   public initialCaseLinkRefs = [];
+  public casesToUnlink = [];
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {
@@ -70,6 +71,7 @@ export class LinkedCasesService {
     this.hasNavigatedInJourney = false;
     this.caseDetails = null;
     this.hasContinuedFromStart = false;
+    this.casesToUnlink = [];
   }
 
   public mapResponse(esSearchCasesResponse): any {
