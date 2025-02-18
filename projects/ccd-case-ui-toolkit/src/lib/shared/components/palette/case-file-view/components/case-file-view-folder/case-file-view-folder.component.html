@@ -11,10 +11,14 @@
     Documents ({{ documentCount }})
   </div>
   <div class="document-folders-header__flex">
-    <ccd-case-file-view-folder-toggle (expandAll)="expandAll($event)"
-      (collapseAll)="collapseAll($event)"></ccd-case-file-view-folder-toggle>
-    <ccd-case-file-view-folder-sort (sortAscending)="sortDataSourceAscending($event)"
-      (sortDescending)="sortDataSourceDescending($event)"></ccd-case-file-view-folder-sort>
+    <ccd-case-file-view-folder-toggle 
+      (expandAll)="expandAll($event)"
+      (collapseAll)="collapseAll($event)">
+    </ccd-case-file-view-folder-toggle>
+    <ccd-case-file-view-folder-sort 
+      (sortAscending)="sortDataSourceAscending($event)"
+      (sortDescending)="sortDataSourceDescending($event)">
+    </ccd-case-file-view-folder-sort>
   </div>
 </div>
 
@@ -25,13 +29,13 @@
   <div>
     <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
       <!-- document -->
-      <cdk-nested-tree-node class="
-          document-tree-container__node document-tree-container__node--document
-        " *cdkTreeNodeDef="let node">
+      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__node--document" 
+          *cdkTreeNodeDef="let node">
         <button class="node" (click)="selectedNodeItem = node; clickedDocument.emit(node)"
           [class.node--selected]="selectedNodeItem?.name === node.name">
           <div class="node__icon" disabled>
-            <img src="/assets/img/case-file-view/case-file-view-document.svg" class="node__iconImg"
+            <img src="/assets/img/case-file-view/case-file-view-document.svg" 
+              class="node__iconImg"
               alt="Document icon" />
           </div>
           <span class="node__name node-name-document">
@@ -42,22 +46,22 @@
               }}</span>
           </span>
           <div class="node__document-options">
-            <ccd-case-file-view-folder-document-actions
-              (changeFolderAction)="triggerDocumentAction('changeFolder', node)" (openInANewTabAction)="
-                triggerDocumentAction('openInANewTab', node)
-              " (downloadAction)="triggerDocumentAction('download', node)"
-              (printAction)="triggerDocumentAction('print', node)" [allowMoving]="allowMoving">
+            <ccd-case-file-view-folder-document-actions 
+                (changeFolderAction)="triggerDocumentAction('changeFolder', node)" 
+                (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)" 
+                (downloadAction)="triggerDocumentAction('download', node)" 
+                (printAction)="triggerDocumentAction('print', node)" 
+                [allowMoving]="allowMoving">
             </ccd-case-file-view-folder-document-actions>
           </div>
         </button>
       </cdk-nested-tree-node>
       <!-- folder-->
-      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder"
-        *cdkTreeNodeDef="let node; when: nestedChildren">
+      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">
         <button class="node" cdkTreeNodeToggle>
           <div class="node__icon" [attr.aria-label]="'toggle ' + node.name">
-            <img class="node__iconImg" [src]="
-                nestedTreeControl.isExpanded(node)
+            <img class="node__iconImg" 
+                [src]="nestedTreeControl.isExpanded(node)
                   ? '/assets/images/folder-open.png'
                   : '/assets/images/folder.png'
               " alt="Folder icon" />
