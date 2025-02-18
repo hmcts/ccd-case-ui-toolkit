@@ -336,7 +336,7 @@ describe('PaginationComponent:', () => {
 
       const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(expected);
-      expect(prevA.getAttribute('aria-label')).toBe(expected);
+      expect(prevA.getAttribute('aria-label')).toBe('Previous page');
     }));
 
     it('nextLabel should bind in correct locations', fakeAsync(() => {
@@ -352,7 +352,7 @@ describe('PaginationComponent:', () => {
 
       const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(expected);
-      expect(nextA.getAttribute('aria-label')).toBe(expected);
+      expect(nextA.getAttribute('aria-label')).toBe('Next page');
 
       instance.config.currentPage = 10;
       fixture.detectChanges();
