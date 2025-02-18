@@ -116,6 +116,7 @@ describe('UnLinkCasesComponent', () => {
     getAllLinkedCaseInformation() { },
     getCaseName() { },
     caseFieldValue: [],
+    casesToUnlink: []
   };
 
   beforeEach(waitForAsync(() => {
