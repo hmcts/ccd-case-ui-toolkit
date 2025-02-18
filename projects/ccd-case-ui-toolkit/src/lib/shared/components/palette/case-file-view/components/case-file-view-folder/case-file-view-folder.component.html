@@ -32,11 +32,9 @@
   <div>
     <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
       <!-- document -->
-      <cdk-nested-tree-node 
-        class="document-tree-container__node document-tree-container__node--document" 
-        *cdkTreeNodeDef="let node"
-      >
-        <button class="node" 
+      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__node--document" *cdkTreeNodeDef="let node">
+        <button 
+          class="node" 
           (click)="selectedNodeItem = node; clickedDocument.emit(node)" 
           [class.node--selected]="selectedNodeItem?.name === node.name"
         >
@@ -66,10 +64,7 @@
         </button>
       </cdk-nested-tree-node>
       <!-- folder-->
-      <cdk-nested-tree-node 
-        class="document-tree-container__node document-tree-container__folder" 
-        *cdkTreeNodeDef="let node; when: nestedChildren"
-      >
+      <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">
         <button class="node" cdkTreeNodeToggle>
           <div class="node__icon" [attr.aria-label]="'toggle ' + node.name">
             <img class="node__iconImg" 
