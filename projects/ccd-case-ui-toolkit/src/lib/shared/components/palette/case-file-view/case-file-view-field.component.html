@@ -24,11 +24,12 @@
   <div class="govuk-form-group" id="case-file-view">
     <!-- Document tree -->
     <div class="document-tree-container">
-      <ccd-case-file-view-folder class="document-tree-container__tree"
-                    [categoriesAndDocuments]="categoriesAndDocuments$"
-                    (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()" 
-                    (moveDocument)="moveDocument($event)"
-                    [allowMoving]="allowMoving">
+      <ccd-case-file-view-folder 
+          class="document-tree-container__tree"
+          [categoriesAndDocuments]="categoriesAndDocuments$"
+          (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()" 
+          (moveDocument)="moveDocument($event)"
+          [allowMoving]="allowMoving">
       </ccd-case-file-view-folder>
     </div>
     <!-- Slider -->
