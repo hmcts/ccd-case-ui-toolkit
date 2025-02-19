@@ -11,7 +11,9 @@
         <span class="text-16">{{columnsAllLabels[heading].label | rpxTranslate}}</span>
         <a href="javascript:void(0)"
            (click)="sortRowsByColumns(heading)"
+           (keyup.enter)="sortRowsByColumns(heading)"
            class="sort-widget"
+           aria-label="{{'Sort ' + heading | rpxTranslate}}"
            [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
       </th>
       <th></th>
