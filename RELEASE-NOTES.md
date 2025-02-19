@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.1.36-rc1
+### Version 7.1.38
 **EXUI-2104** Event History Summary - ExUI Changes
 **EXUI-2668** when Update Referral event completed (incorrect)
 **EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
