@@ -1,7 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
-import { SessionStorageService } from '../../../../services';
 
 @Component({
   selector: 'ccd-event-log-table',
@@ -23,15 +22,8 @@ export class EventLogTableComponent implements OnInit {
 
   public isPartOfCaseTimeline = false;
 
-  public isUserExternal: boolean;
-
-  constructor(
-    private readonly sessionStorage: SessionStorageService
-  ){}
-
   public ngOnInit(): void {
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
-    this.isUserExternal = JSON.parse(this.sessionStorage.getItem('userDetails')).roles.includes('pui-case-manager');
   }
 
   public select(event: CaseViewEvent): void {
@@ -75,10 +67,7 @@ export class EventLogTableComponent implements OnInit {
     return `you are on event ${event.event_name} row, press tab key to navigate to columns`;
   }
 
-  public getAriaLabelforLink(event: CaseViewEvent, isExternalUser: boolean): string {
-    if (isExternalUser) {
-      return `${event.event_name}`;
-    }
+  public getAriaLabelforLink(event: CaseViewEvent): string {
     return `press enter key to open event ${event.event_name} link in separate window`;
   }
 }

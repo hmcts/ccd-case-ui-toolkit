@@ -9,10 +9,8 @@ import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
 import createSpyObj = jasmine.createSpyObj;
-import { SessionStorageService } from '../../../../services';
 
 describe('EventLogTableComponent', () => {
-  const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
   const EVENTS: CaseViewEvent[] = [
     {
@@ -59,13 +57,6 @@ describe('EventLogTableComponent', () => {
   const $TABLE_ROW_LINKS_TIMELINE = By.css('table>tbody>tr>td>div#case-timeline>a');
   const $TABLE_ROW_LINKS_STANDALONE = By.css('table>tbody>tr>td>div:not(.tooltip)>a');
   const $TABLE_COLUMNS = By.css('table>tbody>tr>td');
-  const $TABLE_ROW_LINKS_TIMELINE_EXTERNAL = By.css('table>tbody>tr>td>div>span.event-link');
-
-  const USER = {
-    roles: [
-      'caseworker'
-    ]
-  };
 
   const COL_EVENT = 0;
   const COL_DATE = 1;
@@ -85,15 +76,12 @@ describe('EventLogTableComponent', () => {
             DatePipe,
             MockRpxTranslatePipe
           ],
-          providers: [FormatTranslatorService,
-            { provide: SessionStorageService, useValue: mockSessionStorageService }
-          ]
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
       fixture = TestBed.createComponent(EventLogTableComponent);
       component = fixture.componentInstance;
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
 
       component.events = EVENTS;
       component.selected = SELECTED_EVENT;
@@ -211,8 +199,10 @@ describe('EventLogTableComponent', () => {
   });
 
   describe('Case timeline use', () => {
+
     let caseHistoryHandler;
     beforeEach(waitForAsync(() => {
+
       caseHistoryHandler = createSpyObj('caseHistoryHandler', ['apply']);
 
       TestBed
@@ -223,16 +213,12 @@ describe('EventLogTableComponent', () => {
             DatePipe,
             MockRpxTranslatePipe
           ],
-          providers: [FormatTranslatorService,
-            { provide: SessionStorageService, useValue: mockSessionStorageService }
-
-          ]
+          providers: [FormatTranslatorService]
         })
         .compileComponents();
 
       fixture = TestBed.createComponent(EventLogTableComponent);
       component = fixture.componentInstance;
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
 
       component.events = EVENTS;
       component.selected = SELECTED_EVENT;
@@ -250,50 +236,6 @@ describe('EventLogTableComponent', () => {
       fixture.detectChanges();
 
       expect(caseHistoryHandler.apply).toHaveBeenCalledWith(4);
-    });
-  });
-
-  describe('External user', () => {
-    beforeEach(waitForAsync(() => {
-      TestBed
-        .configureTestingModule({
-          imports: [RouterTestingModule],
-          declarations: [
-            EventLogTableComponent,
-            DatePipe,
-            MockRpxTranslatePipe
-          ],
-          providers: [FormatTranslatorService,
-            { provide: SessionStorageService, useValue: mockSessionStorageService }
-          ]
-        })
-        .compileComponents();
-
-      fixture = TestBed.createComponent(EventLogTableComponent);
-      component = fixture.componentInstance;
-      const EXTERNAL_USER = {
-        roles: [
-          'pui-case-manager'
-        ]
-      };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(EXTERNAL_USER));
-
-      component.events = EVENTS;
-      component.selected = SELECTED_EVENT;
-      component.isPartOfCaseTimeline = false;
-
-      de = fixture.debugElement;
-      fixture.detectChanges();
-    }));
-
-    it('should not render hyperlink for each row and link to event id', () => {
-      const links = de.queryAll($TABLE_ROW_LINKS_TIMELINE_EXTERNAL);
-      expect(component.isUserExternal).toBeTruthy();
-      expect(links.length).toBe(2);
-      expect(links[0].nativeElement.getAttribute('href')).toBeNull();
-      expect(links[1].nativeElement.getAttribute('href')).toBeNull();
-      expect(links[0].nativeElement.textContent).toContain('Update a case');
-      expect(links[1].nativeElement.textContent).toContain('Update a case');
     });
   });
 });
