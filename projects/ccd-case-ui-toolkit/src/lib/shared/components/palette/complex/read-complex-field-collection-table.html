@@ -21,7 +21,7 @@
     <!-- </COMPLEX table field header>-->
     <ng-container *ngFor="let item of rows; let i = index;">
       <!-- <COMPLEX table collapsed view>-->
-      <tr class="new-table-row accordion-heading" (keyup.enter)="isHidden[i] = !isHidden[i]" (click)="isHidden[i] = !isHidden[i]"
+      <tr class="new-table-row accordion-heading" (keyup)="$event.key === 'Enter' ? (isHidden[i] = !isHidden[i]) : null" (click)="isHidden[i] = !isHidden[i]"
           [class.last-accordion]="isHidden[i]">
         <ng-container *ngFor="let heading of columns">
           <td class="text-16">
