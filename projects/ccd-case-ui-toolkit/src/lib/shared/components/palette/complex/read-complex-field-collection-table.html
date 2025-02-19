@@ -21,7 +21,7 @@
     <!-- </COMPLEX table field header>-->
     <ng-container *ngFor="let item of rows; let i = index;">
       <!-- <COMPLEX table collapsed view>-->
-      <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]"
+      <tr class="new-table-row accordion-heading" (keyup.enter)="isHidden[i] = !isHidden[i]" (click)="isHidden[i] = !isHidden[i]"
           [class.last-accordion]="isHidden[i]">
         <ng-container *ngFor="let heading of columns">
           <td class="text-16">
@@ -37,7 +37,7 @@
         </ng-container>
         <td>
           <div style="float: right;">
-            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="image" class="accordion-image"/></a>
+            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
           </div>
         </td>
       </tr>
