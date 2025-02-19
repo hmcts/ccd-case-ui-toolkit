@@ -4,6 +4,7 @@ import { State, StateMachine } from '@edium/fsm';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { UserInfo } from '../../../domain/user/user-info.model';
+import { CaseEditComponent } from '../../case-editor';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 
@@ -199,7 +200,6 @@ export class EventStartStateMachineService {
         }
       }
     };
-    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     let userInfo: UserInfo;
     const userInfoStr = context.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -212,7 +212,9 @@ export class EventStartStateMachineService {
       userId: userInfo.id ? userInfo.id : userInfo.uid,
       taskId: task.id,
       createdTimestamp: Date.now()};
-    context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
+    context.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
+    // EXUI-2668 - Only add client context when taskEventCompletionInfo is set - stops auto completing incorrect tasks
+    context.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });

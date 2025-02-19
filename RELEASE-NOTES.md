@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.1.38
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+**EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
+**EXUI-2743** Check Application Task is supposed to AutoClose
+
 ### Version 7.1.37
 **EXUI-2766** User getting error when upload valid file
 
@@ -50,8 +56,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
-
+**EXUI-2315** Retrieve current user language selection
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue
