@@ -1,10 +1,16 @@
 <div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
-  <label [for]="id()">
-    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</span>
-  </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" role="alert" attr.aria-label="{{fileUploadMessages | rpxTranslate}}" *ngIf="fileUploadMessages && !valid">{{fileUploadMessages | rpxTranslate}}</span>
-
+  <legend class="form-label">
+    {{ caseField | ccdFieldLabel }}
+  </legend>
+  <span class="form-hint" *ngIf="caseField.hint_text">
+    {{ caseField.hint_text | rpxTranslate }}
+  </span>
+  <span class="error-message"
+        role="alert"
+        tabindex="0"
+        [hidden]="!(fileUploadMessages && !valid)">
+    {{ fileUploadMessages | rpxTranslate }}
+  </span>
   <div>
     <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
     <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
