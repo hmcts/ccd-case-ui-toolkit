@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.40
+**EXUI-1615** DAC_Visual_Headings_01
+
 ### Version 7.1.39
 **EXUI-1629** DAC_Skip_Links_01
 
