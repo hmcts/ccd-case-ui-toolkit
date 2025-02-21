@@ -13,7 +13,7 @@
            (click)="sortRowsByColumns(heading)"
            (keyup.enter)="sortRowsByColumns(heading)"
            class="sort-widget"
-           [attr.aria-label]="'Sort ' + heading | rpxTranslate"
+           [attr.aria-label]="'Sort ' + columnsAllLabels[heading].label | rpxTranslate"
            [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
       </th>
       <th></th>
