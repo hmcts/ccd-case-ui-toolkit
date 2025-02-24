@@ -25,6 +25,7 @@ import {
   DraftService,
   ErrorNotifierService,
   FieldsUtils,
+  LoadingService,
   NavigationNotifierService,
   NavigationOrigin,
   OrderService,
@@ -77,6 +78,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
   private subs: Subscription[] = [];
   public eventId: string;
+  public isEventButtonClicked: boolean = false;
 
   public callbackErrorsSubject:   Observable<any>;
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -96,7 +98,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe
+    private readonly rpxTranslationPipe: RpxTranslatePipe,
+    private readonly loadingService: LoadingService
   ) {
   }
 
@@ -106,7 +109,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.error = x;
         return true;
       }
-     return false;
+      return false;
     }));
     
     initDialog();
@@ -191,9 +194,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    this.isEventButtonClicked = false;
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
+    if (this.isEventButtonClicked){
+      return;
+    }
+    this.isEventButtonClicked = true;
+    const spinner = this.loadingService.register();
+    this.loadingService.addSharedSpinner(spinner);
     this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 
