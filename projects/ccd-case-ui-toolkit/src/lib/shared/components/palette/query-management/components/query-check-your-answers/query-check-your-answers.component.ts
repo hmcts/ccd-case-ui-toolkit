@@ -94,7 +94,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           next: (response: any) => {
           // Filter task by query id
             if (this.tid && response.tasks?.length > 1) {
-              this.filteredTasks = response.tasks?.find((task: Task) => task.id === this.tid);
+              this.filteredTasks = response.tasks?.filter((task: Task) => task.id === this.tid);
             } else {
               this.filteredTasks = response.tasks;
             }
