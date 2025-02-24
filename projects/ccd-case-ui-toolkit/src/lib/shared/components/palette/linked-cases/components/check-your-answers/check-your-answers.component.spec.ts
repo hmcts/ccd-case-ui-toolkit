@@ -104,7 +104,8 @@ describe('CheckYourAnswersComponent', () => {
   const linkedCasesService = {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: true,
-    linkedCases
+    linkedCases,
+    casesToUnlink: []
   };
 
   beforeEach(waitForAsync(() => {
@@ -205,5 +206,95 @@ describe('CheckYourAnswersComponent', () => {
     component.next();
 
     expect(component.next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should set unlink to true for matching case references', () => {
+    linkedCasesService.casesToUnlink = ['123', '456'];
+    linkedCasesService.linkedCases = [
+      {
+        caseReference: '123', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      },
+      {
+        caseReference: '789', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      },
+      {
+        caseReference: '456', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      }
+    ];
+
+    component.ensureDataIntegrity();
+
+    expect(linkedCasesService.linkedCases[0].unlink).toBeTruthy();
+    expect(linkedCasesService.linkedCases[1].unlink).toBeFalsy();
+    expect(linkedCasesService.linkedCases[2].unlink).toBeTruthy();
+  });
+
+  it('should not set unlink to true if no matching case references', () => {
+    linkedCasesService.casesToUnlink = ['999'];
+    linkedCasesService.linkedCases = [
+      {
+        caseReference: '123', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      },
+      {
+        caseReference: '789', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      },
+      {
+        caseReference: '456', unlink: false,
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      }
+    ];
+
+    component.ensureDataIntegrity();
+
+    expect(linkedCasesService.linkedCases[0].unlink).toBeFalsy();
+    expect(linkedCasesService.linkedCases[1].unlink).toBeFalsy();
+    expect(linkedCasesService.linkedCases[2].unlink).toBeFalsy();
   });
 });
