@@ -7,6 +7,7 @@ import {
 import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
+import { CaseEditComponent } from '../../../case-edit';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
@@ -77,7 +78,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
 
   public onContinue(): void {
     // Get task details
-    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const clientContextStr = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     const task = userTask ? userTask.task_data : null;
     // not complete_task not utilised here as related to event completion

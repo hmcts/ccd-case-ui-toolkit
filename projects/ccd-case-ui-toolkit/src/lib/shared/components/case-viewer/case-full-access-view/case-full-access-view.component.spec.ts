@@ -40,6 +40,7 @@ import {
   FormValueService,
   HttpErrorService,
   HttpService,
+  LoadingService,
   NavigationNotifierService,
   NavigationOrigin,
   ProfileNotifier,
@@ -706,6 +707,7 @@ describe('CaseFullAccessViewComponent', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          LoadingService
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
@@ -1316,7 +1318,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1676,6 +1679,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           PageValidationService,
           CaseFieldService,
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+          LoadingService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1805,7 +1809,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -2097,7 +2102,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -2266,7 +2272,8 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
         { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
         { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
         { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-        DeleteOrCancelDialogComponent
+        DeleteOrCancelDialogComponent,
+        LoadingService
       ],
       teardown: { destroyAfterEach: false }
     }).compileComponents();
@@ -2731,7 +2738,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService
         ]
       })
       .compileComponents();
