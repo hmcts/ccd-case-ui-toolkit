@@ -4,7 +4,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, SessionStorageService } from '../../../services';
+import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -32,12 +32,16 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly activityPollingService: ActivityPollingService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly loadingService: LoadingService
   ) {
     this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
 
   public ngOnInit(): void {
+    if (this.loadingService.hasSharedSpinner()){
+      this.loadingService.unregisterSharedSpinner();
+    }
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
