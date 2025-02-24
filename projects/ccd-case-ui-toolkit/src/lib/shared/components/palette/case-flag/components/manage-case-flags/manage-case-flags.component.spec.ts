@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseField, FieldType } from '../../../../../domain';
@@ -126,6 +126,7 @@ describe('ManageCaseFlagsComponent', () => {
         } as FieldType,
         formatted_value: {
           partyName: 'Rose Bank',
+          pathToFlagsFormGroup: 'CaseFlag1',
           details: [
             {
               id: '95de3cde-9f1b-468b-863b-8bc29ce7e600',
@@ -139,6 +140,7 @@ describe('ManageCaseFlagsComponent', () => {
         },
         value: {
           partyName: 'Rose Bank',
+          pathToFlagsFormGroup: 'CaseFlag1',
           details: [
             {
               id: '95de3cde-9f1b-468b-863b-8bc29ce7e600',
@@ -177,6 +179,7 @@ describe('ManageCaseFlagsComponent', () => {
         } as FieldType,
         formatted_value: {
           partyName: 'Tom Atin',
+          pathToFlagsFormGroup: 'CaseFlag2',
           details: [
             {
               id: 'd9348799-1532-444a-b577-cd546e2f58f1',
@@ -190,6 +193,7 @@ describe('ManageCaseFlagsComponent', () => {
         },
         value: {
           partyName: 'Tom Atin',
+          pathToFlagsFormGroup: 'CaseFlag2',
           details: [
             {
               id: 'd9348799-1532-444a-b577-cd546e2f58f1',
@@ -223,6 +227,7 @@ describe('ManageCaseFlagsComponent', () => {
         } as FieldType,
         formatted_value: {
           partyName: '',
+          pathToFlagsFormGroup: 'caseFlags',
           details: [
             {
               id: '573ce187-abae-4121-81d3-53fbba074e62',
@@ -232,6 +237,7 @@ describe('ManageCaseFlagsComponent', () => {
         },
         value: {
           partyName: '',
+          pathToFlagsFormGroup: 'caseFlags',
           details: [
             {
               id: '573ce187-abae-4121-81d3-53fbba074e62',
@@ -261,6 +267,7 @@ describe('ManageCaseFlagsComponent', () => {
         } as FieldType,
         formatted_value: {
           partyName: '',
+          pathToFlagsFormGroup: 'caseFlags',
           details: [
             {
               id: 'aa692b36-9dc0-43de-b5f8-2dba78664376',
@@ -270,6 +277,7 @@ describe('ManageCaseFlagsComponent', () => {
         },
         value: {
           partyName: '',
+          pathToFlagsFormGroup: 'caseFlags',
           details: [
             {
               id: 'aa692b36-9dc0-43de-b5f8-2dba78664376',
@@ -362,7 +370,7 @@ describe('ManageCaseFlagsComponent', () => {
       pathToFlagsFormGroup: 'CaseFlag2'
     };
 
-    const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance);
+    const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance, '', '');
     expect(displayResult.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
     expect(displayResult.flagDetailDisplay.flagDetail.name).toEqual(flagDetail.name);
     expect(displayResult.flagDetailDisplay.flagDetail.flagComment).toEqual(flagDetail.flagComment);
@@ -465,7 +473,7 @@ describe('ManageCaseFlagsComponent', () => {
         }
       } as CaseField
     } as FlagsWithFormGroupPath;
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flag1Detail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flag1Detail, flagsInstance, '', '');
     expect(flagDetailMappedForDisplay.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail).toEqual(flag1Detail);
     expect(flagDetailMappedForDisplay.pathToFlagsFormGroup).toEqual(flagsInstance.pathToFlagsFormGroup);
@@ -515,7 +523,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
     flagsInstance.flags.details[0].otherDescription = 'A new description';
     flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionDetail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionDetail, flagsInstance, '', '');
     // Expect all four fields to have been reset to the original persisted values
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
       flagsInstance.caseField.formatted_value.details[0].value.flagComment);
@@ -578,7 +586,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
     flagsInstance.flags.details[0].otherDescription = 'A new description';
     flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
-    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionCyDetail, flagsInstance);
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionCyDetail, flagsInstance, '', '');
     // Expect all four fields to have been reset to the original persisted values
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
       flagsInstance.caseField.formatted_value.partyFlags.details[0].value.flagComment);
@@ -595,7 +603,7 @@ describe('ManageCaseFlagsComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-selection-1').click();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
@@ -622,7 +630,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.flagsDisplayData.length).toBe(4);
     expect(component.noFlagsError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -663,5 +671,77 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_EXTERNAL)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_2_POINT_1)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
+  });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return the correct flag ID when all properties are present', () => {
+    const flag: FlagDetailDisplayWithFormGroupPath = {
+      flagDetailDisplay: {
+        flagDetail: {
+          id: '123'
+        }
+      }
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(component.getFlagID(flag)).toBe('123');
+  });
+
+  it('should return an empty string when any property is missing', () => {
+    const flag: FlagDetailDisplayWithFormGroupPath = {} as FlagDetailDisplayWithFormGroupPath;
+    expect(component.getFlagID(flag)).toBe('');
+  });
+
+  it('should call reapplyCachedControls when cached control flag ID matches form group selected control flag ID', () => {
+    spyOn(component, 'reapplyCachedControls');
+    spyOn(component, 'getFlagID').and.returnValue('flagID');
+    component.cachedControls = component.formGroup.controls;
+    component.cachedControls.selectedManageCaseLocation.setValue({ flagDetailDisplay: { flagDetail: { id: '456' } } });
+
+    component.formGroup.get('selectedManageCaseLocation').setValue({ flagDetailDisplay: { flagDetail: { id: '123' } } });
+    component.next();
+
+    expect(component.reapplyCachedControls).toHaveBeenCalled();
+  });
+
+  it('should not call reapplyCachedControls when cached control flag ID does not match form group selected control flag ID', () => {
+    spyOn(component, 'reapplyCachedControls');
+    spyOn(component, 'getFlagID').and.returnValues('flagID1', 'flagID2');
+
+    component.formGroup.get('selectedManageCaseLocation').setValue({ flagDetailDisplay: { flagDetail: { id: '123' } } });
+    component.cachedControls = component.formGroup.controls;
+
+    component.next();
+
+    expect(component.reapplyCachedControls).not.toHaveBeenCalled();
+  });
+
+  it('should reapply cachedcontrols if user does not change selection', () => {
+    const tempControls = component.formGroup;
+    tempControls.addControl('fakeComment', new FormControl('commentText'));
+    component.cachedControls = tempControls.controls;
+    component.reapplyCachedControls();
+    expect(component.formGroup.get('fakeComment')).toBeTruthy();
   });
 });
