@@ -580,7 +580,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     });
   });
 
-  fdescribe('submit', () => {
+  describe('submit', () => {
     it('should log an error when fieldId is missing', () => {
       spyOn(console, 'error');
       component.fieldId = null;
@@ -682,7 +682,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(casesService.createEvent).toHaveBeenCalled();
   });
 
-  fit('should complete task when query is submitted', () => {
+  it('should complete task when query is submitted', () => {
     casesService.createEvent.and.returnValue(of({}));
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
     component.queryCreateContext = QueryCreateContext.RESPOND;
