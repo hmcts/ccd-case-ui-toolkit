@@ -115,10 +115,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     if (this.summary.valid && this.description.valid) {
-      if (this.caseEdit.isLinkedCasesSubmission) {
-        // once the user submits the linked cases we need to reset the service so data isnt retained if they open the event again
-        this.linkedCasesService.resetLinkedCaseData();
-      }
+      this.linkedCasesService.resetLinkedCaseData();
       this.caseEdit.submitForm({
         eventTrigger: this.eventTrigger,
         form: this.editForm,

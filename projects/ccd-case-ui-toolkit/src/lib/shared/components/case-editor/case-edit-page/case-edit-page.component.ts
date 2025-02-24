@@ -347,6 +347,20 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         this.caseFlagStateService.lastPageFieldState = journeyPageNumber;
       }
     }
+    if ((!this.linkedCasesService.isLinkedCasesEventTrigger) && (this.linkedCasesService.casesToUnlink.length > 0)) {
+      // ensure cfv is set correctly
+      this.linkedCasesService.caseFieldValue = this.linkedCasesService.caseFieldValue.filter(
+        (caseFieldValue) => !this.linkedCasesService.casesToUnlink.some((link) => caseFieldValue.id === link)
+      );
+      //ensure that the values are not lost when navigating back
+      if (this.editForm.controls.data['controls'].caseLinks.controls){
+        this.editForm.controls.data.value.caseLinks = this.linkedCasesService.caseFieldValue;
+      }
+      if (this.editForm.value.data.caseLinks.length === 0){
+        delete this.editForm.controls.data.value.caseNameHmctsInternal;
+        delete this.editForm.controls.data.value.maintainCaseLinksFlag;
+      }
+    }
 
     this.caseEditDataService.clearFormValidationErrors();
     this.checkForStagesCompleted();

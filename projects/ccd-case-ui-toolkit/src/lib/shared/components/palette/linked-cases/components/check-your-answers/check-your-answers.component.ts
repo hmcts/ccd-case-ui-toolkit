@@ -26,10 +26,21 @@ export class CheckYourAnswersComponent extends AbstractJourneyComponent implemen
   }
 
   public ngOnInit(): void {
+    this.ensureDataIntegrity();
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.linkedCasesTableCaption = this.linkedCasesService.isLinkedCasesEventTrigger ? 'Proposed case links' : 'Linked cases';
     this.linkedCases = this.linkedCasesService.linkedCases.filter(linkedCase => !linkedCase.unlink);
     this.casesToUnlink = this.linkedCasesService.linkedCases.filter(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
+  }
+
+  public ensureDataIntegrity(){
+    for (const link in this.linkedCasesService.casesToUnlink){
+      this.linkedCasesService.linkedCases?.forEach((linkedCase) => {
+        if (linkedCase?.caseReference === this.linkedCasesService.casesToUnlink[link]){
+          linkedCase.unlink = true;
+        }
+      });
+    }
   }
 
   public onChange(): void {
