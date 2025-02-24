@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.38-qm-label",
+  "version": "7.1.43-qm-label",
   "engines": {
     "node": ">=18.19.0"
   },
