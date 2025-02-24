@@ -18,6 +18,7 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { AccessControlList } from '../../../../../domain/definition/access-control-list.model';
+import { Task } from '../../../../../domain/work-allocation/Task';
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -52,7 +53,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public attachments: FormDocument[];
 
   public errorMessages: ErrorMessage[] = [];
-  public filteredTask = [];
+  public filteredTasks: Task[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -87,14 +88,15 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     this.setCaseQueriesCollectionData();
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
-      this.searchTasksSubscription = this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
+      this.searchTasksSubscription = this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
+        this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
         .subscribe({
           next: (response: any) => {
           // Filter task by query id
-            if (response.tasks?.length > 1) {
-              this.filteredTask = response.tasks?.find((task) => task.case_id === this.tid);
+            if (this.tid && response.tasks?.length > 1) {
+              this.filteredTasks = response.tasks?.filter((task: Task) => task.id === this.tid);
             } else {
-              this.filteredTask = response.tasks;
+              this.filteredTasks = response.tasks;
             }
           },
           error: (error) => {
@@ -131,16 +133,20 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const createEvent$ = this.createEvent(data);
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
-      const completeTask$ = this.workAllocationService.completeTask(
-        this.filteredTask[0].id,
-        this.caseViewTrigger.name
-      );
-      this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
-        next: ([createEventResponse, tasksResponse]: [any, any]) => {
-          this.finaliseSubmission();
-        },
-        error: (error) => this.handleError(error)
-      });
+      if (this.filteredTasks?.length > 0) {
+        const completeTask$ = this.workAllocationService.completeTask(
+          this.filteredTasks[0].id,
+          this.caseViewTrigger.name
+        );
+        this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
+          next: ([createEventResponse, tasksResponse]: [any, any]) => {
+            this.finaliseSubmission();
+          },
+          error: (error) => this.handleError(error)
+        });
+      } else {
+        console.error('Error: No task to complete found');
+      }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
         next: () => this.finaliseSubmission(),
