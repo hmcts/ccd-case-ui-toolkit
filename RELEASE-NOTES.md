@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.42
+**EXUI-2795** Additional Text For QM Document Upload
+
 ### Version 7.1.40
 **EXUI-1615** DAC_Visual_Headings_01
 
