@@ -8,7 +8,6 @@ import { CaseViewEvent } from '../../../../domain';
   styleUrls: ['./event-log-table.scss']
 })
 export class EventLogTableComponent implements OnInit {
-
   @Input()
   public events: CaseViewEvent[];
 
