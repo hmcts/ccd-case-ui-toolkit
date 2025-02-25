@@ -356,9 +356,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       if (this.editForm.controls.data['controls'].caseLinks.controls){
         this.editForm.controls.data.value.caseLinks = this.linkedCasesService.caseFieldValue;
       }
-      if (this.editForm.value.data.caseLinks.length === 0){
+      // these get added somehow somewhere, but if we are unlinking we dont want them, remove them
+      if ('caseNameHmctsInternal' in this.editForm.controls.data.value) {
         delete this.editForm.controls.data.value.caseNameHmctsInternal;
+        (this.editForm.controls['data'] as FormGroup).removeControl('caseNameHmctsInternal');
+      }
+      if ('maintainCaseLinksFlag' in this.editForm.controls.data.value) {
         delete this.editForm.controls.data.value.maintainCaseLinksFlag;
+        (this.editForm.controls['data'] as FormGroup).removeControl('maintainCaseLinksFlag');
       }
     }
 

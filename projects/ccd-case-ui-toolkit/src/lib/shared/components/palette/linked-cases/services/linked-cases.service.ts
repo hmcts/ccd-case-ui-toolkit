@@ -72,6 +72,7 @@ export class LinkedCasesService {
     this.caseDetails = null;
     this.hasContinuedFromStart = false;
     this.casesToUnlink = [];
+    this.cachedFieldValues = null;
   }
 
   public mapResponse(esSearchCasesResponse): any {
