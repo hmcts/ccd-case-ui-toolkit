@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.43
+**EXUI-2388** Currently PED not working within Case File View
+
 ### Version 7.1.42
 **EXUI-2795** Additional Text For QM Document Upload
 
