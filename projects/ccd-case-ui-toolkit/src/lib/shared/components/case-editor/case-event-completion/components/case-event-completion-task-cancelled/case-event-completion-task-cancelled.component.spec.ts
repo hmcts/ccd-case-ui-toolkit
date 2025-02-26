@@ -2,6 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { CaseEditComponent } from '../../../case-edit';
 import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseEventCompletionTaskCancelledComponent } from './case-event-completion-task-cancelled.component';
 
@@ -46,7 +47,7 @@ describe('TaskCancelledComponent', () => {
   it('should emit event can be completed true when clicked on continue button', () => {
     spyOn(component.notifyEventCompletionCancelled, 'emit');
     component.onContinue();
-    expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith('clientContext')
+    expect(component.context.sessionStorageService.removeItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT);
     expect(component.notifyEventCompletionCancelled.emit).toHaveBeenCalledWith(true);
   });
 
