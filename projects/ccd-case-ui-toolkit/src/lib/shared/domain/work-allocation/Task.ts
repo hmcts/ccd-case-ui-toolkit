@@ -8,6 +8,7 @@ export interface Task {
   case_type_id?: string;
   created_date: string;
   due_date?: string;
+  description?: string;
   execution_type?: string;
   id: string;
   jurisdiction: string;
