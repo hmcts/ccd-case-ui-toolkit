@@ -18,6 +18,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
+
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
 
@@ -45,7 +46,7 @@ export class UnLinkCasesComponent implements OnInit {
       this.getAllLinkedCaseInformation();
     } else {
       this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
-        const linkedCasesTab = caseView.tabs.find(tab => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
+        const linkedCasesTab = caseView.tabs.find((tab) => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
         if (linkedCasesTab) {
           const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
           this.linkedCases = linkedCases;
@@ -58,26 +59,26 @@ export class UnLinkCasesComponent implements OnInit {
 
   public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
-    this.linkedCases.forEach(linkedCase => {
+    this.linkedCases.forEach((linkedCase) => {
       searchCasesResponse.push(this.casesService.getCaseViewV2(linkedCase.caseReference));
     });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
         searchCases.forEach((response: CaseView) => {
-          const linkedCaseFromList = this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id);
+          const linkedCaseFromList = this.linkedCases.find((linkedCase) => linkedCase.caseReference === response.case_id);
           if (linkedCaseFromList) {
             const caseName = this.linkedCasesService.getCaseName(response);
-            this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id).caseName = caseName;
+            this.linkedCases.find((linkedCase) => linkedCase.caseReference === response.case_id).caseName = caseName;
           }
         });
         this.initForm();
         this.linkedCasesService.linkedCases = this.linkedCases;
         this.isServerError = false;
       },
-        err => {
-          this.isServerError = true;
-          this.notifyAPIFailure.emit(true);
-        });
+      (err) => {
+        this.isServerError = true;
+        this.notifyAPIFailure.emit(true);
+      });
     }
   }
 
@@ -92,7 +93,7 @@ export class UnLinkCasesComponent implements OnInit {
   }
 
   public get getLinkedCasesFormArray(): FormArray {
-    const formFieldArray = this.linkedCases.map(val => this.fb.group({
+    const formFieldArray = this.linkedCases.map((val) => this.fb.group({
       caseReference: val.caseReference,
       reasons: val.reasons,
       createdDateTime: val.createdDateTime,
@@ -107,7 +108,7 @@ export class UnLinkCasesComponent implements OnInit {
 
   public onChange(caseSelected: any): void {
     this.resetErrorMessages();
-    const selectedCase = this.linkedCases.find(linkedCase => linkedCase.caseReference === caseSelected.value);
+    const selectedCase = this.linkedCases.find((linkedCase) => linkedCase.caseReference === caseSelected.value);
     if (selectedCase) {
       selectedCase.unlink = caseSelected.checked ? true : false;
     }
@@ -116,7 +117,7 @@ export class UnLinkCasesComponent implements OnInit {
   public onNext(): void {
     this.resetErrorMessages();
     let navigateToNextPage = true;
-    const casesMarkedToUnlink = this.linkedCases.find(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
+    const casesMarkedToUnlink = this.linkedCases.find((linkedCase) => linkedCase.unlink && linkedCase.unlink === true);
     if (!casesMarkedToUnlink) {
       this.errorMessages.push({
         title: 'case-selection',
@@ -135,7 +136,7 @@ export class UnLinkCasesComponent implements OnInit {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,
       errorMessages: this.errorMessages,
-      navigateToNextPage: isNavigateToNextPage,
+      navigateToNextPage: isNavigateToNextPage
     });
   }
 

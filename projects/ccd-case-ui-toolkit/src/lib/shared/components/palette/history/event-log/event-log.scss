@@ -1,11 +1,23 @@
-@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+@import "govuk_frontend_toolkit/stylesheets/_colours.scss";
 
 @media (max-width: 991px) {
-
-  [class*="col-md"]{
+  [class*="col-md"] {
     margin-bottom: 30px;
   }
+}
 
+.column-half,
+.column-one-half {
+  float: left;
+  width: 50%;
+}
+
+// Apply vertical scrollbar to case history div
+@media (min-width: 641px) {
+  .scrollbar {
+    height: 70vh;
+    overflow-y: auto;
+  }
 }
 
 .EventLog-DetailsPanel {

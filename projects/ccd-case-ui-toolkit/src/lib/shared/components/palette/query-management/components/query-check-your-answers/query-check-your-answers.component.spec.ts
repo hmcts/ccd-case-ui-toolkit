@@ -391,8 +391,8 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
-    workAllocationService.searchTasks.and.returnValue(of(response));
+    workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId', 'completeTask']);
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(response));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);
@@ -414,7 +414,7 @@ describe('QueryCheckYourAnswersComponent', () => {
         { provide: WorkAllocationService, useValue: workAllocationService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: Router, useValue: router },
-        { provide: QualifyingQuestionService , useValue: qualifyingQuestionService  }
+        { provide: QualifyingQuestionService, useValue: qualifyingQuestionService }
       ]
     })
       .compileComponents();
@@ -430,6 +430,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       isHearingRelated: new FormControl('', Validators.required),
       attachments: new FormControl([mockAttachment])
     });
+    component['tid'] = '1';
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -576,32 +577,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     });
   });
 
-  describe('searchAndCompleteTask', () => {
-    it('should call search task', () => {
-      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-      component.searchAndCompleteTask();
-    });
-  });
-
   describe('submit', () => {
-    it('should call search task', () => {
-      component.searchAndCompleteTask();
-      fixture.detectChanges();
-      const searchParameter = { ccdId: '1' } as TaskSearchParameter;
-      expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
-    });
-
-    it('should trigger event completion', () => {
-      component.searchAndCompleteTask();
-      fixture.detectChanges();
-      const eventCompletionParams: EventCompletionParams = {
-        caseId: '1',
-        eventId: 'queryManagementRespondQuery',
-        task: response.tasks[0]
-      };
-      expect(component.eventCompletionParams).toEqual(eventCompletionParams);
-    });
-
     it('should log an error when fieldId is missing', () => {
       spyOn(console, 'error');
       component.fieldId = null;

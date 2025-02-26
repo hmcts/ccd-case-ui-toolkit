@@ -3,6 +3,52 @@
 ### Version 7.1.29
 **EXUI-1227** Issue in CaseFileView
 
+### Version 7.1.43
+**EXUI-2388** Currently PED not working within Case File View
+
+### Version 7.1.42
+**EXUI-2795** Additional Text For QM Document Upload
+
+### Version 7.1.40
+**EXUI-1615** DAC_Visual_Headings_01
+
+### Version 7.1.39
+**EXUI-1629** DAC_Skip_Links_01
+
+### Version 7.1.38
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+**EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
+**EXUI-2743** Check Application Task is supposed to AutoClose
+
+### Version 7.1.37
+**EXUI-2766** User getting error when upload valid file
+
+### Version 7.1.36
+**EXUI-1562** accessibility issue
+
+### Version 7.1.35
+**EXUI-2711** Review font and grammer in the query management screens
+
+### Version 7.1.34
+**EXUI-2524** Review font and grammer in the query management screens
+
+### Version 7.1.33
+**EXUI-2696** Improve release process
+**EXUI-2734** Improve usability of the event history screen
+
+### Version 7.1.32
+**EXUI-2729** Query Management - Callback error handling.
+
+### Version 7.1.31
+**EXUI-2609** Manage case links: Issue with change button on CYA page
+
+### Version 7.1.30
+**EXUI-2667** MediaViewer partial failure to render PDF on Chrome
+
+### Version 7.1.29
+**EXUI-1717** Add logs for auto task completion failure
+
 ### Version 7.1.28
 **EXUI-2698** User is able to upload restricted file type to Civil case
 
@@ -25,8 +71,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
-
+**EXUI-2315** Retrieve current user language selection
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue

@@ -19,7 +19,7 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 @Component({
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
-  templateUrl: './link-cases.component.html',
+  templateUrl: './link-cases.component.html'
 })
 export class LinkCasesComponent implements OnInit {
   @Output()
@@ -85,8 +85,8 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public toggleLinkCaseReasonOtherComments(event: any): void {
-    this.linkCaseReasons.find(reason => reason.value_en === event.target.value).selected = event.target.checked;
-    this.showComments = this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected;
+    this.linkCaseReasons.find((reason) => reason.value_en === event.target.value).selected = event.target.checked;
+    this.showComments = this.linkCaseReasons.find((reason) => reason.value_en === 'Other')?.selected;
   }
 
   public submitCaseInfo(): void {
@@ -133,7 +133,7 @@ export class LinkCasesComponent implements OnInit {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CaseNumberError,
-        fieldId: 'caseNumber',
+        fieldId: 'caseNumber'
       });
     }
     if (this.linkCaseForm.controls.reasonType.invalid) {
@@ -141,17 +141,17 @@ export class LinkCasesComponent implements OnInit {
       this.errorMessages.push({
         title: 'dummy-case-reason',
         description: LinkedCasesErrorMessages.ReasonSelectionError,
-        fieldId: 'caseReason',
+        fieldId: 'caseReason'
       });
     }
     if (this.linkCaseForm.controls.reasonType.valid
-      && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
+      && this.linkCaseReasons.find((reason) => reason.value_en === 'Other').selected) {
       if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
         this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
         this.errorMessages.push({
           title: 'dummy-case-reason-comments',
           description: LinkedCasesErrorMessages.otherDescriptionError,
-          fieldId: 'otherDescription',
+          fieldId: 'otherDescription'
         });
       }
       if (this.linkCaseForm.controls.otherDescription.value.trim().length > 100) {
@@ -159,7 +159,7 @@ export class LinkCasesComponent implements OnInit {
         this.errorMessages.push({
           title: 'dummy-case-reason-comments',
           description: LinkedCasesErrorMessages.otherDescriptionMaxLengthError,
-          fieldId: 'otherDescription',
+          fieldId: 'otherDescription'
         });
       }
     }
@@ -168,7 +168,7 @@ export class LinkCasesComponent implements OnInit {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CaseProposedError,
-        fieldId: 'caseNumber',
+        fieldId: 'caseNumber'
       });
     }
     if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
@@ -176,14 +176,14 @@ export class LinkCasesComponent implements OnInit {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.CasesLinkedError,
-        fieldId: 'caseNumber',
+        fieldId: 'caseNumber'
       });
     }
     if (this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('')) {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.ProposedCaseWithIn,
-        fieldId: 'caseNumber',
+        fieldId: 'caseNumber'
       });
     }
     window.scrollTo(0, 0);
@@ -206,7 +206,7 @@ export class LinkCasesComponent implements OnInit {
             caseState: caseView.state.name || '',
             caseStateDescription: caseView.state.description || '',
             caseService: caseView.case_type && caseView.case_type.jurisdiction && caseView.case_type.jurisdiction.description || '',
-            caseName: this.linkedCasesService.getCaseName(caseView),
+            caseName: this.linkedCasesService.getCaseName(caseView)
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {
             CaseReference: caseView.case_id,
@@ -219,7 +219,7 @@ export class LinkCasesComponent implements OnInit {
           }
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
-          this.linkCaseReasons.forEach(reason => reason.selected = false);
+          this.linkCaseReasons.forEach((reason) => reason.selected = false);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -228,7 +228,7 @@ export class LinkCasesComponent implements OnInit {
           this.errorMessages.push({
             title: 'dummy-case-number',
             description: LinkedCasesErrorMessages.CaseCheckAgainError,
-            fieldId: 'caseNumber',
+            fieldId: 'caseNumber'
           });
           this.emitLinkedCasesState(false);
           window.scrollTo(0, 0);
@@ -242,7 +242,7 @@ export class LinkCasesComponent implements OnInit {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
       errorMessages: this.errorMessages,
-      navigateToNextPage: isNavigateToNextPage,
+      navigateToNextPage: isNavigateToNextPage
     });
   }
 
@@ -284,7 +284,7 @@ export class LinkCasesComponent implements OnInit {
 
   public onSelectedLinkedCaseRemove(pos, selectedCaseReference): void {
     const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
-    const updatedItems = caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
+    const updatedItems = caseFieldValue.filter((item) => item.value && item.value.CaseReference !== selectedCaseReference);
     if (updatedItems) {
       this.linkedCasesService.caseFieldValue = updatedItems;
     }
@@ -305,7 +305,7 @@ export class LinkCasesComponent implements OnInit {
       this.errorMessages.push({
         title: 'dummy-case-selection',
         description: LinkedCasesErrorMessages.CaseSelectionError,
-        fieldId: 'caseReason',
+        fieldId: 'caseReason'
       });
       navigateToNextPage = false;
     }
