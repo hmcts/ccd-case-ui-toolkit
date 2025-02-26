@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+### Version 7.1.43
+**EXUI-2388** Currently PED not working within Case File View
+
+### Version 7.1.42
+**EXUI-2795** Additional Text For QM Document Upload
+
+### Version 7.1.40
+**EXUI-1615** DAC_Visual_Headings_01
+
+### Version 7.1.39
+**EXUI-1629** DAC_Skip_Links_01
+
 ### Version 7.1.38
 **EXUI-2104** Event History Summary - ExUI Changes
 **EXUI-2668** when Update Referral event completed (incorrect)
