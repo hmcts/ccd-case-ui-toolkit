@@ -315,6 +315,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       case 502:
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
+      case 500:
         {
           let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
           if (error?.error) {
