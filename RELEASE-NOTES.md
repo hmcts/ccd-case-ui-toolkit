@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.29
+**EXUI-1227** Issue in CaseFileView
+
 ### Version 7.1.43
 **EXUI-2388** Currently PED not working within Case File View
 
