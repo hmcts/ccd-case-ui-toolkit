@@ -11,7 +11,7 @@
 </div>
 
 <div class="document-folders-header">
-  <div class="document-folders-header__title">Documents ({{ documentCount }})</div>
+  <span class="document-folders-header__title">Documents ({{ documentCount }})</span>
   <div>
     <ccd-case-file-view-folder-sort
       (sortAscending)="sortDataSourceAscending($event)"
@@ -36,7 +36,7 @@
           <span class="node__name node-name-document">
             {{node.name}}
             <br>
-            <span class="node__document-upload-timestamp">{{node.upload_timestamp | ccdDate : 'local' | date:"dd MMM YYYY HH:mm"}}</span>
+            <span class="node__document-upload-timestamp">{{node.upload_timestamp | ccdDate : 'local' :'dd MMM YYYY HH:mm'}}</span>
           </span>
           <div class="node__document-options">
             <ccd-case-file-view-folder-document-actions
