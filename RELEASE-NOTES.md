@@ -1,7 +1,9 @@
 ## RELEASE NOTES
 
-### Version 7.1.29
+### Version 7.1.44
 **EXUI-1227** Issue in CaseFileView
+**EXUI-2765** QM- label is not associated to form element
+**EXUI-1994** Error message on file upload unclear
 
 ### Version 7.1.43
 **EXUI-2388** Currently PED not working within Case File View
