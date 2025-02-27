@@ -128,6 +128,9 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   const snapshotActivatedRoute = {
     snapshot: {
+      queryparams: {
+        tid: 'Task_2'
+      },
       params: {
         qid: '1',
         dataid: 'id-007'
@@ -288,7 +291,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     events: []
   };
 
-  const response = {
+  const taskResponse = {
     tasks: [{
       additional_properties: {
         additionalProp1: '1'
@@ -392,7 +395,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId', 'completeTask']);
-    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(response));
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(taskResponse));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     casesService = jasmine.createSpyObj('casesService', ['createEvent', 'getCaseViewV2']);
@@ -677,5 +680,20 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.submit();
 
     expect(casesService.createEvent).toHaveBeenCalled();
+  });
+
+  it('should complete task when query is submitted', () => {
+    casesService.createEvent.and.returnValue(of({}));
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    fixture.detectChanges();
+    component.ngOnInit();
+
+    component.fieldId = 'someFieldId';
+    component.caseQueriesCollections = [];
+
+    component.submit();
+
+    expect(workAllocationService.completeTask).toHaveBeenCalled();
   });
 });
