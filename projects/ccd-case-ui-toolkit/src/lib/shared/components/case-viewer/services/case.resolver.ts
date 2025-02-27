@@ -37,7 +37,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
-    const currentUrl = this.router.url ?? ''; // Ensure currentUrl is always a string
+    const currentUrl = this.router.url ?? '';
 
     // Prevent resolving if eventId=queryManagementRespondQuery is in the URL
     if (currentUrl.includes(CaseResolver.EVENT_ID_QM_RESPOND_TO_QUERY)) {
