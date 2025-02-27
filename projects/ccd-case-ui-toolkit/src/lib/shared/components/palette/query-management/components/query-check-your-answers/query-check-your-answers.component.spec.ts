@@ -690,7 +690,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.ngOnInit();
 
     component.fieldId = 'someFieldId';
-    component.caseQueriesCollections = [];
+    component.filteredTasks = taskResponse.tasks;
 
     component.submit();
 

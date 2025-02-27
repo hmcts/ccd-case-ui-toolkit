@@ -15,6 +15,8 @@ export class CaseResolver implements Resolve<CaseView> {
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
 
+  public static readonly EVENT_ID_QM_RESPOND_TO_QUERY = 'eventId=queryManagementRespondQuery';
+
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
@@ -35,6 +37,13 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
+    const currentUrl = this.router.url; // Get the current URL
+
+    // Prevent resolving if eventId=queryManagementRespondQuery is in the URL
+    if (currentUrl.includes(CaseResolver.EVENT_ID_QM_RESPOND_TO_QUERY)) {
+      console.info('Skipping resolve for event queryManagementRespondQuery.');
+      this.goToDefaultPage();
+    }
 
     if (!cid) {
       console.info('No case ID available in the route. Will navigate to case list.');
