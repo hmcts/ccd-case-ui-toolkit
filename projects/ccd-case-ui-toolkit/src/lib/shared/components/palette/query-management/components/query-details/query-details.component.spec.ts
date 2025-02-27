@@ -7,6 +7,7 @@ import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pip
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 import { Constants } from '../../../../../commons/constants';
+import { QueryItemResponseStatus } from '../../enums';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -221,17 +222,17 @@ describe('QueryDetailsComponent', () => {
     expect(component.toggleLinkVisibility).toHaveBeenCalled();
   });
 
-  it('should set showLink to true when user is navigated to follow up to a query', () => {
+  it('should set showItem to true when user is navigated to follow up to a query', () => {
     component.toggleLinkVisibility();
     expect(component['queryItemId']).toBe('123');
-    expect(component.showLink).toBe(true);
+    expect(component.showItem).toBe(true);
   });
 
-  it('should set showLink to false when user is navigated to response to a query', () => {
+  it('should set showItem to false when user is navigated to response to a query', () => {
     component['route'].snapshot.params.qid = '3';
     component.ngOnChanges();
     component.toggleLinkVisibility();
-    expect(component.showLink).toBe(false);
+    expect(component.showItem).toBe(false);
   });
 
   describe('isCaseworker', () => {
@@ -257,12 +258,13 @@ describe('QueryDetailsComponent', () => {
     });
   });
   describe('hasRespondedToQuery', () => {
-    it('should emit true and return true if conditions are met', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
-      spyOn(component.hasResponded, 'emit');
+    beforeEach(() => {
+      spyOn(component.hasResponded, 'emit'); // Spy on the EventEmitter
+    });
 
-      component.totalNumberOfQueryChildren = 1;
-
+    it('should emit true and return true if responseStatus is not AWAITING and user is a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
       const result = component.hasRespondedToQuery();
 
       expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
@@ -270,25 +272,35 @@ describe('QueryDetailsComponent', () => {
       expect(result).toBeTruthy();
     });
 
-    it('should emit false and return false if children length is even', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
-      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
+    it('should emit false and return false if responseStatus is AWAITING and user is a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
 
-    it('should emit false and return false if query is not defined', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true); // Mock the isCaseworker method to return true
-      spyOn(component.hasResponded, 'emit'); // Spy on the emit method of hasResponded
-      component.query = null; // Set the query to null
+    it('should emit false and return false if responseStatus is not AWAITING but user is not a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(false);
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED; // Not AWAITING, but user isn't a caseworker
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined(); // Ensure message is not set
+      expect(component.message).toBeUndefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if queryResponseStatus is undefined', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = undefined; // Undefined case
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
