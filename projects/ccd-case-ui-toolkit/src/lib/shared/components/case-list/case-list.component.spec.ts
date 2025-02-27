@@ -136,7 +136,7 @@ describe('CaseListComponent', () => {
 
     it('should enable the "select all" checkbox when there is at least one shareable Case', () => {
       expect(component.canAnyBeShared()).toBe(true);
-      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(selectAllCheckbox.nativeElement.disabled).toBe(false);
     });
 
@@ -145,7 +145,7 @@ describe('CaseListComponent', () => {
       expect(component.canAnyBeShared()).toBe(false);
       // Update the view
       fixture.detectChanges();
-      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(selectAllCheckbox.nativeElement.disabled).toBe(true);
     });
 

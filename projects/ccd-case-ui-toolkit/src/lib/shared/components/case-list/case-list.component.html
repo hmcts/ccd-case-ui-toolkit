@@ -2,15 +2,15 @@
   <caption class="govuk-table__caption">{{caption | rpxTranslate}}</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col" *ngIf="selectionEnabled">
+      <td class="govuk-table__header" *ngIf="selectionEnabled">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()"
                  [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
           <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-          <label class="govuk-label govuk-checkboxes__label" for="select-all">
+          <label class="govuk-label govuk-checkboxes__label" for="select-all" [attr.aria-labelledby]="'select-all'">
           </label>
         </div>
-      </th>
+      </td>
       <th class="govuk-table__header" scope="col" *ngFor="let h of tableConfig.columnConfigs">{{h.header | rpxTranslate}}</th>
     </tr>
   </thead>
@@ -22,7 +22,7 @@
             <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] }}" name="select-{{ c[tableConfig.idField] }}"
                   type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
             <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}" [attr.aria-labelledby]="'select-' + c[tableConfig.idField]">
             </label>
           </div>
         </th>
