@@ -128,7 +128,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   const snapshotActivatedRoute = {
     snapshot: {
-      queryparams: {
+      queryParams: {
         tid: 'Task_2'
       },
       params: {
@@ -433,7 +433,6 @@ describe('QueryCheckYourAnswersComponent', () => {
       isHearingRelated: new FormControl('', Validators.required),
       attachments: new FormControl([mockAttachment])
     });
-    component['tid'] = '1';
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -682,15 +681,16 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(casesService.createEvent).toHaveBeenCalled();
   });
 
-  it('should complete task when query is submitted', () => {
-    casesService.createEvent.and.returnValue(of({}));
+  it('should filter tasks by tid and complete task when query is submitted', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
     component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.fieldId = 'someFieldId';
+
     fixture.detectChanges();
     component.ngOnInit();
 
-    component.fieldId = 'someFieldId';
-    component.filteredTasks = taskResponse.tasks;
+    expect(component.filteredTasks.length).toBe(1);
+    expect(component.filteredTasks[0].id).toBe('Task_2');
 
     component.submit();
 
