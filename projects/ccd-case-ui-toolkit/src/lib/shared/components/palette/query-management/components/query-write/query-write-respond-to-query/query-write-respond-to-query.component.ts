@@ -25,7 +25,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public caseId: string;
   public queryItemId: string;
   public caseDetails;
-  public totalNumberOfQueryChildren: number;
+  public queryResponseStatus: string;
   public queryItemDisplay: QueryListItem;
 
   public hasRespondedToQuery: boolean = false;
@@ -58,8 +58,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
         return;
       }
 
-      const numberOfQueryChildren = new QueryListData(this.caseQueriesCollections[0]);
-      this.totalNumberOfQueryChildren = numberOfQueryChildren?.queries?.[0]?.children?.length || 0;
+      const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
 
       const messageId = this.route.snapshot.params.dataid;
       if (!messageId) {
@@ -74,6 +73,9 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
       if (filteredMessages.length > 0) {
         const matchingMessage = filteredMessages[0]?.value;
+
+        const filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.parentId === message?.id);
+        this.queryResponseStatus = filteredQuery[0]?.responseStatus;
 
         if (matchingMessage) {
           this.queryItemDisplay = new QueryListItem();
