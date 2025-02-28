@@ -116,6 +116,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public submit(): void {
     if (this.summary.valid && this.description.valid) {
       this.linkedCasesService.resetLinkedCaseData();
+      this.checkExistingDataInSubmission();
       this.caseEdit.submitForm({
         eventTrigger: this.eventTrigger,
         form: this.editForm,
@@ -133,6 +134,27 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       form: this.editForm,
       submit: this.caseEdit.submit
     });
+  }
+
+  public checkExistingDataInSubmission() {
+    if (this.caseEdit.isCaseFlagSubmission) {
+      this.eventTrigger.case_fields.forEach((field) => {
+        const fieldData = this.editForm.value.data[field.id];
+        if (fieldData?.details) {
+          const priorFlags = fieldData.details;
+          if (priorFlags) {
+            priorFlags.forEach((flag) => {
+              if (!field.formatted_value.details) {
+                field.formatted_value.details = [];
+              }
+              if (!field.formatted_value.details.some((detail) => detail.id === flag.id)) {
+                field.formatted_value.details.push(flag);
+              }
+            });
+          }
+        }
+      });
+    }
   }
 
   private getPageTitle(): string {
