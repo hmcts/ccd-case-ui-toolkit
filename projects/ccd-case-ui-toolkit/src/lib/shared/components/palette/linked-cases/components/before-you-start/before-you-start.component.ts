@@ -40,6 +40,8 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
           this.linkedCasesService.initialCaseLinkRefs.push(item.caseReference);
         });
         this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
+      } else {
+        this.linkedCasesService.caseFieldValue = this.linkedCasesService.caseFieldValue.filter((item) => this.linkedCasesService.initialCaseLinkRefs.includes(item.id));
       }
     }
   }

@@ -60,7 +60,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     }
     if (this.linkedCasesService.editMode || this.linkedCasesService.linkedCases.length) {
       // this may have includes the currently added one but yet to be submitted.
-      this.selectedCases = this.linkedCasesService.linkedCases;
+      this.selectedCases = this.linkedCasesService.linkedCases.filter((item) => this.linkedCasesService.initialCaseLinkRefs.includes(item.caseReference));
     } else if (this.linkedCasesService.initialCaseLinks.length !== this.linkedCasesService.caseFieldValue.length) {
       this.linkedCasesService.linkedCases = this.linkedCasesService.initialCaseLinks;
     }

@@ -101,7 +101,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
-    if (!this.caseFlagStateService.initialCaseFlags && this.caseEdit.isCaseFlagSubmission){
+    if (!this.caseFlagStateService.initialCaseFlags && this.caseEdit.isCaseFlagSubmission && Object.keys(this.caseEdit.form.value.data).length > 0){
       this.caseFlagStateService.initialCaseFlags = JSON.parse(JSON.stringify(this.caseEdit.form.value));
     }
     this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
@@ -155,6 +155,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
             });
             field._value.details = field._value.details.filter((detail) => detail.id !== null);
             field.formatted_value.details = field._value.details;
+            field._value.groupId = field.formatted_value.groupId;
+            field._value.visibility = field.formatted_value.visibility;
             fieldData.details = fieldData.details.filter((detail) => detail.id !== null);
           }
         }
