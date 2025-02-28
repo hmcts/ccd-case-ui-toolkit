@@ -148,14 +148,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           if (priorFlags) {
             priorFlags.forEach((flag) => {
               if (!field.formatted_value.details) {
-                field.formatted_value.details = [];
               }
-              if (!field.formatted_value.details.some((detail) => detail.id === flag.id)) {
-                field.formatted_value.details.push(flag);
+              if (!field._value.details.some((detail) => detail.id === flag.id)) {
+                field._value.details.push(flag);
               }
             });
-            field.formatted_value.details = field.formatted_value.details.filter((detail) => detail.id !== null);
             field._value.details = field._value.details.filter((detail) => detail.id !== null);
+            field.formatted_value.details = field._value.details;
             fieldData.details = fieldData.details.filter((detail) => detail.id !== null);
           }
         }
@@ -205,6 +204,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseEdit.isLinkedCasesSubmission) {
       this.handleLinkedCasesSubmission();
     }
+    this.caseFlagStateService.resetInitialCaseFlags();
     this.emitCancelEvent();
   }
 
