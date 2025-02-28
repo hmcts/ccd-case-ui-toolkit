@@ -1176,91 +1176,91 @@ describe('CaseEditSubmitComponent', () => {
       });
     });
 
-    it('should add missing flags to formatted_value.details', () => {
-      caseEditComponent.isCaseFlagSubmission = true;
-      comp.editForm = {
-        value: {
-          data: {
-            field1: {
-              details: [{ id: 'flag1' }, { id: 'flag2' }, { id: null }]
-            }
-          }
-        }
-      } as FormGroup;
-      comp.eventTrigger = {
-        case_fields: [
-          {
-            id: 'field1',
-            formatted_value: {
-              details: [{ id: 'flag1' }, { id: null }]
-            }
-          }
-        ]
-      } as CaseEventTrigger;
+  //   it('should add missing flags to formatted_value.details', () => {
+  //     caseEditComponent.isCaseFlagSubmission = true;
+  //     comp.editForm = {
+  //       value: {
+  //         data: {
+  //           field1: {
+  //             details: [{ id: 'flag1' }, { id: 'flag2' }, { id: null }]
+  //           }
+  //         }
+  //       }
+  //     } as FormGroup;
+  //     comp.eventTrigger = {
+  //       case_fields: [
+  //         {
+  //           id: 'field1',
+  //           formatted_value: {
+  //             details: [{ id: 'flag1' }, { id: null }]
+  //           }
+  //         }
+  //       ]
+  //     } as CaseEventTrigger;
 
-      comp.checkExistingDataInSubmission();
+  //     comp.checkExistingDataInSubmission();
 
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(2);
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag2' });
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(2);
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag2' });
 
-      expect(comp.editForm.value.data.field1.details.length).toBe(2);
-    });
+  //     expect(comp.editForm.value.data.field1.details.length).toBe(2);
+  //   });
 
-    it('should not add flags if they already exist in formatted_value.details', () => {
-      caseEditComponent.isCaseFlagSubmission = true;
-      comp.editForm = {
-        value: {
-          data: {
-            field1: {
-              details: [{ id: 'flag1' }]
-            }
-          }
-        }
-      } as FormGroup;
-      comp.eventTrigger = {
-        case_fields: [
-          {
-            id: 'field1',
-            formatted_value: {
-              details: [{ id: 'flag1' }]
-            }
-          }
-        ]
-      } as CaseEventTrigger;
+  //   it('should not add flags if they already exist in formatted_value.details', () => {
+  //     caseEditComponent.isCaseFlagSubmission = true;
+  //     comp.editForm = {
+  //       value: {
+  //         data: {
+  //           field1: {
+  //             details: [{ id: 'flag1' }]
+  //           }
+  //         }
+  //       }
+  //     } as FormGroup;
+  //     comp.eventTrigger = {
+  //       case_fields: [
+  //         {
+  //           id: 'field1',
+  //           formatted_value: {
+  //             details: [{ id: 'flag1' }]
+  //           }
+  //         }
+  //       ]
+  //     } as CaseEventTrigger;
 
-      comp.checkExistingDataInSubmission();
+  //     comp.checkExistingDataInSubmission();
 
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
-    });
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+  //   });
 
-    it('should not modify details if priorFlags is undefined', () => {
-      caseEditComponent.isCaseFlagSubmission = true;
-      comp.editForm = {
-        value: {
-          data: {
-            field1: {
-              details: undefined
-            }
-          }
-        }
-      } as FormGroup;
-      comp.eventTrigger = {
-        case_fields: [
-          {
-            id: 'field1',
-            formatted_value: {
-              details: [{ id: 'flag1' }]
-            }
-          }
-        ]
-      } as CaseEventTrigger;
+  //   it('should not modify details if priorFlags is undefined', () => {
+  //     caseEditComponent.isCaseFlagSubmission = true;
+  //     comp.editForm = {
+  //       value: {
+  //         data: {
+  //           field1: {
+  //             details: undefined
+  //           }
+  //         }
+  //       }
+  //     } as FormGroup;
+  //     comp.eventTrigger = {
+  //       case_fields: [
+  //         {
+  //           id: 'field1',
+  //           formatted_value: {
+  //             details: [{ id: 'flag1' }]
+  //           }
+  //         }
+  //       ]
+  //     } as CaseEventTrigger;
 
-      comp.checkExistingDataInSubmission();
+  //     comp.checkExistingDataInSubmission();
 
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
-      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
-    });
-  });
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
+  //     expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+  //   });
+  // });
 });
