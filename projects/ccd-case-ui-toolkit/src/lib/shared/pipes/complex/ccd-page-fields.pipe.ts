@@ -13,7 +13,7 @@ export class CcdPageFieldsPipe implements PipeTransform {
       const control: AbstractControl = (dataFormGroup.controls['data'] as FormGroup).get(key);
       return control['caseField'] as CaseField;
     }).filter(field => {
-      return !!page.case_fields.find(pcf => pcf.id === field.id);
+      return field && !!page.case_fields.find(pcf => pcf.id === field.id);
     }).sort((a, b) => a.order - b.order);
 
     const rawValue: any = dataFormGroup.value;
