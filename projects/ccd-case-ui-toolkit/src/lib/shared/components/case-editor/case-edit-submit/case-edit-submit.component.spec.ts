@@ -1262,5 +1262,5 @@ describe('CaseEditSubmitComponent', () => {
   //     expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
   //     expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
   //   });
-  // });
+  });
 });

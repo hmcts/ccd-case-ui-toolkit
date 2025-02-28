@@ -62,7 +62,7 @@
     </fieldset>
 
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isAtStart()">
+      <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">
         {{'Previous' | rpxTranslate}}
       </button>
       <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>

@@ -104,13 +104,27 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.cancel();
   }
 
+  public getPageNumber(){
+    return this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage !== undefined ? this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage : this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState;
+  }
+
   public isAtStart(): boolean {
-    const pageNumberToUse = this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage !== undefined ? this.multipageComponentStateService.getJourneyCollection()[0]?.linkedCasesPage : this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState;
+    const pageNumberToUse = this.getPageNumber();
+    if (pageNumberToUse === undefined){
+      return false;
+    }
     return pageNumberToUse === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyStartPageNumber;
   }
 
   public isAtEnd(): boolean {
     return this.multipageComponentStateService.getJourneyCollection()[0]?.fieldState === this.multipageComponentStateService.getJourneyCollection()[0]?.journeyEndPageNumber;
+  }
+
+  public isDisabled(): boolean {
+    if (this.getPageNumber() === undefined){
+      return !this.hasPreviousPage$.value;
+    }
+    return this.isAtStart();
   }
 
   // This method will be triggered by the next button in the app component
@@ -215,7 +229,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
-    this.previousStep();
+    if (this.getPageNumber() !== undefined){
+      this.previousStep();
+    }
     CaseEditPageComponent.setFocusToTop();
   }
 
