@@ -101,7 +101,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
-
+    if (!this.caseFlagStateService.initialCaseFlags && this.caseEdit.isCaseFlagSubmission){
+      this.caseFlagStateService.initialCaseFlags = JSON.parse(JSON.stringify(this.caseEdit.form.value));
+    }
     this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
     this.description = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.description');
   }
@@ -123,6 +125,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
         submit: this.caseEdit.submit,
         caseDetails: this.caseEdit.caseDetails
       });
+      this.caseFlagStateService.resetInitialCaseFlags();
     }
   }
 
@@ -141,7 +144,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.eventTrigger.case_fields.forEach((field) => {
         const fieldData = this.editForm.value.data[field.id];
         if (fieldData?.details) {
-          const priorFlags = fieldData.details;
+          const priorFlags = this.caseFlagStateService.initialCaseFlags.data[field.id].details;
           if (priorFlags) {
             priorFlags.forEach((flag) => {
               if (!field.formatted_value.details) {
@@ -151,6 +154,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
                 field.formatted_value.details.push(flag);
               }
             });
+            field.formatted_value.details = field.formatted_value.details.filter((detail) => detail.id !== null);
+            field._value.details = field._value.details.filter((detail) => detail.id !== null);
+            fieldData.details = fieldData.details.filter((detail) => detail.id !== null);
           }
         }
       });
