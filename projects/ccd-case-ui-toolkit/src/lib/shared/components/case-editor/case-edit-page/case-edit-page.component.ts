@@ -574,11 +574,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     const initalLinks = this.linkedCasesService.initialCaseLinkRefs;
     if (linkedCasesTab && linkedCasesTab?.value?.length !== initalLinks?.length) {
       const initialCaseRefs = this.linkedCasesService.initialCaseLinkRefs;
-      linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
-        initialCaseRefs.includes(item.value.CaseReference)
+      linkedCasesTab.value = linkedCasesTab.value?.filter((item) =>
+        initialCaseRefs?.includes(item.value.CaseReference)
       );
-      linkedCasesTab.formatted_value = linkedCasesTab.formatted_value.filter((item) =>
-        initialCaseRefs.includes(item.value.CaseReference)
+      linkedCasesTab.formatted_value = linkedCasesTab.formatted_value?.filter((item) =>
+        initialCaseRefs?.includes(item.value?.CaseReference)
       );
     }
     if (linkedCasesTab && (linkedCasesTab?.formatted_value?.length !== initalLinks?.length)) {
