@@ -64,7 +64,10 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
         return displayData;
       }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus) || !this.excludedFlagStatuses.includes(flagForDisplay.flagDetailDisplay?.flagDetail?.status as CaseFlagStatus));
     }
-
+    this.flagsDisplayData = this.flagsDisplayData.filter((flagForDisplay) =>
+      !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus) &&
+      !this.excludedFlagStatuses.includes(flagForDisplay.flagDetailDisplay?.flagDetail?.status as CaseFlagStatus)
+    );
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
     if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
