@@ -340,6 +340,12 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
     this.emitLinkedCasesState(navigateToNextPage);
   }
 
+  public ngOnDestroy(): void {
+    if (this.selectedCases.length > 0) {
+      this.linkedCasesService.linkedCases = this.selectedCases;
+    }
+  }
+
   public next() {
     this.onNext();
 

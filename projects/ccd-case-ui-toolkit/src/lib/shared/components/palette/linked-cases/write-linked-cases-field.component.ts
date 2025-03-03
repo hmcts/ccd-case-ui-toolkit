@@ -71,6 +71,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       this.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
       this.journeyPageNumber = LinkedCasesPages.CHECK_YOUR_ANSWERS;
       this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(true);
+      this.submitLinkedCases();
     }
 
     this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
