@@ -154,7 +154,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
               }
             });
             if (field._value) {
-              field._value.details = field._value.details.filter((detail: { id?: string }) => detail.id !== null);
+              field._value.details = field._value.details?.filter((detail: { id?: string }) => detail.id !== null);
               field._value.groupId = field.formatted_value.groupId;
               field._value.visibility = field.formatted_value.visibility;
               field.formatted_value.details = field._value.details;
