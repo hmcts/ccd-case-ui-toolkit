@@ -153,11 +153,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
                 field._value.details.push(flag);
               }
             });
-            field._value.details = field._value.details.filter((detail) => detail.id !== null);
-            field.formatted_value.details = field._value.details;
-            field._value.groupId = field.formatted_value.groupId;
-            field._value.visibility = field.formatted_value.visibility;
-            fieldData.details = fieldData.details.filter((detail) => detail.id !== null);
+            if (field._value) {
+              field._value.details = field._value.details.filter((detail: { id?: string }) => detail.id !== null);
+              field._value.groupId = field.formatted_value.groupId;
+              field._value.visibility = field.formatted_value.visibility;
+              field.formatted_value.details = field._value.details;
+              fieldData.details = fieldData.details.filter((detail: { id?: string }) => detail.id !== null);
+            }
           }
         }
       });
