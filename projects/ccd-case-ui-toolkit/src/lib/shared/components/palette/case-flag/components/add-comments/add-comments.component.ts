@@ -47,6 +47,8 @@ export class AddCommentsComponent extends AbstractJourneyComponent implements On
     if ((this.formGroup?.value && this.formGroup?.value?.isParent === false && this.formGroup?.value?.flagComment === false) ||
       (this.formGroup?.value?.flagType?.isParent === false && this.formGroup?.value?.flagType?.flagComment === false)) {
       this.optional = true;
+    } else {
+      this.optional = false;
     }
   }
 
