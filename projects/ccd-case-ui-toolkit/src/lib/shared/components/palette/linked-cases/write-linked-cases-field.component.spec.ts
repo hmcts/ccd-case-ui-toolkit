@@ -573,6 +573,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
   it('should set linkedCasesPage and journeyPageNumber to CHECK_YOUR_ANSWERS if cameFromFinalStep is true', () => {
     linkedCasesService.cameFromFinalStep = true;
     spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
+    spyOn(component, 'submitLinkedCases').and.stub();
     component.ngOnInit();
     expect(component.linkedCasesPage).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
     expect(component.journeyPageNumber).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);

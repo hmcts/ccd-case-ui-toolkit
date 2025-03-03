@@ -44,11 +44,13 @@ export class AddCommentsComponent extends AbstractJourneyComponent implements On
       this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
     }
 
-    if ((this.formGroup?.value && this.formGroup?.value?.isParent === false && this.formGroup?.value?.flagComment === false) ||
-      (this.formGroup?.value?.flagType?.isParent === false && this.formGroup?.value?.flagType?.flagComment === false)) {
-      this.optional = true;
-    } else {
-      this.optional = false;
+    if (!this.optional){
+      if ((this.formGroup?.value && this.formGroup?.value?.isParent === false && this.formGroup?.value?.flagComment === false) ||
+        (this.formGroup?.value?.flagType?.isParent === false && this.formGroup?.value?.flagType?.flagComment === false)) {
+        this.optional = true;
+      } else {
+        this.optional = false;
+      }
     }
   }
 

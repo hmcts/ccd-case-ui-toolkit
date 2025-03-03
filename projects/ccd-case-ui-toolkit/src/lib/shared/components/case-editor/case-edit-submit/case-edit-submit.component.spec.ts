@@ -369,7 +369,7 @@ describe('CaseEditSubmitComponent', () => {
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
         getCaseId: () => '',
-        submitForm: () => '',
+        submitForm: () => ''
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -382,7 +382,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+      caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache', 'resetInitialCaseFlags']);
       caseFlagStateServiceSpy.formGroup = FORM_GROUP;
       caseFlagStateServiceSpy.fieldStateToNavigate = 5;
 

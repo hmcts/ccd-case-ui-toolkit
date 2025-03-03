@@ -57,6 +57,7 @@ export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent
       : SearchLanguageInterpreterStep.HINT_TEXT;
     this.formGroup.addControl(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM, new FormControl());
     this.formGroup.addControl(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY, new FormControl());
+    this.multipageComponentStateService.getJourneyCollectionMainObject().journeyPageNumber = CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER;
     this.filteredLanguages$ = this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).valueChanges.pipe(
       // Need to check type of input because it changes to object (i.e. Language) when a value is selected from the
       // autocomplete panel, instead of string when a value is being typed in
