@@ -316,6 +316,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       this.linkedCasesService.caseFieldValue = updatedItems;
     }
     this.selectedCases.splice(pos, 1);
+    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => item.caseReference !== selectedCaseReference);
   }
 
   public onNext(): void {
