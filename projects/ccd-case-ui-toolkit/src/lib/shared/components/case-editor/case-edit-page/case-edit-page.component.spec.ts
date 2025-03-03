@@ -6,6 +6,7 @@ import {
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   AbstractControl,
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -69,7 +70,6 @@ import { CaseFlagStateService } from '../services/case-flag-state.service';
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
 
-  const mockFormBuilder = jasmine.createSpyObj('FormBuilder', ['group']);
   const mockSearchService = jasmine.createSpyObj('SearchService', [
     'retrieveState',
     'storeState',
@@ -1239,6 +1239,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
     const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
+    const formBuilder = new FormBuilder();
 
     beforeEach(
       waitForAsync(() => {
@@ -1584,6 +1585,79 @@ describe('CaseEditPageComponent - all other tests', () => {
         CaseEditPageText.TRIGGER_TEXT_CONTINUE
       );
       expect(comp.caseEdit.ignoreWarning).toBeTruthy();
+    });
+
+    it('should filter caseFieldValue and remove unnecessary controls when not a linked cases event trigger', () => {
+      linkedCasesService.isLinkedCasesEventTrigger = false;
+      linkedCasesService.casesToUnlink = ['1'];
+      linkedCasesService.caseFieldValue = [{ id: '1' }, { id: '2' }];
+      comp.editForm = formBuilder.group({
+        data: formBuilder.group({
+          caseLinks: formBuilder.array([]),
+          caseNameHmctsInternal: [null],
+          maintainCaseLinksFlag: [null],
+          caseLinksFlag: [null]
+        })
+      });
+      comp.eventTrigger = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: {
+              people: {
+                value: true
+              }
+            }
+          }
+        ]
+      } as unknown as CaseEventTrigger;
+      comp.submit();
+
+      expect(linkedCasesService.caseFieldValue).toEqual([{ id: '2' }]);
+      expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
+      expect(comp.editForm.controls.data.get('maintainCaseLinksFlag')).toBeNull();
+    });
+
+    it('should remove unnecessary controls when a linked cases event trigger', () => {
+      linkedCasesService.isLinkedCasesEventTrigger = true;
+      linkedCasesService.linkedCases = [{
+        caseReference: '1',
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      }];
+      comp.editForm = formBuilder.group({
+        data: formBuilder.group({
+          caseLinks: formBuilder.array([]),
+          caseNameHmctsInternal: [null],
+          maintainCaseLinksFlag: [null],
+          caseLinksFlag: [null]
+        })
+      });
+      comp.eventTrigger = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: {
+              people: {
+                value: true
+              }
+            }
+          }
+        ]
+      } as unknown as CaseEventTrigger;
+
+      comp.submit();
+
+      expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
+      expect(comp.editForm.controls.data.get('caseLinksFlag')).toBeNull();
     });
   });
 
