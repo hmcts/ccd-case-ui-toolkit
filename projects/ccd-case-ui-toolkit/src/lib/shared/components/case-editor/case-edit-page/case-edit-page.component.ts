@@ -438,6 +438,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       // intended to be present in the Case Event data (they are added only for value selection and validation
       // purposes)
       this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
+      this.linkedCasesService.resetLinkedCaseData();
     }
     CaseEditPageComponent.setFocusToTop();
   }
