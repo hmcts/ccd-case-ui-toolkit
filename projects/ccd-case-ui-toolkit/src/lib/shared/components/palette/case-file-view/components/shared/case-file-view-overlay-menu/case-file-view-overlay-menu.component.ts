@@ -19,4 +19,9 @@ export class CaseFileViewOverlayMenuComponent {
     this.isOpen = isOpen;
     this.isOpenChange.emit(isOpen);
   }
+
+  public callback(func: any): void {
+    func();
+    this.closeOverlay();
+  }
 }
