@@ -35,11 +35,16 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
   public ngOnInit(): void {
     this.updateFlagAddTranslationTitle = CaseFlagWizardStepTitle.UPDATE_FLAG_ADD_TRANSLATION;
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    this.multipageComponentStateService.getJourneyCollectionMainObject().journeyEndPageNumber++;
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail?.flagComment));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl(flagDetail?.flagComment_cy));
+  }
+
+  public ngOnDestroy(): void {
+    this.multipageComponentStateService.getJourneyCollectionMainObject().journeyEndPageNumber--;
   }
 
   public onNext(): void {
