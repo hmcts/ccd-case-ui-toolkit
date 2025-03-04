@@ -19,7 +19,7 @@
       </ng-container>
 
       <menu *ngFor="let item of menuItems">
-        <li class="overlay-menu__item" (click)="item.actionFn(); closeOverlay();" (keyup.enter)="item.actionFn(); closeOverlay();">
+        <li class="overlay-menu__item" (click)="item.actionFn(); closeOverlay();" (keyup)="$event.key === 'Enter' ? item.actionFn(); closeOverlay(); : null">
           <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{title}} icon'" />
           <span class="overlay-menu__actionText">{{item.actionText}}</span>
         </li>
