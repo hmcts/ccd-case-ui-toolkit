@@ -27,7 +27,9 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
     const linkedCaseReferenceIds = this.linkedCasesService.caseFieldValue.filter((item) => item).map((item) => item.id);
-    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => linkedCaseReferenceIds.indexOf(item.caseReference) !== -1);
+    if (this.linkedCasesService.initialCaseLinks.length !== (this.linkedCasesService.caseFieldValue.length + this.linkedCasesService.casesToUnlink.length)) {
+      this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => linkedCaseReferenceIds.indexOf(item.caseReference) !== -1);
+    }
     if (this.linkedCasesService.linkedCases.length === 0 && this.linkedCasesService.caseFieldValue.length !== 0 && !this.linkedCasesService.hasContinuedFromStart) {
       this.linkedCasesService.caseFieldValue.forEach((item) => {
         this.linkedCasesService.initialCaseLinkRefs.push(item.id);

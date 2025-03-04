@@ -35,12 +35,12 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
     let originalStatus: string;
-    let originalPathToFlag: string;
+    let originalIdToFlag: string;
     // if the user has progressed to CYA and then navigated away, the flag they selected will be set as inactive, we need to reset this
     const locationControl = this.formGroup.get(this.selectedControlName);
     if (locationControl) {
       originalStatus = locationControl?.value?.originalStatus;
-      originalPathToFlag = locationControl?.value?.pathToFlagsFormGroup;
+      originalIdToFlag = locationControl?.value?.flagDetailDisplay.flagDetail.id;
       this.cachedControls = cloneDeep(this.formGroup.controls);
       Object.keys(this.formGroup.controls).forEach((controlName) => {
         if (controlName !== this.selectedControlName) {
@@ -58,16 +58,12 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance, originalStatus, originalPathToFlag))
+            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance, originalStatus, originalIdToFlag))
           ];
         }
         return displayData;
-      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus) || !this.excludedFlagStatuses.includes(flagForDisplay.flagDetailDisplay?.flagDetail?.status as CaseFlagStatus));
+      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
     }
-    this.flagsDisplayData = this.flagsDisplayData.filter((flagForDisplay) =>
-      !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus) &&
-      !this.excludedFlagStatuses.includes(flagForDisplay.flagDetailDisplay?.flagDetail?.status as CaseFlagStatus)
-    );
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
     if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
@@ -123,7 +119,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
         flagDetail.otherDescription_cy = originalFlagDetail.value?.otherDescription_cy;
       }
     }
-    return {
+    let returnObj = {
       flagDetailDisplay: {
         partyName: flagsInstance.flags?.partyName,
         flagDetail,
@@ -135,11 +131,15 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
       roleOnCase: flagsInstance.flags?.roleOnCase,
       originalStatus
     };
+    if (originalPathToFlag === flagDetail.id) {
+      returnObj = { ...returnObj, originalStatus };
+    }
+    return returnObj;
   }
 
   public getStatusToUse(flagsInstance: FlagsWithFormGroupPath, originalPathToFlag: string, originalStatusFromFG: string, originalFlagDetail: CaseField): string{
     let statusToUse = '';
-    if (flagsInstance.pathToFlagsFormGroup === originalPathToFlag) {
+    if (originalFlagDetail.id === originalPathToFlag) {
       if (originalStatusFromFG) {
         statusToUse = originalStatusFromFG === originalFlagDetail.value?.status ? originalFlagDetail.value?.status : originalStatusFromFG;
       } else {
