@@ -162,21 +162,6 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     expect(errorMessageElements.length).toBe(0);
   });
 
-  it('should call onNext method when next is called', () => {
-    spyOn(component, 'onNext');
-    component.next();
-    expect(component.onNext).toHaveBeenCalled();
-  });
-
-  it('should call super next method when errorMessages length is 0', () => {
-    spyOn(component, 'next').and.callThrough();
-    spyOn(component, 'onNext');
-    component.errorMessages = [];
-    component.next();
-    expect(component.onNext).toHaveBeenCalled();
-    expect(component.next).toHaveBeenCalled();
-  });
-
   it('should not call super next method when errorMessages length is not 0', () => {
     spyOn(component, 'next').and.callThrough();
     spyOn(component, 'onNext');

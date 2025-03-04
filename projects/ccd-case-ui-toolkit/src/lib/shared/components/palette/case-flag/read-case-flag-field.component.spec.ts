@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, Jurisdiction } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
@@ -12,13 +12,35 @@ import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain'
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
-import { MultipageComponentStateService } from '../../../services';
+import { JurisdictionService, MultipageComponentStateService, SearchService } from '../../../services';
+import { LinkedCasesService } from '../linked-cases/services';
+import createSpyObj = jasmine.createSpyObj;
+import { of } from 'rxjs';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
   let router: Router;
   let route: ActivatedRoute;
+  const CASE_TYPES_2 = [
+    {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
 
   const flaglauncherId = 'FlagLauncher';
   const flagLauncher1CaseField: CaseField = {
@@ -502,7 +524,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null, null, new MultipageComponentStateService())
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null, null, linkedCasesService, new MultipageComponentStateService())
       }
     },
     get: (controlName: string) => {
