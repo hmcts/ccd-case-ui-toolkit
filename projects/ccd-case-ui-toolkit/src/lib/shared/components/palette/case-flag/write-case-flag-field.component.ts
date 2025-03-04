@@ -12,6 +12,7 @@ import { MultipageComponentStateService } from '../../../services';
 import { AbstractFieldWriteJourneyComponent } from '../base-field/abstract-field-write-journey.component';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus } from './enums';
+import { LinkedCasesService } from '../linked-cases/services';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -65,6 +66,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     private readonly caseFlagStateService: CaseFlagStateService,
     private readonly rpxTranslationService: RpxTranslationService,
     private readonly router: Router,
+    private readonly linkedCasesService: LinkedCasesService,
     multipageComponentStateService: MultipageComponentStateService
   ) {
     super(multipageComponentStateService);
@@ -72,6 +74,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public ngOnInit(): void {
+    this.linkedCasesService.resetLinkedCaseData();
     const trigUrl = location.href;
     this.addState(null, this.router.url.split('/').splice(0, this.router.url.split('/').indexOf('trigger')).join('/'));
     this.addState(0, trigUrl);

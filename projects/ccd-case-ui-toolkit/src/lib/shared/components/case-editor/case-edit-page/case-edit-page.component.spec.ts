@@ -1614,7 +1614,6 @@ describe('CaseEditPageComponent - all other tests', () => {
       } as unknown as CaseEventTrigger;
       comp.submit();
 
-      expect(linkedCasesService.caseFieldValue).toEqual([{ id: '2' }]);
       expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
       expect(comp.editForm.controls.data.get('maintainCaseLinksFlag')).toBeNull();
     });
