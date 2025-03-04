@@ -1,7 +1,7 @@
 <div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
-  <legend class="form-label">
-    {{ caseField | ccdFieldLabel }}
-  </legend>
+  <label [for]="id()">
+    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</span>
+  </label>
   <span class="form-hint" *ngIf="caseField.hint_text">
     {{ caseField.hint_text | rpxTranslate }}
   </span>
