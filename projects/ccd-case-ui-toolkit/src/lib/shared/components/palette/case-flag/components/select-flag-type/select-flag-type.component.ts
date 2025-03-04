@@ -243,6 +243,10 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
       }
     }
     this.subJourneyIndex = Math.max(0, this.subJourneyIndex - 1);
+    if (this.subJourneyIndex === 0) {
+      this.flagTypes = this.flagTypes.filter((flag) =>
+        this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+    }
     this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
   }
 
