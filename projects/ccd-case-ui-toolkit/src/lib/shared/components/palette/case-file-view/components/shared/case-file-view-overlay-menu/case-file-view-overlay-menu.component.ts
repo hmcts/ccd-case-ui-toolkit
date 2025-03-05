@@ -20,7 +20,7 @@ export class CaseFileViewOverlayMenuComponent {
     this.isOpenChange.emit(isOpen);
   }
 
-  public callback(func: any): void {
+  public actionAndClose(func: any): void {
     func();
     this.closeOverlay();
   }
