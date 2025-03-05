@@ -76,6 +76,39 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
 
   onFlagSelectionChange(selectedFlag: FormControl): void {
     this.formGroup.get(this.selectedControlName).setValue(selectedFlag);
+    const idsInDisplayData = this.flagsDisplayData.map((flagDisplay) => this.getFlagID(flagDisplay));
+    for (const i in this.flagsData){
+      if (this.flagsData[i].caseField.formatted_value.details){
+        this.flagsData[i].caseField.formatted_value.details.forEach((flagDetail) => {
+          if (idsInDisplayData.includes(flagDetail.id)) {
+            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
+            if (matchingFlagDisplay) {
+              flagDetail.value.status = matchingFlagDisplay.originalStatus;
+            }
+          }
+        });
+      }
+      if (this.flagsData[i].caseField._value.details) {
+        this.flagsData[i].caseField._value.details.forEach((flagDetail) => {
+          if (idsInDisplayData.includes(flagDetail.id)) {
+            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
+            if (matchingFlagDisplay) {
+              flagDetail.value.status = matchingFlagDisplay.originalStatus;
+            }
+          }
+        });
+      }
+      if (this.flagsData[i].flags.details) {
+        this.flagsData[i].flags.details.forEach((flagDetail) => {
+          if (idsInDisplayData.includes(flagDetail.id)){
+            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
+            if (matchingFlagDisplay) {
+              flagDetail.status = matchingFlagDisplay.originalStatus;
+            }
+          }
+        });
+      }
+    }
   }
 
   isSelected(flagDisplay: FlagDetailDisplayWithFormGroupPath): boolean {
