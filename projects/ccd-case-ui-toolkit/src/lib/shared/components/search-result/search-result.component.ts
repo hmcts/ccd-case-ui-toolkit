@@ -4,11 +4,12 @@ import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
   CaseField, CaseState, CaseType, DisplayMode,
-  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
+  DRAFT_PREFIX, FieldType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
 } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
 import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import { FieldsUtils } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -149,6 +150,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
+  }
+
+  public isTranslatable(col: SearchResultViewColumn): boolean {
+    return FieldsUtils.isTranslatable(col.case_field_type);
   }
 
   public get resultTotal(): number {

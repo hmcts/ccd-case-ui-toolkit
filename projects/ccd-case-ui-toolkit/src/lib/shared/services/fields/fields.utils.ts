@@ -30,6 +30,12 @@ export class FieldsUtils {
       || ctx === 'COMPLEX');
   }
 
+  public static isTranslatable(fieldType: FieldType): boolean {
+    if (fieldType.type === 'Label' || fieldType.type === 'FixedList') {
+      return true;
+    }
+  }
+
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
       return plainToClassFromExist(new CaseField(), obj);
