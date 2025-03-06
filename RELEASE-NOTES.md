@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.46
+**EXUI-2104** Event History Summary
+
 ### Version 7.1.45
 **EXUI-2792** QM issue
 
