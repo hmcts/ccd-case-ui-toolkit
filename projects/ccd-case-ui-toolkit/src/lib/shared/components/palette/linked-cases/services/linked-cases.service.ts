@@ -25,6 +25,13 @@ export class LinkedCasesService {
   public serverLinkedApiError: { id: string, message: string } = null;
   public isServerReasonCodeError = false;
   public caseJurisdictionID = null;
+  public storedCaseNumber = '';
+  public cameFromFinalStep = false;
+  public hasNavigatedInJourney = false;
+  public hasContinuedFromStart = false;
+  public cachedFieldValues;
+  public initialCaseLinkRefs = [];
+  public casesToUnlink = [];
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {
@@ -53,6 +60,21 @@ export class LinkedCasesService {
     };
   }
 
+  public resetLinkedCaseData(): void {
+    //remove the newly added linked case using the linked case
+    this.caseFieldValue = [];
+    this.linkedCases = [];
+    this.initialCaseLinks = [];
+    this.initialCaseLinkRefs = [];
+    this.storedCaseNumber = '';
+    this.cameFromFinalStep = false;
+    this.hasNavigatedInJourney = false;
+    this.caseDetails = null;
+    this.hasContinuedFromStart = false;
+    this.casesToUnlink = [];
+    this.cachedFieldValues = null;
+  }
+
   public mapResponse(esSearchCasesResponse): any {
     const caseInfo = this.caseFieldValue.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
@@ -72,9 +94,10 @@ export class LinkedCasesService {
   public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
     const linkedCaseIds = this.groupLinkedCasesByCaseType(this.caseFieldValue, 'CaseType');
+    const caseTypeId = this.caseDetails.case_type.id;
     Object.keys(linkedCaseIds).forEach(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100);
-      const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
+      const query = this.searchService.searchCasesByIds(caseTypeId, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
     });
     if (searchCasesResponse.length) {
@@ -85,7 +108,6 @@ export class LinkedCasesService {
             casesResponse.push(this.mapResponse(result));
           });
         });
-
         this.linkedCases = casesResponse.map(item => {
           return {
             caseReference: item.caseReference,
@@ -100,6 +122,7 @@ export class LinkedCasesService {
             }),
           } as CaseLink;
         });
+        this.initialCaseLinks = this.linkedCases;
         this.serverLinkedApiError = null;
       },
       err => {

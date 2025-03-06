@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
-import { CaseField, Profile } from '../../../domain';
+import { CaseField, CaseTab, Jurisdiction, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
@@ -21,8 +21,10 @@ import {
   FormErrorService,
   FormValidatorsService,
   FormValueService,
+  JurisdictionService,
   OrderService,
   ProfileNotifier,
+  SearchService,
   SessionStorageService
 } from '../../../services';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -34,8 +36,11 @@ import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -47,6 +52,27 @@ describe('CaseEditSubmitComponent', () => {
   mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
+
+  const CASE_TYPES_2 = [
+    {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
 
   let sessionStorageService: any;
   const mockCaseNotifier: any = {};
@@ -106,6 +132,7 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier: ProfileNotifier;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
   let formValidatorsService: jasmine.SpyObj<FormValidatorsService>;
+  let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
@@ -318,6 +345,8 @@ describe('CaseEditSubmitComponent', () => {
     ];
     const firstPage = pages[0];
     const wizard: Wizard = new Wizard(pages);
+    const caseFlagStateService: CaseFlagStateService = new CaseFlagStateService();
+    let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
     beforeEach(() => {
       orderService = new OrderService();
       spyOn(orderService, 'sort').and.callThrough();
@@ -340,7 +369,7 @@ describe('CaseEditSubmitComponent', () => {
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
         getCaseId: () => '',
-        submitForm: () => '',
+        submitForm: () => ''
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -353,9 +382,12 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache', 'resetInitialCaseFlags']);
+      caseFlagStateServiceSpy.formGroup = FORM_GROUP;
+      caseFlagStateServiceSpy.fieldStateToNavigate = 5;
+
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
-
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -385,6 +417,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService,
+          { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -442,6 +477,38 @@ describe('CaseEditSubmitComponent', () => {
 
       expect(comp.navigateToPage).toHaveBeenCalled();
       expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should return lastPageShown and set the fieldStateToNavigate', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      caseFlagStateServiceSpy.lastPageFieldState = 1;
+      comp.previous();
+
+      expect(caseFlagStateServiceSpy.fieldStateToNavigate).toEqual(1);
+      expect(comp.navigateToPage).toHaveBeenCalled();
+      expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should return lastPageShown and set cameFromFinalStep if in linkedCaseSubmission', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      caseEditComponent.isLinkedCasesSubmission = true;
+      comp.previous();
+
+      expect(linkedCasesService.cameFromFinalStep).toBeTruthy();
+      expect(comp.navigateToPage).toHaveBeenCalled();
+      expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should reset the linkedCasesService values on cancel', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      spyOn(linkedCasesService, 'resetLinkedCaseData').and.callThrough();
+      caseEditComponent.isLinkedCasesSubmission = true;
+      comp.cancel();
+
+      expect(linkedCasesService.resetLinkedCaseData).toHaveBeenCalled();
     });
 
     it('should return false when no field exists and checkYourAnswerFieldsToDisplayExists is called', () => {
@@ -730,23 +797,178 @@ describe('CaseEditSubmitComponent', () => {
       expect(cancelLink).toBeNull();
     });
 
-    it('should not display the "Previous" button if submission is for a Case Flag', () => {
-      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
-      comp.eventTrigger.case_fields = [
-        caseFieldCaseFlagCreate
-      ];
-      fixture.detectChanges();
-      expect(comp.caseEdit.isCaseFlagSubmission).toBe(true);
-      const previousButton = de.query(By.css('.button-secondary'));
-      expect(previousButton).toBeNull();
-    });
-
     it('should display the "Previous" button if submission is not for a Case Flag', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
       expect(comp.caseEdit.isCaseFlagSubmission).toBe(false);
       const previousButton = de.query(By.css('.button-secondary'));
       expect(previousButton.nativeElement.textContent).toContain('Previous');
+    });
+
+    it('should remove any unsubmitted data on cancel', () => {
+      comp.caseEdit.caseDetails.tabs = [{
+        id: '123',
+        fields: [
+          {
+            id: 'caseLinks',
+            value: [
+              { value: { CaseReference: 'REF1' } },
+              { value: { CaseReference: 'REF2' } },
+              { value: { CaseReference: 'REF3' } }
+            ]
+          }
+        ]
+      }] as CaseTab[];
+      caseEditComponent.isLinkedCasesSubmission = true;
+      linkedCasesService.initialCaseLinkRefs = ['REF1'];
+      comp.cancel();
+      expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
+    });
+
+    it('should add missing flags to formatted_value.details', () => {
+      caseEditComponent.isCaseFlagSubmission = true;
+      comp.editForm = {
+        value: {
+          data: {
+            field1: {
+              details: [{ id: 'flag1' }, { id: 'flag2' }]
+            }
+          }
+        }
+      } as FormGroup;
+      comp.eventTrigger = {
+        case_fields: [
+          {
+            id: 'field1',
+            formatted_value: {
+              details: [{ id: 'flag1' }]
+            },
+            _value: {
+              details: []
+            }
+          }
+        ]
+      } as CaseEventTrigger;
+      caseFlagStateServiceSpy.initialCaseFlags = {
+        data: {
+          field1: {
+            details: [{ id: 'flag1' }, { id: 'flag2' }]
+          }
+        }
+      };
+      comp.checkExistingDataInSubmission();
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(2);
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain(jasmine.objectContaining({ id: 'flag1' }));
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain(jasmine.objectContaining({ id: 'flag2' }));
+    });
+
+    it('should not add flags if they already exist in formatted_value.details', () => {
+      caseEditComponent.isCaseFlagSubmission = true;
+      comp.editForm = {
+        value: {
+          data: {
+            field1: {
+              details: [{ id: 'flag1' }]
+            }
+          }
+        }
+      } as FormGroup;
+      comp.eventTrigger = {
+        case_fields: [
+          {
+            id: 'field1',
+            formatted_value: {
+              details: [{ id: 'flag1' }]
+            },
+            _value: {
+              details: [{ id: 'flag1' }]
+            }
+          }
+        ]
+      } as CaseEventTrigger;
+      caseFlagStateServiceSpy.initialCaseFlags = {
+        data: {
+          field1: {
+            details: [{ id: 'flag1' }]
+          }
+        }
+      };
+      comp.checkExistingDataInSubmission();
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+    });
+
+    it('should not modify details if priorFlags is undefined', () => {
+      caseEditComponent.isCaseFlagSubmission = true;
+      comp.editForm = {
+        value: {
+          data: {
+            field1: {
+              details: undefined
+            }
+          }
+        }
+      } as FormGroup;
+      comp.eventTrigger = {
+        case_fields: [
+          {
+            id: 'field1',
+            formatted_value: {
+              details: [{ id: 'flag1' }]
+            },
+            _value: {
+              details: [{ id: 'flag1' }]
+            }
+          }
+        ]
+      } as CaseEventTrigger;
+      caseFlagStateServiceSpy.initialCaseFlags = {
+        data: {
+          field1: {
+            details: undefined
+          }
+        }
+      };
+      comp.checkExistingDataInSubmission();
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+    });
+
+    it('should filter out null ids from details', () => {
+      caseEditComponent.isCaseFlagSubmission = true;
+      comp.editForm = {
+        value: {
+          data: {
+            field1: {
+              details: [{ id: 'flag1' }, { id: null }]
+            }
+          }
+        }
+      } as FormGroup;
+      comp.eventTrigger = {
+        case_fields: [
+          {
+            id: 'field1',
+            formatted_value: {
+              details: [{ id: 'flag1' }, { id: null }]
+            },
+            _value: {
+              details: [{ id: 'flag1' }, { id: null }]
+            }
+          }
+        ]
+      } as CaseEventTrigger;
+      caseFlagStateServiceSpy.initialCaseFlags = {
+        data: {
+          field1: {
+            details: [{ id: 'flag1' }, { id: null }]
+          }
+        }
+      };
+      comp.checkExistingDataInSubmission();
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details.length).toBe(1);
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
+      expect(comp.eventTrigger.case_fields[0].formatted_value.details).not.toContain({ id: null });
     });
   });
 
@@ -818,6 +1040,27 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
+      const CASE_TYPES_2 = [
+        {
+          id: 'Benefit_Xui',
+          name: 'Benefit_Xui',
+          description: '',
+          states: [],
+          events: [],
+        }];
+      const MOCK_JURISDICTION: Jurisdiction[] = [{
+        id: 'JURI_1',
+        name: 'Jurisdiction 1',
+        description: '',
+        caseTypes: CASE_TYPES_2
+      }];
+    
+      const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+      searchService.searchCasesByIds.and.returnValue(of({}));
+      const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+      jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+      const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -846,6 +1089,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          CaseFlagStateService,
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -861,7 +1107,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit RESUMED_FORM_DISCARD on create event if cancel triggered and originated from view case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
-        // tslint:disable-next-line: switch-default
+      // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -876,7 +1122,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
-        // tslint:disable-next-line: switch-default
+      // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return '';
@@ -978,6 +1224,27 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
+      const CASE_TYPES_2 = [
+        {
+          id: 'Benefit_Xui',
+          name: 'Benefit_Xui',
+          description: '',
+          states: [],
+          events: [],
+        }];
+      const MOCK_JURISDICTION: Jurisdiction[] = [{
+        id: 'JURI_1',
+        name: 'Jurisdiction 1',
+        description: '',
+        caseTypes: CASE_TYPES_2
+      }];
+    
+      const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+      searchService.searchCasesByIds.and.returnValue(of({}));
+      const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+      jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+      const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1006,6 +1273,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          CaseFlagStateService,
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);

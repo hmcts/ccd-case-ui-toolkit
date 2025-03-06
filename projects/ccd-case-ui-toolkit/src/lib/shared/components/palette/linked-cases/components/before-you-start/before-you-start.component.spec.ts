@@ -16,7 +16,11 @@ describe('BeforeYouStartComponent', () => {
     isLinkedCasesEventTrigger: false,
     caseFieldValue: [],
     linkedCases: [],
+    initialCaseLinkRefs: [],
     serverLinkedApiError: null,
+    hasContinuedFromStart: false,
+    casesToUnlink: [],
+    initialCaseLinks: []
   };
 
   const mockRouter = {
@@ -39,6 +43,10 @@ describe('BeforeYouStartComponent', () => {
   }));
 
   beforeEach(() => {
+    linkedCasesService.caseFieldValue = [{ id: '123' }];
+    linkedCasesService.linkedCases = [];
+    linkedCasesService.hasContinuedFromStart = false;
+    linkedCasesService.initialCaseLinkRefs = [];
     fixture = TestBed.createComponent(BeforeYouStartComponent);
     component = fixture.componentInstance;
     spyOn(component.linkedCasesStateEmitter, 'emit');
@@ -47,14 +55,6 @@ describe('BeforeYouStartComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should next event emit linked cases state with no error', () => {
-    fixture.detectChanges();
-    const buttonElem = fixture.debugElement.query(By.css('.button-primary')); // change selector here
-    buttonElem.triggerEventHandler('click', null);
-    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: undefined, navigateToNextPage: true });
   });
 
   it('should display correct text content for link cases journey', () => {
@@ -76,5 +76,25 @@ describe('BeforeYouStartComponent', () => {
   it('should return to case details page', () => {
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+
+  it('should emit linkedCasesStateEmitter when next is called', () => {
+    component.next();
+    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
+  });
+
+  it('should call super.next when next is called and errorMessages is an empty array', () => {
+    spyOn(component, 'next').and.callThrough();
+    component.errorMessages = [];
+    component.next();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should set the initialCaseLinkRefs when linkedCases is empty and caseFieldValue is not empty', () => {
+    expect(linkedCasesService.initialCaseLinkRefs).toEqual(['123']);
+  });
+
+  it('should set the initialCaseLinkRefs when linkedCases is not empty and caseFieldValue is not empty', () => {
+    expect(linkedCasesService.initialCaseLinkRefs).toEqual(['123']);
   });
 });

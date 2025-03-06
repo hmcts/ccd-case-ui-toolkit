@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { FlagType } from '../../../domain/case-flag';
-import { CaseField, FieldType } from '../../../domain/definition';
+import { CaseField, FieldType, Jurisdiction } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from './domain';
@@ -15,6 +15,8 @@ import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { LinkedCasesService } from '../linked-cases/services';
+import { JurisdictionService, SearchService } from '../../../services';
 
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
@@ -136,6 +138,26 @@ describe('WriteCaseFlagFieldComponent', () => {
       ]
     },
   };
+  const CASE_TYPES_2 = [
+    {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+
   // Set different description, comments, date/time modified, and status values in formatted_value to check they are restored
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.otherDescription = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.otherDescription_cy = null;
@@ -359,7 +381,9 @@ describe('WriteCaseFlagFieldComponent', () => {
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
         { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
-        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
+        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy },
+        { provide: LinkedCasesService, useValue: linkedCasesService },
+        Router
       ]
     })
       .compileComponents();

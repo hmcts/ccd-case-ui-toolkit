@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
-import { CaseFlagRefdataService } from '../../../../../services';
+import { CaseFlagRefdataService, MultipageComponentStateService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
 import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.component';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 @Component({
@@ -15,7 +16,7 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
   templateUrl: './select-flag-type.component.html',
   styleUrls: ['./select-flag-type.component.scss']
 })
-export class SelectFlagTypeComponent implements OnInit, OnDestroy {
+export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {
   @Input()
   public formGroup: FormGroup;
 
@@ -43,6 +44,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   @Output()
   public flagCommentsOptionalEmitter: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  public flagTypeSubJourneyEmitter: EventEmitter<any> = new EventEmitter();
+
   public flagTypes: FlagType[];
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
@@ -54,6 +58,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
   public isCaseLevelFlag = false;
+  public cachedRDFlagTypes: FlagType[];
+  public subJourneyIndex: number = 0;
 
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
@@ -64,6 +70,11 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     return CaseFlagWizardStepTitle;
   }
 
+  public constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService, pageStateService: MultipageComponentStateService) {
+    super(pageStateService);
+    this.handleBackButtonSubJourney = this.handleBackButtonSubJourney.bind(this);
+  }
+
   public get selectedFlagType(): FlagType | null {
     return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value;
   }
@@ -72,13 +83,12 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value?.flagCode === this.otherFlagTypeCode;
   }
 
-  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
-
   public ngOnInit(): void {
     this.isCaseLevelFlag = this.selectedFlagsLocation?.flags?.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
     this.flagTypes = [];
     const flagType = this.isCaseLevelFlag ? RefdataCaseFlagType.CASE : RefdataCaseFlagType.PARTY;
-
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
     // FormControl is linked to a checkbox input element, so initial value should be false
@@ -86,7 +96,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.valueChanges
-      .subscribe(_ => {
+      .subscribe((_) => {
         this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.setValue('');
         this.cachedPath = [];
 
@@ -96,63 +106,148 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
           [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY]: ''
         });
       }
-    );
+      );
 
     // If hmctsServiceId is present, use this to retrieve the relevant list of flag types
     if (this.hmctsServiceId) {
       this.flagRefdata$ = this.caseFlagRefdataService
         .getCaseFlagsRefdata(this.hmctsServiceId, flagType, true, this.isDisplayContextParameterExternal)
         .subscribe({
-          next: flagTypes => this.processFlagTypes(flagTypes),
-          error: error => this.onRefdataError(error)
+          next: (flagTypes) => this.processFlagTypes(flagTypes),
+          error: (error) => this.onRefdataError(error)
         });
     } else {
       // Else, HMCTS service code is required to retrieve the relevant list of flag types; attempt to obtain it by case type ID first
       this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(this.caseTypeId)
         .pipe(
           // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
-          catchError(_ => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
+          catchError((_) => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
           // Use switchMap to return an inner Observable of the flag types data, having received the service details
           // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
-          switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
+          switchMap((serviceDetails) => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
             true, this.isDisplayContextParameterExternal))
         )
         .subscribe({
-          next: flagTypes => this.processFlagTypes(flagTypes),
-          error: error => this.onRefdataError(error)
+          next: (flagTypes) => this.processFlagTypes(flagTypes),
+          error: (error) => this.onRefdataError(error)
         });
     }
+    this.addState(this.subJourneyIndex);
+    window.addEventListener('popstate', this.handleBackButtonSubJourney);
+  }
+
+  public handleBackButtonSubJourney(event: Event): void {
+    event.preventDefault();
+    this.previous();
+  }
+
+  public addState(data: number, url?: string): void {
+    history.pushState('1'+data, '', url);
   }
 
   public ngOnDestroy(): void {
     this.flagRefdata$?.unsubscribe();
     this.flagTypeControlChangesSubscription?.unsubscribe();
+    // check if the user has an existing path when navigating away from the page
+    // if so we may need to ensure the values are set correctly.
+    this.checkForExistingPath();
+    window.removeEventListener('popstate', this.handleBackButtonSubJourney);
+  }
+
+  public checkForExistingPath(): void {
+    // Restore values from cachedPath
+    if (this.subJourneyIndex <= 0) {
+      // check if the user is navigating to the previous page in the jounrey.
+      // in this situation we need to restore the full path for data retention across pages.
+      if (this.cachedPath && this.cachedPath.length > 0) {
+        this.cachedPath.forEach((flagType) => {
+          if (flagType) {
+            this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(flagType, { emitEvent: false });
+          }
+        });
+      }
+    }
   }
 
   public onNext(): void {
-    // Validate form
     this.validateForm();
-    // Return case flag field state, whether the selected flag type (if any) is a parent or not, error messages,
-    // flag name, path, hearing relevant indicator, code, and "list of values" (if any) to the parent
+    this.emitCaseFlagState();
+    this.emitFlagCommentsOptional();
+    this.handleFlagTypeSelection();
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
+  }
+
+  private emitCaseFlagState(): void {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: this.selectedFlagType ? this.selectedFlagType.isParent : null,
       errorMessages: this.errorMessages
     });
-    // Emit "flag comments optional" event if the user selects a child flag type where comments are not mandatory
+  }
+
+  private emitFlagCommentsOptional(): void {
     if (this.selectedFlagType && !this.selectedFlagType.isParent && !this.selectedFlagType.flagComment) {
       this.flagCommentsOptionalEmitter.emit(null);
     }
+  }
 
-    // If the selected flag type is a parent, load the list of child flag types and reset the current selection
+  private handleFlagTypeSelection(): void {
     if (this.selectedFlagType?.isParent) {
-      // Cache the current flag type selection before it is reset - this is needed for displaying its name as the title
-      // when displaying the next set of child flags
-      this.cachedFlagType = this.selectedFlagType;
-      this.flagTypes = this.selectedFlagType.childFlags;
-      this.cachedPath?.shift();
-      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
+      this.loadChildFlagTypes();
+    } else {
+      this.completeSubJourney();
     }
+  }
+
+  private loadChildFlagTypes(): void {
+    this.cachedFlagType = this.selectedFlagType;
+    this.flagTypes = this.selectedFlagType.childFlags;
+    if (this.cachedPath.length !== 0 && this.cachedPath[this.subJourneyIndex] === this.selectedFlagType) {
+      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedPath[this.subJourneyIndex + 1], { emitEvent: false });
+    } else {
+      this.cachedPath?.shift();
+      const value = this.cachedPath?.length ? this.cachedPath[0] : null;
+      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(value, { emitEvent: false });
+    }
+    this.subJourneyIndex++;
+  }
+
+  private completeSubJourney(): void {
+    const currentSelectedFlag = this.formGroup.controls.flagType;
+    const addedFlagValue = this.selectedFlagsLocation?.caseField?.value?.details;
+    if (addedFlagValue && (addedFlagValue[Object.keys(addedFlagValue).length]?.name !== currentSelectedFlag.value.name)) {
+      this.selectedFlagsLocation['caseField'].value.details.pop();
+      this.selectedFlagsLocation['caseField'].formatted_value?.details.pop();
+    }
+  }
+
+  // Simplified version of the onPrevious method with optimized code
+  public onPrevious(): void {
+    if (this.cachedFlagType) {
+      if (this.cachedFlagType.Path?.length === 1) {
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedFlagType, { emitEvent: false });
+        this.flagTypes = this.cachedRDFlagTypes[0].childFlags;
+      } else {
+        let currentPath = this.cachedRDFlagTypes[0];
+        const pathToSearch = this.cachedFlagType.Path.slice(1);
+        for (const pathElement of pathToSearch) {
+          const foundFlag = currentPath.childFlags.find((flag) => flag.name === pathElement);
+          if (foundFlag) {
+            currentPath = foundFlag;
+          }
+        }
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedFlagType, { emitEvent: false });
+        this.flagTypes = currentPath.childFlags;
+        this.cachedFlagType = currentPath;
+      }
+    }
+    this.subJourneyIndex = Math.max(0, this.subJourneyIndex - 1);
+    if (this.subJourneyIndex === 0) {
+      this.flagTypes = this.flagTypes.filter((flag) =>
+        this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+    }
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
   }
 
   // Identity function for trackBy use by *ngFor for flagTypes in HTML template
@@ -171,9 +266,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       if (this.cachedFlagType) {
         errorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
       } else {
-        errorMessage  = this.isDisplayContextParameterExternal
-        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
-        : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+        errorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
       }
       this.flagTypeNotSelectedErrorMessage = errorMessage;
       this.errorMessages.push({ title: '', description: errorMessage, fieldId: 'conditional-radios-list' });
@@ -193,22 +288,37 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private processFlagTypes(flagTypes: FlagType[]): void {
-    // First (and only) object in the returned array should be the top-level "Party" flag type
-    // The "Other" flag type should be removed from the top level if the user is external
-    this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
-      this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
-
+  public processFlagTypes(flagTypes: FlagType[]): void {
+    const prevJourneyPage = this.multipageComponentStateService.getJourneyCollection()[0];
+    const { journeyPreviousPageNumber, journeyPageNumber } = prevJourneyPage;
+    this.cachedRDFlagTypes = flagTypes;
+    if (this.selectedFlagType && (journeyPreviousPageNumber > journeyPageNumber)) {
+      const selectedFlagType = this.selectedFlagType;
+      const pathToSearch = selectedFlagType.Path.slice(1);
+      let currentPath = flagTypes[0];
+      for (const pathElement of pathToSearch) {
+        const foundFlag = currentPath.childFlags.find((flag) => flag.name === pathElement);
+        if (foundFlag) {
+          currentPath = foundFlag;
+        }
+      }
+      this.flagTypes = currentPath.childFlags;
+      this.cachedFlagType = currentPath;
+    } else {
+      this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
+        this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+    }
     const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     if (formControl?.value) {
-      // Cache Path based on existing flagCode -- needed for nested choices
-      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-      this.cachedPath = [
-        ...path,
-        foundFlagType
-      ];
-      formControl.setValue(this.cachedPath[0], { emitEvent: false });
+      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.cachedRDFlagTypes[0].childFlags);
+      this.cachedPath = [...path, foundFlagType];
+      formControl.setValue((this.selectedFlagType && (journeyPreviousPageNumber > journeyPageNumber)) ? this.cachedPath[this.cachedPath.length - 1] : this.cachedPath[0], { emitEvent: false });
+      if (this.cachedPath.length !== 0 && (journeyPreviousPageNumber > journeyPageNumber)) {
+        this.subJourneyIndex = this.cachedPath.length-1;
+      }
     }
+    this.flagTypeSubJourneyEmitter.emit(this.subJourneyIndex);
+    this.addState(this.subJourneyIndex);
   }
 
   private onRefdataError(error: any): void {
@@ -218,5 +328,21 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.errorMessages.push({ title: '', description: error.message, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+  }
+
+  public next(): void {
+    this.onNext();
+    this.addState(this.subJourneyIndex);
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
+  }
+
+  public previous(): void {
+    this.onPrevious();
+
+    if (this.subJourneyIndex <= 0) {
+      super.previous();
+    }
   }
 }

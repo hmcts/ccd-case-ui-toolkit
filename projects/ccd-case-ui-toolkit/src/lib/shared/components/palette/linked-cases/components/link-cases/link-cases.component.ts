@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import moment from 'moment';
 import { throwError } from 'rxjs';
-import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { CaseView, ErrorMessage, HttpError, Journey } from '../../../../../domain';
 import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
@@ -15,13 +15,15 @@ import {
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
   templateUrl: './link-cases.component.html'
 })
-export class LinkCasesComponent implements OnInit {
+export class LinkCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
@@ -38,29 +40,36 @@ export class LinkCasesComponent implements OnInit {
   public linkCaseReasons: LovRefDataModel[];
   public showComments = false;
   private readonly ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
-
   constructor(
     private readonly casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly linkedCasesService: LinkedCasesService) { }
+    private readonly linkedCasesService: LinkedCasesService,
+    multipageComponentStateService: MultipageComponentStateService
+  ) {
+    super(multipageComponentStateService);
+  }
 
   public ngOnInit(): void {
     this.caseId = this.linkedCasesService.caseId;
     this.caseName = this.linkedCasesService.caseName;
     this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
     this.initForm();
-    if (this.linkedCasesService.editMode) {
+    if (!this.linkedCasesService.hasNavigatedInJourney) {
+      this.linkedCasesService.linkedCases = [];
+    }
+    if (this.linkedCasesService.editMode || this.linkedCasesService.linkedCases.length) {
       // this may have includes the currently added one but yet to be submitted.
-      this.selectedCases = this.linkedCasesService.linkedCases;
+      this.selectedCases = this.linkedCasesService.linkedCases.filter((item) => !this.linkedCasesService.initialCaseLinkRefs.includes(item.caseReference));
     } else if (this.linkedCasesService.initialCaseLinks.length !== this.linkedCasesService.caseFieldValue.length) {
       this.linkedCasesService.linkedCases = this.linkedCasesService.initialCaseLinks;
     }
   }
 
   public initForm(): void {
+    const caseNumber = this.linkedCasesService.storedCaseNumber ?? '';
     this.linkCaseForm = this.fb.group({
-      caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
+      caseNumber: [caseNumber, [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
       otherDescription: ['', [Validators.maxLength(100)]]
     });
@@ -100,9 +109,12 @@ export class LinkCasesComponent implements OnInit {
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
       !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
+      !this.isCaseInInitial(this.linkCaseForm.value.caseNumber) &&
       !this.isCaseSelectedSameAsCurrentCase() &&
       !this.isOtherOptionSelectedButOtherDescriptionNotEntered()
     ) {
+      this.linkedCasesService.storedCaseNumber = '';
+      this.linkedCasesService.hasNavigatedInJourney = true;
       this.getCaseInfo();
     } else {
       this.showErrorInfo();
@@ -115,12 +127,22 @@ export class LinkCasesComponent implements OnInit {
     }
     const caseNumber = this.linkCaseForm.value.caseNumber;
     return !!linkedCases.find(
-      (caseLink) => caseLink.caseReference.split('-').join('') === caseNumber.split('-').join('')
+      (caseLink) => caseLink.caseReference.split('-').join('').trim() === caseNumber.split('-').join('').trim()
     );
   }
 
+  public isCaseInInitial(proposedCaseLink: string){
+    if (proposedCaseLink){
+      // initial case links will not have - in them, account for the case where a user may type with -
+      proposedCaseLink = proposedCaseLink.replace(/-/g, '').trim();
+      const initialCaseLinks = this.linkedCasesService.initialCaseLinkRefs || [];
+      return initialCaseLinks.includes(proposedCaseLink);
+    }
+    return false;
+  }
+
   private isCaseSelectedSameAsCurrentCase(): boolean {
-    return this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('');
+    return this.linkCaseForm.value.caseNumber.split('-').join('').trim() === this.linkedCasesService.caseId.split('-').join('').trim();
   }
 
   private isOtherOptionSelectedButOtherDescriptionNotEntered(): boolean {
@@ -179,7 +201,15 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber'
       });
     }
-    if (this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('')) {
+    if (this.isCaseInInitial(this.linkCaseForm.value.caseNumber)) {
+      this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCasesErrorMessages.CasesLinkedError,
+        fieldId: 'caseNumber'
+      });
+    }
+    if (this.linkCaseForm.value.caseNumber.split('-').join('').trim() === this.linkedCasesService.caseId.split('-').join('').trim()) {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.ProposedCaseWithIn,
@@ -191,7 +221,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public getCaseInfo(): void {
-    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '');
+    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '').trim();
     this.casesService
       .getCaseViewV2(caseNumberData)
       .subscribe(
@@ -214,9 +244,6 @@ export class LinkCasesComponent implements OnInit {
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           };
-          if (!this.linkedCasesService.caseFieldValue) {
-            this.linkedCasesService.caseFieldValue = [];
-          }
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
           this.linkCaseReasons.forEach((reason) => reason.selected = false);
@@ -289,6 +316,7 @@ export class LinkCasesComponent implements OnInit {
       this.linkedCasesService.caseFieldValue = updatedItems;
     }
     this.selectedCases.splice(pos, 1);
+    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => item.caseReference !== selectedCaseReference);
   }
 
   public onNext(): void {
@@ -298,6 +326,7 @@ export class LinkCasesComponent implements OnInit {
     this.caseSelectionError = null;
     this.noSelectedCaseError = null;
     let navigateToNextPage = true;
+    this.linkedCasesService.storedCaseNumber = this.linkCaseForm.value.caseNumber ?? '';
     if (this.selectedCases.length) {
       this.linkedCasesService.linkedCases = this.selectedCases;
     } else {
@@ -310,5 +339,19 @@ export class LinkCasesComponent implements OnInit {
       navigateToNextPage = false;
     }
     this.emitLinkedCasesState(navigateToNextPage);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.selectedCases.length > 0) {
+      this.linkedCasesService.linkedCases = this.selectedCases;
+    }
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }

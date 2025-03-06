@@ -13,6 +13,7 @@ export * from './eventStatusService';
 export * from './fields';
 export * from './form';
 export * from './http';
+export * from './journey';
 export * from './jurisdiction';
 export * from './banners';
 export * from './navigation';
