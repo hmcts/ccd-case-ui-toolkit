@@ -1,10 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
+import { Constants } from '../../../../../commons/constants';
+import { QueryItemResponseStatus } from '../../enums';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -154,6 +157,14 @@ describe('QueryDetailsComponent', () => {
     ]
   };
 
+  const snapshotActivatedRoute = {
+    snapshot: {
+      params: {
+        qid: '123'
+      }
+    }
+  };
+
   beforeEach(async () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
     await TestBed.configureTestingModule({
@@ -162,7 +173,10 @@ describe('QueryDetailsComponent', () => {
         MockRpxTranslatePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: SessionStorageService, useValue: mockSessionStorageService }]
+      providers: [
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute }
+      ]
     })
       .compileComponents();
   });
@@ -202,6 +216,25 @@ describe('QueryDetailsComponent', () => {
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Attachments');
   });
 
+  it('should call toggleLinkVisibility when ngOnChanges is called', () => {
+    spyOn(component, 'toggleLinkVisibility');
+    component.ngOnChanges();
+    expect(component.toggleLinkVisibility).toHaveBeenCalled();
+  });
+
+  it('should set showItem to true when user is navigated to follow up to a query', () => {
+    component.toggleLinkVisibility();
+    expect(component['queryItemId']).toBe('123');
+    expect(component.showItem).toBe(true);
+  });
+
+  it('should set showItem to false when user is navigated to response to a query', () => {
+    component['route'].snapshot.params.qid = '3';
+    component.ngOnChanges();
+    component.toggleLinkVisibility();
+    expect(component.showItem).toBe(false);
+  });
+
   describe('isCaseworker', () => {
     it('should return true if the user doesnt have pui-case-manager', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
@@ -222,6 +255,54 @@ describe('QueryDetailsComponent', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isCaseworker()).toBeFalsy();
+    });
+  });
+  describe('hasRespondedToQuery', () => {
+    beforeEach(() => {
+      spyOn(component.hasResponded, 'emit'); // Spy on the EventEmitter
+    });
+
+    it('should emit true and return true if responseStatus is not AWAITING and user is a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTruthy();
+    });
+
+    it('should emit false and return false if responseStatus is AWAITING and user is a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if responseStatus is not AWAITING but user is not a caseworker', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(false);
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED; // Not AWAITING, but user isn't a caseworker
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if queryResponseStatus is undefined', () => {
+      spyOn(component, 'isCaseworker').and.returnValue(true);
+      component.queryResponseStatus = undefined; // Undefined case
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.message).toBeUndefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
     });
   });
 });

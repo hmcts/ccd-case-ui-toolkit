@@ -1,6 +1,10 @@
 <ng-container *ngIf="query">
+  <cut-alert type="error" *ngIf="hasRespondedToQuery() && !showItem">
+    <ng-container>{{message}}</ng-container>
+  </cut-alert>
+
   <br/>
-  <p>
+  <p *ngIf="showItem">
     <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</a>
   </p>
   <div>

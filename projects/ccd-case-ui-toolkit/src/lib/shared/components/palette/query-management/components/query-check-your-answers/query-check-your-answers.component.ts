@@ -1,24 +1,24 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
   CaseField,
   CaseView,
   CaseViewTrigger,
-  ErrorMessage,
-  TaskSearchParameter
+  ErrorMessage
 } from '../../../../../../../lib/shared/domain';
 import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, CasesService, EventTriggerService, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { AccessControlList } from '../../../../../domain/definition/access-control-list.model';
+import { Task } from '../../../../../domain/work-allocation/Task';
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -42,6 +42,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
   private queryId: string;
+  private tid: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
 
@@ -52,6 +53,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public attachments: FormDocument[];
 
   public errorMessages: ErrorMessage[] = [];
+  public filteredTasks: Task[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -65,6 +67,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
+    this.tid = this.route.snapshot.queryParams?.tid;
+
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
 
@@ -82,6 +86,24 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     this.getDocumentAttachments();
 
     this.setCaseQueriesCollectionData();
+
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+      this.searchTasksSubscription = this.workAllocationService.getTasksByCaseIdAndEventId(this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
+        this.caseDetails.case_id, this.caseDetails.case_type.id, this.caseDetails.case_type.jurisdiction.id)
+        .subscribe({
+          next: (response: any) => {
+          // Filter task by query id
+            if (this.tid && response.tasks?.length > 1) {
+              this.filteredTasks = response.tasks?.filter((task: Task) => task.id === this.tid);
+            } else {
+              this.filteredTasks = response.tasks;
+            }
+          },
+          error: (error) => {
+            console.error('Error in searchTasksSubscription:', error);
+          }
+        });
+    }
   }
 
   public ngOnDestroy(): void {
@@ -108,7 +130,33 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     }
 
     const data = this.generateCaseQueriesCollectionData();
-    this.createEventSubscription = this.casesService.createEvent(this.caseDetails, {
+    const createEvent$ = this.createEvent(data);
+
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+      if (this.filteredTasks?.length > 0) {
+        const completeTask$ = this.workAllocationService.completeTask(
+          this.filteredTasks[0].id,
+          this.caseViewTrigger.name
+        );
+        this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
+          next: ([createEventResponse, tasksResponse]: [any, any]) => {
+            this.finaliseSubmission();
+          },
+          error: (error) => this.handleError(error)
+        });
+      } else {
+        console.error('Error: No task to complete found');
+      }
+    } else {
+      this.createEventSubscription = createEvent$.subscribe({
+        next: () => this.finaliseSubmission(),
+        error: (error) => this.handleError(error)
+      });
+    }
+  }
+
+  private createEvent(data: any): Observable<any> {
+    return this.casesService.createEvent(this.caseDetails, {
       data,
       event: {
         id: this.caseViewTrigger?.id,
@@ -117,41 +165,17 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       },
       event_token: this.eventData?.event_token,
       ignore_warning: false
-    }).subscribe(
-      () => {
-        // Search and complete task
-        this.searchAndCompleteTask();
-        // Emit query submitted event
-        this.querySubmitted.emit(true);
-        this.qualifyingQuestionService.clearQualifyingQuestionSelection();
-      },
-      // Error
-      () => this.router.navigate(['/', 'service-down'])
-    );
+    });
   }
 
-  public searchAndCompleteTask(): void {
-    // Search Task
-    const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
-    this.searchTasksSubscription = this.workAllocationService.searchTasks(searchParameter)
-      .subscribe(
-        (response: any) => {
-          // Filter task by query id
-          const filteredTask = response.tasks?.find((task) =>
-            Object.values(task.additional_properties).some((value) => value === this.queryId)
-          );
-          // Trigger event completion
-          this.eventCompletionParams = {
-            caseId: this.caseDetails.case_id,
-            eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
-            task: filteredTask
-          };
-        },
-        (error) => {
-          console.error('Error in searchTasksSubscription:', error);
-          // Handle error appropriately
-        }
-      );
+  private finaliseSubmission(): void {
+    this.querySubmitted.emit(true);
+    this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+  }
+
+  private handleError(error: any): void {
+    console.error('Error in API calls:', error);
+    this.router.navigate(['/', 'service-down']);
   }
 
   private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
