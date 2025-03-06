@@ -190,9 +190,6 @@ Taken by PR
 ### Version 7.0.20
 **EUI-1300** accessibility change
 
-### Version 7.0.18-event-flow-cancel-navigation-v2
-**CSFD-18** Ungrey back button - event flow cancel navigation
-
 ### Version 7.0.19
 **EUI-1067** No error message is displayed when entering incorrect postcode
 **EUI-1123** TextArea fields are not preloaded even the data is present in response intermittently
