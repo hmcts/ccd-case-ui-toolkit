@@ -75,39 +75,78 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   }
 
   onFlagSelectionChange(selectedFlag: FormControl): void {
+    // Update the form control value
     this.formGroup.get(this.selectedControlName).setValue(selectedFlag);
-    const idsInDisplayData = this.flagsDisplayData.map((flagDisplay) => this.getFlagID(flagDisplay));
-    for (const i in this.flagsData){
-      if (this.flagsData[i].caseField.formatted_value.details){
-        this.flagsData[i].caseField.formatted_value.details.forEach((flagDetail) => {
-          if (idsInDisplayData.includes(flagDetail.id)) {
-            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
-            if (matchingFlagDisplay) {
-              flagDetail.value.status = matchingFlagDisplay.originalStatus;
-            }
+
+    const flagDisplayMap = new Map(
+      this.flagsDisplayData.map((fd) => [this.getFlagID(fd), fd])
+    );
+
+    this.updateFlagDetails(flagDisplayMap);
+  }
+
+  private updateFlagDetails(flagDisplayMap: Map<string, FlagDetailDisplayWithFormGroupPath>): void {
+    const updateDetails = (
+      details: any[],
+      valueAccessor: ((detail: any) => any) | null = (detail) => detail.value
+    ) => {
+      details.forEach((detail) => {
+        const matching = flagDisplayMap.get(detail.id);
+        if (matching) {
+          if (valueAccessor) {
+            valueAccessor(detail).status = matching.originalStatus;
+          } else {
+            detail.status = matching.originalStatus;
           }
-        });
+        }
+      });
+    };
+
+    // Iterate over each flagData item and update the corresponding flag details
+    for (const flagData of this.flagsData) {
+      const { caseField, flags } = flagData;
+      if (caseField) {
+        this.updateCaseFieldDetails(caseField, updateDetails);
       }
-      if (this.flagsData[i].caseField._value.details) {
-        this.flagsData[i].caseField._value.details.forEach((flagDetail) => {
-          if (idsInDisplayData.includes(flagDetail.id)) {
-            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
-            if (matchingFlagDisplay) {
-              flagDetail.value.status = matchingFlagDisplay.originalStatus;
-            }
-          }
-        });
+      // If flags.details exists at the root of flagData, update directly (status is not nested under value)
+      if (flags?.details) {
+        updateDetails(flags.details, null);
       }
-      if (this.flagsData[i].flags.details) {
-        this.flagsData[i].flags.details.forEach((flagDetail) => {
-          if (idsInDisplayData.includes(flagDetail.id)){
-            const matchingFlagDisplay = this.flagsDisplayData.find((flagDisplay) => this.getFlagID(flagDisplay) === flagDetail.id);
-            if (matchingFlagDisplay) {
-              flagDetail.status = matchingFlagDisplay.originalStatus;
-            }
-          }
-        });
-      }
+    }
+  }
+
+  private updateCaseFieldDetails(caseField: CaseField, updateDetails: (details: any[], valueAccessor?: ((detail: any) => any) | null) => void): void {
+    // For caseField._value.flags.details
+    if (caseField._value?.flags?.details) {
+      updateDetails(caseField._value.flags.details);
+    }
+    // For caseField.formatted_value.flags.details
+    if (caseField.formatted_value?.flags?.details) {
+      updateDetails(caseField.formatted_value.flags.details);
+    }
+    // If caseField._value is an array, check each element's nested flags.details
+    if (Array.isArray(caseField._value)) {
+      caseField._value.forEach((val) => {
+        if (val.value?.flags?.details) {
+          updateDetails(val.value.flags.details);
+        }
+      });
+    }
+    // If caseField.formatted_value is an array, check each element's nested flags.details
+    if (Array.isArray(caseField.formatted_value)) {
+      caseField.formatted_value.forEach((val) => {
+        if (val.value?.flags?.details) {
+          updateDetails(val.value.flags.details);
+        }
+      });
+    }
+    // For caseField.formatted_value.details (not nested under flags)
+    if (caseField.formatted_value?.details) {
+      updateDetails(caseField.formatted_value.details);
+    }
+    // For caseField._value.details (not nested under flags)
+    if (caseField._value?.details) {
+      updateDetails(caseField._value.details);
     }
   }
 

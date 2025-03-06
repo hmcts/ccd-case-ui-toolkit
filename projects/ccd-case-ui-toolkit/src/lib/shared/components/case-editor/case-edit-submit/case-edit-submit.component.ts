@@ -147,17 +147,21 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           const priorFlags = this.caseFlagStateService.initialCaseFlags.data[field.id].details;
           if (priorFlags) {
             priorFlags.forEach((flag) => {
-              if (!field.formatted_value.details) {
-              }
               if (!field._value.details.some((detail) => detail.id === flag.id)) {
                 field._value.details.push(flag);
               }
             });
             if (field._value) {
               field._value.details = field._value.details?.filter((detail: { id?: string }) => detail.id !== null);
-              field._value.groupId = field.formatted_value.groupId;
-              field._value.visibility = field.formatted_value.visibility;
-              field.formatted_value.details = field._value.details;
+              if (field.formatted_value?.groupId) {
+                field._value.groupId = field.formatted_value.groupId;
+              }
+              if (field.formatted_value?.visibility) {
+                field._value.visibility = field.formatted_value?.visibility;
+              }
+              if (field.formatted_value?.details) {
+                field.formatted_value.details = field._value?.details;
+              }
               fieldData.details = fieldData.details.filter((detail: { id?: string }) => detail.id !== null);
             }
           }
