@@ -79,6 +79,6 @@ export class EventLogTableComponent implements OnInit {
     if (isExternalUser) {
       return `${event.event_name}`;
     }
-    return `press enter key to open event ${event.event_name} link in separate window`;
+    return '';
   }
 }
