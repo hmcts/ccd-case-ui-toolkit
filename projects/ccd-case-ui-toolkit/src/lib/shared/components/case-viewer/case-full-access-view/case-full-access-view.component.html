@@ -60,7 +60,7 @@
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate">
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
           <ng-template matTabContent>
             <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
