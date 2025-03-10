@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { QueryListItem } from '../../models';
 import { Constants } from '../../../../../commons/constants';
+import { QueryItemResponseStatus } from '../../enums';
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -10,12 +11,13 @@ import { Constants } from '../../../../../commons/constants';
 })
 export class QueryDetailsComponent implements OnChanges{
   @Input() public query: QueryListItem;
-  @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   @Input() public caseId: string;
-  @Output() public hasResponded: EventEmitter<boolean> = new EventEmitter();
-  @Input() public totalNumberOfQueryChildren: number;
+  @Input() public queryResponseStatus: string;
 
-  public showLink: boolean = true;
+  @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
+  @Output() public hasResponded: EventEmitter<boolean> = new EventEmitter();
+
+  public showItem: boolean = true;
   public message: string;
 
   private static readonly QUERY_ITEM_RESPOND = '3';
@@ -44,15 +46,21 @@ export class QueryDetailsComponent implements OnChanges{
 
   public toggleLinkVisibility(): void {
     this.queryItemId = this.route.snapshot.params.qid;
-    this.showLink = this.queryItemId !== QueryDetailsComponent.QUERY_ITEM_RESPOND;
+    this.showItem = this.queryItemId !== QueryDetailsComponent.QUERY_ITEM_RESPOND;
   }
 
   public hasRespondedToQuery(): boolean {
-    if (this.totalNumberOfQueryChildren >= 0 && this.isCaseworker() && this.totalNumberOfQueryChildren % 2 !== 0) {
+    if (this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING) {
+      this.hasResponded.emit(false);
+      return false;
+    }
+
+    if (this.isCaseworker() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
       this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;
     }
+
     this.hasResponded.emit(false);
     return false;
   }
