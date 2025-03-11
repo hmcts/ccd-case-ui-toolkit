@@ -7,12 +7,9 @@ import { Router } from '@angular/router';
   templateUrl: './markdown.html'
 })
 export class MarkdownComponent implements OnInit {
-  @Input()
-  public content: string;
-  @Input()
-  public markdownUseHrefAsRouterLink!: boolean;
-  @Input()
-  public renderUrlToTextFeature?: boolean = true;
+  @Input() public content: string;
+  @Input() public markdownUseHrefAsRouterLink!: boolean;
+  @Input() public renderUrlToTextFeature?: boolean = true;
 
   constructor(private router: Router, private renderer: Renderer2) {}
 
@@ -24,15 +21,21 @@ export class MarkdownComponent implements OnInit {
   }
 
   @HostListener('click', ['$event'])
-  public onMarkdownClick(event: MouseEvent) {
+  public onMarkdownClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
     // If we don't have an anchor tag, we don't need to do anything.
-    if (event.target instanceof HTMLAnchorElement === false) {
+    if (!(target instanceof HTMLAnchorElement)) {
       return;
     }
-    return true;
+    const anchor = target as HTMLAnchorElement;
+    const href = anchor.getAttribute('href');
+    if (href?.startsWith('/')) {
+      event.preventDefault();
+      this.router.navigate([href]);
+    }
   }
 
-  private renderUrlToText() : void {
+  private renderUrlToText(): void {
     const renderer = new marked.Renderer();
 
     renderer.link = (href, title, text) => {
