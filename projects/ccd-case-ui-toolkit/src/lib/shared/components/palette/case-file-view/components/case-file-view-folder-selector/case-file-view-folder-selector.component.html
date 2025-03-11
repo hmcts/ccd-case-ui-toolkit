@@ -1,4 +1,4 @@
-<div tabindex="0" aria-label="close" class="close" (click)="cancel()"></div>
+<span tabindex="0" aria-label="close" class="close" (click)="cancel()" (keyup)="$event.key === 'Enter' ? cancel() : null"></span>
 <h2 class="govuk-heading-l">Move File</h2>
 <p>Where do you want to move "{{ data.document.document_filename }}" file?</p>
 <div class="folders govuk-radios govuk-radios--conditional">
@@ -13,7 +13,7 @@
 
 <ng-template #folder let-cat="cat" let-level="level">
     <div class="folder govuk-radios__item">
-        <input class="govuk-radios__input" type="radio" name="level-{{level}}" [id]="cat.category_id" (click)="handleChange($event)" />
+        <input class="govuk-radios__input" type="radio" name="level-{{level}}" [id]="cat.category_id" (click)="handleChange($event)" (keyup)="$event.key === 'Enter' ? handleChange($event) : null" />
         <label class="govuk-label govuk-radios__label" [for]="cat.category_id">
             <img class="iconImg" src="/assets/images/folder.png" alt="Folder icon" />
             {{ cat.category_name }}
