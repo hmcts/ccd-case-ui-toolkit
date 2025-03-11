@@ -22,7 +22,7 @@ export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 @Component({
   selector: 'ccd-case-file-view-folder',
   templateUrl: './case-file-view-folder.component.html',
-  styleUrls: ['./case-file-view-folder.component.scss'],
+  styleUrls: ['./case-file-view-folder.component.scss']
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
@@ -58,14 +58,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public expandAll(expand: boolean) {
-    this.nestedTreeControl.expandDescendants(this.nestedDataSource[0]);
-  }
-
-  public collapseAll(expand: boolean) {
-    this.nestedTreeControl.collapseAll();
-  }
-
   constructor(
     private readonly windowService: WindowService,
     private readonly router: Router,
@@ -74,6 +66,16 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly appConfig: AbstractAppConfig
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
+  }
+
+  public collapseAll(expand: boolean) {
+    this.nestedTreeControl.collapseAll();
+  }
+
+  public expandAll(expand: boolean) {
+    this.nestedDataSource.forEach((node) => {
+      this.nestedTreeControl.expandDescendants(node);
+    });
   }
 
   public ngOnInit(): void {
