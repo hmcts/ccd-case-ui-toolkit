@@ -44,7 +44,7 @@ describe('LabelFieldComponent', () => {
 
   const markdownComponentMock: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content', 'markdownUseHrefAsRouterLink']
+    inputs: ['content']
   });
   let fixture: ComponentFixture<LabelFieldComponent>;
   let component: LabelFieldComponent;
