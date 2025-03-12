@@ -22,12 +22,9 @@ export class MarkdownComponent implements OnInit {
 
   public interceptClick(event: MouseEvent): void {
     this.ngZone.runOutsideAngular(() => {
-      console.log(event);
-      // Look for anchor clicks
       const target = event.target as HTMLElement;
       if (target.tagName.toLowerCase() === 'a') {
         const href = target.getAttribute('href');
-        // If href exists and is an internal route (e.g., starts with '/' but not 'http')
         if (href && href.startsWith('/') && !href.startsWith('//')) {
           event.preventDefault();
           this.ngZone.run(() => {
