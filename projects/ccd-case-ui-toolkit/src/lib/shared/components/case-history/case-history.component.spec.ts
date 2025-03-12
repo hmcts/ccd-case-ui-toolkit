@@ -27,7 +27,7 @@ describe('CaseHistoryComponent', () => {
 
   const markdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content', 'markdownUseHrefAsRouterLink']
+    inputs: ['content']
   });
 
   // Page object selectors

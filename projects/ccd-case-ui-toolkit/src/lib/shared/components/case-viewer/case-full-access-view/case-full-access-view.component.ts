@@ -68,7 +68,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
-  public markdownUseHrefAsRouterLink: boolean;
   public message: string;
   public subscription: Subscription;
   public notificationBannerConfig: NotificationBannerConfig;
@@ -114,7 +113,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     
     initDialog();
     this.init();
-    this.markdownUseHrefAsRouterLink = true;
 
     this.sessionStorageService?.removeItem('eventUrl');
 

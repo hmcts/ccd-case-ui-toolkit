@@ -1,17 +1,17 @@
-import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, NgZone, OnInit, Renderer2 } from '@angular/core';
 import * as marked from 'marked';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'ccd-markdown',
-  templateUrl: './markdown.html'
+  templateUrl: './markdown.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkdownComponent implements OnInit {
   @Input() public content: string;
-  @Input() public markdownUseHrefAsRouterLink!: boolean;
   @Input() public renderUrlToTextFeature?: boolean = true;
 
-  constructor(private router: Router, private renderer: Renderer2) {}
+  constructor(private router: Router, private renderer: Renderer2, private ngZone: NgZone) {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
@@ -20,19 +20,22 @@ export class MarkdownComponent implements OnInit {
     }
   }
 
-  @HostListener('click', ['$event'])
-  public onMarkdownClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    // If we don't have an anchor tag, we don't need to do anything.
-    if (!(target instanceof HTMLAnchorElement)) {
-      return;
-    }
-    const anchor = target as HTMLAnchorElement;
-    const href = anchor.getAttribute('href');
-    if (href?.startsWith('/')) {
-      event.preventDefault();
-      this.router.navigate([href]);
-    }
+  public interceptClick(event: MouseEvent): void {
+    this.ngZone.runOutsideAngular(() => {
+      console.log(event);
+      // Look for anchor clicks
+      const target = event.target as HTMLElement;
+      if (target.tagName.toLowerCase() === 'a') {
+        const href = target.getAttribute('href');
+        // If href exists and is an internal route (e.g., starts with '/' but not 'http')
+        if (href && href.startsWith('/') && !href.startsWith('//')) {
+          event.preventDefault();
+          this.ngZone.run(() => {
+            this.router.navigateByUrl(href);
+          });
+        }
+      }
+    });
   }
 
   private renderUrlToText(): void {
@@ -57,7 +60,7 @@ export class MarkdownComponent implements OnInit {
     return urlOrigin === currentOrigin || url.startsWith('/'); // Check if same origin or relative
   }
 
-  private detectMarkdownLinks(inputString) {
+  private detectMarkdownLinks(inputString: string): boolean {
     const markdownLinkRegex = /\[([^\]]+)\]\(?([^ )]+)\)/g;
     return markdownLinkRegex.test(inputString);
   }
