@@ -35,6 +35,8 @@ import { ConvertHrefToRouterService } from '../../case-editor/services/convert-h
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import { LinkedCasesService } from '../../palette/linked-cases/services';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -99,7 +101,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
     private readonly rpxTranslationPipe: RpxTranslatePipe,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
   }
 
@@ -135,6 +139,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
+    this.linkedCasesService.resetLinkedCaseData();
+    this.caseFlagStateService.resetInitialCaseFlags();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
