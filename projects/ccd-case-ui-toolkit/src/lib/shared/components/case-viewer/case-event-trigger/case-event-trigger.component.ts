@@ -1,11 +1,11 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
+import { Constants } from '../../../commons/constants';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -21,6 +21,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public activitySubscription: Subscription;
   public caseSubscription: Subscription;
   public parentUrl: string;
+  public routerCurrentNavigation: Navigation;
 
   constructor(
     private readonly ngZone: NgZone,
@@ -34,6 +35,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly loadingService: LoadingService
   ) {
+    this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
 
   public ngOnInit(): void {
@@ -119,8 +121,15 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): Promise<boolean> {
-    if (this.router.url && this.router.url.includes('linkCases')) {
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
+    const previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
+    if (previousUrl) {
+      if (previousUrl.indexOf('#') > -1) {
+        const url = previousUrl.split('#')[0];
+        const fragment = previousUrl.split('#')[1].replace(/%20/g, ' ');
+        return this.router.navigate([url], { fragment: fragment });
+      } else {
+        return this.router.navigate([previousUrl]);
+      }
     } else {
       return this.router.navigate([this.parentUrl]);
     }
