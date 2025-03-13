@@ -64,8 +64,7 @@ export class EventLogTableComponent implements OnInit {
 
   public getAriaLabelforColumn(event: CaseViewEvent): string {
     if (this.selected !== event) {
-      return `date ${formatDate(event.timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')},
-        press enter key for event ${event.event_name} details`;
+      return `date ${formatDate(event.timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')}, ${event.event_name}`;
     } else {
       return '';
     }
