@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.52
+**EXUI-2748** Low Contrast pop up window
+
 ### Version 7.1.51
 **EXUI-2039/2039** Ungrey back button
 
