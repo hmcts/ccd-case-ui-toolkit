@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.1.51
+**EXUI-2039/2039** Ungrey back button
+
+### Version 7.1.50
+**EXUI-2868** E2E test failings - due to removing label associated for upload doc
+
 ### Version 7.1.46
 **EXUI-2104** Event History Summary
 
