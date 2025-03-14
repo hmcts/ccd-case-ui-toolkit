@@ -13,6 +13,14 @@ export class CaseFileViewOverlayMenuComponent {
   @Input() public isOpen = false;
   @Output() public isOpenChange = new EventEmitter<boolean>();
 
+  public setOpen() {
+    this.isOpen = !this.isOpen;
+    if(this.isOpen) {
+     const firstFocusableElement = document.querySelector('.overlay-menu > li:first-child') as HTMLElement;
+     firstFocusableElement.focus();
+    }
+  }
+
   public closeOverlay(): void {
     const isOpen = false;
 
