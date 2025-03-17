@@ -8,6 +8,11 @@
   cursor: pointer;
   color: #6e7071;
 }
+@media (prefers-color-scheme: dark) {
+  .dialog-title, .dialog-info {
+    color: #000000;
+  }
+}
 .dialog-header {
   text-align: right;
 }

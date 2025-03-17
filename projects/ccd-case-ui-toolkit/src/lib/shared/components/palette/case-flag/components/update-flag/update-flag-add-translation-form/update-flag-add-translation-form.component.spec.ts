@@ -14,7 +14,6 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
   let otherDescriptionWelshControl: DebugElement;
   let flagCommentsControl: DebugElement;
   let flagCommentsWelshControl: DebugElement;
-  let nextButton: HTMLElement;
   let otherDescriptionTextarea: HTMLInputElement;
   let otherDescriptionWelshTextarea: HTMLInputElement;
   let flagCommentsTextarea: HTMLInputElement;
@@ -60,7 +59,6 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
       '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
     component.selectedFlag = selectedFlag1;
-    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
     fixture.detectChanges();
     otherDescriptionControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.OTHER_FLAG_DESCRIPTION}`));
     otherDescriptionWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH}`));
@@ -109,7 +107,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     flagCommentsTextarea.dispatchEvent(new Event('input'));
     flagCommentsWelshTextarea.value = `${textareaInput}0`;
     flagCommentsWelshTextarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -157,10 +155,19 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     flagCommentsTextarea.dispatchEvent(new Event('input'));
     flagCommentsWelshTextarea.value = textareaInput;
     flagCommentsWelshTextarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     const errorMessageElements = fixture.debugElement.queryAll(By.css('.govuk-error-message'));
     expect(errorMessageElements.length).toBe(0);
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
   });
 });
