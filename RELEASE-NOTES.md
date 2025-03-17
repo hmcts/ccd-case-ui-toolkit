@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.54
+**EXUI-2902** 'Ignore warning and go' button not working for 2 events
+
 ### Version 7.1.53
 **EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
 
