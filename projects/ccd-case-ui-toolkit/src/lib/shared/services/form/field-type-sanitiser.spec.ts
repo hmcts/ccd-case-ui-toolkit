@@ -369,7 +369,7 @@ describe('FieldTypeSanitiser', () => {
             ]
           }
         },
-        formatted_value: [
+        _value: [
           {
             id: '42110b76-c3ca-4407-ba65-5b4e6c74c3de',
             value: {
@@ -416,7 +416,7 @@ describe('FieldTypeSanitiser', () => {
         ]
       };
       fieldTypeSanitiser.checkValuesSetInCollection(caseField, data);
-      expect(caseField.formatted_value[0].value.documentToShare.value).toEqual(data.ordersToShareCollection[0].value.documentToShare);
+      expect(caseField._value[0].value.documentToShare.value).toEqual(data.ordersToShareCollection[0].value.documentToShare);
     });
   });
 });

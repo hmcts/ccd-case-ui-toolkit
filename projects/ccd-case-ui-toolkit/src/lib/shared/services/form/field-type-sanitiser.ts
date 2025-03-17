@@ -58,21 +58,21 @@ export class FieldTypeSanitiser {
   }
 
   public checkValuesSetInCollection(caseField: CaseField, data: any): void {
-    for (const field in caseField.formatted_value) {
+    for (const field in caseField._value) {
       for (const id in data[caseField.id]) {
-        if (caseField.formatted_value[field]?.id === data[caseField.id][id]?.id) {
-          this.updateFieldValues(caseField.formatted_value[field].value, data[caseField.id][id]?.value);
+        if (caseField._value[field]?.id === data[caseField.id][id]?.id) {
+          this.updateFieldValues(caseField._value[field].value, data[caseField.id][id]?.value);
         }
       }
     }
   }
 
-  public updateFieldValues(formattedValue: any, dataValue: any): void {
+  public updateFieldValues(caseFieldValue: any, dataValue: any): void {
     for (const key in dataValue) {
-      if ((typeof formattedValue[key] === 'object') && (!isEqual(formattedValue[key], dataValue[key]))) {
-        this.updateObjectValue(formattedValue[key], dataValue[key]);
+      if ((typeof caseFieldValue[key] === 'object') && (!isEqual(caseFieldValue[key], dataValue[key]))) {
+        this.updateObjectValue(caseFieldValue[key], dataValue[key]);
       } else {
-        this.updatePrimitiveValue(formattedValue, key, dataValue[key]);
+        this.updatePrimitiveValue(caseFieldValue, key, dataValue[key]);
       }
     }
   }
@@ -83,9 +83,9 @@ export class FieldTypeSanitiser {
     }
   }
 
-  public updatePrimitiveValue(formattedValue: any, key: string, dataValue: any): void {
-    if ((!formattedValue[key]) || (formattedValue[key] !== dataValue)) {
-      formattedValue[key] = dataValue;
+  public updatePrimitiveValue(caseFieldValue: any, key: string, dataValue: any): void {
+    if ((!caseFieldValue[key]) || (caseFieldValue[key] !== dataValue)) {
+      caseFieldValue[key] = dataValue;
     }
   }
 
