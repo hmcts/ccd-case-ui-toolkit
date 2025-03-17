@@ -729,7 +729,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.formValueService.sanitiseDynamicLists(caseFields, formFields);
 
     // we only want to ensure this when the field_type is a collection of complex fields
-    if (caseFields.find((field) => field.field_type?.type === 'Collection' && field.field_type?.collection_field_type?.type === 'Complex')) {
+    if (caseFields.some((field) => field.field_type?.type === 'Collection' && field.field_type?.collection_field_type?.type === 'Complex')) {
       formFields = this.formValueService.checkValuesSetInCollection(formFields, caseFields);
     }
 
