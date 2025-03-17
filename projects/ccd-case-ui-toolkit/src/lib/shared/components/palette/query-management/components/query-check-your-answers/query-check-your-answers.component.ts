@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
   CaseField,
@@ -134,14 +134,15 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
-        const completeTask$ = this.workAllocationService.completeTask(
-          this.filteredTasks[0].id,
-          this.caseViewTrigger.name
-        );
-        this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
-          next: ([createEventResponse, tasksResponse]: [any, any]) => {
-            this.finaliseSubmission();
-          },
+        this.createEventSubscription = createEvent$.pipe(
+          switchMap((createEventResponse) =>
+            this.workAllocationService.completeTask(
+              this.filteredTasks[0].id,
+              this.caseViewTrigger.name
+            )
+          )
+        ).subscribe({
+          next: () => this.finaliseSubmission(),
           error: (error) => this.handleError(error)
         });
       } else {

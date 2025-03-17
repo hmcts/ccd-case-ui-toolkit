@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 7.1.52-exui-2902-rc1
-**EXUI-2902** Ignore warning and go' button not working
+### Version 7.1.53
+**EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
 
 ### Version 7.1.52
 **EXUI-2748** Low Contrast pop up window
