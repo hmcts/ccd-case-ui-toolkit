@@ -111,7 +111,7 @@
       (eventCanBeCompleted)="onEventCanBeCompleted($event)">
     </ccd-case-event-completion>
     <div class="form-group form-group-related">
-      <button *ngIf="!caseEdit.isCaseFlagSubmission" class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
+      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
         {{'Previous' | rpxTranslate}}
       </button>
       <button type="submit" [disabled]="isDisabled" class="button">
