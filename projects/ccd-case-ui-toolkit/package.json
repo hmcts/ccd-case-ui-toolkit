@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.46-google-analytics",
+  "version": "7.1.53-google-analytics",
   "engines": {
     "node": ">=18.19.0"
   },
