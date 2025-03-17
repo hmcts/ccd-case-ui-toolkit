@@ -23,7 +23,7 @@
   <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
       <li>
-        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">
+        <a (click)="navigateToErrorElement(validationError.id)" (keyup.enter)="navigateToErrorElement(validationError.id)" tabindex="0" class="validation-error">
           {{ validationError.message | rpxTranslate: getRpxTranslatePipeArgs(validationError.label | rpxTranslate): null }}
         </a>
       </li>
@@ -40,7 +40,7 @@
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
-  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
+  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
     <fieldset id="fieldset-case-data">
       <legend style="display: none;"></legend>
       <!-- single column -->
@@ -62,7 +62,7 @@
     </fieldset>
 
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
+      <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">
         {{'Previous' | rpxTranslate}}
       </button>
       <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>

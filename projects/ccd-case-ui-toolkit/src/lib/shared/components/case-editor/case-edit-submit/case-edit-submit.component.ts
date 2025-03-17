@@ -7,6 +7,7 @@ import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
+  MultipageComponentStateService,
   FormValidatorsService,
   OrderService,
   ProfileNotifier
@@ -17,6 +18,8 @@ import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.componen
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 // @dynamic
 @Component({
@@ -72,7 +75,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
-    private readonly formValidatorsService: FormValidatorsService
+    private readonly multipageComponentStateService: MultipageComponentStateService,
+    private readonly formValidatorsService: FormValidatorsService,
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private readonly linkedCasesService: LinkedCasesService,
   ) {
   }
 
@@ -95,7 +101,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
-
+    if (!this.caseFlagStateService.initialCaseFlags && this.caseEdit.isCaseFlagSubmission && Object.keys(this.caseEdit.form.value.data).length > 0){
+      this.caseFlagStateService.initialCaseFlags = JSON.parse(JSON.stringify(this.caseEdit.form.value));
+    }
     this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
     this.description = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.description');
   }
@@ -109,12 +117,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     if (this.summary.valid && this.description.valid) {
+      this.linkedCasesService.resetLinkedCaseData();
+      this.checkExistingDataInSubmission();
       this.caseEdit.submitForm({
         eventTrigger: this.eventTrigger,
         form: this.editForm,
         submit: this.caseEdit.submit,
         caseDetails: this.caseEdit.caseDetails
       });
+      this.caseFlagStateService.resetInitialCaseFlags();
     }
   }
 
@@ -126,6 +137,37 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       form: this.editForm,
       submit: this.caseEdit.submit
     });
+  }
+
+  public checkExistingDataInSubmission() {
+    if (this.caseEdit.isCaseFlagSubmission) {
+      this.eventTrigger.case_fields.forEach((field) => {
+        const fieldData = this.editForm.value.data[field.id];
+        if (fieldData?.details) {
+          const priorFlags = this.caseFlagStateService.initialCaseFlags.data[field.id].details;
+          if (priorFlags) {
+            priorFlags.forEach((flag) => {
+              if (!field._value.details.some((detail) => detail.id === flag.id)) {
+                field._value.details.push(flag);
+              }
+            });
+            if (field._value) {
+              field._value.details = field._value.details?.filter((detail: { id?: string }) => detail.id !== null);
+              if (field.formatted_value?.groupId) {
+                field._value.groupId = field.formatted_value.groupId;
+              }
+              if (field.formatted_value?.visibility) {
+                field._value.visibility = field.formatted_value?.visibility;
+              }
+              if (field.formatted_value?.details) {
+                field.formatted_value.details = field._value?.details;
+              }
+              fieldData.details = fieldData.details.filter((detail: { id?: string }) => detail.id !== null);
+            }
+          }
+        }
+      });
+    }
   }
 
   private getPageTitle(): string {
@@ -167,12 +209,36 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): void {
+    if (this.caseEdit.isLinkedCasesSubmission) {
+      this.handleLinkedCasesSubmission();
+    }
+    this.caseFlagStateService.resetInitialCaseFlags();
+    this.emitCancelEvent();
+  }
+
+  private handleLinkedCasesSubmission(): void {
+    const linkedCasesTab = this.getLinkedCasesTab();
+    const initialLinks = this.linkedCasesService.initialCaseLinkRefs;
+
+    if (linkedCasesTab && linkedCasesTab.value.length !== initialLinks.length) {
+      linkedCasesTab.value = linkedCasesTab.value.filter((item) =>
+        initialLinks.includes(item.value.CaseReference)
+      );
+    }
+    this.linkedCasesService.resetLinkedCaseData();
+  }
+
+  private getLinkedCasesTab(): CaseField | null {
+    return this.caseEdit.caseDetails.tabs.find((tab) =>
+      tab?.fields?.some((field) => field.id === 'caseLinks')
+    )?.fields?.[0] ?? null;
+  }
+
+  private emitCancelEvent(): void {
     if (this.eventTrigger.can_save_draft) {
-      if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-        this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
-      } else {
-        this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
-      }
+      const origin = this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM);
+      const status = origin === 'viewDraft' ? CaseEditPageComponent.RESUMED_FORM_DISCARD : CaseEditPageComponent.NEW_FORM_DISCARD;
+      this.caseEdit.cancelled.emit({ status });
     } else {
       this.caseEdit.cancelled.emit();
     }
@@ -235,6 +301,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public previous(): void {
+    if (this.caseEdit.isCaseFlagSubmission) {
+      // if we are in the caseflag journey we need to store the last page index so that the previous button on CYA will take to correct page
+      this.caseFlagStateService.fieldStateToNavigate = this.caseFlagStateService.lastPageFieldState;
+    }
+    if (this.caseEdit.isLinkedCasesSubmission) {
+      this.linkedCasesService.cameFromFinalStep = true;
+    }
     /* istanbul ignore else */
     if (this.hasPrevious()) {
       this.navigateToPage(this.getLastPageShown().id);
