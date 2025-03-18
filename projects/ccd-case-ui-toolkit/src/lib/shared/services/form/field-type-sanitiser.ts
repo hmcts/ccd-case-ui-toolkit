@@ -46,7 +46,7 @@ export class FieldTypeSanitiser {
           break;
 
         case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
-          this.checkValuesSetInCollection(caseField, data);
+          this.synchronizeCasefieldWithData(caseField, data);
           if (Array.isArray(data[caseField.id])) {
             data[caseField.id].forEach((formElement: any) => {
               this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
@@ -57,7 +57,7 @@ export class FieldTypeSanitiser {
     });
   }
 
-  public checkValuesSetInCollection(caseField: CaseField, data: any): void {
+  public synchronizeCasefieldWithData(caseField: CaseField, data: any): void {
     for (const field in caseField._value) {
       for (const id in data[caseField.id]) {
         if (caseField._value[field]?.id === data[caseField.id][id]?.id) {

@@ -415,7 +415,7 @@ describe('FieldTypeSanitiser', () => {
           }
         ]
       };
-      fieldTypeSanitiser.checkValuesSetInCollection(caseField, data);
+      fieldTypeSanitiser.synchronizeCasefieldWithData(caseField, data);
       expect(caseField._value[0].value.documentToShare.value).toEqual(data.ordersToShareCollection[0].value.documentToShare);
     });
   });
