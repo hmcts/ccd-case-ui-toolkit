@@ -76,4 +76,30 @@ describe('LinkedCasesService', () => {
     caseViewData.tabs = [];
     expect(linkedCasesService.getCaseName(CASE_VIEW_DATA)).toEqual('Case name missing');
   });
+
+  it('should reset linked case data', () => {
+    linkedCasesService.caseFieldValue = [1, 2, 3];
+    linkedCasesService.linkedCases = [{
+      caseReference: '',
+      reasons: [],
+      createdDateTime: '',
+      caseType: '',
+      caseTypeDescription: '',
+      caseState: '',
+      caseStateDescription: '',
+      caseService: '',
+      caseName: ''
+    }];
+    linkedCasesService.storedCaseNumber = '12345';
+    linkedCasesService.cameFromFinalStep = true;
+    linkedCasesService.hasNavigatedInJourney = true;
+
+    linkedCasesService.resetLinkedCaseData();
+
+    expect(linkedCasesService.caseFieldValue).toEqual([]);
+    expect(linkedCasesService.linkedCases).toEqual([]);
+    expect(linkedCasesService.storedCaseNumber).toBe('');
+    expect(linkedCasesService.cameFromFinalStep).toBe(false);
+    expect(linkedCasesService.hasNavigatedInJourney).toBe(false);
+  });
 });

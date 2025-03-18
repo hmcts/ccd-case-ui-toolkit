@@ -336,7 +336,7 @@ describe('PaginationComponent:', () => {
 
       const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(expected);
-      expect(prevA.getAttribute('aria-label')).toBe(expected);
+      expect(prevA.getAttribute('aria-label')).toBe('Previous page');
     }));
 
     it('nextLabel should bind in correct locations', fakeAsync(() => {
@@ -352,7 +352,7 @@ describe('PaginationComponent:', () => {
 
       const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(expected);
-      expect(nextA.getAttribute('aria-label')).toBe(expected);
+      expect(nextA.getAttribute('aria-label')).toBe('Next page');
 
       instance.config.currentPage = 10;
       fixture.detectChanges();
@@ -388,11 +388,11 @@ describe('PaginationComponent:', () => {
 
       const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(`Previous ${TEST_LABEL}`);
-      expect(prevA.getAttribute('aria-label')).toBe(`Previous ${TEST_LABEL}`);
+      expect(prevA.getAttribute('aria-label')).toBe(`Previous page`);
 
       const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(`Next ${TEST_LABEL}`);
-      expect(nextA.getAttribute('aria-label')).toBe(`Next ${TEST_LABEL}`);
+      expect(nextA.getAttribute('aria-label')).toBe(`Next page`);
 
       const pageA = fixture.debugElement.queryAll(By.css('.ngx-pagination li > a'))[1].nativeElement;
       expect(pageA.innerText.replace(/\n/, ' ')).toContain(`${TEST_LABEL} 1`);

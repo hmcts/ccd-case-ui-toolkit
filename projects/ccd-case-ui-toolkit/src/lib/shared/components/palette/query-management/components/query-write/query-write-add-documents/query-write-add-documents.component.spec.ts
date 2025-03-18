@@ -37,14 +37,14 @@ describe('QueryWriteAddDocumentsComponent', () => {
   });
 
   it('should validate label', () => {
-    expect(component.mockDocumentCaseField.label).toEqual('Add document');
+    expect(component.mockDocumentCaseField.label).toEqual('Attach a document');
     component.label = 'Document label';
     component.ngOnInit();
     expect(component.mockDocumentCaseField.label).toEqual('Document label');
   });
 
   it('should validate the hint text', () => {
-    expect(component.mockDocumentCaseField.hint_text).toEqual('Attach a document to this message');
+    expect(component.mockDocumentCaseField.hint_text).toEqual('Only attach documents related to your query. For all other documents use your case management document upload function.');
     component.hintText = 'Attach document hint text';
     component.ngOnInit();
     expect(component.mockDocumentCaseField.hint_text).toEqual('Attach document hint text');
