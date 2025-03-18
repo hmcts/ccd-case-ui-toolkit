@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
 ### Version 7.1.54
 **EXUI-2902** 'Ignore warning and go' button not working for 2 events
 
