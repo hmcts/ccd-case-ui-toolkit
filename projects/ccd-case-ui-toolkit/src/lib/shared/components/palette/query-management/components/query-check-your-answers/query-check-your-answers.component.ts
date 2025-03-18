@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
   CaseField,
@@ -30,12 +30,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
+  public readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public eventData: CaseEventTrigger | null = null;
-  @Input() public roleName: string;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
 
@@ -134,14 +134,15 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
-        const completeTask$ = this.workAllocationService.completeTask(
-          this.filteredTasks[0].id,
-          this.caseViewTrigger.name
-        );
-        this.createEventSubscription = forkJoin([createEvent$, completeTask$]).subscribe({
-          next: ([createEventResponse, tasksResponse]: [any, any]) => {
-            this.finaliseSubmission();
-          },
+        this.createEventSubscription = createEvent$.pipe(
+          switchMap((createEventResponse) =>
+            this.workAllocationService.completeTask(
+              this.filteredTasks[0].id,
+              this.caseViewTrigger.name
+            )
+          )
+        ).subscribe({
+          next: () => this.finaliseSubmission(),
           error: (error) => this.handleError(error)
         });
       } else {
@@ -260,7 +261,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       const numberOfCaseQueriesCollections = this.eventData?.case_fields?.filter(
         (caseField) =>
           caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-          caseField.field_type.type === this.FIELD_TYPE_COMPLEX
+          caseField.field_type.type === this.FIELD_TYPE_COMPLEX && caseField.display_context !== this.DISPLAY_CONTEXT_READONLY
       )?.length || 0;
 
       this.caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
@@ -277,14 +278,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private extractCaseQueryId(data: CaseField, count: number): void {
-    const { id, value, acls } = data;
+    const { id, value } = data;
     const messageId = this.route.snapshot.params.dataid;
 
     // Check if the field_type matches CaseQueriesCollection and type is Complex
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
-      if (this.queryCreateContext === QueryCreateContext.NEW_QUERY) {
+      if (this.queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== this.DISPLAY_CONTEXT_READONLY) {
+        this.fieldId = id;
+
+        // TODO
         //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
-        this.setFieldId(count, acls, id);
       }
       // If messageId is present, find the corresponding case message
       this.setMessageFieldId(messageId, value, id);
@@ -298,18 +301,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       if (matchedMessage) {
         this.fieldId = id;
       }
-    }
-  }
-
-  private setFieldId(count: number, acls: AccessControlList[], id: string) {
-    if (count > 1) {
-      const matchingRole = acls?.find((acl) => acl.role === this.roleName);
-      if (matchingRole) {
-        this.fieldId = id;
-      }
-    } else {
-      // Set the field ID dynamically based on the extracted data
-      this.fieldId = id; // Store the ID for use in generating newQueryData
     }
   }
 
