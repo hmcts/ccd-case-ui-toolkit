@@ -1314,6 +1314,14 @@ describe('with no defaults', () => {
     expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
   }));
 
+  it('should call scrollTo when scrollToTop is called', () => {
+    // Mock the current scroll position as 100
+    Object.defineProperty(document.documentElement, 'scrollTop', { value: 100, writable: true });
+    const scrollToSpy = spyOn(window, 'scrollTo');
+    component.scrollToTop();
+    expect(scrollToSpy).toHaveBeenCalled();
+  });
+
   it('should not call scrollTo if already at the top', () => {
     // Mock the current scroll position as 0
     Object.defineProperty(document.documentElement, 'scrollTop', { value: 0, writable: true });
