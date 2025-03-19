@@ -358,12 +358,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
       const tab = matTab['_viewContainerRef'] as ViewContainerRef;
       const id = (tab.element.nativeElement as HTMLElement).id;
-      // cases/case-details/:caseId/hearings
-      // cases/case-details/:caseId/roles-and-access
+      // cases/case-details/:jurisdiction/:caseType/:caseId/hearings
+      // cases/case-details/:jurisdiction/:caseType/:caseId/roles-and-access
       this.router.navigate([id], { relativeTo: this.route });
     } else {
       // Routing here is based on tab label, not ideal
-      // cases/case-details/:caseId#tabLabel
+      // cases/case-details/:jurisdiction/:caseType/:caseId#tabLabel
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
