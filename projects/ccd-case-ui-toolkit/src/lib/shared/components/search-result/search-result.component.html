@@ -40,7 +40,7 @@
             {{col.label | rpxTranslate}}
           </div>
           <div *ngIf="comparator(col)" class="search-result-column-sort">
-            <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+            <a (click)="sort(col)" (keyup.enter)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" [attr.aria-label]="'Sort ' + col.label | rpxTranslate" href="javascript:void(0)"></a>
           </div>
         </div>
       </th>
