@@ -16,7 +16,8 @@ export class CaseFileViewOverlayMenuComponent {
   public setOpen() {
     this.isOpen = !this.isOpen;
     if(this.isOpen) {
-     (document.querySelector('.overlay-menu__itemIcon > li:first-child') as HTMLElement).focus();
+      console.log('open is set to:', this.isOpen);
+     (document.querySelector('.overlay-menu > li:first-child') as HTMLElement).focus();
     }
   }
 
