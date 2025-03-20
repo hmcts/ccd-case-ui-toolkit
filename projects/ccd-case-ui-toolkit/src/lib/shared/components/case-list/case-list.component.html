@@ -22,7 +22,7 @@
             <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] || i }}" name="select-{{ c[tableConfig.idField] || i }}"
                   type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
             <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] || i }}" [attr.aria-labelledby]="'select-' + c[tableConfig.idField] || i">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] || i }}" [attr.aria-labelledby]="'select-' + (c[tableConfig.idField] || i)">
             </label>
           </div>
         </td>
