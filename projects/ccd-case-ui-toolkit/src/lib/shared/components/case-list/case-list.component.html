@@ -15,14 +15,14 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: pageSize, currentPage: currentPageNo, totalItems: totalResultsCount }">
+    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: pageSize, currentPage: currentPageNo, totalItems: totalResultsCount };  index as i">
       <tr data-selector="table-row" class="govuk-table__row">
         <td data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] }}" name="select-{{ c[tableConfig.idField] }}"
+            <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] || i }}" name="select-{{ c[tableConfig.idField] || i }}"
                   type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
             <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}" [attr.aria-labelledby]="'select-' + c[tableConfig.idField]">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] || i }}" [attr.aria-labelledby]="'select-' + (c[tableConfig.idField] || i)">
             </label>
           </div>
         </td>
