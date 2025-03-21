@@ -1,5 +1,26 @@
 ## RELEASE NOTES
 
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
+### Version 7.1.54
+**EXUI-2902** 'Ignore warning and go' button not working for 2 events
+
+### Version 7.1.53
+**EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
+
+### Version 7.1.52
+**EXUI-2748** Low Contrast pop up window
+
+### Version 7.1.51
+**EXUI-2039/2039** Ungrey back button
+
+### Version 7.1.50
+**EXUI-2868** E2E test failings - due to removing label associated for upload doc
+
+### Version 7.1.46
+**EXUI-2104** Event History Summary
+
 ### Version 7.1.45
 **EXUI-2792** QM issue
 

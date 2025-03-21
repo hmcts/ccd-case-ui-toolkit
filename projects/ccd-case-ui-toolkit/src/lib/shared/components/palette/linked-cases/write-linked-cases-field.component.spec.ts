@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { AddressesService, FieldsUtils, LoadingService } from '../../../services';
+import { AddressesService, FieldsUtils, LoadingService, MultipageComponentStateService, SearchService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -30,7 +30,9 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 import createSpyObj = jasmine.createSpyObj;
 import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
-import { By } from '@angular/platform-browser';
+import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
+import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -89,9 +91,41 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const pageValidationService = new PageValidationService(caseFieldService);
   const fieldUtils = new FieldsUtils();
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
-  caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService(), validPageListCaseFieldsService, new AddressesService(null, null));
+  const multipageComponentStateService = new MultipageComponentStateService();
+  const CASE_TYPES_2 = [
+    {
+        id: 'Benefit_Xui',
+        name: 'Benefit_Xui',
+        description: '',
+        states: [],
+        events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
 
+  caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
+    route,
+    formValueService,
+    formErrorService,
+    null,
+    pageValidationService,
+    dialog,
+    caseFieldService,
+    new CaseEditDataService(),
+    new LoadingService(),
+    validPageListCaseFieldsService,
+    multipageComponentStateService,
+    new AddressesService(null, null),
+    new LinkedCasesService(jurisdictionService as any, searchService),
+    new CaseFlagStateService());
   const caseInfo = {
     case_id: '1682374819203471',
     case_type: {
@@ -219,6 +253,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     isLinkedCasesEventTrigger: true,
     caseFieldValue,
     linkedCases,
+    cameFromFinalStep: false,
     getAllLinkedCaseInformation() { },
     getCaseName() { }
   };
@@ -472,4 +507,76 @@ describe('WriteLinkedCasesFieldComponent', () => {
     wp.order = order;
     return wp;
   }
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or LINK_CASE', () => {
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to LINK_CASE when on CHECK_YOUR_ANSWERS', () => {
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on LINK_CASE', () => {
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to LINK_CASE when on CHECK_YOUR_ANSWERS and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on LINK_CASE and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or LINK_CASE and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on UNLINK_CASE and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.UNLINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to UNLINK_CASE when on CHECK_YOUR_ANSWERS and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.UNLINK_CASE);
+  });
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or UNLINK_CASE and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage and journeyPageNumber to CHECK_YOUR_ANSWERS if cameFromFinalStep is true', () => {
+    linkedCasesService.cameFromFinalStep = true;
+    spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
+    spyOn(component, 'submitLinkedCases').and.stub();
+    component.ngOnInit();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+    expect(component.journeyPageNumber).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(true);
+  });
 });
