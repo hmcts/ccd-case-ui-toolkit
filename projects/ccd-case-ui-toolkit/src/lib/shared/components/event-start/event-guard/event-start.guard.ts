@@ -95,7 +95,7 @@ export class EventStartGuard implements CanActivate {
       return true;
     } else if (tasksAssignedToUser.length > 1 && !taskId) {
       // if more than one task assigned to the user then give multiple tasks error
-      this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+      this.router.navigate([`/cases/case-details/${payload.tasks[0].jurisdiction}/${payload.tasks[0].case_type_id}/${caseId}/multiple-tasks-exist`]);
       return false;
     } else {
       let task: any;
@@ -126,7 +126,7 @@ export class EventStartGuard implements CanActivate {
       if (this.router && this.router.url && this.router.url.includes('event-start')) {
         return of(true);
       }
-      this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
+      this.router.navigate([`/cases/case-details/${payload.tasks[0].jurisdiction}/${payload.tasks[0].case_type_id}/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId, eventId, userId));

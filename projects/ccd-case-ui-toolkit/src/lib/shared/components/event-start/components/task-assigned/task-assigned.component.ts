@@ -13,6 +13,8 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
 
   public task: Task = null;
   public caseId: string;
+  public jurisdiction: string;
+  public caseType: string;
   public assignedUserName: string;
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
@@ -21,6 +23,8 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
     private readonly judicialworkerService: JudicialworkerService,
     private readonly caseworkerService: CaseworkerService) {
     this.caseId = this.route.snapshot.data.case.case_id;
+    this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    this.caseType = this.route.snapshot.data.case.case_type.id;
     this.task = this.route.snapshot.queryParams as Task;
   }
 
