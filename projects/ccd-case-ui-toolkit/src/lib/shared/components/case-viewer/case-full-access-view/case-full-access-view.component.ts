@@ -109,8 +109,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public ngOnInit(): void {
     this.callbackErrorsSubject = this.errorNotifierService.errorSource.pipe(filter((x) => {
-      if(x && x.status !== 401 && x.status !== 403) {
+      if (x && x.status !== 401 && x.status !== 403) {
         this.error = x;
+        this.isEventButtonClicked = false;
         return true;
       }
       return false;
