@@ -46,6 +46,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     const cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
     // tslint:disable-next-line: prefer-const
     let caseTypeId: string;
+    const jurisdiction = route.parent.paramMap.get('jurisdiction');
     const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
     if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
@@ -70,7 +71,8 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
-          this.router.navigate([`/cases/case-details/${cid}/tasks`]);
+          const caseType = route.parent.paramMap.get('caseType');
+          this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}/tasks`]);
           return throwError(error);
         })
       ).toPromise();
