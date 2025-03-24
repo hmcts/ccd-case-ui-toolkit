@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
@@ -17,7 +17,6 @@ import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, Que
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
-import { AccessControlList } from '../../../../../domain/definition/access-control-list.model';
 import { Task } from '../../../../../domain/work-allocation/Task';
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -31,6 +30,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
   public readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
+  public readonly QM_SELECT_FIRST_COLLECTION = 'selectFirstCollection';
+  public readonly QM_COLLECTION_PROMPT = 'promptQmCollection';
+  public readonly CIVIL_JURISDICTION = 'CIVIL';
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
@@ -45,6 +47,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private tid: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
+  private firstCollectionPicked: boolean = false; // Track whether the first collection has been picked
+  private firstCollectionOrder?: number;
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
@@ -283,12 +287,18 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     // Check if the field_type matches CaseQueriesCollection and type is Complex
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
-      if (this.queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== this.DISPLAY_CONTEXT_READONLY) {
-        this.fieldId = id;
-
-        // TODO
+      if (this.isNewQueryContext(data)) {
         //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
+        if (count > 1) {
+          if (!this.handleMultipleCollections(data, id)) {
+            return;
+          }
+        } else {
+          // Set the field ID dynamically based on the extracted data
+          this.fieldId = id; // Store the ID for use in generating newQueryData
+        }
       }
+
       // If messageId is present, find the corresponding case message
       this.setMessageFieldId(messageId, value, id);
     }
@@ -302,6 +312,53 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         this.fieldId = id;
       }
     }
+  }
+
+  private isNewQueryContext(data: CaseField): boolean {
+    return this.queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== this.DISPLAY_CONTEXT_READONLY;
+  }
+
+  private handleMultipleCollections(data: CaseField, id: string): boolean {
+    const jurisdictionId = this.caseDetails?.case_type?.jurisdiction?.id;
+
+    if (!jurisdictionId) {
+      console.error('Jurisdiction ID is missing.');
+      return false;
+    }
+
+    if (this.getCollectionSelectionMethod(jurisdictionId) === this.QM_SELECT_FIRST_COLLECTION) {
+      const fieldOrder = this.getFieldOrderFromWizardPages(id);
+
+      // Pick the collection with the lowest order
+      if (
+        fieldOrder !== undefined &&
+        (this.firstCollectionOrder === undefined || fieldOrder < this.firstCollectionOrder)
+      ) {
+        this.fieldId = id;
+        this.firstCollectionOrder = fieldOrder;
+      }
+    } else {
+      // Display Error, for now, until EXUI-2644 is implemented
+      console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
+      return false;
+    }
+
+    return true;
+  }
+
+  private getFieldOrderFromWizardPages(fieldId: string): number | undefined {
+    const firstPageFields = this.eventData?.wizard_pages[0]?.wizard_page_fields;
+
+    if (!firstPageFields) {
+      return undefined;
+    }
+
+    const match = firstPageFields.find((field) => field.case_field_id === fieldId);
+    return match?.order;
+  }
+
+  private getCollectionSelectionMethod(jurisdiction: string): string {
+    return jurisdiction.toUpperCase() === this.CIVIL_JURISDICTION ? this.QM_SELECT_FIRST_COLLECTION : this.QM_COLLECTION_PROMPT;
   }
 
   private getDocumentAttachments(): void {
