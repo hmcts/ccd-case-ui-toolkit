@@ -477,6 +477,21 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.fileUploadMessages).toEqual('Document format is not supported');
   });
 
+  it('should allow user to upload file ignoring file extension case', () => {
+    const allowedFileTypes = '.pdf,.txt,.doc,.dot,.docx,.rtf,.xls,.xlt,.xla,.xlsx,.xltx,.xlsb,.ppt,.pot,.pps,.ppa,.pptx,.potx,.ppsx,.jpg,.jpeg,.bmp,.tif,.tiff,.png,.csv';
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.PDF');
+    const dummyEvent = {
+      target: {
+        files: [
+          file
+        ]
+      }
+    };
+    component.fileChangeEvent(dummyEvent, allowedFileTypes);
+    expect(component.fileUploadMessages).toEqual('Uploading...');
+  });
+
   it('should allow user to upload if there is no file types specified', () => {
     spyOn(component, 'invalidFileFormat');
     const allowedFileTypes = '';

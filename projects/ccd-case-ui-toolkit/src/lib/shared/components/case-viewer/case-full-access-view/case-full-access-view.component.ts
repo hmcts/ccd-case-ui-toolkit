@@ -25,6 +25,7 @@ import {
   DraftService,
   ErrorNotifierService,
   FieldsUtils,
+  LoadingService,
   NavigationNotifierService,
   NavigationOrigin,
   OrderService,
@@ -34,6 +35,8 @@ import { ConvertHrefToRouterService } from '../../case-editor/services/convert-h
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import { LinkedCasesService } from '../../palette/linked-cases/services';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -77,6 +80,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
   private subs: Subscription[] = [];
   public eventId: string;
+  public isEventButtonClicked: boolean = false;
 
   public callbackErrorsSubject:   Observable<any>;
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -96,17 +100,21 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe
+    private readonly rpxTranslationPipe: RpxTranslatePipe,
+    private readonly loadingService: LoadingService,
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
   }
 
   public ngOnInit(): void {
     this.callbackErrorsSubject = this.errorNotifierService.errorSource.pipe(filter((x) => {
-      if(x && x.status !== 401 && x.status !== 403) {
+      if (x && x.status !== 401 && x.status !== 403) {
         this.error = x;
+        this.isEventButtonClicked = false;
         return true;
       }
-     return false;
+      return false;
     }));
     
     initDialog();
@@ -132,6 +140,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
+    this.linkedCasesService.resetLinkedCaseData();
+    this.caseFlagStateService.resetInitialCaseFlags();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -191,9 +201,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.resetErrors();
     this.ignoreWarning = false;
     this.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    this.isEventButtonClicked = false;
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
+    if (this.isEventButtonClicked){
+      return;
+    }
+    this.isEventButtonClicked = true;
+    const spinner = this.loadingService.register();
+    this.loadingService.addSharedSpinner(spinner);
     this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 

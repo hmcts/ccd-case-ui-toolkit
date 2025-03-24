@@ -131,8 +131,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public fileChangeEvent(fileInput: any, allowedRegex?: string): void {
     let fileTypeRegex;
-    if (allowedRegex){
-      fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`);
+    if (allowedRegex) {
+      fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`, 'i');
     }
     if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)){
       this.invalidFileFormat();
@@ -326,6 +326,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       case 502:
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
+      case 500:
         {
           let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
           if (error?.error) {
