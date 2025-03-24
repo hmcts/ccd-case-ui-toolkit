@@ -1,8 +1,6 @@
 <div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
   <label [for]="id()">
-    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}"
-      >{{(caseField | ccdFieldLabel)}}</span
-    >
+    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">
     {{ caseField.hint_text | rpxTranslate }}
@@ -15,13 +13,10 @@
   </span>
   <div>
     <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
-    <ccd-read-document-field
-      *ngIf="caseField"
-      [caseField]="caseField"
-    ></ccd-read-document-field>
+    <ccd-read-document-field *ngIf="caseField" [caseField]="caseField"></ccd-read-document-field>
   </div>
 
-  <div style="position: relative">
+  <div style="position:relative">
     <div
       [id]="createElementId('fileInputWrapper')"
       (click)="fileSelectEvent()"
@@ -31,11 +26,11 @@
       <label
         [for]="id()"
         class="button button-secondary input-label"
-        aria-label="Choose file"
-        >{{'Choose file' | rpxTranslate}}</label
-      >
+        aria-label="Choose file">
+        {{'Choose file' | rpxTranslate}}
+      </label>
       <span class="form-control bottom-30">
-        <span>fileName</span>
+        <span>{{fileName | rpxTranslate}}</span>
       </span>
     </div>
     <input
@@ -45,8 +40,7 @@
       (keydown.Tab)="fileValidationsOnTab()"
       (change)="fileChangeEvent($event, caseField.field_type.regular_expression)"
       accept="{{caseField.field_type.regular_expression}}"
-      #fileInput
-    />
+      #fileInput/>
   </div>
 </div>
 <div class="form-group bottom-30">
@@ -55,8 +49,7 @@
     type="button"
     aria-label="Cancel upload"
     (click)="cancelUpload()"
-    [disabled]="!isUploadInProgress()"
-  >
+    [disabled]="!isUploadInProgress()">
     {{'Cancel upload' | rpxTranslate}}
   </button>
 </div>

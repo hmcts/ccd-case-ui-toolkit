@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.1.56-exui-1832-rc1
+**EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
 ### Version 7.1.55
 **EXUI-2885** QM: Handle read only query collections
 

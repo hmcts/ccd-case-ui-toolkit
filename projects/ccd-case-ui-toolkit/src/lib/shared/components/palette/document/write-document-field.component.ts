@@ -15,7 +15,6 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -64,18 +63,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
-    private readonly rpxTranslationService : RpxTranslationService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    if (this.rpxTranslationService.language === 'cy'){
-      this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSED).subscribe((translation) => {
-        this.fileName = translation;
-      });
-    }
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
@@ -271,7 +264,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
-    if (this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)) {
+    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
       this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
     }
   }
@@ -283,7 +276,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -305,7 +298,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
