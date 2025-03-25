@@ -14,7 +14,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   ],
 })
 export class ReadComplexFieldRawComponent extends AbstractFieldReadComponent {
-
   @Input()
   public caseFields: CaseField[] = [];
 }
