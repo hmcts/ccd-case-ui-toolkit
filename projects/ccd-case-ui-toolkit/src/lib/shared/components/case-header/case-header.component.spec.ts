@@ -13,7 +13,7 @@ import { CaseHeaderComponent } from './case-header.component';
 describe('CaseHeaderComponent', () => {
   const markdownComponentMock: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content', 'markdownUseHrefAsRouterLink']
+    inputs: ['content']
   });
 
   const $HEADING = By.css('.heading-h1');
