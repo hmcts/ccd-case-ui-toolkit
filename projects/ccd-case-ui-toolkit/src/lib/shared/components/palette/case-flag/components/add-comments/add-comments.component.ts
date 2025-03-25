@@ -1,14 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState } from '../../domain';
 import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
   selector: 'ccd-add-comments',
   templateUrl: './add-comments.component.html'
 })
-export class AddCommentsComponent implements OnInit {
+export class AddCommentsComponent extends AbstractJourneyComponent implements OnInit, Journey {
+
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
   @Input() public isDisplayContextParameterExternal = false;
@@ -41,6 +43,15 @@ export class AddCommentsComponent implements OnInit {
     if (!this.formGroup.get(this.flagCommentsControlName)) {
       this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
     }
+
+    if (!this.optional){
+      if ((this.formGroup?.value && this.formGroup?.value?.isParent === false && this.formGroup?.value?.flagComment === false) ||
+        (this.formGroup?.value?.flagType?.isParent === false && this.formGroup?.value?.flagType?.flagComment === false)) {
+        this.optional = true;
+      } else {
+        this.optional = false;
+      }
+    }
   }
 
   public onNext(): void {
@@ -72,6 +83,14 @@ export class AddCommentsComponent implements OnInit {
         description: AddCommentsErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
         fieldId: this.flagCommentsControlName
       });
+    }
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
     }
   }
 }
