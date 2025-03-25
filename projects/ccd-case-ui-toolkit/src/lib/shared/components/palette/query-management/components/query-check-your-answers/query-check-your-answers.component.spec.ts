@@ -599,7 +599,8 @@ describe('QueryCheckYourAnswersComponent', () => {
             id: 'CaseQueriesCollection',
             type: 'Complex'
           },
-          acls: [{ role: 'userRole', id: 'field1' }]
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
         },
         {
           id: 'field2',
@@ -608,7 +609,8 @@ describe('QueryCheckYourAnswersComponent', () => {
             id: 'CaseQueriesCollection',
             type: 'Complex'
           },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }]
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
         },
         {
           id: 'field3',
@@ -621,12 +623,11 @@ describe('QueryCheckYourAnswersComponent', () => {
       ]
     } as any;
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-    component.roleName = 'userRole';
 
     component.setCaseQueriesCollectionData();
 
     expect(component.caseQueriesCollections.length).toBe(2);
-    expect(component.fieldId).toBe('field1');
+    expect(component.fieldId).toBe('field2');
   });
 
   it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
@@ -647,12 +648,12 @@ describe('QueryCheckYourAnswersComponent', () => {
             id: 'CaseQueriesCollection',
             type: 'Complex'
           },
-          acls: [{ role: 'userRole', create: true, read: true, update: true, delete: true }]
+          acls: [{ role: 'userRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
         }
       ]
     } as any;
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-    component.roleName = 'userRole';
 
     component.setCaseQueriesCollectionData();
 

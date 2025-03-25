@@ -60,7 +60,7 @@ describe('CaseEventTriggerComponent', () => {
     event: {
       id: EVENT_TRIGGER.id,
       summary: 'Some summary',
-      description: 'Some description',
+      description: 'Some description'
     },
     event_token: 'cbcdcbdh',
     ignore_warning: false
@@ -134,6 +134,7 @@ describe('CaseEventTriggerComponent', () => {
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
+  const finalUrl = '/cases/case-details/1707912713167104#Claim%20details';
 
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
@@ -150,9 +151,11 @@ describe('CaseEventTriggerComponent', () => {
     activityPollingService.postEditActivity.and.returnValue(of(true));
     router = {
       navigate: jasmine.createSpy('navigate'),
-      url: ''
+      url: '',
+      getCurrentNavigation: jasmine.createSpy('getCurrentNavigation')
     };
-    router.navigate.and.returnValue({ then: f => f() });
+    router.navigate.and.returnValue({ then: (f) => f() });
+    router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: finalUrl } });
 
     TestBed
       .configureTestingModule({
@@ -230,7 +233,7 @@ describe('CaseEventTriggerComponent', () => {
 
   it('should alert warning message after task completion error available and set to true in session storage', () => {
     casesService.createEvent.and.returnValue(of({}));
-    sessionStorageService.getItem.and.returnValue('true')
+    sessionStorageService.getItem.and.returnValue('true');
 
     component.submitted({ caseId: 123, status: 'happy' });
 
@@ -245,18 +248,9 @@ describe('CaseEventTriggerComponent', () => {
     expect(alertService.warning).toHaveBeenCalled();
   });
 
-  it('should have a cancel button going back to the create case', () => {
+  it('should verify cancel navigate to the correct url', () => {
     component.cancel();
-
-    expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
-  });
-
-  it('should cancel navigate to linked cases tab', () => {
-    const routerWithModifiedUrl = TestBed.get(Router);
-    routerWithModifiedUrl.url = 'linkCases';
-    component.caseDetails.case_id = '1111-2222-3333-4444';
-    component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Claim details' });
   });
 
   it('should bypass validation if the eventTrigger case fields contain a FlagLauncher field', (done) => {
@@ -280,13 +274,13 @@ describe('CaseEventTriggerComponent', () => {
       },
       hasPages(): boolean {
         return false;
-      },
+      }
     };
     SANITISED_EDIT_FORM.data = {
       caseFlagLauncherField1: null
     };
 
-    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe((result) => {
       expect(result).toBeNull();
       done();
     });
@@ -315,13 +309,13 @@ describe('CaseEventTriggerComponent', () => {
       },
       hasPages(): boolean {
         return false;
-      },
+      }
     };
     SANITISED_EDIT_FORM.data = {
       caseFlagLauncherField1: null
     };
 
-    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe((result) => {
       expect(result).not.toBeNull();
       done();
     });
@@ -342,13 +336,13 @@ describe('CaseEventTriggerComponent', () => {
       },
       hasPages(): boolean {
         return false;
-      },
+      }
     };
     SANITISED_EDIT_FORM.data = {
       caseFlagLauncherField1: null
     };
 
-    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe((result) => {
       expect(result).not.toBeNull();
       done();
     });
@@ -360,7 +354,7 @@ describe('CaseEventTriggerComponent', () => {
     spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
     component.eventTrigger = null;
 
-    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe((result) => {
       expect(result).not.toBeNull();
       done();
     });
@@ -373,7 +367,7 @@ describe('CaseEventTriggerComponent', () => {
     routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Claim details' });
   });
 
   it('should call unregisterStoredSpinner if there is a stored spinnter', () => {
