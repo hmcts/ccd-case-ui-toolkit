@@ -10,6 +10,7 @@ export * from './document';
 export * from './draft.model';
 export * from './error-message.model';
 export * from './http';
+export * from './journey';
 export * from './order';
 export * from './organisation';
 export * from './pagination-metadata.model';

@@ -1,5 +1,52 @@
 ## RELEASE NOTES
 
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
+### Version 7.1.54
+**EXUI-2902** 'Ignore warning and go' button not working for 2 events
+
+### Version 7.1.53
+**EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
+
+### Version 7.1.52
+**EXUI-2748** Low Contrast pop up window
+
+### Version 7.1.51
+**EXUI-2039/2039** Ungrey back button
+
+### Version 7.1.50
+**EXUI-2868** E2E test failings - due to removing label associated for upload doc
+
+### Version 7.1.46
+**EXUI-2104** Event History Summary
+
+### Version 7.1.45
+**EXUI-2792** QM issue
+
+### Version 7.1.44
+**EXUI-1227** Issue in CaseFileView
+**EXUI-2765** QM- label is not associated to form element
+**EXUI-1994** Error message on file upload unclear
+
+### Version 7.1.43
+**EXUI-2388** Currently PED not working within Case File View
+
+### Version 7.1.42
+**EXUI-2795** Additional Text For QM Document Upload
+
+### Version 7.1.40
+**EXUI-1615** DAC_Visual_Headings_01
+
+### Version 7.1.39
+**EXUI-1629** DAC_Skip_Links_01
+
+### Version 7.1.38
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+**EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
+**EXUI-2743** Check Application Task is supposed to AutoClose
+
 ### Version 7.1.37
 **EXUI-2766** User getting error when upload valid file
 
@@ -50,8 +97,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
-
+**EXUI-2315** Retrieve current user language selection
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue
