@@ -7,7 +7,7 @@
     </h3>
     <ul id="errors" class="error-summary-list">
       <li *ngFor="let errorMsg of error.callbackErrors">
-        {{errorMsg | rpxTranslate}}
+        {{errorMsg}}
       </li>
     </ul>
   </ng-container>
@@ -19,7 +19,7 @@
     </h3>
     <ul id="warnings" class="error-summary-list">
       <li *ngFor="let warningMsg of error.callbackWarnings">
-        {{warningMsg | rpxTranslate}}
+        {{warningMsg}}
       </li>
     </ul>
   </ng-container>
