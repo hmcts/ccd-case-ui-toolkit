@@ -288,9 +288,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     // Check if the field_type matches CaseQueriesCollection and type is Complex
     if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
       if (this.isNewQueryContext(data)) {
-        //if number qmCaseQueriesCollection is more then filter out the right qmCaseQueriesCollection
+        // If there is more than one qmCaseQueriesCollection, pick the one with the lowest order
         if (count > 1) {
-          if (!this.handleMultipleCollections(data, id)) {
+          if (!this.handleMultipleCollections()) {
             return;
           }
         } else {
@@ -318,7 +318,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     return this.queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== this.DISPLAY_CONTEXT_READONLY;
   }
 
-  private handleMultipleCollections(data: CaseField, id: string): boolean {
+  private handleMultipleCollections(): boolean {
     const jurisdictionId = this.caseDetails?.case_type?.jurisdiction?.id;
 
     if (!jurisdictionId) {
@@ -327,16 +327,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     }
 
     if (this.getCollectionSelectionMethod(jurisdictionId) === this.QM_SELECT_FIRST_COLLECTION) {
-      const fieldOrder = this.getFieldOrderFromWizardPages(id);
-
       // Pick the collection with the lowest order
-      if (
-        fieldOrder !== undefined &&
-        (this.firstCollectionOrder === undefined || fieldOrder < this.firstCollectionOrder)
-      ) {
-        this.fieldId = id;
-        this.firstCollectionOrder = fieldOrder;
-      }
+      this.fieldId = this.getCaseQueriesCollectionFieldOrderFromWizardPages()?.id;
     } else {
       // Display Error, for now, until EXUI-2644 is implemented
       console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
@@ -346,15 +338,26 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  private getFieldOrderFromWizardPages(fieldId: string): number | undefined {
-    const firstPageFields = this.eventData?.wizard_pages[0]?.wizard_page_fields;
+  private getCaseQueriesCollectionFieldOrderFromWizardPages(): CaseField | undefined {
+    const candidateFields = this.eventData?.case_fields?.filter(
+      (field) =>
+        field.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
+        field.field_type.type === this.FIELD_TYPE_COMPLEX &&
+        field.display_context !== this.DISPLAY_CONTEXT_READONLY
+    );
 
-    if (!firstPageFields) {
-      return undefined;
-    }
+    if (!candidateFields?.length) return undefined;
 
-    const match = firstPageFields.find((field) => field.case_field_id === fieldId);
-    return match?.order;
+    const firstPageFields = this.eventData?.wizard_pages?.[0]?.wizard_page_fields;
+
+    if (!firstPageFields) return undefined;
+
+    return candidateFields
+      .map((field) => {
+        const wizardField = firstPageFields.find(f => f.case_field_id === field.id);
+        return { field, order: wizardField?.order ?? Number.MAX_SAFE_INTEGER };
+      })
+      .sort((a, b) => a.order - b.order)[0]?.field;
   }
 
   private getCollectionSelectionMethod(jurisdiction: string): string {
