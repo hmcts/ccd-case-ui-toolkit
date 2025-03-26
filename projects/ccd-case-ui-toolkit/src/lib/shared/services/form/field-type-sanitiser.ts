@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
+import { isEqual } from 'underscore';
 
 @Injectable()
 export class FieldTypeSanitiser {
@@ -45,6 +46,7 @@ export class FieldTypeSanitiser {
           break;
 
         case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
+          this.synchronizeCasefieldWithData(caseField, data);
           if (Array.isArray(data[caseField.id])) {
             data[caseField.id].forEach((formElement: any) => {
               this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
@@ -53,6 +55,38 @@ export class FieldTypeSanitiser {
           break;
       }
     });
+  }
+
+  public synchronizeCasefieldWithData(caseField: CaseField, data: any): void {
+    for (const field in caseField._value) {
+      for (const id in data[caseField.id]) {
+        if (caseField._value[field]?.id === data[caseField.id][id]?.id) {
+          this.updateFieldValues(caseField._value[field].value, data[caseField.id][id]?.value);
+        }
+      }
+    }
+  }
+
+  public updateFieldValues(caseFieldValue: any, dataValue: any): void {
+    for (const key in dataValue) {
+      if ((typeof caseFieldValue[key] === 'object') && (!isEqual(caseFieldValue[key], dataValue[key]))) {
+        this.updateObjectValue(caseFieldValue[key], dataValue[key]);
+      } else {
+        this.updatePrimitiveValue(caseFieldValue, key, dataValue[key]);
+      }
+    }
+  }
+
+  public updateObjectValue(formattedObject: any, dataObject: any): void {
+    if (formattedObject?.value !== dataObject) {
+      formattedObject.value = dataObject;
+    }
+  }
+
+  public updatePrimitiveValue(caseFieldValue: any, key: string, dataValue: any): void {
+    if ((!caseFieldValue[key]) || (caseFieldValue[key] !== dataValue)) {
+      caseFieldValue[key] = dataValue;
+    }
   }
 
   public ensureDynamicMultiSelectListPopulated(caseFields: CaseField[]): CaseField[] {
@@ -76,6 +110,7 @@ export class FieldTypeSanitiser {
       return { ...field, field_type: { ...field?.field_type } } as CaseField;
     });
   }
+
   private checkNestedDynamicList(caseField: CaseField, fieldData: any = null): void {
     caseField.field_type.complex_fields.forEach((complexField) => {
       if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
@@ -97,7 +132,7 @@ export class FieldTypeSanitiser {
     const values = data[field.id];
     if (Array.isArray(values)) {
       const listItems = this.getListItems(field);
-      const matches = listItems.filter(item => values.map(v => v.code).indexOf(item.code) !== -1);
+      const matches = listItems.filter((item) => values.map((v) => v.code).indexOf(item.code) !== -1);
 
       data[field.id] = {
         value: matches,
@@ -110,7 +145,7 @@ export class FieldTypeSanitiser {
     const stringValue = data[field.id];
     if (typeof stringValue === 'string') {
       const listItems = this.getListItems(field);
-      const matches = listItems.filter(value => value?.code === stringValue);
+      const matches = listItems.filter((value) => value?.code === stringValue);
       if (matches && matches.length > 0) {
         data[field.id] = {
           value: matches[0],

@@ -1,9 +1,12 @@
 <dl [hidden]="caseField.hidden" class="case-field" ccdLabelSubstitutor [caseField]="caseField" [contextFields]="caseFields" [id]="caseField.id">
   <dt>
-    <ccd-markdown *ngIf="labelCanBeTranslated" [content]="caseField.label | rpxTranslate" [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+    <ccd-markdown *ngIf="labelCanBeTranslated && !caseField.isTranslated" [content]="caseField.label | rpxTranslate">
     </ccd-markdown>
 
-    <ccd-markdown *ngIf="!labelCanBeTranslated" [content]="caseField.value || caseField.label" [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+    <ccd-markdown *ngIf="labelCanBeTranslated && caseField.isTranslated" [content]="caseField.label">
+    </ccd-markdown>
+
+    <ccd-markdown *ngIf="!labelCanBeTranslated" [content]="caseField.value || caseField.label">
     </ccd-markdown>
   </dt>
   <dd></dd>

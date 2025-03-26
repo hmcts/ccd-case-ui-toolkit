@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -8,6 +8,8 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { PlaceholderService } from './services/placeholder.service';
 import createSpyObj = jasmine.createSpyObj;
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
   template: `
@@ -58,9 +60,11 @@ describe('LabelSubstitutorDirective', () => {
   let hintEl: HTMLElement;
   let valueEl: HTMLElement;
   let placeholderService: any;
+  let mockTranslationPipe: any;
 
   beforeEach(() => {
     placeholderService = createSpyObj<PlaceholderService>('placeholderService', ['resolvePlaceholders']);
+    mockTranslationPipe = createSpyObj<RpxTranslatePipe>('RpxTranslatePipe', ['transform']);
 
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule],
@@ -68,6 +72,12 @@ describe('LabelSubstitutorDirective', () => {
       providers: [
         FieldsUtils,
         FormatTranslatorService,
+        { provide: RpxTranslatePipe, useValue: mockTranslationPipe },
+        RpxTranslationService,
+        RpxTranslationConfig,
+        HttpClient,
+        HttpHandler,
+        ChangeDetectorRef,
         { provide: PlaceholderService, useValue: placeholderService }]
     }).compileComponents();
 
@@ -89,7 +99,9 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseFields = [comp.caseField];
 
       placeholderService.resolvePlaceholders.and
-        .returnValues('Label B with valueA=ValueA and valueA=ValueA:1',
+        .returnValues(
+          'Label B with valueA=ValueA and valueA=ValueA:1',
+          'Label B with valueA=ValueA and valueA=ValueA:1', // directive calls it twice for label
           'Label B with valueA=ValueA and valueA=ValueA:2',
           'Label B with valueA=ValueA and valueA=ValueA:3');
       fixture.detectChanges();
@@ -110,6 +122,27 @@ describe('LabelSubstitutorDirective', () => {
       fixture.detectChanges();
 
       expect(labelEl.innerText).toBe('');
+      expect(hintEl.innerText).toBe('');
+      expect(valueEl.innerText).toBe('');
+    });
+
+    it('should pass unsubstituted text to translation service', () => {
+      const label = 'English text with a ${placeholder} which should be translated';
+      const transLabel = 'Welsh text with a REPLACEMENT in it';
+      const hintText = '';
+      const value = '';
+      comp.caseField = textField('LabelB', value, label, hintText);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(
+        'REPLACEMENT',
+        transLabel,
+        hintText,
+        value);
+      mockTranslationPipe.transform.and.returnValue('Welsh text with a ${placeholder} in it');
+      fixture.detectChanges();
+      expect(mockTranslationPipe.transform).toHaveBeenCalledWith(label);
+      expect(labelEl.innerText).toBe(transLabel);
       expect(hintEl.innerText).toBe('');
       expect(valueEl.innerText).toBe('');
     });

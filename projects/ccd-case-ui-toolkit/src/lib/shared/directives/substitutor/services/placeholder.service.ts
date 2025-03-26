@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValueService } from '../../../services/form/form-value.service';
+// This class implements ccd Field Interpolation
 
 // @dynamic
 @Injectable()
