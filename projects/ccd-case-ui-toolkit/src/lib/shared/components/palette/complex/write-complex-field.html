@@ -1,6 +1,10 @@
 <div class="form-group" [id]="id()">
   <fieldset>
-    <legend><h2 *ngIf="renderLabel" class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2></legend>
+    <legend *ngIf="renderLabel">
+      <ng-container *ngIf="caseField || ccdFieldLabel">
+        <h2 class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2>
+      </ng-container>
+    </legend>
     <ng-container [ngSwitch]="field | ccdIsReadOnly" *ngFor="let field of complexFields">
       <ccd-field-read *ngSwitchCase="true"
                       ccdLabelSubstitutor
