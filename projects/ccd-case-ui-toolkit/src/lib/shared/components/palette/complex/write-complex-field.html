@@ -1,7 +1,7 @@
 <div class="form-group" [id]="id()">
   <fieldset>
     <legend *ngIf="renderLabel">
-      <ng-container *ngIf="caseField || ccdFieldLabel">
+      <ng-container *ngIf="caseField | ccdFieldLabel">
         <h2 class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2>
       </ng-container>
     </legend>
