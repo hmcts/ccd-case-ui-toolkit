@@ -13,6 +13,21 @@ export class CaseFileViewOverlayMenuComponent {
   @Input() public isOpen = false;
   @Output() public isOpenChange = new EventEmitter<boolean>();
 
+  public setOpen() {
+    this.isOpen = !this.isOpen;
+    if(this.isOpen) {
+      console.log('open');
+      const el = document.getElementById("overlay-menu__item0");
+      console.log("element =", el);
+      if( el ) {
+        setTimeout(()=>{
+          (el as HTMLElement).focus();
+          console.log("element to focus=", el);
+        },0); 
+      }
+    }
+  }
+
   public closeOverlay(): void {
     const isOpen = false;
 
