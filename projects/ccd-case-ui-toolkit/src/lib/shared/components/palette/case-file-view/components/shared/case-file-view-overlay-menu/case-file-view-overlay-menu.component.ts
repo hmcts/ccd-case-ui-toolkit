@@ -19,7 +19,7 @@ export class CaseFileViewOverlayMenuComponent {
       const el = document.getElementById("overlay-menu__item0") as HTMLElement;
       setTimeout(()=>{
         el.focus();
-      },0); 
+      },10); 
     }
   }
 
