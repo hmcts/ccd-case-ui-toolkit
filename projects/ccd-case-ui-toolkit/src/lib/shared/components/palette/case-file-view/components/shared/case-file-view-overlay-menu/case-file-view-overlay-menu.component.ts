@@ -16,10 +16,13 @@ export class CaseFileViewOverlayMenuComponent {
   public setOpen() {
     this.isOpen = !this.isOpen;
     if(this.isOpen) {
-      const el = document.getElementById("overlay-menu__item0") as HTMLElement;
+      console.log('open');
+      const el = document.getElementsByClassName(".overlay-menu__item");
+      console.log("elements =", el);
       setTimeout(()=>{
-        el.focus();
-      },10); 
+        (el[0] as HTMLElement).focus();
+        console.log("element to focus=", el[0]);
+      },0); 
     }
   }
 
