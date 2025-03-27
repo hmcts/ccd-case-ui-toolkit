@@ -1,5 +1,7 @@
 export * from './abstract-field-read.component';
+export * from './abstract-field-write-journey.component';
 export * from './abstract-field-write.component';
+export * from './abstract-journey.component';
 export * from './field-read.component';
 export * from './field-write.component';
 export * from './field-read-label.component';
