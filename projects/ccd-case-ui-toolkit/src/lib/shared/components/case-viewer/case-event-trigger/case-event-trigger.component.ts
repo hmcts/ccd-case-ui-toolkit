@@ -49,6 +49,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         this.caseDetails = caseDetails;
       });
     }
+    this.route.data.subscribe((data) => {
+      if (data?.eventTrigger){
+        this.eventTrigger = data.eventTrigger;
+      }
+    });
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular( () => {

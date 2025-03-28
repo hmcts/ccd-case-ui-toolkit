@@ -115,6 +115,14 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    this.initializeComponent();
+
+    this.route.queryParams.subscribe((params: Params) => {
+      this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
+    });
+  }
+
+  private initializeComponent(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
@@ -129,10 +137,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         description: ['']
       })
     });
+  }
 
-    this.route.queryParams.subscribe((params: Params) => {
-      this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
-    });
+  public ngOnChanges(): void {
+    if (this.eventTrigger) {
+      this.initializeComponent();
+    }
   }
 
   public ngOnDestroy(): void {
