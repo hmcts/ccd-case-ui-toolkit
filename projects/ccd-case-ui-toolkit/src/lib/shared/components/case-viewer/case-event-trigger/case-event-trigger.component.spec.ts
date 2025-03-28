@@ -115,10 +115,6 @@ describe('CaseEventTriggerComponent', () => {
   const URL_SEGMENTS_OBS: Observable<UrlSegment[]> = of(URL_SEGMENTS);
 
   const mockRoute: any = {
-    data: of({
-      case: CASE_DETAILS,
-      eventTrigger: EVENT_TRIGGER
-    }),
     snapshot: {
       data: {
         case: CASE_DETAILS,

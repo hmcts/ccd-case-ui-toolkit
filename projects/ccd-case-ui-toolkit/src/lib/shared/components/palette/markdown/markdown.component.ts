@@ -26,10 +26,18 @@ export class MarkdownComponent implements OnInit {
       if (target.tagName.toLowerCase() === 'a') {
         const href = target.getAttribute('href');
         if (href && href.startsWith('/') && !href.startsWith('//')) {
-          event.preventDefault();
-          this.ngZone.run(() => {
-            this.router.navigateByUrl(href);
-          });
+          const currentUrl = window.location.href;
+          if (currentUrl.includes('trigger')) {
+            // if we are already in an event and there is a markdown we should reload the page as without the components will not reinitialise
+            this.ngZone.run(() => {
+              this.router.navigateByUrl(href);
+            });
+          } else {
+            event.preventDefault();
+            this.ngZone.run(() => {
+              this.router.navigateByUrl(href);
+            });
+          }
         }
       }
     });
