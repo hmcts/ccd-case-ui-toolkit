@@ -5,6 +5,7 @@ import { delay } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
+import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
 
 @Injectable()
 export class DocumentManagementService {
@@ -25,7 +26,7 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  constructor(private readonly http: HttpService, private readonly appConfig: AbstractAppConfig) {}
+  constructor(private readonly http: HttpService, private readonly appConfig: AbstractAppConfig, private readonly caseNotifierService: CaseNotifier) {}
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.getDocStoreUrl();
@@ -103,6 +104,14 @@ export class DocumentManagementService {
   }
 
   private getDocStoreUrl(): string {
-    return this.appConfig.getDocumentSecureMode() ? this.appConfig.getDocumentManagementUrlV2() : this.appConfig.getDocumentManagementUrl();
+    let docStoreUrl = '';
+    this.caseNotifierService.caseView.subscribe((caseDetails) => {
+      const caseType = caseDetails?.case_type?.id;
+      const documentSecureModeCaseTypeExclusions = this.appConfig.getDocumentSecureModeCaseTypeExclusions()?.split(',');
+      const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(caseType);
+      const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
+      docStoreUrl = (documentSecureModeEnabled && !isDocumentOnExclusionList) ? this.appConfig.getDocumentManagementUrlV2() : this.appConfig.getDocumentManagementUrl();
+    }).unsubscribe();
+    return docStoreUrl;
   }
 }

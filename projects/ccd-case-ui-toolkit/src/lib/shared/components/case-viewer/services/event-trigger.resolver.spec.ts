@@ -180,6 +180,9 @@ describe('EventTriggerResolver', () => {
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
         paramMap: createSpyObj('paramMap', ['get'])
+      },
+      params: {
+        eid: EVENT_TRIGGER_ID
       }
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
