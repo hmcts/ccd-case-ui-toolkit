@@ -13,6 +13,15 @@
   <div class="govuk-!-margin-bottom-4" *ngIf="showForm">
     <div [formGroup]="formGroup">
       <div>
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            <ccd-markdown
+              [content]="serviceMessage | rpxTranslate">
+            </ccd-markdown>
+          </strong>
+        </div>
         <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
