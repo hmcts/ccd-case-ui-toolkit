@@ -32,9 +32,13 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
-    return this.isRootTriggerEventRoute(route) ? this.getAndCacheEventTrigger(route)
-        : (this.cachedEventTrigger && (route.params?.eid === this.cachedEventTrigger?.id)) ? Promise.resolve(this.cachedEventTrigger)
-        : this.getAndCacheEventTrigger(route);
+    if (this.isRootTriggerEventRoute(route)) {
+      return this.getAndCacheEventTrigger(route);
+    }
+    if (this.cachedEventTrigger && (route.params?.eid === this.cachedEventTrigger?.id)) {
+      return Promise.resolve(this.cachedEventTrigger);
+    }
+    return this.getAndCacheEventTrigger(route);
   }
 
   private isRootTriggerEventRoute(route: ActivatedRouteSnapshot) {
