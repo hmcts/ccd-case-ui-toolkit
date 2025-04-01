@@ -13,6 +13,10 @@ export class CaseFileViewOverlayMenuComponent {
   @Input() public isOpen = false;
   @Output() public isOpenChange = new EventEmitter<boolean>();
 
+  public setOpen() {
+    this.isOpen = !this.isOpen;
+  }
+
   public closeOverlay(): void {
     const isOpen = false;
 
