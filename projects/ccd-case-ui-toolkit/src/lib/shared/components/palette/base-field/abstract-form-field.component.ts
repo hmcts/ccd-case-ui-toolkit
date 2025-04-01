@@ -24,6 +24,10 @@ export abstract class AbstractFormFieldComponent {
     return this.idPrefix + this.caseField.id;
   }
 
+  public isTranslatable(field: CaseField): boolean {
+    return FieldsUtils.isTranslatable(field.field_type);
+  }
+
   protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
     const container: FormContainer = this.parent || this.formGroup;
     if (!container) {

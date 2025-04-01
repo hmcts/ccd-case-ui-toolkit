@@ -18,7 +18,6 @@ import {
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { CaseTab } from 'ccd-case-ui-toolkit';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseEditValidationError } from '../../../commons/case-edit-data/case-edit-validation.model';
@@ -32,6 +31,7 @@ import {
   FieldType,
   HttpError,
   Jurisdiction,
+  CaseTab
 } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CcdPageFieldsPipe } from '../../../pipes';
