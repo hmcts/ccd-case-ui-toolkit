@@ -184,7 +184,7 @@ describe('CaseEventTriggerComponent', () => {
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivityPollingService, useValue: activityPollingService },
           { provide: SessionStorageService, useValue: sessionStorageService },
-          { provide: LoadingService, useValue: loadingService }
+          { provide: LoadingService, useValue: loadingService },
         ]
       })
       .compileComponents();
