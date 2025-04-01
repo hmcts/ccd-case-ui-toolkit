@@ -17,7 +17,7 @@ export class CaseFileViewOverlayMenuComponent {
     this.isOpen = !this.isOpen;
     if(this.isOpen) {
       console.log('open');
-      const el = document.getElementById("overlay-menu__item0");
+      const el = document.querySelector('.overlay-menu__item:first-of-type');
       console.log("element =", el);
       if( el ) {
         setTimeout(()=>{
