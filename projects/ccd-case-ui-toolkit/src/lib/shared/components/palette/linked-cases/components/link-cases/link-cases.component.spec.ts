@@ -80,6 +80,7 @@ describe('LinkCasesComponent', () => {
     linkedCases: [],
     linkCaseReasons,
     caseFieldValue: [],
+    initialCaseLinkRefs: ['123456'],
     mapLookupIDToValueFromJurisdictions() {},
     getCaseName() {}
   };
@@ -182,5 +183,44 @@ describe('LinkCasesComponent', () => {
     expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
     component.showErrorInfo();
     expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
+  });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return true if the proposed case link is in the initial case links', () => {
+    const result = component.isCaseInInitial('123-456');
+    expect(result).toBe(true);
+  });
+
+  it('should return false if the proposed case link is not in the initial case links', () => {
+    const result = component.isCaseInInitial('654321');
+    expect(result).toBe(false);
+  });
+
+  it('should return false if the proposed case link is null or empty', () => {
+    expect(component.isCaseInInitial(null)).toBe(false);
+    expect(component.isCaseInInitial('')).toBe(false);
   });
 });

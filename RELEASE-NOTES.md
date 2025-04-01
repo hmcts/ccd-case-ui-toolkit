@@ -1,5 +1,34 @@
 ## RELEASE NOTES
 
+### Version 7.1.57
+**EXUI-1843** markdown routerLink feature has been removed
+**EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2756** Text alignment in Event history Detail seen to differ
+**EXUI-2640** Add a exclusion list for case types that should not be subject to CDAM
+**EXUI-2744** Data input in event page disappears in CYA page
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
+### Version 7.1.54
+**EXUI-2902** 'Ignore warning and go' button not working for 2 events
+
+### Version 7.1.53
+**EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
+
+### Version 7.1.52
+**EXUI-2748** Low Contrast pop up window
+
+### Version 7.1.51
+**EXUI-2039/2039** Ungrey back button
+
+### Version 7.1.50
+**EXUI-2868** E2E test failings - due to removing label associated for upload doc
+
 ### Version 7.1.46
 **EXUI-2104** Event History Summary
 

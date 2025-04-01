@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../../domain';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import {
   CaseFlagFieldState,
@@ -9,12 +9,13 @@ import {
   UpdateFlagAddTranslationErrorMessage,
   UpdateFlagAddTranslationStep
 } from '../../../enums';
+import { AbstractJourneyComponent } from '../../../../base-field';
 
 @Component({
   selector: 'ccd-update-flag-add-translation-form',
   templateUrl: './update-flag-add-translation-form.component.html'
 })
-export class UpdateFlagAddTranslationFormComponent implements OnInit {
+export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -34,11 +35,16 @@ export class UpdateFlagAddTranslationFormComponent implements OnInit {
   public ngOnInit(): void {
     this.updateFlagAddTranslationTitle = CaseFlagWizardStepTitle.UPDATE_FLAG_ADD_TRANSLATION;
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    this.multipageComponentStateService.getJourneyCollectionMainObject().journeyEndPageNumber++;
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail?.flagComment));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl(flagDetail?.flagComment_cy));
+  }
+
+  public ngOnDestroy(): void {
+    this.multipageComponentStateService.getJourneyCollectionMainObject().journeyEndPageNumber--;
   }
 
   public onNext(): void {
@@ -97,6 +103,14 @@ export class UpdateFlagAddTranslationFormComponent implements OnInit {
         description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
         fieldId: CaseFlagFormFields.COMMENTS_WELSH
       });
+    }
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
     }
   }
 }
