@@ -10,7 +10,6 @@ import { createCaseHistory } from '../../fixture';
 import { CaseReferencePipe, CcdTabFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../pipes';
 import { AlertService, FieldsUtils, OrderService } from '../../services';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
-import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../case-editor';
 import { PaletteUtilsModule } from '../palette';
 import { CaseHistoryComponent } from './case-history.component';
@@ -18,6 +17,8 @@ import { CaseHistory } from './domain';
 import { CaseHistoryService } from './services';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('CaseHistoryComponent', () => {
   const caseHeaderComponent: any = MockComponent({
@@ -27,7 +28,7 @@ describe('CaseHistoryComponent', () => {
 
   const markdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content', 'markdownUseHrefAsRouterLink']
+    inputs: ['content']
   });
 
   // Page object selectors
@@ -119,7 +120,7 @@ describe('CaseHistoryComponent', () => {
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
           markdownComponent,
-          MockRpxTranslatePipe,
+          RpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -131,7 +132,11 @@ describe('CaseHistoryComponent', () => {
           { provide: OrderService, useValue: orderService },
           { provide: CaseNotifier, useValue: caseNotifier },
           { provide: CaseHistoryService, useValue: caseHistoryService },
-          { provide: Router, useValue: router }
+          { provide: Router, useValue: router },
+          RpxTranslationService,
+          RpxTranslationConfig,
+          HttpClient,
+          HttpHandler
         ]
       })
       .compileComponents();
