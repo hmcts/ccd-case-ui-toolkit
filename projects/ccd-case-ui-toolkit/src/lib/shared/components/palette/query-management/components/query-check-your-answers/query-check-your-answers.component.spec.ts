@@ -5,9 +5,8 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { CaseField, CaseView, FieldType, TaskSearchParameter } from '../../../../../../shared/domain';
+import { CaseField, CaseView, FieldType } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../services';
-import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
@@ -625,8 +624,126 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     component.setCaseQueriesCollectionData();
 
+    expect(component.caseQueriesCollections.length).toBe(1);
+    expect(component.fieldId).toBe('field2');
+  });
+
+  it('should set caseQueriesCollections and fieldId correctly for multiple QmCaseQueriesCollection to the first collection for CIVIL jurisdiction', () => {
+    component.caseDetails.case_type.jurisdiction.id = 'CIVIL';
+
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ],
+      wizard_pages: [{
+        wizard_page_fields: [
+          {
+            case_field_id: 'field2',
+            order: 1
+          },
+          {
+            case_field_id: 'field4',
+            order: 4
+          }
+        ]
+      }]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
     expect(component.caseQueriesCollections.length).toBe(2);
     expect(component.fieldId).toBe('field2');
+  });
+
+  it('should show console error for multiple QmCaseQueriesCollection for other jurisdiction', () => {
+    spyOn(console, 'error');
+    component.caseDetails.case_type.jurisdiction.id = 'PUBLICLAW';
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(console.error).toHaveBeenCalledWith('Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction');
   });
 
   it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
@@ -635,6 +752,60 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     expect(component.caseQueriesCollections).toBeUndefined();
     expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should show console error if Jurisdiction is undefined', () => {
+    spyOn(console, 'error');
+    component.caseDetails.case_type.jurisdiction.id = undefined;
+
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(console.error).toHaveBeenCalledWith('Jurisdiction ID is missing.');
   });
 
   it('should set fieldId based on messageId when found', () => {
