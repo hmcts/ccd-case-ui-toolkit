@@ -4,10 +4,11 @@ import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { Constants } from '../../../../../commons/constants';
+import { PUI_CASE_MANAGER } from '../../../../../utils';
+import { QueryItemResponseStatus } from '../../enums';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
-import { Constants } from '../../../../../commons/constants';
-import { QueryItemResponseStatus } from '../../enums';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -243,7 +244,7 @@ describe('QueryDetailsComponent', () => {
     });
 
     it('should return true if the user doesnt have pui-case-manager', () => {
-      USER.roles.push('pui-case-manager');
+      USER.roles.push(PUI_CASE_MANAGER);
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isCaseworker()).toBeFalsy();

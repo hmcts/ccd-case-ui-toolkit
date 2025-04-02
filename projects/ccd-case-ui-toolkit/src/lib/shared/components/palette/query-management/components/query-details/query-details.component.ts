@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '../../../../../services';
-import { QueryListItem } from '../../models';
+
 import { Constants } from '../../../../../commons/constants';
+import { SessionStorageService } from '../../../../../services';
+import { isCaseworker } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
+import { QueryListItem } from '../../models';
+
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -33,10 +36,7 @@ export class QueryDetailsComponent implements OnChanges{
   }
 
   public isCaseworker(): boolean {
-    const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    return userDetails && userDetails.roles
-      && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
+    return isCaseworker(this.sessionStorageService);
   }
 
   public ngOnChanges(): void {

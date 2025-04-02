@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
+import { SessionStorageService } from '../../../services';
+import { isCaseworker } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
-import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
   selector: 'ccd-read-query-management-field',
@@ -68,9 +69,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   }
 
   public isCaseworker(): boolean {
-    const userDetails = JSON.parse(this.sessionStorageService?.getItem('userDetails'));
-    return userDetails && userDetails.roles
-      && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
+    return isCaseworker(this.sessionStorageService);
   }
 }
