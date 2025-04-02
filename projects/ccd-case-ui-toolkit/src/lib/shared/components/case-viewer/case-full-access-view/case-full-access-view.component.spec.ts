@@ -131,7 +131,7 @@ const caseHeaderComponentMock: any = MockComponent({
 
 const markdownComponentMock: any = MockComponent({
   selector: 'ccd-markdown',
-  inputs: ['content', 'markdownUseHrefAsRouterLink']
+  inputs: ['content']
 });
 
 const caseActivityComponentMock: any = MockComponent({
@@ -963,6 +963,7 @@ it('should set case view tab based on navigation end event', () => {
     component.callbackErrorsSubject.subscribe(error => results.push(error));
 
     errors.forEach(error => errorSource.next(error));
+    expect(component.isEventButtonClicked).toBeFalsy();
     expect(results.length).toEqual(0);
     expect(results).toEqual([]);
   });

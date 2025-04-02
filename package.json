@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.52-exui-2825-scrollbar",
+  "version": "7.1.60-exui-2825-scrollbar",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -63,7 +63,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.13-exui-2825-scrollbar",
+    "@hmcts/media-viewer": "4.0.14",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
