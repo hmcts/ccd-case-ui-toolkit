@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.60
+**EXUI-2928** QM: Limit the length of a message subject
+
 ### Version 7.1.59
 **EXUI-2649** QM task management integration
 
