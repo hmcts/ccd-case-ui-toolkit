@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.61-qm-task-management",
+  "version": "7.1.59",
   "engines": {
     "node": ">=18.19.0"
   },

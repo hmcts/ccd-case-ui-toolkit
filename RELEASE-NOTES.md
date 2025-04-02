@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
 ### Version 7.1.58
 **EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
 
