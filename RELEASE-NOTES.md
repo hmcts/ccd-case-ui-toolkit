@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
 ### Version 7.1.57
 **EXUI-1843** markdown routerLink feature has been removed
 **EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
