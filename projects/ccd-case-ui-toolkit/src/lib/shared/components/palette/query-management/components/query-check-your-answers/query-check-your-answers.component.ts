@@ -97,10 +97,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (response: any) => {
           // Filter task by query id
-            if (this.tid && response.tasks?.length > 1) {
-              this.filteredTasks = response.tasks?.filter((task: Task) => task.id === this.tid);
-            } else {
-              this.filteredTasks = response.tasks;
+            if (this.tid) {
+              if (response.tasks?.length > 1) {
+                this.filteredTasks = response.tasks?.filter((task: Task) => task.id === this.tid);
+              } else {
+                this.filteredTasks = response.tasks;
+              }
             }
           },
           error: (error) => {
@@ -150,7 +152,14 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           error: (error) => this.handleError(error)
         });
       } else {
-        console.error('Error: No task to complete found');
+        console.error('Error: No task to complete was found');
+        this.errorMessages = [
+          {
+            title: 'Error',
+            description: 'No task to complete was found',
+            fieldId: 'field-id'
+          }
+        ];
       }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
