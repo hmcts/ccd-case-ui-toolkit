@@ -10,13 +10,14 @@ export class QueryManagementUtils {
   private static readonly caseLevelCaseFieldId = 'CaseQueriesCollection';
   public static readonly FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
 
   public static extractCaseQueriesFromCaseField(caseField: CaseField) {
-    const { field_type, value } = caseField;
+    const { field_type, value, display_context } = caseField;
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId && QueryManagementUtils.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementUtils.caseLevelCaseFieldId && display_context !== QueryManagementUtils.DISPLAY_CONTEXT_READONLY && QueryManagementUtils.isNonEmptyObject(value)) {
         return value;
       }
       return null;

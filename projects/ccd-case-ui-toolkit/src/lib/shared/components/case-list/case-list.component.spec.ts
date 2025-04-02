@@ -107,7 +107,7 @@ describe('CaseListComponent', () => {
       // Added +1 for checkbox column
       expect(firstRow.children.length).toBe(tableConfig.columnConfigs.length + 1);
 
-      const firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(firstRowFirstCol.nativeElement.tagName).toBe('INPUT');
       expect(firstRowFirstCol.nativeElement.getAttribute('type')).toBe('checkbox');
 
@@ -130,13 +130,13 @@ describe('CaseListComponent', () => {
 
     it('should allow a Case to be shared', () => {
       expect(component.canBeShared(cases[0])).toBe(true);
-      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(checkbox.nativeElement.disabled).toBe(false);
     });
 
     it('should enable the "select all" checkbox when there is at least one shareable Case', () => {
       expect(component.canAnyBeShared()).toBe(true);
-      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(selectAllCheckbox.nativeElement.disabled).toBe(false);
     });
 
@@ -145,7 +145,7 @@ describe('CaseListComponent', () => {
       expect(component.canAnyBeShared()).toBe(false);
       // Update the view
       fixture.detectChanges();
-      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(selectAllCheckbox.nativeElement.disabled).toBe(true);
     });
 
@@ -154,7 +154,7 @@ describe('CaseListComponent', () => {
       expect(component.isSelected(cases[0])).toBe(true);
       // Update the view
       fixture.detectChanges();
-      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(checkbox.nativeElement.checked).toBe(true);
     });
 
@@ -163,7 +163,7 @@ describe('CaseListComponent', () => {
       expect(component.isSelected(cases[1])).toBe(false);
       // Update the view
       fixture.detectChanges();
-      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(2) th:nth-child(1) div:nth-child(1) input'));
+      const checkbox = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) div:nth-child(1) input'));
       expect(checkbox.nativeElement.checked).toBe(false);
     });
 
@@ -175,9 +175,9 @@ describe('CaseListComponent', () => {
       expect(component.selectedCases.length).toEqual(2);
       // Update the view
       fixture.detectChanges();
-      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(firstRowCheckbox.nativeElement.checked).toBe(true);
-      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) th:nth-child(1) div:nth-child(1) input'));
+      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) div:nth-child(1) input'));
       expect(secondRowCheckbox.nativeElement.checked).toBe(true);
     });
 
@@ -189,9 +189,9 @@ describe('CaseListComponent', () => {
       expect(component.selectedCases.length).toEqual(0);
       // Update the view
       fixture.detectChanges();
-      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(firstRowCheckbox.nativeElement.checked).toBe(false);
-      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) th:nth-child(1) div:nth-child(1) input'));
+      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) div:nth-child(1) input'));
       expect(secondRowCheckbox.nativeElement.checked).toBe(false);
     });
 
@@ -201,9 +201,9 @@ describe('CaseListComponent', () => {
       expect(component.selectedCases.length).toEqual(1);
       // Update the view
       fixture.detectChanges();
-      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(firstRowCheckbox.nativeElement.checked).toBe(true);
-      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) th:nth-child(1) div:nth-child(1) input'));
+      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) div:nth-child(1) input'));
       expect(secondRowCheckbox.nativeElement.checked).toBe(false);
     });
 
@@ -212,14 +212,14 @@ describe('CaseListComponent', () => {
       expect(component.selectedCases.length).toEqual(1);
       // Update the view
       fixture.detectChanges();
-      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) th:nth-child(1) div:nth-child(1) input'));
+      const firstRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
       expect(firstRowCheckbox.nativeElement.checked).toBe(true);
       component.changeSelection(cases[0]);
       expect(component.selectedCases.length).toEqual(0);
       // Update the view
       fixture.detectChanges();
       expect(firstRowCheckbox.nativeElement.checked).toBe(false);
-      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) th:nth-child(1) div:nth-child(1) input'));
+      const secondRowCheckbox = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) div:nth-child(1) input'));
       expect(secondRowCheckbox.nativeElement.checked).toBe(false);
     });
   });
