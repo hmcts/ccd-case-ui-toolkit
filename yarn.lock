@@ -42,18 +42,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/architect@npm:0.1802.16":
-  version: 0.1802.16
-  resolution: "@angular-devkit/architect@npm:0.1802.16"
+"@angular-devkit/architect@npm:0.1802.17":
+  version: 0.1802.17
+  resolution: "@angular-devkit/architect@npm:0.1802.17"
   dependencies:
-    "@angular-devkit/core": "npm:18.2.16"
+    "@angular-devkit/core": "npm:18.2.17"
     rxjs: "npm:7.8.1"
   dependenciesMeta:
     esbuild:
       built: true
     puppeteer:
       built: true
-  checksum: 10/31cbe2fdab295871f894f1c05aa323cb9b625be38cc614dd59b0e141658914cef80d5de17836f6f214a2c6f6ffd8c0227a1c8b6bea28cec45a029632fa7464fe
+  checksum: 10/de6b9fca450438a9b6d9f5f98f7b2d2b2035b434cfbdbb805df64c4ed993fa78c2bfadd57b9ca34885e3e848d2760093384810e33a8bac7d97038ca01644917e
   languageName: node
   linkType: hard
 
@@ -201,9 +201,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:18.2.16":
-  version: 18.2.16
-  resolution: "@angular-devkit/core@npm:18.2.16"
+"@angular-devkit/core@npm:18.2.17":
+  version: 18.2.17
+  resolution: "@angular-devkit/core@npm:18.2.17"
   dependencies:
     ajv: "npm:8.17.1"
     ajv-formats: "npm:3.0.1"
@@ -221,15 +221,15 @@ __metadata:
   peerDependenciesMeta:
     chokidar:
       optional: true
-  checksum: 10/eddb3dbe4080b6ea20b159346a3fe05ae03b5dfcde751a573730f8e8889fb56a270afdfaa153585f7d583c7eb123c47d4a96340975649f433ddc805bc5768a54
+  checksum: 10/506edfe8669dad2beeab7d0e3f6c78cb3c36b828afc7e0748e3828ebe898dfc54bea787dab03a6c3e4a72f86b0ae2af39ec7200d930eb2f1fc90c7287e5b0748
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:18.2.16":
-  version: 18.2.16
-  resolution: "@angular-devkit/schematics@npm:18.2.16"
+"@angular-devkit/schematics@npm:18.2.17":
+  version: 18.2.17
+  resolution: "@angular-devkit/schematics@npm:18.2.17"
   dependencies:
-    "@angular-devkit/core": "npm:18.2.16"
+    "@angular-devkit/core": "npm:18.2.17"
     jsonc-parser: "npm:3.3.1"
     magic-string: "npm:0.30.11"
     ora: "npm:5.4.1"
@@ -239,7 +239,7 @@ __metadata:
       built: true
     puppeteer:
       built: true
-  checksum: 10/92a15cd74efe51158c9507e975d30ac350e57c42af4f09c50ef99121ed938fc9b2ed9ec13665fdcb17de90b80c4e092c0955a6fcc02585e1c5f960855901ebdb
+  checksum: 10/7a9457b6a6d4137d537454aa0589e14615e8a011e06f93f754c823dd85e56e4515efcb0b696becc9430927d2f14c42b05f5faa48e4530f57f56ad4f8c9e57472
   languageName: node
   linkType: hard
 
@@ -393,16 +393,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cli@npm:^18.1.2":
-  version: 18.2.16
-  resolution: "@angular/cli@npm:18.2.16"
+"@angular/cli@npm:^18.2.17":
+  version: 18.2.17
+  resolution: "@angular/cli@npm:18.2.17"
   dependencies:
-    "@angular-devkit/architect": "npm:0.1802.16"
-    "@angular-devkit/core": "npm:18.2.16"
-    "@angular-devkit/schematics": "npm:18.2.16"
+    "@angular-devkit/architect": "npm:0.1802.17"
+    "@angular-devkit/core": "npm:18.2.17"
+    "@angular-devkit/schematics": "npm:18.2.17"
     "@inquirer/prompts": "npm:5.3.8"
     "@listr2/prompt-adapter-inquirer": "npm:2.0.15"
-    "@schematics/angular": "npm:18.2.16"
+    "@schematics/angular": "npm:18.2.17"
     "@yarnpkg/lockfile": "npm:1.1.0"
     ini: "npm:4.1.3"
     jsonc-parser: "npm:3.3.1"
@@ -421,7 +421,7 @@ __metadata:
       built: true
   bin:
     ng: bin/ng.js
-  checksum: 10/e6b7368a39105a638b7b66e8497ca026a0a068f44e8cda2bfe13b1dfca6204e9c47942414f7537df27f936796aa26fdd282df7056a1c423fd25f15c8a6e6ac1f
+  checksum: 10/ffb6ec535f6614cbf66193fbc25cae0cd9259d1e8e0639329bcc5399cb0a84ea029fabbc9aa59d556615347666667ced73b88af972818ae7e5b600c811059e50
   languageName: node
   linkType: hard
 
@@ -4380,7 +4380,7 @@ __metadata:
     "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:~17.3.5"
     "@angular/cdk": "npm:17.3.5"
-    "@angular/cli": "npm:^18.1.2"
+    "@angular/cli": "npm:^18.2.17"
     "@angular/common": "npm:^17.3.5"
     "@angular/compiler": "npm:17.3.5"
     "@angular/compiler-cli": "npm:^17.3.5"
@@ -6522,19 +6522,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@schematics/angular@npm:18.2.16":
-  version: 18.2.16
-  resolution: "@schematics/angular@npm:18.2.16"
+"@schematics/angular@npm:18.2.17":
+  version: 18.2.17
+  resolution: "@schematics/angular@npm:18.2.17"
   dependencies:
-    "@angular-devkit/core": "npm:18.2.16"
-    "@angular-devkit/schematics": "npm:18.2.16"
+    "@angular-devkit/core": "npm:18.2.17"
+    "@angular-devkit/schematics": "npm:18.2.17"
     jsonc-parser: "npm:3.3.1"
   dependenciesMeta:
     esbuild:
       built: true
     puppeteer:
       built: true
-  checksum: 10/c0538b6cfe1395e0b9f083a0763f9bd44a2bfabed0c7a52c7f65ba7b2308f6059faec57371a162f657421274e6bd488247334edfa9c256818ccb3cdbdc5bf4b6
+  checksum: 10/4722180dfd9d3572ba31f1818d3a1dea6f9ab7467f192bed53d2617036742cb4066412063577e65fd852439f4eb006c92ba27196bef3f9a53f2e47aa7b323c3f
   languageName: node
   linkType: hard
 
