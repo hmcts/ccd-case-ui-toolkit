@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
 ### Version 7.1.61
 **EXUI-2825** Mediaview: A scrollbar link appears in the centre
 **EXUI-2928** QM: Limit the length of a message subject
