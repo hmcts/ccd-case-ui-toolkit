@@ -541,10 +541,12 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({}));
 
     spyOn(component.querySubmitted, 'emit');
+    spyOn(component.callbackConfirmationBody, 'emit');
     component.submit();
 
     expect(casesService.createEvent).toHaveBeenCalled();
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+    expect(component.callbackConfirmationBody.emit).toHaveBeenCalledWith(undefined);
   });
 
   it('should set fieldId to undefined when eventData is unavailable', () => {
@@ -864,8 +866,10 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.filteredTasks.length).toBe(1);
     expect(component.filteredTasks[0].id).toBe('Task_2');
 
+    spyOn(component.callbackConfirmationBody, 'emit');
     component.submit();
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
+    expect(component.callbackConfirmationBody.emit).toHaveBeenCalledWith(undefined);
   });
 });
