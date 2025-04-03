@@ -1,5 +1,21 @@
 ## RELEASE NOTES
 
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+**EXUI-2928** QM: Limit the length of a message subject
+
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
 ### Version 7.1.57
 **EXUI-1843** markdown routerLink feature has been removed
 **EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
