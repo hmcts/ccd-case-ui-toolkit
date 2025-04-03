@@ -32,14 +32,18 @@
             {{ 'The subject should be a summary of your query' | rpxTranslate }}
           </div>
           <p id="subject-error" class="govuk-error-message"
-              *ngIf="submitted && formGroup.get('subject').hasError('required')">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ raiseQueryErrorMessage.QUERY_SUBJECT | rpxTranslate }}
+            *ngIf="submitted && (formGroup.get('subject').hasError('required') || formGroup.get('subject').hasError('maxlength'))">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+            {{ getSubjectErrorMessage() | rpxTranslate }}
           </p>
-          <input [formControlName]="'subject'" type="text" name="subject"
-                 class="govuk-input" id="subject"
-                 [class.govuk-input--error]="submitted && formGroup.get('subject')?.hasError('required')"
-          />
-        </div>
+
+          <input type="text"
+            id="subject"
+            class="govuk-input"
+            formControlName="subject"
+            maxlength="200"
+            (input)="onSubjectInput()"
+            aria-describedby="subject-error" />
       </div>
 
         <div class="govuk-form-group"

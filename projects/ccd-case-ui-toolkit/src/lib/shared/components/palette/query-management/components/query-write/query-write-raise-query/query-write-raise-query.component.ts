@@ -13,4 +13,23 @@ export class QueryWriteRaiseQueryComponent {
   @Input() public serviceMessage: string | null;
 
   public raiseQueryErrorMessage = RaiseQueryErrorMessage;
+
+  onSubjectInput(): void {
+    const control = this.formGroup.get('subject');
+    const value = control?.value;
+    if (value && value.length > 200) {
+      control?.setValue(value.substring(0, 200));
+    }
+  }
+
+  getSubjectErrorMessage(): string {
+    const control = this.formGroup.get('subject');
+    if (control.hasError('required')) {
+      return this.raiseQueryErrorMessage.QUERY_SUBJECT;
+    }
+    if (control.hasError('maxlength')) {
+      return this.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH;
+    }
+    return '';
+  }
 }

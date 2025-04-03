@@ -11,7 +11,7 @@
     <tbody>
       <tr *ngFor="let document of documents">
         <td class="document-name"><a [href]="document.url | ccdPrintUrl" target="_blank" rel="external">
-          {{document.name | rpxTranslate}}
+          {{document.name}}
         </a></td>
         <td class="document-type">{{document.type | rpxTranslate}}</td>
       </tr>

@@ -151,6 +151,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return false;
   }
 
+  public getDocumentSecureModeCaseTypeExclusions(): string {
+    return '';
+  }
+
   public getWAServiceConfig(): any {
     return null;
   }

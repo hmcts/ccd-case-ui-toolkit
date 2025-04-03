@@ -8,6 +8,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { LabelFieldComponent } from './label-field.component';
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('LabelFieldComponent', () => {
   const $CONTENT = By.css('dl>dt ccd-markdown');
@@ -44,7 +46,7 @@ describe('LabelFieldComponent', () => {
 
   const markdownComponentMock: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content', 'markdownUseHrefAsRouterLink']
+    inputs: ['content']
   });
   let fixture: ComponentFixture<LabelFieldComponent>;
   let component: LabelFieldComponent;
@@ -62,6 +64,11 @@ describe('LabelFieldComponent', () => {
         providers: [
           FieldsUtils,
           PlaceholderService,
+          RpxTranslatePipe,
+          RpxTranslationService,
+          RpxTranslationConfig,
+          HttpClient,
+          HttpHandler
         ]
       })
       .compileComponents();
