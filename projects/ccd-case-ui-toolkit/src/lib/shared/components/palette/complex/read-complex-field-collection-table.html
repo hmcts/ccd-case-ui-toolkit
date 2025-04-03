@@ -37,7 +37,7 @@
         </ng-container>
         <td>
           <div style="float: right;">
-            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
+            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="accordion-img" class="accordion-image"/></a>
           </div>
         </td>
       </tr>
@@ -51,7 +51,7 @@
               *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">
               <!-- <COMPLEX table expandable body simple field>-->
               <tr class="complex-panel-simple-field accordion-body" *ngIf="item[vLabel.id]" [hidden]="vLabel.hidden">
-                <th scope="col"><span class="text-16">{{vLabel.label | rpxTranslate}}</span></th>
+                <th scope="col"><span class="text-16">{{ vLabel.label | rpxTranslate }}</span></th>
                 <td *ngIf="vLabel['type'] !== 'Complex'" class="text-16">
                   <ccd-field-read [caseField]="toCaseField('', vLabel.label, vLabel.field_type, item[vLabel.id])"
                                   [context]="context"></ccd-field-read>
