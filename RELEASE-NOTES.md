@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+
 ### Version 7.1.60
 **EXUI-2928** QM: Limit the length of a message subject
 
