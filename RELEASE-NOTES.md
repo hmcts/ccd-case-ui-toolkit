@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
 ### Version 7.1.63
 **EXUI-2864** Increase size of hint text in document upload
 

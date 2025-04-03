@@ -35,7 +35,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     if (this.isRootTriggerEventRoute(route)) {
       return this.getAndCacheEventTrigger(route);
     }
-    if (this.cachedEventTrigger && (route.params?.eid === this.cachedEventTrigger?.id)) {
+    if (this.cachedEventTrigger && ((route.params?.eid === this.cachedEventTrigger?.id) && (route.params?.cid === this.cachedEventTrigger?.case_id))) {
       return Promise.resolve(this.cachedEventTrigger);
     }
     return this.getAndCacheEventTrigger(route);
