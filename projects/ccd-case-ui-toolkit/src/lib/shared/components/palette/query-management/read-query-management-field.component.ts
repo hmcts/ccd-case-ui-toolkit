@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
-import { isCaseworker } from '../../../utils';
+import { isInternalUser } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
@@ -68,7 +68,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.query = null;
   }
 
-  public isCaseworker(): boolean {
-    return isCaseworker(this.sessionStorageService);
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
   }
 }

@@ -7,7 +7,7 @@ import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
-import { isCaseworker } from '../../../utils';
+import { isInternalUser } from '../../../utils';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -157,7 +157,7 @@ export class WorkAllocationService {
    * @param response is the response given from the observable which contains the user detaild.
    */
   public handleTaskCompletionError(): void {
-    if (isCaseworker(this.sessionStorageService)) {
+    if (isInternalUser(this.sessionStorageService)) {
       // when submitting the completion of task if not yet rendered cases/case confirm then preserve the alert for re-rendering
       this.alertService.setPreserveAlerts(true, ['cases/case', 'submit']);
       this.alertService.warning({ phrase:'A task could not be completed successfully. Please complete the task associated with the case manually.'});

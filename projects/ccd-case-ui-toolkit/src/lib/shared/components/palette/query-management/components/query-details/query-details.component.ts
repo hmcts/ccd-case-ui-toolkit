@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Constants } from '../../../../../commons/constants';
 import { SessionStorageService } from '../../../../../services';
-import { isCaseworker } from '../../../../../utils';
+import { isInternalUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
 import { QueryListItem } from '../../models';
 
@@ -35,8 +35,8 @@ export class QueryDetailsComponent implements OnChanges{
     this.backClicked.emit(true);
   }
 
-  public isCaseworker(): boolean {
-    return isCaseworker(this.sessionStorageService);
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
   }
 
   public ngOnChanges(): void {
@@ -55,7 +55,7 @@ export class QueryDetailsComponent implements OnChanges{
       return false;
     }
 
-    if (this.isCaseworker() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
+    if (this.isInternalUser() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
       this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;
