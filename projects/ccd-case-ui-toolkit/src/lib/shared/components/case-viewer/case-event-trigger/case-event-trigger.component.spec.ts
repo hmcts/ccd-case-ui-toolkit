@@ -10,6 +10,7 @@ import { ActivityPollingService, AlertService, FieldsUtils, LoadingService, Sess
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
+import { EventTriggerResolver } from '../services';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -130,6 +131,7 @@ describe('CaseEventTriggerComponent', () => {
   let alertService: any;
   let caseNotifier: any;
   let casesService: any;
+  let eventResolverService: any;
   let loadingService: any;
   let sessionStorageService: any;
   let casesReferencePipe: any;
@@ -139,6 +141,7 @@ describe('CaseEventTriggerComponent', () => {
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
+    eventResolverService = createSpyObj<EventTriggerResolver>('eventTriggerResolver', ['resetCachedEventTrigger']);
     loadingService = new LoadingService();
     casesService.createEvent.and.returnValue(of(true));
     casesService.validateCase.and.returnValue(of(true));
@@ -185,6 +188,7 @@ describe('CaseEventTriggerComponent', () => {
           { provide: ActivityPollingService, useValue: activityPollingService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: LoadingService, useValue: loadingService },
+          { provide: EventTriggerResolver, useValue: eventResolverService }
         ]
       })
       .compileComponents();

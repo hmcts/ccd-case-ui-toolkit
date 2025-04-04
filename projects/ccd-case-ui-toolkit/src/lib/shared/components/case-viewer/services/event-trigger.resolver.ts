@@ -46,6 +46,10 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     return !route.firstChild || !route.firstChild.url.length;
   }
 
+  public resetCachedEventTrigger(): void {
+    this.cachedEventTrigger = null;
+  }
+
   private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
     const cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
     // tslint:disable-next-line: prefer-const

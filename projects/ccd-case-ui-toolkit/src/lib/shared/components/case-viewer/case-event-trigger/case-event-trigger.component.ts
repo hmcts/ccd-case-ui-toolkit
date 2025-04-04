@@ -6,6 +6,7 @@ import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
+import { EventTriggerResolver } from '../services';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -33,7 +34,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private eventTriggerResolver: EventTriggerResolver
   ) {
     this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
@@ -69,6 +71,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
+    this.eventTriggerResolver.resetCachedEventTrigger();
   }
 
   public postEditActivity(): Observable<Activity[]> {
