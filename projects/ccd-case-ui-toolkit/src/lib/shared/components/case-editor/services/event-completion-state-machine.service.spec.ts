@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { State, StateMachine } from '@edium/fsm';
 import { of } from 'rxjs';
-import { WorkAllocationService } from '.';
+import { CaseNotifier, WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
@@ -27,6 +27,7 @@ describe('EventCompletionStateMachineService', () => {
   let httpService: HttpService;
   let errorService: HttpErrorService;
   let alertService: AlertService;
+  let mockCaseNotifier;
   let mockWorkAllocationService: WorkAllocationService;
   // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
@@ -111,7 +112,8 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
+  mockCaseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
   mockSessionStorageService = new SessionStorageService();
 
   const context: EventCompletionStateMachineContext = {
@@ -128,7 +130,7 @@ describe('EventCompletionStateMachineService', () => {
     component: eventCompletionComponentEmitter
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
@@ -299,7 +301,7 @@ describe('EventCompletionStateMachineService', () => {
     expect(service.addTransitionsForStateTaskUnassigned).toBeTruthy();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 });

@@ -8,7 +8,7 @@ import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { ActivityComponent } from './activity.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CcdActivityComponent', () => {
+describe('CcdActivityComponent test', () => {
   const BANNER: any = DisplayMode.BANNER;
   const ICON: any = DisplayMode.ICON;
   const CASE_ID = '1507217479821551';

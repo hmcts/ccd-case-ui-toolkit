@@ -15,7 +15,8 @@ import { WorkAllocationService } from '../services/work-allocation.service';
 import { CaseEventCompletionComponent } from './case-event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseEventCompletionComponent', () => {
+describe('CaseEventCompletionComponent tests', () => {
+  console.error('case event completion test')
   const API_URL = 'http://aggregated.ccd.reform';
   let fixture: ComponentFixture<CaseEventCompletionComponent>;
   let component: CaseEventCompletionComponent;
@@ -107,6 +108,7 @@ describe('CaseEventCompletionComponent', () => {
   }));
 
   it('should create', () => {
+    console.error('case creation test')
     component.eventCompletionParams = eventCompletionParams;
     expect(component).toBeTruthy();
   });
@@ -136,7 +138,7 @@ describe('CaseEventCompletionComponent', () => {
     expect(component.taskState).toBe(1);
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 });

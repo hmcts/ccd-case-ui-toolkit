@@ -173,7 +173,7 @@ describe('TaskReassignedComponent', () => {
     expect(component.judicialworkerSubscription.unsubscribe).toHaveBeenCalled();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 });

@@ -1,6 +1,6 @@
 import { RouterHelperService } from './router-helper.service';
 
-describe('CaseEditSubmitComponent', () => {
+describe('RouterHelperService Test', () => {
   let classUnderTest: RouterHelperService;
 
   const mockRoute: any = {

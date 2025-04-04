@@ -313,9 +313,9 @@ describe('with defaults', () => {
     fixture.detectChanges();
   }));
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should disable the button', () => {
     component.selected.jurisdiction = JURISDICTION_2;
@@ -761,9 +761,9 @@ describe('with defaults and CRUD', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should populate case types drop down with CRUD filtered case types and sort states', waitForAsync(() => {
     component.onJurisdictionIdChange();
@@ -864,9 +864,9 @@ describe('with defaults and CRUD and empty case types', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should disable case type dropdown if default is filtered out due to CRUD and no other case types', () => {
     const caseTypeSelector = de.query(By.css('#wb-case-type'));
@@ -941,9 +941,9 @@ describe('with defaults and CRUD and type with empty case states', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should disable states dropdown if default is filtered out due to CRUD and no other states', () => {
     const caseTypeSelector = de.query(By.css('#wb-case-type'));
@@ -1025,9 +1025,9 @@ describe('with query parameters', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should initially select jurisdiction based on query parameter', () => {
     expect(component.selected.jurisdiction).toBe(JURISDICTION_1);
@@ -1112,9 +1112,9 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should initially NOT select anything if jurisdiction is invalid and no case types', () => {
     expect(component.selected.jurisdiction).toBeUndefined();
@@ -1189,9 +1189,9 @@ describe('with no defaults', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 
   it('should have disabled button', () => {
     component.selected.jurisdiction = JURISDICTION_2;

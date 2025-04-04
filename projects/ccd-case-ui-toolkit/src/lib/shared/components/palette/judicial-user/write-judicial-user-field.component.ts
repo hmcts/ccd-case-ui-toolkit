@@ -7,6 +7,7 @@ import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { CaseNotifier } from '../../case-editor';
 
 @Component({
   selector: 'ccd-write-judicial-user-field',
@@ -28,13 +29,30 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   public invalidSearchTerm = false;
   public judicialUserSelected = false;
   public jurisdictionSubscription: Subscription;
+  public caseNotifierSubscription: Subscription;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly caseFlagRefDataService: CaseFlagRefdataService,
     private readonly compoundPipe: IsCompoundPipe,
+    private readonly caseNotifier: CaseNotifier,
     private readonly validatorsService: FormValidatorsService) {
     super(compoundPipe, validatorsService);
+
+    this.jurisdictionSubscription = this.jurisdictionService.selectedJurisdictionBS.subscribe((jurisdiction) => {
+      if (jurisdiction && jurisdiction.id) {
+        this.jurisdiction = jurisdiction.id;
+        if (jurisdiction.currentCaseType) {
+          this.caseType = jurisdiction.currentCaseType.id;
+        }
+      }
+    });
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails?.case_type?.jurisdiction.id) {
+        this.caseType = caseDetails.case_type.id;
+        this.jurisdiction = caseDetails.case_type.jurisdiction.id;
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -101,23 +119,12 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     }
   }
 
+  // Get Jurisdiction and case type from the caseNotifier if available, otherwise use the jurisdiction service.
+  // If a new case is being created then the jurisdiction and case type will be set by the case creation filters
+  // If an event on an existing case is being run then the jurisdiction and case type are available from
+  // the caseNotifier (and possibly also the jurisidiction service, but not if going directly to the case from the
+  // task list, for instance)
   public setJurisdictionAndCaseType(): void {
-    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    if (caseInfoStr) {
-      const caseInfo = JSON.parse(caseInfoStr);
-      this.jurisdiction = caseInfo?.jurisdiction;
-      this.caseType = caseInfo?.caseType;
-    } else {
-      // If there is no case info, attempt to get the current jurisdiction and case type via the JurisdictionService
-      this.jurisdictionSubscription = this.jurisdictionService.selectedJurisdictionBS.subscribe((jurisdiction) => {
-        if (jurisdiction) {
-          this.jurisdiction = jurisdiction.id;
-          if (jurisdiction.currentCaseType) {
-            this.caseType = jurisdiction.currentCaseType.id;
-          }
-        }
-      });
-    }
   }
 
   public displayJudicialUser(judicialUser?: JudicialUserModel): string | undefined {
@@ -169,5 +176,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
 
   public ngOnDestroy(): void {
     this.jurisdictionSubscription?.unsubscribe();
+    this.caseNotifierSubscription?.unsubscribe();
   }
 }

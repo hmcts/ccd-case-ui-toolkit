@@ -66,9 +66,8 @@ class FieldReadLabelComponent {
   public markdownUseHrefAsRouterLink?: boolean;
 }
 
-describe('FieldReadComponent', () => {
+describe('FieldReadComponent test', () => {
   let fixture: ComponentFixture<FieldReadComponent>;
-  let component: FieldReadComponent;
   let de: DebugElement;
 
   let paletteService: any;
@@ -96,6 +95,7 @@ describe('FieldReadComponent', () => {
   const caseEditDataService = new CaseEditDataService();
   const pageValidationService = new PageValidationService(caseFieldService);
   const dialog: any = '';
+
 
   beforeEach(waitForAsync(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -147,7 +147,7 @@ describe('FieldReadComponent', () => {
       .compileComponents();
 
     fixture = TestBed.createComponent(FieldReadComponent);
-    component = fixture.componentInstance;
+    const component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;
     component.caseFields = caseFields;
@@ -157,6 +157,12 @@ describe('FieldReadComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
 
   it('should get field read class from PaletteService', () => {
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, false);
@@ -196,7 +202,7 @@ describe('FieldReadComponent', () => {
   });
 
   it('should display label if required', () => {
-    component.withLabel = true;
+    fixture.componentInstance.withLabel = true;
     fixture.detectChanges();
 
     const fieldReadLabelComponent = de.query(By.css('ccd-field-read-label'));

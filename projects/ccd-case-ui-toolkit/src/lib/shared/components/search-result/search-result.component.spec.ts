@@ -7,6 +7,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
+import { FieldReadComponent } from '../palette';
 import {
   CaseState,
   CaseType,
@@ -24,14 +25,14 @@ import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
 
-@Component({
-  selector: 'ccd-field-read',
-  template: `{{caseField.value}}`
-})
-class FieldReadComponent {
-  @Input()
-  public caseField: string;
-}
+// @Component({
+//   selector: 'ccd-field-read',
+//   template: `{{caseField}}`
+// })
+// class FieldReadComponent {
+//   @Input()
+//   public caseField: string;
+// }
 
 describe('SearchResultComponent', () => {
   describe('with results', () => {
@@ -805,10 +806,10 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            FieldReadComponent
           ],
           declarations: [
-            FieldReadComponent,
             SearchResultComponent,
             SortSearchResultPipe,
             CaseReferencePipe,
@@ -816,6 +817,7 @@ describe('SearchResultComponent', () => {
             // Mocks
             MockRpxTranslatePipe,
             caseActivityComponent,
+
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],

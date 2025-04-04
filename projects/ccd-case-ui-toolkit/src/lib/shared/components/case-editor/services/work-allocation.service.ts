@@ -7,6 +7,7 @@ import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
+import { CaseNotifier } from './case.notifier';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -16,15 +17,20 @@ export class WorkAllocationService {
   public static iACAdmOfficer = 'caseworker-ia-admofficer';
 
   private features: WAFeatureConfig;
+  private caseType: string;
+  private jurisdiction: string;
 
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
     private readonly errorService: HttpErrorService,
     private readonly alertService: AlertService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly caseNotifier: CaseNotifier
   ) {
-    // Check to see if work allocation is enabled
+    this.caseNotifier.caseView.subscribe((caseDetails) => {
+      this.jurisdiction = caseDetails.case_type.jurisdiction.id
+      this.caseType = caseDetails.case_type.id
+    })
   }
 
   /**
@@ -62,9 +68,8 @@ export class WorkAllocationService {
     }
     let enabled = false;
     if (!jurisdiction || !caseType) {
-      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
-      jurisdiction = caseInfo.jurisdiction;
-      caseType = caseInfo.caseType;
+      jurisdiction = this.jurisdiction;
+      caseType = this.caseType;
     }
     if (!this.features || !this.features.configurations) {
       this.appConfig.logMessage('isWAEnabled: no features');

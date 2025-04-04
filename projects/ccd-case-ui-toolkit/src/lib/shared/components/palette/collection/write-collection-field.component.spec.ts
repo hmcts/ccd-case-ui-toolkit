@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
@@ -9,6 +9,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { ProfileNotifier } from '../../../services';
+import { FieldReadComponent, FieldWriteComponent } from '../base-field';
 import { FormValidatorsService } from '../../../services/form';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -61,15 +62,6 @@ const $ADD_BUTTON_TOP = By.css('.write-collection-add-item__top');
 const $ADD_BUTTON_BOTTOM = By.css('.write-collection-add-item__bottom');
 const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
-const fieldWriteComponent = MockComponent({
-  selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
-});
-const fieldReadComponent = MockComponent({
-  selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
-});
-
 describe('WriteCollectionFieldComponent', () => {
   let fixture: ComponentFixture<WriteCollectionFieldComponent>;
   let component: WriteCollectionFieldComponent;
@@ -121,14 +113,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -371,14 +363,14 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -488,14 +480,14 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -578,14 +570,14 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -685,14 +677,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -750,7 +742,7 @@ describe('WriteCollectionFieldComponent', () => {
   let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of());
@@ -788,14 +780,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          FieldWriteComponent,
+          FieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -816,7 +808,7 @@ describe('WriteCollectionFieldComponent', () => {
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
+  });
 
   afterEach(() => {
     fixture.destroy();

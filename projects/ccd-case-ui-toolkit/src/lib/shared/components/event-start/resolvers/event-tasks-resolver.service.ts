@@ -7,27 +7,35 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { WorkAllocationService } from '../../case-editor/services/work-allocation.service';
 import { AbstractAppConfig } from '../../../../app.config';
+import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
 export class EventTasksResolverService implements Resolve<Task[]> {
+  private caseId: string;
+  private caseType: string;
+  private jurisdiction: string;
 
   constructor(private readonly service: WorkAllocationService,
               private readonly sessionStorageService: SessionStorageService,
+              private readonly caseNotifier: CaseNotifier,
               private readonly abstractConfig: AbstractAppConfig) {
+    caseNotifier.caseView.subscribe((caseView) => {
+      this.caseId = caseView.case_id;
+      this.caseType = caseView.case_type.id;
+      this.jurisdiction = caseView.case_type.jurisdiction.id;
+    });
   }
 
   public resolve(route: ActivatedRouteSnapshot): Observable<Task[]> {
     const eventId = route.queryParamMap.get('eventId');
     const caseId = route.queryParamMap.get('caseId');
-    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    const caseInfo = JSON.parse(caseInfoStr);
-    if (caseInfo) {
-      return this.service.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
+    if (this.caseId && caseId === this.caseId) {
+      return this.service.getTasksByCaseIdAndEventId(eventId, this.caseId, this.caseType, this.jurisdiction)
       .pipe(
         map((payload: TaskPayload) => payload.tasks)
       );
     } else {
-      this.abstractConfig.logMessage(`EventTasksResolverService: caseInfo details not available in session storage for ${caseId}`);
+      this.abstractConfig.logMessage(`EventTasksResolverService: caseInfo details not available or don't match current case for ${caseId}`);
     }
   }
 }

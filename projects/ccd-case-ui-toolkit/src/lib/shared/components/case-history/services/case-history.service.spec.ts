@@ -9,7 +9,7 @@ import { HttpErrorService, HttpService } from '../../../services';
 import { CaseHistory } from '../domain';
 import { CaseHistoryService } from './case-history.service';
 
-describe('CaseHistoryService', () => {
+describe('CaseHistoryService test', () => {
   const DATA_URL = 'http://data.ccd.reform';
   const CASE_ID = '1';
   const EVENT_ID = '10';

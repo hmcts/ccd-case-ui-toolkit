@@ -51,7 +51,7 @@ describe('TaskCancelledComponent', () => {
     expect(component.notifyEventCompletionCancelled.emit).toHaveBeenCalledWith(true);
   });
 
-  afterAll(() => {
-    TestBed.resetTestingModule();
-  });
+  // afterAll(() => {
+  //   TestBed.resetTestingModule();
+  // });
 });
