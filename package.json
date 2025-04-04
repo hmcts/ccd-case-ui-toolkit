@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.65",
+  "version": "7.1.65-event-trigger-reset-cache",
   "engines": {
     "node": ">=18.19.0"
   },
