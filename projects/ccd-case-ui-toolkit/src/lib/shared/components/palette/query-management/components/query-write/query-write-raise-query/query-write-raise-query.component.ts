@@ -10,6 +10,7 @@ export class QueryWriteRaiseQueryComponent {
   @Input() public submitted: boolean;
   @Input() public caseDetails;
   @Input() public showForm: boolean;
+  @Input() public serviceMessage: string | null;
 
   public raiseQueryErrorMessage = RaiseQueryErrorMessage;
 
