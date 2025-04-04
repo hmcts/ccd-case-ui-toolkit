@@ -20,8 +20,13 @@ export class CaseFileViewOverlayMenuComponent {
     this.isOpenChange.emit(isOpen);
   }
 
-  public actionAndClose(func: any): void {
-    func();
-    this.closeOverlay();
+  public setOpen() {
+    this.isOpen = !this.isOpen;
+    if(this.isOpen) {
+      setTimeout(()=>{
+        const el = document.querySelector('.overlay-menu__item:first-of-type');
+        (el as HTMLElement).focus();
+      },0); 
+    }
   }
 }
