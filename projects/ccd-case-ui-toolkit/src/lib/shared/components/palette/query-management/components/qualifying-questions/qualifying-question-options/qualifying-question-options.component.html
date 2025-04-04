@@ -23,8 +23,12 @@
             <div class="govuk-radios__divider">{{ 'or' | rpxTranslate }}</div>
           </ng-container>
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" name="qualifyingQuestionOption"
-              type="radio" [formControl]="qualifyingQuestionsControl" [value]="qualifyingQuestion">
+            <input class="govuk-radios__input" 
+              id="{{qualifyingQuestion.name}}" 
+              name="qualifyingQuestionOption"
+              type="radio" [formControl]="qualifyingQuestionsControl" 
+              [value]="qualifyingQuestion"
+              (change)="onSelectionChange(qualifyingQuestion)">
             <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name |
               rpxTranslate }}</label>
           </div>
