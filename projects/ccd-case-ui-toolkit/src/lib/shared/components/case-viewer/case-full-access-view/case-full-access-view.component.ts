@@ -255,7 +255,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0 || this.appendedTabs.length > 0;
+    return this.sortedTabs?.length > 0 || this.prependedTabs?.length > 0 || this.appendedTabs?.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
