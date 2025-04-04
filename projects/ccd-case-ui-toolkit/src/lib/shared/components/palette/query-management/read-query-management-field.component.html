@@ -13,7 +13,7 @@
     [caseId]="caseId"
   ></ccd-query-details>
 
-  <ng-container *ngIf="!isCaseworker()">
+  <ng-container *ngIf="!isInternalUser()">
     <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">

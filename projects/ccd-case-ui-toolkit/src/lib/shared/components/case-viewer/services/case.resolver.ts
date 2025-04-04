@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
 import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
@@ -126,9 +127,9 @@ export class CaseResolver implements Resolve<CaseView> {
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
     console.info('Going to default page!');
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(this.sessionStorage.getItem(USER_DETAILS));
     userDetails && userDetails.roles
-        && !userDetails.roles.includes('pui-case-manager')
+        && !userDetails.roles.includes(PUI_CASE_MANAGER)
         &&
         (userDetails.roles.includes('caseworker-ia-iacjudge')
           || userDetails.roles.includes('caseworker-ia-caseofficer')
