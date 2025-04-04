@@ -4,10 +4,11 @@ import { of } from 'rxjs';
 import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { HttpErrorService, HttpService, SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { CaseNotifier, WorkAllocationService } from '../../case-editor';
 import { EventTasksResolverService } from './event-tasks-resolver.service';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
+import { getMockCaseNotifier } from '../../case-editor/services/case.notifier.spec';
 
 describe('EventTaskResolverService', () => {
   // tslint:disable-next-line: prefer-const
@@ -17,6 +18,7 @@ describe('EventTaskResolverService', () => {
   let workAllocationService: WorkAllocationService;
   let alertService: any;
   let mockAbstractConfig: any;
+  let mockCaseNotifier: CaseNotifier;
 
   const taskPayload: TaskPayload = {
     task_required_for_event: true,
@@ -55,7 +57,8 @@ describe('EventTaskResolverService', () => {
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
-  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
+  mockCaseNotifier = getMockCaseNotifier();
+  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
   mockAbstractConfig = createSpyObj('abstractConfig', ['logMessage']);
 
   beforeEach(() => TestBed.configureTestingModule({

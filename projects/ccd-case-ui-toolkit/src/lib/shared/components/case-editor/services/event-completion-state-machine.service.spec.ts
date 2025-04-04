@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { State, StateMachine } from '@edium/fsm';
 import { of } from 'rxjs';
-import { WorkAllocationService } from '.';
+import { CaseNotifier, CasesService, WorkAllocationService } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
@@ -16,13 +16,14 @@ import {
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
+import { CaseView } from '../../../domain';
+import { getMockCaseNotifier } from './case.notifier.spec';
 
 describe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
   // tslint:disable-next-line: prefer-const
-  let mockSessionStorageService: SessionStorageService;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let httpService: HttpService;
   let errorService: HttpErrorService;
@@ -31,6 +32,9 @@ describe('EventCompletionStateMachineService', () => {
   // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
+  let mockCaseNotifier: CaseNotifier;
+  let mockSessionStorageService: SessionStorageService;
+  let mockCasesService: CasesService;
   const eventCompletionComponentEmitter: any = {
     eventCanBeCompleted: new EventEmitter<boolean>(true),
     setTaskState: () => { }
@@ -111,8 +115,7 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
-  mockSessionStorageService = new SessionStorageService();
+  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
 
   const context: EventCompletionStateMachineContext = {
     task: oneTask,
@@ -138,6 +141,8 @@ describe('EventCompletionStateMachineService', () => {
       ]
     });
     service = new EventCompletionStateMachineService();
+    mockCaseNotifier = getMockCaseNotifier();
+    mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
   });
 
   it('should initialise state machine', () => {

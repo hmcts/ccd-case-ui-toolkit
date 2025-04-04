@@ -41,6 +41,7 @@ import { LinkedCasesService } from '../../palette/linked-cases/services/linked-c
 
 import createSpyObj = jasmine.createSpyObj;
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { getMockCaseNotifier } from '../services/case.notifier.spec';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -75,7 +76,7 @@ describe('CaseEditSubmitComponent', () => {
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
 
   let sessionStorageService: any;
-  const mockCaseNotifier: any = {};
+  let mockCaseNotifier: CaseNotifier = getMockCaseNotifier();
   const task = `{
     "assignee": null,
     "auto_assigned": false,
@@ -1054,7 +1055,7 @@ describe('CaseEditSubmitComponent', () => {
         description: '',
         caseTypes: CASE_TYPES_2
       }];
-    
+
       const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
       searchService.searchCasesByIds.and.returnValue(of({}));
       const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
@@ -1238,7 +1239,7 @@ describe('CaseEditSubmitComponent', () => {
         description: '',
         caseTypes: CASE_TYPES_2
       }];
-    
+
       const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
       searchService.searchCasesByIds.and.returnValue(of({}));
       const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
