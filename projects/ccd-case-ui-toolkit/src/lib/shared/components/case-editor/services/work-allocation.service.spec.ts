@@ -9,6 +9,7 @@ import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.s
 import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
+import { getMockCaseNotifier } from './case.notifier.spec';
 
 interface UserInfo {
   id: string;
@@ -158,9 +159,7 @@ describe('WorkAllocationService', () => {
     httpService.get.and.returnValue(of(getExampleUserDetails()[1]));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-    mockCasesService = createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
-    mockCaseNotifier = new CaseNotifier(mockCasesService);
-    mockCaseNotifier.announceCase(mockCaseView2);
+    mockCaseNotifier = getMockCaseNotifier(mockCaseView2);
     workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
   });
 

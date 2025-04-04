@@ -15,6 +15,7 @@ import { CaseField, CaseView, OrderService } from '../..';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewerComponent } from './case-viewer.component';
 import createSpyObj = jasmine.createSpyObj;
+import { getMockCaseNotifier } from '../case-editor/services/case.notifier.spec';
 
 const CASE_VIEW_FROM_ROUTE: CaseView = {
   case_type: {
@@ -138,9 +139,7 @@ describe('CaseViewerComponent', () => {
     'getAccessManagementBasicViewMock'
   ]);
 
-  const mockCaseNotifier = new CaseNotifier(casesService);
-  mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
-
+  const mockCaseNotifier = getMockCaseNotifier();
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = {} as Data;
 

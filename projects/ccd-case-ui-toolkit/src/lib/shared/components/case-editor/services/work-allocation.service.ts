@@ -29,8 +29,8 @@ export class WorkAllocationService {
   ) {
     this.caseNotifier.caseView.subscribe((caseDetails) => {
       if (caseDetails) {
-        this.jurisdiction = caseDetails.case_type.jurisdiction.id;
-        this.caseType = caseDetails.case_type.id;
+        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseType = caseDetails?.case_type?.id;
       }
     });
   }
