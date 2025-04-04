@@ -14,6 +14,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class QueryWriteDateInputComponent implements ControlValueAccessor {
   @Input() public formControlName: string;
+  // TEST TODO
+  // Note: ngModel used here - Angular may affect this
   public day: number;
   public month: number;
   public year: number;
