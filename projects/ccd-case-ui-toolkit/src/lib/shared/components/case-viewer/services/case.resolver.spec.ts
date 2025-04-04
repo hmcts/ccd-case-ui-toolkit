@@ -339,6 +339,17 @@ describe('CaseResolver', () => {
         expect(router.navigate).not.toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
       });
     });
+
+    it('should skip resolve and call goToDefaultPage if eventId=queryManagementRespondQuery is in URL', async () => {
+      router.url = '/cases/event-start?eventId=queryManagementRespondQuery'; // Simulate URL
+      mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(false);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver.resolve(route);
+
+      route.paramMap.get.and.returnValue(CASE_ID);
+
+      expect(router.navigate).toHaveBeenCalledWith(['/cases']);
+    });
   });
 
   describe('resolve()', () => {

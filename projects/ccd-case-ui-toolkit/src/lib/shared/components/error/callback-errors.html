@@ -1,4 +1,4 @@
-<div *ngIf="hasErrors() || hasWarnings()" class="error-summary" role="group"
+<div *ngIf="hasErrors() || hasWarnings()" class="error-summary"
      [attr.aria-label]="'Cannot continue because the service reported one or more errors or warnings' | rpxTranslate"
      tabindex="-1">
   <ng-container *ngIf="hasErrors()">
@@ -7,7 +7,7 @@
     </h3>
     <ul id="errors" class="error-summary-list">
       <li *ngFor="let errorMsg of error.callbackErrors">
-        {{errorMsg | rpxTranslate}}
+        {{errorMsg}}
       </li>
     </ul>
   </ng-container>
@@ -19,7 +19,7 @@
     </h3>
     <ul id="warnings" class="error-summary-list">
       <li *ngFor="let warningMsg of error.callbackWarnings">
-        {{warningMsg | rpxTranslate}}
+        {{warningMsg}}
       </li>
     </ul>
   </ng-container>

@@ -1,5 +1,38 @@
 ## RELEASE NOTES
 
+### Version 7.1.65
+**EXUI-2876** Spinner Does Not Stop on Queries Tab
+
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+**EXUI-2928** QM: Limit the length of a message subject
+
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
+### Version 7.1.57
+**EXUI-1843** markdown routerLink feature has been removed
+**EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2756** Text alignment in Event history Detail seen to differ
+**EXUI-2640** Add a exclusion list for case types that should not be subject to CDAM
+**EXUI-2744** Data input in event page disappears in CYA page
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
 ### Version 7.1.54
 **EXUI-2902** 'Ignore warning and go' button not working for 2 events
 
