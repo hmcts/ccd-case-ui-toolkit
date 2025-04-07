@@ -310,8 +310,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // select the first tab checking if the tab is visible
         const preSelectTab: CaseTab = this.findPreSelectedActiveTab();
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
-          matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab?.label }).then(() => {
+          matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab?.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
           // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
           if (matTab?.position) {
