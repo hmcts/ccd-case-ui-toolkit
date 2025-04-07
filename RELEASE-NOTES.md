@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.65-exui-2971-rc1
+**EXUI-2971** RPA process fails
+
 ### Version 7.1.65
 **EXUI-2876** Spinner Does Not Stop on Queries Tab
 
