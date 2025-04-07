@@ -139,7 +139,10 @@ describe('CaseViewerComponent', () => {
     'getAccessManagementBasicViewMock'
   ]);
 
-  const mockCaseNotifier = getMockCaseNotifier();
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
+
+  // const mockCaseNotifier = getMockCaseNotifier();
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = {} as Data;
 

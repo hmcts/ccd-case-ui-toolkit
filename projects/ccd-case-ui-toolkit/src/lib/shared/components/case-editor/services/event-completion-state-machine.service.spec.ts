@@ -16,7 +16,6 @@ import {
 import { EventCompletionStateMachineService } from './event-completion-state-machine.service';
 import createSpyObj = jasmine.createSpyObj;
 import { EventCompletionTaskStates } from '../domain/event-completion-task-states.model';
-import { CaseView } from '../../../domain';
 import { getMockCaseNotifier } from './case.notifier.spec';
 
 describe('EventCompletionStateMachineService', () => {
@@ -115,7 +114,10 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
+  mockCaseNotifier = getMockCaseNotifier();
+  mockSessionStorageService = new SessionStorageService();
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+
 
   const context: EventCompletionStateMachineContext = {
     task: oneTask,
@@ -137,12 +139,11 @@ describe('EventCompletionStateMachineService', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseNotifier, useValue: mockCaseNotifier }
       ]
     });
     service = new EventCompletionStateMachineService();
-    mockCaseNotifier = getMockCaseNotifier();
-    mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
   });
 
   it('should initialise state machine', () => {

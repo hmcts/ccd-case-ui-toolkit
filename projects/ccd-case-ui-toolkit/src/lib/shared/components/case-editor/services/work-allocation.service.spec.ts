@@ -153,7 +153,7 @@ describe('WorkAllocationService', () => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig', 'logMessage']);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
-    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
+    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['Asylum'], release: '3.0'}]});
 
     httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
     httpService.get.and.returnValue(of(getExampleUserDetails()[1]));
@@ -208,7 +208,6 @@ describe('WorkAllocationService', () => {
   });
 
   describe('assignTask', () => {
-
     beforeEach(() => {
       httpService.post.and.returnValue(of({}));
     });
@@ -235,16 +234,15 @@ describe('WorkAllocationService', () => {
     });
 
     it('should be blocked when not supported by WA', () => {
-      mockCaseNotifier.announceCase(mockCaseView1);
+      mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
       const userId = getExampleUserDetails()[1].userInfo.id;
       workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
     });
-
   });
 
   describe('completeTask', () => {
-
     beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of({}));
     }));
@@ -271,7 +269,8 @@ describe('WorkAllocationService', () => {
     });
 
     it('should be blocked when not supported by WA', () => {
-      mockCaseNotifier.announceCase(mockCaseView1);
+      mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
       workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
     });
@@ -306,7 +305,8 @@ describe('WorkAllocationService', () => {
     });
 
     it('should be blocked when not supported by WA', () => {
-      mockCaseNotifier.announceCase(mockCaseView1);
+      mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
     });
@@ -351,7 +351,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: []
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'Asylum').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
         done();
@@ -364,7 +364,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'Asylum').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id, 'event');
         done();
       });
@@ -375,7 +375,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(() => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'Asylum').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
       }, error => {
@@ -390,7 +390,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'Asylum').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
@@ -418,8 +418,9 @@ describe('WorkAllocationService', () => {
 
     it('should be blocked when not supported by WA', () => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
-      mockCaseNotifier.announceCase(mockCaseView1);
-      workAllocationService.completeAppropriateTask(null, null, 'IA', 'Asylum').subscribe(result => {
+      mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+      workAllocationService.completeAppropriateTask(null, null, 'CIVIL', 'Civil').subscribe(result => {
         expect(result).toBe(null);
       });
     });
