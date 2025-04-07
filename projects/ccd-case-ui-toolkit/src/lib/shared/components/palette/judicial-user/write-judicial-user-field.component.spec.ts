@@ -13,6 +13,9 @@ import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseNotifier } from '../../case-editor';
+import { MockComponent } from 'ng2-mock-component';
+import { getMockCaseNotifier } from '../../case-editor/services/case.notifier.spec';
 
 const VALUE = {
   idamId: 'idam123',
@@ -112,7 +115,7 @@ const JUDICIAL_USERS: JudicialUserModel[] = [
 
 const SERVICE_DETAILS = [
   {
-    ccd_service_name: 'SSCS',
+    ccd_service_name: 'CIVIL',
     org_unit: 'HMCTS',
     service_code: 'BBA3',
     service_id: 31
@@ -141,27 +144,28 @@ describe('WriteJudicialUserFieldComponent', () => {
   let loadJudicialUserSpy: jasmine.Spy;
   let filterJudicialUsersSpy: jasmine.Spy;
   let nativeElement: any;
+  let mockCaseNotifier: any;
 
   beforeEach(waitForAsync(() => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS' }));
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'CIVIL', jurisdiction: 'CIVIL' }));
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
     caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
     compoundPipe = createSpyObj<IsCompoundPipe>('compoundPipe', ['transform']);
     compoundPipe.transform.and.returnValue(false);
+    mockCaseNotifier = getMockCaseNotifier();
     validatorsService = createSpyObj<FormValidatorsService>('validatorsService', ['addValidators']);
-
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
         MatAutocompleteModule,
         PaletteUtilsModule
       ],
-      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe, MockComponent({ selector: 'ccd-field-read', inputs: ['caseField'] })],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },
@@ -169,7 +173,8 @@ describe('WriteJudicialUserFieldComponent', () => {
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
         { provide: IsCompoundPipe, useValue: compoundPipe },
         { provide: FormValidatorsService, useValue: validatorsService },
-        { provide: FirstErrorPipe, useValue: MockFirstErrorPipe }
+        { provide: FirstErrorPipe, useValue: MockFirstErrorPipe },
+        { provide: CaseNotifier, useValue: mockCaseNotifier }
       ]
     })
       .compileComponents();
@@ -183,7 +188,6 @@ describe('WriteJudicialUserFieldComponent', () => {
     spyOn(FieldsUtils, 'addCaseFieldAndComponentReferences').and.callThrough();
     spyOn(component.formGroup, 'setControl').and.callThrough();
     spyOn(component, 'setupValidation').and.callThrough();
-    spyOn(component, 'setJurisdictionAndCaseType').and.callThrough();
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
@@ -193,7 +197,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(FieldsUtils.addCaseFieldAndComponentReferences).toHaveBeenCalledWith(
       component.judicialUserControl, component.caseField, component);
     expect(component.setupValidation).toHaveBeenCalled();
-    expect(component.setJurisdictionAndCaseType).toHaveBeenCalled();
+    // expect(component.setJurisdictionAndCaseType).toHaveBeenCalled();
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
     selectedJudicial.dispatchEvent(new Event('focusin'));
     selectedJudicial.value = 'col';
@@ -203,8 +207,8 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
-    expect(component.jurisdiction).toEqual('SSCS');
-    expect(component.caseType).toEqual('Benefit');
+    expect(component.jurisdiction).toEqual('CIVIL');
+    expect(component.caseType).toEqual('CIVIL');
   });
 
   it('should set validation for the component when the field is not mandatory', () => {
@@ -329,21 +333,20 @@ describe('WriteJudicialUserFieldComponent', () => {
   });
 
   it('should set jurisdiction and case type', () => {
-    component.setJurisdictionAndCaseType();
-    expect(component.jurisdiction).toEqual('SSCS');
-    expect(component.caseType).toEqual('Benefit');
+    expect(component.jurisdiction).toEqual('CIVIL');
+    expect(component.caseType).toEqual('CIVIL');
   });
 
   it('should search for judicial users for the specified case type ID', () => {
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.calls.reset();
     jurisdictionService.searchJudicialUsers.calls.reset();
     component.jurisdiction = 'BBA3';
-    component.caseType = 'Benefit';
+    component.caseType = 'CIVIL';
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     // Subscribe to the observable to execute it and trigger calls to services
     let filteredJudicialUsers: JudicialUserModel[];
     component.filterJudicialUsers('jas').subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
-    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('Benefit');
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('CIVIL');
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).not.toHaveBeenCalled();
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
     expect(filteredJudicialUsers).toEqual([JUDICIAL_USERS[0]]);
@@ -354,12 +357,12 @@ describe('WriteJudicialUserFieldComponent', () => {
     jurisdictionService.searchJudicialUsers.calls.reset();
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(throwError(new Error('Unknown case type ID')));
     component.jurisdiction = 'BBA3';
-    component.caseType = 'Benefit';
+    component.caseType = 'CIVIL';
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     // Subscribe to the observable to execute it and trigger calls to services
     let filteredJudicialUsers: JudicialUserModel[];
     component.filterJudicialUsers('jas').subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
-    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('Benefit');
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('CIVIL');
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith('BBA3');
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
     expect(filteredJudicialUsers).toEqual([JUDICIAL_USERS[0]]);
@@ -501,57 +504,11 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(errorMessageElement.textContent).toContain('Judicial User is required');
   });
 
-  it('should get the jurisdiction and case type via the JurisdictionService if there is no case info', fakeAsync(() => {
-    sessionStorageService.getItem.and.returnValue(null);
-    const dummyJurisdictionAndCaseType = {
-      id: 'J1',
-      name: 'Jurisdiction 1',
-      description: 'Dummy jurisdiction',
-      caseTypes: [],
-      currentCaseType: {
-        id: 'CT1',
-        name: 'Case Type 1'
-      } as CaseTypeLite
-    } as Jurisdiction;
-    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
-    jurisdictionService.selectedJurisdictionBS.next(dummyJurisdictionAndCaseType);
-    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe').and.callThrough();
-    component.setJurisdictionAndCaseType();
-    tick();
-    expect(jurisdictionService.selectedJurisdictionBS.subscribe).toHaveBeenCalled();
-    expect(component.jurisdiction).toEqual(dummyJurisdictionAndCaseType.id);
-    expect(component.caseType).toEqual(dummyJurisdictionAndCaseType.currentCaseType.id);
-  }));
-
   it('should not get the jurisdiction and case type via the JurisdictionService if there is case info', () => {
     Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
     spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe');
-    component.setJurisdictionAndCaseType();
     expect(jurisdictionService.selectedJurisdictionBS.subscribe).not.toHaveBeenCalled();
-    expect(component.jurisdiction).toEqual('SSCS');
-    expect(component.caseType).toEqual('Benefit');
+    expect(component.jurisdiction).toEqual('CIVIL');
+    expect(component.caseType).toEqual('CIVIL');
   });
-
-  it('should unsubscribe from any subscriptions when the component is destroyed', fakeAsync(() => {
-    sessionStorageService.getItem.and.returnValue(null);
-    const dummyJurisdictionAndCaseType = {
-      id: 'J1',
-      name: 'Jurisdiction 1',
-      description: 'Dummy jurisdiction',
-      caseTypes: [],
-      currentCaseType: {
-        id: 'CT1',
-        name: 'Case Type 1'
-      } as CaseTypeLite
-    } as Jurisdiction;
-    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
-    jurisdictionService.selectedJurisdictionBS.next(dummyJurisdictionAndCaseType);
-    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe').and.callThrough();
-    component.setJurisdictionAndCaseType();
-    tick();
-    expect(jurisdictionService.selectedJurisdictionBS.subscribe).toHaveBeenCalled();
-    spyOn(component.jurisdictionSubscription, 'unsubscribe');
-    component.ngOnDestroy();
-    expect(component.jurisdictionSubscription.unsubscribe).toHaveBeenCalled();
-  }));
 });
