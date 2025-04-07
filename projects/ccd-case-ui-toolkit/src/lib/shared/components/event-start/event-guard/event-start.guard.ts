@@ -7,17 +7,28 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { ReadCookieService, SessionStorageService } from '../../../services';
-import { CaseEditComponent, WorkAllocationService } from '../../case-editor';
+import { CaseEditComponent, CaseNotifier, WorkAllocationService } from '../../case-editor';
 import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
+  private jurisdiction: string;
+  private caseType: string;
+  private caseId: string;
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
     private readonly abstractConfig: AbstractAppConfig,
-    private readonly cookieService: ReadCookieService) {
+    private readonly cookieService: ReadCookieService,
+    private readonly caseNotifier: CaseNotifier) {
+    this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails) {
+        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseType = caseDetails?.case_type?.id;
+        this.caseId = caseDetails?.case_id;
+      }
+    });
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -30,7 +41,6 @@ export class EventStartGuard implements CanActivate {
       const userInfo = JSON.parse(userInfoStr);
       userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
-    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     const languageCookie = this.cookieService.getCookie('exui-preferred-language');
     const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
     const preClientContext = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
@@ -59,18 +69,16 @@ export class EventStartGuard implements CanActivate {
         this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
-    if (caseInfoStr) {
-      const caseInfo = JSON.parse(caseInfoStr);
-      if (caseInfo && caseInfo.cid === caseId) {
-        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
+    if (this.jurisdiction && this.caseType) {
+      if (this.caseId === caseId) {
+        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
           .pipe(
             switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
           );
-      } else {
-        this.abstractConfig.logMessage(`EventStartGuard: caseId ${caseInfo.cid} in caseInfo not matched with the route parameter caseId ${caseId}`);
       }
+      this.abstractConfig.logMessage(`EventStartGuard: caseId ${this.caseId} in case notifier not matched with the route parameter caseId ${caseId}`);
     } else {
-      this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in session storage for ${caseId}`);
+      this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in case notifier for ${caseId}`);
     }
     return of(false);
   }
