@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.66-exui-3004-rc1
+**EXUI-3004** Link for a new tab casuing issues
+
 ### Version 7.1.66
 **EXUI-2957** QM: Service Specific Text on Raise a Query page
 
