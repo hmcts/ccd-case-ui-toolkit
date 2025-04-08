@@ -13,6 +13,15 @@
   <div class="govuk-!-margin-bottom-4" *ngIf="showForm">
     <div [formGroup]="formGroup">
       <div>
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            <ccd-markdown
+              [content]="serviceMessage | rpxTranslate">
+            </ccd-markdown>
+          </strong>
+        </div>
         <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
@@ -23,14 +32,18 @@
             {{ 'The subject should be a summary of your query' | rpxTranslate }}
           </div>
           <p id="subject-error" class="govuk-error-message"
-              *ngIf="submitted && formGroup.get('subject').hasError('required')">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ raiseQueryErrorMessage.QUERY_SUBJECT | rpxTranslate }}
+            *ngIf="submitted && (formGroup.get('subject').hasError('required') || formGroup.get('subject').hasError('maxlength'))">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+            {{ getSubjectErrorMessage() | rpxTranslate }}
           </p>
-          <input [formControlName]="'subject'" type="text" name="subject"
-                 class="govuk-input" id="subject"
-                 [class.govuk-input--error]="submitted && formGroup.get('subject')?.hasError('required')"
-          />
-        </div>
+
+          <input type="text"
+            id="subject"
+            class="govuk-input"
+            formControlName="subject"
+            maxlength="200"
+            (input)="onSubjectInput()"
+            aria-describedby="subject-error" />
       </div>
 
         <div class="govuk-form-group"
