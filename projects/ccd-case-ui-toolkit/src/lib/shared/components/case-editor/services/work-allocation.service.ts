@@ -111,7 +111,7 @@ export class WorkAllocationService {
       return of(null);
     }
     this.appConfig.logMessage(`completeTask: completing ${taskId}`);
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/completed`;
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/incorrectURLForTaskManagementApi/incorrect`;
     return this.http
       .post(url, { actionByEvent: true, eventName: eventName })
       .pipe(
