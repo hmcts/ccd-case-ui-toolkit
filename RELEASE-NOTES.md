@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.67
+**EXUI-2972** Refactor isCaseworker to isInternalUser
+
 ### Version 7.1.66
 **EXUI-2957** QM: Service Specific Text on Raise a Query page
 
