@@ -222,7 +222,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({}));
     }));
 
-    xit('should call post with the correct parameters', () => {
+    it('should call post with the correct parameters', () => {
       workAllocationService.completeTask(MOCK_TASK_1.id, 'Add case number').subscribe();
       expect(appConfig.logMessage).toHaveBeenCalledWith(`completeTask: completing ${MOCK_TASK_1.id}`);
       expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true, eventName: 'Add case number' });
