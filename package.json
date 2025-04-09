@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.65-is-caseworker-incorrect",
+  "version": "7.1.66-is-caseworker-incorrect",
   "engines": {
     "node": ">=18.19.0"
   },
