@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.66
+**EXUI-2957** QM: Service Specific Text on Raise a Query page
+
 ### Version 7.1.65
 **EXUI-2876** Spinner Does Not Stop on Queries Tab
 
