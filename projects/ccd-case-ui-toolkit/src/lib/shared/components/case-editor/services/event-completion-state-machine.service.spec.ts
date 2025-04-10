@@ -116,7 +116,7 @@ describe('EventCompletionStateMachineService', () => {
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockCaseNotifier = getMockCaseNotifier();
   mockSessionStorageService = new SessionStorageService();
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, mockSessionStorageService);
 
 
   const context: EventCompletionStateMachineContext = {

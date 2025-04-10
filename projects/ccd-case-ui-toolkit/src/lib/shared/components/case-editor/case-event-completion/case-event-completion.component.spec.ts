@@ -30,6 +30,7 @@ describe('CaseEventCompletionComponent', () => {
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
   let eventCompletionStateMachineService: any;
+  let sessionStorageService: any;
 
   const task: Task = {
     assignee: null,
@@ -87,7 +88,9 @@ describe('CaseEventCompletionComponent', () => {
   alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockCasesService = createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
   mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+  sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);

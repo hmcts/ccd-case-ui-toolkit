@@ -37,6 +37,7 @@ describe('TaskReassignedComponent', () => {
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
   let mockWorkAllocationService: WorkAllocationService;
+  let sessionStorageService;
 
   const task: Task = {
     assignee: '1234-1234-1234-1234',
@@ -110,7 +111,9 @@ describe('TaskReassignedComponent', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, getMockCaseNotifier());
+  sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, getMockCaseNotifier(), sessionStorageService);
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
 

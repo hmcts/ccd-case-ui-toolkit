@@ -20,6 +20,7 @@ describe('EventTaskResolverService', () => {
   let alertService: any;
   let mockAbstractConfig: any;
   let mockCaseNotifier: CaseNotifier;
+  let sessionStorageService;
 
   const taskPayload: TaskPayload = {
     task_required_for_event: true,
@@ -57,7 +58,9 @@ describe('EventTaskResolverService', () => {
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockCaseNotifier = getMockCaseNotifier();
-  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+  sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
   mockAbstractConfig = createSpyObj('abstractConfig', ['logMessage']);
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -99,7 +102,7 @@ describe('EventTaskResolverService - error', () => {
   let alertService: any;
   let mockAbstractConfig: any;
   let mockCaseNotifier: CaseNotifier;
-
+  let sessionStorageService;
   const taskPayload: TaskPayload = {
     task_required_for_event: true,
     tasks: [
@@ -147,7 +150,9 @@ describe('EventTaskResolverService - error', () => {
       }
     }
   } as CaseView);
-  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+  sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
   mockAbstractConfig = createSpyObj('abstractConfig', ['logMessage']);
 
   beforeEach(() => TestBed.configureTestingModule({

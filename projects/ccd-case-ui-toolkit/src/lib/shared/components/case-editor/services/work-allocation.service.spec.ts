@@ -4,6 +4,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { HttpErrorService, HttpService } from '../../../services';
+import { PUI_CASE_MANAGER } from '../../../utils';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -148,6 +149,7 @@ describe('WorkAllocationService', () => {
   let mockCaseNotifier: CaseNotifier;
   let mockCasesService: CasesService;
   let alertService: any;
+  let sessionStorageService: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig', 'logMessage']);
@@ -160,7 +162,10 @@ describe('WorkAllocationService', () => {
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
     mockCaseNotifier = getMockCaseNotifier(mockCaseView2);
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+    alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
   });
 
   describe('searchTasks', () => {
@@ -235,7 +240,7 @@ describe('WorkAllocationService', () => {
 
     it('should be blocked when not supported by WA', () => {
       mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
-      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
       const userId = getExampleUserDetails()[1].userInfo.id;
       workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
@@ -270,7 +275,7 @@ describe('WorkAllocationService', () => {
 
     it('should be blocked when not supported by WA', () => {
       mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
-      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
       workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
     });
@@ -306,7 +311,7 @@ describe('WorkAllocationService', () => {
 
     it('should be blocked when not supported by WA', () => {
       mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
-      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
       expect(httpService.post).not.toHaveBeenCalled();
     });
@@ -315,32 +320,15 @@ describe('WorkAllocationService', () => {
 
   describe('handleTaskCompletionError', () => {
     it('should set a warning on the alertService if the role is of caseworker', () => {
-      workAllocationService.handleTaskCompletionError(getExampleUserDetails()[1]);
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({roles: ['caseworker-ia-caseofficer']}));
+      workAllocationService.handleTaskCompletionError();
       expect(alertService.warning).toHaveBeenCalled();
     });
 
     it('should not set a warning on the alertService if the role is not of caseworker', () => {
-      workAllocationService.handleTaskCompletionError(getExampleUserDetails()[0]);
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({roles: [PUI_CASE_MANAGER]}));
+      workAllocationService.handleTaskCompletionError();
       expect(alertService.warning).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('userIsCaseworker', () => {
-    it('should return true if the user is of caseworker', () => {
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACCaseOfficer])).toBe(true);
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer])).toBe(true);
-
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer, 'nonCaseworkerRole'])).toBe(true);
-    });
-
-    it('should return true if the user is of caseworker with casing discrepancies', () => {
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer.toUpperCase()])).toBe(true);
-      expect(workAllocationService.userIsCaseworker(['casEworker-iA-caseoFficer'])).toBe(true);
-    });
-
-    it('should return false if the user is not of caseworker', () => {
-      expect(workAllocationService.userIsCaseworker(['nonCaseworkerRole'])).toBe(false);
-      expect(workAllocationService.userIsCaseworker([])).toBe(false);
     });
   });
 
@@ -419,7 +407,7 @@ describe('WorkAllocationService', () => {
     it('should be blocked when not supported by WA', () => {
       const completeSpy = spyOn(workAllocationService, 'completeTask');
       mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
-      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier);
+      workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
       workAllocationService.completeAppropriateTask(null, null, 'CIVIL', 'Civil').subscribe(result => {
         expect(result).toBe(null);
       });
