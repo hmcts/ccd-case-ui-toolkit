@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.69
+**EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
+
 ### Version 7.1.68
 **EXUI-3004** Link for a new tab casuing issues
 
