@@ -3,9 +3,9 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter, WAFeatureConfig } from '../../../domain';
-import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { CaseNotifier } from './case.notifier';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import { isInternalUser } from '../../../utils';
 
@@ -17,15 +17,23 @@ export class WorkAllocationService {
   public static iACAdmOfficer = 'caseworker-ia-admofficer';
 
   private features: WAFeatureConfig;
+  private jurisdiction: string;
+  private caseType: string;
 
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
     private readonly errorService: HttpErrorService,
     private readonly alertService: AlertService,
+    private readonly caseNotifier: CaseNotifier,
     private readonly sessionStorageService: SessionStorageService
   ) {
-    // Check to see if work allocation is enabled
+    this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails) {
+        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseType = caseDetails?.case_type?.id;
+      }
+    });
   }
 
   /**
@@ -63,9 +71,8 @@ export class WorkAllocationService {
     }
     let enabled = false;
     if (!jurisdiction || !caseType) {
-      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
-      jurisdiction = caseInfo.jurisdiction;
-      caseType = caseInfo.caseType;
+      jurisdiction = this.jurisdiction;
+      caseType = this.caseType;
     }
     if (!this.features || !this.features.configurations) {
       this.appConfig.logMessage('isWAEnabled: no features');
