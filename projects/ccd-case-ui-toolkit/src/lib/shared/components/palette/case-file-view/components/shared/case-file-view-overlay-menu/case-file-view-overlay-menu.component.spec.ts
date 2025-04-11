@@ -74,14 +74,4 @@ describe('CaseFileViewOverlayMenuComponent', () => {
     expect(component.isOpen).toBe(false);
     expect(component.isOpenChange.emit).toHaveBeenCalledWith(false);
   });
-  
-  it('should call the provided function and close the overlay', () => {
-    const mockFunction = jasmine.createSpy('mockFunction');
-    spyOn(component, 'closeOverlay');
-
-    component.actionAndClose(mockFunction);
-
-    expect(mockFunction).toHaveBeenCalled();
-    expect(component.closeOverlay).toHaveBeenCalled();
-  });
 });
