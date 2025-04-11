@@ -197,7 +197,6 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(FieldsUtils.addCaseFieldAndComponentReferences).toHaveBeenCalledWith(
       component.judicialUserControl, component.caseField, component);
     expect(component.setupValidation).toHaveBeenCalled();
-    // expect(component.setJurisdictionAndCaseType).toHaveBeenCalled();
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
     selectedJudicial.dispatchEvent(new Event('focusin'));
     selectedJudicial.value = 'col';

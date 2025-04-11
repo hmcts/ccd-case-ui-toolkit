@@ -27,7 +27,6 @@ export class EventTasksResolverService implements Resolve<Task[]> {
   public resolve(route: ActivatedRouteSnapshot): Observable<Task[]> {
     const eventId = route.queryParamMap.get('eventId');
     const caseId = route.queryParamMap.get('caseId');
-    console.log(this.caseType, this.jurisdiction)
     if (this.caseType && this.jurisdiction) {
       return this.service.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
         .pipe(
