@@ -8,8 +8,8 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
+import { USER_DETAILS } from '../../utils';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
-
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -137,7 +137,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   }
 
   private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
-    const userProfile = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const userProfile = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
     return events.filter(event => userProfile && userProfile.roles &&
       !!userProfile.roles.find(role => this.hasCreateAccess(event, role)));
   }

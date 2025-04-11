@@ -15,6 +15,4 @@ export class LabelFieldComponent {
   @Input()
   public labelCanBeTranslated = false;
 
-  @Input()
-  public markdownUseHrefAsRouterLink?: boolean;
 }

@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '../../../../../services';
-import { QueryListItem } from '../../models';
+
 import { Constants } from '../../../../../commons/constants';
+import { SessionStorageService } from '../../../../../services';
+import { isInternalUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
+import { QueryListItem } from '../../models';
+
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -32,11 +35,8 @@ export class QueryDetailsComponent implements OnChanges{
     this.backClicked.emit(true);
   }
 
-  public isCaseworker(): boolean {
-    const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    return userDetails && userDetails.roles
-      && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
   }
 
   public ngOnChanges(): void {
@@ -55,7 +55,7 @@ export class QueryDetailsComponent implements OnChanges{
       return false;
     }
 
-    if (this.isCaseworker() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
+    if (this.isInternalUser() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
       this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;

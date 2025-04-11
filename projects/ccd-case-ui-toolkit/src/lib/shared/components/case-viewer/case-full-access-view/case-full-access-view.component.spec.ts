@@ -131,7 +131,7 @@ const caseHeaderComponentMock: any = MockComponent({
 
 const markdownComponentMock: any = MockComponent({
   selector: 'ccd-markdown',
-  inputs: ['content', 'markdownUseHrefAsRouterLink']
+  inputs: ['content']
 });
 
 const caseActivityComponentMock: any = MockComponent({
