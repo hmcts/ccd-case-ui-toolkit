@@ -77,7 +77,6 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.errorNotifier.announceError(error);
           caseTypeId = route.parent.paramMap.get('caseType');
           this.router.navigate([`/cases/case-details/${jurisdiction}/${caseTypeId}/${cid}/tasks`]);
-          this.router.navigate([`/cases/case-details/${cid}/tasks`]);
           return throwError(error);
         })
       ).toPromise();
