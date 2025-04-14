@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.69-exui-1832-rc1
+**EXUI-1832** Choose file' and 'no file chosen' not being translated
+
 ### Version 7.1.69
 **EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
 
