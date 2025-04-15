@@ -2,30 +2,30 @@
   <caption class="govuk-table__caption">{{caption | rpxTranslate}}</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col" *ngIf="selectionEnabled">
+      <td class="govuk-table__header" *ngIf="selectionEnabled">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()"
                  [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
           <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-          <label class="govuk-label govuk-checkboxes__label" for="select-all">
+          <label class="govuk-label govuk-checkboxes__label" for="select-all" [attr.aria-labelledby]="'select-all'">
           </label>
         </div>
-      </th>
+      </td>
       <th class="govuk-table__header" scope="col" *ngFor="let h of tableConfig.columnConfigs">{{h.header | rpxTranslate}}</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: pageSize, currentPage: currentPageNo, totalItems: totalResultsCount }">
+    <ng-container *ngFor="let c of cases | paginate: { itemsPerPage: pageSize, currentPage: currentPageNo, totalItems: totalResultsCount };  index as i">
       <tr data-selector="table-row" class="govuk-table__row">
-        <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
+        <td data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="selectionEnabled">
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] }}" name="select-{{ c[tableConfig.idField] }}"
+            <input class="govuk-checkboxes__input" id="select-{{ c[tableConfig.idField] || i }}" name="select-{{ c[tableConfig.idField] || i }}"
                   type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
             <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] }}">
+            <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] || i }}" [attr.aria-labelledby]="'select-' + (c[tableConfig.idField] || i)">
             </label>
           </div>
-        </th>
+        </td>
         <ng-container *ngFor="let col of tableConfig.columnConfigs; first as isFirst">
           <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="isFirst && firstCellIsHeader">
             <ng-container *ngIf="!col.type || col.type === 'text'">{{c[col.key] | rpxTranslate}}</ng-container>

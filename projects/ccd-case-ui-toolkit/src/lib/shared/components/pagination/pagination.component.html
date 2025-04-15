@@ -22,10 +22,10 @@
           <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }} </span>
           <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
         </a>
-        <ng-container *ngIf="p.getCurrent() === page.value">
-          <span class="show-for-sr">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
+        <a tabindex="0" *ngIf="p.getCurrent() === page.value">
+          <span class="show-for-sr" [attr.current]="page" [attr.aria-label]="screenReaderCurrentLabel">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
           <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
-        </ng-container>
+        </a>
       </li>
       <li class="pagination-next" [class.disabled]="p.isLastPage()" *ngIf="directionLinks">
         <a tabindex="0" *ngIf="!p.isLastPage()" (keyup.enter)="p.next()" (click)="p.next()"
