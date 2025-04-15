@@ -52,6 +52,28 @@ describe('Date input component', () => {
     fixture.detectChanges();
   }));
 
+  it('should initialize displayHour, displayMinute, displaySecond, hour, minute, and second if mandatory and isDateTime are true', () => {
+    component.mandatory = true;
+    component.isDateTime = true;
+
+    component.ngOnInit();
+
+    expect(component.displayHour).toBe('00');
+    expect(component.displayMinute).toBe('00');
+    expect(component.displaySecond).toBe('00');
+  });
+
+  it('should not initialize displayHour, displayMinute, displaySecond, hour, minute, and second if mandatory or isDateTime are false', () => {
+    component.mandatory = false;
+    component.isDateTime = true;
+
+    component.ngOnInit();
+
+    expect(component.displayHour).toBeNull();
+    expect(component.displayMinute).toBeNull();
+    expect(component.displaySecond).toBeNull();
+  });
+
   it('should verify day, month, year value from date', async () => {
     component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
@@ -175,6 +197,54 @@ describe('Date input component', () => {
       fixture.detectChanges();
       const input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
       expect(input.value).toBeNull();
+    });
+
+    it('should return the correct dayId when id includes "Date"', () => {
+      component.id = 'startDate';
+
+      const result = component.dayId();
+
+      expect(result).toBe('startDate-day');
+    });
+
+    it('should return the correct dayId when id does not include "Date"', () => {
+      component.id = 'start';
+
+      const result = component.dayId();
+
+      expect(result).toBe('start-day');
+    });
+
+    it('should return the correct monthId when id includes "Date"', () => {
+      component.id = 'startDate';
+
+      const result = component.monthId();
+
+      expect(result).toBe('startDate-month');
+    });
+
+    it('should return the correct monthId when id does not include "Date"', () => {
+      component.id = 'start';
+
+      const result = component.monthId();
+
+      expect(result).toBe('start-month');
+    });
+
+    it('should return the correct yearId when id includes "Date"', () => {
+      component.id = 'startDate';
+
+      const result = component.yearId();
+
+      expect(result).toBe('startDate-year');
+    });
+
+    it('should return the correct yearId when id does not include "Date"', () => {
+      component.id = 'start';
+
+      const result = component.yearId();
+
+      expect(result).toBe('start-year');
     });
   });
 });

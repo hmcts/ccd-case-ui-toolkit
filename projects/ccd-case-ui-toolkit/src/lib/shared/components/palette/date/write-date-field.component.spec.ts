@@ -15,13 +15,18 @@ const FIELD_TYPE: FieldType = {
   type: 'Date'
 };
 const VALUE = '2017-07-26';
-const CASE_FIELD: CaseField = ({
+const aRealCaseField = new CaseField();
+
+const caseFieldData: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
 }) as CaseField;
+// We need a read case field so that it has the correct methods available
+Object.keys(caseFieldData).forEach(key => { aRealCaseField[key] = caseFieldData[key]; });
+const CASE_FIELD: CaseField = aRealCaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 

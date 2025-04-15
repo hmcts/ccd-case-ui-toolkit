@@ -13,6 +13,43 @@ describe('CaseField', () => {
     component = new CaseField();
   }));
 
+  it('should generate hierachical path for casefield hierarchies', () => {
+    const gparent: CaseField = new CaseField();
+    gparent.id = 'grandparent';
+    gparent.parent = null;
+    const parent: CaseField = new CaseField();
+    parent.id = 'parent';
+    parent.parent = gparent;
+    component.parent = parent;
+    component.id = 'child';
+    const htmlId = component.getHierachicalId();
+    expect(htmlId).toBe('child_parent_grandparent');
+  });
+
+  it('should return simple id for top level field', () => {
+    component.parent = null;
+    component.id = 'joeyramone';
+    const htmlId = component.getHierachicalId();
+    expect(htmlId).toBe('joeyramone');
+  });
+
+  it('should return simple id for top level field', () => {
+    component.parent = null;
+    component.id = 'joeyramone';
+    const htmlId = component.getHierachicalId();
+    expect(htmlId).toBe('joeyramone');
+  });
+
+  it('should bail out if it detects too deeply nested hierarchy', () => {
+    const parent: CaseField = new CaseField();
+    parent.id = 'johnnyramone';
+    parent.parent = component; // deliberately create a circular reference
+    component.parent = parent;
+    component.id = 'joeyramone';
+    const htmlId = component.getHierachicalId();
+    expect(htmlId).toBe('joeyramone');
+  });
+
   it('should be able to retrieve right values from the accessors menthods when FieldType is DynamicLists', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicList';
