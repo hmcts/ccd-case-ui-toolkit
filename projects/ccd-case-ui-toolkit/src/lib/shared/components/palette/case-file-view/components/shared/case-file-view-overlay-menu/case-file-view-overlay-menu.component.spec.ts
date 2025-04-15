@@ -74,4 +74,16 @@ describe('CaseFileViewOverlayMenuComponent', () => {
     expect(component.isOpen).toBe(false);
     expect(component.isOpenChange.emit).toHaveBeenCalledWith(false);
   });
+
+  it('should toggle isOpen from false to true', () => {
+    component.isOpen = false;
+    component.setOpen();
+    expect(component.isOpen).toBe(true);
+  });
+
+  it('should toggle isOpen from true to false', () => {
+    component.isOpen = true;
+    component.setOpen();
+    expect(component.isOpen).toBe(false);
+  });
 });
