@@ -18,6 +18,8 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { Task } from '../../../../../domain/work-allocation/Task';
+import { USER_DETAILS } from '../../../../../utils';
+
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -201,7 +203,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
-    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
 
     const caseMessage = this.queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
