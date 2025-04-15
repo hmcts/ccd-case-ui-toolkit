@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.70
+**EXUI-2835** Validation shown for unsupported document. The user can still proceed to the next page. Check Your Answers page shows an empty value in the field
+
 ### Version 7.1.69
 **EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
 
