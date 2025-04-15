@@ -10,6 +10,8 @@ import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-fi
 import { WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseNotifier } from './case.notifier';
+import { getMockCaseNotifier } from './case.notifier.spec';
 
 describe('CasesService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
@@ -74,6 +76,7 @@ describe('CasesService', () => {
   let loadingService: any;
   let alertService: any;
   let retryUtil: any;
+  let mockCaseNotifier: CaseNotifier;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig',
@@ -98,8 +101,8 @@ describe('CasesService', () => {
       return caseFields;
     });
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
-
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
+    mockCaseNotifier = getMockCaseNotifier(CASE_VIEW);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
