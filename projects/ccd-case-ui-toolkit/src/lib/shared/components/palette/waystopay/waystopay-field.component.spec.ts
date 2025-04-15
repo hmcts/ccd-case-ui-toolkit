@@ -33,6 +33,7 @@ const APP_CONFIG: AbstractAppConfig = {
   getDocumentManagementUrl: () => 'documentManagementUrl',
   getDocumentManagementUrlV2: () => 'documentManagementUrlV2',
   getDocumentSecureMode: () => true,
+  getDocumentSecureModeCaseTypeExclusions: () => 'DIVORCE',
   getRemoteDocumentManagementUrl: () => 'remoteDocumentManagementUrl',
   getHrsUrl: () => 'hrsUrl',
   getRemoteHrsUrl: () => 'remoteHrsUrl',

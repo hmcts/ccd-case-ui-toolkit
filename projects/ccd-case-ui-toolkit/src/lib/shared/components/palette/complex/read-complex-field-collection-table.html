@@ -11,7 +11,9 @@
         <span class="text-16">{{columnsAllLabels[heading].label | rpxTranslate}}</span>
         <a href="javascript:void(0)"
            (click)="sortRowsByColumns(heading)"
+           (keyup.enter)="sortRowsByColumns(heading)"
            class="sort-widget"
+           [attr.aria-label]="'Sort ' + columnsAllLabels[heading].label | rpxTranslate"
            [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
       </th>
       <th></th>
@@ -19,7 +21,7 @@
     <!-- </COMPLEX table field header>-->
     <ng-container *ngFor="let item of rows; let i = index;">
       <!-- <COMPLEX table collapsed view>-->
-      <tr class="new-table-row accordion-heading" (click)="isHidden[i] = !isHidden[i]"
+      <tr class="new-table-row accordion-heading" (keyup)="$event.key === 'Enter' ? (isHidden[i] = !isHidden[i]) : null" (click)="isHidden[i] = !isHidden[i]"
           [class.last-accordion]="isHidden[i]">
         <ng-container *ngFor="let heading of columns">
           <td class="text-16">
@@ -35,7 +37,7 @@
         </ng-container>
         <td>
           <div style="float: right;">
-            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="image" class="accordion-image"/></a>
+            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="accordion-img" class="accordion-image"/></a>
           </div>
         </td>
       </tr>
@@ -49,7 +51,7 @@
               *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">
               <!-- <COMPLEX table expandable body simple field>-->
               <tr class="complex-panel-simple-field accordion-body" *ngIf="item[vLabel.id]" [hidden]="vLabel.hidden">
-                <th scope="col"><span class="text-16">{{vLabel.label | rpxTranslate}}</span></th>
+                <th scope="col"><span class="text-16">{{ vLabel.label | rpxTranslate }}</span></th>
                 <td *ngIf="vLabel['type'] !== 'Complex'" class="text-16">
                   <ccd-field-read [caseField]="toCaseField('', vLabel.label, vLabel.field_type, item[vLabel.id])"
                                   [context]="context"></ccd-field-read>

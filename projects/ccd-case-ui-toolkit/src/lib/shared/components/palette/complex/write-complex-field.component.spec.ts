@@ -170,7 +170,7 @@ describe('WriteComplexFieldComponent', () => {
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
-      field_type: FIELD_TYPE_WITH_VALUES
+      field_type: FIELD_TYPE_WITH_VALUES,
     }) as CaseField;
 
     const LINE_1 = 0;
@@ -241,6 +241,8 @@ describe('WriteComplexFieldComponent', () => {
       const addControlSpy = spyOn(component.complexGroup, 'addControl').and.callThrough();
       const firstFieldControl = component.complexGroup.get(FIRST_FIELD.id);
       expect(firstFieldControl).toBeDefined();
+      // Removes parent before comparing with plainToClassFromExist
+      firstFieldControl['caseField'].parent = undefined;
       expect(firstFieldControl['caseField']).toEqual(plainToClassFromExist(new CaseField(), FIRST_FIELD));
       const result = component.buildField(FIRST_FIELD);
       expect(result).toEqual(FIRST_FIELD);
@@ -382,7 +384,8 @@ describe('WriteComplexFieldComponent', () => {
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
-        value: CASE_FIELD.value['AddressLine1']
+        value: CASE_FIELD.value['AddressLine1'],
+        parent: component.caseField
       }));
 
       const line2 = FIELD_TYPE.complex_fields[LINE_2];
@@ -391,7 +394,8 @@ describe('WriteComplexFieldComponent', () => {
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
-        value: CASE_FIELD.value['AddressLine2']
+        value: CASE_FIELD.value['AddressLine2'],
+        parent: component.caseField
       }));
 
       const postcode = FIELD_TYPE.complex_fields[POSTCODE];
@@ -400,7 +404,8 @@ describe('WriteComplexFieldComponent', () => {
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
-        value: CASE_FIELD.value['AddressPostcode']
+        value: CASE_FIELD.value['AddressPostcode'],
+        parent: component.caseField
       }));
     });
 

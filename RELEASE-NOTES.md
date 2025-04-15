@@ -1,5 +1,88 @@
 ## RELEASE NOTES
 
+### Version 7.1.65
+**EXUI-2876** Spinner Does Not Stop on Queries Tab
+
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+**EXUI-2928** QM: Limit the length of a message subject
+
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
+### Version 7.1.57
+**EXUI-1843** markdown routerLink feature has been removed
+**EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2756** Text alignment in Event history Detail seen to differ
+**EXUI-2640** Add a exclusion list for case types that should not be subject to CDAM
+**EXUI-2744** Data input in event page disappears in CYA page
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
+### Version 7.1.55
+**EXUI-2885** QM: Handle read only query collections
+
+### Version 7.1.54
+**EXUI-2902** 'Ignore warning and go' button not working for 2 events
+
+### Version 7.1.53
+**EXUI-2883** Query Management: Respond to query task completing on failed caseworker event submission
+
+### Version 7.1.52
+**EXUI-2748** Low Contrast pop up window
+
+### Version 7.1.51
+**EXUI-2039/2039** Ungrey back button
+
+### Version 7.1.50
+**EXUI-2868** E2E test failings - due to removing label associated for upload doc
+
+### Version 7.1.46
+**EXUI-2104** Event History Summary
+
+### Version 7.1.45
+**EXUI-2792** QM issue
+
+### Version 7.1.44
+**EXUI-1227** Issue in CaseFileView
+**EXUI-2765** QM- label is not associated to form element
+**EXUI-1994** Error message on file upload unclear
+
+### Version 7.1.43
+**EXUI-2388** Currently PED not working within Case File View
+
+### Version 7.1.42
+**EXUI-2795** Additional Text For QM Document Upload
+
+### Version 7.1.40
+**EXUI-1615** DAC_Visual_Headings_01
+
+### Version 7.1.39
+**EXUI-1629** DAC_Skip_Links_01
+
+### Version 7.1.38
+**EXUI-2104** Event History Summary - ExUI Changes
+**EXUI-2668** when Update Referral event completed (incorrect)
+**EXUI-2595** Spinner on 'Manage Support'n'Request Support' events
+**EXUI-2743** Check Application Task is supposed to AutoClose
+
+### Version 7.1.37
+**EXUI-2766** User getting error when upload valid file
+
+### Version 7.1.36
+**EXUI-1562** accessibility issue
+
 ### Version 7.1.35
 **EXUI-2711** Review font and grammer in the query management screens
 
@@ -44,8 +127,7 @@ Taken by PR
 **EXUI-2389** PED and Media Viewer
 
 ### Version 7.0.75-exui-2315
-**EXUI-2315** etrieve current user language selection
-
+**EXUI-2315** Retrieve current user language selection
 
 ### Version 7.0.75-exui-2515
 **EXUI-2515** case-link-issue

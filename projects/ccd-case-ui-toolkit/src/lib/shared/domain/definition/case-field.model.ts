@@ -37,6 +37,7 @@ export class CaseField implements Orderable {
 
   public _value: any;
   public _list_items: any = [];
+  private isTranslatedFlag: boolean = false;
 
   @Expose()
   public get value(): any {
@@ -183,5 +184,14 @@ export class CaseField implements Orderable {
       console.log("Path too long, possible circular reference in case field hierarchy");
       return this.id;
     }
+  }
+  
+  public set isTranslated(val: boolean)
+  {
+    this.isTranslatedFlag = val;
+  }
+
+  public get isTranslated(): boolean {
+    return this.isTranslatedFlag;
   }
 }

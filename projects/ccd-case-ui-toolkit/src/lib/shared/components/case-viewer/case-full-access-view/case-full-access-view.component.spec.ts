@@ -40,6 +40,7 @@ import {
   FormValueService,
   HttpErrorService,
   HttpService,
+  LoadingService,
   NavigationNotifierService,
   NavigationOrigin,
   ProfileNotifier,
@@ -58,6 +59,7 @@ import { CaseFlagStatus, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { LinkedCasesService } from '../../palette/linked-cases/services';
 
 @Component({
   // tslint:disable-next-line
@@ -129,7 +131,7 @@ const caseHeaderComponentMock: any = MockComponent({
 
 const markdownComponentMock: any = MockComponent({
   selector: 'ccd-markdown',
-  inputs: ['content', 'markdownUseHrefAsRouterLink']
+  inputs: ['content']
 });
 
 const caseActivityComponentMock: any = MockComponent({
@@ -706,6 +708,9 @@ describe('CaseFullAccessViewComponent', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
@@ -761,6 +766,14 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.tabGroup._tabs[1].textLabel).toEqual('Tab2');
     });
   })
+
+  it('should call reset for linkedCaseService and caseFlagStateService oninit', () => {
+    const linkedCasesService = TestBed.inject(LinkedCasesService);
+    const caseFlagStateService = TestBed.inject(CaseFlagStateService);
+    component.ngOnInit();
+    expect(linkedCasesService.resetLinkedCaseData).toHaveBeenCalled();
+    expect(caseFlagStateService.resetInitialCaseFlags).toHaveBeenCalled();
+  });
 
   it('should unsubscribe from all subscriptions on destroy', () => {
     const sub = new Subscription();
@@ -950,6 +963,7 @@ it('should set case view tab based on navigation end event', () => {
     component.callbackErrorsSubject.subscribe(error => results.push(error));
 
     errors.forEach(error => errorSource.next(error));
+    expect(component.isEventButtonClicked).toBeFalsy();
     expect(results.length).toEqual(0);
     expect(results).toEqual([]);
   });
@@ -1316,7 +1330,10 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1446,7 +1463,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
           DeleteOrCancelDialogComponent,
-          CaseFlagStateService
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1676,6 +1694,9 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           PageValidationService,
           CaseFieldService,
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1805,7 +1826,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -2097,7 +2121,10 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -2266,7 +2293,10 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
         { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
         { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
         { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-        DeleteOrCancelDialogComponent
+        DeleteOrCancelDialogComponent,
+        LoadingService,
+        { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+        { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
       ],
       teardown: { destroyAfterEach: false }
     }).compileComponents();
@@ -2731,7 +2761,10 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          LoadingService,
+          { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
         ]
       })
       .compileComponents();

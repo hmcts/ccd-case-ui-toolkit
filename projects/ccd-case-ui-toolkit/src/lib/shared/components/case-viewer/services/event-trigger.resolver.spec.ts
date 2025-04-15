@@ -4,7 +4,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { createCaseEventTrigger } from '../../../fixture';
-import { ErrorNotifierService, HttpService, ProfileNotifier, ProfileService } from '../../../services';
+import { ErrorNotifierService, HttpService, LoadingService, ProfileNotifier, ProfileService } from '../../../services';
 import { CaseResolver } from './case.resolver';
 import { EventTriggerResolver } from './event-trigger.resolver';
 
@@ -31,6 +31,7 @@ describe('EventTriggerResolver', () => {
   let casesService: any;
   let alertService: any;
   let orderService: any;
+  let loadingService: any;
 
   let route: any;
 
@@ -73,6 +74,7 @@ describe('EventTriggerResolver', () => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error', 'setPreserveAlerts']);
     orderService = createSpyObj('orderService', ['sort']);
+    loadingService = createSpyObj('loadingService', ['sort']);
     errorNotifier = createSpyObj('errorNotifierService', ['announceError']);
     profileService = createSpyObj<ProfileService>('profileService', ['get']);
     profileNotifier = new ProfileNotifier();
@@ -86,7 +88,7 @@ describe('EventTriggerResolver', () => {
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     httpService.get.and.returnValue(of(MOCK_PROFILE));
 
-    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier, router, appConfig, errorNotifier);
+    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier, router, appConfig, errorNotifier, loadingService);
 
     route = {
       firstChild: {
@@ -178,6 +180,10 @@ describe('EventTriggerResolver', () => {
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
         paramMap: createSpyObj('paramMap', ['get'])
+      },
+      params: {
+        eid: EVENT_TRIGGER_ID,
+        cid: '42'
       }
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);

@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { ReadCookieService, SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { CaseEditComponent, WorkAllocationService } from '../../case-editor';
 import { EventStartGuard } from './event-start.guard';
 import { AbstractAppConfig } from '../../../../app.config';
 
@@ -76,7 +76,7 @@ describe('EventStartGuard', () => {
     result$.subscribe(result => {
       expect(result).toEqual(false);
       // check client context is set correctly
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(mockClientContext));
     });
   });
 
@@ -90,7 +90,7 @@ describe('EventStartGuard', () => {
     result$.subscribe(result => {
       expect(result).toEqual(false);
       // check client context is set correctly
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(mockClientContext));
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(mockClientContext));
     });
   });
 
@@ -153,16 +153,18 @@ describe('EventStartGuard', () => {
 
   describe('checkTaskInEventNotRequired', () => {
     const caseId = '1234567890';
+    const eventId = 'eventId';
+    const userId = 'testUser';
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
-      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null, null, null)).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
@@ -182,8 +184,8 @@ describe('EventStartGuard', () => {
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       mockCookieService.getCookie.and.returnValue(mockLanguage);
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
     });
 
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
@@ -191,11 +193,12 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      let baseTime = new Date(2025, 3, 2);
       const mockLanguage = 'cy';
       const clientContext = {
         client_context: {
@@ -208,13 +211,23 @@ describe('EventStartGuard', () => {
           }
         }
       }
+      const mockTaskEventCompletionInfo = {
+        caseId,
+        eventId,
+        userId,
+        taskId: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+        createdTimestamp: baseTime.getTime()
+      }
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       mockCookieService.getCookie.and.returnValue(mockLanguage);
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+      // mock the time so we get the correct timestamp
+      jasmine.clock().mockDate(baseTime);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6', eventId, userId)).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(mockTaskEventCompletionInfo));
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
     });
 
   });

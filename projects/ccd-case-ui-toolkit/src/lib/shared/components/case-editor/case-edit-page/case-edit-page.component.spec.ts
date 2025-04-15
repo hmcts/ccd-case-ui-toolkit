@@ -6,6 +6,7 @@ import {
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   AbstractControl,
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -29,6 +30,8 @@ import {
   DRAFT_PREFIX,
   FieldType,
   HttpError,
+  Jurisdiction,
+  CaseTab
 } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CcdPageFieldsPipe } from '../../../pipes';
@@ -42,7 +45,10 @@ import {
   FieldTypeSanitiser,
   FormErrorService,
   FormValueService,
+  JurisdictionService,
   LoadingService,
+  MultipageComponentStateService,
+  SearchService,
 } from '../../../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -58,17 +64,39 @@ import { CaseEditPageText } from './case-edit-page-text.enum';
 import { CaseEditPageComponent } from './case-edit-page.component';
 import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { CaseFlagStateService } from '../services/case-flag-state.service';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
 
-  const mockFormBuilder = jasmine.createSpyObj('FormBuilder', ['group']);
   const mockSearchService = jasmine.createSpyObj('SearchService', [
     'retrieveState',
     'storeState',
   ]);
   const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
 
+  const CASE_TYPES_2 = [
+    {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+  
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -81,9 +109,12 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService = {},
     loadingService = {},
     validPageListCaseFieldsService = {},
-    addressesService = {}
+    multipageComponentStateService = new MultipageComponentStateService(),
+    addressesService = {},
+    linkedCasesService = {},
+    caseFlagStateService = new CaseFlagStateService()
   }) =>
-  new CaseEditPageComponent(
+    new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
     route as ActivatedRoute,
     formValueService as FormValueService,
@@ -95,8 +126,11 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
     validPageListCaseFieldsService as ValidPageListCaseFieldsService,
-    addressesService as AddressesService
-  );
+    multipageComponentStateService as MultipageComponentStateService,
+    addressesService as AddressesService,
+    linkedCasesService as LinkedCasesService,
+    caseFlagStateService as CaseFlagStateService
+    );
 
   it('should create', () => {
     component = initializeComponent({});
@@ -104,8 +138,45 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     expect(component).toBeTruthy();
   });
 
+  describe('multipageComponentStateService', () => {
+    it('should trigger previous step with the multi-page component state service', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      multipageComponentStateService.resetJourneyCollection();
+      spyOn(multipageComponentStateService, 'previous');
+      
+      multipageComponentStateService.setInstigator(component);
+      component.previousStep();
+      
+      expect(multipageComponentStateService.previous).toHaveBeenCalled();
+    });
+  
+    it('should trigger next step with the multi-page component state service', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const caseEditDataService: CaseEditDataService = new CaseEditDataService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService, caseEditDataService });
+      spyOn(multipageComponentStateService, 'next');
+
+      multipageComponentStateService.setInstigator(component);
+      component.nextStep();
+     
+      expect(multipageComponentStateService.next).toHaveBeenCalled();
+    });
+
+    it('should reset the multi-page component state service on destruction',  () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      spyOn(multipageComponentStateService, 'reset');
+      
+      multipageComponentStateService.setInstigator(component);
+      component.ngOnDestroy();
+      
+      expect(multipageComponentStateService.reset).toHaveBeenCalled();
+    });
+  });
+
   describe('updateEventTriggerCaseFields', () => {
-    it(`should NOT update event trigger's case fields as eventTrigger is null`, () => {
+    it('should NOT update event trigger\'s case fields as eventTrigger is null', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {} as unknown as CaseEventData;
@@ -116,7 +187,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock).toBeNull();
     });
 
-    it(`should NOT update event trigger's case fields as eventTrigger has no case fields`, () => {
+    it('should NOT update event trigger\'s case fields as eventTrigger has no case fields', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {} as unknown as CaseEventData;
@@ -127,7 +198,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock).toEqual(jasmine.objectContaining({ id: 'noCaseFields' }));
     });
 
-    it(`should update event trigger's case fields value`, () => {
+    it('should update event trigger\'s case fields value', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const jsonDataMock = {
@@ -149,7 +220,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(true);
     });
 
-    it(`should update event trigger's case fields value with jsonData's object`, () => {
+    it('should update event trigger\'s case fields value with jsonData\'s object', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -176,7 +247,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should NOT update event trigger's case fields value as jsonData's value is null`, () => {
+    it('should NOT update event trigger\'s case fields value as jsonData\'s value is null', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -209,7 +280,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should NOT update event trigger's case fields value as jsonData's value is undefined`, () => {
+    it('should NOT update event trigger\'s case fields value as jsonData\'s value is undefined', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -240,7 +311,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
 
-    it(`should update event trigger's case fields value as jsonData's value is present`, () => {
+    it('should update event trigger\'s case fields value as jsonData\'s value is present', () => {
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
@@ -353,6 +424,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const caseField1 = new CaseField();
   const caseField2 = new CaseField();
   const eventData = new CaseEventData();
+  let multipageComponentStateService = new MultipageComponentStateService();
+
   const caseEventDataPrevious: CaseEventData = {
     data: {
       field1: 'Updated value',
@@ -364,11 +437,35 @@ describe('CaseEditPageComponent - all other tests', () => {
     ignore_warning: true,
   };
 
+  const CASE_TYPES_2 = [
+    {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: '',
+      states: [],
+      events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+  const caseFlagStateService = new CaseFlagStateService();
+  let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
+
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
       case_fields: [caseField1],
       name: 'Test event trigger name',
       can_save_draft: true,
+      id: 'c100ManageFlags'
     };
     let loadingServiceMock: LoadingService;
 
@@ -458,6 +555,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
+        multipageComponentStateService = new MultipageComponentStateService();
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -480,8 +578,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -761,6 +862,39 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.saveDraftSub.unsubscribe).toHaveBeenCalled();
       expect(comp.caseFormValidationErrorsSub.unsubscribe).toHaveBeenCalled();
     });
+
+    it('should set the fieldStateToNavigate and lastPageFieldState when conditions are met', () => {
+      caseFlagStateService.fieldStateToNavigate = 0;
+      spyOn(multipageComponentStateService, 'getJourneyCollection').and.returnValue([{ journeyPageNumber: 3 }]);
+      comp.ngOnInit();
+      expect(caseFlagStateService.fieldStateToNavigate).toEqual(3);
+      expect(caseFlagStateService.lastPageFieldState).toEqual(3);
+    });
+
+    it('should remove any unsubmitted data on cancel', () => {
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
+      comp.currentPage = wizardPage;
+      comp.caseEdit.caseDetails.tabs = [{
+        id: '123',
+        fields: [
+          {
+            id: 'caseLinks',
+            formatted_value: [
+              { value: { CaseReference: 'REF1' } }
+            ],
+            value: [
+              { value: { CaseReference: 'REF1' } },
+              { value: { CaseReference: 'REF2' } }
+            ]
+          }
+        ]
+      }] as CaseTab[];
+      linkedCasesServiceSpy = TestBed.inject(LinkedCasesService) as jasmine.SpyObj<LinkedCasesService>;
+      spyOn(comp, 'isLinkedCasesJourney').and.returnValues(true);
+      linkedCasesService.initialCaseLinkRefs = ['REF1', 'REF2'];
+      comp.cancel();
+      expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
+    });
   });
 
   describe('Save and Resume disabled', () => {
@@ -877,8 +1011,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1044,8 +1180,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1101,6 +1239,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
     const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
+    const formBuilder = new FormBuilder();
 
     beforeEach(
       waitForAsync(() => {
@@ -1216,8 +1355,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1445,6 +1586,78 @@ describe('CaseEditPageComponent - all other tests', () => {
       );
       expect(comp.caseEdit.ignoreWarning).toBeTruthy();
     });
+
+    it('should filter caseFieldValue and remove unnecessary controls when not a linked cases event trigger', () => {
+      linkedCasesService.isLinkedCasesEventTrigger = false;
+      linkedCasesService.casesToUnlink = ['1'];
+      linkedCasesService.caseFieldValue = [{ id: '1' }, { id: '2' }];
+      comp.editForm = formBuilder.group({
+        data: formBuilder.group({
+          caseLinks: formBuilder.array([]),
+          caseNameHmctsInternal: [null],
+          maintainCaseLinksFlag: [null],
+          caseLinksFlag: [null]
+        })
+      });
+      comp.eventTrigger = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: {
+              people: {
+                value: true
+              }
+            }
+          }
+        ]
+      } as unknown as CaseEventTrigger;
+      comp.submit();
+
+      expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
+      expect(comp.editForm.controls.data.get('maintainCaseLinksFlag')).toBeNull();
+    });
+
+    it('should remove unnecessary controls when a linked cases event trigger', () => {
+      linkedCasesService.isLinkedCasesEventTrigger = true;
+      linkedCasesService.linkedCases = [{
+        caseReference: '1',
+        reasons: [],
+        createdDateTime: '',
+        caseType: '',
+        caseTypeDescription: '',
+        caseState: '',
+        caseStateDescription: '',
+        caseService: '',
+        caseName: ''
+      }];
+      comp.editForm = formBuilder.group({
+        data: formBuilder.group({
+          caseLinks: formBuilder.array([]),
+          caseNameHmctsInternal: [null],
+          maintainCaseLinksFlag: [null],
+          caseLinksFlag: [null]
+        })
+      });
+      comp.eventTrigger = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: {
+              people: {
+                value: true
+              }
+            }
+          }
+        ]
+      } as unknown as CaseEventTrigger;
+
+      comp.submit();
+
+      expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
+      expect(comp.editForm.controls.data.get('caseLinksFlag')).toBeNull();
+    });
   });
 
   describe('previous the form', () => {
@@ -1563,8 +1776,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock}
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1617,7 +1832,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         const value = control.value;
 
         if (!value) {
-          return {mockRequired:true};
+          return { mockRequired: true };
         }
       }
     }
@@ -1672,7 +1887,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       id: 'AddressLine1',
       label: 'AddressLine1',
       display_context: 'MANDATORY',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '',
     } as CaseField;
 
@@ -1782,8 +1997,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService },
+            { provide: CaseFlagStateService, useValue: caseFlagStateService }
           ],
         }).compileComponents();
       })
@@ -1827,7 +2044,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(3);
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% is required`);
+        expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
 
@@ -1860,7 +2077,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form`
+          'The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form'
         );
       });
     });
@@ -1880,7 +2097,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `The field that is causing the error cannot be determined but there is an error present`
+          'The field that is causing the error cannot be determined but there is an error present'
         );
       });
     });
@@ -1914,7 +2131,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `%FIELDLABEL% is below the minimum length`
+          '%FIELDLABEL% is below the minimum length'
         );
       });
     });
@@ -1947,7 +2164,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% exceeds the maximum length`);
+        expect(error.message).toEqual('%FIELDLABEL% exceeds the maximum length');
       });
     });
 
@@ -1995,7 +2212,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
 
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`%FIELDLABEL% is required`);
+        expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
 
@@ -2040,7 +2257,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
+        expect(error.message).toEqual('There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present');
       });
     });
 
