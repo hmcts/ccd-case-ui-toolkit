@@ -14,6 +14,7 @@ export class CaseField implements Orderable {
   public hiddenCannotChange: boolean;
   public label: string;
   public order?: number;
+  public parent?: CaseField;
 
   @Type(() => FieldType)
   public field_type: FieldType;
@@ -169,6 +170,22 @@ export class CaseField implements Orderable {
       return null;
   }
 
+  // Ascend the hierarchy to get the full path of the field
+  @Expose()
+  public getHierachicalId(curr?: string): string {
+    const prefix: string = curr ? curr + "_" : "";
+    if (prefix.length < 1024) {
+      if (this.parent) {
+        return this.parent.getHierachicalId(prefix + this.id);
+      } else {
+        return prefix + this.id;
+      }
+    } else {
+      console.log("Path too long, possible circular reference in case field hierarchy");
+      return this.id;
+    }
+  }
+  
   public set isTranslated(val: boolean)
   {
     this.isTranslatedFlag = val;

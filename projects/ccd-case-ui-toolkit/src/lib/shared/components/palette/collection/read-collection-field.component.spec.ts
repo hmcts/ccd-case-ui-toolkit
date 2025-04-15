@@ -81,14 +81,15 @@ describe('ReadCollectionFieldComponent', () => {
       const field = cells[i].componentInstance;
 
       expect(field.caseField).toEqual({
-        id: i,
+        id: `${i}`,
         label: `X ${i + 1}`,
         field_type: {
           id: 'Text',
           type: 'Text'
         },
         value: VALUES[i].value,
-        hidden: false
+        hidden: false,
+        parent: component.caseField
       });
     }
   });
