@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.71
+**EXUI-2997** Add reset to event-resolver
+
 ### Version 7.1.70
 **EXUI-2835** Validation shown for unsupported document. The user can still proceed to the next page. Check Your Answers page shows an empty value in the field
 
