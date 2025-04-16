@@ -127,7 +127,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
       const qualifyingQuestion: QualifyingQuestion = {
         name: 'Test Question',
         markdown: 'Test Markdown',
-        url: 'https://example.com/${CCD_REFERENCE}/question'
+        url: 'https://example.com/${[CASE_REFERENCE]}/question'
       };
 
       component.onSelectionChange(qualifyingQuestion);
