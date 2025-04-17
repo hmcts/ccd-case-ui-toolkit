@@ -2,11 +2,11 @@
   <div class="form-group flex">
     <fieldset class="heading-h2" aria-label="Filters">{{'Filters' | rpxTranslate }}</fieldset>
     <button type="button" class="button workbasket-filters-apply" (click)="apply(true)" [disabled]="isApplyButtonDisabled()"
-            [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
+        [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
       {{'Apply' | rpxTranslate}}
-    </button>
+    </button>&nbsp;&nbsp;&nbsp;
     <button type="button" (click)="reset()" class="button button-secondary"
-            [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
+        [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
       {{'Reset' | rpxTranslate}}
     </button>
   </div>
@@ -50,9 +50,7 @@
     </div>
   </ng-container>
 
-  <div class="form-group">
     <button type="button" class="button" (click)="scrollToTop()"
           [title]="'Back to top' | rpxTranslate" [attr.aria-label]="'Back to top' | rpxTranslate">{{'Back to top' | rpxTranslate}}
     </button>
-  </div>
 </form>
