@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.72-exui-2703-rc1
+**EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
+
 ### Version 7.1.72
 **EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
 
