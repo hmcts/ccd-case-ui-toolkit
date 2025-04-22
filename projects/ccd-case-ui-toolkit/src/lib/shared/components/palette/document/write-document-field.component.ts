@@ -176,6 +176,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public invalidFileFormat(): void {
     this.updateDocumentForm(null, null, null);
     this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_ERROR_INVALID_FORMAT);
+
+    // fix active form group so that additional attachments in invalid format are not accepted
+    this.formGroup.setErrors({ invalidFileFormat: true });
   }
 
   public getUploadedFileName(): any {

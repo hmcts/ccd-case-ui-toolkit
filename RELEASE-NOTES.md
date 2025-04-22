@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.1.69-exui-1832-rc1
+### Version 7.1.72-exui-1832-rc1
 **EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.1.72
+**EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
+
+### Version 7.1.71
+**EXUI-2997** Add reset to event-resolver
+
+### Version 7.1.70
+**EXUI-2835** Validation shown for unsupported document. The user can still proceed to the next page. Check Your Answers page shows an empty value in the field
 
 ### Version 7.1.69
 **EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
