@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.72
+**EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
+
 ### Version 7.1.71
 **EXUI-2997** Add reset to event-resolver
 
