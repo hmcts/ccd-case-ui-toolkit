@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.72",
+  "version": "7.1.72-exui-3017-rc1",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -105,7 +105,7 @@
     "@angular-eslint/template-parser": "17.3.0",
     "@angular/cli": "^17.3.5",
     "@angular/compiler-cli": "^17.3.5",
-    "@babel/core": "^7.23.0",
+    "@babel/core": "^7.23.2",
     "@compodoc/compodoc": "1.1.12",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",

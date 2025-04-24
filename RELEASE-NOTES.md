@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.72-exui-3017-rc1
+**EXUI-3017** high and critical vulnerablity suppressions
+
 ### Version 7.1.72
 **EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
 
