@@ -16,7 +16,8 @@ export function getMockCaseNotifier(caseView: CaseView = null): CaseNotifier {
       }
     }
   } as CaseView;
-  const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
+  const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView', 'getCaseViewV2']);
+  mockCasesService.getCaseViewV2.and.returnValue(of(cv));
   const mockCaseNotifier = new CaseNotifier(mockCasesService);
   if (!caseView) caseView = cv;
   mockCaseNotifier.caseView = mockCaseNotifier.caseView = new BehaviorSubject(caseView).asObservable();

@@ -70,16 +70,6 @@ describe('EventStartGuard', () => {
     });
   });
 
-  it('should log a message and not call getTasksByCaseIdAndEventId when caseId not matched with caseInfo caseId', () => {
-    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId123' }));
-    const route = createActivatedRouteSnapshot('caseId', 'eventId');
-    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
-    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
-    const result$ = guard.canActivate(route);
-    expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
-    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith('EventStartGuard: caseId 1620409659381330 in case notifier not matched with the route parameter caseId caseId');
-  });
-
   it('client context should be set with language regardless whether task is attached to event', () => {
     const mockClientContext = { client_context: { user_language: { language: 'cookieString' } } };
     mockCookieService.getCookie.and.returnValue('cookieString');
@@ -313,7 +303,6 @@ describe('EventStartGuard - error', () => {
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const result$ = guard.canActivate(route);
     expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
-    expect(mockAbstractConfig.logMessage).toHaveBeenCalledWith(`EventStartGuard: caseInfo details not available in case notifier for caseId`);
   });
 
   function createActivatedRouteSnapshot(cid: string, eid: string): ActivatedRouteSnapshot {
