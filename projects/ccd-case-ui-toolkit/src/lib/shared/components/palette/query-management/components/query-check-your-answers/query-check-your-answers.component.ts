@@ -239,7 +239,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
         // If no collection matches, or it's a new query
         newQueryData[this.fieldId] = {
-          partyName: originalPartyName, // Not returned by CCD
+          partyName: originalPartyName,
           roleOnCase: '', // Not returned by CCD
           caseMessages: [
             {
