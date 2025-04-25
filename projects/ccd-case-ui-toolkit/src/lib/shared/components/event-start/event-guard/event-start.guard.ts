@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
@@ -35,6 +35,18 @@ export class EventStartGuard implements CanActivate {
     const caseId = route.params['cid'];
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
+    // check if we have the case details in the case notifier
+    // if not, then fetch the case details using case notifier
+    const caseDataObservable = (!this.jurisdiction || !this.caseType || !this.caseId) ?
+      this.caseNotifier.fetchAndRefresh(caseId).pipe(
+        tap((caseDetails) => {
+          this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+          this.caseType = caseDetails?.case_type?.id;
+          this.caseId = caseDetails?.case_id;
+        }),
+        map(() => true)
+      ) : of(true);
+
     let userId: string;
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -69,18 +81,22 @@ export class EventStartGuard implements CanActivate {
         this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
-    if (this.jurisdiction && this.caseType) {
-      if (this.caseId === caseId) {
-        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
-          .pipe(
-            switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
-          );
-      }
-      this.abstractConfig.logMessage(`EventStartGuard: caseId ${this.caseId} in case notifier not matched with the route parameter caseId ${caseId}`);
-    } else {
-      this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in case notifier for ${caseId}`);
-    }
-    return of(false);
+    return caseDataObservable.pipe(
+      switchMap(() => {
+        if (this.jurisdiction && this.caseType) {
+          if (this.caseId === caseId) {
+            return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
+              .pipe(
+                switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
+              );
+          }
+          this.abstractConfig.logMessage(`EventStartGuard: caseId ${this.caseId} in case notifier not matched with the route parameter caseId ${caseId}`);
+        } else {
+          this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in case notifier for ${caseId}`);
+        }
+        return of(false);
+      })
+    );
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string, eventId: string, userId: string): boolean {
