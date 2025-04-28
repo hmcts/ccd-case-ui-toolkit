@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.1.74
+**EXUI-2985** Query collection partyName gets recreated on Raise Query
+**EXUI-2967** Raise a query qualifying questions for Civil
+**EXUI-2637** Additional Logging for Query management
+
 ### Version 7.1.73
 **EXUI-2960** Incorrect data is being pulled from HMC to List Assist
 
