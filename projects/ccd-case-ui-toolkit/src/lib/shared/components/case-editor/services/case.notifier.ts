@@ -27,6 +27,7 @@ export class CaseNotifier {
         .getCaseViewV2(cid)
         .pipe(
           map(caseView => {
+            console.log("CASE VIEW =", caseView);
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.setBasicFields(this.cachedCaseView.tabs);
             this.announceCase(this.cachedCaseView);
