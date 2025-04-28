@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.73
+**EXUI-2960** Incorrect data is being pulled from HMC to List Assist
+
 ### Version 7.1.72
 **EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
 
