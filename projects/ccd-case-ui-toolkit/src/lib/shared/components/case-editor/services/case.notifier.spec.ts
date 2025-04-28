@@ -1,6 +1,28 @@
 import { CaseField, CaseTab, CaseView } from '../../../domain';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
+import { BehaviorSubject, of } from 'rxjs';
+
+export function getMockCaseNotifier(caseView: CaseView = null): CaseNotifier {
+  const cv: CaseView = {
+    case_id: '1620409659381330',
+    case_type: {
+      id: 'CIVIL',
+      name: '',
+      jurisdiction: {
+        id: 'CIVIL',
+        name: '',
+        description: ''
+      }
+    }
+  } as CaseView;
+  const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView', 'getCaseViewV2']);
+  mockCasesService.getCaseViewV2.and.returnValue(of(cv));
+  const mockCaseNotifier = new CaseNotifier(mockCasesService);
+  if (!caseView) caseView = cv;
+  mockCaseNotifier.caseView = mockCaseNotifier.caseView = new BehaviorSubject(caseView).asObservable();
+  return mockCaseNotifier;
+}
 
 describe('setBasicFields', () => {
   let caseNotifier: CaseNotifier;
