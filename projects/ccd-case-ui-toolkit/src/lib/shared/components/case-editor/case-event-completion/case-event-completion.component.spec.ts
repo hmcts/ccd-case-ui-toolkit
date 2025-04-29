@@ -6,14 +6,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Task } from '../../../domain/work-allocation/Task';
-import { AlertService, HttpErrorService, HttpService } from '../../../services';
-import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { CaseworkerService, JudicialworkerService } from '../services';
+import { CaseNotifier, CasesService, CaseworkerService, JudicialworkerService } from '../services';
 import { EventCompletionStateMachineService } from '../services/event-completion-state-machine.service';
 import { WorkAllocationService } from '../services/work-allocation.service';
 import { CaseEventCompletionComponent } from './case-event-completion.component';
 import createSpyObj = jasmine.createSpyObj;
+import { of } from 'rxjs';
+import { getMockCaseNotifier } from '../services/case.notifier.spec';
 
 describe('CaseEventCompletionComponent', () => {
   const API_URL = 'http://aggregated.ccd.reform';
@@ -23,11 +24,13 @@ describe('CaseEventCompletionComponent', () => {
   let httpService: HttpService;
   let errorService: HttpErrorService;
   let alertService: AlertService;
-  let sessionStorageService: any;
+  let mockCaseNotifier: CaseNotifier;
+  let mockCasesService: CasesService;
   let mockWorkAllocationService: WorkAllocationService;
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
   let eventCompletionStateMachineService: any;
+  let sessionStorageService: any;
 
   const task: Task = {
     assignee: null,
@@ -63,6 +66,19 @@ describe('CaseEventCompletionComponent', () => {
     eventId: '4321-4321-4321-4321'
   };
 
+  const mockCaseView1: any = {
+    case_id: '1620409659381330',
+    case_type: {
+      id: 'CIVIL',
+      name: '',
+      jurisdiction: {
+        id: 'CIVIL',
+        name: '',
+        description: ''
+      }
+    }
+  };
+
   appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
   appConfig.getApiUrl.and.returnValue(API_URL);
   appConfig.getCaseDataUrl.and.returnValue(API_URL);
@@ -70,8 +86,11 @@ describe('CaseEventCompletionComponent', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
+  mockCasesService = createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
+  mockCaseNotifier = getMockCaseNotifier(mockCaseView1);
+  sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA', roles: []}));
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockCaseNotifier, sessionStorageService);
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);
@@ -91,6 +110,7 @@ describe('CaseEventCompletionComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         SessionStorageService,
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
         { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
