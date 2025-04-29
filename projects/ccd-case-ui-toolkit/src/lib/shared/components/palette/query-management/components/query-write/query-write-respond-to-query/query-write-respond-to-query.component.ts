@@ -50,8 +50,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND
-      && this.caseQueriesCollections?.length > 0
+    if (this.caseQueriesCollections?.length > 0
     ) {
       if (!this.caseQueriesCollections[0]) {
         console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
@@ -73,15 +72,19 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
       if (filteredMessages.length > 0) {
         const matchingMessage = filteredMessages[0]?.value;
-
-        const filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.parentId === message?.id);
-        this.queryResponseStatus = filteredQuery[0]?.responseStatus;
-
-        if (matchingMessage) {
-          this.queryItemDisplay = new QueryListItem();
-          Object.assign(this.queryItemDisplay, matchingMessage);
-          this.queryItem = this.queryItemDisplay;
+        let filteredQuery = [];
+        if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
+          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.parentId === message?.id);
+          if (matchingMessage) {
+            this.queryItemDisplay = new QueryListItem();
+            Object.assign(this.queryItemDisplay, matchingMessage);
+            this.queryItem = this.queryItemDisplay;
+          }
+        } else {
+          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
         }
+
+        this.queryResponseStatus = filteredQuery[0]?.responseStatus;
       }
     }
   }
