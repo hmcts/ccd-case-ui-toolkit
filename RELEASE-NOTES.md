@@ -1,5 +1,67 @@
 ## RELEASE NOTES
 
+### Version 7.1.75
+**EXUI-3052** Possible to submit a follow up on a question which has not been responded to
+
+### Version 7.1.74
+**EXUI-2985** Query collection partyName gets recreated on Raise Query
+**EXUI-2967** Raise a query qualifying questions for Civil
+**EXUI-2637** Additional Logging for Query management
+
+### Version 7.1.73
+**EXUI-2960** Incorrect data is being pulled from HMC to List Assist
+
+### Version 7.1.72
+**EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
+
+### Version 7.1.71
+**EXUI-2997** Add reset to event-resolver
+
+### Version 7.1.70
+**EXUI-2835** Validation shown for unsupported document. The user can still proceed to the next page. Check Your Answers page shows an empty value in the field
+
+### Version 7.1.69
+**EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
+
+### Version 7.1.68
+**EXUI-3004** Link for a new tab casuing issues
+
+### Version 7.1.67
+**EXUI-2972** Refactor isCaseworker to isInternalUser
+
+### Version 7.1.66
+**EXUI-2957** QM: Service Specific Text on Raise a Query page
+
+### Version 7.1.65
+**EXUI-2876** Spinner Does Not Stop on Queries Tab
+
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+**EXUI-2928** QM: Limit the length of a message subject
+
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
+### Version 7.1.57
+**EXUI-1843** markdown routerLink feature has been removed
+**EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2756** Text alignment in Event history Detail seen to differ
+**EXUI-2640** Add a exclusion list for case types that should not be subject to CDAM
+**EXUI-2744** Data input in event page disappears in CYA page
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
 ### Version 7.1.55
 **EXUI-2885** QM: Handle read only query collections
 
