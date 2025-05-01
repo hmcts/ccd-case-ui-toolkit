@@ -47,8 +47,6 @@ export class SearchFiltersComponent implements OnInit {
   public searchInputs: SearchInput[];
   public searchInputsReady: boolean;
 
-  // TEST-TODO
-  // ngModel may cause Angular 18 issues
   public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,

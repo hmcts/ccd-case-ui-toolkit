@@ -46,8 +46,6 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   public workbasketDefaults: boolean;
 
-  // TEST-TODO
-  // ngModel may cause Angular 18 issues
   public selected: {
     init?: boolean,
     jurisdiction?: Jurisdiction,
