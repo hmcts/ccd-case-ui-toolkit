@@ -27,7 +27,7 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
     this.mockDocumentCaseField = Object.assign(new CaseField(), {
       id: QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME,
       label: this.label ? this.label : 'Attach a document',
-      hint_text: this.hintText ? this.hintText : 'Only attach documents related to your query. For all other documents use your case management document upload function.',
+      hint_text: this.hintText,
       display_context: 'OPTIONAL',
       display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
       field_type: Object.assign(new FieldType(), {
