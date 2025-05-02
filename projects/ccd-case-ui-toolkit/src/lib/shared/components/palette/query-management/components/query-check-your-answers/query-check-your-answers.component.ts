@@ -51,8 +51,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private tid: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
-  private firstCollectionPicked: boolean = false; // Track whether the first collection has been picked
-  private firstCollectionOrder?: number;
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
@@ -247,9 +245,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           caseMessages: [...matchedCollection.caseMessages] // Append the updated messages array
         };
       } else {
+        // Use partyName from the first collection (assumption: all share the same party)
+        const originalPartyName = this.caseQueriesCollections[0].partyName;
+
         // If no collection matches, or it's a new query
         newQueryData[this.fieldId] = {
-          partyName: currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`, // Not returned by CCD
+          partyName: originalPartyName,
           roleOnCase: '', // Not returned by CCD
           caseMessages: [
             {

@@ -7,6 +7,7 @@ import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
 
 @Component({
   selector: 'ccd-write-judicial-user-field',
@@ -33,8 +34,15 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     private readonly sessionStorageService: SessionStorageService,
     private readonly caseFlagRefDataService: CaseFlagRefdataService,
     private readonly compoundPipe: IsCompoundPipe,
-    private readonly validatorsService: FormValidatorsService) {
+    private readonly validatorsService: FormValidatorsService,
+    private readonly caseNotifier: CaseNotifier) {
     super(compoundPipe, validatorsService);
+    this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails) {
+        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseType = caseDetails?.case_type?.id;
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -48,8 +56,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     // Ensure that this FormControl has links to the JudicialUser case field and this component
     FieldsUtils.addCaseFieldAndComponentReferences(this.judicialUserControl, this.caseField, this);
     this.setupValidation();
-
-    this.setJurisdictionAndCaseType();
 
     this.filteredJudicialUsers$ = this.judicialUserControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
@@ -97,25 +103,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     if (personalCode) {
       this.jurisdictionService.searchJudicialUsersByPersonalCodes([personalCode]).pipe(take(1)).subscribe(judicialUsers => {
         this.judicialUserControl.setValue(judicialUsers[0]);
-      });
-    }
-  }
-
-  public setJurisdictionAndCaseType(): void {
-    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    if (caseInfoStr) {
-      const caseInfo = JSON.parse(caseInfoStr);
-      this.jurisdiction = caseInfo?.jurisdiction;
-      this.caseType = caseInfo?.caseType;
-    } else {
-      // If there is no case info, attempt to get the current jurisdiction and case type via the JurisdictionService
-      this.jurisdictionSubscription = this.jurisdictionService.selectedJurisdictionBS.subscribe((jurisdiction) => {
-        if (jurisdiction) {
-          this.jurisdiction = jurisdiction.id;
-          if (jurisdiction.currentCaseType) {
-            this.caseType = jurisdiction.currentCaseType.id;
-          }
-        }
       });
     }
   }
