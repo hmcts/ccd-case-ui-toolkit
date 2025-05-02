@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -830,6 +830,33 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.setCaseQueriesCollectionData();
 
     expect(component.fieldId).toBe('field1');
+  });
+
+  it('should return undefined when wizard_page_fields is missing', () => {
+    component.eventData = {
+      case_fields: [],
+      wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when wizard_page_fields is missing in wizard_pages', () => {
+    const caseField = {
+      id: 'field1',
+      field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+      display_context: 'OPTIONAL'
+    };
+
+    component.eventData = {
+      case_fields: [caseField],
+      wizard_pages: [{}] // No `wizard_page_fields`
+    } as any;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
   });
 
   it('should initialize newQueryData correctly when fieldId is set', () => {
