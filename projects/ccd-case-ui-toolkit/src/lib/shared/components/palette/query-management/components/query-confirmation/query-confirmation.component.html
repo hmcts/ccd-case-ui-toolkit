@@ -4,11 +4,13 @@
       <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY || queryCreateContext === queryCreateContextEnum.FOLLOWUP">
         <div class="govuk-panel govuk-panel--confirmation">
           <h1 class="govuk-panel__title">{{'Query submitted' | rpxTranslate}}</h1>
-          <div class="govuk-panel__body">{{'Your query has been sent to HMCTS' | rpxTranslate}}</div>
+          <div class="qm-confirmation govuk-panel__body">
+            <ccd-markdown [content]="callbackConfirmationMessageText?.header | rpxTranslate"></ccd-markdown>
+          </div>
         </div>
         <div class="govuk-body">
           <h3 class="govuk-heading-s">{{'What happens next' | rpxTranslate}}</h3>
-          <ccd-markdown [content]="callbackConfirmationBodyText | rpxTranslate"></ccd-markdown>
+          <ccd-markdown [content]="callbackConfirmationMessageText?.body | rpxTranslate"></ccd-markdown>
           <p>{{'When the response is available it will be added to the \'Queries\' section.' | rpxTranslate}}</p>
           <p>
             {{'You can' | rpxTranslate}}

@@ -8,7 +8,7 @@ import { QueryCreateContext } from '../../models/query-create-context.enum';
 })
 export class QueryConfirmationComponent implements OnInit {
   @Input() public queryCreateContext: QueryCreateContext;
-  @Input() public callbackConfirmationBodyText: string;
+  @Input() public callbackConfirmationMessageText: string | undefined;
 
   public caseId = '';
   public queryCreateContextEnum = QueryCreateContext;

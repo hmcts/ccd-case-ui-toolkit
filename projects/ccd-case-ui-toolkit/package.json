@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-"version": "7.1.70-callback-success-message",
+"version": "7.1.76-callback-success-message",
   "engines": {
     "node": ">=18.19.0"
   },

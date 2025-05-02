@@ -541,12 +541,12 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({}));
 
     spyOn(component.querySubmitted, 'emit');
-    spyOn(component.callbackConfirmationBody, 'emit');
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(casesService.createEvent).toHaveBeenCalled();
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
-    expect(component.callbackConfirmationBody.emit).toHaveBeenCalledWith(undefined);
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 
   it('should set fieldId to undefined when eventData is unavailable', () => {
@@ -866,10 +866,10 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.filteredTasks.length).toBe(1);
     expect(component.filteredTasks[0].id).toBe('Task_2');
 
-    spyOn(component.callbackConfirmationBody, 'emit');
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
-    expect(component.callbackConfirmationBody.emit).toHaveBeenCalledWith(undefined);
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 });
