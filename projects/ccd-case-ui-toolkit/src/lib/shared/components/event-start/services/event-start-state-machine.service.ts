@@ -108,11 +108,17 @@ export class EventStartStateMachineService {
     }
   }
 
+  private getJurisdictionNCaseType(context: EventStartStateMachineContext): any {
+    const caseInfo = context.sessionStorageService.getItem('caseInfo');
+    return caseInfo ? JSON.parse(caseInfo) : null;
+  }
+
   public entryActionForStateNoTask(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
     // Navigate to no tasks available error page
-    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+    const caseDetails = this.getJurisdictionNCaseType(context);
+    context.router.navigate([`/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
   public entryActionForStateOneOrMoreTasks(state: State, context: EventStartStateMachineContext): void {
@@ -159,14 +165,14 @@ export class EventStartStateMachineService {
   public entryActionForStateTaskUnAssigned(state: State, context: EventStartStateMachineContext): void {
     let navigationURL = '';
     let theQueryParams: Params = {};
-
+    const caseDetails = this.getJurisdictionNCaseType(context);
     if (context.tasks[0].assignee) {
       // Task is assigned to some other user, navigate to task assigned error page
-      navigationURL = `/cases/case-details/${context.caseId}/task-assigned`;
+      navigationURL = `/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/task-assigned`;
       theQueryParams = context.tasks[0];
     } else {
       // Task is unassigned, navigate to task unassigned error page
-      navigationURL = `/cases/case-details/${context.caseId}/task-unassigned`;
+      navigationURL = `/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/task-unassigned`;
     }
 
     // Trigger final state to complete processing of state machine
@@ -216,15 +222,16 @@ export class EventStartStateMachineService {
     // EXUI-2668 - Only add client context when taskEventCompletionInfo is set - stops auto completing incorrect tasks
     context.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
     // Allow user to perform the event
-    context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
+    context.router.navigate([`/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });
   }
 
   public entryActionForStateMultipleTasksAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
+    const caseDetails = this.getJurisdictionNCaseType(context);
     // Navigate to multiple tasks exist error page
-    context.router.navigate([`/cases/case-details/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
   }
 
   public finalAction(state: State): void {
