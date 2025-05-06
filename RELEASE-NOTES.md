@@ -1,7 +1,18 @@
 ## RELEASE NOTES
 
-### Version 7.1.72-exui-1832-rc1
+### Version 7.1.75-exui-1832-rc1
 **EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.1.75
+**EXUI-3052** Possible to submit a follow up on a question which has not been responded to
+
+### Version 7.1.74
+**EXUI-2985** Query collection partyName gets recreated on Raise Query
+**EXUI-2967** Raise a query qualifying questions for Civil
+**EXUI-2637** Additional Logging for Query management
+
+### Version 7.1.73
+**EXUI-2960** Incorrect data is being pulled from HMC to List Assist
 
 ### Version 7.1.72
 **EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab

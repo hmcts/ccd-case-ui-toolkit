@@ -8,6 +8,7 @@ import { CaseView } from '../../../../../../domain';
 import { CaseNotifier } from '../../../../../case-editor';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
 import { CaseQueriesCollection, QueryListItem } from '../../../models';
+import { getMockCaseNotifier } from '../../../../../case-editor/services/case.notifier.spec';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -78,9 +79,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
     }
   ];
 
-  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
-  const mockCaseNotifier = new CaseNotifier(casesService);
-  mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+  const mockCaseNotifier = getMockCaseNotifier(CASE_VIEW);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
