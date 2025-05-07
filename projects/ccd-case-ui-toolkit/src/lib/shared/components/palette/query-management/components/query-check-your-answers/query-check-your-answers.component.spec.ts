@@ -832,7 +832,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.fieldId).toBe('field1');
   });
 
-  it('should return undefined when wizard_page_fields is missing', () => {
+  it('should return undefined when case_fields is empty', () => {
     component.eventData = {
       case_fields: [],
       wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
