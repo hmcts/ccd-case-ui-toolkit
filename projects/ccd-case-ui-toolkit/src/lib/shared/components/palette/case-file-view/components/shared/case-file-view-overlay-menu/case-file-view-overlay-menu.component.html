@@ -1,6 +1,6 @@
 <div>
   <button type="button" class="overlay-toggle"
-          (click)="$event.stopPropagation(); isOpen = !isOpen"
+          (click)="$event.stopPropagation(); setOpen()"
           cdkOverlayOrigin #trigger="cdkOverlayOrigin">
     <ng-content select="[trigger]"></ng-content>
   </button>
@@ -18,12 +18,14 @@
         <div class="overlay-menu__title">{{title}}</div>
       </ng-container>
 
-      <ng-container *ngFor="let item of menuItems; index as i">
-        <div class="overlay-menu__item" tabindex="0" [id]="'overlay-menu__item' + i" (click)="item.actionFn(); closeOverlay();" (keyup)="$event.key === 'Enter' ? actionAndClose(item.actionFn()) : null">
-          <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{title}} icon'" />
-          <span class="overlay-menu__actionText">{{item.actionText}}</span>
-        </div>
-      </ng-container>
+      <ul>
+        <ng-container *ngFor="let item of menuItems;">
+          <li class="overlay-menu__item" tabindex="0" (click)="item.actionFn(); closeOverlay();" (keydown.enter)="item.actionFn(); closeOverlay();">
+            <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{title}} icon'" />
+            <span class="overlay-menu__actionText">{{item.actionText}}</span>
+          </li>
+        </ng-container>
+      </ul>
     </div>
   </ng-template>
 </div>
