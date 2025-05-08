@@ -4356,7 +4356,7 @@ __metadata:
     angular2-template-loader: "npm:^0.6.2"
     babel-loader: "npm:^8.2.5"
     braces: "npm:^2.3.1"
-    class-transformer: "npm:^0.3.2"
+    class-transformer: "npm:^0.5.1"
     codacy-coverage: "npm:^2.1.1"
     codecov: "npm:^3.0.0"
     codelyzer: "npm:^6.0.0"
@@ -11730,10 +11730,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"class-transformer@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "class-transformer@npm:0.3.2"
-  checksum: 10/86fc3fa614c4b11cffbdefc0fb393d674ae531298c7f3e7ea12b51a2f65c694e43f8a80c347dfdc5d0d6e60c904cdd81c9e857fd8436766e6ba4903744b78c13
+"class-transformer@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "class-transformer@npm:0.5.1"
+  checksum: 10/750327e3e9a5cf233c5234252f4caf6b06c437bf68a24acbdcfb06c8e0bfff7aa97c30428184813e38e08111b42871f20c5cf669ea4490f8ae837c09f08b31e7
   languageName: node
   linkType: hard
 

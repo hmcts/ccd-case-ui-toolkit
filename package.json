@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.76-hint-text-1",
+  "version": "7.1.77",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -127,7 +127,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "angular2-template-loader": "^0.6.2",
     "babel-loader": "^8.2.5",
-    "class-transformer": "^0.3.2",
+    "class-transformer": "^0.5.1",
     "codacy-coverage": "^2.1.1",
     "codecov": "^3.0.0",
     "codelyzer": "^6.0.0",
