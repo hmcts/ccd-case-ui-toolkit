@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.77
+**EXUI-3064** Never ending loading wheel
+
 ### Version 7.1.76
 **EXUI-2497** Accessibility issue
 **EXUI-1618**
