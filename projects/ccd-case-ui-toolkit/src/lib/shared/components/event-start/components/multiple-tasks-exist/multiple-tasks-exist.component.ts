@@ -10,7 +10,7 @@ export class MultipleTasksExistComponent implements OnInit {
 
   public caseId: string;
 
-  constructor(private readonly route: ActivatedRoute, private loadingService: LoadingService) {
+  constructor(private readonly route: ActivatedRoute, private readonly loadingService: LoadingService) {
     this.caseId = this.route.snapshot.data.case.case_id;
   }
 
