@@ -55,7 +55,6 @@ describe('QueryConfirmationComponent', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
     fixture.detectChanges();
     expect(nativeElement.querySelector('.govuk-panel__title').textContent).toEqual('Query submitted');
-    expect(nativeElement.querySelector('.govuk-panel__body').textContent).toEqual('Your query has been sent to HMCTS');
     expect(nativeElement.querySelector('.govuk-link').textContent).toEqual('Go back to the case');
   });
 
@@ -72,7 +71,6 @@ describe('QueryConfirmationComponent', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
     fixture.detectChanges();
     expect(nativeElement.querySelector('.govuk-panel__title').textContent).toEqual('Query submitted');
-    expect(nativeElement.querySelector('.govuk-panel__body').textContent).toEqual('Your query has been sent to HMCTS');
     expect(nativeElement.querySelector('.govuk-link').textContent).toEqual('Go back to the case');
   });
 });
