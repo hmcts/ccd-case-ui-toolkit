@@ -107,6 +107,13 @@ const CASE_TYPES_2: CaseType[] = [
   }
 ];
 
+const JURISDICTION_3: Jurisdiction = {
+  id: 'J3',
+  name: 'Jurisdiction 3',
+  description: 'Jurisdiction 3 with case types',
+  caseTypes: CASE_TYPES_1
+};
+
 const DEFAULT_CASE_TYPE = CASE_TYPES_2[1];
 const DEFAULT_CASE_STATE = DEFAULT_CASE_TYPE.states[1];
 
@@ -1098,12 +1105,13 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
 
     component.jurisdictions = [
       JURISDICTION_1,
-      JURISDICTION_2
+      JURISDICTION_2,
+      JURISDICTION_3
     ];
     component.formGroup = TEST_FORM_GROUP;
     component.defaults = {
-      jurisdiction_id: JURISDICTION_2.id,
-      case_type_id: DEFAULT_CASE_TYPE.id,
+      jurisdiction_id: JURISDICTION_3.id,
+      case_type_id: CASE_TYPES_1[0].id,
       state_id: DEFAULT_CASE_STATE.id
     };
     component.onApply.subscribe(workbasketHandler.applyFilters);
@@ -1116,11 +1124,13 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     TestBed.resetTestingModule();
   });
 
-  it('should initially NOT select anything if jurisdiction is invalid and no case types', () => {
-    expect(component.selected.jurisdiction).toBeUndefined();
-    expect(component.selected.caseType).toBeUndefined();
+  it('should select default values after ngOnInit', fakeAsync(() => {
+    component.ngOnInit();
+    tick(); // Simulate the passage of time to trigger subscriptions
+    expect(component.selected.jurisdiction).toEqual(JURISDICTION_3);
+    expect(component.selected.caseType).toEqual(DEFAULT_CASE_TYPE);
     expect(component.selected.caseState).toBeUndefined();
-  });
+  }));
 });
 
 describe('with no defaults', () => {

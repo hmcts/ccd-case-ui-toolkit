@@ -40,7 +40,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     super(compoundPipe, validatorsService);
     // We need to caseType from the case list filters as well as the case notifier, because the judicial user component
     // can be used in the case list before any case is opened, thus the caseNotifier has nothing to notify
-    this.jurisdictionSubscription = this.jurisdictionService.selectedJurisdictionBS.subscribe({
+    this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
       next: (jurisdiction) => {
         console.log('jurisdiction', jurisdiction);
         if (jurisdiction?.currentCaseType) {
@@ -98,7 +98,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     console.log('filterJudicialUsers:', searchTerm);
     if (!this.caseType) {
       console.log('caseType not set, getting from jurisdictionService');
-      this.caseType = this.jurisdictionService.selectedJurisdictionBS.getValue()?.currentCaseType?.id;
+      this.caseType = this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
     }
     // we need to identify the "base case type" for the service code, because services tend to create testing
     // case types that aren't present in ref data. Generally these are called <casetype>-<something>. There are no

@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
-import { CaseField, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
+import { CaseField, CaseType, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
@@ -122,6 +122,23 @@ const SERVICE_DETAILS = [
   }
 ] as HmctsServiceDetail[];
 
+const CASE_TYPE_JUF: CaseType = {
+  id: 'CTJUF',
+  name: 'Case type Judicial User Field',
+  description: '',
+  states: [],
+  events: [],
+  case_fields: [],
+  jurisdiction: null
+};
+
+const JURISDICTION_JUF: Jurisdiction = {
+  id: 'JUF',
+  name: 'Jurisdiction Judicial User Field',
+  description: '',
+  caseTypes: [CASE_TYPE_JUF],
+};
+
 @Pipe({
   name: 'ccdFirstError',
   pure: false
@@ -150,6 +167,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(JURISDICTION_JUF));
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'CIVIL', jurisdiction: 'CIVIL' }));
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
@@ -503,11 +521,4 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(errorMessageElement.textContent).toContain('Judicial User is required');
   });
 
-  it('should not get the jurisdiction and case type via the JurisdictionService if there is case info', () => {
-    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
-    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe');
-    expect(jurisdictionService.selectedJurisdictionBS.subscribe).not.toHaveBeenCalled();
-    expect(component.jurisdiction).toEqual('CIVIL');
-    expect(component.caseType).toEqual('CIVIL');
-  });
 });

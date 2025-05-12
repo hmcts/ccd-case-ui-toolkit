@@ -64,6 +64,7 @@ export class SearchFiltersComponent implements OnInit {
     private readonly orderService: OrderService,
     private readonly jurisdictionService: JurisdictionService,
     private readonly windowService: WindowService) {
+    this.selected = {};
   }
 
   public ngOnInit(): void {
@@ -83,9 +84,11 @@ export class SearchFiltersComponent implements OnInit {
       console.log(`ngOnInit jurisdiction:caseType: ${this.selected?.jurisdiction?.id}:${this.selected?.jurisdiction?.currentCaseType?.id}`);
       this.onJurisdictionIdChange();
     }
-    this.selected.formGroup = this.formGroup;
-    this.selected.page = 1;
-    this.selected.metadataFields = this.getMetadataFields();
+    if (this.selected) {
+      this.selected.formGroup = this.formGroup;
+      this.selected.page = 1;
+      this.selected.metadataFields = this.getMetadataFields();
+    }
     this.onApply.emit({
       selected: this.selected,
       queryParams: this.getQueryParams()
@@ -171,9 +174,9 @@ export class SearchFiltersComponent implements OnInit {
 
   public onJurisdictionIdChange(): void {
     this.selected.caseType = null;
-    this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
+    this.selectedJurisdictionCaseTypes = this.selected?.jurisdiction?.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
-    console.log('jurisdiction selected: ' + this.selected.jurisdiction.id + ' case type: ' + this.selected.jurisdiction.currentCaseType.id);
+    console.log('jurisdiction selected: ' + this.selected.jurisdiction?.id + ' case type: ' + this.selected.jurisdiction?.currentCaseType?.id);
     this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.onJurisdiction.emit(this.selected.jurisdiction);
   }
@@ -222,13 +225,13 @@ export class SearchFiltersComponent implements OnInit {
   private getQueryParams() {
     // Save filters as query parameters for current route
     const queryParams = {};
-    if (this.selected.jurisdiction) {
+    if (this.selected?.jurisdiction) {
       queryParams[this.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
     }
-    if (this.selected.caseType) {
+    if (this.selected?.caseType) {
       queryParams[this.PARAM_CASE_TYPE] = this.selected.caseType.id;
     }
-    if (this.selected.caseState) {
+    if (this.selected?.caseState) {
       queryParams[this.PARAM_CASE_STATE] = this.selected.caseState.id;
     }
     return queryParams;
