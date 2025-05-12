@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.78-exui-1832-rc1
+**EXUI-1832** Choose file' and 'no file chosen' not being translated
+
 ### Version 7.1.78
 **EXUI-3047** hint-text
 
