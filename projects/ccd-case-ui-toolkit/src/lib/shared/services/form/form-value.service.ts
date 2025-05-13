@@ -303,7 +303,7 @@ export class FormValueService {
       const fieldId = data[field].id;
       if (Array.isArray(caseField.data[fieldId])) {
         for (const subField in caseField.data[fieldId]) {
-          if (data[field]?._value){
+          if (data[field]?._value && Object.keys(caseField.data[fieldId][subField] || {}).every((key) => key in data[field]._value[subField])) {
             if (caseField.data[fieldId][subField] !== data[field]?._value[subField]) {
               caseField.data[fieldId][subField] = data[field]._value[subField];
             }

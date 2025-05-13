@@ -78,7 +78,8 @@ export class FieldTypeSanitiser {
   }
 
   public updateObjectValue(formattedObject: any, dataObject: any): void {
-    if (formattedObject?.value !== dataObject) {
+    // we only want to update the value if there is a list_items property
+    if ((formattedObject?.value !== dataObject) && (formattedObject.list_items)) {
       formattedObject.value = dataObject;
     }
   }
