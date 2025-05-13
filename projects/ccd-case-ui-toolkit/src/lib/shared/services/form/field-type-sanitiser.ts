@@ -71,7 +71,7 @@ export class FieldTypeSanitiser {
     for (const key in dataValue) {
       if ((typeof caseFieldValue[key] === 'object') && (!isEqual(caseFieldValue[key], dataValue[key]))) {
         this.updateObjectValue(caseFieldValue[key], dataValue[key]);
-      } else {
+      } else if (typeof caseFieldValue[key] !== 'object') {
         this.updatePrimitiveValue(caseFieldValue, key, dataValue[key]);
       }
     }
