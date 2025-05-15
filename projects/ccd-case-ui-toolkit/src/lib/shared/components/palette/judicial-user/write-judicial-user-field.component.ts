@@ -29,15 +29,26 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   public invalidSearchTerm = false;
   public judicialUserSelected = false;
   public jurisdictionSubscription: Subscription;
+  private notifierSubscription: Subscription;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly caseFlagRefDataService: CaseFlagRefdataService,
-    private readonly compoundPipe: IsCompoundPipe,
-    private readonly validatorsService: FormValidatorsService,
-    private readonly caseNotifier: CaseNotifier) {
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly caseFlagRefDataService: CaseFlagRefdataService,
+              private readonly compoundPipe: IsCompoundPipe,
+              private readonly validatorsService: FormValidatorsService,
+              private readonly caseNotifier: CaseNotifier) {
     super(compoundPipe, validatorsService);
-    this.caseNotifier.caseView.subscribe((caseDetails) => {
+    // We need to caseType from the case list filters as well as the case notifier, because the judicial user component
+    // can be used in the case list before any case is opened, thus the caseNotifier has nothing to notify
+    this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
+      next: (jurisdiction) => {
+        if (jurisdiction?.currentCaseType) {
+          this.jurisdiction = jurisdiction.id;
+          this.caseType = jurisdiction.currentCaseType.id
+        }
+      }
+    });
+    this.notifierSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
       if (caseDetails) {
         this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
         this.caseType = caseDetails?.case_type?.id;
@@ -82,6 +93,17 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   }
 
   public filterJudicialUsers(searchTerm: string): Observable<JudicialUserModel[]> {
+    if (!this.caseType) {
+      this.caseType = this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
+    }
+    // we need to identify the "base case type" for the service code, because services tend to create testing
+    // case types that aren't present in ref data. Generally these are called <casetype>-<something>. There are no
+    // real case types that include a hyphen in the name (I've checked the ref data),
+    // so we can use this to identify the base case type
+    // and strip off the suffix. This is a bit of a hack, but it works for now.
+    if (this.caseType && this.caseType.includes('-')) {
+      this.caseType = this.caseType.split('-')[0];
+    }
     return this.caseFlagRefDataService.getHmctsServiceDetailsByCaseType(this.caseType).pipe(
       // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
       catchError(_ => this.caseFlagRefDataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
@@ -156,5 +178,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
 
   public ngOnDestroy(): void {
     this.jurisdictionSubscription?.unsubscribe();
+    this.notifierSubscription?.unsubscribe();
   }
 }

@@ -64,32 +64,30 @@ export class SearchFiltersComponent implements OnInit {
     private readonly orderService: OrderService,
     private readonly jurisdictionService: JurisdictionService,
     private readonly windowService: WindowService) {
+    this.selected = {};
   }
 
   public ngOnInit(): void {
-    this.selected = {};
-    const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+    const jurisdiction = this.getValuesFromLocalStorage();
     if (this.jurisdictions.length === 1 || jurisdiction) {
       this.selected.jurisdiction = this.jurisdictions[0];
-      if (jurisdiction) {
-        try {
-          console.log('jurisdiction retrieved from local storage len = ' + jurisdiction.length)
-          const localStorageJurisdiction = JSON.parse(decompressFromUTF16(jurisdiction));
-          if (localStorageJurisdiction) {
-            this.selected.jurisdiction = this.jurisdictions
-              .filter(j => j.id === localStorageJurisdiction.id)[0];
-          }
-        } catch (e) {
-          console.log("Failed to retrieve jurisdiction from local storage");
-          this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null)
+      if(jurisdiction) {
+        this.selected.jurisdiction = this.jurisdictions
+          .filter(j => j.id === jurisdiction.id)[0];
+        if(jurisdiction.currentCaseType &&
+          this.selected.jurisdiction.caseTypes.find(ct => ct.id === jurisdiction.currentCaseType.id)) {
+          this.selected.jurisdiction.currentCaseType = jurisdiction.currentCaseType;
+        } else {
+          this.selected.jurisdiction.currentCaseType = this.selected.jurisdiction.caseTypes[0];
         }
       }
       this.onJurisdictionIdChange();
     }
-
-    this.selected.formGroup = this.formGroup;
-    this.selected.page = 1;
-    this.selected.metadataFields = this.getMetadataFields();
+    if (this.selected) {
+      this.selected.formGroup = this.formGroup;
+      this.selected.page = 1;
+      this.selected.metadataFields = this.getMetadataFields();
+    }
     this.onApply.emit({
       selected: this.selected,
       queryParams: this.getQueryParams()
@@ -111,7 +109,6 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public apply(): void {
-    console.log("Search filters apply");
     this.selected.formGroup = this.formGroup;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
@@ -130,14 +127,28 @@ export class SearchFiltersComponent implements OnInit {
     try {
       const compJurisd = compressToUTF16(JSON.stringify(this.selected.jurisdiction));
       this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, compJurisd);
-      console.log('jurisdiction compressed into local storage, length = ' + compJurisd.length);
-    } catch (e) {
-      console.log('Could not store jurisdiction in local storage');
+     } catch (e) {
       this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null);
     }
     if (this.selected.caseType) {
       this.windowService.setLocalStorage(CASE_TYPE_LOC_STORAGE, JSON.stringify(this.selected.caseType));
     }
+  }
+
+  public getValuesFromLocalStorage(): Jurisdiction {
+    const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+    if (jurisdiction) {
+      try {
+        const localStorageJurisdiction = JSON.parse(decompressFromUTF16(jurisdiction));
+        if (localStorageJurisdiction) {
+          return localStorageJurisdiction;
+        }
+      } catch (e) {
+        console.log("Failed to retrieve jurisdiction from local storage");
+        this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null)
+      }
+    }
+    return null;
   }
 
   public getMetadataFields(): string[] {
@@ -161,13 +172,17 @@ export class SearchFiltersComponent implements OnInit {
 
   public onJurisdictionIdChange(): void {
     this.selected.caseType = null;
-    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
-    this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
+    this.selectedJurisdictionCaseTypes = this.selected?.jurisdiction?.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
+    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.onJurisdiction.emit(this.selected.jurisdiction);
   }
 
   public onCaseTypeIdChange(): void {
+    if (this.selected.jurisdiction && this.selected.caseType) {
+      this.selected.jurisdiction.currentCaseType = this.selected.caseType;
+      this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction)
+    }
     this.formGroup = new FormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
@@ -207,13 +222,13 @@ export class SearchFiltersComponent implements OnInit {
   private getQueryParams() {
     // Save filters as query parameters for current route
     const queryParams = {};
-    if (this.selected.jurisdiction) {
+    if (this.selected?.jurisdiction) {
       queryParams[this.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
     }
-    if (this.selected.caseType) {
+    if (this.selected?.caseType) {
       queryParams[this.PARAM_CASE_TYPE] = this.selected.caseType.id;
     }
-    if (this.selected.caseState) {
+    if (this.selected?.caseState) {
       queryParams[this.PARAM_CASE_STATE] = this.selected.caseState.id;
     }
     return queryParams;
@@ -234,6 +249,7 @@ export class SearchFiltersComponent implements OnInit {
       } else {
         this.selected.caseType = caseTypes[0];
       }
+      this.selected.jurisdiction.currentCaseType = this.selected.caseType;
       this.onCaseTypeIdChange();
     }
   }
