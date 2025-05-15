@@ -108,7 +108,6 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public apply(init: boolean): void {
-    console.log('apply filters', this.selected);
     // Save filters as query parameters for current route
     const queryParams = {};
     if (this.selected.jurisdiction) {
@@ -153,10 +152,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.jurisdiction) {
       // Set the selected case type as the current case type of the selected jurisdiction
       this.selected.jurisdiction.currentCaseType = this.selected.caseType;
-      console.log(`Selected jurisdiction:caseType ${this.selected.jurisdiction?.id}:${this.selected.jurisdiction?.currentCaseType?.id} `, );
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
-    } else {
-      console.log('No selected jurisdiction');
     }
     // Apply filters
     this.onApply.emit({ selected: this.selected, queryParams });
@@ -297,7 +293,6 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Query parameters, when available, take precedence over workbasket defaults.
    */
   private initFilters(init: boolean) {
-    console.log('init filters', this.selected);
     const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
@@ -320,7 +315,6 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.selected.jurisdiction = null;
       this.selected.caseType = null;
     }
-    console.log('apply filters', this.selected);
     this.apply(init);
   }
 

@@ -81,7 +81,6 @@ export class SearchFiltersComponent implements OnInit {
           this.selected.jurisdiction.currentCaseType = this.selected.jurisdiction.caseTypes[0];
         }
       }
-      console.log(`ngOnInit jurisdiction:caseType: ${this.selected?.jurisdiction?.id}:${this.selected?.jurisdiction?.currentCaseType?.id}`);
       this.onJurisdictionIdChange();
     }
     if (this.selected) {
@@ -129,7 +128,6 @@ export class SearchFiltersComponent implements OnInit {
       const compJurisd = compressToUTF16(JSON.stringify(this.selected.jurisdiction));
       this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, compJurisd);
      } catch (e) {
-      console.log('Could not store jurisdiction in local storage');
       this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null);
     }
     if (this.selected.caseType) {
@@ -176,7 +174,6 @@ export class SearchFiltersComponent implements OnInit {
     this.selected.caseType = null;
     this.selectedJurisdictionCaseTypes = this.selected?.jurisdiction?.caseTypes;
     this.selectCaseType(this.selectedJurisdictionCaseTypes);
-    console.log('jurisdiction selected: ' + this.selected.jurisdiction?.id + ' case type: ' + this.selected.jurisdiction?.currentCaseType?.id);
     this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.onJurisdiction.emit(this.selected.jurisdiction);
   }

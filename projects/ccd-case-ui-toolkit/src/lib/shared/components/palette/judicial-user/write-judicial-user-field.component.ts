@@ -42,7 +42,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     // can be used in the case list before any case is opened, thus the caseNotifier has nothing to notify
     this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
       next: (jurisdiction) => {
-        console.log('jurisdiction', jurisdiction);
         if (jurisdiction?.currentCaseType) {
           this.jurisdiction = jurisdiction.id;
           this.caseType = jurisdiction.currentCaseType.id
@@ -59,7 +58,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
 
   public ngOnInit(): void {
     super.ngOnInit();
-    console.log('WriteJudicialUserFieldComponent ngOnInit');
     this.judicialUserControl = new FormControl(this.caseField.value);
     // FormControl needs to be added to the main FormGroup so it can be picked up by the PageValidationService when
     // checking if the page is valid. FormGroup.setControl() is used here to ensure any existing JudicialUser
@@ -95,9 +93,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   }
 
   public filterJudicialUsers(searchTerm: string): Observable<JudicialUserModel[]> {
-    console.log('filterJudicialUsers:', searchTerm);
     if (!this.caseType) {
-      console.log('caseType not set, getting from jurisdictionService');
       this.caseType = this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
     }
     // we need to identify the "base case type" for the service code, because services tend to create testing
@@ -107,10 +103,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     // and strip off the suffix. This is a bit of a hack, but it works for now.
     if (this.caseType && this.caseType.includes('-')) {
       this.caseType = this.caseType.split('-')[0];
-      console.log('caseType set to', this.caseType);
     }
-    console.log('Finding service code for caseType:', this.caseType);
-
     return this.caseFlagRefDataService.getHmctsServiceDetailsByCaseType(this.caseType).pipe(
       // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
       catchError(_ => this.caseFlagRefDataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
