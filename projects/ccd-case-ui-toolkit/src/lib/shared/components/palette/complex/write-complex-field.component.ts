@@ -120,6 +120,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     const fieldsFilterPipe: FieldsFilterPipe = new FieldsFilterPipe();
     this.complexFields = fieldsFilterPipe.transform(this.caseField, true).map(field => {
       if (field && field.id) {
+        field.parent = this.caseField;
         if (!(field instanceof CaseField)) {
           return this.buildField(plainToClassFromExist(new CaseField(), field));
         }
