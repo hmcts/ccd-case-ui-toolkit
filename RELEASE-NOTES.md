@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.78-exui-2703-rc1
+**EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
+
 ### Version 7.1.78
 **EXUI-3047** hint-text
 
