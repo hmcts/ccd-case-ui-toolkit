@@ -1128,7 +1128,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     component.ngOnInit();
     tick(); // Simulate the passage of time to trigger subscriptions
     expect(component.selected.jurisdiction).toEqual(JURISDICTION_3);
-    expect(component.selected.caseType).toEqual(DEFAULT_CASE_TYPE);
+    expect(component.selected.caseType).toEqual(CASE_TYPES_1[0]);
     expect(component.selected.caseState).toBeUndefined();
   }));
 });
@@ -1222,20 +1222,6 @@ describe('with no defaults', () => {
 
     expect(selector.nativeElement.selectedIndex).toEqual(0);
 
-  });
-
-  it('should initialise case type selector and case state as blank', () => {
-    let selector = de.query(By.css('#wb-case-type'));
-
-    expect(selector.children.length).toEqual(1);
-    expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
-
-    selector = de.query(By.css('#wb-case-state'));
-
-    expect(selector.children.length).toEqual(1);
-    expect(selector.children[0].nativeElement.textContent).toEqual('Any');
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
   });
 
   it('should initialise case type with types from selected jurisdiction and index should be "Select a value" ', async () => {

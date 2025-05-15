@@ -164,7 +164,7 @@ describe('WriteJudicialUserFieldComponent', () => {
   let mockCaseNotifier: any;
 
   beforeEach(waitForAsync(() => {
-    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes', 'getSelectedJurisdiction']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(JURISDICTION_JUF));
@@ -201,6 +201,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
     component.formGroup = new FormGroup({});
+
     loadJudicialUserSpy = spyOn(component, 'loadJudicialUser').and.callThrough();
     filterJudicialUsersSpy = spyOn(component, 'filterJudicialUsers').and.callThrough();
     spyOn(FieldsUtils, 'addCaseFieldAndComponentReferences').and.callThrough();
