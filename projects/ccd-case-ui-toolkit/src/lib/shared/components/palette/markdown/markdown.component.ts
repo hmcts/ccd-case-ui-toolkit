@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, NgZone, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, NgZone, OnInit, Renderer2 } from '@angular/core';
 import * as marked from 'marked';
 import { Router } from '@angular/router';
 
@@ -11,13 +11,14 @@ export class MarkdownComponent implements OnInit {
   @Input() public content: string;
   @Input() public renderUrlToTextFeature?: boolean = true;
 
-  constructor(private router: Router, private renderer: Renderer2, private ngZone: NgZone) {}
+  constructor(private router: Router, private renderer: Renderer2, private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
     if (this.renderUrlToTextFeature) {
       this.renderUrlToText();
     }
+    this.cdr.markForCheck(); // Mark the component for change detection
   }
 
   public interceptClick(event: MouseEvent): void {
@@ -61,6 +62,8 @@ export class MarkdownComponent implements OnInit {
     marked.setOptions({
       renderer: renderer
     });
+
+    this.cdr.markForCheck();
   }
 
   private isAllowedUrl(url: string): boolean {
