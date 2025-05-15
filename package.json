@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.78-judicial-user-field-casetype",
+  "version": "7.1.78-judicial-user-field-casetype-2",
   "engines": {
     "node": ">=18.19.0"
   },
