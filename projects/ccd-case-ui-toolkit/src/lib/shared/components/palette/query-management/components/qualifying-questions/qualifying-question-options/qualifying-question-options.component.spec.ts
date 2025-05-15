@@ -8,6 +8,7 @@ import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-
 import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
 import { QualifyingQuestionService } from '../../../services';
+import { QualifyingQuestion } from '../../../models';
 
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
@@ -118,6 +119,20 @@ describe('QualifyingQuestionOptionsComponent', () => {
 
       expect(qualifyingQuestionService.getQualifyingQuestionSelection).toHaveBeenCalled();
       expect(component.qualifyingQuestionsControl.value).toBe(savedSelection);
+    });
+
+    it('should emit questionSelected event with the correct qualifyingQuestion', () => {
+      spyOn(component.questionSelected, 'emit');
+
+      const qualifyingQuestion: QualifyingQuestion = {
+        name: 'Test Question',
+        markdown: 'Test Markdown',
+        url: 'https://example.com/${[CASE_REFERENCE]}/question'
+      };
+
+      component.onSelectionChange(qualifyingQuestion);
+
+      expect(component.questionSelected.emit).toHaveBeenCalledWith(qualifyingQuestion);
     });
   });
 });

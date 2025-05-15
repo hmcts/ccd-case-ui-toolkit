@@ -4331,7 +4331,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.14"
+    "@hmcts/media-viewer": "npm:4.0.16"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -4356,7 +4356,7 @@ __metadata:
     angular2-template-loader: "npm:^0.6.2"
     babel-loader: "npm:^8.2.5"
     braces: "npm:^2.3.1"
-    class-transformer: "npm:^0.3.2"
+    class-transformer: "npm:^0.5.1"
     codacy-coverage: "npm:^2.1.1"
     codecov: "npm:^3.0.0"
     codelyzer: "npm:^6.0.0"
@@ -4472,9 +4472,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.14":
-  version: 4.0.14
-  resolution: "@hmcts/media-viewer@npm:4.0.14"
+"@hmcts/media-viewer@npm:4.0.16":
+  version: 4.0.16
+  resolution: "@hmcts/media-viewer@npm:4.0.16"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -4493,7 +4493,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/69107a9e36f6aeae18c0e15058693dc708f95a1f601e721fa71f5ab88f5357af3fbd323950f1863f864add4c02e7a45c6ac4766ddbf5399e67d8b5ccf5778614
+  checksum: 10/c32b0f24a7a5744851522c44db83020dbda8eef4cf96c84926a980753dde23d6db400f0f98ad83dec150ebc9f316e32d53340975e0ee94e7efd1381e5b8c4172
   languageName: node
   linkType: hard
 
@@ -11730,10 +11730,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"class-transformer@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "class-transformer@npm:0.3.2"
-  checksum: 10/86fc3fa614c4b11cffbdefc0fb393d674ae531298c7f3e7ea12b51a2f65c694e43f8a80c347dfdc5d0d6e60c904cdd81c9e857fd8436766e6ba4903744b78c13
+"class-transformer@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "class-transformer@npm:0.5.1"
+  checksum: 10/750327e3e9a5cf233c5234252f4caf6b06c437bf68a24acbdcfb06c8e0bfff7aa97c30428184813e38e08111b42871f20c5cf669ea4490f8ae837c09f08b31e7
   languageName: node
   linkType: hard
 

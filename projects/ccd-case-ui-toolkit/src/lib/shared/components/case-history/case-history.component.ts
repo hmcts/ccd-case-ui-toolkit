@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { CaseView } from '../../domain/case-view/case-view.model';
@@ -38,7 +38,9 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
     private readonly caseHistoryService: CaseHistoryService) { }
 
   public ngOnInit() {
-    this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+    this.caseSubscription = this.caseNotifier.caseView
+    .pipe(take(1))
+    .subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
       const eventId = this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID) || this.event;
       this.caseHistoryService

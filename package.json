@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.56-exui-673-rc1",
+  "version": "7.1.78-exui-673-rc1",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -63,7 +63,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.14",
+    "@hmcts/media-viewer": "4.0.16",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -127,7 +127,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "angular2-template-loader": "^0.6.2",
     "babel-loader": "^8.2.5",
-    "class-transformer": "^0.3.2",
+    "class-transformer": "^0.5.1",
     "codacy-coverage": "^2.1.1",
     "codecov": "^3.0.0",
     "codelyzer": "^6.0.0",

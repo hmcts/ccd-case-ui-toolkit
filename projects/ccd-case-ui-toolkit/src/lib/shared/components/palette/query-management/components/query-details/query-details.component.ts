@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '../../../../../services';
-import { QueryListItem } from '../../models';
+
 import { Constants } from '../../../../../commons/constants';
+import { SessionStorageService } from '../../../../../services';
+import { isInternalUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
+import { QueryListItem } from '../../models';
+
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
@@ -21,6 +24,7 @@ export class QueryDetailsComponent implements OnChanges{
   public message: string;
 
   private static readonly QUERY_ITEM_RESPOND = '3';
+  private static readonly QUERY_ITEM_FOLLOW_UP = '4';
   private queryItemId: string;
 
   constructor(
@@ -32,11 +36,8 @@ export class QueryDetailsComponent implements OnChanges{
     this.backClicked.emit(true);
   }
 
-  public isCaseworker(): boolean {
-    const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    return userDetails && userDetails.roles
-      && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
   }
 
   public ngOnChanges(): void {
@@ -45,20 +46,29 @@ export class QueryDetailsComponent implements OnChanges{
   }
 
   public toggleLinkVisibility(): void {
-    this.queryItemId = this.route.snapshot.params.qid;
-    this.showItem = this.queryItemId !== QueryDetailsComponent.QUERY_ITEM_RESPOND;
+    this.queryItemId = this.route.snapshot.params.qid as string;
+    if (this.queryItemId === QueryDetailsComponent.QUERY_ITEM_RESPOND || this.queryItemId === QueryDetailsComponent.QUERY_ITEM_FOLLOW_UP) {
+      this.showItem = false;
+    }
   }
 
   public hasRespondedToQuery(): boolean {
-    if (this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING) {
-      this.hasResponded.emit(false);
-      return false;
-    }
+    const isAwaiting = this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING;
 
-    if (this.isCaseworker() && this.queryResponseStatus !== QueryItemResponseStatus.AWAITING) {
+    if (this.isInternalUser()) {
+      if (isAwaiting) {
+        this.hasResponded.emit(false);
+        return false;
+      }
+
       this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;
+    }
+
+    if (isAwaiting) {
+      this.hasResponded.emit(true);
+      return false; // Don't show message
     }
 
     this.hasResponded.emit(false);

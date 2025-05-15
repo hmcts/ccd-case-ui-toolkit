@@ -33,11 +33,8 @@
     <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
       <!-- document -->
       <cdk-nested-tree-node class="document-tree-container__node document-tree-container__node--document" *cdkTreeNodeDef="let node">
-        <button 
-          class="node" 
-          (click)="selectedNodeItem = node; clickedDocument.emit(node)" 
-          [class.node--selected]="selectedNodeItem?.name === node.name"
-        >
+        <button class="node case-file__node" (click)="selectedNodeItem = node; clickedDocument.emit(node)"
+                [class.node--selected]="selectedNodeItem?.name === node.name">
           <div class="node__icon" disabled>
             <img src="/assets/img/case-file-view/case-file-view-document.svg" 
               class="node__iconImg"
@@ -51,17 +48,17 @@
               node.upload_timestamp | ccdDate: "local":"dd MMM YYYY HH:mm"
               }}</span>
           </span>
-          <div class="node__document-options">
-            <ccd-case-file-view-folder-document-actions 
-                (changeFolderAction)="triggerDocumentAction('changeFolder', node)" 
-                (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)" 
-                (downloadAction)="triggerDocumentAction('download', node)" 
-                (printAction)="triggerDocumentAction('print', node)" 
-                [allowMoving]="allowMoving"
-            >
-            </ccd-case-file-view-folder-document-actions>
-          </div>
         </button>
+        <div class="node__document-options case-file__action">
+          <ccd-case-file-view-folder-document-actions
+            (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
+            (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
+            (downloadAction)="triggerDocumentAction('download', node)"
+            (printAction)="triggerDocumentAction('print', node)"
+            [allowMoving]="allowMoving"
+          >
+          </ccd-case-file-view-folder-document-actions>
+        </div>
       </cdk-nested-tree-node>
       <!-- folder-->
       <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">

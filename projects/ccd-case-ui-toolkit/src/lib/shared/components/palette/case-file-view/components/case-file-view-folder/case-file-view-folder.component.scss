@@ -166,3 +166,15 @@
     padding-left: 10px;
   }
 }
+
+.node.case-file__node {
+  width: 80%;
+  float: left;
+}
+
+.node__document-options.case-file__action {
+  width: 15%;
+  float: left;
+  box-sizing: border-box;
+  padding: 12px;
+}
