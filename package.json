@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.1.78-angular-upgrade-rc2",
+  "version": "7.1.78-angular-upgrade-rc3",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -61,7 +61,7 @@
     "@angular/router": "18.2.13",
     "@angular/upgrade": "18.2.13",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.2.1",
+    "@hmcts/ccpay-web-component": "6.2.15",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.16-angular-upgrade",
     "@ngrx/effects": "17.2.0",
