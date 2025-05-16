@@ -14,6 +14,8 @@ export class QueryListItem implements CaseMessage {
   public parentId?: string;
   public children: QueryListItem[] = [];
 
+  public messageIndexInParent?: number | null = null;
+
   public get lastSubmittedMessage(): QueryListItem {
     const getLastSubmittedMessage = (item: QueryListItem): QueryListItem => {
       let lastSubmittedMessage: QueryListItem = item;
@@ -26,7 +28,6 @@ export class QueryListItem implements CaseMessage {
           }
         }
       }
-
       return lastSubmittedMessage;
     };
 
@@ -38,7 +39,20 @@ export class QueryListItem implements CaseMessage {
   }
 
   public get lastSubmittedDate(): Date {
-    return new Date(this.lastSubmittedMessage.createdOn);
+    const childrenCount = this.children.length;
+    if (childrenCount === 0) {
+      return new Date(this.lastSubmittedMessage.createdOn);
+    }
+
+    let index: number;
+
+    if (childrenCount === 1) {
+      index = 0;
+    } else {
+      index = childrenCount % 2 === 0 ? childrenCount - 1 : childrenCount - 2;
+    }
+
+    return new Date(this.children[index].createdOn);
   }
 
   public get lastResponseBy(): string {
@@ -46,15 +60,38 @@ export class QueryListItem implements CaseMessage {
   }
 
   public get lastResponseDate(): Date | null {
-    return this.children?.length > 0 ? new Date(this.lastSubmittedMessage.createdOn) : null;
+    const childrenCount = this.children.length;
+    if (childrenCount === 0) {
+      return null;
+    }
+
+    let index: number;
+
+    if (childrenCount === 1) {
+      index = 0;
+    } else {
+      index = childrenCount % 2 === 1 ? childrenCount - 1 : childrenCount - 2;
+    }
+
+    return new Date(this.children[index].createdOn);
   }
 
   public get responseStatus(): QueryItemResponseStatus {
-    if (this.children?.length > 0) {
+    // Child logic (position-based)
+    if (this.messageIndexInParent !== null) {
+      return this.messageIndexInParent % 2 === 0
+        ? QueryItemResponseStatus.RESPONDED
+        : QueryItemResponseStatus.AWAITING;
+    }
+
+    // Parent logic (children count)
+    if (this.children && this.children.length > 0) {
       return this.children.length % 2 === 1
         ? QueryItemResponseStatus.RESPONDED
         : QueryItemResponseStatus.AWAITING;
     }
+
+    // No children — still awaiting
     return QueryItemResponseStatus.AWAITING;
   }
 }
