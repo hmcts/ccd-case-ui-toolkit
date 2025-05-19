@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.1.78-exui-3103-rc1
+### Version 7.1.79
 **EXUI-3103** duplication of seconds label
 
 ### Version 7.1.78
