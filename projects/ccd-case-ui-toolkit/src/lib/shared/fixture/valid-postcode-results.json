@@ -601,6 +601,42 @@
         "MATCH": 1,
         "MATCH_DESCRIPTION": "EXACT"
       }
+    },
+    {
+      "DPA": {
+        "UPRN": "200002933737",
+        "UDPRN": "4260388",
+        "ADDRESS": "CARDIFF MAGISTRATES COURT, FITZALAN PLACE, CAERDYDD, CF24 0RZ",
+        "ORGANISATION_NAME": "CARDIFF MAGISTRATES COURT",
+        "THOROUGHFARE_NAME": "FITZALAN PLACE",
+        "POST_TOWN": "CAERDYDD",
+        "POSTCODE": "CF24 0RZ",
+        "RPC": "2",
+        "X_COORDINATE": 319095,
+        "Y_COORDINATE": 176551,
+        "STATUS": "APPROVED",
+        "LOGICAL_STATUS_CODE": "1",
+        "CLASSIFICATION_CODE": "C",
+        "CLASSIFICATION_CODE_DESCRIPTION": "Law Court",
+        "LOCAL_CUSTODIAN_CODE": 6815,
+        "LOCAL_CUSTODIAN_CODE_DESCRIPTION": "CARDIFF",
+        "COUNTRY_CODE": "W",
+        "COUNTRY_CODE_DESCRIPTION": "This record is within Wales",
+        "POSTAL_ADDRESS_CODE": "D",
+        "POSTAL_ADDRESS_CODE_DESCRIPTION": "A record which is linked to PAF",
+        "BLPU_STATE_CODE": "2",
+        "BLPU_STATE_CODE_DESCRIPTION": "In use",
+        "TOPOGRAPHY_LAYER_TOID": "osgb1000027253562",
+        "WARD_CODE": "W05001270",
+        "PARISH_CODE": "W04000837",
+        "LAST_UPDATE_DATE": "12/11/2018",
+        "ENTRY_DATE": "02/07/2002",
+        "BLPU_STATE_DATE": "12/05/2008",
+        "LANGUAGE": "CY",
+        "MATCH": 1,
+        "MATCH_DESCRIPTION": "EXACT",
+        "DELIVERY_POINT_SUFFIX": "1A"
+      }
     }
   ]
 }
