@@ -19,8 +19,6 @@ export class QueryListItem implements CaseMessage {
   public get lastSubmittedMessage(): QueryListItem {
     const getLastSubmittedMessage = (item: QueryListItem): QueryListItem => {
       let lastSubmittedMessage: QueryListItem = item;
-
-      if (item.children && item.children.length > 0) {
         for (const child of item.children) {
           const childLastSubmittedMessage = getLastSubmittedMessage(child);
           if (childLastSubmittedMessage.createdOn > lastSubmittedMessage.createdOn) {
@@ -40,15 +38,13 @@ export class QueryListItem implements CaseMessage {
 
   public get lastSubmittedDate(): Date {
     const childrenCount = this.children.length;
-    if (childrenCount === 0) {
+    if (childrenCount <= 1) {
       return new Date(this.lastSubmittedMessage.createdOn);
     }
 
     let index: number;
 
-    if (childrenCount === 1) {
-      index = 0;
-    } else {
+    if (childrenCount > 1) {
       index = childrenCount % 2 === 0 ? childrenCount - 1 : childrenCount - 2;
     }
 
