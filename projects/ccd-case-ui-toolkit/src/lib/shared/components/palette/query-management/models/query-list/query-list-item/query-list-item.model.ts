@@ -19,6 +19,7 @@ export class QueryListItem implements CaseMessage {
   public get lastSubmittedMessage(): QueryListItem {
     const getLastSubmittedMessage = (item: QueryListItem): QueryListItem => {
       let lastSubmittedMessage: QueryListItem = item;
+      if (item.children && item.children.length > 1) {
         for (const child of item.children) {
           const childLastSubmittedMessage = getLastSubmittedMessage(child);
           if (childLastSubmittedMessage.createdOn > lastSubmittedMessage.createdOn) {
