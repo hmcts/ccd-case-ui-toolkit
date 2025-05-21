@@ -579,7 +579,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       this.caseSubmit({ form, caseEventData, submit });
     } else {
       // Navigate to tasks tab on case details page
-      this.router.navigate([`/cases/case-details/${this.getCaseId(caseDetails)}/tasks`], { relativeTo: this.route });
+      this.router.navigate([`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.getCaseId(caseDetails)}/tasks`], { relativeTo: this.route });
     }
   }
 
