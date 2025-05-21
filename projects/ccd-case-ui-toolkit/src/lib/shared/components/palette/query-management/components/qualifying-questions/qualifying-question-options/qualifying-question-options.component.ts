@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -13,6 +13,8 @@ import { QualifyingQuestionService } from '../../../services';
 export class QualifyingQuestionOptionsComponent implements OnInit {
   @Input() public qualifyingQuestionsControl: FormControl;
   @Input() public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
+  @Output() questionSelected = new EventEmitter<QualifyingQuestion>();
+
   public qualifyingQuestionsErrorMessage = QualifyingQuestionsErrorMessage;
   public caseId: string;
   public jurisdiction: string;
@@ -42,6 +44,10 @@ export class QualifyingQuestionOptionsComponent implements OnInit {
 
   public get displayError(): boolean {
     return this.qualifyingQuestionsControl.touched && this.qualifyingQuestionsControl.hasError('required');
+  }
+
+  public onSelectionChange(qualifyingQuestion: QualifyingQuestion) {
+    this.questionSelected.emit(qualifyingQuestion);
   }
 }
 

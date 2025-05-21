@@ -18,6 +18,8 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { Task } from '../../../../../domain/work-allocation/Task';
+import { USER_DETAILS } from '../../../../../utils';
+
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -47,8 +49,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private tid: string;
   private createEventSubscription: Subscription;
   private searchTasksSubscription: Subscription;
-  private firstCollectionPicked: boolean = false; // Track whether the first collection has been picked
-  private firstCollectionOrder?: number;
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
@@ -193,7 +193,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
-    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
 
     const caseMessage = this.queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
@@ -234,9 +234,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           caseMessages: [...matchedCollection.caseMessages] // Append the updated messages array
         };
       } else {
+        // Use partyName from the first collection (assumption: all share the same party)
+        const originalPartyName = this.caseQueriesCollections[0].partyName;
+
         // If no collection matches, or it's a new query
         newQueryData[this.fieldId] = {
-          partyName: currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`, // Not returned by CCD
+          partyName: originalPartyName,
           roleOnCase: '', // Not returned by CCD
           caseMessages: [
             {

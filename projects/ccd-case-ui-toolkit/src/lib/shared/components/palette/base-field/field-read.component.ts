@@ -36,7 +36,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       const componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
       const injector = Injector.create({
         providers: [],
-        parent: this.fieldContainer.injector
+        parent: this.fieldContainer?.injector
       });
 
       const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
@@ -60,7 +60,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['context'] = this.context;
       component.instance['labelCanBeTranslated'] = this.labelCanBeTranslated(this.caseField);
 
-      this.fieldContainer.insert(component.hostView);
+      this.fieldContainer?.insert(component.hostView);
     });
   }
 

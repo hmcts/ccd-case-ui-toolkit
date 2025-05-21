@@ -6,10 +6,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
+import { SessionStorageService } from '../../../../services';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
 import createSpyObj = jasmine.createSpyObj;
-import { SessionStorageService } from '../../../../services';
 
 describe('EventLogTableComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
