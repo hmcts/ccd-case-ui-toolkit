@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.1.79
+**EXUI-3103** duplication of seconds label
+
 ### Version 7.1.78
 **EXUI-3047** hint-text
 

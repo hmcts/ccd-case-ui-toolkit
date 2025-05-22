@@ -82,7 +82,6 @@
 
   <div class="form-group form-group-second" *ngIf="isDateTime">
     <span class="form-label" [attr.id]="'second-label-'+ secondId()">{{'Second' | rpxTranslate}}</span>
-    <label class="form-label" [for]="secondId()">{{'Second' | rpxTranslate}}</label>
     <input #secondInput
            class="form-control"
            [id]="secondId()"
