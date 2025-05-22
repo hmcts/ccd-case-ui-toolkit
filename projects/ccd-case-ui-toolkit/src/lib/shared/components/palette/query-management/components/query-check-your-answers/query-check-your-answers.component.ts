@@ -42,6 +42,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public eventData: CaseEventTrigger | null = null;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
+  @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
+
 
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
@@ -141,12 +143,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
         this.createEventSubscription = createEvent$.pipe(
-          switchMap((createEventResponse) =>
-            this.workAllocationService.completeTask(
+          switchMap((createEventResponse) => {
+            const confirmationBody = createEventResponse?.after_submit_callback_response?.confirmation_body;
+            const confirmationHeader = createEventResponse?.after_submit_callback_response?.confirmation_header;
+            this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+
+            return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
               this.caseViewTrigger.name
             )
-          )
+          })
         ).subscribe({
           next: () => this.finaliseSubmission(),
           error: (error) => this.handleError(error)
@@ -163,7 +169,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
-        next: () => this.finaliseSubmission(),
+        next: (callbackResponse) => {
+          this.finaliseSubmission();
+          const confirmationBody = callbackResponse?.after_submit_callback_response?.confirmation_body;
+          const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
+          this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+        },
         error: (error) => this.handleError(error)
       });
     }
@@ -358,11 +369,15 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         field.display_context !== this.DISPLAY_CONTEXT_READONLY
     );
 
-    if (!candidateFields?.length) return undefined;
+    if (!candidateFields?.length) {
+      return undefined;
+    }
 
     const firstPageFields = this.eventData?.wizard_pages?.[0]?.wizard_page_fields;
 
-    if (!firstPageFields) return undefined;
+    if (!firstPageFields) {
+      return undefined;
+    }
 
     return candidateFields
       .map((field) => {
