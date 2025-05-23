@@ -216,7 +216,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
       }
     });
-    this.jurisdictionSubs = this.jurisdictionService.selectedJurisdictionBS.subscribe({
+    this.jurisdictionSubs = this.jurisdictionService.getSelectedJurisdiction().subscribe({
       next: (jurisdiction) => {
         if (jurisdiction) {
           this.jurisdictionId = jurisdiction.id;
