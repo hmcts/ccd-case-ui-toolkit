@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -17,11 +18,14 @@ export class EventStartGuard implements CanActivate {
   private caseId: string;
 
   constructor(private readonly workAllocationService: WorkAllocationService,
-    private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly abstractConfig: AbstractAppConfig,
-    private readonly cookieService: ReadCookieService,
-    private readonly caseNotifier: CaseNotifier) {
+              private readonly router: Router,
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly abstractConfig: AbstractAppConfig,
+              private readonly cookieService: ReadCookieService,
+              private readonly caseNotifier: CaseNotifier) {
+    // Keep subscribing to caseView to update internal properties.
+    // This subscription should ideally be cleaned up if this guard is not a singleton or is reused heavily.
+    // For a guard, it's typically fine as guards are often singletons.
     this.caseNotifier.caseView.subscribe((caseDetails) => {
       if (caseDetails) {
         this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
@@ -32,20 +36,23 @@ export class EventStartGuard implements CanActivate {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const caseId = route.params['cid'];
+    const routeCaseId = route.params['cid']; // Get the caseId from the current route parameters
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
-    // check if we have the case details in the case notifier
-    // if not, then fetch the case details using case notifier
-    const caseDataObservable = (!this.jurisdiction || !this.caseType || !this.caseId) ?
-      this.caseNotifier.fetchAndRefresh(caseId).pipe(
-        tap((caseDetails) => {
-          this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
-          this.caseType = caseDetails?.case_type?.id;
-          this.caseId = caseDetails?.case_id;
-        }),
-        map(() => true)
-      ) : of(true);
+
+    // Always fetch or refresh case data if the current internal caseId doesn't match the route's caseId
+    // or if the internal data is incomplete.
+    const ensureCaseDataIsCurrent$ = (this.caseId !== routeCaseId || !this.jurisdiction || !this.caseType) ?
+        this.caseNotifier.fetchAndRefresh(routeCaseId).pipe(
+            tap((caseDetails) => {
+              // Update internal state after fetch
+              this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+              this.caseType = caseDetails?.case_type?.id;
+              this.caseId = caseDetails?.case_id;
+              this.abstractConfig.logMessage(`EventStartGuard: Fetched and refreshed caseId ${this.caseId} from route parameter ${routeCaseId}`);
+            }),
+            map(() => true)
+        ) : of(true); // If internal data matches, no need to fetch again
 
     let userId: string;
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
@@ -53,11 +60,12 @@ export class EventStartGuard implements CanActivate {
       const userInfo = JSON.parse(userInfoStr);
       userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
+
+    // Client context setup remains the same
     const languageCookie = this.cookieService.getCookie('exui-preferred-language');
     const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
     const preClientContext = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     if (!preClientContext) {
-      // creates client context for language if not already existing
       const storeClientContext = {
         client_context: {
           user_language: {
@@ -81,21 +89,25 @@ export class EventStartGuard implements CanActivate {
         this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContextAddLanguage));
       }
     }
-    return caseDataObservable.pipe(
-      switchMap(() => {
-        if (this.jurisdiction && this.caseType) {
-          if (this.caseId === caseId) {
-            return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
-              .pipe(
-                switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId, userId))
-              );
+
+    return ensureCaseDataIsCurrent$.pipe( // Now ensureCaseDataIsCurrent$ ensures this.caseId is correct
+        switchMap(() => {
+          // At this point, this.caseId, this.jurisdiction, this.caseType should reflect the route's caseId
+          // Log the state *after* ensuring it's up-to-date
+          this.abstractConfig.logMessage(`EventStartGuard: Checking tasks for caseId ${this.caseId} (route ${routeCaseId}) with jurisdiction ${this.jurisdiction} and caseType ${this.caseType}`);
+
+          if (this.jurisdiction && this.caseType && this.caseId === routeCaseId) { // Confirm the match
+            return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, routeCaseId, this.caseType, this.jurisdiction)
+                .pipe(
+                    switchMap((payload: TaskPayload) => this.checkForTasks(payload, routeCaseId, eventId, taskId, userId))
+                );
+          } else {
+            // This should ideally not be reached if ensureCaseDataIsCurrent$ successfully updated the state
+            // but logging it as a fallback for unexpected scenarios.
+            this.abstractConfig.logMessage(`EventStartGuard: Mismatch or missing caseInfo details after refresh attempt. Internal caseId: ${this.caseId}, Route caseId: ${routeCaseId}, Jurisdiction: ${this.jurisdiction}, CaseType: ${this.caseType}`);
+            return of(false);
           }
-          this.abstractConfig.logMessage(`EventStartGuard: caseId ${this.caseId} in case notifier not matched with the route parameter caseId ${caseId}`);
-        } else {
-          this.abstractConfig.logMessage(`EventStartGuard: caseInfo details not available in case notifier for ${caseId}`);
-        }
-        return of(false);
-      })
+        })
     );
   }
 
@@ -112,7 +124,7 @@ export class EventStartGuard implements CanActivate {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = payload.tasks.filter(x =>
-      x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
+        x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
     );
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on
