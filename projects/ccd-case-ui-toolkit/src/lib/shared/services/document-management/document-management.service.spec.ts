@@ -158,6 +158,16 @@ describe('DocumentManagementService', () => {
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
+
+    it('should handle when there is no case in case_notifier', () => {
+      appConfig.getDocumentSecureMode.and.returnValue(true);
+      appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
+      caseNotifier.caseView = of(undefined);
+      jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ currentCaseType: { id: 'caseType2' } }));
+      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      const url = documentManagementService['getDocStoreUrl']();
+      expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
+    });
   });
 
   describe('Media viewer', () => {
