@@ -142,8 +142,8 @@ describe('WriteDocumentFieldComponent', () => {
     appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
-    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['selectedJurisdictionBS']);
-    jurisdictionService.selectedJurisdictionBS = of({ id: 'test-jurisdiction' });
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
         imports: [],
@@ -633,8 +633,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
-    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['selectedJurisdictionBS']);
-    jurisdictionService.selectedJurisdictionBS = of({ id: 'test-jurisdiction' });
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
         imports: [],

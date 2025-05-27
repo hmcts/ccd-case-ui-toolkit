@@ -34,8 +34,8 @@ describe('DocumentManagementService', () => {
     appConfig.getDocumentSecureMode.and.returnValue(false);
     appConfig.getCdamExclusionList.and.returnValue('');
     caseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['caseView']);
-    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['selectedJurisdictionBS']);
-    jurisdictionService.selectedJurisdictionBS = of({ id: 'caseType1' });
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     caseNotifier.caseView = of(undefined);
     documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);

@@ -74,7 +74,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     // Wait for both observables to emit at least once
     this.caseNotifierSubscription = combineLatest([
       this.caseNotifier.caseView.pipe(take(1)),
-      this.jurisdictionService.selectedJurisdictionBS.pipe(take(1))
+      this.jurisdictionService.getSelectedJurisdiction()
     ]).subscribe(([caseDetails, jurisdiction]) => {
       if (caseDetails) {
         this.caseTypeId = caseDetails?.case_type?.id;
