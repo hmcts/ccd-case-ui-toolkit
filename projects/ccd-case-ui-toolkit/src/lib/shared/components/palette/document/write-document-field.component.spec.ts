@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
@@ -808,5 +808,105 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     // Expect the UPLOAD_TIMESTAMP control to be removed
     expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
+  });
+});
+
+describe('WriteDocumentFieldComponent', () => {
+
+  const FORM_GROUP = new FormGroup({});
+  const DIALOG_CONFIG = new MatDialogConfig();
+  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
+  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+
+  const readDocumentComponentMock = MockComponent({
+    selector: 'ccd-read-document-field',
+    inputs: ['caseField']
+  });
+
+  let fixture: ComponentFixture<WriteDocumentFieldComponent>;
+  let component: WriteDocumentFieldComponent;
+  let de: DebugElement;
+  let mockDocumentManagementService: any;
+  let mockFileUploadStateService: any;
+
+  let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
+  let componentDialog: DocumentDialogComponent;
+  let deDialog: DebugElement;
+  let mockDialog: any;
+  let mockMatDialogRef: any;
+  let appConfig: any;
+  let casesService: any;
+
+  let jurisdictionService: any;
+  const eventTriggerService: any = {};
+  let caseNotifier: any;
+
+  beforeEach(waitForAsync(() => {
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService.uploadFile.and.returnValues(
+      of(RESPONSE_FIRST_DOCUMENT),
+      of(RESPONSE_SECOND_DOCUMENT)
+    );
+    mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
+    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed', 'close']);
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
+    mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
+      'setUploadInProgress',
+      'isUploadInProgress'
+    ]);
+
+    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    caseNotifier = {};
+    caseNotifier.caseView = of(undefined);
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
+    TestBed
+      .configureTestingModule({
+        imports: [],
+        declarations: [
+          WriteDocumentFieldComponent,
+          FieldLabelPipe,
+          DocumentDialogComponent,
+          // Mocks
+          readDocumentComponentMock,
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
+        ],
+        providers: [
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: mockDialog },
+          { provide: MatDialogRef, useValue: mockMatDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
+          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          DocumentDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteDocumentFieldComponent);
+    component = fixture.componentInstance;
+
+    component.caseField = CASE_FIELD;
+    component.formGroup = FORM_GROUP;
+
+    de = fixture.debugElement;
+    component.ngOnInit();
+    fixture.detectChanges();
+  }));
+
+  it('should set jurisdiction and casetype from casenotifier', () => {
+    caseNotifier.caseView = of(undefined); // mock expected structure
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
+    window.history.pushState({}, '', '/case/case-create/test1/test2');
+    component.ngOnInit();
+    expect(component.caseTypeId).toBe('test2');
+    expect(component.jurisdictionId).toBe('test1');
   });
 });
