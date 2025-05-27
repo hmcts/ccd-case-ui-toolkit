@@ -5,9 +5,9 @@ import { MatDialogConfig } from '@angular/material/dialog';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { Subscription, of, throwError } from 'rxjs';
+import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, DocumentData, FieldType, HttpError } from '../../../domain';
+import { CaseField, DocumentData, FieldType, HttpError, Jurisdiction } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -120,9 +120,9 @@ describe('WriteDocumentFieldComponent', () => {
   let appConfig: any;
   let casesService: any;
 
-  const jurisdictionService: any = {};
+  let jurisdictionService: any;
   const eventTriggerService: any = {};
-  const caseNotifier: any = {};
+  let caseNotifier: any;
 
   beforeEach(waitForAsync(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -138,8 +138,12 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
-
+    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    caseNotifier = {};
+    caseNotifier.caseView = of({ case_type: { id: 'test' } });
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['selectedJurisdictionBS']);
+    jurisdictionService.selectedJurisdictionBS = of({ id: 'test-jurisdiction' });
     TestBed
       .configureTestingModule({
         imports: [],
@@ -606,7 +610,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
-  const jurisdictionService: any = {};
+  let jurisdictionService: any;
+  let caseNotifier: any;
   const eventTriggerService: any = {};
 
   beforeEach(waitForAsync(() => {
@@ -624,8 +629,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
-
+    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    caseNotifier = {};
+    caseNotifier.caseView = of({ case_type: { id: 'test' } });
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['selectedJurisdictionBS']);
+    jurisdictionService.selectedJurisdictionBS = of({ id: 'test-jurisdiction' });
     TestBed
       .configureTestingModule({
         imports: [],
@@ -648,8 +657,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
-          DocumentDialogComponent,
-          CaseNotifier
+          { provide: CaseNotifier, useValue: caseNotifier },
+          DocumentDialogComponent
         ]
       })
       .compileComponents();

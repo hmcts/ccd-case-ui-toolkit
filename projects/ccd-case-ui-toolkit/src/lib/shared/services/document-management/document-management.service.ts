@@ -1,11 +1,12 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { delay, map, switchMap, take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
 import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 
 @Injectable()
 export class DocumentManagementService {
@@ -26,7 +27,36 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  constructor(private readonly http: HttpService, private readonly appConfig: AbstractAppConfig, private readonly caseNotifierService: CaseNotifier) {}
+  private caseTypeId: string = '';
+
+  constructor(
+    private readonly http: HttpService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly caseNotifierService: CaseNotifier,
+    private readonly jurisdictionService: JurisdictionService
+  ) {
+    combineLatest([
+      this.caseNotifierService.caseView.pipe(take(1)),
+      this.jurisdictionService.selectedJurisdictionBS.pipe(take(1))
+    ]).subscribe(([caseDetails, jurisdiction]) => {
+      if (caseDetails) {
+        this.caseTypeId = caseDetails?.case_type?.id;
+      }
+      if (jurisdiction) {
+        if (jurisdiction.currentCaseType) {
+          this.caseTypeId = jurisdiction.currentCaseType.id;
+        }
+      }
+      //if the user refreshes on the case creation page the above logic will not work, we can get the caseTypeId from the URL
+      if (!this.caseTypeId) {
+        const url = window.location.pathname;
+        if (url.indexOf('/case-create/') > -1) {
+          const parts = url.split('/');
+          this.caseTypeId = parts[parts.indexOf('case-create') + 2];
+        }
+      }
+    });
+  }
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
     const url = this.getDocStoreUrl();
@@ -41,13 +71,13 @@ export class DocumentManagementService {
 
   public getMediaViewerInfo(documentFieldValue: any): string {
     const mediaViewerInfo = {
-        document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
-        document_filename: documentFieldValue.document_filename,
-        content_type: this.getContentType(documentFieldValue),
-        annotation_api_url: this.appConfig.getAnnotationApiUrl(),
-        case_id: documentFieldValue.id,
-        case_jurisdiction: documentFieldValue.jurisdiction
-      };
+      document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+      document_filename: documentFieldValue.document_filename,
+      content_type: this.getContentType(documentFieldValue),
+      annotation_api_url: this.appConfig.getAnnotationApiUrl(),
+      case_id: documentFieldValue.id,
+      case_jurisdiction: documentFieldValue.jurisdiction
+    };
     return JSON.stringify(mediaViewerInfo);
   }
 
@@ -104,14 +134,11 @@ export class DocumentManagementService {
   }
 
   private getDocStoreUrl(): string {
-    let docStoreUrl = '';
-    this.caseNotifierService.caseView.subscribe((caseDetails) => {
-      const caseType = caseDetails?.case_type?.id;
-      const documentSecureModeCaseTypeExclusions = this.appConfig.getDocumentSecureModeCaseTypeExclusions()?.split(',');
-      const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(caseType);
-      const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
-      docStoreUrl = (documentSecureModeEnabled && !isDocumentOnExclusionList) ? this.appConfig.getDocumentManagementUrlV2() : this.appConfig.getDocumentManagementUrl();
-    }).unsubscribe();
-    return docStoreUrl;
+    const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
+    const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
+    const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
+    return (documentSecureModeEnabled && !isDocumentOnExclusionList)
+      ? this.appConfig.getDocumentManagementUrlV2()
+      : this.appConfig.getDocumentManagementUrl();
   }
 }
