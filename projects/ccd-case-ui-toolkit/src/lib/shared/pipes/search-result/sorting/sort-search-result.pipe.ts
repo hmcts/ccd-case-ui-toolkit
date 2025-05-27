@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { isUndefined } from 'util';
 import { SortOrder } from '../../../domain';
 import { SearchResultViewItem } from '../../../domain/search/search-result-view-item.model';
 import { SortParameters } from '../../../domain/search/sorting/sort-parameters';
@@ -11,7 +10,7 @@ export class SortSearchResultPipe implements PipeTransform {
 
   public transform(searchResults: SearchResultViewItem[], sortParameters: SortParameters) {
 
-    if (isUndefined(searchResults) || isUndefined(sortParameters)) {
+    if (searchResults === undefined || sortParameters === undefined) {
       return searchResults;
     }
     return searchResults.sort(
