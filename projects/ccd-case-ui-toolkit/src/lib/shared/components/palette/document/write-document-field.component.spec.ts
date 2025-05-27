@@ -672,6 +672,29 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture.detectChanges();
   }));
 
+  it('should set jurisdiction and casetype from casenotifier', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    caseNotifier.caseView = of({ case_type: { id: 'test1', jurisdiction: { id: 'test2' } } });
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
+    component.ngOnInit();
+    expect(component.caseTypeId).toBe('test1');
+    expect(component.jurisdictionId).toBe('test2');
+  });
+
+   it('should set jurisdiction and casetype from casenotifier', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    caseNotifier.caseView = of(undefined);
+    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({
+      id: 'test1',
+      currentCaseType: {
+        id: 'test2'
+      }
+    }));
+    component.ngOnInit();
+    expect(component.caseTypeId).toBe('test2');
+    expect(component.jurisdictionId).toBe('test1');
+  });
+
   it('should be invalid if no document specified for upload for read only. Empty file.', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     component.ngOnInit();
