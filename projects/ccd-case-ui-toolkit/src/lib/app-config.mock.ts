@@ -151,7 +151,7 @@ export class AppMockConfig implements AbstractAppConfig {
     return false;
   }
 
-  public getDocumentSecureModeCaseTypeExclusions(): string {
+  public getCdamExclusionList(): string {
     return '';
   }
 
