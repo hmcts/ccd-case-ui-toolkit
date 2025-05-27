@@ -681,7 +681,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.jurisdictionId).toBe('test2');
   });
 
-   it('should set jurisdiction and casetype from casenotifier', () => {
+  it('should set jurisdiction and casetype from casenotifier', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     caseNotifier.caseView = of(undefined);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({
