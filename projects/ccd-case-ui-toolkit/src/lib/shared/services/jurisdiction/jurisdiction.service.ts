@@ -8,7 +8,7 @@ import { HttpService } from '../http';
 export class JurisdictionService {
   // We retain the Subject observable because subscribing code couldn't happen a null value
   public readonly selectedJurisdictionSource = new Subject<Jurisdiction>();
-  public readonly selectedJurisdictionBS = new BehaviorSubject<Jurisdiction>(null);
+  private readonly _selectedJurisdictionBS = new BehaviorSubject<Jurisdiction>(null);
   public readonly selectedJurisdiction: Observable<Jurisdiction>;
 
   constructor(private readonly httpService: HttpService) {
@@ -21,7 +21,11 @@ export class JurisdictionService {
 
   public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {
     this.selectedJurisdictionSource.next(jurisdiction);
-    this.selectedJurisdictionBS.next(jurisdiction);
+    this._selectedJurisdictionBS.next(jurisdiction);
+  }
+
+  public getSelectedJurisdiction(): BehaviorSubject<Jurisdiction> {
+    return this._selectedJurisdictionBS;
   }
 
   public searchJudicialUsers(searchTerm: string, serviceId: string): Observable<JudicialUserModel[]> {

@@ -4585,7 +4585,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
+    "@hmcts/media-viewer": "npm:4.1.0"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -4677,7 +4677,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.0.2"
+    rpx-xui-translation: "npm:1.1.0"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -4726,9 +4726,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.16-angular-upgrade":
-  version: 4.0.16-angular-upgrade
-  resolution: "@hmcts/media-viewer@npm:4.0.16-angular-upgrade"
+"@hmcts/media-viewer@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@hmcts/media-viewer@npm:4.1.0"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -4747,7 +4747,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f3714621d08e37e0c34dfc96fb0e01465b2ca617932974af9484c15fcfb9e377e4994480870e1db04fb1786d977f1262e917a55054cc93cc266e4033be4254b1
+  checksum: 10/9208f09ae86e77e6c29ce38b1d47b4b14d9aaa81efed3ce6e58b525ea7cd67cb895ff2ddf1e32b5080fb49e5464217cbb316eca043e741c416219a47c579ec5a
   languageName: node
   linkType: hard
 
@@ -26738,17 +26738,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.0.2":
-  version: 1.0.2
-  resolution: "rpx-xui-translation@npm:1.0.2"
+"rpx-xui-translation@npm:1.1.0":
+  version: 1.1.0
+  resolution: "rpx-xui-translation@npm:1.1.0"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/common": ^15.2.9
-    "@angular/core": ^15.2.9
-  checksum: 10/851abb2a89223c3bde4572015385822dec2a60e38fb8c2e620d6d60d56c99e686be5ec77e3d36540e2f185835646639032d5a4141f1630a13a4e37f2c78f2804
+    "@angular/common": ^18.2.13
+    "@angular/core": ^18.2.13
+  checksum: 10/1aae07fae96c927ff4c484cf250c55220579eef42c4b90ec1af680ce163bfe2ff2148d2df4bc4e205f7feabed841d2e5320fa6eae15a2b2ac2cd4ab7586e3824
   languageName: node
   linkType: hard
 
