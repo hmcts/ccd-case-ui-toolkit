@@ -60,6 +60,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public errorMessages: ErrorMessage[] = [];
   public filteredTasks: Task[] = [];
+  public readyToSubmit: boolean;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -105,6 +106,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
               } else {
                 this.filteredTasks = response.tasks;
               }
+              this.readyToSubmit = true;
             }
           },
           error: (error) => {
@@ -151,7 +153,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
               this.caseViewTrigger.name
-            )
+            );
           })
         ).subscribe({
           next: () => this.finaliseSubmission(),
@@ -381,7 +383,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     return candidateFields
       .map((field) => {
-        const wizardField = firstPageFields.find(f => f.case_field_id === field.id);
+        const wizardField = firstPageFields.find((f) => f.case_field_id === field.id);
         return { field, order: wizardField?.order ?? Number.MAX_SAFE_INTEGER };
       })
       .sort((a, b) => a.order - b.order)[0]?.field;
