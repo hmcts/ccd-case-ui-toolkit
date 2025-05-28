@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.2
+**EXUI-673** Open all folders with one click
+
 ### Version 7.2.01
 **EXUI-3124** INC5697603-Country name not getting translated to welsh
 
