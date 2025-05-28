@@ -16,29 +16,32 @@
     </h2>
 
     <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
-      <div *ngFor="let item of collItems; let i = index" #collectionItem
-           [id]="this.buildIdPrefix(i) + i" class="form-group">
-        <div class="collection-title">
-          <div class="float-left">
-            <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i) | rpxTranslate}}</h3></label>
+      <fieldset class="govuk-fieldset">
+        <div *ngFor="let item of collItems; let i = index" #collectionItem
+            [id]="this.buildIdPrefix(i) + i" class="form-group">
+          <div class="collection-title">
+            <div class="float-left">
+              <legend class="govuk-fieldset__legend">
+                <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i) | rpxTranslate}}</h3></label>
+              </legend>
+            </div>
+            <div class="float-right">
+              <button class="button button-secondary" type="button" (click)="openModal(i)"
+                      [disabled]="isNotAuthorisedToDelete(i)"
+                      attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate}}</button>
+            </div>
           </div>
-          <div class="float-right">
-            <button class="button button-secondary" type="button" (click)="openModal(i)"
-                    [disabled]="isNotAuthorisedToDelete(i)"
-                    attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate}}</button>
-          </div>
+          <ccd-field-write [caseField]="item.caseField"
+                          [caseFields]="caseFields"
+                          [formGroup]="formGroup"
+                          [parent]="item.container"
+                          [idPrefix]="item.prefix"
+                          [hidden]="item.caseField.hidden"
+                          [isExpanded]="isExpanded"
+                          [isInSearchBlock]="isInSearchBlock">
+          </ccd-field-write>
         </div>
-        <ccd-field-write [caseField]="item.caseField"
-                         [caseFields]="caseFields"
-                         [formGroup]="formGroup"
-                         [parent]="item.container"
-                         [idPrefix]="item.prefix"
-                         [hidden]="item.caseField.hidden"
-                         [isExpanded]="isExpanded"
-                         [isInSearchBlock]="isInSearchBlock">
-        </ccd-field-write>
-      </div>
-
+      </fieldset>
     </div>
 
     <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">{{'Add new' | rpxTranslate }}</button>
