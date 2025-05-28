@@ -136,6 +136,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           fieldId: 'field-id'
         }
       ];
+      window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -168,6 +169,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             fieldId: 'field-id'
           }
         ];
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
