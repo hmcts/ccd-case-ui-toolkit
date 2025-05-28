@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.1
+### Version 7.2.01
 **EXUI-3124** INC5697603-Country name not getting translated to welsh
 
 ### Version 7.2.0
