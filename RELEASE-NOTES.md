@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.2.01
+**EXUI-3124** INC5697603-Country name not getting translated to welsh
+
+### Version 7.2.0
+**EXUI-2978** Angular 18 upgrade
+
+### Version 7.1.79
+**EXUI-3103** duplication of seconds label
+
 ### Version 7.1.78
 **EXUI-3047** hint-text
 
