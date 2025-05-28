@@ -449,6 +449,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for raise a query', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -465,6 +466,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for respond to a query', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -479,6 +481,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for following up a query', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');

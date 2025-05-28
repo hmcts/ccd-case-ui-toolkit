@@ -44,7 +44,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
 
-
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
   private queryId: string;
@@ -113,6 +112,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             console.error('Error in searchTasksSubscription:', error);
           }
         });
+    } else {
+      this.readyToSubmit = true;
     }
   }
 
