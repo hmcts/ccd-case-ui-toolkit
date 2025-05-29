@@ -1,4 +1,4 @@
-<div class="govuk-grid-row">
+<div class="govuk-grid-row" *ngIf="readyToSubmit">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <!-- Error message summary -->
     <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"

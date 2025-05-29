@@ -74,7 +74,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
         const matchingMessage = filteredMessages[0]?.value;
         let filteredQuery = [];
         if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.parentId === message?.id);
+          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
           if (matchingMessage) {
             this.queryItemDisplay = new QueryListItem();
             Object.assign(this.queryItemDisplay, matchingMessage);
