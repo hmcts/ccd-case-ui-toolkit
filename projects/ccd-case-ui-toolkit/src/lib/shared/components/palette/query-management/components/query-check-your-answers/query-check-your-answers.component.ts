@@ -127,6 +127,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+      return
+    }
+
     // Check if fieldId is null or undefined
     if (!this.fieldId) {
       console.error('Error: Field ID is missing. Cannot proceed with submission.');
@@ -143,6 +146,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     const data = this.generateCaseQueriesCollectionData();
     const createEvent$ = this.createEvent(data);
+
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
@@ -170,7 +174,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             fieldId: 'field-id'
           }
         ];
+        this.isSubmitting = false;
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        return;
       }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
@@ -201,10 +207,13 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private finaliseSubmission(): void {
     this.querySubmitted.emit(true);
     this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+    this.isSubmitting = false;
   }
 
   private handleError(error: any): void {
     console.error('Error in API calls:', error);
+
+    this.isSubmitting = false;
     this.router.navigate(['/', 'service-down']);
   }
 
