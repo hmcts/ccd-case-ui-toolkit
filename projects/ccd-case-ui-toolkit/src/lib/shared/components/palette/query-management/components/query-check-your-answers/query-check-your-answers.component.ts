@@ -60,6 +60,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public errorMessages: ErrorMessage[] = [];
   public filteredTasks: Task[] = [];
   public readyToSubmit: boolean;
+  public isSubmitting: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -127,6 +128,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+
+    if (this.isSubmitting) {
       return
     }
 
@@ -147,6 +150,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const data = this.generateCaseQueriesCollectionData();
     const createEvent$ = this.createEvent(data);
 
+    this.isSubmitting = true;
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
