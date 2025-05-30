@@ -28,8 +28,7 @@ export class CaseResolver implements Resolve<CaseView> {
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
               private router: Router,
-              private sessionStorage: SessionStorageService,
-              private readonly appConfig: AbstractAppConfig) {
+              private sessionStorage: SessionStorageService) {
     router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
@@ -113,7 +112,7 @@ export class CaseResolver implements Resolve<CaseView> {
       return of(null);
     }
     // Error 403 and enable-restricted-case-access Launch Darkly flag is enabled, navigate to restricted case access page
-    if (error.status === 403 && this.appConfig.getEnableRestrictedCaseAccessConfig()) {
+    if (error.status === 403) {
       this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
       return of(null);
     }
