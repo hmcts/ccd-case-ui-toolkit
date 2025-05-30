@@ -192,7 +192,6 @@ export class CaseEditorConfig {
   public case_flags_refdata_api_url: string;
   public rd_common_data_api_url: string;
   public case_data_store_api_url: string;
-  public enable_restricted_case_access: boolean;
   public enable_case_file_view_version_1_1: boolean;
   public icp_enabled: boolean;
   public icp_jurisdictions: string[];
