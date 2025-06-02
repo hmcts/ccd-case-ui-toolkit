@@ -111,6 +111,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           },
           error: (error) => {
             console.error('Error in searchTasksSubscription:', error);
+            this.readyToSubmit = false;
           }
         });
     } else {
