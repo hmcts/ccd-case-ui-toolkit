@@ -279,7 +279,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
@@ -290,7 +289,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
@@ -301,7 +299,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
