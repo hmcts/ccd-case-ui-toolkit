@@ -50,47 +50,59 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.caseQueriesCollections?.length > 0
-    ) {
-      if (!this.caseQueriesCollections[0]) {
-        console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
-        return;
-      }
-
-      const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
-
-      const messageId = this.route.snapshot.params.dataid;
-      if (!messageId) {
-        console.warn('No messageId found in route params:', this.route.snapshot.params);
-        return;
-      }
-
-      const filteredMessages = this.caseQueriesCollections
-        .map((caseData) => caseData?.caseMessages || []) // Ensure caseMessages is always an array
-        .flat() // Flatten into a single array of messages
-        .filter((message) => message?.value?.id === messageId); // Safe access
-
-      if (filteredMessages.length > 0) {
-        const matchingMessage = filteredMessages[0]?.value;
-        let filteredQuery = [];
-        if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-          if (matchingMessage?.parentId) {
-            filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.parentId === message?.id);
-          } else {
-            filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.id === message?.id);
-          }
-          if (matchingMessage) {
-            this.queryItemDisplay = new QueryListItem();
-            Object.assign(this.queryItemDisplay, matchingMessage);
-            this.queryItem = this.queryItemDisplay;
-          }
-        } else {
-          filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.id === message?.id);
-        }
-
-        this.queryResponseStatus = filteredQuery[0]?.responseStatus;
-      }
+    if (!this.caseQueriesCollections || this.caseQueriesCollections.length === 0) {
+    // Silent return – this is not an error.
+      return;
     }
+
+    if (!this.caseQueriesCollections[0]) {
+      console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
+      return;
+    }
+
+    const messageId = this.route.snapshot.params?.dataid;
+    if (!messageId) {
+      console.warn('No messageId found in route params:', this.route.snapshot.params);
+      return;
+    }
+
+    const allMessages = this.caseQueriesCollections
+      .flatMap((caseData) => caseData?.caseMessages || []);
+
+    const matchingMessage = allMessages.find(
+      (message) => message?.value?.id === messageId
+    )?.value;
+
+    if (!matchingMessage) {
+      console.warn('No matching message found for ID:', messageId);
+      return;
+    }
+
+    const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+
+    let filteredQuery = [];
+
+    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
+      if (matchingMessage?.parentId) {
+        filteredQuery = queryWithChildren.queries.filter(
+          (query) => query?.id === matchingMessage.parentId
+        );
+      } else {
+        filteredQuery = queryWithChildren.queries.filter(
+          (query) => query?.id === matchingMessage.id
+        );
+      }
+
+      this.queryItemDisplay = new QueryListItem();
+      Object.assign(this.queryItemDisplay, matchingMessage);
+      this.queryItem = this.queryItemDisplay;
+    } else {
+      filteredQuery = queryWithChildren.queries.filter(
+        (query) => query?.id === matchingMessage.id
+      );
+    }
+
+    this.queryResponseStatus = filteredQuery[0]?.responseStatus;
   }
 
   public hasResponded(value: boolean): void {
