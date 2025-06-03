@@ -74,14 +74,19 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
         const matchingMessage = filteredMessages[0]?.value;
         let filteredQuery = [];
         if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
+          if (matchingMessage?.parentId) {
+            filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.parentId === message?.id);
+          } else {
+            filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.id === message?.id);
+          }
+          console.log('Filtered query for respond:', filteredQuery,);
           if (matchingMessage) {
             this.queryItemDisplay = new QueryListItem();
             Object.assign(this.queryItemDisplay, matchingMessage);
             this.queryItem = this.queryItemDisplay;
           }
         } else {
-          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
+          filteredQuery = queryWithChildren?.queries.filter((message) => matchingMessage?.id === message?.id);
         }
 
         this.queryResponseStatus = filteredQuery[0]?.responseStatus;

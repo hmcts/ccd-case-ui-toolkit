@@ -3,11 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { CaseView } from '../../../../../../domain';
 import { CaseNotifier } from '../../../../../case-editor';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { CaseQueriesCollection, QueryListItem } from '../../../models';
+import { CaseQueriesCollection } from '../../../models';
 import { getMockCaseNotifier } from '../../../../../case-editor/services/case.notifier.spec';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -121,10 +120,6 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should set caseId and caseDetails in ngOnInit', (done) => {
     component.ngOnInit();
 
@@ -180,5 +175,41 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryItemDisplay.hearingDate).toEqual('2023-01-10');
     expect(component.queryItemDisplay.createdOn).toEqual(new Date('2024-08-27T15:44:50.700Z'));
     expect(component.queryItemDisplay.createdBy).toEqual('120b3665-0b8a-4e80-ace0-01d8d63c1005');
+  });
+
+  it('should return early if caseQueriesCollections is empty', () => {
+    component.caseQueriesCollections = [];
+    const consoleSpy = spyOn(console, 'error');
+    component.ngOnChanges();
+    expect(consoleSpy).not.toHaveBeenCalled();
+  });
+
+  it('should log error if caseQueriesCollections[0] is undefined', () => {
+    component.caseQueriesCollections = [undefined as any];
+    const consoleSpy = spyOn(console, 'error');
+    component.ngOnChanges();
+    expect(consoleSpy).toHaveBeenCalledWith('caseQueriesCollections[0] is undefined!', component.caseQueriesCollections);
+  });
+
+  it('should warn and return if no messageId is found', () => {
+    activatedRoute.snapshot.params = { cid: '123' }; // no dataid
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+
+    const warnSpy = spyOn(console, 'warn');
+    component.ngOnChanges();
+
+    expect(warnSpy).toHaveBeenCalledWith('No messageId found in route params:', activatedRoute.snapshot.params);
+  });
+
+  it('should filter parent query when responding to a child message', () => {
+    activatedRoute.snapshot.params = { dataid: 'id-007' };
+    component.queryItemId = '3';
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+
+    component.ngOnChanges();
+
+    expect(component.queryItemDisplay.id).toEqual('id-007');
+    expect(component.queryItem.id).toEqual('id-007');
+    expect(component.queryResponseStatus).toEqual('Responded');
   });
 });
