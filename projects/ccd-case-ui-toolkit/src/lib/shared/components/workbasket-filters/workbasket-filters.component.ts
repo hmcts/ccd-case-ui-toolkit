@@ -54,7 +54,8 @@ export class WorkbasketFiltersComponent implements OnInit {
     formGroup?: FormGroup,
     page?: number,
     metadataFields?: string[]
-  };
+  // EXUI-3162 - selected is never undefined
+  } = {};
 
   public formGroup: FormGroup = new FormGroup({});
 
@@ -87,17 +88,22 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const j = this.getDefaultJurisdiction();
-    const ct = this.getDefaultCaseType();
-    j.currentCaseType = ct;
     this.selected = {
-      jurisdiction: j,
-      caseType: ct,
+      jurisdiction: null,
+      caseType: null,
       formGroup: null,
       caseState: undefined,
       page: 1,
       metadataFields: []
     };
+    // EXUI-3162 - do not use defaults unless present
+    if (this.defaults) {
+      const j = this.getDefaultJurisdiction();
+      const ct = this.getDefaultCaseType();
+      j.currentCaseType = ct;
+      this.selected.jurisdiction = j ? j : null;
+      this.selected.caseType = ct ? ct : null;
+    }
     this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.route.queryParams.subscribe(params => {
       if (!this.initialised || !params || !Object.keys(params).length) {
