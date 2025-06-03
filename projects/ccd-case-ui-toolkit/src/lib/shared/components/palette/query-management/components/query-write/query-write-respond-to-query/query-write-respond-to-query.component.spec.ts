@@ -212,4 +212,77 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryItem.id).toEqual('id-007');
     expect(component.queryResponseStatus).toEqual('Responded');
   });
+
+  it('should warn and return if no matching message is found for ID', () => {
+    const unmatchedMessageId = 'non-existent-id';
+
+    // Override route param to a non-matching ID
+    activatedRoute.snapshot.params = { dataid: unmatchedMessageId };
+
+    // Provide caseQueriesCollections with only unmatched messages
+    component.caseQueriesCollections = [{
+      caseMessages: [
+        {
+          id: 'some-id',
+          value: {
+            id: 'different-id',
+            body: 'Message not matching',
+            attachments: [],
+            createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+            createdOn: new Date('2024-08-27T15:44:50.700Z'),
+            hearingDate: '2023-01-10',
+            isHearingRelated: 'Yes',
+            name: 'Piran Sam',
+          }
+        }
+      ],
+      partyName: '',
+      roleOnCase: ''
+    }];
+
+    const warnSpy = spyOn(console, 'warn');
+
+    component.ngOnChanges();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      'No matching message found for ID:',
+      unmatchedMessageId
+    );
+
+    expect(component.queryItemDisplay).toBeUndefined();
+    expect(component.queryItem).toBeUndefined();
+  });
+
+  it('should filter parent query when matchingMessage has parentId', () => {
+    // Set dataid to match the child message
+    activatedRoute.snapshot.params = { dataid: 'id-007-testt' }; // ID of child
+    component.queryItemId = '3';
+
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+
+    component.ngOnChanges();
+
+    // Should match and filter by parentId ('id-007')
+    expect(component.queryItemDisplay.id).toEqual('id-007-testt');
+    expect(component.queryItem.id).toEqual('id-007-testt');
+
+    // Should set queryResponseStatus from the parent query
+    expect(component.queryResponseStatus).toEqual('Responded');
+  });
+
+  it('should filter query by id when matchingMessage has no parentId', () => {
+  // Set dataid to match the parent message directly
+    activatedRoute.snapshot.params = { dataid: 'id-007' }; // ID of parent
+    component.queryItemId = '3';
+
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+
+    component.ngOnChanges();
+
+    // Should filter directly by message id
+    expect(component.queryItemDisplay.id).toEqual('id-007');
+    expect(component.queryItem.id).toEqual('id-007');
+    expect(component.queryResponseStatus).toEqual('Responded');
+  });
+
 });
