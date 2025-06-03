@@ -136,7 +136,7 @@ describe('CaseEventTriggerComponent', () => {
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
-  const finalUrl = '/cases/case-details/1707912713167104#Claim%20details';
+  const finalUrl = '/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104#Claim%20details';
 
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
@@ -254,7 +254,7 @@ describe('CaseEventTriggerComponent', () => {
 
   it('should verify cancel navigate to the correct url', () => {
     component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Claim details' });
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104'], { fragment: 'Claim details' });
   });
 
   it('should bypass validation if the eventTrigger case fields contain a FlagLauncher field', (done) => {
@@ -371,7 +371,7 @@ describe('CaseEventTriggerComponent', () => {
     routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Claim details' });
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104'], { fragment: 'Claim details' });
   });
 
   it('should call unregisterStoredSpinner if there is a stored spinnter', () => {

@@ -37,8 +37,8 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // Get case id and task from the parent component
     this.caseId = this.context.caseId;
     const task = this.context.reassignedTask;
-    this.jurisdiction = this.context.task.jurisdiction;
-    this.caseType = this.context.task.case_type_id;
+    this.jurisdiction = task.jurisdiction;
+    this.caseType = task.case_type_id;
 
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {

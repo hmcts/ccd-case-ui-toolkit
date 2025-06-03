@@ -23,13 +23,13 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
     private readonly judicialworkerService: JudicialworkerService,
     private readonly caseworkerService: CaseworkerService) {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
-    this.caseType = this.route.snapshot.data.case.case_type.id;
     this.task = this.route.snapshot.queryParams as Task;
   }
 
   public ngOnInit(): void {
     // Current user is a caseworker?
+    this.jurisdiction = this.task.jurisdiction;
+    this.caseType = this.task.case_type_id;
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(this.task.jurisdiction).subscribe(result => {
       if (result && result[0].service === this.task.jurisdiction && result[0].caseworkers) {
         const caseworker = result[0].caseworkers.find(x => x.idamId === this.task.assignee);

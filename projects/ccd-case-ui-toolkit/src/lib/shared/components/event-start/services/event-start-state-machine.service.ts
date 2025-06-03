@@ -108,17 +108,11 @@ export class EventStartStateMachineService {
     }
   }
 
-  private getJurisdictionNCaseType(context: EventStartStateMachineContext): any {
-    const caseInfo = context.sessionStorageService.getItem('caseInfo');
-    return caseInfo ? JSON.parse(caseInfo) : null;
-  }
-
   public entryActionForStateNoTask(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
     // Navigate to no tasks available error page
-    const caseDetails = this.getJurisdictionNCaseType(context);
-    context.router.navigate([`/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
   public entryActionForStateOneOrMoreTasks(state: State, context: EventStartStateMachineContext): void {
@@ -165,14 +159,13 @@ export class EventStartStateMachineService {
   public entryActionForStateTaskUnAssigned(state: State, context: EventStartStateMachineContext): void {
     let navigationURL = '';
     let theQueryParams: Params = {};
-    const caseDetails = this.getJurisdictionNCaseType(context);
     if (context.tasks[0].assignee) {
       // Task is assigned to some other user, navigate to task assigned error page
-      navigationURL = `/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/task-assigned`;
+      navigationURL = `/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/task-assigned`;
       theQueryParams = context.tasks[0];
     } else {
       // Task is unassigned, navigate to task unassigned error page
-      navigationURL = `/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/task-unassigned`;
+      navigationURL = `/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/task-unassigned`;
     }
 
     // Trigger final state to complete processing of state machine
@@ -229,9 +222,8 @@ export class EventStartStateMachineService {
   public entryActionForStateMultipleTasksAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
-    const caseDetails = this.getJurisdictionNCaseType(context);
     // Navigate to multiple tasks exist error page
-    context.router.navigate([`/cases/case-details/${caseDetails?.jurisdiction}/${caseDetails.caseType}/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
   }
 
   public finalAction(state: State): void {
