@@ -8,6 +8,7 @@ import { QueryCreateContext } from '../../models/query-create-context.enum';
 })
 export class QueryConfirmationComponent implements OnInit {
   @Input() public queryCreateContext: QueryCreateContext;
+  @Input() public callbackConfirmationMessageText: { [key: string]: string } = {};
 
   public caseId = '';
   public jurisdiction = '';
