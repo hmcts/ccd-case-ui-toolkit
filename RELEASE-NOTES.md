@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.2.2-exui-1832-rc1
+### Version 7.2.5
 **EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.2.4
+**EXUI-2676** Query Management - Civil LR Release
 
 ### Version 7.2.2
 **EXUI-673** Open all folders with one click
