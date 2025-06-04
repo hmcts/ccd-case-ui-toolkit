@@ -26,7 +26,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public queryItemId: string;
   public caseDetails;
   public queryResponseStatus: string;
-  public queryItemDisplay: QueryListItem;
+  public queryListData: QueryListItem | undefined;
 
   public hasRespondedToQuery: boolean = false;
 
@@ -69,24 +69,36 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
         .map((caseData) => caseData?.caseMessages || []) // Ensure caseMessages is always an array
         .flat() // Flatten into a single array of messages
         .filter((message) => message?.value?.id === messageId); // Safe access
-
-      if (filteredMessages.length > 0) {
-        const matchingMessage = filteredMessages[0]?.value;
-        let filteredQuery = [];
-        if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
-          if (matchingMessage) {
-            this.queryItemDisplay = new QueryListItem();
-            Object.assign(this.queryItemDisplay, matchingMessage);
-            this.queryItem = this.queryItemDisplay;
-          }
-        } else {
-          filteredQuery = queryWithChildren?.queries.filter((message) => filteredMessages[0]?.value?.id === message?.id);
-        }
-
-        this.queryResponseStatus = filteredQuery[0]?.responseStatus;
-      }
+    if (!matchingMessage) {
+      console.warn('No matching message found for ID:', messageId);
+      return;
     }
+
+    const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+
+    let filteredQuery = [];
+
+    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
+      if (matchingMessage?.parentId) {
+        filteredQuery = queryWithChildren.queries.filter(
+          (query) => query?.id === matchingMessage.parentId
+        );
+
+        this.queryListData = queryWithChildren?.queries.find((message) => matchingMessage?.parentId === message?.id);
+      } else {
+        filteredQuery = queryWithChildren.queries.filter(
+          (query) => query?.id === matchingMessage.id
+        );
+        this.queryListData = queryWithChildren?.queries.find((message) => matchingMessage?.id === message?.id);
+      }
+    } else {
+      this.queryListData = this.queryItem;
+      filteredQuery = queryWithChildren.queries.filter(
+        (query) => query?.id === matchingMessage.id
+      );
+    }
+
+    this.queryResponseStatus = filteredQuery[0]?.responseStatus;
   }
 
   public hasResponded(value: boolean): void {
