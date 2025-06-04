@@ -34,7 +34,20 @@ export class QueryListItem implements CaseMessage {
   }
 
   public get lastSubmittedBy(): string {
-    return this.lastSubmittedMessage.name;
+    const childrenCount = this.children.length;
+    if (childrenCount === 0) {
+      return this.lastSubmittedMessage.name;
+    }
+
+    let index: number;
+
+    if (childrenCount === 1) {
+      index = 0;
+    } else {
+      index = childrenCount % 2 === 1 ? childrenCount - 1 : childrenCount - 2;
+    }
+
+    return this.children[index].name;
   }
 
   public get lastSubmittedDate(): Date {
