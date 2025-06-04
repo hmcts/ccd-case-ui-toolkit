@@ -15,10 +15,12 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html'
+  templateUrl: './write-document-field.html',
+  styleUrls: ['./../base-field/field-write.component.scss']
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';
@@ -31,6 +33,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
+  public static readonly NO_FILE_CHOSED = 'No file chosen';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -45,6 +48,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
+  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSED;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -60,12 +64,18 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
+    private readonly rpxTranslationService : RpxTranslationService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
+    if (this.rpxTranslationService.language === 'cy'){
+      this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSED).subscribe((translation) => {
+        this.fileName = translation;
+      });
+    }
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
@@ -128,6 +138,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.invalidFileFormat();
     } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
+      this.fileName = fileInput.target.files[0].name;
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
@@ -275,7 +286,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -297,7 +308,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }

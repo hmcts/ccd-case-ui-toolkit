@@ -1,1 +1,15 @@
+.input-upload-file {
+  width: 100%;
+  display: none;
+}
+
+.upload-file-container {
+  display: flex;
+  align-items: baseline;
+}
+
+.input-label {
+  width: 8rem;
+}
+
 @import "../base-field/grey-bar.scss";
