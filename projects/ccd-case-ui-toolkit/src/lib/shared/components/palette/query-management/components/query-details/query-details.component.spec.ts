@@ -268,7 +268,6 @@ describe('QueryDetailsComponent', () => {
       component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBeTruthy();
     });
@@ -279,7 +278,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
@@ -290,7 +288,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
@@ -301,7 +298,6 @@ describe('QueryDetailsComponent', () => {
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });

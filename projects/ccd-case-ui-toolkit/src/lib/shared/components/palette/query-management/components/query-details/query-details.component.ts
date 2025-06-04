@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Constants } from '../../../../../commons/constants';
 import { SessionStorageService } from '../../../../../services';
 import { isInternalUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
@@ -21,7 +20,6 @@ export class QueryDetailsComponent implements OnChanges{
   @Output() public hasResponded: EventEmitter<boolean> = new EventEmitter();
 
   public showItem: boolean = true;
-  public message: string;
 
   private static readonly QUERY_ITEM_RESPOND = '3';
   private static readonly QUERY_ITEM_FOLLOW_UP = '4';
@@ -61,7 +59,6 @@ export class QueryDetailsComponent implements OnChanges{
         return false;
       }
 
-      this.message = Constants.TASK_COMPLETION_ERROR;
       this.hasResponded.emit(true);
       return true;
     }
