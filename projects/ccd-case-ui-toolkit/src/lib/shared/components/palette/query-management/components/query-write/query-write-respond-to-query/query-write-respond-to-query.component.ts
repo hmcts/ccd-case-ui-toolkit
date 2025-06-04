@@ -50,25 +50,29 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.caseQueriesCollections?.length > 0
-    ) {
-      if (!this.caseQueriesCollections[0]) {
-        console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
-        return;
-      }
+    if (!this.caseQueriesCollections || this.caseQueriesCollections.length === 0) {
+    // Silent return – this is not an error.
+      return;
+    }
 
-      const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+    if (!this.caseQueriesCollections[0]) {
+      console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
+      return;
+    }
 
-      const messageId = this.route.snapshot.params.dataid;
-      if (!messageId) {
-        console.warn('No messageId found in route params:', this.route.snapshot.params);
-        return;
-      }
+    const messageId = this.route.snapshot.params?.dataid;
+    if (!messageId) {
+      console.warn('No messageId found in route params:', this.route.snapshot.params);
+      return;
+    }
 
-      const filteredMessages = this.caseQueriesCollections
-        .map((caseData) => caseData?.caseMessages || []) // Ensure caseMessages is always an array
-        .flat() // Flatten into a single array of messages
-        .filter((message) => message?.value?.id === messageId); // Safe access
+    const allMessages = this.caseQueriesCollections
+      .flatMap((caseData) => caseData?.caseMessages || []);
+
+    const matchingMessage = allMessages.find(
+      (message) => message?.value?.id === messageId
+    )?.value;
+
     if (!matchingMessage) {
       console.warn('No matching message found for ID:', messageId);
       return;
