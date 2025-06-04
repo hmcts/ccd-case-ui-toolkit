@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.7
+**EXUI-3173** remove console logs
+
 ### Version 7.2.6
 **EXUI-3162** Exceptions on case list on prod with
 
