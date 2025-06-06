@@ -9,9 +9,13 @@ import { LoadingService } from '../../../../services/loading/loading.service';
 export class MultipleTasksExistComponent implements OnInit {
 
   public caseId: string;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(private readonly route: ActivatedRoute, private readonly loadingService: LoadingService) {
     this.caseId = this.route.snapshot.data.case.case_id;
+    this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    this.caseType = this.route.snapshot.data.case.case_type.id;
   }
 
   public ngOnInit() {
