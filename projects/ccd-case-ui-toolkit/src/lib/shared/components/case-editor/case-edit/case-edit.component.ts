@@ -224,7 +224,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   public emitSubmitted(response: Record<string, any>): void {
-    this.submitted.emit({ caseId: response['id'], status: this.getStatus(response) });
+    this.submitted.emit({ caseId: response['id'], jurisdiction: response['jurisdiction'], caseType: response['case_type'], status: this.getStatus(response) });
   }
 
   public getNextPage({ wizard, currentPageId, eventTrigger, form }: CaseEditGetNextPage): WizardPage {
