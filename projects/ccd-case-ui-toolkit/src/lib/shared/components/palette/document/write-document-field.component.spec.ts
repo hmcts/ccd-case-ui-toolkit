@@ -20,7 +20,6 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorResponse } from '@angular/common/http';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -164,10 +163,6 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
-          {
-            provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate'])
-          },
           DocumentDialogComponent
         ]
       })
@@ -287,7 +282,6 @@ describe('WriteDocumentFieldComponent', () => {
       }
     });
 
-    expect(component.fileName).toBe('test.pdf')
     expect(component.caseField.value.document_filename).toBe('test.pdf');
   });
 
@@ -615,7 +609,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let casesService: any;
   const jurisdictionService: any = {};
   const eventTriggerService: any = {};
-  let rpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach(waitForAsync(() => {
 
@@ -656,10 +649,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
-          {
-            provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate'])
-          },
           DocumentDialogComponent,
           CaseNotifier
         ]

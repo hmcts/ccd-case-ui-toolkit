@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.7-exui-3199-rc1
+**EXUI-3199** drag-drop-file-upload-issue
+
 ### Version 7.2.7
 **EXUI-3173** remove console logs
 
