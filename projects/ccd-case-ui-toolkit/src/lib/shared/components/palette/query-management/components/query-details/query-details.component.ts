@@ -52,23 +52,26 @@ export class QueryDetailsComponent implements OnChanges{
 
   public hasRespondedToQuery(): boolean {
     const isAwaiting = this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING;
+    if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {
+          return true;
+      } else {
+        if (this.isInternalUser()) {
+          if (isAwaiting) {
+            this.hasResponded.emit(false);
+            return false;
+          }
 
-    if (this.isInternalUser()) {
-      if (isAwaiting) {
+          this.hasResponded.emit(true);
+          return true;
+        }
+
+        if (isAwaiting) {
+          this.hasResponded.emit(true);
+          return false; // Don't show message
+        }
+
         this.hasResponded.emit(false);
         return false;
       }
-
-      this.hasResponded.emit(true);
-      return true;
     }
-
-    if (isAwaiting) {
-      this.hasResponded.emit(true);
-      return false; // Don't show message
-    }
-
-    this.hasResponded.emit(false);
-    return false;
-  }
 }

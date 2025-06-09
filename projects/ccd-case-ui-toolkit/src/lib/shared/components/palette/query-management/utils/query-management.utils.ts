@@ -76,7 +76,8 @@ export class QueryManagementUtils {
       hearingDate: queryItem.hearingDate,
       createdOn: new Date(),
       createdBy: currentUserId,
-      parentId: queryItem.id
+      parentId: queryItem.id,
+      isClosed
     };
   }
 
