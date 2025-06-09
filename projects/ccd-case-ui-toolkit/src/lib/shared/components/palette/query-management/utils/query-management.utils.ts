@@ -65,6 +65,7 @@ export class QueryManagementUtils {
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
+    const isClosed = formGroup.get('closeQuery').value;
 
     return {
       id: uuidv4(),
