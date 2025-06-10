@@ -3,6 +3,9 @@
 ### Version 7.2.7-exui-3199-rc1
 **EXUI-3199** drag-drop-file-upload-issue
 
+### Version 7.2.8
+**EXUI-3186** Task Completion Message appears after page refresh for responded query but is no longer valid
+
 ### Version 7.2.7
 **EXUI-3173** remove console logs
 
@@ -18,7 +21,7 @@
 ### Version 7.2.2
 **EXUI-673** Open all folders with one click
 
-### Version 7.2.01
+### Version 7.2.1
 **EXUI-3124** INC5697603-Country name not getting translated to welsh
 
 ### Version 7.2.0
