@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.9
+**EXUI-3199** drag-drop-file-upload-issue
+
 ### Version 7.2.8
 **EXUI-3186** Task Completion Message appears after page refresh for responded query but is no longer valid
 
