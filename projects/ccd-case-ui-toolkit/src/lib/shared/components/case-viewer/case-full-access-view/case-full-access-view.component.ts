@@ -360,7 +360,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       const id = (tab.element.nativeElement as HTMLElement).id;
       // cases/case-details/:jurisdiction/:caseType/:caseId/hearings
       // cases/case-details/:jurisdiction/:caseType/:caseId/roles-and-access
-      this.router.navigate([id], { relativeTo: this.route });
+      this.router.navigate([
+        'cases',
+        'case-details',
+        this.caseDetails.case_type.jurisdiction.id,
+        this.caseDetails.case_type.id,
+        this.caseDetails.case_id,
+        id
+      ], { relativeTo: this.route.root });
     } else {
       // Routing here is based on tab label, not ideal
       // cases/case-details/:jurisdiction/:caseType/:caseId#tabLabel
