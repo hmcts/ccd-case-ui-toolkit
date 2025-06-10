@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.7-exui-3199-rc1
+### Version 7.2.9
 **EXUI-3199** drag-drop-file-upload-issue
 
 ### Version 7.2.8
