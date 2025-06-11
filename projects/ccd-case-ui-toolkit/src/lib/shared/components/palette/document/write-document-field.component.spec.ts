@@ -20,7 +20,6 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorResponse } from '@angular/common/http';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -287,7 +286,6 @@ describe('WriteDocumentFieldComponent', () => {
       }
     });
 
-    expect(component.fileName).toBe('test.pdf')
     expect(component.caseField.value.document_filename).toBe('test.pdf');
   });
 

@@ -43,14 +43,10 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['ChromeHeadless'],
     customLaunchers: {
-      ChromeHeadless: {
-        base: 'Chrome',
-        flags: [
-          '--headless',
-          '--disable-gpu',
-          '--no-sandbox',
-        ],
-      },
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
     },
     singleRun: true,
     restartOnFileChange: true
