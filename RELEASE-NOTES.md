@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.10
+**EXUI-2613** Remove LaunchDarkly feature flags - Group 2
+
 ### Version 7.2.9
 **EXUI-3199** drag-drop-file-upload-issue
 
