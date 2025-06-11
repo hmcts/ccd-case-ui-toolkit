@@ -112,6 +112,7 @@ describe('WriteDocumentFieldComponent', () => {
   let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
+  let mockTranslationService: any;
 
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
@@ -138,6 +139,7 @@ describe('WriteDocumentFieldComponent', () => {
       'setUploadInProgress',
       'isUploadInProgress'
     ]);
+    mockTranslationService = new RpxTranslationService(null, null);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
 
@@ -164,10 +166,7 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
-          {
-            provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate'])
-          },
+          { provide: RpxTranslationService, useValue: mockTranslationService },
           DocumentDialogComponent
         ]
       })
@@ -178,6 +177,7 @@ describe('WriteDocumentFieldComponent', () => {
 
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
+    spyOn(mockTranslationService, 'getTranslation$').and.returnValue(of(''));
 
     de = fixture.debugElement;
     component.ngOnInit();
@@ -615,7 +615,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let casesService: any;
   const jurisdictionService: any = {};
   const eventTriggerService: any = {};
-  let rpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
+  let mockTranslationService: any;;
 
   beforeEach(waitForAsync(() => {
 
@@ -631,6 +631,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'setUploadInProgress',
       'isUploadInProgress'
     ]);
+    mockTranslationService = new RpxTranslationService(null, null);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
 
@@ -656,10 +657,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
-          {
-            provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate'])
-          },
+          { provide: RpxTranslationService, useValue: mockTranslationService },
           DocumentDialogComponent,
           CaseNotifier
         ]
@@ -670,6 +668,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD_MANDATORY;
+    spyOn(mockTranslationService, 'getTranslation$').and.returnValue(of(''));
 
     de = fixture.debugElement;
     fixture.detectChanges();

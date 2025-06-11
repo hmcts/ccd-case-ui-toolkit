@@ -33,7 +33,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
-  public static readonly NO_FILE_CHOSED = 'No file chosen';
+  public static readonly NO_FILE_CHOSEN = 'No file chosen';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -48,7 +48,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
-  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSED;
+  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSEN;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -71,11 +71,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    if (this.rpxTranslationService.language === 'cy'){
-      this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSED).subscribe((translation) => {
-        this.fileName = translation;
-      });
-    }
+    this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSEN).subscribe((translation) => {
+      this.fileName = translation;
+    });
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
