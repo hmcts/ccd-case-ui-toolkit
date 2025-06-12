@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -449,6 +449,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for raise a query', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -465,6 +466,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for respond to a query', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -479,6 +481,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for following up a query', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -541,10 +544,12 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({}));
 
     spyOn(component.querySubmitted, 'emit');
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(casesService.createEvent).toHaveBeenCalled();
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 
   it('should set fieldId to undefined when eventData is unavailable', () => {
@@ -830,6 +835,33 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.fieldId).toBe('field1');
   });
 
+  it('should return undefined when case_fields is empty', () => {
+    component.eventData = {
+      case_fields: [],
+      wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when wizard_page_fields is missing in wizard_pages', () => {
+    const caseField = {
+      id: 'field1',
+      field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+      display_context: 'OPTIONAL'
+    };
+
+    component.eventData = {
+      case_fields: [caseField],
+      wizard_pages: [{}] // No `wizard_page_fields`
+    } as any;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
+  });
+
   it('should initialize newQueryData correctly when fieldId is set', () => {
     component.fieldId = 'someFieldId';
     component.caseQueriesCollections = [
@@ -864,8 +896,10 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.filteredTasks.length).toBe(1);
     expect(component.filteredTasks[0].id).toBe('Task_2');
 
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 });
