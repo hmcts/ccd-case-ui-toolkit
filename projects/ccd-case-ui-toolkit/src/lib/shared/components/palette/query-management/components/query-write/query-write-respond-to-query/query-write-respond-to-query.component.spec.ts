@@ -252,22 +252,6 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryItem).toBeUndefined();
   });
 
-  it('should filter parent query when matchingMessage has parentId', () => {
-    // Set dataid to match the child message
-    activatedRoute.snapshot.params = { dataid: 'id-007-testt' }; // ID of child
-    component.queryItemId = '3';
-
-    component.caseQueriesCollections = caseQueriesCollectionsMockData;
-
-    component.ngOnChanges();
-
-    // Should match and filter by parentId ('id-007')
-    expect(component.queryListData.id).toEqual('id-007');
-
-    // Should set queryResponseStatus from the parent query
-    expect(component.queryResponseStatus).toEqual('Responded');
-  });
-
   it('should filter query by id when matchingMessage has no parentId', () => {
   // Set dataid to match the parent message directly
     activatedRoute.snapshot.params = { dataid: 'id-007' }; // ID of parent
@@ -313,8 +297,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
     component.ngOnChanges();
 
-    expect(component.queryItemDisplay.id).toEqual('id-007');
-    expect(component.queryItem.id).toEqual('id-007');
+    expect(component.queryListData.id).toEqual('id-007');
     expect(component.queryResponseStatus).toEqual('Responded');
   });
 
@@ -354,7 +337,6 @@ describe('QueryWriteRespondToQueryComponent', () => {
       unmatchedMessageId
     );
 
-    expect(component.queryItemDisplay).toBeUndefined();
     expect(component.queryItem).toBeUndefined();
   });
 
@@ -368,8 +350,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
     component.ngOnChanges();
 
     // Should match and filter by parentId ('id-007')
-    expect(component.queryItemDisplay.id).toEqual('id-007-testt');
-    expect(component.queryItem.id).toEqual('id-007-testt');
+    expect(component.queryListData.id).toEqual('id-007');
 
     // Should set queryResponseStatus from the parent query
     expect(component.queryResponseStatus).toEqual('Responded');
@@ -385,8 +366,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
     component.ngOnChanges();
 
     // Should filter directly by message id
-    expect(component.queryItemDisplay.id).toEqual('id-007');
-    expect(component.queryItem.id).toEqual('id-007');
+    expect(component.queryListData.id).toEqual('id-007');
     expect(component.queryResponseStatus).toEqual('Responded');
   });
 

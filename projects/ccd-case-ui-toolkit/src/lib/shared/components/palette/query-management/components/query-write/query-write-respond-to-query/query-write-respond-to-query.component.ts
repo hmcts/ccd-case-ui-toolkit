@@ -79,34 +79,16 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
     }
 
     const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+    const targetId = this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND
+      ? (matchingMessage?.parentId || matchingMessage?.id)
+      : matchingMessage?.id;
 
-    let filteredQuery = [];
-
-    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-      if (matchingMessage?.parentId) {
-        filteredQuery = queryWithChildren.queries.filter(
-          (query) => query?.id === matchingMessage.parentId
-        );
-
-        this.queryListData = queryWithChildren?.queries.find((message) => matchingMessage?.parentId === message?.id);
-      } else {
-        filteredQuery = queryWithChildren.queries.filter(
-          (query) => query?.id === matchingMessage.id
-        );
-        this.queryListData = queryWithChildren?.queries.find((message) => matchingMessage?.id === message?.id);
-      }
-    } else {
-      this.queryListData = this.queryItem;
-      filteredQuery = queryWithChildren.queries.filter(
-        (query) => query?.id === matchingMessage.id
-      );
+    this.queryListData = queryWithChildren?.queries.find(query => query?.id === targetId);
+    this.queryResponseStatus = this.queryListData?.responseStatus;
     }
 
-    this.queryResponseStatus = filteredQuery[0]?.responseStatus;
-  }
-
-  public hasResponded(value: boolean): void {
-    this.hasRespondedToQuery = value;
-    this.hasRespondedToQueryTask.emit(value);
-  }
+    public hasResponded(value: boolean): void {
+      this.hasRespondedToQuery = value;
+      this.hasRespondedToQueryTask.emit(value);
+    }
 }
