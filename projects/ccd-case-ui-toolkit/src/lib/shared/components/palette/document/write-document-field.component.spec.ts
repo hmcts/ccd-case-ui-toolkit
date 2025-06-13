@@ -111,7 +111,6 @@ describe('WriteDocumentFieldComponent', () => {
   let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
-  let mockTranslationService: any;
 
   let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
   let componentDialog: DocumentDialogComponent;
@@ -174,7 +173,6 @@ describe('WriteDocumentFieldComponent', () => {
 
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
-    spyOn(mockTranslationService, 'getTranslation$').and.returnValue(of(''));
 
     de = fixture.debugElement;
     component.ngOnInit();
@@ -611,7 +609,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let casesService: any;
   const jurisdictionService: any = {};
   const eventTriggerService: any = {};
-  let mockTranslationService: any;;
 
   beforeEach(waitForAsync(() => {
 
@@ -662,7 +659,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD_MANDATORY;
-    spyOn(mockTranslationService, 'getTranslation$').and.returnValue(of(''));
 
     de = fixture.debugElement;
     fixture.detectChanges();
