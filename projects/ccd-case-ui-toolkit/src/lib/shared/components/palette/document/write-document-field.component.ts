@@ -31,12 +31,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
-  public static readonly NO_FILE_CHOSEN = 'No file chosen';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
   public selectedFile: File;
-  public selectedFileName: string = '';
   public valid = true;
   public fileUploadMessages: string;
   public confirmReplaceResult: string;
@@ -47,7 +45,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
-  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSEN;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
