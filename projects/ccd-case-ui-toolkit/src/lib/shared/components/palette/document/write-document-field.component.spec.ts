@@ -138,7 +138,6 @@ describe('WriteDocumentFieldComponent', () => {
       'setUploadInProgress',
       'isUploadInProgress'
     ]);
-    mockTranslationService = new RpxTranslationService(null, null);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
 
@@ -165,7 +164,6 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: RpxTranslationService, useValue: mockTranslationService },
           DocumentDialogComponent
         ]
       })
@@ -629,7 +627,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'setUploadInProgress',
       'isUploadInProgress'
     ]);
-    mockTranslationService = new RpxTranslationService(null, null);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode']);
 
@@ -655,7 +652,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
-          { provide: RpxTranslationService, useValue: mockTranslationService },
           DocumentDialogComponent,
           CaseNotifier
         ]
