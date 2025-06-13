@@ -18,8 +18,7 @@ import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html',
-  styleUrls: ['./write-document-field.scss']
+  templateUrl: './write-document-field.html'
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';
@@ -155,15 +154,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.openDialog(this.dialogConfig);
     } else {
       this.openFileDialog();
-    }
-  }
-
-  public onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      this.selectedFileName = input.files[0].name;
-    } else {
-      this.selectedFileName = '';
     }
   }
 
