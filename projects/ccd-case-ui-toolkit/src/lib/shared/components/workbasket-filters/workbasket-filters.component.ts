@@ -54,7 +54,8 @@ export class WorkbasketFiltersComponent implements OnInit {
     formGroup?: FormGroup,
     page?: number,
     metadataFields?: string[]
-  };
+  // EXUI-3162 - selected is never undefined
+  } = {};
 
   public formGroup: FormGroup = new FormGroup({});
 
@@ -72,8 +73,38 @@ export class WorkbasketFiltersComponent implements OnInit {
     private readonly windowService: WindowService) {
   }
 
+  private getDefaultJurisdiction(): Jurisdiction {
+    if (!this.jurisdictions || this.jurisdictions.length === 0) {
+      return null;
+    }
+    return this.defaults.jurisdiction_id
+      ? this.jurisdictions.find(j => this.defaults.jurisdiction_id === j.id)
+      : this.jurisdictions[0];
+  }
+  private getDefaultCaseType(): CaseTypeLite {
+    return this.defaults.case_type_id
+      ? this.getDefaultJurisdiction()?.caseTypes.find(ct => this.defaults.case_type_id === ct.id)
+      : this.getDefaultJurisdiction()?.caseTypes[0];
+  }
+
   public ngOnInit(): void {
-    this.selected = {};
+    this.selected = {
+      jurisdiction: null,
+      caseType: null,
+      formGroup: null,
+      caseState: undefined,
+      page: 1,
+      metadataFields: []
+    };
+    // EXUI-3162 - do not use defaults unless present
+    if (this.defaults) {
+      const j = this.getDefaultJurisdiction();
+      const ct = this.getDefaultCaseType();
+      j.currentCaseType = ct;
+      this.selected.jurisdiction = j ? j : null;
+      this.selected.caseType = ct ? ct : null;
+    }
+    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.route.queryParams.subscribe(params => {
       if (!this.initialised || !params || !Object.keys(params).length) {
         this.initFilters(false);
@@ -154,7 +185,8 @@ export class WorkbasketFiltersComponent implements OnInit {
   public onJurisdictionIdChange() {
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
-      this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0 ? this.selected.jurisdiction.caseTypes : null;
+      this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0
+        ? this.selected.jurisdiction.caseTypes : null;
       // Line was too long for linting so refactored it.
       if (this.workbasketDefaults && this.selectedJurisdictionCaseTypes) {
         this.selected.caseType = this.selectedJurisdictionCaseTypes[0];
@@ -287,6 +319,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       }
     } else {
       this.selected.jurisdiction = null;
+      this.selected.caseType = null;
     }
     this.apply(init);
   }

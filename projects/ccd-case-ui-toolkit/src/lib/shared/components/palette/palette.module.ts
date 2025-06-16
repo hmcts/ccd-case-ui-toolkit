@@ -44,6 +44,7 @@ import {
 import {
   CaseFileViewFolderSortComponent
 } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
+import { CaseFileViewFolderToggleComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-toggle/case-file-view-folder-toggle.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import {
   AddCommentsComponent,
@@ -225,6 +226,7 @@ const PALETTE_COMPONENTS = [
   CaseFileViewFieldComponent,
   CaseFileViewFolderComponent,
   CaseFileViewFolderSortComponent,
+  CaseFileViewFolderToggleComponent,
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
   CaseFileViewFolderSelectorComponent,
