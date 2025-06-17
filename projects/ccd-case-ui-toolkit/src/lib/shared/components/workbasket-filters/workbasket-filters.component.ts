@@ -73,6 +73,16 @@ export class WorkbasketFiltersComponent implements OnInit {
     private readonly windowService: WindowService) {
   }
 
+  public scrollToTop() {
+    (function smoothscroll() {
+      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(smoothscroll);
+        window.scrollTo(0, currentScroll - (currentScroll / 8));
+      }
+    })();
+  }
+
   private getDefaultJurisdiction(): Jurisdiction {
     if (!this.jurisdictions || this.jurisdictions.length === 0) {
       return null;
