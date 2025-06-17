@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.11
+**EXUI-3190** Queries Tab Last submitted by column not displaying caseworker name
+
 ### Version 7.2.10
 **EXUI-2613** Remove LaunchDarkly feature flags - Group 2
 
