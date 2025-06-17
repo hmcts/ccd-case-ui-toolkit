@@ -81,6 +81,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         window.scrollTo(0, currentScroll - (currentScroll / 8));
       }
     })();
+  }
 
   private getDefaultJurisdiction(): Jurisdiction {
     if (!this.jurisdictions || this.jurisdictions.length === 0) {
