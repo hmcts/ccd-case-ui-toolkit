@@ -1,9 +1,4 @@
 <ng-container *ngIf="query">
-  <cut-alert type="error" *ngIf="hasRespondedToQuery() && !showItem">
-    <ng-container>{{message}}</ng-container>
-  </cut-alert>
-
-  <br/>
   <p *ngIf="showItem">
     <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</a>
   </p>
@@ -19,7 +14,7 @@
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Submission date' | rpxTranslate }}</th>
-        <td class="govuk-table__cell">{{ query.createdOn | date: 'dd MMM yyyy' }}</td>
+        <td class="govuk-table__cell">{{ query.createdOn | date: 'dd MMMM YYYY HH:mm' }}</td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Query subject' | rpxTranslate }}</th>
@@ -63,7 +58,7 @@
           <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">{{ 'Last response date' | rpxTranslate }}</th>
-            <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMM yyyy' }}</td>
+            <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMMM YYYY HH:mm'  }}</td>
           </tr>
 
             <tr *ngIf="isInternalUser()" class="govuk-table__row">
@@ -100,7 +95,7 @@
           <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">{{ 'Last submission date' | rpxTranslate }}</th>
-            <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMM yyyy' }}</td>
+            <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMMM YYYY HH:mm'}}</td>
           </tr>
 
           <tr class="govuk-table__row">
