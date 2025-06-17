@@ -47,7 +47,7 @@ describe('AddressesService', () => {
 
   it('should return all addresses from a given postcode location', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(addresses => { expect(addresses.length).toEqual(20);});
+    result.subscribe(addresses => { expect(addresses.length).toEqual(21);});
   });
 
   it('should return addresses with either addressLine1 or addressLine2 populated', () => {
@@ -108,6 +108,13 @@ describe('AddressesService', () => {
     result.subscribe(addresses => {
       expect(isAddressLineInCapitalCase(addresses[0].AddressLine1)).toBe(true);
       expect(isAddressLineInCapitalCase(addresses[0].AddressLine2)).toBe(true);
+    });
+  });
+
+  it('should expect Country to be in welsh if Language and country code are welsh', () => {
+    const result = addressesService.getAddressesForPostcode(validPostCode);
+    result.subscribe(addresses => {
+      expect(addresses[addresses.length - 1].Country).toBe('Deyrnas Unedig');
     });
   });
 

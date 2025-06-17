@@ -42,6 +42,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public eventData: CaseEventTrigger | null = null;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
+  @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
 
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
@@ -58,6 +59,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public errorMessages: ErrorMessage[] = [];
   public filteredTasks: Task[] = [];
+  public readyToSubmit: boolean;
+  public isSubmitting: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -103,12 +106,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
               } else {
                 this.filteredTasks = response.tasks;
               }
+              this.readyToSubmit = true;
             }
           },
           error: (error) => {
             console.error('Error in searchTasksSubscription:', error);
+            this.readyToSubmit = false;
           }
         });
+    } else {
+      this.readyToSubmit = true;
     }
   }
 
@@ -122,6 +129,11 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+
+    if (this.isSubmitting) {
+      return
+    }
+
     // Check if fieldId is null or undefined
     if (!this.fieldId) {
       console.error('Error: Field ID is missing. Cannot proceed with submission.');
@@ -132,21 +144,28 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           fieldId: 'field-id'
         }
       ];
+      window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       return;
     }
 
     const data = this.generateCaseQueriesCollectionData();
     const createEvent$ = this.createEvent(data);
 
+    this.isSubmitting = true;
+
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       if (this.filteredTasks?.length > 0) {
         this.createEventSubscription = createEvent$.pipe(
-          switchMap((createEventResponse) =>
-            this.workAllocationService.completeTask(
+          switchMap((createEventResponse) => {
+            const confirmationBody = createEventResponse?.after_submit_callback_response?.confirmation_body;
+            const confirmationHeader = createEventResponse?.after_submit_callback_response?.confirmation_header;
+            this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+
+            return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
               this.caseViewTrigger.name
-            )
-          )
+            );
+          })
         ).subscribe({
           next: () => this.finaliseSubmission(),
           error: (error) => this.handleError(error)
@@ -160,10 +179,18 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             fieldId: 'field-id'
           }
         ];
+        this.isSubmitting = false;
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        return;
       }
     } else {
       this.createEventSubscription = createEvent$.subscribe({
-        next: () => this.finaliseSubmission(),
+        next: (callbackResponse) => {
+          this.finaliseSubmission();
+          const confirmationBody = callbackResponse?.after_submit_callback_response?.confirmation_body;
+          const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
+          this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+        },
         error: (error) => this.handleError(error)
       });
     }
@@ -185,10 +212,13 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private finaliseSubmission(): void {
     this.querySubmitted.emit(true);
     this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+    this.isSubmitting = false;
   }
 
   private handleError(error: any): void {
     console.error('Error in API calls:', error);
+
+    this.isSubmitting = false;
     this.router.navigate(['/', 'service-down']);
   }
 
@@ -358,15 +388,19 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         field.display_context !== this.DISPLAY_CONTEXT_READONLY
     );
 
-    if (!candidateFields?.length) return undefined;
+    if (!candidateFields?.length) {
+      return undefined;
+    }
 
     const firstPageFields = this.eventData?.wizard_pages?.[0]?.wizard_page_fields;
 
-    if (!firstPageFields) return undefined;
+    if (!firstPageFields) {
+      return undefined;
+    }
 
     return candidateFields
       .map((field) => {
-        const wizardField = firstPageFields.find(f => f.case_field_id === field.id);
+        const wizardField = firstPageFields.find((f) => f.case_field_id === field.id);
         return { field, order: wizardField?.order ?? Number.MAX_SAFE_INTEGER };
       })
       .sort((a, b) => a.order - b.order)[0]?.field;
