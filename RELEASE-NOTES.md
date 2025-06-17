@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.12
+**EXUI-3043/3208** Show full thread context when replying as a caseworker
+
 ### Version 7.1.78-exui-2703-rc1
 **EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
 
