@@ -3,6 +3,42 @@
 ### Version 7.1.78-exui-2703-rc1
 **EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
 
+### Version 7.2.11
+**EXUI-3190** Queries Tab Last submitted by column not displaying caseworker name
+
+### Version 7.2.10
+**EXUI-2613** Remove LaunchDarkly feature flags - Group 2
+
+### Version 7.2.9
+**EXUI-3199** drag-drop-file-upload-issue
+
+### Version 7.2.8
+**EXUI-3186** Task Completion Message appears after page refresh for responded query but is no longer valid
+
+### Version 7.2.7
+**EXUI-3173** remove console logs
+
+### Version 7.2.6
+**EXUI-3162** Exceptions on case list on prod with
+
+### Version 7.2.5
+**EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.2.4
+**EXUI-2676** Query Management - Civil LR Release
+
+### Version 7.2.2
+**EXUI-673** Open all folders with one click
+
+### Version 7.2.1
+**EXUI-3124** INC5697603-Country name not getting translated to welsh
+
+### Version 7.2.0
+**EXUI-2978** Angular 18 upgrade
+
+### Version 7.1.79
+**EXUI-3103** duplication of seconds label
+
 ### Version 7.1.78
 **EXUI-3047** hint-text
 

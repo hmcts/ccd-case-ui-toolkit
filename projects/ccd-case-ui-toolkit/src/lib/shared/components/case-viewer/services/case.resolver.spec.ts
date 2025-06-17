@@ -47,8 +47,7 @@ describe('CaseResolver', () => {
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
       caseNotifier.fetchAndRefresh.and.returnValue(of(CASE));
       sessionStorageService.getItem.and.returnValue(null);
-      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getEnableRestrictedCaseAccessConfig']);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       route = {
         firstChild: {
@@ -179,7 +178,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -203,7 +202,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -227,7 +226,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -261,7 +260,7 @@ describe('CaseResolver', () => {
       };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -315,9 +314,8 @@ describe('CaseResolver', () => {
         sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
       });
 
-      it('should navigate to restricted case access if feature enabled and error code is 403', () => {
-        mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(true);
-        caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      it('should navigate to restricted case access if error code is 403', () => {
+        caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
         caseResolver
           .resolve(route)
           .then(
@@ -326,24 +324,11 @@ describe('CaseResolver', () => {
           );
         expect(router.navigate).toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
       });
-
-      it('should not navigate to restricted case access if feature not enabled and error code is 403', () => {
-        mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(false);
-        caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
-        caseResolver
-          .resolve(route)
-          .then(
-            data => expect(data).toBeFalsy(),
-            err => expect(err).toBeTruthy()
-          );
-        expect(router.navigate).not.toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
-      });
     });
 
     it('should skip resolve and call goToDefaultPage if eventId=queryManagementRespondQuery is in URL', async () => {
       router.url = '/cases/event-start?eventId=queryManagementRespondQuery'; // Simulate URL
-      mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(false);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
       caseResolver.resolve(route);
 
       route.paramMap.get.and.returnValue(CASE_ID);
@@ -389,9 +374,7 @@ describe('CaseResolver', () => {
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
       sessionStorageService.getItem.and.returnValue(null);
-      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getEnableRestrictedCaseAccessConfig']);
-      mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(true);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       route = {
         firstChild: {
