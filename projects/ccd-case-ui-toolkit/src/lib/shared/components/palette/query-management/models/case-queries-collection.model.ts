@@ -16,7 +16,7 @@ export interface CaseMessage {
   createdOn: Date;
   createdBy: string;
   parentId?: string;
-  isClosed?: boolean;
+  isClosed?: string;
 }
 
 export interface QueryMessage {

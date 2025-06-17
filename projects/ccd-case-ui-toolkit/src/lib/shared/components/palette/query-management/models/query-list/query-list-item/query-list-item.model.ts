@@ -12,6 +12,7 @@ export class QueryListItem implements CaseMessage {
   public createdOn: Date;
   public createdBy: string;
   public parentId?: string;
+  public isClosed?: string;
   public children: QueryListItem[] = [];
 
   public messageIndexInParent?: number | null = null;
