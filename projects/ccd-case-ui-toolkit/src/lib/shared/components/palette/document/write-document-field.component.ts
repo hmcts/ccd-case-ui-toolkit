@@ -124,7 +124,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (allowedRegex) {
       fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`, 'i');
     }
-    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)){
+    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)) {
       this.invalidFileFormat();
     } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -263,7 +263,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
-    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+    if (this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)) {
       this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
     }
   }
@@ -275,7 +275,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -297,7 +297,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
