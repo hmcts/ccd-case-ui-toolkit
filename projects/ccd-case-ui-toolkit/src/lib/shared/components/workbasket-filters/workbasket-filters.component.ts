@@ -73,6 +73,10 @@ export class WorkbasketFiltersComponent implements OnInit {
     private readonly windowService: WindowService) {
   }
 
+  public scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   private getDefaultJurisdiction(): Jurisdiction {
     if (!this.jurisdictions || this.jurisdictions.length === 0) {
       return null;
