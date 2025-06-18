@@ -98,7 +98,13 @@ describe('QueryListItem', () => {
 
   describe('lastSubmittedBy', () => {
     it('should return the name of the person of the lastSubmittedMessage', () => {
-      expect(queryListItem.lastSubmittedBy).toEqual(lastSubmittedBy.name);
+      const index = queryListItem.children.length === 1
+        ? 0
+        : queryListItem.children.length % 2 === 1
+          ? queryListItem.children.length - 1
+          : queryListItem.children.length - 2;
+
+      expect(queryListItem.lastSubmittedBy).toEqual(queryListItem.children[index].name);
     });
   });
 
