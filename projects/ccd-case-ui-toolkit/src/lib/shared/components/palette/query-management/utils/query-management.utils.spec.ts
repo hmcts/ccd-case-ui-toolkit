@@ -43,7 +43,8 @@ describe('QueryManagementUtils', () => {
         body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
         isHearingRelated: new FormControl('true', Validators.required),
         hearingDate: new FormControl('2023-10-23'),
-        attachments: new FormControl([])
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
       });
       const caseMessage = {
         id: 'test',
@@ -84,7 +85,8 @@ describe('QueryManagementUtils', () => {
       };
       const formGroup = new FormGroup({
         body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
-        attachments: new FormControl([])
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
       });
       const caseMessage = {
         id: 'test',
@@ -102,6 +104,74 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+    });
+
+    it('should return "Yes" for isClosed when closeQuery is true', () => {
+      const queryItem: QueryListItem = {
+        id: '1234-1234-1234',
+        subject: 'Follow up',
+        name: 'Stuart Smith',
+        body: 'Body',
+        attachments: [],
+        isHearingRelated: 'Yes',
+        hearingDate: '2023-10-23',
+        createdOn: new Date(),
+        createdBy: '1111-2222-3333-4444',
+        children: [],
+        lastSubmittedMessage: new QueryListItem(),
+        lastSubmittedBy: '',
+        lastSubmittedDate: undefined,
+        lastResponseBy: '',
+        lastResponseDate: undefined,
+        responseStatus: null
+      };
+
+      const formGroup = new FormGroup({
+        body: new FormControl('Follow-up body'),
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(true)
+      });
+
+      const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails);
+      expect(result.isClosed).toBe('Yes');
+    });
+
+    it('should fallback to "id" if uid is not present', () => {
+      const userWithIdOnly = { id: 'fallback-user-id', name: 'Alt Name' };
+
+      const formGroup = new FormGroup({
+        subject: new FormControl('Test Subject'),
+        body: new FormControl('Test Body'),
+        isHearingRelated: new FormControl(false),
+        hearingDate: new FormControl(null),
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
+      });
+
+      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithIdOnly);
+      expect(result.createdBy).toBe('fallback-user-id');
+      expect(result.name).toBe('Alt Name');
+    });
+
+    it('should fallback to forename + surname if name is not provided', () => {
+      const userWithNames = {
+        uid: 'uid-xyz',
+        forename: 'Lisa',
+        surname: 'Brown'
+      };
+
+      const formGroup = new FormGroup({
+        subject: new FormControl('Another Subject'),
+        body: new FormControl('Another Body'),
+        isHearingRelated: new FormControl(false),
+        hearingDate: new FormControl(null),
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
+      });
+
+      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithNames);
+      expect(result.name).toBe('Lisa Brown');
+      expect(result.createdBy).toBe('uid-xyz');
     });
   });
 
@@ -184,6 +254,65 @@ describe('QueryManagementUtils', () => {
       expect(QueryManagementUtils.isNonEmptyObject('string')).toBeFalsy();
       expect(QueryManagementUtils.isNonEmptyObject(123)).toBeFalsy();
       expect(QueryManagementUtils.isNonEmptyObject([])).toBeFalsy();
+    });
+  });
+
+  describe('QueryManagementUtils methods', () => {
+    let formGroup: FormGroup;
+
+    beforeEach(() => {
+      formGroup = new FormGroup({
+        body: new FormControl('Test body'),
+        subject: new FormControl('Test subject'),
+        attachments: new FormControl([]),
+        isHearingRelated: new FormControl(false),
+        hearingDate: new FormControl(null),
+        closeQuery: new FormControl(false)
+      });
+    });
+
+    describe('getNewQueryData', () => {
+      it('should use uid and name if available', () => {
+        const user = { uid: 'user-123', name: 'Alice Smith' };
+        const result = QueryManagementUtils.getNewQueryData(formGroup, user);
+        expect(result.createdBy).toBe('user-123');
+        expect(result.name).toBe('Alice Smith');
+      });
+
+      it('should fallback to id and forename + surname', () => {
+        const user = { id: 'user-456', forename: 'Bob', surname: 'Jones' };
+        const result = QueryManagementUtils.getNewQueryData(formGroup, user);
+        expect(result.createdBy).toBe('user-456');
+        expect(result.name).toBe('Bob Jones');
+      });
+    });
+
+    describe('getRespondOrFollowupQueryData', () => {
+      const queryItem = new QueryListItem();
+      queryItem.subject = 'Follow up';
+      queryItem.id = 'query-001';
+      queryItem.isHearingRelated = 'Yes';
+      queryItem.hearingDate = '2025-07-01';
+
+      it('should set isClosed to Yes when closeQuery is true', () => {
+        formGroup.get('closeQuery').setValue(true);
+        const user = { uid: 'x', name: 'Y' };
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        expect(result.isClosed).toBe('Yes');
+      });
+
+      it('should set isClosed to No when closeQuery is false', () => {
+        formGroup.get('closeQuery').setValue(false);
+        const user = { uid: 'x', name: 'Y' };
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        expect(result.isClosed).toBe('No');
+      });
+
+      it('should fallback to forename + surname when name is missing', () => {
+        const user = { uid: 'u9', forename: 'Charlie', surname: 'Doe' };
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        expect(result.name).toBe('Charlie Doe');
+      });
     });
   });
 });

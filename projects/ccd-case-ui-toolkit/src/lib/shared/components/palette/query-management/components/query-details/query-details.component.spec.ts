@@ -301,5 +301,25 @@ describe('QueryDetailsComponent', () => {
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
+
+    it('should emit true and return false when user is external and query is awaiting response', () => {
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+      spyOn(component, 'isInternalUser').and.returnValue(false);
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.isInternalUser).toHaveBeenCalled();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit true and return true when queryResponseStatus is CLOSED', () => {
+      component.queryResponseStatus = QueryItemResponseStatus.CLOSED;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTruthy();
+    });
   });
 });

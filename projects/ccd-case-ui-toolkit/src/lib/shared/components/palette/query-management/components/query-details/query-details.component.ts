@@ -52,6 +52,10 @@ export class QueryDetailsComponent implements OnChanges{
 
   public hasRespondedToQuery(): boolean {
     const isAwaiting = this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING;
+    if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {
+      this.hasResponded.emit(true);
+      return true;
+    }
 
     if (this.isInternalUser()) {
       if (isAwaiting) {
