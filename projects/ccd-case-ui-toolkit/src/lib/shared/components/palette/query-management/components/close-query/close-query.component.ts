@@ -7,8 +7,4 @@ import { FormGroup } from '@angular/forms';
 })
 export class CloseQueryComponent {
   @Input() public formGroup: FormGroup;
-
-  public closeQuery(): void {
-    console.log('this.formGroup.get(value', this.formGroup.get('closeQuery')?.value);
-  }
 }
