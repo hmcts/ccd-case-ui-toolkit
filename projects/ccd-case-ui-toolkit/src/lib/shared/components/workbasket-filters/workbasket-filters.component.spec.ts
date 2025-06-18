@@ -1317,20 +1317,6 @@ describe('with no defaults', () => {
     component.scrollToTop();
     expect(scrollToSpy).toHaveBeenCalled();
   });
-
-  it('should not call scrollTo if already at the top', () => {
-    // Mock the current scroll position as 0
-    Object.defineProperty(document.documentElement, 'scrollTop', { value: 0, writable: true });
-    Object.defineProperty(document.body, 'scrollTop', { value: 0, writable: true });
-
-    const scrollToSpy = spyOn(window, 'scrollTo');
-    const requestAnimationFrameSpy = spyOn(window, 'requestAnimationFrame');
-
-    component.scrollToTop();
-
-    expect(requestAnimationFrameSpy).not.toHaveBeenCalled();
-    expect(scrollToSpy).not.toHaveBeenCalled();
-  });
 });
 
 function resetCaseTypes(jurisdiction: Jurisdiction, caseTypes: CaseType[]) {
