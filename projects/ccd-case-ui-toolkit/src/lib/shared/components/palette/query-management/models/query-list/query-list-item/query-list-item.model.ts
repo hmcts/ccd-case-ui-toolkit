@@ -89,6 +89,15 @@ export class QueryListItem implements CaseMessage {
 
   public get responseStatus(): QueryItemResponseStatus {
     // Child logic (position-based)
+    const isThreadClosed = (item: QueryListItem): boolean => {
+      if (item.isClosed === 'Yes') {
+        return true;
+      }
+      return item.children?.some(child => isThreadClosed(child)) || false;
+    };
+
+    }
+
     if (this.messageIndexInParent !== null) {
       return this.messageIndexInParent % 2 === 0
         ? QueryItemResponseStatus.RESPONDED

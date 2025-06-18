@@ -1,18 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CcdCloseQueryComponent } from './ccd-close-query.component';
+import { CloseQueryComponent } from './close-query.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
-describe('CcdCloseQueryComponent', () => {
-  let component: CcdCloseQueryComponent;
-  let fixture: ComponentFixture<CcdCloseQueryComponent>;
+describe('CloseQueryComponent', () => {
+  let component: CloseQueryComponent;
+  let fixture: ComponentFixture<CloseQueryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CcdCloseQueryComponent]
+      declarations: [
+        CloseQueryComponent,
+        MockRpxTranslatePipe
+      ]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CcdCloseQueryComponent);
+    fixture = TestBed.createComponent(CloseQueryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

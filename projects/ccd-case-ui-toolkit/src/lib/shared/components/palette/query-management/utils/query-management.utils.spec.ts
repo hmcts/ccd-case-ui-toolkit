@@ -43,7 +43,8 @@ describe('QueryManagementUtils', () => {
         body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
         isHearingRelated: new FormControl('true', Validators.required),
         hearingDate: new FormControl('2023-10-23'),
-        attachments: new FormControl([])
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
       });
       const caseMessage = {
         id: 'test',
@@ -84,7 +85,8 @@ describe('QueryManagementUtils', () => {
       };
       const formGroup = new FormGroup({
         body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
-        attachments: new FormControl([])
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
       });
       const caseMessage = {
         id: 'test',
