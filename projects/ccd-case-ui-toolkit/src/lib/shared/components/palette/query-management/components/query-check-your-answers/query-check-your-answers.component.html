@@ -17,6 +17,7 @@
      </div>
    </div>
 
+   <div *ngIf="error && (error.details || error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
     <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
       <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
     </ng-container>
