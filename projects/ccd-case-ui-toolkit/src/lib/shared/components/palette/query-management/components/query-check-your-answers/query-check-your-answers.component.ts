@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
   CaseField,
@@ -10,7 +10,7 @@ import {
   CaseViewTrigger,
   ErrorMessage
 } from '../../../../../../../lib/shared/domain';
-import { SessionStorageService } from '../../../../../services';
+import { ErrorNotifierService, SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
@@ -61,6 +61,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public filteredTasks: Task[] = [];
   public readyToSubmit: boolean;
   public isSubmitting: boolean = false;
+
+  public callbackErrorsSubject: Subject<any> = new Subject();
+  public error: any;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -217,9 +220,19 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private handleError(error: any): void {
     console.error('Error in API calls:', error);
-
     this.isSubmitting = false;
-    this.router.navigate(['/', 'service-down']);
+
+    if (this.isServiceErrorFound(error)){
+      this.error = null;
+      this.callbackErrorsSubject.next(error);
+    } else {
+       if (error && error.status !== 401 && error.status !== 403) {
+        this.error = error;
+       } else {
+        this.router.navigate(['/', 'service-down']);
+       }
+    }
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
   }
 
   private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
@@ -416,6 +429,10 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       const documents = attachmentsValue;
       this.attachments = documents.map(QueryManagementUtils.documentToCollectionFormDocument);
     }
+  }
+
+  public isServiceErrorFound(error: any): boolean {
+    return !!(error?.callbackErrors?.length);
   }
 }
 

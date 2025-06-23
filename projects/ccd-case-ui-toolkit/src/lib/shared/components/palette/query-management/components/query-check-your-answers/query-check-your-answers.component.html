@@ -17,6 +17,18 @@
      </div>
    </div>
 
+   <div *ngIf="error && (error.details || error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h3 class="heading-h3 error-summary-heading" id="event_error-summary-heading">
+      The event could not be created
+    </h3>
+    <p>{{error.message}}</p>
+    <ul *ngIf="error.details?.field_errors" class="error-summary-list">
+      <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
+    </ul>
+  </div>
+
+  <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject"></ccd-callback-errors>
+
     <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
       <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
     </ng-container>
