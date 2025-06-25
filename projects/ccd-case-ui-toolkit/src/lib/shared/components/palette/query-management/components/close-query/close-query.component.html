@@ -1,0 +1,21 @@
+<div [formGroup]="formGroup">
+    <h2 class="govuk-heading-m">{{ 'Closing the query' | rpxTranslate }}</h2>
+    <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input"
+            formControlName="closeQuery" id="closeQuery" name="closeQuery" type="checkbox" />
+        <label class="govuk-label govuk-checkboxes__label" for="closeQuery" [attr.aria-labelledby]="'closeQuery'">
+        {{ 'I want to close this query' | rpxTranslate }}
+        </label>
+    </div>
+    <div class="govuk-warning-text">
+        <span aria-hidden="true" class="govuk-warning-text__icon">!</span>
+        <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        <p class="qm-service-message">
+            <strong>
+            {{ 'Closing the query means the parties can no longer send message in this thread.' | rpxTranslate }}
+            </strong>
+        </p>
+        </strong>
+    </div>
+</div>
