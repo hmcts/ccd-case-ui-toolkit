@@ -54,7 +54,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public jurisdictionId: string;
   public caseTypeId: string;
   public caseTypeExclusions: string;
-  public fileSecureModeOn: boolean = true;
+  public fileSecureModeOn: boolean = false;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -95,13 +95,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
           this.caseTypeId = parts[parts.indexOf('case-create') + 2];
         }
       }
-      // if the secure mode LD flag is false we should set all fileSecuremode to use v1 doc endpoint
-      if (!this.secureModeOn){
-        this.fileSecureModeOn = false;
-      }
       // if the secure mode LD flag is true we should set fileSecureModeOn to false if the caseTypeId is in the exclusion list
-      if (this.secureModeOn && this.caseTypeExclusions.split(',').includes(this.caseTypeId)) {
-        this.fileSecureModeOn = false;
+      if (this.secureModeOn && !this.caseTypeExclusions.split(',').includes(this.caseTypeId)) {
+        this.fileSecureModeOn = true;
       }
       this.dialogConfig = initDialog();
       let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };

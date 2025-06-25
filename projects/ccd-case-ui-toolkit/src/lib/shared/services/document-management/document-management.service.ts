@@ -145,7 +145,7 @@ export class DocumentManagementService {
     if (documentSecureModeEnabled && !isDocumentOnExclusionList){
       return this.appConfig.getDocumentManagementUrlV2();
     }
-    // if documentSecureModeEnabled is true
+    // if documentSecureModeEnabled is true, and case is in the exclusion list, return docV1 endpoint
     return this.appConfig.getDocumentManagementUrl();
   }
 }
