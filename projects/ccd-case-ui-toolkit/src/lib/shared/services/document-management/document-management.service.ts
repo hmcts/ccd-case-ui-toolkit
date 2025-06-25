@@ -137,8 +137,15 @@ export class DocumentManagementService {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
     const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
-    return (documentSecureModeEnabled && !isDocumentOnExclusionList)
-      ? this.appConfig.getDocumentManagementUrlV2()
-      : this.appConfig.getDocumentManagementUrl();
+    // if the documentSecureModeEnabled is false, return docV1 endpoint
+    if (!documentSecureModeEnabled){
+      return this.appConfig.getDocumentManagementUrl();
+    }
+    // if the documentSecureModeEnabled is true, and the case is not in the exclusion list, return docV2 endpoint
+    if (documentSecureModeEnabled && !isDocumentOnExclusionList){
+      return this.appConfig.getDocumentManagementUrlV2();
+    }
+    // if documentSecureModeEnabled is true
+    return this.appConfig.getDocumentManagementUrl();
   }
 }
