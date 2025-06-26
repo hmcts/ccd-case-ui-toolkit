@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.13-simplify-cdam-logic",
+  "version": "7.2.13-simplify-cdam-logic-rc2",
   "engines": {
     "node": ">=18.19.0"
   },
