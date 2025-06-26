@@ -134,18 +134,27 @@ export class DocumentManagementService {
   }
 
   private getDocStoreUrl(): string {
+    if (this.isDocumentSecureModeEnabled()) {
+      return this.appConfig.getDocumentManagementUrlV2();
+    }
+    return this.appConfig.getDocumentManagementUrl();
+  }
+
+  // return false == document should not use CDAM
+  // return true == document should use CDAM
+  public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
     const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
-    // if the documentSecureModeEnabled is false, return docV1 endpoint
+    // if the documentSecureModeEnabled is false, return false
     if (!documentSecureModeEnabled){
-      return this.appConfig.getDocumentManagementUrl();
+      return false;
     }
-    // if the documentSecureModeEnabled is true, and the case is not in the exclusion list, return docV2 endpoint
+    // if the documentSecureModeEnabled is true, and the case is not in the exclusion list, return true
     if (documentSecureModeEnabled && !isDocumentOnExclusionList){
-      return this.appConfig.getDocumentManagementUrlV2();
+      return true;
     }
-    // if documentSecureModeEnabled is true, and case is in the exclusion list, return docV1 endpoint
-    return this.appConfig.getDocumentManagementUrl();
+    // if documentSecureModeEnabled is true, and case is in the exclusion list, return false
+    return false;
   }
 }
