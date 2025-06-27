@@ -134,11 +134,27 @@ export class DocumentManagementService {
   }
 
   private getDocStoreUrl(): string {
+    if (this.isDocumentSecureModeEnabled()) {
+      return this.appConfig.getDocumentManagementUrlV2();
+    }
+    return this.appConfig.getDocumentManagementUrl();
+  }
+
+  // return false == document should not use CDAM
+  // return true == document should use CDAM
+  public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
     const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
-    return (documentSecureModeEnabled && !isDocumentOnExclusionList)
-      ? this.appConfig.getDocumentManagementUrlV2()
-      : this.appConfig.getDocumentManagementUrl();
+    // if the documentSecureModeEnabled is false, return false
+    if (!documentSecureModeEnabled){
+      return false;
+    }
+    // if the documentSecureModeEnabled is true, and the case is not in the exclusion list, return true
+    if (documentSecureModeEnabled && !isDocumentOnExclusionList){
+      return true;
+    }
+    // if documentSecureModeEnabled is true, and case is in the exclusion list, return false
+    return false;
   }
 }

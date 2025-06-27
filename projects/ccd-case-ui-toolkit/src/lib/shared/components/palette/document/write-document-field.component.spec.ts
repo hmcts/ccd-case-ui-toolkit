@@ -20,6 +20,7 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { HttpErrorResponse } from '@angular/common/http';
+import { mock } from 'node:test';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -125,7 +126,7 @@ describe('WriteDocumentFieldComponent', () => {
   let caseNotifier: any;
 
   beforeEach(waitForAsync(() => {
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
@@ -139,7 +140,7 @@ describe('WriteDocumentFieldComponent', () => {
     ]);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
-    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
@@ -617,7 +618,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   beforeEach(waitForAsync(() => {
 
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
       of(RESPONSE_SECOND_DOCUMENT_MANDATORY)
@@ -631,7 +632,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     ]);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
-    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
@@ -843,7 +844,7 @@ describe('WriteDocumentFieldComponent', () => {
   let caseNotifier: any;
 
   beforeEach(waitForAsync(() => {
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
@@ -857,7 +858,7 @@ describe('WriteDocumentFieldComponent', () => {
     ]);
 
     appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
-    appConfig.getCdamExclusionList.and.returnValue(of('testCaseType'));
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of(undefined);
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
