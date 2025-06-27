@@ -2,7 +2,8 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
 import { CaseView } from '../../../domain/case-view/case-view.model';
@@ -15,12 +16,10 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html',
-  styleUrls: ['./../base-field/field-write.component.scss']
+  templateUrl: './write-document-field.html'
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';
@@ -33,7 +32,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
-  public static readonly NO_FILE_CHOSED = 'No file chosen';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -48,7 +46,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
-  public fileName = WriteDocumentFieldComponent.NO_FILE_CHOSED;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -56,6 +53,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public jurisdictionId: string;
   public caseTypeId: string;
+  public caseTypeExclusions: string;
+  public fileSecureModeOn: boolean = true;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -64,32 +63,50 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
-    private readonly rpxTranslationService : RpxTranslationService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    if (this.rpxTranslationService.language === 'cy'){
-      this.rpxTranslationService.getTranslation$(WriteDocumentFieldComponent.NO_FILE_CHOSED).subscribe((translation) => {
-        this.fileName = translation;
-      });
-    }
-    if (this.secureModeOn) {
-      this.subscribeToCaseDetails();
-    }
-    this.dialogConfig = initDialog();
-    // EUI-3403. The field was not being registered when there was no value and the field
-    // itself was not mandatory, which meant that show_conditions would not be evaluated.
-    // I've cleaned up the logic and it's now always registered.
-    let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
-    document = this.secureModeOn && !document.document_hash ? { ...document, document_hash: null } : document;
-    if (this.isAMandatoryComponent()) {
-      this.createDocumentFormWithValidator(document);
-    } else {
-      this.createDocumentForm(document);
-    }
+    this.caseTypeExclusions = this.appConfig.getCdamExclusionList();
+
+    // Wait for both observables to emit at least once
+    this.caseNotifierSubscription = combineLatest([
+      this.caseNotifier.caseView.pipe(take(1)),
+      this.jurisdictionService.getSelectedJurisdiction()
+    ]).subscribe(([caseDetails, jurisdiction]) => {
+      if (caseDetails) {
+        this.caseTypeId = caseDetails?.case_type?.id;
+        this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
+      }
+      if (jurisdiction) {
+        this.jurisdictionId = jurisdiction.id;
+        if (jurisdiction.currentCaseType) {
+          this.caseTypeId = jurisdiction.currentCaseType.id;
+        }
+      }
+      //if we havent set the value of caseTypeId yet, we can check if its in the url. e.g. case-creation
+      if (!this.caseTypeId) {
+        const url = window.location.pathname;
+        if (url.indexOf('/case-create/') > -1) {
+          const parts = url.split('/');
+          this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
+          this.caseTypeId = parts[parts.indexOf('case-create') + 2];
+        }
+      }
+      if (this.secureModeOn && this.caseTypeExclusions.split(',').includes(this.caseTypeId)) {
+        this.fileSecureModeOn = false;
+      }
+      this.dialogConfig = initDialog();
+      let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
+      document = this.fileSecureModeOn && !document.document_hash ? { ...document, document_hash: null } : document;
+      if (this.isAMandatoryComponent()) {
+        this.createDocumentFormWithValidator(document);
+      } else {
+        this.createDocumentForm(document);
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -138,7 +155,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.invalidFileFormat();
     } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
-      this.fileName = fileInput.target.files[0].name;
       this.displayFileUploadMessages(WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS);
       const documentUpload: FormData = this.buildDocumentUploadData(this.selectedFile);
       this.fileUploadStateService.setUploadInProgress(true);
@@ -215,30 +231,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     });
   }
 
-  // Depending on the context, we can get the case type and jurisdiction from different sources
-  // If we are running an event, the caseNotifier will have the current case
-  // If we are creating a case, the case doesn't exist yet, so the caseNotifier can't help
-  // Instead we can use the eventTrigger to get the case type, and the jurisdiction service to
-  // get the currently selected jurisdiction
-  private subscribeToCaseDetails(): void {
-    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
-      next: (caseDetails: CaseView) => {
-        this.caseTypeId = caseDetails?.case_type.id;
-        this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
-      }
-    });
-    this.jurisdictionSubs = this.jurisdictionService.getSelectedJurisdiction().subscribe({
-      next: (jurisdiction) => {
-        if (jurisdiction) {
-          this.jurisdictionId = jurisdiction.id;
-          if (jurisdiction.currentCaseType) {
-            this.caseTypeId = jurisdiction.currentCaseType.id
-          }
-        }
-      }
-    });
-  }
-
   private isAMandatoryComponent(): boolean {
     return this.caseField.display_context && this.caseField.display_context === Constants.MANDATORY;
   }
@@ -260,7 +252,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).valid &&
       !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).valid;
 
-    if (this.secureModeOn) {
+    if (this.fileSecureModeOn) {
       validation = validation && !this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).valid;
     }
 
@@ -293,7 +285,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
     }
 
-    documentFormGroup = this.secureModeOn ? {
+    documentFormGroup = this.fileSecureModeOn ? {
       ...documentFormGroup,
       ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
@@ -315,7 +307,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
     }
 
-    documentFormGroup = this.secureModeOn ? {
+    documentFormGroup = this.fileSecureModeOn ? {
       ...documentFormGroup,
       ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
@@ -369,16 +361,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
-      if (this.secureModeOn) {
+      if (this.fileSecureModeOn) {
         this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });
       } else {
         this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null });
       }
     }
 
-    const document = this.secureModeOn ? result.documents[0] : result._embedded.documents[0];
+    const document = this.fileSecureModeOn ? result.documents[0] : result._embedded.documents[0];
 
-    if (this.secureModeOn) {
+    if (this.fileSecureModeOn) {
       this.updateDocumentForm(
         document._links.self.href,
         document._links.binary.href,
@@ -402,7 +394,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.caseField.value.document_filename = document.originalDocumentName;
       this.caseField.value.document_url = document._links.self.href;
 
-      if (this.secureModeOn) {
+      if (this.fileSecureModeOn) {
         this.caseField.value.document_hash = document.hashToken;
       }
     }
