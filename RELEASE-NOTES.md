@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.13-exui-2761-rc1
+**EXUI-2761** url change
+
 ### Version 7.2.13
 **EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
 **EXUI-3050** SSCS - Duration of the hearing Value updating bug
