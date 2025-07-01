@@ -4,7 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '../../../../../services';
 import { isInternalUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
-import { QueryListItem } from '../../models';
+import { QueryCreateContext, QueryListItem } from '../../models';
+import { CaseNotifier } from '../../../../case-editor/services/case.notifier';
+import { AbstractAppConfig } from '../../../../../../app.config';
 
 @Component({
   selector: 'ccd-query-details',
@@ -25,10 +27,16 @@ export class QueryDetailsComponent implements OnChanges{
   private static readonly QUERY_ITEM_FOLLOW_UP = '4';
   private queryItemId: string;
 
+  public followUpQuery: string = QueryCreateContext.FOLLOWUP;
+  public respondToQuery: string = QueryCreateContext.RESPOND;
+  public enableServiceSpecificMultiFollowups: string[];
+
   constructor(
     private readonly sessionStorageService: SessionStorageService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    private readonly abstractConfig: AbstractAppConfig,
+    private readonly caseNotifier: CaseNotifier) { }
 
   public onBack(): void {
     this.backClicked.emit(true);
@@ -52,6 +60,28 @@ export class QueryDetailsComponent implements OnChanges{
 
   public hasRespondedToQuery(): boolean {
     const isAwaiting = this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING;
+
+    const lastChild = this.query?.children?.[this.query.children.length - 1];
+    const isFollowUp = lastChild?.messageType === this.followUpQuery;
+    const isRespond = lastChild?.messageType === this.respondToQuery;
+
+    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
+    const isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.some((jurisdiction) => jurisdiction === this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id);
+
+    if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {
+      this.hasResponded.emit(true);
+      return true;
+    }
+
+    if (isFollowUp && isMultipleFollowUpEnabled) {
+      this.hasResponded.emit(false);
+      return false;
+    }
+
+    if (isRespond) {
+      this.hasResponded.emit(false);
+      return false;
+    }
 
     if (this.isInternalUser()) {
       if (isAwaiting) {

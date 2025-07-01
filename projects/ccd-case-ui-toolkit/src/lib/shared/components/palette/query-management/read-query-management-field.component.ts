@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
-import { isInternalUser } from '../../../utils';
+import { isInternalUser, FeatureVariation } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { CaseQueriesCollection, QueryListItem } from './models';
+import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
+import { AbstractAppConfig } from '../../../../app.config';
+
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html'
@@ -17,15 +19,37 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public query: QueryListItem;
   public showQueryList: boolean = true;
   public caseId: string;
+  public messageType : string;
+
+  public followUpQuery: string = QueryCreateContext.FOLLOWUP;
+  public respondToQuery: string = QueryCreateContext.RESPOND;
+
+  public isQueryClosed: boolean = false;
+
+  public value: boolean;
+  public isMultipleFollowUpEnabled: boolean;
+
+  public enableServiceSpecificMultiFollowups: string[];
+
+  public defaultFeatureValue: FeatureVariation = {
+    includeCaseTypes: ['CIVIL'],
+    jurisdiction: 'CIVIL'
+  };
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
-    private readonly caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier,
+    private readonly abstractConfig: AbstractAppConfig,
   ) {
     super();
   }
 
   public ngOnInit(): void {
+    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
+    // console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups);
+    this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.some((jurisdiction) => jurisdiction === this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id);
+
+    console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups, this.isMultipleFollowUpEnabled);
     this.caseId = this.route.snapshot.params.cid;
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
@@ -56,11 +80,16 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Loop through the list of parties and their case queries collections
       // QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
+    //  hasMatchedJurisdictionAndCaseType('enable-service-specific-multi-followups', this.route.snapshot.data.case.case_type.jurisdiction.id, this.route.snapshot.data.case.case_type.id);
   }
 
   public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
+    this.messageType = this.getMessageType(query);
+    this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
+    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
+    console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups);
   }
 
   public backToQueryListPage(): void {
@@ -71,4 +100,11 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public isInternalUser(): boolean {
     return isInternalUser(this.sessionStorageService);
   }
+
+  public getMessageType(query: any): string {
+    return query?.children?.length
+      ? query.children[query.children.length - 1]?.messageType
+      : undefined;
+  }
 }
+

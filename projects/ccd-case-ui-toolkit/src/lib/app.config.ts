@@ -56,6 +56,8 @@ export abstract class AbstractAppConfig {
   public abstract getIcpEnable(): boolean;
   public abstract getIcpJurisdictions(): string[];
   public abstract logMessage(logMessage: string): void;
+  public abstract getEnableServiceSpecificMultiFollowups(): string[];
+  // public abstract getMultipleFollowUpEnabled(): boolean;
 
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
@@ -198,4 +200,6 @@ export class CaseEditorConfig {
   public icp_enabled: boolean;
   public icp_jurisdictions: string[];
   public events_to_hide: string[];
+  public enable_service_specific_multi_followups: string[];
+  public multiple_follow_up_enabled: boolean;
 }

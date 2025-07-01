@@ -40,6 +40,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public eventData: CaseEventTrigger | null = null;
+  @Input() public multipleFollowUpFeature: boolean;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
@@ -129,9 +130,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
-
     if (this.isSubmitting) {
-      return
+      return;
     }
 
     // Check if fieldId is null or undefined
@@ -227,7 +227,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
     const caseMessage = this.queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
-      : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails);
+      : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails, this.queryCreateContext);
 
     const messageId = this.route.snapshot.params.dataid; // Get the message ID from route params (if present)
     const isNewQuery = this.queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query

@@ -10,6 +10,7 @@ import { PUI_CASE_MANAGER } from '../../../utils';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
 import { of } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
   selector: 'dummy-component',
@@ -170,7 +171,13 @@ describe('ReadQueryManagementFieldComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseNotifier, useValue: casesNotifier }
+        { provide: CaseNotifier, useValue: casesNotifier },
+        {
+          provide: AbstractAppConfig,
+          useValue: {
+            getEnableServiceSpecificMultiFollowups: () => ['CIVIL', 'FAMILY']
+          }
+        },
       ]
     })
       .compileComponents();
