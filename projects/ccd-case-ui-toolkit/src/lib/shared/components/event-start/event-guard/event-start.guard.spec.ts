@@ -101,12 +101,14 @@ describe('EventStartGuard', () => {
   it('canActivate should navigate to event-start if task is required for event', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
     const route = createActivatedRouteSnapshot('1620409659381330', 'eventId');
-    const payload: TaskPayload = { task_required_for_event: true, tasks} as TaskPayload;
+    guard.jurisdiction = 'jid';
+    guard.caseType = 'ctid';
+    const payload: TaskPayload = { task_required_for_event: true} as TaskPayload;
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(false);
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${payload.tasks[0].jurisdiction}/${payload.tasks[0].case_type_id}/1620409659381330/event-start`], { queryParams: { caseId: '1620409659381330', eventId: 'eventId', taskId: undefined } });
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/jid/ctid/1620409659381330/event-start`], { queryParams: { caseId: '1620409659381330', eventId: 'eventId', taskId: undefined } });
     });
   });
 
@@ -175,10 +177,12 @@ describe('EventStartGuard', () => {
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
+      guard.jurisdiction = 'jid';
+      guard.caseType = 'ctid';
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${mockPayload.tasks[0].jurisdiction}/${mockPayload.tasks[0].case_type_id}/${caseId}/multiple-tasks-exist`]);
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/jid/ctid/${caseId}/multiple-tasks-exist`]);
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
