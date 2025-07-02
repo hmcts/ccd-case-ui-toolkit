@@ -19,6 +19,9 @@ export class ReadComplexFieldTableComponent extends AbstractFieldReadComponent i
   public path: string;
 
   public ngOnInit(): void {
+    super.ngOnInit();
+    console.log('ReadComplexFieldTableComponent ngOnInit, caseFields:',
+      JSON.stringify(this.caseFields));
     this.setDummyPathForChildArrays();
   }
 
