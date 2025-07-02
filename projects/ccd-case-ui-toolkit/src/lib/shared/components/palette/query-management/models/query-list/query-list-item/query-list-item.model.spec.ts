@@ -1,3 +1,4 @@
+import { QueryCreateContext } from '../../..';
 import { QueryItemResponseStatus } from '../../../enums';
 import { QueryListItem } from './query-list-item.model';
 
@@ -190,6 +191,49 @@ describe('QueryListItem', () => {
       const child2 = new QueryListItem();
       child2.messageIndexInParent = 1;
       expect(child2.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return CLOSED if the item is closed', () => {
+      queryListItem.isClosed = 'Yes';
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return CLOSED if any child is closed', () => {
+      queryListItem.isClosed = 'No';
+      queryListItem.children[2].isClosed = 'Yes';
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return RESPONDED if the last messageType is RESPOND', () => {
+      queryListItem.isClosed = 'No';
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.RESPOND;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return AWAITING if the last messageType is FOLLOWUP', () => {
+      queryListItem.isClosed = 'No';
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.FOLLOWUP;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return undefined if no children and item is not closed', () => {
+      queryListItem.isClosed = 'No';
+      queryListItem.children = [];
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return CLOSED if deeply nested child is closed', () => {
+      const deepChild = new QueryListItem();
+      deepChild.isClosed = 'Yes';
+
+      const intermediate = new QueryListItem();
+      intermediate.isClosed = 'No';
+      intermediate.children = [deepChild];
+
+      queryListItem.children = [intermediate];
+      queryListItem.isClosed = 'No';
+
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
   });
 });

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -430,7 +430,8 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      attachments: new FormControl([mockAttachment])
+      attachments: new FormControl([mockAttachment]),
+      closeQuery: new FormControl(false)
     });
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
@@ -901,5 +902,13 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
     expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
+  });
+
+  it('should return early and not call createEvent if isSubmitting is true', () => {
+    component.isSubmitting = true;
+
+    component.submit();
+
+    expect(casesService.createEvent).not.toHaveBeenCalled();
   });
 });

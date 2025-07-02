@@ -50,7 +50,7 @@
   </div>
   <ng-container *ngIf="query.children?.length > 0">
     <ng-container *ngFor="let child of query.children; let i = index;">
-      <ng-container *ngIf="i % 2 === 0; else followUpMessage">
+      <ng-container *ngIf="(i % 2 === 0 && !child?.messageType) || (child && child?.messageType === respondToQuery); else followUpMessage">
         <table class="govuk-table query-details-table" [attr.aria-describedby]="'Response of the query' | rpxTranslate">
           <caption class="govuk-table__caption govuk-table__caption--l">
             <div>{{ 'Response' | rpxTranslate }}</div>

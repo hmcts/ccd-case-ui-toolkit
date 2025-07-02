@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Document, FormDocument, CaseField } from '../../../../domain';
-import { CaseMessage, QueryListItem } from '../models';
+import { CaseMessage, QueryCreateContext, QueryListItem } from '../models';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
@@ -59,12 +59,20 @@ export class QueryManagementUtils {
     };
   }
 
-  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
+  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string): CaseMessage {
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
+    const isClosed = formGroup.get('closeQuery').value ? 'Yes' : 'No';
+
+    const messageType =
+      messageTypeParam === QueryCreateContext.RESPOND
+        ? QueryCreateContext.RESPOND
+        : messageTypeParam === QueryCreateContext.FOLLOWUP
+          ? QueryCreateContext.FOLLOWUP
+          : undefined;
 
     return {
       id: uuidv4(),
@@ -76,7 +84,9 @@ export class QueryManagementUtils {
       hearingDate: queryItem.hearingDate,
       createdOn: new Date(),
       createdBy: currentUserId,
-      parentId: queryItem.id
+      parentId: queryItem.id,
+      isClosed,
+      messageType
     };
   }
 
