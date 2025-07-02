@@ -46,10 +46,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
 
   public ngOnInit(): void {
     this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
-    // console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups);
     this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.some((jurisdiction) => jurisdiction === this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id);
-
-    console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups, this.isMultipleFollowUpEnabled);
     this.caseId = this.route.snapshot.params.cid;
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
@@ -89,7 +86,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.messageType = this.getMessageType(query);
     this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
     this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
-    console.log('enableServiceSpecificMultiFollowups', this.enableServiceSpecificMultiFollowups);
   }
 
   public backToQueryListPage(): void {

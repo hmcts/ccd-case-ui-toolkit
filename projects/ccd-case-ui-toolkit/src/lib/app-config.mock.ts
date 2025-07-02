@@ -235,10 +235,6 @@ export class AppMockConfig implements AbstractAppConfig {
     console.log(msg);
   }
 
-  // public getMultipleFollowUpEnabled(): boolean {
-  //   return false;
-  // }
-
   public getEnableServiceSpecificMultiFollowups(): string[] {
     return [];
   }

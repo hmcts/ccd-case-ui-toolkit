@@ -57,7 +57,6 @@ export abstract class AbstractAppConfig {
   public abstract getIcpJurisdictions(): string[];
   public abstract logMessage(logMessage: string): void;
   public abstract getEnableServiceSpecificMultiFollowups(): string[];
-  // public abstract getMultipleFollowUpEnabled(): boolean;
 
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release

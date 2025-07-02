@@ -13,7 +13,7 @@
     [caseId]="caseId"
   ></ccd-query-details>
 
-  <ng-container *ngIf="!isInternalUser() && !isQueryClosed">------- Test: {{isMultipleFollowUpEnabled}} {{messageType}}
+  <ng-container *ngIf="!isInternalUser() && !isQueryClosed">
     <ng-container *ngIf="(messageType && messageType === followUpQuery  && isMultipleFollowUpEnabled) || (messageType && messageType === respondToQuery); else sequentialQuery">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
