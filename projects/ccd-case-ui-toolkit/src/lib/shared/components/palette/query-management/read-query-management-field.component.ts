@@ -2,7 +2,7 @@ import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
-import { isInternalUser, FeatureVariation } from '../../../utils';
+import { isInternalUser } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from './models';
@@ -30,11 +30,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public isMultipleFollowUpEnabled: boolean;
 
   public enableServiceSpecificMultiFollowups: string[];
-
-  public defaultFeatureValue: FeatureVariation = {
-    includeCaseTypes: ['CIVIL'],
-    jurisdiction: 'CIVIL'
-  };
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
@@ -77,7 +72,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Loop through the list of parties and their case queries collections
       // QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
-    //  hasMatchedJurisdictionAndCaseType('enable-service-specific-multi-followups', this.route.snapshot.data.case.case_type.jurisdiction.id, this.route.snapshot.data.case.case_type.id);
   }
 
   public setQuery(query): void {
@@ -85,7 +79,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.query = query;
     this.messageType = this.getMessageType(query);
     this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
-    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
   }
 
   public backToQueryListPage(): void {
