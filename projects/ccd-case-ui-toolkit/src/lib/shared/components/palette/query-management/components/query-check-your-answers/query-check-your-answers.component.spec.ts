@@ -431,7 +431,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
       attachments: new FormControl([mockAttachment]),
-      closeQuery: new FormControl(false),
+      closeQuery: new FormControl(false)
     });
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
@@ -902,5 +902,13 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
     expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
+  });
+
+  it('should return early and not call createEvent if isSubmitting is true', () => {
+    component.isSubmitting = true;
+
+    component.submit();
+
+    expect(casesService.createEvent).not.toHaveBeenCalled();
   });
 });

@@ -258,4 +258,40 @@ describe('ReadQueryManagementFieldComponent', () => {
       expect(component.isInternalUser()).toBeFalsy();
     });
   });
+
+  describe('getMessageType', () => {
+    it('should return undefined if query has no children', () => {
+      const query = { children: [] };
+      const result = component.getMessageType(query);
+      expect(result).toBeUndefined();
+    });
+
+    it('should return messageType of the last child if children exist', () => {
+      const query = {
+        children: [
+          { messageType: 'RESPOND' },
+          { messageType: 'FOLLOWUP' }
+        ]
+      };
+      const result = component.getMessageType(query);
+      expect(result).toBe('FOLLOWUP');
+    });
+
+    it('should return undefined if query is null or malformed', () => {
+      expect(component.getMessageType(null)).toBeUndefined();
+      expect(component.getMessageType(undefined)).toBeUndefined();
+      expect(component.getMessageType({})).toBeUndefined();
+    });
+
+    it('should safely handle missing messageType in last child', () => {
+      const query = {
+        children: [
+          { messageType: 'RESPOND' },
+          {}
+        ]
+      };
+      const result = component.getMessageType(query);
+      expect(result).toBeUndefined();
+    });
+  });
 });

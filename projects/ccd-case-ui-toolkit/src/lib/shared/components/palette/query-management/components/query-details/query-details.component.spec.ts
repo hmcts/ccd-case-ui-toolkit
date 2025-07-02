@@ -393,5 +393,42 @@ describe('QueryDetailsComponent', () => {
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBe(true);
     });
+
+    it('should treat multi-follow-up as disabled if config returns empty list', () => {
+      // Override config manually for this test
+      component['abstractConfig'].getEnableServiceSpecificMultiFollowups = () => [];
+
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+      component.query.children = [
+        Object.assign(new QueryListItem(), {
+          messageType: 'FOLLOWUP'
+        })
+      ];
+
+      spyOn(component, 'isInternalUser').and.returnValue(false);
+
+      const result = component.hasRespondedToQuery();
+      expect(result).toBeFalsy();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('should return false if last child is FOLLOWUP and jurisdiction is not enabled', () => {
+      component.query.children.push(
+        Object.assign(new QueryListItem(), {
+          messageType: 'FOLLOWUP'
+        })
+      );
+
+      // Override jurisdiction to something not in config
+      component['caseNotifier'].cachedCaseView.case_type.jurisdiction.id = 'IMMIGRATION';
+
+      spyOn(component, 'isInternalUser').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(result).toBeDefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+    });
   });
 });

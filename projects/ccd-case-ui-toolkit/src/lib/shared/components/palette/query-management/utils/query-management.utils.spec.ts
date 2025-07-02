@@ -313,6 +313,59 @@ describe('QueryManagementUtils', () => {
         const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
         expect(result.name).toBe('Charlie Doe');
       });
+      it('should set messageType as RESPOND if passed as RESPOND', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Response body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        expect(result.messageType).toBe(QueryCreateContext.RESPOND);
+      });
+
+      it('should set messageType as FOLLOWUP if passed as FOLLOWUP', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Follow-up body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP);
+        expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
+      });
+
+      it('should set messageType as undefined if invalid type is passed', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Some body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, 'INVALID_TYPE');
+        expect(result.messageType).toBeUndefined();
+      });
     });
   });
 });
