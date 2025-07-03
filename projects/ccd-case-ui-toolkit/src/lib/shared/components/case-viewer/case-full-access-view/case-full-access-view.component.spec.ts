@@ -1272,11 +1272,21 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                   path: 'case-details',
                   children: [
                     {
-                      path: ':id',
+                      path: ':jurisdiction',
                       children: [
                         {
-                          path: 'tasks',
-                          component: TasksContainerComponent
+                          path: ':caseType',
+                          children: [
+                            {
+                              path: ':id',
+                              children: [
+                                {
+                                  path: 'tasks',
+                                  component: TasksContainerComponent
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1309,7 +1319,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
+              public path = (_: string) => 'cases/case-details/TEST/TestAddressBookCase/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1390,7 +1400,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
 
     mockLocation = createSpyObj('location', ['path', 'go', 'isCurrentPathEqualTo']);
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1234567890123456');
 
     TestBed
       .configureTestingModule({
@@ -1409,11 +1419,21 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
                   path: 'case-details',
                   children: [
                     {
-                      path: ':id',
+                      path: ':jurisdiction',
                       children: [
                         {
-                          path: 'tasks',
-                          component: TasksContainerComponent
+                          path: ':caseType',
+                          children: [
+                            {
+                              path: ':id',
+                              children: [
+                                {
+                                  path: 'tasks',
+                                  component: TasksContainerComponent
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1623,16 +1643,26 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
                   path: 'case-details',
                   children: [
                     {
-                      path: ':id',
+                      path: ':jurisdiction',
                       children: [
                         {
-                          path: 'tasks',
-                          component: TasksContainerComponent
+                          path: ':caseType',
+                          children: [
+                            {
+                              path: ':id',
+                              children: [
+                                {
+                                  path: 'tasks',
+                                  component: TasksContainerComponent
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
-                },
+                }
               ]
             }
           ]),
@@ -1663,7 +1693,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456';
+              public path = (_: string) => 'cases/case-details/TEST/TestAddressBookCase/1234567890123456';
             }
           },
           ErrorNotifierService,
@@ -1752,7 +1782,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     mockLocation = createSpyObj('location', ['path']);
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#caseNotes');
     TestBed
       .configureTestingModule({
         imports: [
@@ -1770,11 +1800,21 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                   path: 'case-details',
                   children: [
                     {
-                      path: ':id#overview',
+                      path: ':jurisdiction',
                       children: [
                         {
-                          path: 'tasks',
-                          component: TasksContainerComponent
+                          path: ':caseType',
+                          children: [
+                            {
+                              path: ':id#overview',
+                              children: [
+                                {
+                                  path: 'tasks',
+                                  component: TasksContainerComponent
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1898,7 +1938,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should return blank array when prepended tabs are null', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330');
     componentFixture.detectChanges();
     caseViewerComponent.prependedTabs = null;
     caseViewerComponent.organiseTabPosition();
@@ -1912,7 +1952,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should navigate to roles and access tab', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/roles-and-access');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
@@ -1922,7 +1962,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/caseNotes');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -1946,7 +1986,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
     // Using /caseNotes at the end of the URL ensures there won't be a matching tab found, so the selected tab should
     // default to the first *in the CaseView object*, which is the "Overview" tab
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/caseNotes');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -1960,7 +2000,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/roles-and-access');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -1982,7 +2022,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -1996,7 +2036,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -2017,7 +2057,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
     const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/tasks');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
@@ -2041,7 +2081,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
     mockLocation = createSpyObj('location', ['path']);
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#caseNotes');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
@@ -2065,11 +2105,21 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
                   path: 'case-details',
                   children: [
                     {
-                      path: ':id#overview',
+                      path: ':jurisdiction',
                       children: [
                         {
-                          path: 'tasks',
-                          component: TasksContainerComponent
+                          path: ':caseType',
+                          children: [
+                            {
+                              path: ':id#overview',
+                              children: [
+                                {
+                                  path: 'tasks',
+                                  component: TasksContainerComponent
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -2218,7 +2268,7 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
 
   beforeEach(async () => {
     mockLocation = createSpyObj('location', ['path']);
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330');
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
 
@@ -2237,11 +2287,21 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
                 path: 'case-details',
                 children: [
                   {
-                    path: ':id#overview',
+                    path: ':jurisdiction',
                     children: [
                       {
-                        path: 'tasks',
-                        component: TasksContainerComponent
+                        path: ':caseType',
+                        children: [
+                          {
+                            path: ':id#overview',
+                            children: [
+                              {
+                                path: 'tasks',
+                                component: TasksContainerComponent
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
