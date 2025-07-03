@@ -138,20 +138,18 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     return url;
   }
 
-  private getNavigationUrlWithTab(url: string): string {
-    const hasTidQuery = this.router.url.includes('?tid=');
-    const isNotCasesPath = !this.parentUrl.includes('/cases');
-    const match = this.parentUrl.match(/(\d+)(.*)$/);
+  private getNavigationUrlWithTab(urlLink: string): string {
+    const isNotCasesPath = !urlLink.startsWith('/cases');
+    const match = urlLink.match(/^.*?(\d+)([^\/]*)$/);
     const hasNoExtraPath = match && !match[2];
-
-    if (hasTidQuery && isNotCasesPath && hasNoExtraPath) {
+    if (isNotCasesPath && hasNoExtraPath) {
       // Only add '/cases' prefix if not already present
-      if (!this.parentUrl.startsWith('/cases')) {
-        return `/cases${this.parentUrl}/tasks`;
+      if (!urlLink.startsWith('/cases')) {
+        return `/cases${urlLink}/tasks`;
       }
-      return `${this.parentUrl}/tasks`;
+      return `${urlLink}/tasks`;
     }
-    return url;
+    return urlLink;
   }
 
   public cancel(): Promise<boolean> {
@@ -166,10 +164,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         return this.router.navigate([previousUrl]);
       }
     } else {
-      this.parentUrl = this.getNavigationUrl(this.parentUrl);
+      const url = this.getNavigationUrl(this.parentUrl);
       // If there is no tab name in the URL, we need to navigate to the tasks tab
-      this.parentUrl = this.getNavigationUrlWithTab(this.parentUrl);
-      return this.router.navigate([this.parentUrl]);
+      const updatedUrl = this.getNavigationUrlWithTab(url);
+      return this.router.navigate([updatedUrl]);
     }
   }
 
