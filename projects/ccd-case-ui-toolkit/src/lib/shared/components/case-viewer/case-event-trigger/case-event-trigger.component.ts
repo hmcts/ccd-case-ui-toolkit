@@ -165,9 +165,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         return this.router.navigate([previousUrl]);
       }
     } else {
-      const url = this.getNavigationUrl(this.parentUrl);
-      // If there is no tab name in the URL, we need to navigate to the tasks tab
-      const updatedUrl = this.getNavigationUrlWithTab(url);
+      const updatedUrl = this.getNavigationUrl(this.parentUrl);
       return this.router.navigate([updatedUrl]);
     }
   }

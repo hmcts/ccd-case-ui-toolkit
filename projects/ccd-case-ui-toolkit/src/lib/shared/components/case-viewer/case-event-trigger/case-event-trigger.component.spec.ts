@@ -395,10 +395,4 @@ describe('CaseEventTriggerComponent', () => {
     const result = component['getNavigationUrl'](url);
     expect(result).toBe('/case-details/TEST/TEST_CASE_TYPE/1707912713167104');
   });
-
-  it('getNavigationUrlWithTab should add /cases prefix and /tasks if needed', () => {
-    finalUrl = '/case-details/TEST/TEST_CASE_TYPE/1707912713167104';
-    const result = component['getNavigationUrlWithTab'](finalUrl);
-    expect(result).toBe('/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104/tasks');
-  });
 });
