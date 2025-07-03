@@ -138,21 +138,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     return url;
   }
 
-  private getNavigationUrlWithTab(urlLink: string): string {
-    const isNotCasesPath = !urlLink.startsWith('/cases');
-    // Use a safer regex to avoid super-linear runtime (ReDoS)
-    const match = urlLink.match(/(?:^|\/)(\d+)([^\/]*)$/);
-    const hasNoExtraPath = match && !match[2];
-    if (isNotCasesPath && hasNoExtraPath) {
-      // Only add '/cases' prefix if not already present
-      if (!urlLink.startsWith('/cases')) {
-        return `/cases${urlLink}/tasks`;
-      }
-      return `${urlLink}/tasks`;
-    }
-    return urlLink;
-  }
-
   public cancel(): Promise<boolean> {
     let previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
     if (previousUrl) {
