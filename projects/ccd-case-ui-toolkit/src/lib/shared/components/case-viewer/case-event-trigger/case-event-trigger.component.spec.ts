@@ -389,7 +389,7 @@ describe('CaseEventTriggerComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104'], { fragment: 'Claim details' });
   });
 
-it('getNavigationUrl should transform url if it matches /case-details/:id', () => {
+  it('getNavigationUrl should transform url if it matches /case-details/:id', () => {
     component.caseDetails = CASE_DETAILS;
     const url = '/case-details/1707912713167104';
     const result = component['getNavigationUrl'](url);
