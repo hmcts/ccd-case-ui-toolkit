@@ -10,6 +10,7 @@ import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseNotifier } from '../../../../case-editor/services';
+import { BehaviorSubject } from 'rxjs';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -168,13 +169,13 @@ describe('QueryDetailsComponent', () => {
   };
 
   class MockCaseNotifier {
-    cachedCaseView = {
+    public caseView = new BehaviorSubject({
       case_type: {
         jurisdiction: {
           id: 'CIVIL'
         }
       }
-    };
+    });
   }
 
   beforeEach(async () => {
@@ -204,6 +205,7 @@ describe('QueryDetailsComponent', () => {
     fixture = TestBed.createComponent(QueryDetailsComponent);
     component = fixture.componentInstance;
     component.query = queryListItem;
+    component.ngOnInit();
     fixture.detectChanges();
   });
 
@@ -410,6 +412,8 @@ describe('QueryDetailsComponent', () => {
       const result = component.hasRespondedToQuery();
       expect(result).toBeFalsy();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(component.currentJurisdictionId).toBe('CIVIL');
+      expect(component.isMultipleFollowUpEnabled).toBeTruthy();
     });
 
     it('should return false if last child is FOLLOWUP and jurisdiction is not enabled', () => {
@@ -419,8 +423,13 @@ describe('QueryDetailsComponent', () => {
         })
       );
 
-      // Override jurisdiction to something not in config
-      component['caseNotifier'].cachedCaseView.case_type.jurisdiction.id = 'IMMIGRATION';
+      ((component['caseNotifier'] as unknown) as MockCaseNotifier).caseView.next({
+        case_type: {
+          jurisdiction: {
+            id: 'IMMIGRATION'
+          }
+        }
+      });
 
       spyOn(component, 'isInternalUser').and.returnValue(true);
       component.queryResponseStatus = QueryItemResponseStatus.AWAITING;

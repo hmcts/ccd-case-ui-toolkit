@@ -6,6 +6,9 @@ describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
   let lastSubmittedBy: QueryListItem;
 
+  const YES = 'Yes';
+  const NO = 'No';
+
   beforeEach(() => {
     const items = [
       {
@@ -194,44 +197,44 @@ describe('QueryListItem', () => {
     });
 
     it('should return CLOSED if the item is closed', () => {
-      queryListItem.isClosed = 'Yes';
+      queryListItem.isClosed = YES;
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
 
     it('should return CLOSED if any child is closed', () => {
-      queryListItem.isClosed = 'No';
-      queryListItem.children[2].isClosed = 'Yes';
+      queryListItem.isClosed = NO;
+      queryListItem.children[2].isClosed = YES;
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
 
     it('should return RESPONDED if the last messageType is RESPOND', () => {
-      queryListItem.isClosed = 'No';
+      queryListItem.isClosed = NO;
       queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.RESPOND;
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.RESPONDED);
     });
 
     it('should return AWAITING if the last messageType is FOLLOWUP', () => {
-      queryListItem.isClosed = 'No';
+      queryListItem.isClosed = NO;
       queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.FOLLOWUP;
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
     });
 
     it('should return undefined if no children and item is not closed', () => {
-      queryListItem.isClosed = 'No';
+      queryListItem.isClosed = NO;
       queryListItem.children = [];
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
     });
 
     it('should return CLOSED if deeply nested child is closed', () => {
       const deepChild = new QueryListItem();
-      deepChild.isClosed = 'Yes';
+      deepChild.isClosed = YES;
 
       const intermediate = new QueryListItem();
-      intermediate.isClosed = 'No';
+      intermediate.isClosed = NO;
       intermediate.children = [deepChild];
 
       queryListItem.children = [intermediate];
-      queryListItem.isClosed = 'No';
+      queryListItem.isClosed = NO;
 
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });

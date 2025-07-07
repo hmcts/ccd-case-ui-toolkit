@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
@@ -9,17 +9,18 @@ import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from './mode
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { AbstractAppConfig } from '../../../../app.config';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html'
 })
-export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
+export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
   public caseQueriesCollections: CaseQueriesCollection[];
   public query: QueryListItem;
   public showQueryList: boolean = true;
   public caseId: string;
-  public messageType : string;
+  public messageType: string;
 
   public followUpQuery: string = QueryCreateContext.FOLLOWUP;
   public respondToQuery: string = QueryCreateContext.RESPOND;
@@ -27,22 +28,32 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public isQueryClosed: boolean = false;
 
   public value: boolean;
-  public isMultipleFollowUpEnabled: boolean;
+  public isMultipleFollowUpEnabled: boolean = false;
+  public currentJurisdictionId: string;
+  public enableServiceSpecificMultiFollowups: string[] = [];
 
-  public enableServiceSpecificMultiFollowups: string[];
+  private caseSubscription: Subscription;
+
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
     private readonly caseNotifier: CaseNotifier,
-    private readonly abstractConfig: AbstractAppConfig,
+    private readonly abstractConfig: AbstractAppConfig
   ) {
     super();
   }
 
   public ngOnInit(): void {
-    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
-    this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.some((jurisdiction) => jurisdiction === this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id);
     this.caseId = this.route.snapshot.params.cid;
+
+    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
+    this.caseSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails?.case_type?.jurisdiction?.id) {
+        this.currentJurisdictionId = caseDetails.case_type.jurisdiction.id;
+        this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.includes(this.currentJurisdictionId);
+      }
+    });
+
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
       // this.caseQueriesCollections = caseMessagesMockData;
@@ -72,6 +83,10 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Loop through the list of parties and their case queries collections
       // QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.caseSubscription?.unsubscribe();
   }
 
   public setQuery(query): void {

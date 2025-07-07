@@ -30,6 +30,8 @@ export class QueryDetailsComponent implements OnChanges{
   public followUpQuery: string = QueryCreateContext.FOLLOWUP;
   public respondToQuery: string = QueryCreateContext.RESPOND;
   public enableServiceSpecificMultiFollowups: string[];
+  public currentJurisdictionId: string;
+  public isMultipleFollowUpEnabled: boolean = false;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
@@ -44,6 +46,19 @@ export class QueryDetailsComponent implements OnChanges{
 
   public isInternalUser(): boolean {
     return isInternalUser(this.sessionStorageService);
+  }
+
+  public ngOnInit(): void {
+    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
+
+    this.caseNotifier.caseView.subscribe((caseView) => {
+      if (caseView?.case_type?.jurisdiction?.id) {
+        this.currentJurisdictionId = caseView.case_type.jurisdiction.id;
+        this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.includes(this.currentJurisdictionId);
+
+        this.hasRespondedToQuery();
+      }
+    });
   }
 
   public ngOnChanges(): void {
@@ -65,15 +80,12 @@ export class QueryDetailsComponent implements OnChanges{
     const isFollowUp = lastChild?.messageType === this.followUpQuery;
     const isRespond = lastChild?.messageType === this.respondToQuery;
 
-    this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
-    const isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.some((jurisdiction) => jurisdiction === this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id);
-
     if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {
       this.hasResponded.emit(true);
       return true;
     }
 
-    if (isFollowUp && isMultipleFollowUpEnabled) {
+    if (isFollowUp && this.isMultipleFollowUpEnabled) {
       this.hasResponded.emit(false);
       return false;
     }

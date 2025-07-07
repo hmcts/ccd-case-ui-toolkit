@@ -9,7 +9,7 @@ import { CaseField } from '../../../domain';
 import { PUI_CASE_MANAGER } from '../../../utils';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
@@ -30,8 +30,19 @@ describe('ReadQueryManagementFieldComponent', () => {
   let fixture: ComponentFixture<ReadQueryManagementFieldComponent>;
   const caseId = '12345';
   let route: ActivatedRoute;
+  const mockCaseView$ = new BehaviorSubject<any>({
+    case_type: {
+      jurisdiction: {
+        id: 'CIVIL'
+      }
+    }
+  });
+
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
-  const casesNotifier = jasmine.createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
+  const casesNotifier = {
+    fetchAndRefresh: jasmine.createSpy('fetchAndRefresh').and.returnValue(of({})),
+    caseView: mockCaseView$
+  };
 
   const componentLauncherId = 'ComponentLauncher';
   const componentLauncher1CaseField: CaseField = {
@@ -177,7 +188,7 @@ describe('ReadQueryManagementFieldComponent', () => {
           useValue: {
             getEnableServiceSpecificMultiFollowups: () => ['CIVIL', 'FAMILY']
           }
-        },
+        }
       ]
     })
       .compileComponents();
@@ -292,6 +303,11 @@ describe('ReadQueryManagementFieldComponent', () => {
       };
       const result = component.getMessageType(query);
       expect(result).toBeUndefined();
+    });
+
+    it('should set currentJurisdictionId and isMultipleFollowUpEnabled correctly from notifier', () => {
+      expect(component.currentJurisdictionId).toBe('CIVIL');
+      expect(component.isMultipleFollowUpEnabled).toBeTruthy();
     });
   });
 });
