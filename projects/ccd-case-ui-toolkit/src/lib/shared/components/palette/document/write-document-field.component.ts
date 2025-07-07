@@ -49,12 +49,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
-  private secureModeOn: boolean;
 
   public jurisdictionId: string;
   public caseTypeId: string;
   public caseTypeExclusions: string;
-  public fileSecureModeOn: boolean = true;
+  // Should the file upload use CDAM
+  public fileSecureModeOn: boolean = false;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -68,9 +68,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
-    this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    this.caseTypeExclusions = this.appConfig.getCdamExclusionList();
-
     // Wait for both observables to emit at least once
     this.caseNotifierSubscription = combineLatest([
       this.caseNotifier.caseView.pipe(take(1)),
@@ -95,8 +92,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
           this.caseTypeId = parts[parts.indexOf('case-create') + 2];
         }
       }
-      if (this.secureModeOn && this.caseTypeExclusions.split(',').includes(this.caseTypeId)) {
-        this.fileSecureModeOn = false;
+      // use the documentManagement service to check if the document upload should use CDAM
+      if (this.documentManagement.isDocumentSecureModeEnabled()) {
+        this.fileSecureModeOn = true;
       }
       this.dialogConfig = initDialog();
       let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
