@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SessionStorageService } from '../../../../../services';
@@ -7,13 +7,14 @@ import { QueryItemResponseStatus } from '../../enums';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { CaseNotifier } from '../../../../case-editor/services/case.notifier';
 import { AbstractAppConfig } from '../../../../../../app.config';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
   styleUrls: ['./query-details.component.scss']
 })
-export class QueryDetailsComponent implements OnChanges{
+export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
   @Input() public query: QueryListItem;
   @Input() public caseId: string;
   @Input() public queryResponseStatus: string;
@@ -33,6 +34,8 @@ export class QueryDetailsComponent implements OnChanges{
   public currentJurisdictionId: string;
   public isMultipleFollowUpEnabled: boolean = false;
 
+  private caseSubscription: Subscription;
+
   constructor(
     private readonly sessionStorageService: SessionStorageService,
     private readonly route: ActivatedRoute,
@@ -51,7 +54,7 @@ export class QueryDetailsComponent implements OnChanges{
   public ngOnInit(): void {
     this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
 
-    this.caseNotifier.caseView.subscribe((caseView) => {
+    this.caseSubscription = this.caseNotifier.caseView.subscribe((caseView) => {
       if (caseView?.case_type?.jurisdiction?.id) {
         this.currentJurisdictionId = caseView.case_type.jurisdiction.id;
         this.isMultipleFollowUpEnabled = this.enableServiceSpecificMultiFollowups.includes(this.currentJurisdictionId);
@@ -64,6 +67,10 @@ export class QueryDetailsComponent implements OnChanges{
   public ngOnChanges(): void {
     this.toggleLinkVisibility();
     this.hasRespondedToQuery();
+  }
+
+  public ngOnDestroy(): void {
+    this.caseSubscription?.unsubscribe();
   }
 
   public toggleLinkVisibility(): void {
