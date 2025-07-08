@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.13-exui-2761-rc6
+**EXUI-2761** url change
+
 ### Version 7.2.14
 **EXUI-3257** Users unable to upload documents - cdam fix
 
