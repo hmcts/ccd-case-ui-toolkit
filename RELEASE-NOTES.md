@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.16
+**EXUI-3167** Query Management - Ability to close a query thread for caseworkers
+
 ### Version 7.2.15
 **EXUI-3239** QM: Concurrency error message
 
