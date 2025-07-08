@@ -78,7 +78,11 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       return;
     }
 
-    const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+    const caseQueriesCollections = this.caseQueriesCollections.find(
+      (collection) => collection?.caseMessages.find((c) => c.value.id === messageId)
+    );
+
+    const queryWithChildren = new QueryListData(caseQueriesCollections);
     const targetId = this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND
       ? (matchingMessage?.parentId || matchingMessage?.id)
       : matchingMessage?.id;

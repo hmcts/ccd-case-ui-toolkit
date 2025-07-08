@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.15
+**EXUI-3239** QM: Concurrency error message
+
 ### Version 7.2.14
 **EXUI-3257** Users unable to upload documents - cdam fix
 
