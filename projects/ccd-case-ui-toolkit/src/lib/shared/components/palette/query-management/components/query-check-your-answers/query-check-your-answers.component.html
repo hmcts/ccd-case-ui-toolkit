@@ -135,6 +135,22 @@
       </div>
     </dl>
 
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Closing the query' | rpxTranslate }} {{formGroup.get('closeQuery')?.value }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.get('closeQuery')?.value ? 'I want to close this query' : 'No answer' | rpxTranslate }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+
     <br>
 
     <div>

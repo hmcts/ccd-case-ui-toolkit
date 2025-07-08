@@ -40,3 +40,9 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND">
+  <ccd-close-query *ngIf="!hasRespondedToQuery"
+    [formGroup]="formGroup">
+  </ccd-close-query>
+</ng-container>

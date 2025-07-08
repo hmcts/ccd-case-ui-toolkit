@@ -133,7 +133,9 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent,
+  CloseQueryComponent
+
 } from './query-management';
 import { QualifyingQuestionService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
@@ -273,6 +275,7 @@ const PALETTE_COMPONENTS = [
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
   QueryConfirmationComponent,
+  CloseQueryComponent,
 
   // Case event completion
   CaseEventCompletionComponent,

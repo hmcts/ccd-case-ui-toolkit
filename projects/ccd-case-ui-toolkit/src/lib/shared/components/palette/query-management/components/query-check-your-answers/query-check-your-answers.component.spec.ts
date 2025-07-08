@@ -432,7 +432,8 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      attachments: new FormControl([mockAttachment])
+      attachments: new FormControl([mockAttachment]),
+      closeQuery: new FormControl(false),
     });
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
