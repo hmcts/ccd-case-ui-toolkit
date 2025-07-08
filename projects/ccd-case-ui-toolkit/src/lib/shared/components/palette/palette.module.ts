@@ -143,6 +143,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
+import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -351,6 +352,7 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     LinkedCasesService,
     QualifyingQuestionService,
+    QueryManagementUtils,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
