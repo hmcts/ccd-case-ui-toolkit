@@ -26,7 +26,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public queryItemId: string;
   public caseDetails;
   public queryResponseStatus: string;
-  public queryItemDisplay: QueryListItem;
+  public queryListData: QueryListItem | undefined;
 
   public hasRespondedToQuery: boolean = false;
 
@@ -78,35 +78,21 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       return;
     }
 
-    const queryWithChildren = new QueryListData(this.caseQueriesCollections[0]);
+    const caseQueriesCollections = this.caseQueriesCollections.find(
+      (collection) => collection?.caseMessages.find((c) => c.value.id === messageId)
+    );
 
-    let filteredQuery = [];
+    const queryWithChildren = new QueryListData(caseQueriesCollections);
+    const targetId = this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND
+      ? (matchingMessage?.parentId || matchingMessage?.id)
+      : matchingMessage?.id;
 
-    if (this.queryItemId === QueryWriteRespondToQueryComponent.QUERY_ITEM_RESPOND) {
-      if (matchingMessage?.parentId) {
-        filteredQuery = queryWithChildren.queries.filter(
-          (query) => query?.id === matchingMessage.parentId
-        );
-      } else {
-        filteredQuery = queryWithChildren.queries.filter(
-          (query) => query?.id === matchingMessage.id
-        );
-      }
-
-      this.queryItemDisplay = new QueryListItem();
-      Object.assign(this.queryItemDisplay, matchingMessage);
-      this.queryItem = this.queryItemDisplay;
-    } else {
-      filteredQuery = queryWithChildren.queries.filter(
-        (query) => query?.id === matchingMessage.id
-      );
+    this.queryListData = queryWithChildren?.queries.find(query => query?.id === targetId);
+    this.queryResponseStatus = this.queryListData?.responseStatus;
     }
 
-    this.queryResponseStatus = filteredQuery[0]?.responseStatus;
-  }
-
-  public hasResponded(value: boolean): void {
-    this.hasRespondedToQuery = value;
-    this.hasRespondedToQueryTask.emit(value);
-  }
+    public hasResponded(value: boolean): void {
+      this.hasRespondedToQuery = value;
+      this.hasRespondedToQueryTask.emit(value);
+    }
 }
