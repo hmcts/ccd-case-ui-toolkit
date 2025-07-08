@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.2.15
+**EXUI-3239** QM: Concurrency error message
+
+### Version 7.2.14
+**EXUI-3257** Users unable to upload documents - cdam fix
+
+### Version 7.2.13
+**EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
+**EXUI-3050** SSCS - Duration of the hearing Value updating bug
+**EXUI-3078** Set up CDAM exclusion list
+**EXUI-3158** Refactor CDAM exclusion code to use LaunchDarkly
+
+### Version 7.2.12
+**EXUI-3043/3208** Show full thread context when replying as a caseworker
+
+### Version 7.2.11
+**EXUI-3190** Queries Tab Last submitted by column not displaying caseworker name
+
 ### Version 7.2.10
 **EXUI-2613** Remove LaunchDarkly feature flags - Group 2
 
