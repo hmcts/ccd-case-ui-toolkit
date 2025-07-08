@@ -1,5 +1,6 @@
 import { AddressModel } from '../../domain/addresses/address.model';
 import { AddressType } from './address-type.enum';
+import { CountryLanguage } from './country-language.enum';
 
 /**
  * Moving all this logic here into Address Parser class, so that it
@@ -15,7 +16,7 @@ import { AddressType } from './address-type.enum';
     addressModel.AddressLine3 = this.parseAddressLine3(classification, address);
     addressModel.PostCode = address.POSTCODE;
     addressModel.PostTown = address.POST_TOWN;
-    addressModel.Country = AddressType.UK;
+    addressModel.Country = (address.LANGUAGE?.toUpperCase() === 'CY' && address.COUNTRY_CODE?.toUpperCase() === 'W') ? CountryLanguage.CY : CountryLanguage.EN;
     return addressModel;
   }
 
