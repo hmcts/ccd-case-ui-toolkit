@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.18
+**EXUI-3147** MV CVE fix
+
 ### Version 7.2.17
 **EXUI-2895** Refactor PED access token from URL
 
