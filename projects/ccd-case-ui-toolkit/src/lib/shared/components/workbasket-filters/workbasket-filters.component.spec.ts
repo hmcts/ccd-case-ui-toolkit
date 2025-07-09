@@ -1309,8 +1309,15 @@ describe('with no defaults', () => {
     expect(component.apply).toHaveBeenCalledWith(true);
     expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
   }));
-});
 
+  it('should call scrollTo when scrollToTop is called', () => {
+    // Mock the current scroll position as 100
+    Object.defineProperty(document.documentElement, 'scrollTop', { value: 100, writable: true });
+    const scrollToSpy = spyOn(window, 'scrollTo');
+    component.scrollToTop();
+    expect(scrollToSpy).toHaveBeenCalled();
+  });
+});
 
 function resetCaseTypes(jurisdiction: Jurisdiction, caseTypes: CaseType[]) {
   jurisdiction.caseTypes.splice(0, jurisdiction.caseTypes.length);
