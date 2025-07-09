@@ -13,7 +13,7 @@
     [caseId]="caseId"
   ></ccd-query-details>
 
-  <ng-container *ngIf="!isInternalUser()">
+  <ng-container *ngIf="!isInternalUser() && !isQueryClosed">
     <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
@@ -27,5 +27,14 @@
         <p>{{ 'Our team will read your query and respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
       </div>
     </ng-template>
+  </ng-container>
+  <ng-container *ngIf="!isInternalUser() && isQueryClosed">
+    <div class="govuk-warning-text">
+      <span aria-hidden="true" class="govuk-warning-text__icon">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        <p class="qm-service-message govuk-!-font-weight-bold">{{ 'This query has been closed by court staff.' | rpxTranslate }}</p>
+      </strong>
+    </div>
   </ng-container>
 </ng-template>
