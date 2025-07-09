@@ -7,7 +7,7 @@
           <tr class="complex-panel-compound-field" [hidden]="field.hidden">
             <td colspan="2">
               <span class="text-16">
-                <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"
+                <ccd-field-read [topLevelFormGroup]="topLevelFormGroup" [caseFields]="caseFields"
                   [caseField]="field" [context]="context"></ccd-field-read>
               </span>
             </td>
@@ -18,7 +18,7 @@
             <th id="complex-panel-simple-field-label"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
             <td>
                 <span class="text-16">
-                  <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"
+                  <ccd-field-read [topLevelFormGroup]="topLevelFormGroup" [caseFields]="caseFields"
                     [caseField]="field" [context]="context"></ccd-field-read>
                 </span>
             </td>
