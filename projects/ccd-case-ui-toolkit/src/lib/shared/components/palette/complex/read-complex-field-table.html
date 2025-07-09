@@ -15,7 +15,11 @@
         </ng-container>
         <ng-template #SimpleRow>
           <tr class="complex-panel-simple-field" [hidden]="field.hidden">
-            <th id="complex-panel-simple-field-label"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
+            <th ccdLabelSubstitutor
+                [caseField]="field"
+                [contextFields]="caseFields"
+                [formGroup]="formGroup"
+                id="complex-panel-simple-field-label"><span class="text-16">{{field.label + '_bananas'| rpxTranslate}}</span></th>
             <td>
                 <span class="text-16">
                   <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"

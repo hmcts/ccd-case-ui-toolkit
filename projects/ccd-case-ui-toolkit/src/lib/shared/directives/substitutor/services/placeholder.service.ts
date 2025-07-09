@@ -9,10 +9,13 @@ import { FormValueService } from '../../../services/form/form-value.service';
 export class PlaceholderService {
 
     public resolvePlaceholders(pageFormFields: object, stringToResolve: string): string {
+      if (stringToResolve) {
+        console.log('PlaceholderService.resolvePlaceholders', stringToResolve, JSON.stringify(pageFormFields));
         const ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields, stringToResolve});
         return ps.resolvePlaceholders();
+      }
+      return '';
     }
-
 }
 
 export namespace PlaceholderService {
@@ -169,6 +172,7 @@ ___
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             } else {
                 const fieldValue = FormValueService.getFieldValue(this.pageFormFields, this.fieldIdToSubstitute, this.collectionItemIndex);
+                console.log('getFieldValue', this.fieldIdToSubstitute, 'value:', fieldValue, 'collectionItemIndex:', this.collectionItemIndex);
                 this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute] = fieldValue;
                 return this.resolvedFormValues[this.collectionItemIndex][this.fieldIdToSubstitute];
             }
@@ -221,6 +225,7 @@ ___
 
         private doSubstitution(value: string): void {
             const placeholder = PlaceholderSubstitutor.wrapPlaceholder(this.fieldIdToSubstitute);
+            console.log('Replacing placeholder:', placeholder, 'with value:', value);
             const replacedString = this.stringToResolve.substring(this.startSubstitutionIndex).replace(placeholder, value);
             this.stringToResolve = this.stringToResolve.substring(0, this.startSubstitutionIndex).concat(replacedString);
         }

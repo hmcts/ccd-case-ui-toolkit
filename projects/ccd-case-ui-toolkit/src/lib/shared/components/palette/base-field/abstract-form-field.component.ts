@@ -29,6 +29,7 @@ export abstract class AbstractFormFieldComponent {
   }
 
   protected registerControl<T extends AbstractControl>(control: T, replace = false): AbstractControl {
+    console.log(`Registering control for case field: ${this.caseField.id}`);
     const container: FormContainer = this.parent || this.formGroup;
     if (!container) {
       return control;
