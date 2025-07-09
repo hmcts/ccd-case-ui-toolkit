@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.17
+**EXUI-2895** Refactor PED access token from URL
+
 ### Version 7.2.16
 **EXUI-3167** Query Management - Ability to close a query thread for caseworkers
 
