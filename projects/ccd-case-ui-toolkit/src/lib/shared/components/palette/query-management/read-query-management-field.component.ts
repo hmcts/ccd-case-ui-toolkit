@@ -34,7 +34,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
 
   private caseSubscription: Subscription;
 
-
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
     private readonly caseNotifier: CaseNotifier,

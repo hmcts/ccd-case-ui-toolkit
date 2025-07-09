@@ -310,4 +310,44 @@ describe('ReadQueryManagementFieldComponent', () => {
       expect(component.isMultipleFollowUpEnabled).toBeTruthy();
     });
   });
+  describe('setQuery', () => {
+    it('should set isQueryClosed to true if any child query is closed', () => {
+      const closedChild = new QueryListItem();
+      closedChild.isClosed = 'Yes';
+
+      const openChild = new QueryListItem();
+      openChild.isClosed = 'No';
+
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [openChild, closedChild];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeTruthy();
+    });
+
+    it('should set isQueryClosed to false if no children are closed', () => {
+      const openChild1 = new QueryListItem();
+      openChild1.isClosed = 'No';
+
+      const openChild2 = new QueryListItem();
+      openChild2.isClosed = 'No';
+
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [openChild1, openChild2];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeFalsy();
+    });
+
+    it('should set isQueryClosed to false if query has no children', () => {
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeFalsy();
+    });
+  });
 });

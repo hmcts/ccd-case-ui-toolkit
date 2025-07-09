@@ -82,6 +82,10 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
 
   public hasRespondedToQuery(): boolean {
     const isAwaiting = this.queryResponseStatus === undefined || this.queryResponseStatus === QueryItemResponseStatus.AWAITING;
+    if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {
+      this.hasResponded.emit(true);
+      return true;
+    }
 
     const lastChild = this.query?.children?.[this.query.children.length - 1];
     const isFollowUp = lastChild?.messageType === this.followUpQuery;
