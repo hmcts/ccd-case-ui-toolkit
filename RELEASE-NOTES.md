@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.19
+**EXUI-3301** Query Management component caches stale case ID on case switch
+
 ### Version 7.2.18
 **EXUI-3147** MV CVE fix
 
