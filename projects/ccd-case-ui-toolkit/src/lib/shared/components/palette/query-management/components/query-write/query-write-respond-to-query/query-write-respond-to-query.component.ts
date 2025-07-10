@@ -38,9 +38,9 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.queryItemId = this.route.snapshot.params.qid;
-    this.caseNotifier.caseView.pipe(take(1)).subscribe({
+    this.caseId = this.route.snapshot.params.cid;
+    this.caseNotifier.fetchAndRefresh(this.caseId).pipe(take(1)).subscribe({
       next: (caseDetails) => {
-        this.caseId = caseDetails?.case_id ?? '';
         this.caseDetails = caseDetails;
       },
       error: (err) => {
@@ -87,12 +87,12 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       ? (matchingMessage?.parentId || matchingMessage?.id)
       : matchingMessage?.id;
 
-    this.queryListData = queryWithChildren?.queries.find(query => query?.id === targetId);
+    this.queryListData = queryWithChildren?.queries.find((query) => query?.id === targetId);
     this.queryResponseStatus = this.queryListData?.responseStatus;
-    }
+  }
 
-    public hasResponded(value: boolean): void {
-      this.hasRespondedToQuery = value;
-      this.hasRespondedToQueryTask.emit(value);
-    }
+  public hasResponded(value: boolean): void {
+    this.hasRespondedToQuery = value;
+    this.hasRespondedToQueryTask.emit(value);
+  }
 }
