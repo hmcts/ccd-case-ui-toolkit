@@ -1,9 +1,13 @@
+import { QueryCreateContext } from '../../..';
 import { QueryItemResponseStatus } from '../../../enums';
 import { QueryListItem } from './query-list-item.model';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
   let lastSubmittedBy: QueryListItem;
+
+  const YES = 'Yes';
+  const NO = 'No';
 
   beforeEach(() => {
     const items = [
@@ -192,38 +196,47 @@ describe('QueryListItem', () => {
       expect(child2.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
 
-    it('should return CLOSED when this item is directly marked as closed', () => {
-      queryListItem.isClosed = 'Yes';
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
+    it('should return CLOSED if the item is closed', () => {
+      queryListItem.isClosed = YES;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
 
-    it('should return CLOSED when any nested child item is closed', () => {
-      // Create a deep nested child
+    it('should return CLOSED if any child is closed', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[2].isClosed = YES;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return RESPONDED if the last messageType is RESPOND', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.RESPOND;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return AWAITING if the last messageType is FOLLOWUP', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.FOLLOWUP;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return undefined if no children and item is not closed', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children = [];
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return CLOSED if deeply nested child is closed', () => {
       const deepChild = new QueryListItem();
-      deepChild.isClosed = 'Yes';
-      deepChild.children = [];
+      deepChild.isClosed = YES;
 
-      const midChild = new QueryListItem();
-      midChild.children = [deepChild];
+      const intermediate = new QueryListItem();
+      intermediate.isClosed = NO;
+      intermediate.children = [deepChild];
 
-      const topChild = new QueryListItem();
-      topChild.children = [midChild];
+      queryListItem.children = [intermediate];
+      queryListItem.isClosed = NO;
 
-      queryListItem.children = [topChild];
-
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
-    });
-
-    it('should return RESPONDED for child with even messageIndexInParent', () => {
-      const child = new QueryListItem();
-      child.messageIndexInParent = 2;
-      expect(child.responseStatus).toEqual(QueryItemResponseStatus.RESPONDED);
-    });
-
-    it('should return AWAITING for child with odd messageIndexInParent', () => {
-      const child = new QueryListItem();
-      child.messageIndexInParent = 3;
-      expect(child.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
   });
 });

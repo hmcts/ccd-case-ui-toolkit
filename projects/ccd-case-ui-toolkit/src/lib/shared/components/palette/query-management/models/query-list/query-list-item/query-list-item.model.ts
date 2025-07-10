@@ -1,3 +1,4 @@
+import { QueryCreateContext } from '../..';
 import { QueryItemResponseStatus } from '../../../enums/query-item-response-status.enum';
 import { CaseMessage, QueryMessageDocument } from '../../case-queries-collection.model';
 
@@ -13,6 +14,7 @@ export class QueryListItem implements CaseMessage {
   public createdBy: string;
   public parentId?: string;
   public isClosed?: string;
+  public messageType?: string;
   public children: QueryListItem[] = [];
 
   public messageIndexInParent?: number | null = null;
@@ -92,11 +94,21 @@ export class QueryListItem implements CaseMessage {
       if (item.isClosed === 'Yes') {
         return true;
       }
-      return item.children?.some(child => isThreadClosed(child)) || false;
+      return item.children?.some((child) => isThreadClosed(child)) || false;
     };
 
     if (isThreadClosed(this)) {
       return QueryItemResponseStatus.CLOSED;
+    }
+
+    const lastMessageType = this.children?.length
+      ? this.children[this.children.length - 1]?.messageType
+      : undefined;
+
+    if (lastMessageType && lastMessageType === QueryCreateContext.RESPOND) {
+      return QueryItemResponseStatus.RESPONDED;
+    } else if (lastMessageType && lastMessageType === QueryCreateContext.FOLLOWUP) {
+      return QueryItemResponseStatus.AWAITING;
     }
 
     if (this.messageIndexInParent !== null) {
