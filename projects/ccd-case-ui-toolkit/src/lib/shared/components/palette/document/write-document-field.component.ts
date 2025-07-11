@@ -314,34 +314,36 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private getErrorMessage(error: HttpError): string {
-    switch (error.status) {
-      case 0:
-      case 502:
-        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
-      case 422:
-      case 500:
-      {
-        if (this.fileSecureModeOn){
-          let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
-          if (error?.error) {
-            const fullError = error.error;
-            const start = fullError.indexOf('{');
-            if (start >= 0) {
-              const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-              const obj = JSON.parse(json);
-              if (obj?.error) {
-                errorMsg = obj.error;
-              }
-            }
-          }
-          return errorMsg;
-        }
-        return error.error ? error.error : WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    if (error.status === 0 || error.status === 502) {
+      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    }
+    if (error.status === 422 || error.status === 500) {
+      if (this.fileSecureModeOn) {
+        return this.extractSecureErrorMessage(error) || WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
       }
-      case 429:
-        return error?.error;
-      default:
-        return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+      return error.error || WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    if (error.status === 429) {
+      return error?.error;
+    }
+    return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+  }
+
+  private extractSecureErrorMessage(error: HttpError): string | undefined {
+    if (!error?.error) {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    const fullError = error.error;
+    const start = fullError.indexOf('{');
+    if (start < 0) {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    try {
+      const json = fullError.substring(start, fullError.length - 1).replace(/<EOL>/g, '');
+      const obj = JSON.parse(json);
+      return obj?.error;
+    } catch {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
   }
 
