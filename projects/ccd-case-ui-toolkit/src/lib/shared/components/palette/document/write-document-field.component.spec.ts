@@ -453,6 +453,67 @@ describe('WriteDocumentFieldComponent', () => {
     expect(errorMsg).toEqual(errorMsg);
   });
 
+  describe('getErrorMessage', () => {
+    it('should return UPLOAD_ERROR_NOT_AVAILABLE for status 0', () => {
+      const error = { status: 0 } as any;
+      expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+    });
+
+    it('should return UPLOAD_ERROR_NOT_AVAILABLE for status 502', () => {
+      const error = { status: 502 } as any;
+      expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+    });
+
+    it('should return extracted secure error message for status 422 and secure mode', () => {
+      component.fileSecureModeOn = true;
+      const error = {
+        status: 422,
+        error: '{"error":"Secure error"} <'
+      } as any;
+      expect(component['getErrorMessage'](error)).toBe('Secure error');
+    });
+
+    it('should return fallback error if secure error cannot be extracted', () => {
+      component.fileSecureModeOn = true;
+      const error = {
+        status: 422,
+        error: 'Not a JSON'
+      } as any;
+      expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.ERROR_UPLOADING_FILE);
+    });
+
+    it('should return error.error for status 422 and not secure mode', () => {
+      component.fileSecureModeOn = false;
+      const error = {
+        status: 422,
+        error: 'Normal error'
+      } as any;
+      expect(component['getErrorMessage'](error)).toBe('Normal error');
+    });
+
+    it('should return error.error for status 429', () => {
+      const error = {
+        status: 429,
+        error: 'Too many requests'
+      } as any;
+      expect(component['getErrorMessage'](error)).toBe('Too many requests');
+    });
+
+    it('should return ERROR_UPLOADING_FILE for other status', () => {
+      const error = { status: 404 } as any;
+      expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.ERROR_UPLOADING_FILE);
+    });
+  });
+
+  describe('extractSecureErrorMessage', () => {
+    it('should return parsed error from JSON', () => {
+      const error = {
+        error: '{"error":"Secure error"}<'
+      } as any;
+      expect(component['extractSecureErrorMessage'](error)).toBe('Secure error');
+    });
+  });
+
   it('should call isUploadAFile', () => {
     component.fileUploadMessages = undefined;
     const result = component['isUpLoadingAFile']();
