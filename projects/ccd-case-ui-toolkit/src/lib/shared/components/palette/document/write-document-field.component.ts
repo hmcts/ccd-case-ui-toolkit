@@ -320,7 +320,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
       case 500:
-        {
+      {
+        if (this.fileSecureModeOn){
           let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
           if (error?.error) {
             const fullError = error.error;
@@ -335,6 +336,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
           }
           return errorMsg;
         }
+        return error.error ? error.error : WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+      }
       case 429:
         return error?.error;
       default:
