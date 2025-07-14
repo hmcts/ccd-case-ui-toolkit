@@ -98,6 +98,61 @@ describe('QueryWriteRaiseQueryComponent', () => {
     expect(message).toBe(component.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH);
   });
 
+  it('should call setCaseQueriesCollectionData and generateCaseQueriesCollectionData on ngOnChanges when triggerSubmission is true', () => {
+    const mockGeneratedData = { fieldId: { caseMessages: [] } };
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(true);
+    queryManagementServiceSpy.generateCaseQueriesCollectionData.and.returnValue(mockGeneratedData);
+
+    spyOn(component.queryDataCreated, 'emit');
+
+    component.triggerSubmission = true;
+    component.ngOnChanges();
+
+    expect(queryManagementServiceSpy.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(component.queryDataCreated.emit).toHaveBeenCalledWith(mockGeneratedData);
+  });
+
+  it('should not call generateCaseQueriesCollectionData if triggerSubmission is false', () => {
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(true);
+    component.triggerSubmission = false;
+
+    spyOn(component.queryDataCreated, 'emit');
+
+    component.ngOnChanges();
+
+    expect(queryManagementServiceSpy.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).not.toHaveBeenCalled();
+    expect(component.queryDataCreated.emit).not.toHaveBeenCalled();
+  });
+
+  it('should not call anything if setCaseQueriesCollectionData returns false', () => {
+  // Spy on the internal generateCaseQueriesCollectionData method
+    const generateSpy = spyOn<any>(component, 'generateCaseQueriesCollectionData');
+    const emitSpy = spyOn(component.queryDataCreated, 'emit');
+
+    // Arrange: Make sure setCaseQueriesCollectionData returns false
+    spyOn(component, 'setCaseQueriesCollectionData').and.returnValue(false);
+
+    // Act
+    component.triggerSubmission = true;
+    component.ngOnChanges();
+
+    // Assert
+    expect(component.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(generateSpy).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+
+  it('should warn and return false when eventData is null in setCaseQueriesCollectionData()', () => {
+    spyOn(console, 'warn');
+    component.eventData = null;
+    const result = component.setCaseQueriesCollectionData();
+    expect(console.warn).toHaveBeenCalledWith('Event data not available; skipping collection setup.');
+    expect(result).toBeFalsy();
+  });
+
   it('should correctly assign messgaeId from route params on ngOnChanges', () => {
     component.triggerSubmission = false;
     queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(false);
