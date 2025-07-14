@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
 import { CaseField, CaseView, FieldType } from '../../../../../../shared/domain';
 import { AlertService, ErrorNotifierService, SessionStorageService } from '../../../../../services';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
@@ -29,6 +29,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   let router: Router;
   let workAllocationService: any;
   let sessionStorageService: any;
+  let callbackErrorsSubject: any;
 
   const items = [
     {
@@ -410,6 +411,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+    callbackErrorsSubject = jasmine.createSpyObj('callbackErrorsSubject', ['next']);
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -534,7 +536,8 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(throwError(() => authError));
 
     component.fieldId = 'validFieldId';
-    component.eventData = { event_token: 'token123' } as any;
+    const errorResponse = { status: 401 };
+    casesService.createEvent.and.returnValue(throwError(errorResponse));
 
     component.submit();
 
@@ -543,12 +546,50 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should navigate to service-down page on error during submission', () => {
     component.fieldId = 'someFieldId';
-    const authError = { status: 403, message: 'Forbidden' };
-    casesService.createEvent.and.returnValue(throwError(() => authError));
+    const errorResponse = { status: 401 };
+    casesService.createEvent.and.returnValue(throwError(errorResponse));
+
 
     component.submit();
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
+
+  it('should emit error to callbackErrorsSubject if callbackErrors are found', () => {
+    const callbackError = {
+      callbackErrors: [{ message: 'Invalid state' }]
+    };
+
+    const subject = new Subject<any>();
+    spyOn(subject, 'next');
+    component.callbackErrorsSubject = subject;
+
+    component.fieldId = 'validFieldId';
+
+    component.eventData = { event_token: 'token' } as any;
+    component.caseQueriesCollections = [];
+
+    casesService.createEvent.and.returnValue(throwError(callbackError));
+
+    component.submit();
+
+    expect(subject.next).toHaveBeenCalledWith(callbackError);
+  });
+
+
+  it('should set error but not navigate for generic error without callbackErrors', () => {
+    const genericError = { status: 500 };
+    component.fieldId = 'someFieldId';
+    component.eventData = { event_token: 'token' } as any;
+    component.caseQueriesCollections = [];
+
+    casesService.createEvent.and.returnValue(throwError(genericError));
+
+    component.submit();
+
+    expect(component.error).toEqual(genericError);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
 
   it('should set querySubmitted to true when submit is called', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
@@ -795,7 +836,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(component.filteredTasks[0].id).toBe('Task_2');
 
     spyOn(component.callbackConfirmationMessage, 'emit');
-    czomponent.submit();
+    component.submit();
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
     expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
