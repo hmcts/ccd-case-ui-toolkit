@@ -135,7 +135,7 @@ import {
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent
 } from './query-management';
-import { QualifyingQuestionService } from './query-management/services';
+import { QualifyingQuestionService, QueryManagementService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -353,6 +353,7 @@ const PALETTE_COMPONENTS = [
     LinkedCasesService,
     QualifyingQuestionService,
     QueryManagementUtils,
+    QueryManagementService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

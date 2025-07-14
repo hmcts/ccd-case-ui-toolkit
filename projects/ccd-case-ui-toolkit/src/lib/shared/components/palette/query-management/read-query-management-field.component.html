@@ -13,7 +13,7 @@
     [caseId]="caseId"
   ></ccd-query-details>
 
-  <ng-container *ngIf="!isInternalUser()">
+  <ng-container *ngIf="!isInternalUser() && !isQueryClosed && query?.children?.length > 0">
     <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
@@ -23,6 +23,10 @@
 
     <ng-template #queryIsInReview>
       <div>
+        <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
+              [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
+        {{ 'Ask a follow-up question' | rpxTranslate }}
+      </button>
         <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
         <p>{{ 'Our team will read your query and respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
       </div>

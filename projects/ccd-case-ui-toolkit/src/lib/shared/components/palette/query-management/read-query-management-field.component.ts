@@ -18,6 +18,8 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public showQueryList: boolean = true;
   public caseId: string;
 
+  public isQueryClosed: boolean = false;
+
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
     private readonly caseNotifier: CaseNotifier
@@ -61,6 +63,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
+    this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
   }
 
   public backToQueryListPage(): void {

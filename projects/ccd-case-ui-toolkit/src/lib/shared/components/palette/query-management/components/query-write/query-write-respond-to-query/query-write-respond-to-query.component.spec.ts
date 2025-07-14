@@ -6,8 +6,12 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { CaseView } from '../../../../../../domain';
 import { CaseNotifier } from '../../../../../case-editor';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { CaseQueriesCollection } from '../../../models';
 import { getMockCaseNotifier } from '../../../../../case-editor/services/case.notifier.spec';
+import { CaseQueriesCollection } from '../../../models';
+import { of, throwError } from 'rxjs';
+import {
+  SessionStorageService
+} from '../../../../../../services';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -20,6 +24,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
   let component: QueryWriteRespondToQueryComponent;
   let fixture: ComponentFixture<QueryWriteRespondToQueryComponent>;
   let activatedRoute: ActivatedRoute;
+  let sessionStorageService: any;
 
   const caseId = '1234';
   const CASE_VIEW: CaseView = {
@@ -99,7 +104,9 @@ describe('QueryWriteRespondToQueryComponent', () => {
               }
             }
           }
-        }
+        },
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
+        { provide: SessionStorageService, useValue: sessionStorageService }
       ]
     })
       .compileComponents();
@@ -370,4 +377,26 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryResponseStatus).toEqual('Responded');
   });
 
+  it('should emit queryDataCreated when triggerSubmission is true and collection is set', () => {
+    const emitSpy = spyOn(component.queryDataCreated, 'emit');
+    const mockData = {} as any;
+
+    component.triggerSubmission = true;
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+    component.eventData = {} as any;
+    component.caseDetails = {} as any;
+
+    spyOn<any>(component['queryManagementService'], 'generateCaseQueriesCollectionData').and.returnValue(mockData);
+    spyOn<any>(component['queryManagementService'], 'setCaseQueriesCollectionData').and.callThrough();
+
+    component.ngOnChanges();
+
+    expect(emitSpy).toHaveBeenCalledWith(mockData);
+  });
+
+  it('should return false when eventData is missing in setCaseQueriesCollectionData', () => {
+    component.eventData = null;
+    const result = component.setCaseQueriesCollectionData();
+    expect(result).toBeFalsy();
+  });
 });

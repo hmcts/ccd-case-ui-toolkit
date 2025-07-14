@@ -1,12 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Pipe, PipeTransform } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
+import { ActivatedRoute } from '@angular/router';
+import { QueryManagementService } from '../../../services';
+import { of } from 'rxjs';
+import { Pipe, PipeTransform } from '@angular/core';
+import { QueryCreateContext } from '../../../models';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
-  public transform(value: string, ...args: any[]) {
+  public transform(value: string): string {
     return value;
   }
 }
@@ -14,12 +17,30 @@ class MockRpxTranslatePipe implements PipeTransform {
 describe('QueryWriteRaiseQueryComponent', () => {
   let component: QueryWriteRaiseQueryComponent;
   let fixture: ComponentFixture<QueryWriteRaiseQueryComponent>;
+  let queryManagementServiceSpy: jasmine.SpyObj<QueryManagementService>;
+  let routeStub;
 
   beforeEach(async () => {
+    routeStub = {
+      snapshot: {
+        params: {
+          dataid: 'mock-message-id'
+        }
+      }
+    };
+
+    queryManagementServiceSpy = jasmine.createSpyObj('QueryManagementService', [
+      'setCaseQueriesCollectionData',
+      'generateCaseQueriesCollectionData'
+    ]);
+
     await TestBed.configureTestingModule({
-      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe]
-    })
-      .compileComponents();
+      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
+      providers: [
+        { provide: ActivatedRoute, useValue: routeStub },
+        { provide: QueryManagementService, useValue: queryManagementServiceSpy }
+      ]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -32,6 +53,11 @@ describe('QueryWriteRaiseQueryComponent', () => {
       isHearingRelated: new FormControl(null, Validators.required),
       attachments: new FormControl([])
     });
+
+    component.caseDetails = {} as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.eventData = {} as any;
+    component.queryItem = {} as any;
     fixture.detectChanges();
   });
 
@@ -70,5 +96,14 @@ describe('QueryWriteRaiseQueryComponent', () => {
     component.formGroup.get('subject').markAsTouched();
     const message = component.getSubjectErrorMessage();
     expect(message).toBe(component.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH);
+  });
+
+  it('should correctly assign messgaeId from route params on ngOnChanges', () => {
+    component.triggerSubmission = false;
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(false);
+
+    component.ngOnChanges();
+
+    expect(component.messgaeId).toBe('mock-message-id');
   });
 });
