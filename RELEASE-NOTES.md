@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
+### Version 7.2.19
+**EXUI-3301** Query Management component caches stale case ID on case switch
+
+### Version 7.2.18
+**EXUI-3147** MV CVE fix
+
 ### Version 7.2.17
-**EXUI-1832** welsh translation
+**EXUI-2895** Refactor PED access token from URL
 
 ### Version 7.2.16
 **EXUI-3167** Query Management - Ability to close a query thread for caseworkers
