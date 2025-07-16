@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.21
+**EXUI-3304** Uploading encrypted file shows incorrect error message 
+
 ### Version 7.2.20
 **EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
 
