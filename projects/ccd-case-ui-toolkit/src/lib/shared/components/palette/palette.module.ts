@@ -133,7 +133,9 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent,
+  CloseQueryComponent
+
 } from './query-management';
 import { QualifyingQuestionService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
@@ -143,6 +145,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
+import { ErrorsModule } from '../error/errors.module';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -272,6 +275,7 @@ const PALETTE_COMPONENTS = [
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
   QueryConfirmationComponent,
+  CloseQueryComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
@@ -313,7 +317,8 @@ const PALETTE_COMPONENTS = [
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
-    MarkdownComponentModule
+    MarkdownComponentModule,
+    ErrorsModule
   ],
   declarations: [
     FixedListPipe,

@@ -1,7 +1,25 @@
 ## RELEASE NOTES
 
-### Version 7.2.13-exui-2761-rc6
+### Version 7.2.20-exui-2761-rc1
 **EXUI-2761** url change
+
+### Version 7.2.20
+**EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
+
+### Version 7.2.19
+**EXUI-3301** Query Management component caches stale case ID on case switch
+
+### Version 7.2.18
+**EXUI-3147** MV CVE fix
+
+### Version 7.2.17
+**EXUI-2895** Refactor PED access token from URL
+
+### Version 7.2.16
+**EXUI-3167** Query Management - Ability to close a query thread for caseworkers
+
+### Version 7.2.15
+**EXUI-3239** QM: Concurrency error message
 
 ### Version 7.2.14
 **EXUI-3257** Users unable to upload documents - cdam fix
