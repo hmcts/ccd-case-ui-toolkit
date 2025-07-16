@@ -1,5 +1,154 @@
 ## RELEASE NOTES
 
+### Version 7.2.21
+**EXUI-3304** Uploading encrypted file shows incorrect error message 
+
+### Version 7.2.20
+**EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
+
+### Version 7.2.19
+**EXUI-3301** Query Management component caches stale case ID on case switch
+
+### Version 7.2.18
+**EXUI-3147** MV CVE fix
+
+### Version 7.2.17
+**EXUI-2895** Refactor PED access token from URL
+
+### Version 7.2.16
+**EXUI-3167** Query Management - Ability to close a query thread for caseworkers
+
+### Version 7.2.15
+**EXUI-3239** QM: Concurrency error message
+
+### Version 7.2.14
+**EXUI-3257** Users unable to upload documents - cdam fix
+
+### Version 7.2.13
+**EXUI-2703** Add apply and cancel filter buttons at the top of the case filters
+**EXUI-3050** SSCS - Duration of the hearing Value updating bug
+**EXUI-3078** Set up CDAM exclusion list
+**EXUI-3158** Refactor CDAM exclusion code to use LaunchDarkly
+
+### Version 7.2.12
+**EXUI-3043/3208** Show full thread context when replying as a caseworker
+
+### Version 7.2.11
+**EXUI-3190** Queries Tab Last submitted by column not displaying caseworker name
+
+### Version 7.2.10
+**EXUI-2613** Remove LaunchDarkly feature flags - Group 2
+
+### Version 7.2.9
+**EXUI-3199** drag-drop-file-upload-issue
+
+### Version 7.2.8
+**EXUI-3186** Task Completion Message appears after page refresh for responded query but is no longer valid
+
+### Version 7.2.7
+**EXUI-3173** remove console logs
+
+### Version 7.2.6
+**EXUI-3162** Exceptions on case list on prod with
+
+### Version 7.2.5
+**EXUI-1832** Choose file' and 'no file chosen' not being translated
+
+### Version 7.2.4
+**EXUI-2676** Query Management - Civil LR Release
+
+### Version 7.2.2
+**EXUI-673** Open all folders with one click
+
+### Version 7.2.1
+**EXUI-3124** INC5697603-Country name not getting translated to welsh
+
+### Version 7.2.0
+**EXUI-2978** Angular 18 upgrade
+
+### Version 7.1.79
+**EXUI-3103** duplication of seconds label
+
+### Version 7.1.78
+**EXUI-3047** hint-text
+
+### Version 7.1.77
+**EXUI-3064** Never ending loading wheel
+
+### Version 7.1.76
+**EXUI-2497** Accessibility issue
+**EXUI-1618**
+**EXUI-1648**
+**EXUI-3062**
+**EXUI-1630**
+**EXUI-1632**
+**EXUI-1584**
+**EXUI-1574**
+**EXUI-1573**
+**EXUI-1545**
+
+### Version 7.1.75
+**EXUI-3052** Possible to submit a follow up on a question which has not been responded to
+
+### Version 7.1.74
+**EXUI-2985** Query collection partyName gets recreated on Raise Query
+**EXUI-2967** Raise a query qualifying questions for Civil
+**EXUI-2637** Additional Logging for Query management
+
+### Version 7.1.73
+**EXUI-2960** Incorrect data is being pulled from HMC to List Assist
+
+### Version 7.1.72
+**EXUI-2982** Spinner Intermittently Stops and Restarts When Selecting a Query Event from the History Tab
+
+### Version 7.1.71
+**EXUI-2997** Add reset to event-resolver
+
+### Version 7.1.70
+**EXUI-2835** Validation shown for unsupported document. The user can still proceed to the next page. Check Your Answers page shows an empty value in the field
+
+### Version 7.1.69
+**EXUI-2968** QM: Service Specific Text on Raise a Query page (Document upload help text)
+
+### Version 7.1.68
+**EXUI-3004** Link for a new tab casuing issues
+
+### Version 7.1.67
+**EXUI-2972** Refactor isCaseworker to isInternalUser
+
+### Version 7.1.66
+**EXUI-2957** QM: Service Specific Text on Raise a Query page
+
+### Version 7.1.65
+**EXUI-2876** Spinner Does Not Stop on Queries Tab
+
+### Version 7.1.64
+**EXUI-2987** Users reporting data from other cases they accessed in the session being copied over to other cases
+
+### Version 7.1.63
+**EXUI-2864** Increase size of hint text in document upload
+
+### Version 7.1.61
+**EXUI-2825** Mediaview: A scrollbar link appears in the centre
+**EXUI-2928** QM: Limit the length of a message subject
+
+### Version 7.1.59
+**EXUI-2649** QM task management integration
+
+### Version 7.1.58
+**EXUI-2913** QM: Query Collection selection for Legal Reps with multiple clients
+
+### Version 7.1.57
+**EXUI-1843** markdown routerLink feature has been removed
+**EXUI-1848** SPIKE : Welsh for Professionals - case data and interpolation
+**EXUI-2551** Case File view too small not loading with correct size
+**EXUI-2756** Text alignment in Event history Detail seen to differ
+**EXUI-2640** Add a exclusion list for case types that should not be subject to CDAM
+**EXUI-2744** Data input in event page disappears in CYA page
+
+### Version 7.1.56
+**EXUI-2924** Improve redaction box creation in Media Viewer
+
 ### Version 7.1.55
 **EXUI-2885** QM: Handle read only query collections
 

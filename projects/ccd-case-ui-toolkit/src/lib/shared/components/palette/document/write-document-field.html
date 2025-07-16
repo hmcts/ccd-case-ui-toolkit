@@ -3,7 +3,7 @@
     <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">
-    {{ caseField.hint_text | rpxTranslate }}
+    <markdown [data]="caseField.hint_text | rpxTranslate"></markdown>
   </span>
   <span class="error-message"
         role="alert"

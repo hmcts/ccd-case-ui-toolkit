@@ -9,6 +9,16 @@ div select {
 
 .form-group {
   margin-bottom: 7px;
+
+  &.flex {
+    display: flex;
+
+    button {
+      margin: 0.25rem;
+      margin-top: 1rem;
+      height: 2rem;
+    }
+  }
 }
 
 .ccd-dropdown {

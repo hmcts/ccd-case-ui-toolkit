@@ -1,11 +1,12 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 import { CaseField } from '../../../domain';
-import { FormGroup } from '@angular/forms';
+import { PUI_CASE_MANAGER } from '../../../utils';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
 import { of } from 'rxjs';
@@ -213,7 +214,7 @@ describe('ReadQueryManagementFieldComponent', () => {
 
     describe('follow-up button', () => {
       it('should not display if query has no children', () => {
-        USER.roles.push('pui-case-manager');
+        USER.roles.push(PUI_CASE_MANAGER);
         mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
         component.query.children = [];
         fixture.detectChanges();
@@ -234,12 +235,12 @@ describe('ReadQueryManagementFieldComponent', () => {
     });
   });
 
-  describe('isCaseworker', () => {
+  describe('isInternalUser', () => {
     it('should return true if the user doesnt have pui-case-manager', () => {
-      USER.roles.push('pui-case-manager');
+      USER.roles.push(PUI_CASE_MANAGER);
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isCaseworker()).toBeFalsy();
+      expect(component.isInternalUser()).toBeFalsy();
       USER.roles.pop();
     });
 
@@ -247,7 +248,48 @@ describe('ReadQueryManagementFieldComponent', () => {
       USER.roles.push('Civil-Judge');
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isCaseworker()).toBeFalsy();
+      expect(component.isInternalUser()).toBeFalsy();
     });
   });
+  describe('setQuery', () => {
+    it('should set isQueryClosed to true if any child query is closed', () => {
+      const closedChild = new QueryListItem();
+      closedChild.isClosed = 'Yes';
+
+      const openChild = new QueryListItem();
+      openChild.isClosed = 'No';
+
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [openChild, closedChild];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeTruthy();
+    });
+
+    it('should set isQueryClosed to false if no children are closed', () => {
+      const openChild1 = new QueryListItem();
+      openChild1.isClosed = 'No';
+
+      const openChild2 = new QueryListItem();
+      openChild2.isClosed = 'No';
+
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [openChild1, openChild2];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeFalsy();
+    });
+
+    it('should set isQueryClosed to false if query has no children', () => {
+      const parentQuery = new QueryListItem();
+      parentQuery.children = [];
+
+      component.setQuery(parentQuery);
+
+      expect(component.isQueryClosed).toBeFalsy();
+    });
+  });
+
 });

@@ -32,6 +32,7 @@ export abstract class AbstractAppConfig {
   public abstract getDocumentManagementUrl(): string;
   public abstract getDocumentManagementUrlV2(): string;
   public abstract getDocumentSecureMode(): boolean;
+  public abstract getCdamExclusionList(): string;
   public abstract getDocumentSecureModeCaseTypeExclusions(): string;
   public abstract getRemoteDocumentManagementUrl(): string;
   public abstract getHrsUrl(): string;
@@ -131,6 +132,7 @@ export class CaseEditorConfig {
   public hrs_url: string;
   public document_management_secure_enabled: boolean;
   public documentSecureModeCaseTypeExclusions: string;
+  public mc_cdam_exclusion_list: string;
   public login_url: string;
   public oauth2_client_id: string;
   public postcode_lookup_url: string;

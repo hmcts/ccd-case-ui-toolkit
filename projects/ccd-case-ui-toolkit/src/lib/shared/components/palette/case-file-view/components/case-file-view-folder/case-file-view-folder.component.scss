@@ -39,6 +39,11 @@
   &__title {
     font-weight: 700;
   }
+
+  &__flex {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 .document-tree-container {
@@ -113,7 +118,7 @@
   white-space: nowrap;
 
   &--selected {
-    background: #fff2cc;
+    background: #FFF2CC;
   }
 
   &__icon {
@@ -122,7 +127,7 @@
   }
 
   &__count {
-    color: #fff;
+    color: #FFF;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -160,4 +165,16 @@
     float: left;
     padding-left: 10px;
   }
+}
+
+.node.case-file__node {
+  width: 80%;
+  float: left;
+}
+
+.node__document-options.case-file__action {
+  width: 15%;
+  float: left;
+  box-sizing: border-box;
+  padding: 12px;
 }

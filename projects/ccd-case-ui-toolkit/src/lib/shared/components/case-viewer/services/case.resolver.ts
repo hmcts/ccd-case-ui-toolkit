@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
 import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
@@ -14,6 +15,8 @@ export class CaseResolver implements Resolve<CaseView> {
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
+
+  public static readonly EVENT_ID_QM_RESPOND_TO_QUERY = 'eventId=queryManagementRespondQuery';
 
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
@@ -25,8 +28,7 @@ export class CaseResolver implements Resolve<CaseView> {
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
               private router: Router,
-              private sessionStorage: SessionStorageService,
-              private readonly appConfig: AbstractAppConfig) {
+              private sessionStorage: SessionStorageService) {
     router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
@@ -35,6 +37,13 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
+    const currentUrl = this.router.url ?? '';
+
+    // Prevent resolving if eventId=queryManagementRespondQuery is in the URL
+    if (currentUrl.includes(CaseResolver.EVENT_ID_QM_RESPOND_TO_QUERY)) {
+      console.info('Skipping resolve for event queryManagementRespondQuery.');
+      this.goToDefaultPage();
+    }
 
     if (!cid) {
       console.info('No case ID available in the route. Will navigate to case list.');
@@ -102,8 +111,8 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/list/case']);
       return of(null);
     }
-    // Error 403 and enable-restricted-case-access Launch Darkly flag is enabled, navigate to restricted case access page
-    if (error.status === 403 && this.appConfig.getEnableRestrictedCaseAccessConfig()) {
+    // Error 403, navigate to restricted case access page
+    if (error.status === 403) {
       this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
       return of(null);
     }
@@ -117,9 +126,9 @@ export class CaseResolver implements Resolve<CaseView> {
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
     console.info('Going to default page!');
-    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(this.sessionStorage.getItem(USER_DETAILS));
     userDetails && userDetails.roles
-        && !userDetails.roles.includes('pui-case-manager')
+        && !userDetails.roles.includes(PUI_CASE_MANAGER)
         &&
         (userDetails.roles.includes('caseworker-ia-iacjudge')
           || userDetails.roles.includes('caseworker-ia-caseofficer')

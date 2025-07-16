@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
+import { SessionStorageService } from '../../../services';
+import { isInternalUser } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
-import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
   selector: 'ccd-read-query-management-field',
@@ -16,6 +17,8 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public query: QueryListItem;
   public showQueryList: boolean = true;
   public caseId: string;
+
+  public isQueryClosed: boolean = false;
 
   constructor(private readonly route: ActivatedRoute,
     private sessionStorageService: SessionStorageService,
@@ -60,6 +63,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
+    this.isQueryClosed =  this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
   }
 
   public backToQueryListPage(): void {
@@ -67,10 +71,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.query = null;
   }
 
-  public isCaseworker(): boolean {
-    const userDetails = JSON.parse(this.sessionStorageService?.getItem('userDetails'));
-    return userDetails && userDetails.roles
-      && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
   }
 }

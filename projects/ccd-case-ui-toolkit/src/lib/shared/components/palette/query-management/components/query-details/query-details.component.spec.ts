@@ -4,10 +4,11 @@ import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { Constants } from '../../../../../commons/constants';
+import { PUI_CASE_MANAGER } from '../../../../../utils';
+import { QueryItemResponseStatus } from '../../enums';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
-import { Constants } from '../../../../../commons/constants';
-import { QueryItemResponseStatus } from '../../enums';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -235,18 +236,18 @@ describe('QueryDetailsComponent', () => {
     expect(component.showItem).toBe(false);
   });
 
-  describe('isCaseworker', () => {
+  describe('isInternalUser', () => {
     it('should return true if the user doesnt have pui-case-manager', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isCaseworker()).toBeTruthy();
+      expect(component.isInternalUser()).toBeTruthy();
     });
 
     it('should return true if the user doesnt have pui-case-manager', () => {
-      USER.roles.push('pui-case-manager');
+      USER.roles.push(PUI_CASE_MANAGER);
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isCaseworker()).toBeFalsy();
+      expect(component.isInternalUser()).toBeFalsy();
       USER.roles.pop();
     });
 
@@ -254,7 +255,7 @@ describe('QueryDetailsComponent', () => {
       USER.roles.push('Civil-Judge');
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isCaseworker()).toBeFalsy();
+      expect(component.isInternalUser()).toBeFalsy();
     });
   });
   describe('hasRespondedToQuery', () => {
@@ -263,46 +264,62 @@ describe('QueryDetailsComponent', () => {
     });
 
     it('should emit true and return true if responseStatus is not AWAITING and user is a caseworker', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true);
+      spyOn(component, 'isInternalUser').and.returnValue(true);
       component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toEqual(Constants.TASK_COMPLETION_ERROR);
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBeTruthy();
     });
 
     it('should emit false and return false if responseStatus is AWAITING and user is a caseworker', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true);
+      spyOn(component, 'isInternalUser').and.returnValue(true);
       component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
 
     it('should emit false and return false if responseStatus is not AWAITING but user is not a caseworker', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(false);
+      spyOn(component, 'isInternalUser').and.returnValue(false);
       component.queryResponseStatus = QueryItemResponseStatus.RESPONDED; // Not AWAITING, but user isn't a caseworker
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
     });
 
     it('should emit false and return false if queryResponseStatus is undefined', () => {
-      spyOn(component, 'isCaseworker').and.returnValue(true);
+      spyOn(component, 'isInternalUser').and.returnValue(true);
       component.queryResponseStatus = undefined; // Undefined case
 
       const result = component.hasRespondedToQuery();
 
-      expect(component.message).toBeUndefined();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
       expect(result).toBeFalsy();
+    });
+
+    it('should emit true and return false when user is external and query is awaiting response', () => {
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+      spyOn(component, 'isInternalUser').and.returnValue(false);
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.isInternalUser).toHaveBeenCalled();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit true and return true when queryResponseStatus is CLOSED', () => {
+      component.queryResponseStatus = QueryItemResponseStatus.CLOSED;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTruthy();
     });
   });
 });

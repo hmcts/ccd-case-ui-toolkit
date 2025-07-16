@@ -44,6 +44,7 @@ import {
 import {
   CaseFileViewFolderSortComponent
 } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
+import { CaseFileViewFolderToggleComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-toggle/case-file-view-folder-toggle.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import {
   AddCommentsComponent,
@@ -132,7 +133,9 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent,
+  CloseQueryComponent
+
 } from './query-management';
 import { QualifyingQuestionService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
@@ -142,6 +145,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
+import { ErrorsModule } from '../error/errors.module';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -225,6 +229,7 @@ const PALETTE_COMPONENTS = [
   CaseFileViewFieldComponent,
   CaseFileViewFolderComponent,
   CaseFileViewFolderSortComponent,
+  CaseFileViewFolderToggleComponent,
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
   CaseFileViewFolderSelectorComponent,
@@ -270,6 +275,7 @@ const PALETTE_COMPONENTS = [
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
   QueryConfirmationComponent,
+  CloseQueryComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
@@ -311,7 +317,8 @@ const PALETTE_COMPONENTS = [
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
-    MarkdownComponentModule
+    MarkdownComponentModule,
+    ErrorsModule
   ],
   declarations: [
     FixedListPipe,

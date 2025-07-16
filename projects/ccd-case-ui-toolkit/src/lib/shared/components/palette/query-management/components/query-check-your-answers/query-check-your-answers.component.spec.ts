@@ -1,13 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of, throwError } from 'rxjs';
-import { CaseField, CaseView, FieldType, TaskSearchParameter } from '../../../../../../shared/domain';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { CaseField, CaseView, FieldType } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../services';
-import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
@@ -29,6 +28,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   let router: Router;
   let workAllocationService: any;
   let sessionStorageService: any;
+  let callbackErrorsSubject: any;
 
   const items = [
     {
@@ -128,7 +128,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   const snapshotActivatedRoute = {
     snapshot: {
-      queryparams: {
+      queryParams: {
         tid: 'Task_2'
       },
       params: {
@@ -402,6 +402,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+    callbackErrorsSubject = jasmine.createSpyObj('callbackErrorsSubject', ['next']);
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -431,9 +432,9 @@ describe('QueryCheckYourAnswersComponent', () => {
       name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      attachments: new FormControl([mockAttachment])
+      attachments: new FormControl([mockAttachment]),
+      closeQuery: new FormControl(false),
     });
-    component['tid'] = '1';
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -451,6 +452,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for raise a query', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -467,6 +469,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for respond to a query', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -481,6 +484,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should display correct columns for following up a query', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
+    component.readyToSubmit = true;
     fixture.detectChanges();
     component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
@@ -494,7 +498,8 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should navigate to service-down page on event creation error', () => {
     component.fieldId = 'validFieldId';
-    casesService.createEvent.and.returnValue(throwError('Error'));
+    const errorResponse = { status: 401 };
+    casesService.createEvent.and.returnValue(throwError(errorResponse));
 
     component.submit();
 
@@ -529,11 +534,50 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   it('should navigate to service-down page on error during submission', () => {
     component.fieldId = 'someFieldId';
-    casesService.createEvent.and.returnValue(throwError('error'));
+    const errorResponse = { status: 401 };
+    casesService.createEvent.and.returnValue(throwError(errorResponse));
+
 
     component.submit();
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
+
+  it('should emit error to callbackErrorsSubject if callbackErrors are found', () => {
+    const callbackError = {
+      callbackErrors: [{ message: 'Invalid state' }]
+    };
+
+    const subject = new Subject<any>();
+    spyOn(subject, 'next');
+    component.callbackErrorsSubject = subject;
+
+    component.fieldId = 'validFieldId';
+
+    component.eventData = { event_token: 'token' } as any;
+    component.caseQueriesCollections = [];
+
+    casesService.createEvent.and.returnValue(throwError(callbackError));
+
+    component.submit();
+
+    expect(subject.next).toHaveBeenCalledWith(callbackError);
+  });
+
+
+  it('should set error but not navigate for generic error without callbackErrors', () => {
+    const genericError = { status: 500 };
+    component.fieldId = 'someFieldId';
+    component.eventData = { event_token: 'token' } as any;
+    component.caseQueriesCollections = [];
+
+    casesService.createEvent.and.returnValue(throwError(genericError));
+
+    component.submit();
+
+    expect(component.error).toEqual(genericError);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
 
   it('should set querySubmitted to true when submit is called', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
@@ -543,10 +587,12 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({}));
 
     spyOn(component.querySubmitted, 'emit');
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(casesService.createEvent).toHaveBeenCalled();
     expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 
   it('should set fieldId to undefined when eventData is unavailable', () => {
@@ -626,8 +672,126 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     component.setCaseQueriesCollectionData();
 
+    expect(component.caseQueriesCollections.length).toBe(1);
+    expect(component.fieldId).toBe('field2');
+  });
+
+  it('should set caseQueriesCollections and fieldId correctly for multiple QmCaseQueriesCollection to the first collection for CIVIL jurisdiction', () => {
+    component.caseDetails.case_type.jurisdiction.id = 'CIVIL';
+
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ],
+      wizard_pages: [{
+        wizard_page_fields: [
+          {
+            case_field_id: 'field2',
+            order: 1
+          },
+          {
+            case_field_id: 'field4',
+            order: 4
+          }
+        ]
+      }]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
     expect(component.caseQueriesCollections.length).toBe(2);
     expect(component.fieldId).toBe('field2');
+  });
+
+  it('should show console error for multiple QmCaseQueriesCollection for other jurisdiction', () => {
+    spyOn(console, 'error');
+    component.caseDetails.case_type.jurisdiction.id = 'PUBLICLAW';
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(console.error).toHaveBeenCalledWith('Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction');
   });
 
   it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
@@ -636,6 +800,60 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     expect(component.caseQueriesCollections).toBeUndefined();
     expect(component.fieldId).toBeUndefined();
+  });
+
+  it('should show console error if Jurisdiction is undefined', () => {
+    spyOn(console, 'error');
+    component.caseDetails.case_type.jurisdiction.id = undefined;
+
+    component.eventData = {
+      case_fields: [
+        {
+          id: 'field1',
+          value: { caseMessages: [{ value: { id: 'message1' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'userRole', id: 'field1' }],
+          display_context: 'READONLY'
+        },
+        {
+          id: 'field2',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        },
+        {
+          id: 'field3',
+          value: null,
+          field_type: {
+            id: 'otherFieldType',
+            type: 'CompopentLauncher'
+          }
+        },
+        {
+          id: 'field4',
+          value: { caseMessages: [{ value: { id: 'message2' } }] },
+          field_type: {
+            id: 'CaseQueriesCollection',
+            type: 'Complex'
+          },
+          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          display_context: 'OPTIONAL'
+        }
+      ]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.setCaseQueriesCollectionData();
+
+    expect(component.caseQueriesCollections.length).toBe(2);
+    expect(console.error).toHaveBeenCalledWith('Jurisdiction ID is missing.');
   });
 
   it('should set fieldId based on messageId when found', () => {
@@ -658,6 +876,33 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.setCaseQueriesCollectionData();
 
     expect(component.fieldId).toBe('field1');
+  });
+
+  it('should return undefined when case_fields is empty', () => {
+    component.eventData = {
+      case_fields: [],
+      wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
+    } as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when wizard_page_fields is missing in wizard_pages', () => {
+    const caseField = {
+      id: 'field1',
+      field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+      display_context: 'OPTIONAL'
+    };
+
+    component.eventData = {
+      case_fields: [caseField],
+      wizard_pages: [{}] // No `wizard_page_fields`
+    } as any;
+
+    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    expect(result).toBeUndefined();
   });
 
   it('should initialize newQueryData correctly when fieldId is set', () => {
@@ -683,18 +928,21 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(casesService.createEvent).toHaveBeenCalled();
   });
 
-  it('should complete task when query is submitted', () => {
-    casesService.createEvent.and.returnValue(of({}));
+  it('should filter tasks by tid and complete task when query is submitted', () => {
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
     component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.fieldId = 'someFieldId';
+
     fixture.detectChanges();
     component.ngOnInit();
 
-    component.fieldId = 'someFieldId';
-    component.caseQueriesCollections = [];
+    expect(component.filteredTasks.length).toBe(1);
+    expect(component.filteredTasks[0].id).toBe('Task_2');
 
+    spyOn(component.callbackConfirmationMessage, 'emit');
     component.submit();
 
     expect(workAllocationService.completeTask).toHaveBeenCalled();
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: undefined, header: undefined });
   });
 });
