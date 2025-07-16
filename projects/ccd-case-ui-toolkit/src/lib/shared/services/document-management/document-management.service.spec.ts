@@ -37,7 +37,7 @@ describe('DocumentManagementService', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     httpService = createSpyObj<HttpService>('httpService', ['post']);
-    caseNotifier.caseView = of(undefined);
+    caseNotifier.caseView = of({ case_type: { id: 'test' } });
     documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
   }));
 
