@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.20
+**EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
+
 ### Version 7.2.19
 **EXUI-3301** Query Management component caches stale case ID on case switch
 
