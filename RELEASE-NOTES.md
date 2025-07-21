@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.24
+**EXUI-3276** Redactions: Investigate viewport issues on DOM1 machines
+
 ### Version 7.2.23
 **EXUI-3313** HALO-12184 Number field doesn't accept Decimal value
 
