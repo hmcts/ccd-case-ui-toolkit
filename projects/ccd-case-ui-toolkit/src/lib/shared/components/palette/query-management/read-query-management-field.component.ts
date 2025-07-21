@@ -104,10 +104,14 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     return isInternalUser(this.sessionStorageService);
   }
 
-  public getMessageType(query: any): string {
-    return query?.children?.length
+  public getMessageType(query: any): string | undefined {
+    if (!query) {
+      return undefined;
+    }
+
+    return query.children?.length
       ? query.children[query.children.length - 1]?.messageType
-      : undefined;
+      : query?.messageType;
   }
 }
 

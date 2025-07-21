@@ -88,7 +88,11 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     const lastChild = this.query?.children?.[this.query.children.length - 1];
-    const isFollowUp = lastChild?.messageType === this.followUpQuery;
+    const lastMessageType = this.query?.children?.length
+      ? this.query.children[this.query.children.length - 1]?.messageType
+      : this.query?.messageType;
+
+    const isFollowUp = lastMessageType === this.followUpQuery;
     const isRespond = lastChild?.messageType === this.respondToQuery;
 
     if (this.queryResponseStatus === QueryItemResponseStatus.CLOSED) {

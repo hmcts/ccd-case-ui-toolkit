@@ -55,7 +55,8 @@ export class QueryManagementUtils {
       isHearingRelated,
       hearingDate,
       createdOn: new Date(),
-      createdBy: currentUserId
+      createdBy: currentUserId,
+      messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
     };
   }
 

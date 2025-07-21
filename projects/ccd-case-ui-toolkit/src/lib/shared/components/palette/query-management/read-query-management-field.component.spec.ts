@@ -271,14 +271,9 @@ describe('ReadQueryManagementFieldComponent', () => {
   });
 
   describe('getMessageType', () => {
-    it('should return undefined if query has no children', () => {
-      const query = { children: [] };
-      const result = component.getMessageType(query);
-      expect(result).toBeUndefined();
-    });
-
     it('should return messageType of the last child if children exist', () => {
       const query = {
+        messageType: 'QUERY',
         children: [
           { messageType: 'RESPOND' },
           { messageType: 'FOLLOWUP' }
@@ -288,17 +283,35 @@ describe('ReadQueryManagementFieldComponent', () => {
       expect(result).toBe('FOLLOWUP');
     });
 
-    it('should return undefined if query is null or malformed', () => {
+    it('should return messageType from query if children is empty', () => {
+      const query = {
+        messageType: 'QUERY',
+        children: []
+      };
+      const result = component.getMessageType(query);
+      expect(result).toBe('QUERY');
+    });
+
+    it('should return messageType from query if children is undefined', () => {
+      const query = {
+        messageType: 'QUERY'
+      };
+      const result = component.getMessageType(query);
+      expect(result).toBe('QUERY');
+    });
+
+    it('should return undefined if query is null, undefined or malformed', () => {
       expect(component.getMessageType(null)).toBeUndefined();
       expect(component.getMessageType(undefined)).toBeUndefined();
       expect(component.getMessageType({})).toBeUndefined();
     });
 
-    it('should safely handle missing messageType in last child', () => {
+    it('should return undefined if last child has no messageType', () => {
       const query = {
+        messageType: 'QUERY',
         children: [
           { messageType: 'RESPOND' },
-          {}
+          {} // last child has no messageType
         ]
       };
       const result = component.getMessageType(query);
@@ -310,6 +323,7 @@ describe('ReadQueryManagementFieldComponent', () => {
       expect(component.isMultipleFollowUpEnabled).toBeTruthy();
     });
   });
+
   describe('setQuery', () => {
     it('should set isQueryClosed to true if any child query is closed', () => {
       const closedChild = new QueryListItem();
