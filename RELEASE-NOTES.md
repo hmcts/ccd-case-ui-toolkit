@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.23
+**EXUI-3313** HALO-12184 Number field doesn't accept Decimal value
+
 ### Version 7.2.22
 **EXUI-3311** Extra text appearing on check your answer page
 
