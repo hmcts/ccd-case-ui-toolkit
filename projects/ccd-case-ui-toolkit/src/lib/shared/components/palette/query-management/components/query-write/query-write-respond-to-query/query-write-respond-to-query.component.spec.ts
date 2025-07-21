@@ -9,7 +9,7 @@ import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-quer
 import {
   SessionStorageService
 } from '../../../../../../services';
-import { CaseQueriesCollection, QueryListItem } from '../../../models';
+import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../../models';
 import { of, throwError } from 'rxjs';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -313,4 +313,46 @@ describe('QueryWriteRespondToQueryComponent', () => {
     const result = component.setCaseQueriesCollectionData();
     expect(result).toBeFalsy();
   });
+
+  it('should call resolveFieldId and set fieldId on queryManagementService', () => {
+    const mockEventData: any = {
+      case_fields: [
+        {
+          id: 'field1',
+          field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+          display_context: 'OPTIONAL',
+          value: {
+            caseMessages: [
+              { value: { id: 'id-007' } }
+            ]
+          }
+        }
+      ],
+      wizard_pages: [
+        {
+          wizard_page_fields: [{ case_field_id: 'field1', order: 1 }]
+        }
+      ]
+    };
+
+    const mockCaseDetails = {
+      case_type: {
+        jurisdiction: { id: 'CIVIL' }
+      }
+    } as CaseView;
+
+    component.eventData = mockEventData;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.caseDetails = mockCaseDetails;
+
+    const service = (component as any).queryManagementService;
+    spyOn(service as any, 'getCollectionSelectionMethod').and.callThrough();
+    spyOn(service as any, 'getCaseQueriesCollectionFieldOrderFromWizardPages').and.callThrough();
+
+    const result = component.setCaseQueriesCollectionData();
+
+    expect(result).toBeTruthy();
+    expect(service.fieldId).toBe('field1');
+  });
+
 });

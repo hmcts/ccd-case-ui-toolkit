@@ -121,88 +121,81 @@ export class QueryManagementService {
     caseDetails: CaseView,
     messageId?: string
   ): void {
-    if (eventData?.case_fields?.length) {
-      // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-      // Counts number qmCaseQueriesCollections
-      const numberOfCaseQueriesCollections = eventData?.case_fields?.filter(
-        (caseField) =>
-          caseField.field_type.id === CASE_QUERIES_COLLECTION_ID &&
-          caseField.field_type.type === FIELD_TYPE_COMPLEX && caseField.display_context !== DISPLAY_CONTEXT_READONLY
-      )?.length || 0;
+    const resolvedFieldId = this.resolveFieldId(eventData, queryCreateContext, caseDetails, messageId);
 
-      this.caseQueriesCollections = eventData.case_fields.reduce((acc, caseField) => {
-        // Extract the ID based on conditions, updating this.fieldId dynamically
-        this.extractCaseQueryId(caseField, numberOfCaseQueriesCollections, queryCreateContext, eventData, caseDetails, messageId);
-
-        const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
-        if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
-          acc.push(extractedCaseQueriesFromCaseField);
-        }
-
-        return acc;
-      }, []);
+    if (!resolvedFieldId) {
+      console.error('Failed to resolve fieldId for CaseQueriesCollection. Cannot proceed.');
+      return;
     }
+
+    this.fieldId = resolvedFieldId;
+
+    this.caseQueriesCollections = eventData.case_fields.reduce((acc, field) => {
+      if (field.id === this.fieldId) {
+        const extracted = QueryManagementUtils.extractCaseQueriesFromCaseField(field);
+        if (extracted && typeof extracted === 'object') {
+          acc.push(extracted);
+        }
+      }
+      return acc;
+    }, []);
   }
 
-  private extractCaseQueryId(
-    data: CaseField,
-    count: number,
-    context: QueryCreateContext,
+  private resolveFieldId(
     eventData: CaseEventTrigger,
+    queryCreateContext: QueryCreateContext,
     caseDetails: CaseView,
-    messageId?:string): void {
-    const { id, value } = data;
-    // Check if the field_type matches CaseQueriesCollection and type is Complex
-    if (data.field_type.id === CASE_QUERIES_COLLECTION_ID && data.field_type.type === FIELD_TYPE_COMPLEX) {
-      if (this.isNewQueryContext(data, context)) {
-        // If there is more than one qmCaseQueriesCollection, pick the one with the lowest order
-        if (count > 1) {
-          if (!this.handleMultipleCollections(caseDetails, eventData)) {
-            return;
-          }
-        } else {
-          // Set the field ID dynamically based on the extracted data
-          this.fieldId = id; // Store the ID for use in generating newQueryData
+    messageId?: string
+  ): string | null {
+  // Step 1: Filter candidate fields (must be editable CaseQueriesCollection fields)
+    const candidateFields = eventData?.case_fields?.filter(
+      (field) =>
+        field.field_type.id === CASE_QUERIES_COLLECTION_ID &&
+      field.field_type.type === FIELD_TYPE_COMPLEX &&
+      field.display_context !== DISPLAY_CONTEXT_READONLY
+    );
+
+    if (!candidateFields?.length) {
+      console.warn('No editable CaseQueriesCollection fields found.');
+      return null;
+    }
+
+    const numberOfCollections = candidateFields.length;
+    const jurisdictionId = caseDetails?.case_type?.jurisdiction?.id ?? '';
+
+    // Step 2: If messageId is present, try to locate the field containing that message
+    if (messageId) {
+      const fieldByMessage = candidateFields.find((field) =>
+        field?.value?.caseMessages?.some((msg) => msg?.value?.id === messageId)
+      );
+      if (fieldByMessage) {
+        return fieldByMessage.id; // Found the matching field by message ID
+      }
+    }
+
+    // Step 3: Handle new queries
+    if (queryCreateContext === QueryCreateContext.NEW_QUERY) {
+    // If there's only one collection, use it
+      if (numberOfCollections === 1) {
+        return candidateFields[0].id;
+      }
+
+      // For multiple collections, use jurisdiction-based resolution strategy
+      if (this.getCollectionSelectionMethod(jurisdictionId) === QM_SELECT_FIRST_COLLECTION) {
+      // Choose the one with the lowest order from the first wizard page
+        const firstOrdered = this.getCaseQueriesCollectionFieldOrderFromWizardPages(eventData);
+        if (firstOrdered) {
+          return firstOrdered.id;
         }
-      }
-
-      // If messageId is present, find the corresponding case message
-      this.setMessageFieldId(messageId, value, id);
-    }
-  }
-
-  private setMessageFieldId(messageId, value, id: string) {
-    if (messageId && value?.caseMessages) {
-      // If a matching message is found, set the fieldId to the corresponding id
-      const matchedMessage = value?.caseMessages?.find((message) => message.value.id === messageId);
-      if (matchedMessage) {
-        this.fieldId = id;
+      } else {
+        console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
+        return null;
       }
     }
-  }
 
-  private isNewQueryContext(data: CaseField, queryCreateContext: QueryCreateContext): boolean {
-    return queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== DISPLAY_CONTEXT_READONLY;
-  }
-
-  private handleMultipleCollections(caseDetails:any, eventData: CaseEventTrigger): boolean {
-    const jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
-
-    if (!jurisdictionId) {
-      console.error('Jurisdiction ID is missing.');
-      return false;
-    }
-
-    if (this.getCollectionSelectionMethod(jurisdictionId) === QM_SELECT_FIRST_COLLECTION) {
-      // Pick the collection with the lowest order
-      this.fieldId = this.getCaseQueriesCollectionFieldOrderFromWizardPages(eventData)?.id;
-    } else {
-      // Display Error, for now, until EXUI-2644 is implemented
-      console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
-      return false;
-    }
-
-    return true;
+    // Step 4: Fallback — if none of the above succeeded
+    console.warn('Could not determine fieldId for context:', queryCreateContext);
+    return null;
   }
 
   private getCaseQueriesCollectionFieldOrderFromWizardPages(eventData: CaseEventTrigger): CaseField | undefined {
