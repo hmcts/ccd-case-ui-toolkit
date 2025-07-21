@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.2.20-exui-2761-rc1
+### Version 7.2.23-exui-2761-rc1
 **EXUI-2761** url change
+
+### Version 7.2.23
+**EXUI-3313** HALO-12184 Number field doesn't accept Decimal value
+
+### Version 7.2.22
+**EXUI-3311** Extra text appearing on check your answer page
+
+### Version 7.2.21
+**EXUI-3304** Uploading encrypted file shows incorrect error message
 
 ### Version 7.2.20
 **EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
