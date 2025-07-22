@@ -200,5 +200,4 @@ export class CaseEditorConfig {
   public icp_jurisdictions: string[];
   public events_to_hide: string[];
   public enable_service_specific_multi_followups: string[];
-  public multiple_follow_up_enabled: boolean;
 }
