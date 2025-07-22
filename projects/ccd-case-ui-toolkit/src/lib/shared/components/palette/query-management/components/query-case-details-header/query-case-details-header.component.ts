@@ -14,12 +14,12 @@ export class QueryCaseDetailsHeaderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseTitle = new CaseField();
-    this.caseTitle.label = this.caseDetails.state.title_display;
+    this.caseTitle.label = this.caseDetails?.state?.title_display;
     this.caseFields = this.getCaseFieldsInfo();
   }
 
   private getCaseFieldsInfo(): CaseField[] {
-    const caseDataFields = this.caseDetails.tabs.reduce((acc, tab) => {
+    const caseDataFields = this.caseDetails?.tabs?.reduce((acc, tab) => {
       return acc.concat(tab.fields);
     }, []);
 
