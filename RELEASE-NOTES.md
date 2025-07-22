@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.25
+**EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
+
 ### Version 7.2.24
 **EXUI-3276** Redactions: Investigate viewport issues on DOM1 machines
 
