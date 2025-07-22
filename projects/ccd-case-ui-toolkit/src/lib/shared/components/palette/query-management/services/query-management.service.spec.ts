@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { QueryManagementService } from './query-management.service';
 import { SessionStorageService } from '../../../../services';
 import { QueryCreateContext } from '../models';
