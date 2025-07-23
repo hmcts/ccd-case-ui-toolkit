@@ -42,15 +42,7 @@ export class QueryListItem implements CaseMessage {
       return this.lastSubmittedMessage.name;
     }
 
-    let index: number;
-
-    if (childrenCount === 1) {
-      index = 0;
-    } else {
-      index = childrenCount % 2 === 1 ? childrenCount - 1 : childrenCount - 2;
-    }
-
-    return this.children[index].name;
+    return this.children[childrenCount - 1].name;
   }
 
   public get lastSubmittedDate(): Date {
