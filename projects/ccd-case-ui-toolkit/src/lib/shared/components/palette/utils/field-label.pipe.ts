@@ -10,15 +10,24 @@ export class FieldLabelPipe implements PipeTransform {
 
   constructor(
     private readonly rpxTranslationPipe: RpxTranslatePipe
-  ) {}
-  
-  public transform (field: CaseField): string {
+  ) {
+  }
+
+  public transform(field: CaseField): string {
     if (!field || !field.label) {
       return '';
     } else if (!field.display_context) {
-      return this.rpxTranslationPipe.transform(field.label);
+      this.getTranslatedLabel(field);
     }
-    return this.rpxTranslationPipe.transform(field.label) + (field.display_context.toUpperCase() === 'OPTIONAL' ? 
+    return this.getTranslatedLabel(field) + (field.display_context.toUpperCase() === 'OPTIONAL' ?
       ' (' + this.rpxTranslationPipe.transform('Optional') + ')' : '');
+  }
+
+  private getTranslatedLabel(field: CaseField): string {
+    if (!field.isTranslated) {
+      return this.rpxTranslationPipe.transform(field.label);
+    } else {
+      return field.label;
+    }
   }
 }
