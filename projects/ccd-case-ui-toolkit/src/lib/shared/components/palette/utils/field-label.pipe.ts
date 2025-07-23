@@ -17,7 +17,7 @@ export class FieldLabelPipe implements PipeTransform {
     if (!field || !field.label) {
       return '';
     } else if (!field.display_context) {
-      this.getTranslatedLabel(field);
+      return this.getTranslatedLabel(field);
     }
     return this.getTranslatedLabel(field) + (field.display_context.toUpperCase() === 'OPTIONAL' ?
       ' (' + this.rpxTranslationPipe.transform('Optional') + ')' : '');
