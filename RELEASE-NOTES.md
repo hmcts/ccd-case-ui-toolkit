@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.23-exui-2761-rc2
+**EXUI-2761** url change
+
 ### Version 7.2.25
 **EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
 
