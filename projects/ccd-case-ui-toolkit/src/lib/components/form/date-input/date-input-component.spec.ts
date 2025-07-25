@@ -74,7 +74,8 @@ describe('Date input component', () => {
     expect(component.displaySecond).toBeNull();
   });
 
-  it('should verify day, month, year value from date', async () => {
+  it('should verify day, month, year, hours, minutes, seconds value from date', async () => {
+    component.isDateTime = true;
     component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
     fixture.detectChanges();
@@ -84,6 +85,31 @@ describe('Date input component', () => {
     expect(dayInput.value).toBe('09');
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
     expect(yearInput.value).toBe('2021');
+    const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+    expect(hourInput.value).toBe('09');
+    const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+    expect(minuteInput.value).toBe('02');
+    const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+    expect(secondInput.value).toBe('27');
+  });
+
+  it('should verify hours, minutes, seconds value from date', async () => {
+    component.isDateTime = true;
+    component.id = 'dateField';
+    component.writeValue('2021-04-09');
+    fixture.detectChanges();
+    const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+    expect(monthInput.value).toBe('04');
+    const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+    expect(dayInput.value).toBe('09');
+    const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+    expect(yearInput.value).toBe('2021');
+    const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+    expect(hourInput.value).toBe('');
+    const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+    expect(minuteInput.value).toBe('');
+    const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+    expect(secondInput.value).toBe('');
   });
 
   it('should verify day, month, year value from date', async () => {
@@ -95,7 +121,7 @@ describe('Date input component', () => {
     const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
     expect(dayInput.value).toBe('');
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
-    expect(yearInput.value).toBe('someRandomValue');
+    expect(yearInput.value).toBe('');
   });
 
   it('should be valid when the date is in correct format', () => {
@@ -245,6 +271,20 @@ describe('Date input component', () => {
       const result = component.yearId();
 
       expect(result).toBe('start-year');
+    });
+  });
+
+  describe('hour input component', () => {
+    it('hour input should set utc value based on the date input', async () => {
+      component.isDateTime = true;
+      component.writeValue('2021-04-09T10:30:00.000');
+      component.id = 'hoursInput';
+      component.hourChange('10');
+      component.displayHour = '10';
+      fixture.detectChanges();
+      const input = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+      expect(input.value).toBe('10');
+      expect(onChange).toHaveBeenCalledWith('2021-04-09T09:30:00.000');
     });
   });
 });
