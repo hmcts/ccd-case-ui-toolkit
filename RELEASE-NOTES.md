@@ -1,5 +1,32 @@
 ## RELEASE NOTES
 
+### Version 7.2.25
+**EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
+
+### Version 7.2.24
+**EXUI-3276** Redactions: Investigate viewport issues on DOM1 machines
+
+### Version 7.2.23
+**EXUI-3313** HALO-12184 Number field doesn't accept Decimal value
+
+### Version 7.2.22
+**EXUI-3311** Extra text appearing on check your answer page
+
+### Version 7.2.21
+**EXUI-3304** Uploading encrypted file shows incorrect error message
+
+### Version 7.2.20
+**EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
+
+### Version 7.2.19
+**EXUI-3301** Query Management component caches stale case ID on case switch
+
+### Version 7.2.18
+**EXUI-3147** MV CVE fix
+
+### Version 7.2.17
+**EXUI-2895** Refactor PED access token from URL
+
 ### Version 7.2.16
 **EXUI-3167** Query Management - Ability to close a query thread for caseworkers
 
