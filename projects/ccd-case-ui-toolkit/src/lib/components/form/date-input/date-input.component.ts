@@ -71,23 +71,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public writeValue(obj: string): void { // 2018-04-09T08:02:27.542
     if (obj) {
       this.rawValue = this.removeMilliseconds(obj);
-      // const date = new Date(this.rawValue);
-      // const localDate = this.getOffsetDate(date);
       this.getLocalDateTimeString(this.rawValue);
-      // needs to handle also partial dates, e.g. -05-2016 (missing day)
-      // console.log('localDate:-', localDate);
-      // console.log('localDate toISOString():-', localDate.toISOString());
-      // const [datePart, timePart] = localDate.toISOString().split('T');
-      // const dateValues = datePart.split('-');
-      // this.year = this.displayYear = dateValues[0] || '';
-      // this.month = this.displayMonth = dateValues[1] || '';
-      // this.day = this.displayDay = dateValues[2] || '';
-      // if (timePart) {
-      //   const timeParts = timePart.split(':');
-      //   this.hour = this.displayHour = timeParts[0] || '';
-      //   this.minute = this.displayMinute = timeParts[1] || '';
-      //   this.second = this.displaySecond = timeParts[2] || '';
-      // }
     }
   }
 
@@ -156,10 +140,8 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public dayChange(value: string) {
     // get value from input
     this.day = value;
-    const [datePart, timePart] = this.rawValue.split('T');
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && timePart ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.viewValue();
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -168,10 +150,8 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public monthChange(value: string) {
     // get value from input
     this.month = value;
-    const [datePart, timePart] = this.rawValue.split('T');
-    // this.rawValue = this.convertToUTC(this.viewValue());
-    this.rawValue = this.isDateFormat(this.viewValue()) && timePart ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.viewValue();
+
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -181,10 +161,8 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public yearChange(value: string) {
     // get value from input
     this.year = value;
-    const [datePart, timePart] = this.rawValue.split('T');
-    // this.rawValue = this.convertToUTC(this.viewValue());
-    this.rawValue = this.isDateFormat(this.viewValue()) && timePart ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.viewValue();
+
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -194,10 +172,8 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.hour = value;
 
-    // this.rawValue = this.convertToUTC(this.viewValue());
     this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.viewValue();
-    console.log('hours change value', this.rawValue);
+
     // update the form
     this.propagateChange(this.rawValue);
   }
@@ -206,10 +182,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.minute = value;
 
-    // this.rawValue = this.convertToUTC(this.viewValue());
     this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.viewValue();
-    console.log('minute change value', this.rawValue);
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -220,9 +193,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.second = value;
 
-    // this.rawValue = this.viewValue();
     this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
-    // this.rawValue = this.convertToUTC(this.viewValue());
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -266,10 +237,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     return this.id + '-second';
   }
 
-  private isValidDateTime(input: string): boolean {
-    const date = new Date(input);
-    return this.isDateFormat(date.getTime());
-  }
+  // convert the dates to UTC before sending to the backend
   private convertToUTC(input: string): string | null {
     if (!input) return null;
 
