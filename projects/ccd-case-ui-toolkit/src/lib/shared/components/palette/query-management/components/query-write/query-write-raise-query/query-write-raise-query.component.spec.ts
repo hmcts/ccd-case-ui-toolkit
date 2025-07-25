@@ -153,12 +153,12 @@ describe('QueryWriteRaiseQueryComponent', () => {
     expect(result).toBeFalsy();
   });
 
-  it('should correctly assign messgaeId from route params on ngOnChanges', () => {
+  it('should correctly assign messageIdfrom route params on ngOnChanges', () => {
     component.triggerSubmission = false;
     queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(false);
 
     component.ngOnChanges();
 
-    expect(component.messgaeId).toBe('mock-message-id');
+    expect(component.messageId).toBe('mock-message-id');
   });
 });

@@ -71,7 +71,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public filteredTasks: Task[] = [];
   public readyToSubmit: boolean;
   public isSubmitting: boolean = false;
-  public messgaeId: string;
+  public messageId: string;
   public callbackErrorsSubject: Subject<any> = new Subject();
 
   public error: any;
@@ -91,7 +91,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
     this.tid = this.route.snapshot.queryParams?.tid;
-    this.messgaeId = this.route.snapshot.params.dataid;
+    this.messageId= this.route.snapshot.params.dataid;
 
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
@@ -261,7 +261,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       this.eventData,
       this.queryCreateContext,
       this.caseDetails,
-      this.messgaeId
+      this.messageId
     );
   }
 }

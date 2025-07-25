@@ -37,7 +37,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public queryListData: QueryListItem | undefined;
 
   public hasRespondedToQuery: boolean = false;
-  public messgaeId: string;
+  public messageId: string;
 
   private static readonly QUERY_ITEM_RESPOND = '3';
   private static readonly QUERY_ITEM_FOLLOWUP = '4';
@@ -123,7 +123,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       this.eventData,
       this.queryCreateContext,
       this.caseDetails,
-      this.messgaeId
+      this.messageId
     );
 
     return true;
@@ -134,7 +134,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       this.formGroup,
       this.queryCreateContext,
       this.queryItem,
-      this.messgaeId
+      this.messageId
     );
   }
 }

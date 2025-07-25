@@ -32,7 +32,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
 
   public raiseQueryErrorMessage = RaiseQueryErrorMessage;
   public eventCompletionParams: EventCompletionParams;
-  public messgaeId: string;
+  public messageId: string;
 
   constructor(
     private queryManagementService: QueryManagementService,
@@ -40,7 +40,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
   ) {}
 
   public ngOnChanges(): void {
-    this.messgaeId = this.route.snapshot.params.dataid;
+    this.messageId= this.route.snapshot.params.dataid;
     const isCollectionDataSet = this.setCaseQueriesCollectionData();
     if (isCollectionDataSet) {
       if (this.triggerSubmission) {
@@ -79,7 +79,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
       this.eventData,
       this.queryCreateContext,
       this.caseDetails,
-      this.messgaeId
+      this.messageId
     );
 
     return true;
@@ -90,7 +90,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
       this.formGroup,
       this.queryCreateContext,
       this.queryItem,
-      this.messgaeId
+      this.messageId
     );
   }
 }
