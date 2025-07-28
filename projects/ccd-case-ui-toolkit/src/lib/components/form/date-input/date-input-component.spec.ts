@@ -77,16 +77,16 @@ describe('Date input component', () => {
   it('should verify day, month, year, hours, minutes, seconds value from date', async () => {
     component.isDateTime = true;
     component.id = 'dateField';
-    component.writeValue('2021-04-09T08:02:27.542');
+    component.writeValue('2021-03-09T08:02:27.542');
     fixture.detectChanges();
     const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
-    expect(monthInput.value).toBe('04');
+    expect(monthInput.value).toBe('03');
     const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
     expect(dayInput.value).toBe('09');
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
     expect(yearInput.value).toBe('2021');
     const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
-    expect(hourInput.value).toBe('09');
+    expect(hourInput.value).toBe('08');
     const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
     expect(minuteInput.value).toBe('02');
     const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
@@ -277,14 +277,14 @@ describe('Date input component', () => {
   describe('hour input component', () => {
     it('hour input should set utc value based on the date input', async () => {
       component.isDateTime = true;
-      component.writeValue('2021-04-09T10:30:00.000');
+      component.writeValue('2021-03-09T10:30:00.000');
       component.id = 'hoursInput';
       component.hourChange('10');
       component.displayHour = '10';
       fixture.detectChanges();
       const input = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
       expect(input.value).toBe('10');
-      expect(onChange).toHaveBeenCalledWith('2021-04-09T09:30:00.000');
+      expect(onChange).toHaveBeenCalledWith('2021-03-09T10:30:00.000');
     });
   });
 });
