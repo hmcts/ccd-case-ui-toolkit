@@ -166,6 +166,16 @@ describe('Date input component', () => {
     expect(results).toEqual({ required: 'This field is required' });
   });
 
+  it('should clear display values for invalid date string', () => {
+      component.writeValue('invalid-date');
+      expect(component.displayYear).toBe('');
+      expect(component.displayMonth).toBe('');
+      expect(component.displayDay).toBe('');
+      expect(component.displayHour).toBe('');
+      expect(component.displayMinute).toBe('');
+      expect(component.displaySecond).toBe('');
+  });
+
   describe('day input component', () => {
     it('day input should valid for a string value', async () => {
       component.id = 'dayInput';
@@ -281,10 +291,38 @@ describe('Date input component', () => {
       component.id = 'hoursInput';
       component.hourChange('10');
       component.displayHour = '10';
+      component.minuteChange('30');
+      component.displayMinute = '30';
+      component.secondChange('00');
+      component.displaySecond = '00';
       fixture.detectChanges();
-      const input = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
-      expect(input.value).toBe('10');
+      const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+      const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+      const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+      expect(hourInput.value).toBe('10');
+      expect(minuteInput.value).toBe('30');
+      expect(secondInput.value).toBe('00');
       expect(onChange).toHaveBeenCalledWith('2021-03-09T10:30:00.000');
+    });
+  });
+
+  describe('inputFocus and touch', () => {
+    it('should mark as untouched if not touched', () => {
+      component.formControl = new FormControl();
+      component.isTouched = false;
+      let markedUntouched = false;
+      component.formControl.markAsUntouched = () => { markedUntouched = true; };
+      component.inputFocus();
+      expect(markedUntouched).toBe(true);
+    });
+
+    it('should mark as touched if touched', () => {
+      component.formControl = new FormControl();
+      component.isTouched = true;
+      let markedTouched = false;
+      component.formControl.markAsTouched = () => { markedTouched = true; };
+      component.touch();
+      expect(markedTouched).toBe(true);
     });
   });
 });
