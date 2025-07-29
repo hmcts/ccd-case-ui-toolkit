@@ -1,30 +1,9 @@
-<!-- <ng-container *ngIf="qualifyingQuestion?.markdown">
+<ng-container *ngIf="qualifyingQuestion?.markdown">
   <h1 class="govuk-heading-l">
     {{ qualifyingQuestion.name | rpxTranslate }}
   </h1>
-  <div class="qm-qualifying-question">
-    <ccd-markdown
-    [content]="qualifyingQuestion.markdown | rpxTranslate">
-  </ccd-markdown>
-  </div>
-</ng-container> -->
-
-<ng-container *ngIf="qualifyingQuestion?.markdown">
-  <h1 class="govuk-heading-l">
-    {{ qualifyingQuestion.name | rpxTranslate }} -
-  </h1>
-   <!-- <ng-container *translatedMarkdown="qq; let content">
-    {{ qq.markdown }}
+  <ng-container *translatedMarkdown="qualifyingQuestion; let content;">
     <div class="qm-qualifying-question">
-      <ccd-markdown
-        [content]="qq ? content : (qq.markdown | rpxTranslate)">
-      </ccd-markdown>
-    </div>
-   </ng-container> -->
-
-    <ng-container *translatedMarkdown="qualifyingQuestion; let content;">
-    <div class="qm-qualifying-question">
-       {{ qualifyingQuestion.markdown }}
       <ccd-markdown [content]="qualifyingQuestion ? content : (qualifyingQuestion.markdown | rpxTranslate)"></ccd-markdown>
     </div>
   </ng-container>
