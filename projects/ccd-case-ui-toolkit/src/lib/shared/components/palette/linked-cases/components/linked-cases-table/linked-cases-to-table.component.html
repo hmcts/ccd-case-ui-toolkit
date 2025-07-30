@@ -27,7 +27,7 @@
               <td>
                 @for (reason of case.reasons; track reason; let i = $index; let isLast = $last) {
                   <span>
-                    {{reason.value | ccdLinkCasesReasonValue}}<span>@if (hasLeadCaseOrConsolidated(reason.value.Reason)) {
+                    {{reason | ccdLinkCasesReasonValue}}<span>@if (hasLeadCaseOrConsolidated(reason)) {
                     <a class="govuk-!-padding-left-1"
                       href="cases/case-details/{{ case.caseReference }}"
                     >{{getCaseRefereneLink(case.caseReference)}}</a>

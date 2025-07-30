@@ -75,7 +75,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     }
   }
 
-  onFlagSelectionChange(selectedFlag: FormControl): void {
+  onFlagSelectionChange(selectedFlag: FlagDetailDisplayWithFormGroupPath): void {
     // Update the form control value
     this.formGroup.get(this.selectedControlName).setValue(selectedFlag);
 

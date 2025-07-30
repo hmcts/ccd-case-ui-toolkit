@@ -56,19 +56,19 @@
                 <span>
                   @if (isLinkCasesJourney) {
                     <span>
-                      {{reason | ccdLinkCasesReasonValue}}
+                      {{ reason | ccdLinkCasesReasonValue }}
                     </span>
                   }
                   @if (!isLinkCasesJourney) {
                     <span>
-                      {{reason.Reason.value | ccdLinkCasesReasonValue}}
+                      {{ reason | ccdLinkCasesReasonValue }}
                     </span>
                   }
                   @if (!isLast) {
                     <br>
-                    }
-                  </span>
-                }
+                  }
+                </span>
+              }
               </td>
               <td class="govuk-table__cell"></td>
               @if (isLinkCasesJourney) {
