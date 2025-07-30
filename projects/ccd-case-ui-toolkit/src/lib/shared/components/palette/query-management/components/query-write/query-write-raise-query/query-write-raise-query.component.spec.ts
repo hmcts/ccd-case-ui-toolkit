@@ -4,7 +4,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
     return value;

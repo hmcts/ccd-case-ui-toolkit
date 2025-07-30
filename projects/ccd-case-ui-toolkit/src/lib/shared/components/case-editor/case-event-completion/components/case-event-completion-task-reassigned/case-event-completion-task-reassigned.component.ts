@@ -10,8 +10,9 @@ import { JudicialworkerService } from '../../../services/judicial-worker.service
 import { CaseEditComponent } from '../../../case-edit';
 
 @Component({
-  selector: 'app-case-event-completion-task-reassigned',
-  templateUrl: './case-event-completion-task-reassigned.html'
+    selector: 'app-case-event-completion-task-reassigned',
+    templateUrl: './case-event-completion-task-reassigned.html',
+    standalone: false
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
   @Input()

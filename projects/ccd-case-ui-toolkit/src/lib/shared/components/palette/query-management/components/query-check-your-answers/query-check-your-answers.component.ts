@@ -21,9 +21,10 @@ import { Task } from '../../../../../domain/work-allocation/Task';
 import { USER_DETAILS } from '../../../../../utils';
 
 @Component({
-  selector: 'ccd-query-check-your-answers',
-  templateUrl: './query-check-your-answers.component.html',
-  styleUrls: ['./query-check-your-answers.component.scss']
+    selector: 'ccd-query-check-your-answers',
+    templateUrl: './query-check-your-answers.component.html',
+    styleUrls: ['./query-check-your-answers.component.scss'],
+    standalone: false
 })
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';

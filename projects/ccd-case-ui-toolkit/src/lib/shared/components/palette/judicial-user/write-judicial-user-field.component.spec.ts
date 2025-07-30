@@ -140,8 +140,9 @@ const JURISDICTION_JUF: Jurisdiction = {
 };
 
 @Pipe({
-  name: 'ccdFirstError',
-  pure: false
+    name: 'ccdFirstError',
+    pure: false,
+    standalone: false
 })
 class MockFirstErrorPipe implements PipeTransform {
   transform(value: ValidationErrors, args?: string): string {

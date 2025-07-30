@@ -4,9 +4,10 @@ import { SimpleOrganisationModel } from '../../../domain/organisation';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 
 @Component({
-  selector: 'ccd-write-organisation-complex-field',
-  templateUrl: './write-organisation-complex-field.component.html',
-  styleUrls: ['./organisation-field.scss']
+    selector: 'ccd-write-organisation-complex-field',
+    templateUrl: './write-organisation-complex-field.component.html',
+    styleUrls: ['./organisation-field.scss'],
+    standalone: false
 })
 export class WriteOrganisationComplexFieldComponent extends AbstractFormFieldComponent {
 

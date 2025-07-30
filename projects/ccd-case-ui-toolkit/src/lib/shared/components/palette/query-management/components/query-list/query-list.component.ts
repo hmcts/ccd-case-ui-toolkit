@@ -3,9 +3,10 @@ import { SortOrder } from '../../../complex/sort-order';
 import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({
-  selector: 'ccd-query-list',
-  templateUrl: './query-list.component.html',
-  styleUrls: ['./query-list.component.scss']
+    selector: 'ccd-query-list',
+    templateUrl: './query-list.component.html',
+    styleUrls: ['./query-list.component.scss'],
+    standalone: false
 })
 export class QueryListComponent implements OnChanges {
   @Input() public caseQueriesCollection: CaseQueriesCollection;

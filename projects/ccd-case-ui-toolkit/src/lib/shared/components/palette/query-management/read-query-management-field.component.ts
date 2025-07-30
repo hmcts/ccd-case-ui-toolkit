@@ -9,8 +9,9 @@ import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
-  selector: 'ccd-read-query-management-field',
-  templateUrl: './read-query-management-field.component.html'
+    selector: 'ccd-read-query-management-field',
+    templateUrl: './read-query-management-field.component.html',
+    standalone: false
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
   public caseQueriesCollections: CaseQueriesCollection[];

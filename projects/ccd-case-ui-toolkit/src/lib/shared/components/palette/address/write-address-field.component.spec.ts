@@ -44,8 +44,9 @@ describe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-write-complex-type-field`,
-    template: ``
-  })
+    template: ``,
+    standalone: false
+})
   class MockWriteComplexFieldComponent {
 
     @Input()

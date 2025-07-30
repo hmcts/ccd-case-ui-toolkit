@@ -7,9 +7,10 @@ import { QueryItemResponseStatus } from '../../enums';
 import { QueryListItem } from '../../models';
 
 @Component({
-  selector: 'ccd-query-details',
-  templateUrl: './query-details.component.html',
-  styleUrls: ['./query-details.component.scss']
+    selector: 'ccd-query-details',
+    templateUrl: './query-details.component.html',
+    styleUrls: ['./query-details.component.scss'],
+    standalone: false
 })
 export class QueryDetailsComponent implements OnChanges{
   @Input() public query: QueryListItem;

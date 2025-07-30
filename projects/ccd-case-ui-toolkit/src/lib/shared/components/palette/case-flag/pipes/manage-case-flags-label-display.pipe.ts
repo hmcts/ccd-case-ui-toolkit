@@ -6,8 +6,9 @@ import { map } from 'rxjs/operators';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../domain';
 
 @Pipe({
-  name: 'manageCaseFlagsLabelDisplay',
-  pure: false
+    name: 'manageCaseFlagsLabelDisplay',
+    pure: false,
+    standalone: false
 })
 export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTransform {
   private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';

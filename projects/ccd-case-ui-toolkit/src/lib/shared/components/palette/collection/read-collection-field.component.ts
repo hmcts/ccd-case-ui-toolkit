@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-  selector: 'ccd-read-collection-field',
-  templateUrl: './read-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+    selector: 'ccd-read-collection-field',
+    templateUrl: './read-collection-field.html',
+    styleUrls: ['./collection-field.scss'],
+    standalone: false
 })
 export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

@@ -16,7 +16,10 @@ import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-@Pipe({ name: 'ccdCaseReference' })
+@Pipe({
+    name: 'ccdCaseReference',
+    standalone: false
+})
 class MockCaseReferencePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
     return value;

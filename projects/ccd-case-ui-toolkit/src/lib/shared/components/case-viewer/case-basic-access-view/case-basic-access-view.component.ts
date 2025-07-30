@@ -5,8 +5,9 @@ import { CaseView } from '../../../domain/case-view/case-view.model';
 import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
-  selector: 'ccd-case-basic-access-view',
-  templateUrl: 'case-basic-access-view.component.html'
+    selector: 'ccd-case-basic-access-view',
+    templateUrl: 'case-basic-access-view.component.html',
+    standalone: false
 })
 export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   public static CANCEL_LINK_DESTINATION = '/work/my-work/list';

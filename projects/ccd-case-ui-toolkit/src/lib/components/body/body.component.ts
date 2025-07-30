@@ -4,7 +4,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
     selector: 'cut-body',
     templateUrl: './body.html',
     styleUrls: ['./fonts.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class BodyComponent {
 

@@ -5,7 +5,8 @@ import { CaseTab } from '../../domain/case-view';
 import { CaseField } from '../../domain/definition';
 
 @Pipe({
-  name: 'ccdTabFields'
+    name: 'ccdTabFields',
+    standalone: false
 })
 export class CcdTabFieldsPipe implements PipeTransform {
 

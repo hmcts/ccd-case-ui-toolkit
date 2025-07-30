@@ -6,9 +6,10 @@ import { CaseNotifier } from '../../../../../case-editor/services';
 import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
 @Component({
-  selector: 'ccd-query-write-respond-to-query',
-  templateUrl: './query-write-respond-to-query.component.html',
-  styleUrls: ['./query-write-respond-to-query.component.scss']
+    selector: 'ccd-query-write-respond-to-query',
+    templateUrl: './query-write-respond-to-query.component.html',
+    styleUrls: ['./query-write-respond-to-query.component.scss'],
+    standalone: false
 })
 
 export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
