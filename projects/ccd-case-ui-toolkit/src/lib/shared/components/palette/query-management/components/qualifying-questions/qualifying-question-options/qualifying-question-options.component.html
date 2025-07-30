@@ -1,4 +1,4 @@
-<ng-container *ngIf="qualifyingQuestionsControl">
+@if (qualifyingQuestionsControl) {
   <div class="govuk-form-group" [class.govuk-form-group--error]="displayError">
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -9,31 +9,29 @@
       <h2 class="govuk-heading-m govuk-!-margin-top-10">
         {{ 'What do you need help to do?' | rpxTranslate }}
       </h2>
-
-      <ng-container *ngIf="displayError">
+      @if (displayError) {
         <p class="govuk-error-message">
           <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{
           qualifyingQuestionsErrorMessage.SELECT_AN_OPTION | rpxTranslate }}
         </p>
-      </ng-container>
-
+      }
       <div class="govuk-radios" data-module="govuk-radios">
-        <ng-container *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async; let isLast = last">
-          <ng-container *ngIf="isLast">
+        @for (qualifyingQuestion of qualifyingQuestions$ | async; track qualifyingQuestion; let isLast = $last) {
+          @if (isLast) {
             <div class="qm-qualifying-question__divider">{{ 'If your issue is not covered by the options above, raise a query:' | rpxTranslate }}</div>
-          </ng-container>
+          }
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" 
-              id="{{qualifyingQuestion.name}}" 
+            <input class="govuk-radios__input"
+              id="{{qualifyingQuestion.name}}"
               name="qualifyingQuestionOption"
-              type="radio" [formControl]="qualifyingQuestionsControl" 
+              type="radio" [formControl]="qualifyingQuestionsControl"
               [value]="qualifyingQuestion"
               (change)="onSelectionChange(qualifyingQuestion)">
             <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name |
-              rpxTranslate }}</label>
+            rpxTranslate }}</label>
           </div>
-        </ng-container>
+        }
       </div>
     </fieldset>
   </div>
-</ng-container>
+}

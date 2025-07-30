@@ -1,8 +1,9 @@
-<ccd-search-filters
-    *ngIf="isVisible"
+@if (isVisible) {
+  <ccd-search-filters
     [jurisdictions]="jurisdictions"
     [autoApply]="autoApply"
     (onApply)="onWrapperApply($event)"
     (onReset)="onWrapperReset($event)"
     (onJuridiction)="onWrapperJurisdiction($event)"
-></ccd-search-filters>
+  ></ccd-search-filters>
+}

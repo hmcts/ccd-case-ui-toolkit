@@ -6,18 +6,22 @@
           {{manageCaseFlagTitle | rpxTranslate}}
         </h1>
       </legend>
-      <div id="manage-case-flag-not-selected-error-message" class="govuk-error-message"
-        *ngIf="manageCaseFlagSelectedErrorMessage">
-        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{manageCaseFlagSelectedErrorMessage | rpxTranslate}}
-      </div>
-      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
-        <div class="govuk-radios__item" *ngFor="let flagDisplay of flagsDisplayData; index as i">
-          <input class="govuk-radios__input" id="flag-selection-{{i}}"
-            type="radio"
-            [checked]="isSelected(flagDisplay)"
-            (change)="onFlagSelectionChange(flagDisplay)"/>
-          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay | manageCaseFlagsLabelDisplay"></label>
+      @if (manageCaseFlagSelectedErrorMessage) {
+        <div id="manage-case-flag-not-selected-error-message" class="govuk-error-message"
+          >
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{manageCaseFlagSelectedErrorMessage | rpxTranslate}}
         </div>
+      }
+      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
+        @for (flagDisplay of flagsDisplayData; track flagDisplay; let i = $index) {
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="flag-selection-{{i}}"
+              type="radio"
+              [checked]="isSelected(flagDisplay)"
+              (change)="onFlagSelectionChange(flagDisplay)"/>
+            <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay | manageCaseFlagsLabelDisplay"></label>
+          </div>
+        }
       </div>
     </fieldset>
   </div>

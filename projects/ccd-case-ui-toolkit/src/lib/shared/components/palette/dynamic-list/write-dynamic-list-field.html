@@ -2,17 +2,27 @@
   [ngClass]="{'form-group-error': !dynamicListFormControl.valid && (dynamicListFormControl.dirty || dynamicListFormControl.touched)}">
 
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
+    @if (caseField.label) {
+      <span class="form-label">{{(caseField | ccdFieldLabel)}}</span>
+    }
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option from the dropdown' | rpxTranslate}}</span>
-  <span class="error-message"
-    *ngIf="dynamicListFormControl.errors && dynamicListFormControl.dirty">{{(dynamicListFormControl.errors |
+  @if (caseField.hint_text) {
+    <span class="form-hint">{{caseField.hint_text | rpxTranslate}}</span>
+  }
+  @if (!caseField.label && !caseField.hint_text) {
+    <span class="form-label">{{'Select an option from the dropdown' | rpxTranslate}}</span>
+  }
+  @if (dynamicListFormControl.errors && dynamicListFormControl.dirty) {
+    <span class="error-message"
+      >{{(dynamicListFormControl.errors |
     ccdFirstError:caseField.label)}}</span>
+  }
 
   <select class="form-control ccd-dropdown bottom-30" [id]="id()"
     [formControl]="dynamicListFormControl">
     <option [ngValue]=null>{{'--Select a value--' | rpxTranslate}}</option>
-    <option [ngValue]="type.code" *ngFor="let type of caseField.list_items">{{type.label | rpxTranslate}}</option>
+    @for (type of caseField.list_items; track type) {
+      <option [ngValue]="type.code">{{type.label | rpxTranslate}}</option>
+    }
   </select>
 </div>

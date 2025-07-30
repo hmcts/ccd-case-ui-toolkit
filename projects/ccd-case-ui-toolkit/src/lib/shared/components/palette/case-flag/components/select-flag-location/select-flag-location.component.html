@@ -6,26 +6,30 @@
           {{flagLocationTitle | rpxTranslate}}
         </h1>
       </legend>
-      <div id="flag-location-not-selected-error-message" class="govuk-error-message"
-        *ngIf="flagLocationNotSelectedErrorMessage">
-        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagLocationNotSelectedErrorMessage | rpxTranslate}}
-      </div>
-      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
-        <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">
-          <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedLocationControlName"
-            type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
-          <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">
-            <ng-container *ngIf="flagsInstance.flags.partyName">
-              {{flagsInstance.flags.partyName}}
-              <ng-container *ngIf="flagsInstance.flags.roleOnCase">
-                ({{flagsInstance.flags.roleOnCase | rpxTranslate}})
-              </ng-container>
-            </ng-container>
-            <ng-container *ngIf="!flagsInstance.flags.partyName">
-              {{caseLevelFlagLabel | rpxTranslate}}
-            </ng-container>
-          </label>
+      @if (flagLocationNotSelectedErrorMessage) {
+        <div id="flag-location-not-selected-error-message" class="govuk-error-message"
+          >
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagLocationNotSelectedErrorMessage | rpxTranslate}}
         </div>
+      }
+      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
+        @for (flagsInstance of filteredFlagsData; track flagsInstance; let i = $index) {
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedLocationControlName"
+              type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
+            <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">
+              @if (flagsInstance.flags.partyName) {
+                {{flagsInstance.flags.partyName}}
+                @if (flagsInstance.flags.roleOnCase) {
+                  ({{flagsInstance.flags.roleOnCase | rpxTranslate}})
+                }
+              }
+              @if (!flagsInstance.flags.partyName) {
+                {{caseLevelFlagLabel | rpxTranslate}}
+              }
+            </label>
+          </div>
+        }
       </div>
     </fieldset>
   </div>

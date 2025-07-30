@@ -6,45 +6,57 @@
       {{(caseField | ccdFieldLabel)}}
     </h2>
     <button class="button write-collection-add-item__top" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">{{'Add new' | rpxTranslate}}</button>
-    <h2 class="heading-h2 error-spacing" *ngIf="caseField.hint_text || formArray.errors">
-      <span *ngIf="caseField.hint_text" class="form-hint">
-      <ccd-markdown [content]="caseField.hint_text"></ccd-markdown>
-      </span>
-      <span *ngIf="formArray.errors" class="error-message">
-        {{(formArray.errors | ccdFirstError:caseField.label)}}
-      </span>
-    </h2>
+    @if (caseField.hint_text || formArray.errors) {
+      <h2 class="heading-h2 error-spacing">
+        @if (caseField.hint_text) {
+          <span class="form-hint">
+            <ccd-markdown [content]="caseField.hint_text"></ccd-markdown>
+          </span>
+        }
+        @if (formArray.errors) {
+          <span class="error-message">
+            {{(formArray.errors | ccdFirstError:caseField.label)}}
+          </span>
+        }
+      </h2>
+    }
 
-    <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
-      <fieldset class="govuk-fieldset">
-        <div *ngFor="let item of collItems; let i = index" #collectionItem
-            [id]="this.buildIdPrefix(i) + i" class="form-group">
-          <div class="collection-title">
-            <div class="float-left">
-              <legend class="govuk-fieldset__legend">
-                <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i) | rpxTranslate}}</h3></label>
-              </legend>
+    @if (caseField.value && caseField.value.length) {
+      <div class="form-group" [hidden]="caseField.hidden">
+        <fieldset class="govuk-fieldset">
+          @for (item of collItems; track item; let i = $index) {
+            <div #collectionItem
+              [id]="this.buildIdPrefix(i) + i" class="form-group">
+              <div class="collection-title">
+                <div class="float-left">
+                  <legend class="govuk-fieldset__legend">
+                    <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i) | rpxTranslate}}</h3></label>
+                  </legend>
+                </div>
+                <div class="float-right">
+                  <button class="button button-secondary" type="button" (click)="openModal(i)"
+                    [disabled]="isNotAuthorisedToDelete(i)"
+                  attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate}}</button>
+                </div>
+              </div>
+              <ccd-field-write [caseField]="item.caseField"
+                [caseFields]="caseFields"
+                [formGroup]="formGroup"
+                [parent]="item.container"
+                [idPrefix]="item.prefix"
+                [hidden]="item.caseField.hidden"
+                [isExpanded]="isExpanded"
+                [isInSearchBlock]="isInSearchBlock">
+              </ccd-field-write>
             </div>
-            <div class="float-right">
-              <button class="button button-secondary" type="button" (click)="openModal(i)"
-                      [disabled]="isNotAuthorisedToDelete(i)"
-                      attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate}}</button>
-            </div>
-          </div>
-          <ccd-field-write [caseField]="item.caseField"
-                          [caseFields]="caseFields"
-                          [formGroup]="formGroup"
-                          [parent]="item.container"
-                          [idPrefix]="item.prefix"
-                          [hidden]="item.caseField.hidden"
-                          [isExpanded]="isExpanded"
-                          [isInSearchBlock]="isInSearchBlock">
-          </ccd-field-write>
-        </div>
-      </fieldset>
-    </div>
+          }
+        </fieldset>
+      </div>
+    }
 
-    <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">{{'Add new' | rpxTranslate }}</button>
+    @if (caseField.value && caseField.value.length) {
+      <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">{{'Add new' | rpxTranslate }}</button>
+    }
 
   </div>
 

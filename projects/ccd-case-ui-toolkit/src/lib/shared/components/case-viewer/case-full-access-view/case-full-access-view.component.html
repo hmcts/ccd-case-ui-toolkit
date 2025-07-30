@@ -1,30 +1,38 @@
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
-<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
-     role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
-    {{'Something went wrong' | rpxTranslate}}
-  </h1>
-  <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
-    <p>{{"We're working to fix the problem. Try again shortly." | rpxTranslate}}</p>
-    <p>
-      <a href="get-help" target="_blank">
+@if (error && !(error.callbackErrors || error.callbackWarnings || error.details)) {
+  <div class="error-summary"
+    role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
+      {{'Something went wrong' | rpxTranslate}}
+    </h1>
+    <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
+      <p>{{"We're working to fix the problem. Try again shortly." | rpxTranslate}}</p>
+      <p>
+        <a href="get-help" target="_blank">
         {{"Contact us" | rpxTranslate}}</a> {{"if you're still having problems." | rpxTranslate}}
-    </p>
+      </p>
+    </div>
   </div>
-</div>
+}
 <!-- Callback error heading and error message to be displayed if there are specific error details -->
-<div *ngIf="error && error.details" class="error-summary" role="group"
-     aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
-    {{'The callback data failed validation' | rpxTranslate}}
-  </h2>
-  <p>{{error.message | rpxTranslate}}</p>
-  <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-    <li *ngFor="let fieldError of error.details.field_errors">
-      {{fieldError.message | rpxTranslate}}
-    </li>
-  </ul>
-</div>
+@if (error && error.details) {
+  <div class="error-summary" role="group"
+    aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
+      {{'The callback data failed validation' | rpxTranslate}}
+    </h2>
+    <p>{{error.message | rpxTranslate}}</p>
+    @if (error.details?.field_errors) {
+      <ul class="error-summary-list">
+        @for (fieldError of error.details.field_errors; track fieldError) {
+          <li>
+            {{fieldError.message | rpxTranslate}}
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
 <ccd-callback-errors
   [triggerTextContinue]="triggerTextStart"
   [triggerTextIgnore]="triggerTextIgnoreWarnings"
@@ -35,71 +43,91 @@
 <div class="grid-row">
   <div class="column-one-half">
     <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
-    <div class="case-viewer-controls" *ngIf="hasPrint && !isDraft() && isPrintEnabled()">
-      <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">{{'Print' | rpxTranslate}}</a>
+    @if (hasPrint && !isDraft() && isPrintEnabled()) {
+      <div class="case-viewer-controls">
+        <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">{{'Print' | rpxTranslate}}</a>
+      </div>
+    }
+  </div>
+  @if (hasEventSelector) {
+    <div class="column-one-half">
+      <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
+        [triggerText]="triggerText"
+        [eventId]="eventId"
+        (onTriggerChange)="clearErrorsAndWarnings()"
+      (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
+    </div>
+  }
+</div>
+@if (activeCaseFlags && !caseFlagsExternalUser) {
+  <div class="grid-row">
+    <div class="column-full">
+      <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)">
+      </ccd-notification-banner>
     </div>
   </div>
-  <div *ngIf="hasEventSelector" class="column-one-half">
-    <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
-                       [triggerText]="triggerText"
-                       [eventId]="eventId"
-                       (onTriggerChange)="clearErrorsAndWarnings()"
-                       (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
-  </div>
-</div>
-<div class="grid-row" *ngIf="activeCaseFlags && !caseFlagsExternalUser">
-  <div class="column-full">
-    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)">
-    </ccd-notification-banner>
-  </div>
-</div>
+}
 <div class="grid-row">
   <div class="column-full">
-    <ng-container *ngIf="hasTabsPresent()">
+    @if (hasTabsPresent()) {
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
         [selectedIndex]="selectedTabIndex">
-        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
-        </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
-          <ng-template matTabContent>
-            <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
-              <tbody>
-              <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup?.controls['data']">
-                <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
-                  <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-                    <tr *ngSwitchCase="true">
-                      <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
-                        <div class="case-viewer-label text-16">
-                          {{field.label | rpxTranslate}}</div>
-                      </th>
-                      <td [id]="'case-viewer-field-read--' + field.id" scope="col">
-                        <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
-                                          [caseField]="field" [caseReference]="caseDetails.case_id">
-                          </ccd-field-read>
-                        </span>
-                      </td>
-                    </tr>
-                    <tr *ngSwitchCase="false" class="compound-field">
-                      <th [id]="'case-viewer-field-read--' + field.id" scope="col">
-                        <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                                          [caseField]="field" [caseReference]="caseDetails.case_id">
-                          </ccd-field-read>
-                        </span>
-                      </th>
-                    </tr>
-                  </ng-container>
-                </div>
-              </ng-container>
-              </tbody>
-            </table>
-          </ng-template>
-        </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
-        </mat-tab>
+        @for (tab of prependedTabs; track tab) {
+          <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate">
+          </mat-tab>
+        }
+        @for (tab of sortedTabs; track tab; let curIdx = $index) {
+          <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
+            <ng-template matTabContent>
+              <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
+                <tbody>
+                  @for (field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup?.controls['data']; track field) {
+                    <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
+                      @switch (!(field | ccdIsCompound)) {
+                        @case (true) {
+                          <tr>
+                            @if (!isFieldToHaveNoLabel(field)) {
+                              <th id="case-viewer-field-label">
+                                <div class="case-viewer-label text-16">
+                                {{field.label | rpxTranslate}}</div>
+                              </th>
+                            }
+                            <td [id]="'case-viewer-field-read--' + field.id" scope="col">
+                              <span class="text-16">
+                                <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
+                                  [caseField]="field" [caseReference]="caseDetails.case_id">
+                                </ccd-field-read>
+                              </span>
+                            </td>
+                          </tr>
+                        }
+                        @case (false) {
+                          <tr class="compound-field">
+                            <th [id]="'case-viewer-field-read--' + field.id" scope="col">
+                              <span class="text-16">
+                                <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                                  [caseField]="field" [caseReference]="caseDetails.case_id">
+                                </ccd-field-read>
+                              </span>
+                            </th>
+                          </tr>
+                        }
+                      }
+                    </div>
+                  }
+                </tbody>
+              </table>
+            </ng-template>
+          </mat-tab>
+        }
+        @for (tab of appendedTabs; track tab) {
+          <mat-tab [id]="tab.id" [label]="tab.label | rpxTranslate">
+          </mat-tab>
+        }
       </mat-tab-group>
-      <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
-    </ng-container>
+      @if ((prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)) {
+        <router-outlet></router-outlet>
+      }
+    }
   </div>
 </div>

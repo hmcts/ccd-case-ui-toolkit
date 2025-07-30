@@ -1,41 +1,61 @@
 <pagination-template #p="paginationApi" [id]="id" [maxSize]="maxSize" (pageChange)="pageChange.emit($event)"
   (pageBoundsCorrection)="pageBoundsCorrection.emit($event)">
   <nav role="navigation" [attr.aria-label]="'Pagination' | rpxTranslate">
-    <ul class="ngx-pagination" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate"
-      [class.responsive]="responsive" *ngIf="!(autoHide && p.pages.length <= 1)">
-      <li class="pagination-previous" [class.disabled]="p.isFirstPage()" *ngIf="directionLinks">
-        <a tabindex="0" *ngIf="1 < p.getCurrent()" (keyup.enter)="p.previous()" (click)="p.previous()"
-          [attr.aria-label]="'Previous page' | rpxTranslate">
-          {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </a>
-        <span *ngIf="p.isFirstPage()" [attr.aria-label]="'Previous page' | rpxTranslate">
-          {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </span>
-      </li>
-      <li class="small-screen">
-        {{ p.getCurrent() }} / {{ p.getLastPage() }}
-      </li>
-      <li [class.current]="p.getCurrent() === page.value" [class.ellipsis]="page.label === '...'"
-        *ngFor="let page of p.pages">
-        <a tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)"
-          *ngIf="p.getCurrent() !== page.value" [attr.aria-label]="(page.label === '...') ? ('Change pagination range' | rpxTranslate) : ('Page ' | rpxTranslate) + (page.label | number:'')">
-          <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }} </span>
-          <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
-        </a>
-        <a tabindex="0" *ngIf="p.getCurrent() === page.value">
-          <span class="show-for-sr" [attr.current]="page" [attr.aria-label]="screenReaderCurrentLabel">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
-          <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
-        </a>
-      </li>
-      <li class="pagination-next" [class.disabled]="p.isLastPage()" *ngIf="directionLinks">
-        <a tabindex="0" *ngIf="!p.isLastPage()" (keyup.enter)="p.next()" (click)="p.next()"
-          [attr.aria-label]="'Next page' | rpxTranslate">
-          {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </a>
-        <span *ngIf="p.isLastPage()">
-          {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </span>
-      </li>
-    </ul>
+    @if (!(autoHide && p.pages.length <= 1)) {
+      <ul class="ngx-pagination" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate"
+        [class.responsive]="responsive">
+        @if (directionLinks) {
+          <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+            @if (1 < p.getCurrent()) {
+              <a tabindex="0" (keyup.enter)="p.previous()" (click)="p.previous()"
+                [attr.aria-label]="'Previous page' | rpxTranslate">
+                {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
+              </a>
+            }
+            @if (p.isFirstPage()) {
+              <span [attr.aria-label]="'Previous page' | rpxTranslate">
+                {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
+              </span>
+            }
+          </li>
+        }
+        <li class="small-screen">
+          {{ p.getCurrent() }} / {{ p.getLastPage() }}
+        </li>
+        @for (page of p.pages; track page) {
+          <li [class.current]="p.getCurrent() === page.value" [class.ellipsis]="page.label === '...'"
+            >
+            @if (p.getCurrent() !== page.value) {
+              <a tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)"
+                [attr.aria-label]="(page.label === '...') ? ('Change pagination range' | rpxTranslate) : ('Page ' | rpxTranslate) + (page.label | number:'')">
+                <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }} </span>
+                <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+              </a>
+            }
+            @if (p.getCurrent() === page.value) {
+              <a tabindex="0">
+                <span class="show-for-sr" [attr.current]="page" [attr.aria-label]="screenReaderCurrentLabel">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
+                <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+              </a>
+            }
+          </li>
+        }
+        @if (directionLinks) {
+          <li class="pagination-next" [class.disabled]="p.isLastPage()">
+            @if (!p.isLastPage()) {
+              <a tabindex="0" (keyup.enter)="p.next()" (click)="p.next()"
+                [attr.aria-label]="'Next page' | rpxTranslate">
+                {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
+              </a>
+            }
+            @if (p.isLastPage()) {
+              <span>
+                {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
+              </span>
+            }
+          </li>
+        }
+      </ul>
+    }
   </nav>
 </pagination-template>

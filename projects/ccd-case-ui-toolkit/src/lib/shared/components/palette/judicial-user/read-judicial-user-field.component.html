@@ -1,5 +1,6 @@
-<span
-  *ngIf="judicialUser"
-  class="text-16">
-  {{ judicialUser.fullName }} ({{ judicialUser.emailId }})
-</span>
+@if (judicialUser) {
+  <span
+    class="text-16">
+    {{ judicialUser.fullName }} ({{ judicialUser.emailId }})
+  </span>
+}

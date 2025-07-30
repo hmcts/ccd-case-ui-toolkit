@@ -1,29 +1,37 @@
 <div class="form-group" [id]="id()">
   <fieldset>
-    <legend *ngIf="renderLabel">
-      <ng-container *ngIf="caseField | ccdFieldLabel">
-        <h2 class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2>
-      </ng-container>
-    </legend>
-    <ng-container [ngSwitch]="field | ccdIsReadOnly" *ngFor="let field of complexFields">
-      <ccd-field-read *ngSwitchCase="true"
-                      ccdLabelSubstitutor
-                      [caseField]="buildField(field)"
-                      [caseFields]="caseFields"
-                      [formGroup]="formGroup"
-                      [withLabel]="true">
-      </ccd-field-read>
-      <ccd-field-write *ngSwitchCase="false"
-                       ccdLabelSubstitutor
-                       [caseField]="field"
-                       [caseFields]="caseFields"
-                       [formGroup]="formGroup"
-                       [parent]="complexGroup"
-                       [idPrefix]="buildIdPrefix(field)"
-                       [hidden]="field.hidden"
-                       [isExpanded]="isExpanded"
-                       [isInSearchBlock]="isInSearchBlock">
-      </ccd-field-write>
-    </ng-container>
+    @if (renderLabel) {
+      <legend>
+        @if (caseField | ccdFieldLabel) {
+          <h2 class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2>
+        }
+      </legend>
+    }
+    @for (field of complexFields; track field) {
+      @switch (field | ccdIsReadOnly) {
+        @case (true) {
+          <ccd-field-read
+            ccdLabelSubstitutor
+            [caseField]="buildField(field)"
+            [caseFields]="caseFields"
+            [formGroup]="formGroup"
+            [withLabel]="true">
+          </ccd-field-read>
+        }
+        @case (false) {
+          <ccd-field-write
+            ccdLabelSubstitutor
+            [caseField]="field"
+            [caseFields]="caseFields"
+            [formGroup]="formGroup"
+            [parent]="complexGroup"
+            [idPrefix]="buildIdPrefix(field)"
+            [hidden]="field.hidden"
+            [isExpanded]="isExpanded"
+            [isInSearchBlock]="isInSearchBlock">
+          </ccd-field-write>
+        }
+      }
+    }
   </fieldset>
 </div>

@@ -1,169 +1,179 @@
-<div class="govuk-grid-row" *ngIf="readyToSubmit">
-  <div class="govuk-grid-column-two-thirds-from-desktop">
-    <!-- Error message summary -->
-    <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
-      aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-      data-module="govuk-error-summary">
-     <h2 class="govuk-error-summary__title" id="error-summary-title">
-       {{ 'There is a problem' | rpxTranslate }}
-     </h2>
-     <div class="govuk-error-summary__body">
-       <ul class="govuk-list govuk-error-summary__list">
-         <li *ngFor="let errorMessage of errorMessages">
-           <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
-             class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
-         </li>
-       </ul>
-     </div>
-   </div>
-
-   <div *ngIf="error && (error.details || error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-    <h3 class="heading-h3 error-summary-heading" id="event_error-summary-heading">
-      The event could not be created
-    </h3>
-    <p>{{error.message}}</p>
-    <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-      <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
-    </ul>
-  </div>
-
-  <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject"></ccd-callback-errors>
-
-    <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
-      <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
-    </ng-container>
-
-    <h1 class="govuk-heading-l">
-      <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND; else defaultCheckYourAnswersTitle">
-        {{ 'Review query response details' | rpxTranslate }}
-      </ng-container>
-
-      <ng-template #defaultCheckYourAnswersTitle>
-        {{ 'Review query details' | rpxTranslate }}
-      </ng-template>
-    </h1>
-    <div class="govuk-!-margin-bottom-4">
-      <ccd-query-case-details-header [caseDetails]="caseDetails"></ccd-query-case-details-header>
+@if (readyToSubmit) {
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <!-- Error message summary -->
+      @if (errorMessages.length > 0) {
+        <div class="govuk-error-summary"
+          aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+          data-module="govuk-error-summary">
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            {{ 'There is a problem' | rpxTranslate }}
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              @for (errorMessage of errorMessages; track errorMessage) {
+                <li>
+                  <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
+                  class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (error && (error.details || error.message)) {
+        <div class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+          <h3 class="heading-h3 error-summary-heading" id="event_error-summary-heading">
+            The event could not be created
+          </h3>
+          <p>{{error.message}}</p>
+          @if (error.details?.field_errors) {
+            <ul class="error-summary-list">
+              @for (fieldError of error.details.field_errors; track fieldError) {
+                <li class="ccd-error-summary-li">{{fieldError.message}}</li>
+              }
+            </ul>
+          }
+        </div>
+      }
+      <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject"></ccd-callback-errors>
+      @if (queryCreateContext === queryCreateContextEnum.NEW_QUERY) {
+        <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
+      }
+      <h1 class="govuk-heading-l">
+        @if (queryCreateContext === queryCreateContextEnum.RESPOND) {
+          {{ 'Review query response details' | rpxTranslate }}
+        } @else {
+          {{ 'Review query details' | rpxTranslate }}
+        }
+      </h1>
+      <div class="govuk-!-margin-bottom-4">
+        <ccd-query-case-details-header [caseDetails]="caseDetails"></ccd-query-case-details-header>
+      </div>
+      @if (queryCreateContext !== queryCreateContextEnum.FOLLOWUP) {
+        <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Submitted query' : 'Query subject' | rpxTranslate }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ queryCreateContext === queryCreateContextEnum.RESPOND ? queryItem.subject : formGroup.get('subject')?.value }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              @if (queryCreateContext === queryCreateContextEnum.NEW_QUERY) {
+                <a
+                  href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+                  {{ 'Change' | rpxTranslate }}
+                </a>
+              }
+            </dd>
+          </div>
+        </dl>
+      }
+      <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query detail' | rpxTranslate }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ formGroup.get('body')?.value }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+              {{ 'Change' | rpxTranslate }}
+            </a>
+          </dd>
+        </div>
+      </dl>
+      @if (queryCreateContext === queryCreateContextEnum.NEW_QUERY) {
+        <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              {{ 'Is the query hearing related?' | rpxTranslate }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @if (formGroup.get('isHearingRelated')?.value === true) {
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
+              } @else {
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
+              }
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+                {{ 'Change' | rpxTranslate }}
+              </a>
+            </dd>
+          </div>
+          @if (formGroup.get('isHearingRelated')?.value) {
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY
+                ? 'What is the date of the hearing?'
+                : 'What is the date of the hearing your query is related to?' | rpxTranslate }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+                  {{ 'Change' | rpxTranslate }}
+                </a>
+              </dd>
+            </div>
+          }
+        </dl>
+      }
+      @if (this.formGroup.get('attachments').value.length > 0) {
+        <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY ? 'Upload a file to the query' : 'Document attached' | rpxTranslate }}
+            </dt>
+            <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
+              @if (this.formGroup.get('attachments').value) {
+                <ccd-query-attachments-read
+                  [attachments]="attachments"
+                  >
+                </ccd-query-attachments-read>
+              }
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+                {{ 'Change' | rpxTranslate }}
+              </a>
+            </dd>
+          </div>
+        </dl>
+      }
+      @if (queryCreateContext === queryCreateContextEnum.RESPOND) {
+        <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              {{ 'Closing the query' | rpxTranslate }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ formGroup.get('closeQuery')?.value ? 'I want to close this query' : 'No answer' | rpxTranslate }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+                {{ 'Change' | rpxTranslate }}
+              </a>
+            </dd>
+          </div>
+        </dl>
+      }
+      <br>
+        <div>
+          <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button"
+            (click)="goBack()">
+            {{ 'Previous' | rpxTranslate }}
+          </button>
+          <button class="govuk-button" data-module="govuk-button" type="submit" (click)="submit()">
+            {{ 'Submit' | rpxTranslate }}
+          </button>
+        </div>
+      </div>
+      <ccd-query-event-completion [eventCompletionParams]="eventCompletionParams">
+      </ccd-query-event-completion>
     </div>
-
-    <dl *ngIf="queryCreateContext !== queryCreateContextEnum.FOLLOWUP" class="govuk-summary-list govuk-!-margin-bottom-0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Submitted query' : 'Query subject' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? queryItem.subject : formGroup.get('subject')?.value }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a  *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" 
-            href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query detail' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ formGroup.get('body')?.value }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-
-    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" class="govuk-summary-list govuk-!-margin-bottom-0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ 'Is the query hearing related?' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          <ng-container *ngIf="formGroup.get('isHearingRelated')?.value === true; else isHearingRelatedFalse">
-            {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
-          </ng-container>
-          <ng-template #isHearingRelatedFalse>
-            {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
-          </ng-template>
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-
-      <div *ngIf="formGroup.get('isHearingRelated')?.value" class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY
-            ? 'What is the date of the hearing?'
-            : 'What is the date of the hearing your query is related to?' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0" *ngIf="this.formGroup.get('attachments').value.length > 0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY ? 'Upload a file to the query' : 'Document attached' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
-          <ccd-query-attachments-read
-            *ngIf="this.formGroup.get('attachments').value"
-            [attachments]="attachments"
-          >
-          </ccd-query-attachments-read>
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-
-    <dl *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ 'Closing the query' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ formGroup.get('closeQuery')?.value ? 'I want to close this query' : 'No answer' | rpxTranslate }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-
-    <br>
-
-    <div>
-      <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button"
-        (click)="goBack()">
-        {{ 'Previous' | rpxTranslate }}
-      </button>
-      <button class="govuk-button" data-module="govuk-button" type="submit" (click)="submit()">
-        {{ 'Submit' | rpxTranslate }}
-      </button>
-    </div>
-  </div>
-
-  <ccd-query-event-completion [eventCompletionParams]="eventCompletionParams">    
-  </ccd-query-event-completion>
-</div>
+  }

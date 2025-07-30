@@ -1,34 +1,31 @@
-<ng-container *ngIf="showQueryList; else singleQueryDetails">
-  <ng-container *ngFor="let caseQueriesCollection of caseQueriesCollections">
-    <div *ngIf="showQueryList" class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
-      <ccd-query-list (selectedQuery)="setQuery($event)" [caseQueriesCollection]="caseQueriesCollection"></ccd-query-list>
-    </div>
-  </ng-container>
-</ng-container>
-
-<ng-template #singleQueryDetails>
+@if (showQueryList) {
+  @for (caseQueriesCollection of caseQueriesCollections; track caseQueriesCollection) {
+    @if (showQueryList) {
+      <div class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
+        <ccd-query-list (selectedQuery)="setQuery($event)" [caseQueriesCollection]="caseQueriesCollection"></ccd-query-list>
+      </div>
+    }
+  }
+} @else {
   <ccd-query-details
     [query]="query"
     (backClicked)="showQueryList = true"
     [caseId]="caseId"
   ></ccd-query-details>
-
-  <ng-container *ngIf="!isInternalUser() && !isQueryClosed">
-    <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
+  @if (!isInternalUser() && !isQueryClosed) {
+    @if (query?.children?.length > 0 && query?.children?.length % 2 === 1) {
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
-              [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
+        [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
         {{ 'Ask a follow-up question' | rpxTranslate }}
       </button>
-    </ng-container>
-
-    <ng-template #queryIsInReview>
+    } @else {
       <div>
         <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
         <p>{{ 'Our team will read your query and respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
       </div>
-    </ng-template>
-  </ng-container>
-  <ng-container *ngIf="!isInternalUser() && isQueryClosed">
+    }
+  }
+  @if (!isInternalUser() && isQueryClosed) {
     <div class="govuk-warning-text">
       <span aria-hidden="true" class="govuk-warning-text__icon">!</span>
       <strong class="govuk-warning-text__text">
@@ -36,5 +33,6 @@
         <p class="qm-service-message govuk-!-font-weight-bold">{{ 'This query has been closed by court staff.' | rpxTranslate }}</p>
       </strong>
     </div>
-  </ng-container>
-</ng-template>
+  }
+}
+

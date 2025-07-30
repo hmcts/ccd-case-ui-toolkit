@@ -1,28 +1,40 @@
 <div class="form-group" [formGroup]="formGroup" [ngClass]="{'form-group-error': !!judicialUserControl && errors}">
   <label [for]="id()">
-    <span *ngIf="caseField.label" class="form-label">
-      {{caseField | ccdFieldLabel}}
-    </span>
+    @if (caseField.label) {
+      <span class="form-label">
+        {{caseField | ccdFieldLabel}}
+      </span>
+    }
   </label>
-  <span *ngIf="caseField.hint_text" class="form-hint">
-    {{caseField.hint_text}}
-  </span>
-  <span class="error-message" *ngIf="errors">
-    {{errors | ccdFirstError:caseField.label}}
-  </span>
+  @if (caseField.hint_text) {
+    <span class="form-hint">
+      {{caseField.hint_text}}
+    </span>
+  }
+  @if (errors) {
+    <span class="error-message">
+      {{errors | ccdFirstError:caseField.label}}
+    </span>
+  }
   <input class="form-control bottom-30" [id]="id()"
     [formControl]="judicialUserControl" [matAutocomplete]="autoComplete" (blur)="onBlur($event)">
   <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayJudicialUser">
-    <mat-option *ngFor="let judicialUser of filteredJudicialUsers$ | async"
-      class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
-      [value]="judicialUser" (onSelectionChange)="onSelectionChange($event)">
-      {{judicialUser?.fullName ? judicialUser.fullName : ''}}{{judicialUser?.emailId ? ' (' + judicialUser.emailId + ')' : ''}}
-    </mat-option>
-    <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
-      No results found
-    </mat-option>
-    <mat-option *ngIf="invalidSearchTerm" class="select-option" disabled>
-      Invalid search term
-    </mat-option>
+    @for (judicialUser of filteredJudicialUsers$ | async; track judicialUser) {
+      <mat-option
+        class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
+        [value]="judicialUser" (onSelectionChange)="onSelectionChange($event)">
+        {{judicialUser?.fullName ? judicialUser.fullName : ''}}{{judicialUser?.emailId ? ' (' + judicialUser.emailId + ')' : ''}}
+      </mat-option>
+    }
+    @if (noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete) {
+      <mat-option class="select-option" disabled>
+        No results found
+      </mat-option>
+    }
+    @if (invalidSearchTerm) {
+      <mat-option class="select-option" disabled>
+        Invalid search term
+      </mat-option>
+    }
   </mat-autocomplete>
 </div>

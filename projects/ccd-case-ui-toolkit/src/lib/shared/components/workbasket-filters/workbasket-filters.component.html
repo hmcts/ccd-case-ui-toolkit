@@ -2,11 +2,11 @@
   <div class="form-group flex">
     <fieldset class="heading-h2" aria-label="Filters">{{'Filters' | rpxTranslate }}</fieldset>
     <button type="button" class="button workbasket-filters-apply" (click)="apply(true)" [disabled]="isApplyButtonDisabled()"
-        [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
+      [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
       {{'Apply' | rpxTranslate}}
     </button>&nbsp;&nbsp;&nbsp;
     <button type="button" (click)="reset()" class="button button-secondary"
-        [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
+      [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
       {{'Reset' | rpxTranslate}}
     </button>
   </div>
@@ -14,43 +14,57 @@
   <div class="form-group">
     <label class="form-label" for="wb-jurisdiction">{{'Jurisdiction' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-jurisdiction"
-            name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
-            (change)="onJurisdictionIdChange()">
-      <option *ngIf="!workbasketDefaults" [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
-      <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name | rpxTranslate}}</option>
+      name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
+      (change)="onJurisdictionIdChange()">
+      @if (!workbasketDefaults) {
+        <option [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
+      }
+      @for (j of jurisdictions; track j) {
+        <option [ngValue]="j">{{j.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 
   <div class="form-group">
     <label class="form-label" for="wb-case-type">{{'Case type' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-type"
-            name="case-type" [(ngModel)]="selected.caseType" [disabled]="isCaseTypesDropdownDisabled()"
-            (change)="onCaseTypeIdChange()" aria-controls="search-result">
-      <option *ngIf="!workbasketDefaults" [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
-      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name | rpxTranslate}}</option>
+      name="case-type" [(ngModel)]="selected.caseType" [disabled]="isCaseTypesDropdownDisabled()"
+      (change)="onCaseTypeIdChange()" aria-controls="search-result">
+      @if (!workbasketDefaults) {
+        <option [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
+      }
+      @for (ct of selectedJurisdictionCaseTypes; track ct) {
+        <option [ngValue]="ct">{{ct.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 
   <div class="form-group">
     <label class="form-label" for="wb-case-state">{{'State' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
-            name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
-            aria-controls="search-result">
+      name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
+      aria-controls="search-result">
       <option [ngValue]="null">{{'Any' | rpxTranslate}}</option>
-      <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
+      @for (cs of selectedCaseTypeStates; track cs) {
+        <option [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 
-  <ng-container ccdConditionalShowForm *ngIf="isSearchableAndWorkbasketInputsReady()" [formGroup]="formGroup" [contextFields]="caseFields">
-    <div id="dynamicFilters">
-      <div class="form-group" *ngFor="let workbasketInput of workbasketInputs">
-        <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" [isInSearchBlock]="true" (keyup.enter)="apply(null)">
-        </ccd-field-write>
+  @if (isSearchableAndWorkbasketInputsReady()) {
+    <ng-container ccdConditionalShowForm [formGroup]="formGroup" [contextFields]="caseFields">
+      <div id="dynamicFilters">
+        @for (workbasketInput of workbasketInputs; track workbasketInput) {
+          <div class="form-group">
+            <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" [isInSearchBlock]="true" (keyup.enter)="apply(null)">
+            </ccd-field-write>
+          </div>
+        }
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
+  }
 
-    <button type="button" class="button" (click)="scrollToTop()"
-          [title]="'Back to top' | rpxTranslate" [attr.aria-label]="'Back to top' | rpxTranslate">{{'Back to top' | rpxTranslate}}
-    </button>
+  <button type="button" class="button" (click)="scrollToTop()"
+    [title]="'Back to top' | rpxTranslate" [attr.aria-label]="'Back to top' | rpxTranslate">{{'Back to top' | rpxTranslate}}
+  </button>
 </form>

@@ -1,6 +1,7 @@
-<exui-error-message
-  *ngIf="(formGroup.invalid && submitted) || getSpecificAccessError"
+@if ((formGroup.invalid && submitted) || getSpecificAccessError) {
+  <exui-error-message
   [error]="errorMessage"></exui-error-message>
+}
 <cut-alert type="information">
   {{'Authorisation is needed to access this case.' | rpxTranslate}}<br />
   {{'This could be because it\'s outside your jurisdiction, or you may be excluded from the case. If you request access to this case, it will be logged for auditing purposes.' | rpxTranslate}}
@@ -40,12 +41,14 @@
       </div>
       <div id="conditional-reason-3">
         <div class="govuk-form-group">
-          <div
-            id="specific-reason-error-message"
-            class="govuk-error-message"
-            *ngIf="formGroup.get('specificReason').invalid && submitted">
-            {{ errorMessage.description | rpxTranslate }}
-          </div>
+          @if (formGroup.get('specificReason').invalid && submitted) {
+            <div
+              id="specific-reason-error-message"
+              class="govuk-error-message"
+              >
+              {{ errorMessage.description | rpxTranslate }}
+            </div>
+          }
           <textarea
             class="govuk-textarea"
             [ngClass]="{

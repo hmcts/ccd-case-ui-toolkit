@@ -1,3 +1,5 @@
-<div *ngFor="let value of caseField.value">
-  <ccd-markdown [content]="value.code | ccdFixedList:caseField.list_items"></ccd-markdown>
-</div>
+@for (value of caseField.value; track value) {
+  <div>
+    <ccd-markdown [content]="value.code | ccdFixedList:caseField.list_items"></ccd-markdown>
+  </div>
+}

@@ -3,113 +3,129 @@
   <h1 class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
 
   <!--Case ID or Title -->
-  <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
-  <ng-template #titleBlock>
+  @if (getCaseTitle()) {
     <ccd-markdown [content]="getCaseTitle() | ccdCaseTitle: contextFields : editForm.controls['data']"></ccd-markdown>
-  </ng-template>
-  <ng-template #idBlock>
-    <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
-  </ng-template>
+  } @else {
+    @if (getCaseId()) {
+      <h2 class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
+    }
+  }
 
   <ccd-case-edit-generic-errors [error]="caseEdit.error"></ccd-case-edit-generic-errors>
 
   <ccd-callback-errors [callbackErrorsSubject]="caseEdit.callbackErrorsSubject"
-                      (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
+  (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
 
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
-    <div *ngIf="!caseEdit.isEventCompletionChecksRequired">
-      <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
-        <h2 class="heading-h2">{{pageTitle | rpxTranslate }}</h2>
-        <span class="text-16" *ngIf="!caseEdit.isCaseFlagSubmission">{{'Check the information below carefully.' | rpxTranslate}}</span>
-
-        <table class="form-table" aria-describedby="check your answers table">
-          <tbody>
-          <ng-container *ngFor="let page of wizard.pages">
-            <ng-container *ngIf="isShown(page)">
-              <ng-container *ngFor="let field of page
-              | ccdPageFields: editForm
-              | ccdReadFieldsFilter: false :undefined :true :allFieldsValues
-              | ccdCYAPageLabelFilter">
-                <ng-container *ngIf="canShowFieldInCYA(field)">
-                  <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
-                      [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                    <th *ngIf="!isLabel(field) && !caseEdit.isCaseFlagSubmission" class="valign-top case-field-label">
-                      <span class="text-16">{{field.label | rpxTranslate}}</span>
-                    </th>
-                    <td class="form-cell case-field-content text-16" [attr.colspan]="isLabel(field) ? '2' : '1'">
-                      <ccd-field-read
-                        [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
-                        [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
-                    </td>
-                    <ng-container *ngIf="!caseEdit.isCaseFlagSubmission">
-                      <td class="valign-top check-your-answers__change case-field-change">
-                        <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
-                          href="javascript:void(0)">
-                          <span class="text-16" attr.aria-label="{{'Change' | rpxTranslate}} {{ field.label | rpxTranslate }}">
-                            {{'Change' | rpxTranslate}}
-                          </span>
-                        </a>
+    @if (!caseEdit.isEventCompletionChecksRequired) {
+      <div>
+        @if (checkYourAnswerFieldsToDisplayExists()) {
+          <h2 class="heading-h2">{{pageTitle | rpxTranslate }}</h2>
+          @if (!caseEdit.isCaseFlagSubmission) {
+            <span class="text-16">{{'Check the information below carefully.' | rpxTranslate}}</span>
+          }
+          <table class="form-table" aria-describedby="check your answers table">
+            <tbody>
+              @for (page of wizard.pages; track page) {
+                @if (isShown(page)) {
+                  @for (field of page
+                    | ccdPageFields: editForm
+                    | ccdReadFieldsFilter: false :undefined :true :allFieldsValues
+                    | ccdCYAPageLabelFilter; track field) {
+                    @if (canShowFieldInCYA(field)) {
+                      <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
+                        [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
+                        @if (!isLabel(field) && !caseEdit.isCaseFlagSubmission) {
+                          <th class="valign-top case-field-label">
+                            <span class="text-16">{{field.label | rpxTranslate}}</span>
+                          </th>
+                        }
+                        <td class="form-cell case-field-content text-16" [attr.colspan]="isLabel(field) ? '2' : '1'">
+                          <ccd-field-read
+                            [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
+                          [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
+                        </td>
+                        @if (!caseEdit.isCaseFlagSubmission) {
+                          <td class="valign-top check-your-answers__change case-field-change">
+                            @if (isChangeAllowed(field)) {
+                              <a (click)="navigateToPage(page.id)"
+                                href="javascript:void(0)">
+                                <span class="text-16" attr.aria-label="{{'Change' | rpxTranslate}} {{ field.label | rpxTranslate }}">
+                                  {{'Change' | rpxTranslate}}
+                                </span>
+                              </a>
+                            }
+                          </td>
+                        }
+                      </tr>
+                    }
+                  }
+                }
+              }
+            </tbody>
+          </table>
+        }
+        @if (readOnlySummaryFieldsToDisplayExists()) {
+          <table class="summary-fields" aria-describedby="summary fields table">
+            <tbody>
+              @for (field of showSummaryFields; track field) {
+                @switch (!(field | ccdIsCompound)) {
+                  @case (true) {
+                    <tr ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
+                      <th id="summary-field-label">{{field.label}}</th>
+                      <td class="form-cell">
+                        <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                       </td>
-                    </ng-container>
-                  </tr>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-          </tbody>
-        </table>
-      </ng-container>
-      <ng-container *ngIf="readOnlySummaryFieldsToDisplayExists()">
-
-        <table class="summary-fields" aria-describedby="summary fields table">
-          <tbody>
-            <ng-container *ngFor="let field of showSummaryFields">
-                <ng-container [ngSwitch]="!(field | ccdIsCompound)">
-                  <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                    <th id="summary-field-label">{{field.label}}</th>
-                    <td class="form-cell">
-                      <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
-                    </td>
-                  </tr>
-                  <tr *ngSwitchCase="false" class="compound-field" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                    <td colspan="2">
-                      <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)" [caseFields]="contextFields"></ccd-field-read>
-                    </td>
-                  </tr>
-                </ng-container>
-              </ng-container>
-          </tbody>
-        </table>
-      </ng-container>
-      <ng-container *ngIf="showEventNotes()">
-        <fieldset id="fieldset-event" formGroupName="event">
-          <legend style="display: none;"></legend>
-          <div class="form-group" [ngClass]="{'form-group-error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
-            <label for="field-trigger-summary" class="form-label">
-              Event summary (optional)
-              <span class="form-hint">A few words describing the purpose of the event.</span>
-            </label>
-            <span class="error-message" *ngIf="summary?.errors && (summary.dirty || summary.touched)">
-              {{summary.errors | ccdFirstError: eventSummaryLabel | rpxTranslate}}
-            </span>
-            <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50"
-              [ngClass]="{'govuk-input--error': summary?.errors && (summary.dirty || summary.touched)}" formControlName="summary" maxlength="1024">
-          </div>
-          <div class="form-group" [ngClass]="{'form-group-error': !!description && !description.valid && (description.dirty || description.touched)}">
-            <label for="field-trigger-description" class="form-label">Event description (optional)</label>
-            <span class="error-message" *ngIf="description?.errors && (description.dirty || description.touched)">
-              {{description.errors | ccdFirstError: eventDescriptionLabel | rpxTranslate}}
-            </span>
-            <textarea id="field-trigger-description" class="form-control bottom-30 width-50" formControlName="description"
+                    </tr>
+                  }
+                  @case (false) {
+                    <tr class="compound-field" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
+                      <td colspan="2">
+                        <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)" [caseFields]="contextFields"></ccd-field-read>
+                      </td>
+                    </tr>
+                  }
+                }
+              }
+            </tbody>
+          </table>
+        }
+        @if (showEventNotes()) {
+          <fieldset id="fieldset-event" formGroupName="event">
+            <legend style="display: none;"></legend>
+            <div class="form-group" [ngClass]="{'form-group-error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
+              <label for="field-trigger-summary" class="form-label">
+                Event summary (optional)
+                <span class="form-hint">A few words describing the purpose of the event.</span>
+              </label>
+              @if (summary?.errors && (summary.dirty || summary.touched)) {
+                <span class="error-message">
+                  {{summary.errors | ccdFirstError: eventSummaryLabel | rpxTranslate}}
+                </span>
+              }
+              <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50"
+                [ngClass]="{'govuk-input--error': summary?.errors && (summary.dirty || summary.touched)}" formControlName="summary" maxlength="1024">
+            </div>
+            <div class="form-group" [ngClass]="{'form-group-error': !!description && !description.valid && (description.dirty || description.touched)}">
+              <label for="field-trigger-description" class="form-label">Event description (optional)</label>
+              @if (description?.errors && (description.dirty || description.touched)) {
+                <span class="error-message">
+                  {{description.errors | ccdFirstError: eventDescriptionLabel | rpxTranslate}}
+                </span>
+              }
+              <textarea id="field-trigger-description" class="form-control bottom-30 width-50" formControlName="description"
               [ngClass]="{'govuk-input--error': description?.errors && (description.dirty || description.touched)}" maxlength="65536"></textarea>
-          </div>
-        </fieldset>
-      </ng-container>
-    </div>
-    <ccd-case-event-completion *ngIf="caseEdit.isEventCompletionChecksRequired"
-      [eventCompletionParams]="caseEdit.eventCompletionParams"
-      (eventCanBeCompleted)="onEventCanBeCompleted($event)">
-    </ccd-case-event-completion>
+            </div>
+          </fieldset>
+        }
+      </div>
+    }
+    @if (caseEdit.isEventCompletionChecksRequired) {
+      <ccd-case-event-completion
+        [eventCompletionParams]="caseEdit.eventCompletionParams"
+        (eventCanBeCompleted)="onEventCanBeCompleted($event)">
+      </ccd-case-event-completion>
+    }
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
         {{'Previous' | rpxTranslate}}

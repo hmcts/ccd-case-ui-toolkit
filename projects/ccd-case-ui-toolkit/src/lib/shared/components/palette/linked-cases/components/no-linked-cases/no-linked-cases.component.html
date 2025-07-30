@@ -1,13 +1,16 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-xl" *ngIf="serverLinkedApiError">There is a problem</h1>
-    <p id="unlink-cases-error" class="govuk-error-message"
-      *ngIf="serverLinkedApiError;else noLinkedCases;">
-      <span class="govuk-visually-hidden">Error:</span> {{serverLinkedApiError.message}}
-    </p>
-    <ng-template #noLinkedCases>
+    @if (serverLinkedApiError) {
+      <h1 class="govuk-heading-xl">There is a problem</h1>
+    }
+    @if (serverLinkedApiError) {
+      <p id="unlink-cases-error" class="govuk-error-message"
+        >
+        <span class="govuk-visually-hidden">Error:</span> {{serverLinkedApiError.message}}
+      </p>
+    } @else {
       <p class="govuk-body">There are no cases linked to this one.</p>
-    </ng-template>
+    }
     <p class="govuk-body">
       <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">Go back to the Linked cases tab</a>
     </p>

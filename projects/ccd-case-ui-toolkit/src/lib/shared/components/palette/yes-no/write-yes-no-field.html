@@ -1,18 +1,26 @@
 <div [id]="id()" class="form-group bottom-30" [ngClass]="{'form-group-error': !yesNoControl.valid && (yesNoControl.dirty || yesNoControl.touched)}">
-	<fieldset class="inline">
+  <fieldset class="inline">
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+      @if (caseField.label) {
+        <span class="form-label">{{caseField | ccdFieldLabel}}</span>
+      }
     </legend>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-    <span class="error-message" *ngIf="yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)">
-      {{yesNoControl.errors | ccdFirstError:caseField.label}}
-    </span>
+    @if (caseField.hint_text) {
+      <span class="form-hint">{{caseField.hint_text | rpxTranslate}}</span>
+    }
+    @if (yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)) {
+      <span class="error-message">
+        {{yesNoControl.errors | ccdFirstError:caseField.label}}
+      </span>
+    }
 
     <div [id]="createElementId('radio')">
-  	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
-  	    <input class="form-control" [id]="createElementId(value)" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
-        <label class="form-label" [for]="createElementId(value)">{{caseField.label ? (caseField.label | rpxTranslate:null:value) : value}}</label>
-  	  </div>
+      @for (value of yesNoValues; track value) {
+        <div class="multiple-choice" [ngClass]="{selected: yesNoControl.value === value}">
+          <input class="form-control" [id]="createElementId(value)" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
+          <label class="form-label" [for]="createElementId(value)">{{caseField.label ? (caseField.label | rpxTranslate:null:value) : value}}</label>
+        </div>
+      }
     </div>
-	</fieldset>
+  </fieldset>
 </div>

@@ -5,44 +5,53 @@
   </div>
 
   <div class="govuk-!-margin-bottom-4">
-    <ccd-query-case-details-header [caseDetails]="caseDetails" *ngIf="caseDetails"></ccd-query-case-details-header>
+    @if (caseDetails) {
+      <ccd-query-case-details-header [caseDetails]="caseDetails"></ccd-query-case-details-header>
+    }
   </div>
 
   <div>
     <ccd-query-details [query]="queryListData"
       [queryResponseStatus]="queryResponseStatus"
-      (hasResponded)="hasResponded($event)"></ccd-query-details>
+    (hasResponded)="hasResponded($event)"></ccd-query-details>
   </div>
 </div>
-<div class="query-respond" *ngIf="showForm">
-  <div *ngIf="!hasRespondedToQuery">
-    <h1 class="govuk-heading-m">
-      {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
-    </h1>
-
-    <div [formGroup]="formGroup">
-      <div class="govuk-form-group body-textarea"
-           [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
-        <div class="govuk-label-wrapper">
-          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
-            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query Body' | rpxTranslate }}
-          </label>
+@if (showForm) {
+  <div class="query-respond">
+    @if (!hasRespondedToQuery) {
+      <div>
+        <h1 class="govuk-heading-m">
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
+        </h1>
+        <div [formGroup]="formGroup">
+          <div class="govuk-form-group body-textarea"
+            [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
+            <div class="govuk-label-wrapper">
+              <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
+                {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query Body' | rpxTranslate }}
+              </label>
+            </div>
+            @if (submitted && formGroup.get('body')?.hasError('required')) {
+              <p id="body-error" class="govuk-error-message"
+                >
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryCreateContextEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
+              </p>
+            }
+            <textarea [formControlName]="'body'" class="govuk-textarea"
+              [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
+              name="body" rows="5" aria-describedby="body-hint body-error">
+            </textarea>
+          </div>
         </div>
-        <p id="body-error" class="govuk-error-message"
-           *ngIf="submitted && formGroup.get('body')?.hasError('required')">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryCreateContextEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
-        </p>
-        <textarea [formControlName]="'body'" class="govuk-textarea"
-                  [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
-                  name="body" rows="5" aria-describedby="body-hint body-error">
-      </textarea>
       </div>
-    </div>
+    }
   </div>
-</div>
+}
 
-<ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND">
-  <ccd-close-query *ngIf="!hasRespondedToQuery"
-    [formGroup]="formGroup">
-  </ccd-close-query>
-</ng-container>
+@if (queryCreateContext === queryCreateContextEnum.RESPOND) {
+  @if (!hasRespondedToQuery) {
+    <ccd-close-query
+      [formGroup]="formGroup">
+    </ccd-close-query>
+  }
+}

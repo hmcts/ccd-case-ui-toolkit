@@ -2,16 +2,24 @@
   <fieldset>
     <legend>
       <label [for]="id()">
-        <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
+        @if (caseField.label) {
+          <span class="form-label">{{(caseField | ccdFieldLabel)}}</span>
+        }
       </label>
-      <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate }}</span>
-      <span class="error-message" *ngIf="fixedRadioListControl.errors && (fixedRadioListControl.dirty || fixedRadioListControl.touched)">{{(fixedRadioListControl.errors | ccdFirstError:caseField.label)}}</span>
+      @if (caseField.hint_text) {
+        <span class="form-hint">{{caseField.hint_text | rpxTranslate }}</span>
+      }
+      @if (fixedRadioListControl.errors && (fixedRadioListControl.dirty || fixedRadioListControl.touched)) {
+        <span class="error-message">{{(fixedRadioListControl.errors | ccdFirstError:caseField.label)}}</span>
+      }
     </legend>
     <ng-container>
-      <div class="multiple-choice" *ngFor="let radioButton of caseField.field_type.fixed_list_items" [ngClass]="{selected: fixedRadioListControl.value === radioButton.code}">
-        <input class="form-control" [id]="id()+'-'+radioButton.code" [name]="id()" type="radio" [formControl]="fixedRadioListControl" [value]="radioButton.code">
-        <label class="form-label" [for]="id()+'-'+radioButton.code">{{radioButton.label | rpxTranslate}}</label>
-      </div>
+      @for (radioButton of caseField.field_type.fixed_list_items; track radioButton) {
+        <div class="multiple-choice" [ngClass]="{selected: fixedRadioListControl.value === radioButton.code}">
+          <input class="form-control" [id]="id()+'-'+radioButton.code" [name]="id()" type="radio" [formControl]="fixedRadioListControl" [value]="radioButton.code">
+          <label class="form-label" [for]="id()+'-'+radioButton.code">{{radioButton.label | rpxTranslate}}</label>
+        </div>
+      }
     </ng-container>
   </fieldset>
 </div>

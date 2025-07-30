@@ -1,5 +1,7 @@
-<div *ngIf="isDataLoaded()">
+@if (isDataLoaded()) {
+  <div>
     <ccd-case-viewer [hasPrint]="hasPrint"
-                     [hasEventSelector]="hasEventSelector">
+      [hasEventSelector]="hasEventSelector">
     </ccd-case-viewer>
-</div>
+  </div>
+}

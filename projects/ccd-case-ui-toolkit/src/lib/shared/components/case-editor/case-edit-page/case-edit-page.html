@@ -1,35 +1,41 @@
-<ng-container *ngIf="currentPage">
-  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
-  <ng-container *ngIf="currentPage.label">
+@if (currentPage) {
+  @if (!currentPage.label) {
+    <h1 class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
+  }
+  @if (currentPage.label) {
     <span class="govuk-caption-l">{{ eventTrigger.name | rpxTranslate}}</span>
     <h1 class="govuk-heading-l">{{currentPage.label | rpxTranslate}}</h1>
-  </ng-container>
-</ng-container>
+  }
+}
 
 <!--Case ID or Title -->
-<div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
-<ng-template #titleBlock>
+@if (getCaseTitle()) {
   <ccd-markdown [content]="getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data']"></ccd-markdown>
-</ng-template>
-<ng-template #idBlock>
-  <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
-</ng-template>
+} @else {
+  @if (getCaseId()) {
+    <h2 class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
+  }
+}
 
 <!-- Error message summary -->
-<div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    {{'There is a problem' | rpxTranslate}}
-  </h2>
-  <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li>
-        <a (click)="navigateToErrorElement(validationError.id)" (keyup.enter)="navigateToErrorElement(validationError.id)" tabindex="0" class="validation-error">
-          {{ validationError.message | rpxTranslate: getRpxTranslatePipeArgs(validationError.label | rpxTranslate): null }}
-        </a>
-      </li>
-    </ul>
+@if (validationErrors.length > 0) {
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      {{'There is a problem' | rpxTranslate}}
+    </h2>
+    @for (validationError of validationErrors; track validationError) {
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li>
+            <a (click)="navigateToErrorElement(validationError.id)" (keyup.enter)="navigateToErrorElement(validationError.id)" tabindex="0" class="validation-error">
+              {{ validationError.message | rpxTranslate: getRpxTranslatePipeArgs(validationError.label | rpxTranslate): null }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    }
   </div>
-</div>
+}
 
 <ccd-case-edit-generic-errors [error]="caseEdit.error"></ccd-case-edit-generic-errors>
 
@@ -40,39 +46,47 @@
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
-  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
-    <fieldset id="fieldset-case-data">
-      <legend style="display: none;"></legend>
-      <!-- single column -->
-      <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
-                          [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
-                          [pageChangeSubject]="pageChangeSubject"
-                          (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
-      <!-- two columns -->
-      <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
-        <div class="column-two-thirds rightBorderSeparator">
-          <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()"
-                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
-        </div>
-        <div class="column-one-third">
-          <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()"
-                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
-        </div>
+  @if (currentPage) {
+    <form class="form" [formGroup]="editForm" (submit)="nextStep()">
+      <fieldset id="fieldset-case-data">
+        <legend style="display: none;"></legend>
+        <!-- single column -->
+        @if (!currentPage.isMultiColumn()) {
+          <ccd-case-edit-form id='caseEditForm' [fields]="currentPage.getCol1Fields()"
+            [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
+            [pageChangeSubject]="pageChangeSubject"
+          (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
+        }
+        <!-- two columns -->
+        @if (currentPage.isMultiColumn()) {
+          <div class="grid-row">
+            <div class="column-two-thirds rightBorderSeparator">
+              <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()"
+              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
+            </div>
+            <div class="column-one-third">
+              <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()"
+              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
+            </div>
+          </div>
+        }
+      </fieldset>
+      <div class="form-group form-group-related">
+        @if (!isAtStart()) {
+          <button class="button button-secondary" type="button" (click)="toPreviousPage()" [disabled]="isDisabled()">
+            {{'Previous' | rpxTranslate}}
+          </button>
+        }
+        <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
       </div>
-    </fieldset>
-
-    <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">
-        {{'Previous' | rpxTranslate}}
-      </button>
-      <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
-    </div>
-
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText() | rpxTranslate}}</a></p>
-  </form>
+      <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText() | rpxTranslate}}</a></p>
+    </form>
+  }
 </div>
 
-<ccd-case-event-completion *ngIf="caseEdit.isEventCompletionChecksRequired"
-  [eventCompletionParams]="caseEdit.eventCompletionParams"
-  (eventCanBeCompleted)="onEventCanBeCompleted($event)">
-</ccd-case-event-completion>
+@if (caseEdit.isEventCompletionChecksRequired) {
+  <ccd-case-event-completion
+    [eventCompletionParams]="caseEdit.eventCompletionParams"
+    (eventCanBeCompleted)="onEventCanBeCompleted($event)">
+  </ccd-case-event-completion>
+}

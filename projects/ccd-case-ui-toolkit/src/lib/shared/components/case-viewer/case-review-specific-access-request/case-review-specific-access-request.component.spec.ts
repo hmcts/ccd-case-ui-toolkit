@@ -137,8 +137,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     component.setMockData();
     de = fixture.debugElement;
     fixture.detectChanges();
-    router = TestBed.get(Router);
-    location = TestBed.get(Location);
+    router = TestBed.inject(Router);
+    location = TestBed.inject(Location);
     spyOn(router, 'navigate');
   }));
 
