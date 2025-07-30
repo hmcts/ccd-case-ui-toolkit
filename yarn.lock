@@ -455,20 +455,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:17.3.5":
-  version: 17.3.5
-  resolution: "@angular/cdk@npm:17.3.5"
+"@angular/cdk@npm:18.2.14":
+  version: 18.2.14
+  resolution: "@angular/cdk@npm:18.2.14"
   dependencies:
     parse5: "npm:^7.1.2"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^17.0.0 || ^18.0.0
-    "@angular/core": ^17.0.0 || ^18.0.0
+    "@angular/common": ^18.0.0 || ^19.0.0
+    "@angular/core": ^18.0.0 || ^19.0.0
     rxjs: ^6.5.3 || ^7.4.0
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 10/e73748787a1566c9d336033e5d15d48612c85307eceecf4f8aa024b1477637671d99cd7475eb2c9729b4da27f853ea47a6239390573a04fb35b6cb852ac58a21
+  checksum: 10/a17b4638dc517f604f940db29510104f2795f0ed06607cadb6f67e76a000b23ddd6a6d3a58d55b413e762e6681021653fbc16c02a568f37ded32dc89adfa7e0e
   languageName: node
   linkType: hard
 
@@ -4611,7 +4611,7 @@ __metadata:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:~18.2.13"
-    "@angular/cdk": "npm:17.3.5"
+    "@angular/cdk": "npm:18.2.14"
     "@angular/cli": "npm:^18.2.17"
     "@angular/common": "npm:^18.2.13"
     "@angular/compiler": "npm:18.2.13"
