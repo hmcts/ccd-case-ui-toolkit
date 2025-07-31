@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.26
+**EXUI-3322** Fix translation of post-interpolation strings
+
 ### Version 7.2.25
 **EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
 
