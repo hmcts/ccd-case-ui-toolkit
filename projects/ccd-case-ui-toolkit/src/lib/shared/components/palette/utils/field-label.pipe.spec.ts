@@ -30,4 +30,29 @@ describe('FieldLabelPipe', () => {
     expect(fieldLabelPipe.transform({ label: 'label', display_context: 'ANYTHING ELSE' } as CaseField))
       .toBe('label');
   });
+
+  it('should return translated label for non-translated field', () => {
+    const field = { label: 'label', isTranslated: false } as CaseField;
+    expect(fieldLabelPipe.transform(field)).toBe('label');
+  });
+
+  it('should return original label for already translated field', () => {
+    const field = { label: 'translatedLabel', isTranslated: true } as CaseField;
+    expect(fieldLabelPipe.transform(field)).toBe('translatedLabel');
+  });
+
+  it('should handle null display_context gracefully', () => {
+    const field = { label: 'label', display_context: null } as CaseField;
+    expect(fieldLabelPipe.transform(field)).toBe('label');
+  });
+
+  it('should handle empty display_context gracefully', () => {
+    const field = { label: 'label', display_context: '' } as CaseField;
+    expect(fieldLabelPipe.transform(field)).toBe('label');
+  });
+
+  it('should handle undefined display_context gracefully', () => {
+    const field = { label: 'label', display_context: undefined } as CaseField;
+    expect(fieldLabelPipe.transform(field)).toBe('label');
+  });
 });
