@@ -12,7 +12,8 @@
             *ngIf="dateControl && dateControl.dirty && maxError">{{'This date is later than the maximum date allowed' | rpxTranslate}}</span>
     </legend>
     <div class="datepicker-container">
-      <input class="govuk-input"
+      <input readonly 
+             class="govuk-input"
              #input
              attr.aria-label="Please enter a date and time in the format | rpxTranslate {{dateTimeEntryFormat}}"
              [min]="minDate(caseField)"
@@ -22,7 +23,7 @@
              (focusin)="focusIn()"
              (focusout)="focusOut()"
              (dateChange)="valueChanged()"
-             ng-model-options="{timezone:'utc'}"
+             style="pointer-events: none;"
       >
       <mat-datepicker-toggle matSuffix [for]="picker" id="pickerOpener"></mat-datepicker-toggle>
       <ngx-mat-datetime-picker #picker
