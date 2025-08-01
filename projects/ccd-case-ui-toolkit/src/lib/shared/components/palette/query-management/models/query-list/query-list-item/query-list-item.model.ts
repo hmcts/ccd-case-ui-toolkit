@@ -47,17 +47,48 @@ export class QueryListItem implements CaseMessage {
 
   public get lastSubmittedDate(): Date {
     const childrenCount = this.children.length;
-    if (childrenCount <= 1) {
+    const lastChild = this.children[childrenCount - 1];
+
+    // 1. Check for legacy: <= 1 child with no messageType
+    const allChildrenLackMessageType = this.children.every(
+      (child) => !child.messageType
+    );
+    if (childrenCount <= 1 && allChildrenLackMessageType) {
       return new Date(this.lastSubmittedMessage.createdOn);
     }
 
-    let index: number;
+    // 2. Check if any RESPOND exists
+    const hasRespond = this.children.some(
+      (child) => child.messageType === QueryCreateContext.RESPOND
+    );
 
-    if (childrenCount > 1) {
-      index = childrenCount % 2 === 0 ? childrenCount - 1 : childrenCount - 2;
+    // 3. Check if all children are FOLLOWUPs and none are RESPONDs
+    const onlyFollowUps = this.children.every(
+      (child) => child.messageType === QueryCreateContext.FOLLOWUP
+    );
+
+    if (onlyFollowUps && !hasRespond) {
+      return new Date(lastChild.createdOn);
     }
 
-    return new Date(this.children[index].createdOn);
+    // 4. If RESPOND exists, get latest FOLLOWUP
+    // If no RESPOND, but there is at least one FOLLOWUP, return the last FOLLOWUP
+    const lastFollowUp = [...this.children]
+      .reverse()
+      .find((child) => child.messageType === QueryCreateContext.FOLLOWUP);
+
+    if (lastFollowUp) {
+      return new Date(lastFollowUp.createdOn);
+    }
+
+    // 5. Legacy fallback: no messageType at all
+    if (allChildrenLackMessageType) {
+      const index = childrenCount % 2 === 0 ? childrenCount - 1 : childrenCount - 2;
+      return new Date(this.children[index]?.createdOn);
+    }
+
+    // 6. Final fallback: return last child's date
+    return new Date(this.lastSubmittedMessage.createdOn);
   }
 
   public get lastResponseBy(): string {

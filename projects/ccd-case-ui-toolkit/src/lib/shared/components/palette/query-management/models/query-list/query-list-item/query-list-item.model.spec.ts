@@ -112,6 +112,116 @@ describe('QueryListItem', () => {
     it('should return the date of the lastSubmittedMessage', () => {
       expect(queryListItem.lastSubmittedDate).toEqual(lastSubmittedBy.createdOn);
     });
+
+    it('should return lastSubmittedMessage.createdOn when only one child and no messageType', () => {
+      const child = new QueryListItem();
+      child.createdOn = new Date('2025-07-01T10:00:00Z');
+      // No messageType defined
+
+      queryListItem.children = [child];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(queryListItem.lastSubmittedMessage.createdOn);
+    });
+
+    it('should return lastChild.createdOn when all children are FOLLOWUP and no RESPOND exists', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.FOLLOWUP;
+      child1.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.FOLLOWUP;
+      child2.createdOn = new Date('2025-07-10T10:00:00Z');
+
+      queryListItem.children = [child1, child2];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(child2.createdOn);
+    });
+
+    it('should return lastChild.createdOn when last is FOLLOWUP and a RESPOND exists', () => {
+      const respond = new QueryListItem();
+      respond.messageType = QueryCreateContext.RESPOND;
+      respond.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const followUp = new QueryListItem();
+      followUp.messageType = QueryCreateContext.FOLLOWUP;
+      followUp.createdOn = new Date('2025-07-12T10:00:00Z');
+
+      queryListItem.children = [respond, followUp];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(followUp.createdOn);
+    });
+
+    it('should return last FOLLOWUP when types are mixed but no RESPOND', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.FOLLOWUP;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = 'OTHER';
+      child2.createdOn = new Date('2025-07-03T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.messageType = 'OTHER';
+      child3.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3];
+
+
+      expect(queryListItem.lastSubmittedDate).toEqual(child1.createdOn);
+    });
+
+    it('should return the last FOLLOWUP when RESPOND and FOLLOWUP are mixed and last is FOLLOWUP', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.RESPOND;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.FOLLOWUP;
+      child2.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.messageType = QueryCreateContext.FOLLOWUP;
+      child3.createdOn = new Date('2025-07-09T10:00:00Z');
+
+      const child4 = new QueryListItem();
+      child4.messageType = QueryCreateContext.RESPOND;
+      child4.createdOn = new Date('2025-07-10T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3, child4];
+
+      // Should return last FOLLOWUP date (2025-07-09)
+      expect(queryListItem.lastSubmittedDate).toEqual(child3.createdOn);
+    });
+
+    it('should use parity index when all children lack messageType', () => {
+      const child1 = new QueryListItem();
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.createdOn = new Date('2025-07-03T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3];
+
+      // Odd length = 3 → index = 1 → child2
+      expect(queryListItem.lastSubmittedDate).toEqual(child2.createdOn);
+    });
+
+    it('should fallback to lastSubmittedMessage when RESPOND exists but no FOLLOWUP', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.RESPOND;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.RESPOND;
+      child2.createdOn = new Date('2025-07-08T10:00:00Z');
+
+      queryListItem.children = [child1, child2];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(queryListItem.lastSubmittedMessage.createdOn);
+    });
   });
 
   describe('lastResponseBy', () => {
