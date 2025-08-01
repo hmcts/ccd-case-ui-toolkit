@@ -141,7 +141,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.day = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -151,7 +151,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.month = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -162,7 +162,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.year = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.rawValue.includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -242,7 +242,6 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     if (!input) return null;
 
     const date = new Date(input);
-    if (isNaN(date.getTime())) return null; // Invalid date
 
     const year = date.getUTCFullYear();
     const month = this.padZero(date.getUTCMonth() + 1);
