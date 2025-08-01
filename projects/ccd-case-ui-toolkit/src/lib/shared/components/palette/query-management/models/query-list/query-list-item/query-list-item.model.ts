@@ -101,8 +101,16 @@ export class QueryListItem implements CaseMessage {
       return null;
     }
 
-    let index: number;
+    const lastChild = this.children[childrenCount - 1];
 
+    if (
+      lastChild?.messageType === QueryCreateContext.FOLLOWUP &&
+    !this.children.some((child) => child.messageType === QueryCreateContext.RESPOND)
+    ) {
+      return null;
+    }
+
+    let index: number;
     if (childrenCount === 1) {
       index = 0;
     } else {
