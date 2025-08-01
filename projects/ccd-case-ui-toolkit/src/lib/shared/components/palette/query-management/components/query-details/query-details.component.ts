@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SessionStorageService } from '../../../../../services';
@@ -11,7 +11,7 @@ import { QueryListItem } from '../../models';
   templateUrl: './query-details.component.html',
   styleUrls: ['./query-details.component.scss']
 })
-export class QueryDetailsComponent implements OnChanges, OnInit{
+export class QueryDetailsComponent implements OnChanges{
   @Input() public query: QueryListItem;
   @Input() public caseId: string;
   @Input() public queryResponseStatus: string;
@@ -23,10 +23,7 @@ export class QueryDetailsComponent implements OnChanges, OnInit{
 
   private static readonly QUERY_ITEM_RESPOND = '3';
   private static readonly QUERY_ITEM_FOLLOW_UP = '4';
-  private static readonly YES = 'Yes';
   private queryItemId: string;
-
-  public isQueryClosed: boolean = false;
 
   constructor(
     private readonly sessionStorageService: SessionStorageService,
@@ -39,10 +36,6 @@ export class QueryDetailsComponent implements OnChanges, OnInit{
 
   public isInternalUser(): boolean {
     return isInternalUser(this.sessionStorageService);
-  }
-
-  public ngOnInit(): void {
-    this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === QueryDetailsComponent.YES);
   }
 
   public ngOnChanges(): void {

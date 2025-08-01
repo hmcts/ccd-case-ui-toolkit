@@ -14,8 +14,6 @@ describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
   let fixture: ComponentFixture<QueryDetailsComponent>;
   const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
-  const YES = 'Yes';
-  const NO = 'No';
 
   const items = [
     {
@@ -323,42 +321,5 @@ describe('QueryDetailsComponent', () => {
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBeTruthy();
     });
-  });
-
-  it('should set isQueryClosed to true if any child query is closed', () => {
-    const closedChild = new QueryListItem();
-    closedChild.isClosed = YES;
-
-    const openChild = new QueryListItem();
-    openChild.isClosed = NO;
-
-    const parentQuery = new QueryListItem();
-    parentQuery.children = [openChild, closedChild];
-    component.query = parentQuery;
-    component.ngOnInit();
-
-    expect(component.isQueryClosed).toBeTruthy();
-  });
-
-  it('should set isQueryClosed to false if no children are closed', () => {
-    const openChild1 = new QueryListItem();
-    openChild1.isClosed = NO;
-
-    const openChild2 = new QueryListItem();
-    openChild2.isClosed = NO;
-
-    const parentQuery = new QueryListItem();
-    parentQuery.children = [openChild1, openChild2];
-    component.query = parentQuery;
-
-    expect(component.isQueryClosed).toBeFalsy();
-  });
-
-  it('should set isQueryClosed to false if query has no children', () => {
-    const parentQuery = new QueryListItem();
-    parentQuery.children = [];
-    component.query = parentQuery;
-
-    expect(component.isQueryClosed).toBeFalsy();
   });
 });
