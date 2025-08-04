@@ -2,9 +2,13 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
+import {
+  CaseEventTrigger
+} from '../../../../../../../../lib/shared/domain';
 import { CaseNotifier } from '../../../../../case-editor/services';
 import { RaiseQueryErrorMessage } from '../../../enums';
-import { CaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
+import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
+import { QueryManagementService } from '../../../services';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
@@ -18,6 +22,10 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   @Input() public submitted = false;
   @Input() public caseQueriesCollections: CaseQueriesCollection[];
   @Input() public showForm;
+  @Input() public triggerSubmission: boolean;
+  @Input() public eventData: CaseEventTrigger | null = null;
+
+  @Output() public queryDataCreated = new EventEmitter <QmCaseQueriesCollection>();
   @Output() public hasRespondedToQueryTask: EventEmitter<boolean> = new EventEmitter();
 
   public readonly queryCreateContextEnum = QueryCreateContext;
@@ -29,12 +37,14 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public queryListData: QueryListItem | undefined;
 
   public hasRespondedToQuery: boolean = false;
+  public messageId: string;
 
   private static readonly QUERY_ITEM_RESPOND = '3';
   private static readonly QUERY_ITEM_FOLLOWUP = '4';
 
   constructor(private readonly caseNotifier: CaseNotifier,
-    private readonly route: ActivatedRoute) {}
+    private readonly route: ActivatedRoute,
+    private queryManagementService: QueryManagementService) {}
 
   public ngOnInit(): void {
     this.queryItemId = this.route.snapshot.params.qid;
@@ -89,10 +99,42 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
     this.queryListData = queryWithChildren?.queries.find((query) => query?.id === targetId);
     this.queryResponseStatus = this.queryListData?.responseStatus;
+    const isCollectionDataSet = this.setCaseQueriesCollectionData();
+    if (isCollectionDataSet) {
+      if (this.triggerSubmission) {
+        const data = this.generateCaseQueriesCollectionData();
+        this.queryDataCreated.emit(data);
+      }
+    }
   }
 
   public hasResponded(value: boolean): void {
     this.hasRespondedToQuery = value;
     this.hasRespondedToQueryTask.emit(value);
+  }
+
+  public setCaseQueriesCollectionData(): boolean {
+    if (!this.eventData) {
+      console.warn('Event data not available; skipping collection setup.');
+      return false;
+    }
+
+    this.queryManagementService.setCaseQueriesCollectionData(
+      this.eventData,
+      this.queryCreateContext,
+      this.caseDetails,
+      this.messageId
+    );
+
+    return true;
+  }
+
+  private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
+    return this.queryManagementService.generateCaseQueriesCollectionData(
+      this.formGroup,
+      this.queryCreateContext,
+      this.queryItem,
+      this.messageId
+    );
   }
 }
