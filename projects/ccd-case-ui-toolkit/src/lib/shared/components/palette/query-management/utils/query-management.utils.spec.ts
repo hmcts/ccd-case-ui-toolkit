@@ -1,6 +1,6 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CaseField, Document, FieldType, FormDocument } from '../../../../domain';
-import { QueryListItem } from '../models';
+import { QueryCreateContext, QueryListItem } from '../models';
 import { QueryManagementUtils } from './query-management.utils';
 
 describe('QueryManagementUtils', () => {
@@ -99,7 +99,7 @@ describe('QueryManagementUtils', () => {
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444'
       };
-      const caseMessageResult = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails);
+      const caseMessageResult = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, undefined);
       expect(caseMessageResult.subject).toEqual(caseMessage.subject);
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
@@ -132,7 +132,7 @@ describe('QueryManagementUtils', () => {
         closeQuery: new FormControl(true)
       });
 
-      const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails);
+      const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND);
       expect(result.isClosed).toBe('Yes');
     });
 
@@ -297,21 +297,74 @@ describe('QueryManagementUtils', () => {
       it('should set isClosed to Yes when closeQuery is true', () => {
         formGroup.get('closeQuery').setValue(true);
         const user = { uid: 'x', name: 'Y' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
         expect(result.isClosed).toBe('Yes');
       });
 
       it('should set isClosed to No when closeQuery is false', () => {
         formGroup.get('closeQuery').setValue(false);
         const user = { uid: 'x', name: 'Y' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
         expect(result.isClosed).toBe('No');
       });
 
       it('should fallback to forename + surname when name is missing', () => {
         const user = { uid: 'u9', forename: 'Charlie', surname: 'Doe' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
         expect(result.name).toBe('Charlie Doe');
+      });
+      it('should set messageType as RESPOND if passed as RESPOND', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Response body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        expect(result.messageType).toBe(QueryCreateContext.RESPOND);
+      });
+
+      it('should set messageType as FOLLOWUP if passed as FOLLOWUP', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Follow-up body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP);
+        expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
+      });
+
+      it('should set messageType as undefined if invalid type is passed', () => {
+        const queryItem = new QueryListItem();
+        queryItem.subject = 'Sub';
+        queryItem.id = 'q1';
+        queryItem.isHearingRelated = 'No';
+        queryItem.hearingDate = '';
+
+        const user = { uid: 'abc123', name: 'Test User' };
+        const formGroup = new FormGroup({
+          body: new FormControl('Some body'),
+          attachments: new FormControl([]),
+          closeQuery: new FormControl(false)
+        });
+
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, 'INVALID_TYPE');
+        expect(result.messageType).toBeUndefined();
       });
     });
   });

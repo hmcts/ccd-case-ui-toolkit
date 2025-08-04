@@ -1,9 +1,13 @@
+import { QueryCreateContext } from '../../..';
 import { QueryItemResponseStatus } from '../../../enums';
 import { QueryListItem } from './query-list-item.model';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
   let lastSubmittedBy: QueryListItem;
+
+  const YES = 'Yes';
+  const NO = 'No';
 
   beforeEach(() => {
     const items = [
@@ -108,6 +112,116 @@ describe('QueryListItem', () => {
     it('should return the date of the lastSubmittedMessage', () => {
       expect(queryListItem.lastSubmittedDate).toEqual(lastSubmittedBy.createdOn);
     });
+
+    it('should return lastSubmittedMessage.createdOn when only one child and no messageType', () => {
+      const child = new QueryListItem();
+      child.createdOn = new Date('2025-07-01T10:00:00Z');
+      // No messageType defined
+
+      queryListItem.children = [child];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(queryListItem.lastSubmittedMessage.createdOn);
+    });
+
+    it('should return lastChild.createdOn when all children are FOLLOWUP and no RESPOND exists', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.FOLLOWUP;
+      child1.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.FOLLOWUP;
+      child2.createdOn = new Date('2025-07-10T10:00:00Z');
+
+      queryListItem.children = [child1, child2];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(child2.createdOn);
+    });
+
+    it('should return lastChild.createdOn when last is FOLLOWUP and a RESPOND exists', () => {
+      const respond = new QueryListItem();
+      respond.messageType = QueryCreateContext.RESPOND;
+      respond.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const followUp = new QueryListItem();
+      followUp.messageType = QueryCreateContext.FOLLOWUP;
+      followUp.createdOn = new Date('2025-07-12T10:00:00Z');
+
+      queryListItem.children = [respond, followUp];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(followUp.createdOn);
+    });
+
+    it('should return last FOLLOWUP when types are mixed but no RESPOND', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.FOLLOWUP;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = 'OTHER';
+      child2.createdOn = new Date('2025-07-03T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.messageType = 'OTHER';
+      child3.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3];
+
+
+      expect(queryListItem.lastSubmittedDate).toEqual(child1.createdOn);
+    });
+
+    it('should return the last FOLLOWUP when RESPOND and FOLLOWUP are mixed and last is FOLLOWUP', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.RESPOND;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.FOLLOWUP;
+      child2.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.messageType = QueryCreateContext.FOLLOWUP;
+      child3.createdOn = new Date('2025-07-09T10:00:00Z');
+
+      const child4 = new QueryListItem();
+      child4.messageType = QueryCreateContext.RESPOND;
+      child4.createdOn = new Date('2025-07-10T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3, child4];
+
+      // Should return last FOLLOWUP date (2025-07-09)
+      expect(queryListItem.lastSubmittedDate).toEqual(child3.createdOn);
+    });
+
+    it('should use parity index when all children lack messageType', () => {
+      const child1 = new QueryListItem();
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.createdOn = new Date('2025-07-03T10:00:00Z');
+
+      const child3 = new QueryListItem();
+      child3.createdOn = new Date('2025-07-05T10:00:00Z');
+
+      queryListItem.children = [child1, child2, child3];
+
+      // Odd length = 3 → index = 1 → child2
+      expect(queryListItem.lastSubmittedDate).toEqual(child2.createdOn);
+    });
+
+    it('should fallback to lastSubmittedMessage when RESPOND exists but no FOLLOWUP', () => {
+      const child1 = new QueryListItem();
+      child1.messageType = QueryCreateContext.RESPOND;
+      child1.createdOn = new Date('2025-07-01T10:00:00Z');
+
+      const child2 = new QueryListItem();
+      child2.messageType = QueryCreateContext.RESPOND;
+      child2.createdOn = new Date('2025-07-08T10:00:00Z');
+
+      queryListItem.children = [child1, child2];
+
+      expect(queryListItem.lastSubmittedDate).toEqual(queryListItem.lastSubmittedMessage.createdOn);
+    });
   });
 
   describe('lastResponseBy', () => {
@@ -188,38 +302,47 @@ describe('QueryListItem', () => {
       expect(child2.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
 
-    it('should return CLOSED when this item is directly marked as closed', () => {
-      queryListItem.isClosed = 'Yes';
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
+    it('should return CLOSED if the item is closed', () => {
+      queryListItem.isClosed = YES;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
 
-    it('should return CLOSED when any nested child item is closed', () => {
-      // Create a deep nested child
+    it('should return CLOSED if any child is closed', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[2].isClosed = YES;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return RESPONDED if the last messageType is RESPOND', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.RESPOND;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return AWAITING if the last messageType is FOLLOWUP', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children[queryListItem.children.length - 1].messageType = QueryCreateContext.FOLLOWUP;
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return AWAITING if no children and item is not closed', () => {
+      queryListItem.isClosed = NO;
+      queryListItem.children = [];
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return CLOSED if deeply nested child is closed', () => {
       const deepChild = new QueryListItem();
-      deepChild.isClosed = 'Yes';
-      deepChild.children = [];
+      deepChild.isClosed = YES;
 
-      const midChild = new QueryListItem();
-      midChild.children = [deepChild];
+      const intermediate = new QueryListItem();
+      intermediate.isClosed = NO;
+      intermediate.children = [deepChild];
 
-      const topChild = new QueryListItem();
-      topChild.children = [midChild];
+      queryListItem.children = [intermediate];
+      queryListItem.isClosed = NO;
 
-      queryListItem.children = [topChild];
-
-      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
-    });
-
-    it('should return RESPONDED for child with even messageIndexInParent', () => {
-      const child = new QueryListItem();
-      child.messageIndexInParent = 2;
-      expect(child.responseStatus).toEqual(QueryItemResponseStatus.RESPONDED);
-    });
-
-    it('should return AWAITING for child with odd messageIndexInParent', () => {
-      const child = new QueryListItem();
-      child.messageIndexInParent = 3;
-      expect(child.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
+      expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.CLOSED);
     });
   });
 });
