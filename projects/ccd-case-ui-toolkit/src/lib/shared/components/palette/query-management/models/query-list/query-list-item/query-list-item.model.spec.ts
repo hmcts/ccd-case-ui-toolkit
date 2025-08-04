@@ -325,7 +325,7 @@ describe('QueryListItem', () => {
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
     });
 
-    it('should return undefined if no children and item is not closed', () => {
+    it('should return AWAITING if no children and item is not closed', () => {
       queryListItem.isClosed = NO;
       queryListItem.children = [];
       expect(queryListItem.responseStatus).toBe(QueryItemResponseStatus.AWAITING);
