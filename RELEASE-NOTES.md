@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.29
+**EXUI-3366** Query Management - Respond to query screen static text update
+
 ### Version 7.2.28
 **EXUI-2999** QM: Ensure that mid-event callback is run when pressing Continue/Previous buttons
 
