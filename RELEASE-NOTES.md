@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.2.28
+**EXUI-2999** QM: Ensure that mid-event callback is run when pressing Continue/Previous buttons
+
+### Version 7.2.27
+**EXUI-3361** 404 with Perftest CCD draft endpoint
+
+### Version 7.2.26
+**EXUI-3322** Fix translation of post-interpolation strings
+
 ### Version 7.2.25
 **EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
 

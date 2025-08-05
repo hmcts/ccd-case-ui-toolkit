@@ -13,7 +13,7 @@ describe('Drafts Service', () => {
   const CT_ID = 'TestAddressBookCase';
   const DRAFT_ID = 'Draft1';
   const EVENT_TRIGGER_ID = 'createCase';
-  const CREATE_OR_UPDATE_DRAFT_URL = `${DATA_URL}/internal/case-types/${CT_ID}/drafts/`;
+  const CREATE_OR_UPDATE_DRAFT_URL = `${DATA_URL}/internal/case-types/${CT_ID}/drafts`;
   const GET_OR_DELETE_DRAFT_URL = `${DATA_URL}/internal/drafts/1`;
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -101,7 +101,7 @@ describe('Drafts Service', () => {
         .subscribe(
           data => expect(data).toEqual(DRAFT_RESPONSE)
         );
-      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA, {
+      expect(httpService.put).toHaveBeenCalledWith(CREATE_OR_UPDATE_DRAFT_URL + '/' + Draft.stripDraftId(DRAFT_ID), CASE_EVENT_DATA, {
         headers: new HttpHeaders()
           .set('experimental', 'true')
           .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_UPDATE)

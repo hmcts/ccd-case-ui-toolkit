@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.27-welsh-translation-qm",
+  "version": "7.2.29-welsh-translation-qm",
   "engines": {
     "node": ">=18.19.0"
   },

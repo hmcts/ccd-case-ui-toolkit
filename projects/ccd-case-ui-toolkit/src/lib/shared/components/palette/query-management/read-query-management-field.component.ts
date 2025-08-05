@@ -63,7 +63,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
-    this.isQueryClosed =  this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
+    this.isQueryClosed = this.query?.children?.some((queryItem) => queryItem?.isClosed === 'Yes');
   }
 
   public backToQueryListPage(): void {
