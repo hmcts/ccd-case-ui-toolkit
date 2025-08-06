@@ -235,9 +235,20 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private handleError(error: any): void {
     console.error('Error in API calls:', error);
-
     this.isSubmitting = false;
-    this.router.navigate(['/', 'service-down']);
+
+    if (this.isServiceErrorFound(error)){
+      this.error = null;
+      this.callbackErrorsSubject.next(error);
+    } else {
+      if (error && error.status !== 401 && error.status !== 403) {
+        this.error = error;
+      } else {
+        this.router.navigate(['/', 'service-down']);
+      }
+    }
+
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
   }
 
   private getDocumentAttachments(): void {
