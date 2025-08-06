@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.30
+**EXUI-3386** QM Event Failures in Preview and AAT Environments
+
 ### Version 7.2.29
 **EXUI-3366** Query Management - Respond to query screen static text update
 
