@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.31
+**EXUI-3381** Notification Not Displayed to Caseworkers or Legal Advisors When Query Is Closed
+
 ### Version 7.2.30
 **EXUI-3386** QM Event Failures in Preview and AAT Environments
 
