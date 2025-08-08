@@ -70,8 +70,8 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       return;
     }
 
-    const messageId = this.route.snapshot.params?.dataid;
-    if (!messageId) {
+    this.messageId = this.route.snapshot.params?.dataid;
+    if (!this.messageId) {
       console.warn('No messageId found in route params:', this.route.snapshot.params);
       return;
     }
@@ -80,16 +80,16 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       .flatMap((caseData) => caseData?.caseMessages || []);
 
     const matchingMessage = allMessages.find(
-      (message) => message?.value?.id === messageId
+      (message) => message?.value?.id === this.messageId
     )?.value;
 
     if (!matchingMessage) {
-      console.warn('No matching message found for ID:', messageId);
+      console.warn('No matching message found for ID:', this.messageId);
       return;
     }
 
     const caseQueriesCollections = this.caseQueriesCollections.find(
-      (collection) => collection?.caseMessages.find((c) => c.value.id === messageId)
+      (collection) => collection?.caseMessages.find((c) => c.value.id === this.messageId)
     );
 
     const queryWithChildren = new QueryListData(caseQueriesCollections);
