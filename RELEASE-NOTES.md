@@ -1,5 +1,44 @@
 ## RELEASE NOTES
 
+### Version 7.2.32
+**EXUI-3389** Follow-up Query Response Missing Standard Footer Message
+
+### Version 7.2.31
+**EXUI-3381** Notification Not Displayed to Caseworkers or Legal Advisors When Query Is Closed
+
+### Version 7.2.30
+**EXUI-3386** QM Event Failures in Preview and AAT Environments
+
+### Version 7.2.29
+**EXUI-3366** Query Management - Respond to query screen static text update
+
+### Version 7.2.28
+**EXUI-2999** QM: Ensure that mid-event callback is run when pressing Continue/Previous buttons
+
+### Version 7.2.27
+**EXUI-3361** 404 with Perftest CCD draft endpoint
+
+### Version 7.2.26
+**EXUI-3322** Fix translation of post-interpolation strings
+
+### Version 7.2.25
+**EXUI-3312** QM: Last submitted by not displaying solicitor name after follow up
+
+### Version 7.2.24
+**EXUI-3276** Redactions: Investigate viewport issues on DOM1 machines
+
+### Version 7.2.23
+**EXUI-3313** HALO-12184 Number field doesn't accept Decimal value
+
+### Version 7.2.22
+**EXUI-3311** Extra text appearing on check your answer page
+
+### Version 7.2.21
+**EXUI-3304** Uploading encrypted file shows incorrect error message
+
+### Version 7.2.20
+**EXUI-1832** 'Choose file' and 'no file chosen' not being sent via Welsh translation API
+
 ### Version 7.2.19
 **EXUI-3301** Query Management component caches stale case ID on case switch
 
