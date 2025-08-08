@@ -23,6 +23,7 @@ import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 import { CaseEditDataModule } from '../../commons/case-edit-data';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { TranslatedMarkdownModule } from '../../directives/welsh-translated-markdown';
 import { PipesModule } from '../../pipes/pipes.module';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';
@@ -300,6 +301,7 @@ const PALETTE_COMPONENTS = [
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
+    TranslatedMarkdownModule,
     MarkdownModule.forChild(),
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
