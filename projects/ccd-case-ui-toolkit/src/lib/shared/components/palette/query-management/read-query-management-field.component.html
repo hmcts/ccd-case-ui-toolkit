@@ -28,7 +28,7 @@
       </div>
     </ng-template>
   </ng-container>
-  <ng-container *ngIf="!isInternalUser() && isQueryClosed">
+  <ng-container *ngIf="isQueryClosed">
     <div class="govuk-warning-text">
       <span aria-hidden="true" class="govuk-warning-text__icon">!</span>
       <strong class="govuk-warning-text__text">

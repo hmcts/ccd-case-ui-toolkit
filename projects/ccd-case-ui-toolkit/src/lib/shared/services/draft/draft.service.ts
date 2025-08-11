@@ -41,7 +41,7 @@ export class DraftService {
   }
 
   public updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
-    const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid) + draftId;
+    const saveDraftEndpoint = `${this.appConfig.getCreateOrUpdateDraftsUrl(ctid)}/${draftId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', DraftService.V2_MEDIATYPE_DRAFT_UPDATE)

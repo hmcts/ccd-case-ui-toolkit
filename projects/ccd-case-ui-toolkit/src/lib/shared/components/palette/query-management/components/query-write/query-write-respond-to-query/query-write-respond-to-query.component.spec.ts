@@ -6,8 +6,10 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { CaseView } from '../../../../../../domain';
 import { CaseNotifier } from '../../../../../case-editor';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { CaseQueriesCollection, QueryListItem } from '../../../models';
-import { getMockCaseNotifier } from '../../../../../case-editor/services/case.notifier.spec';
+import {
+  SessionStorageService
+} from '../../../../../../services';
+import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../../models';
 import { of, throwError } from 'rxjs';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -21,6 +23,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
   let component: QueryWriteRespondToQueryComponent;
   let fixture: ComponentFixture<QueryWriteRespondToQueryComponent>;
   let activatedRoute: ActivatedRoute;
+  let sessionStorageService: any;
 
   const caseId = '123';
   const CASE_VIEW: CaseView = {
@@ -102,7 +105,8 @@ describe('QueryWriteRespondToQueryComponent', () => {
             }
           }
         },
-        { provide: CaseNotifier, useValue: mockCaseNotifier }
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
+        { provide: SessionStorageService, useValue: sessionStorageService }
       ]
     })
       .compileComponents();
@@ -286,4 +290,69 @@ describe('QueryWriteRespondToQueryComponent', () => {
     fixture.detectChanges();
     expect(component.queryItem).toEqual(mockItem);
   });
+
+  it('should emit queryDataCreated when triggerSubmission is true and collection is set', () => {
+    const emitSpy = spyOn(component.queryDataCreated, 'emit');
+    const mockData = {} as any;
+
+    component.triggerSubmission = true;
+    component.caseQueriesCollections = caseQueriesCollectionsMockData;
+    component.eventData = {} as any;
+    component.caseDetails = {} as any;
+
+    spyOn<any>(component['queryManagementService'], 'generateCaseQueriesCollectionData').and.returnValue(mockData);
+    spyOn<any>(component['queryManagementService'], 'setCaseQueriesCollectionData').and.callThrough();
+
+    component.ngOnChanges();
+
+    expect(emitSpy).toHaveBeenCalledWith(mockData);
+  });
+
+  it('should return false when eventData is missing in setCaseQueriesCollectionData', () => {
+    component.eventData = null;
+    const result = component.setCaseQueriesCollectionData();
+    expect(result).toBeFalsy();
+  });
+
+  it('should call resolveFieldId and set fieldId on queryManagementService', () => {
+    const mockEventData: any = {
+      case_fields: [
+        {
+          id: 'field1',
+          field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+          display_context: 'OPTIONAL',
+          value: {
+            caseMessages: [
+              { value: { id: 'id-007' } }
+            ]
+          }
+        }
+      ],
+      wizard_pages: [
+        {
+          wizard_page_fields: [{ case_field_id: 'field1', order: 1 }]
+        }
+      ]
+    };
+
+    const mockCaseDetails = {
+      case_type: {
+        jurisdiction: { id: 'CIVIL' }
+      }
+    } as CaseView;
+
+    component.eventData = mockEventData;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.caseDetails = mockCaseDetails;
+
+    const service = (component as any).queryManagementService;
+    spyOn(service as any, 'getCollectionSelectionMethod').and.callThrough();
+    spyOn(service as any, 'getCaseQueriesCollectionFieldOrderFromWizardPages').and.callThrough();
+
+    const result = component.setCaseQueriesCollectionData();
+
+    expect(result).toBeTruthy();
+    expect(service.fieldId).toBe('field1');
+  });
+
 });
