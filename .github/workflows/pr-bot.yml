@@ -60,8 +60,7 @@ jobs:
           mkdir pr-bot-tmp
           cd pr-bot-tmp
           npm init -y
-          npm install @hmcts/pr-bot
-          node node_modules/@hmcts/pr-bot/dist/prBot.js
+          npx @hmcts/pr-bot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
