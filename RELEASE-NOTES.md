@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.2.32
+**EXUI-3389** Follow-up Query Response Missing Standard Footer Message
+
+### Version 7.2.31
+**EXUI-3381** Notification Not Displayed to Caseworkers or Legal Advisors When Query Is Closed
+
+### Version 7.2.30
+**EXUI-3386** QM Event Failures in Preview and AAT Environments
+
 ### Version 7.2.29
 **EXUI-3366** Query Management - Respond to query screen static text update
 
