@@ -42,7 +42,6 @@ describe('ReadDocumentFieldComponent', () => {
     }) as CaseField;
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
     const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
-    const DOCUMENT_CLICKABLE_HREF = 'javascript:void(0)';
 
     let fixture: ComponentFixture<ReadDocumentFieldComponent>;
     let component: ReadDocumentFieldComponent;
@@ -96,16 +95,15 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(text(de)).toEqual(VALUE.document_filename.toString());
-      const linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('button'));
       expect(linkElement).toBeTruthy();
-      expect(attr(linkElement, 'href')).toEqual(DOCUMENT_CLICKABLE_HREF);
     });
 
     it('should call Media Viewer when the document link is clicked', () => {
       component.caseField.value = VALUE;
       fixture.detectChanges();
       spyOn(component, 'showMediaViewer');
-      const linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('button'));
       expect(linkElement).toBeTruthy();
       linkElement.triggerEventHandler('click', null);
       fixture.detectChanges();

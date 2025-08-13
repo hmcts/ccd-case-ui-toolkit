@@ -18,7 +18,7 @@
 
     <p>{{'You must assign one of the available tasks from the task tab to continue with your work.' | rpxTranslate}}</p>
 
-    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">
+    <a [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">
       {{'Return to tasks tab to assign a task' | rpxTranslate}}
     </a>
   </div>

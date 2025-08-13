@@ -68,7 +68,7 @@
       <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
     </div>
 
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText() | rpxTranslate}}</a></p>
+    <p class="cancel"><button type="button" (click)="cancel()" class="govuk-js-link">{{getCancelText() | rpxTranslate}}</button></p>
   </form>
 </div>
 
