@@ -65,9 +65,7 @@ describe('CaseFileViewFieldComponent', () => {
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
-    mockabstractConfig = createSpyObj<AbstractAppConfig>('LoadingService', ['getIcpJurisdictions', 'getIcpEnable']);
-    mockabstractConfig.getIcpJurisdictions.and.returnValue('["ST_CIC", "IA"]');
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
+
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
 
@@ -244,31 +242,5 @@ describe('CaseFileViewFieldComponent', () => {
     const listElements = fixture.debugElement.queryAll(By.css('#case-file-view-field-errors .govuk-error-summary__list li'));
     const errorMessagesFromElements = listElements.map(item => item.nativeElement.textContent);
     expect(component.errorMessages).toEqual(errorMessagesFromElements);
-  });
-
-  it('should disable icp when config contains false', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(false);
-    fixture.detectChanges();
-    expect(component.icpEnabled).toBeFalsy();
-  });
-
-  it('should enable icp when config contains true', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
-    fixture.detectChanges();
-    expect(component.icpEnabled).toBeTruthy();
-  });
-
-  it('should return false if jurisdiction value is not present', () => {
-    mockabstractConfig.getIcpJurisdictions.and.returnValue(['FAKE']);
-    fixture.detectChanges();
-    const callIcpEnabled = component.isIcpEnabled();
-    expect(callIcpEnabled).toBeFalsy();
-  });
-
-  it('should return true if jurisdiction is empty', () => {
-    mockabstractConfig.getIcpJurisdictions.and.returnValue([]);
-    fixture.detectChanges();
-    const callIcpEnabled = component.isIcpEnabled();
-    expect(callIcpEnabled).toBeTruthy();
   });
 });

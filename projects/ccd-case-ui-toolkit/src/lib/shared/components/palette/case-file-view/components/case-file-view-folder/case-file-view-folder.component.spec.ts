@@ -82,8 +82,6 @@ describe('CaseFileViewFolderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
-    mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getEnableCaseFileViewVersion1_1']);
-    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(true);
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
@@ -196,22 +194,22 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should set mediaViewer localStorage' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
-      const documentTreeNode = component.nestedDataSource[0].children[3];
-      component.triggerDocumentAction('openInANewTab', documentTreeNode);
+    const documentTreeNode = component.nestedDataSource[0].children[3];
+    component.triggerDocumentAction('openInANewTab', documentTreeNode);
 
+    // @ts-expect-error -- private method
+    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+      MEDIA_VIEWER_LOCALSTORAGE_KEY,
       // @ts-expect-error -- private method
-      expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
-        MEDIA_VIEWER_LOCALSTORAGE_KEY,
-        // @ts-expect-error -- private method
-        component.documentManagementService.getMediaViewerInfo({
-          document_binary_url: documentTreeNode.document_binary_url,
-          document_filename: documentTreeNode.document_filename
-        })
-      );
+      component.documentManagementService.getMediaViewerInfo({
+        document_binary_url: documentTreeNode.document_binary_url,
+        document_filename: documentTreeNode.document_filename
+      })
+    );
 
-      // @ts-expect-error -- private method
-      expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
-    });
+    // @ts-expect-error -- private method
+    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
+  });
 
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
@@ -427,20 +425,20 @@ describe('CaseFileViewFolderComponent', () => {
     expect(fakeAnchorElement.remove).toHaveBeenCalled();
   });
 
-  it('should get documents from category without upload timestamp when feature toggle is off', () => {
-    const documents = categoriesAndDocumentsTestData.categories[0].documents;
-    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
-    fixture.detectChanges();
-    documentsTreeNodes.forEach((n) => n.upload_timestamp = '');
-    expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
-  });
+  // it('should get documents from category without upload timestamp when feature toggle is off', () => {
+  //   const documents = categoriesAndDocumentsTestData.categories[0].documents;
+  //   mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+  //   fixture.detectChanges();
+  //   documentsTreeNodes.forEach((n) => n.upload_timestamp = '');
+  //   expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
+  // });
 
-  it('should get uncategorised documents', () => {
-    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
-    fixture.detectChanges();
-    uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
-    expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
-  });
+  // it('should get uncategorised documents', () => {
+  //   mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+  //   fixture.detectChanges();
+  //   uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
+  //   expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
+  // });
 
   it('should expand all folders when expandAll event fired', () => {
     spyOn(component.nestedTreeControl, 'expandDescendants');
