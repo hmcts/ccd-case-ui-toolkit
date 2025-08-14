@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.35-remove-feature-flap",
+  "version": "7.2.35-remove-feature-flag",
   "engines": {
     "node": ">=18.19.0"
   },
