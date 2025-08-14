@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.33
+**EXUI-3398** Update Copy for Closed Functionality Messaging
+
 ### Version 7.2.32
 **EXUI-3389** Follow-up Query Response Missing Standard Footer Message
 
