@@ -219,17 +219,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return [];
   }
 
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    return true;
-  }
-
   public getIcpEnable(): boolean {
     return false;
   }
 
-  public getIcpJurisdictions(): string[] {
-    return ['', ''];
-  }
   public logMessage(msg: string): void {
     console.log(msg);
   }

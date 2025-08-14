@@ -53,8 +53,6 @@ export abstract class AbstractAppConfig {
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   public abstract getPrintServiceUrl(): string;
-  public abstract getIcpEnable(): boolean;
-  public abstract getIcpJurisdictions(): string[];
   public abstract logMessage(logMessage: string): void;
 
   /**
@@ -121,7 +119,6 @@ export abstract class AbstractAppConfig {
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
   public abstract getEventsToHide(): string[];
-  public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }
 export class CaseEditorConfig {
   public api_url: string;

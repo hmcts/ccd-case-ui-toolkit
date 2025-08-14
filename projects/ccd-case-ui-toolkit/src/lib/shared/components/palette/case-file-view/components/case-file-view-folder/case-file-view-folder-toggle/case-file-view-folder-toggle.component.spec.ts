@@ -11,14 +11,10 @@ describe("CaseFileViewFolderToggleComponent", () => {
   let mockAppConfig: any;
 
   beforeEach(waitForAsync(() => {
-    mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>(
-      "AbstractAppConfig",
-      ["getEnableCaseFileViewVersion1_1"]
-    );
     TestBed.configureTestingModule({
       declarations: [
         CaseFileViewFolderToggleComponent,
-        CaseFileViewOverlayMenuComponent,
+        CaseFileViewOverlayMenuComponent
       ],
       imports: [OverlayModule],
       providers: [
