@@ -42,7 +42,7 @@ export class QueryManagementService {
     }
     const caseMessage = queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails)
-      : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails);
+      : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, queryCreateContext);
 
     const isNewQuery = queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query
 
