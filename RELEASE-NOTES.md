@@ -1,5 +1,26 @@
 ## RELEASE NOTES
 
+### Version 7.2.33
+**EXUI-3398** Update Copy for Closed Functionality Messaging
+
+### Version 7.2.32
+**EXUI-3389** Follow-up Query Response Missing Standard Footer Message
+
+### Version 7.2.31
+**EXUI-3381** Notification Not Displayed to Caseworkers or Legal Advisors When Query Is Closed
+
+### Version 7.2.30
+**EXUI-3386** QM Event Failures in Preview and AAT Environments
+
+### Version 7.2.29
+**EXUI-3366** Query Management - Respond to query screen static text update
+
+### Version 7.2.28
+**EXUI-2999** QM: Ensure that mid-event callback is run when pressing Continue/Previous buttons
+
+### Version 7.2.27
+**EXUI-3361** 404 with Perftest CCD draft endpoint
+
 ### Version 7.2.26
 **EXUI-3322** Fix translation of post-interpolation strings
 

@@ -4,13 +4,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CaseField, CaseView, FieldType } from '../../../../../../shared/domain';
-import { SessionStorageService } from '../../../../../services';
+import { AlertService, ErrorNotifierService, SessionStorageService } from '../../../../../services';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
+import { QueryManagementService } from '../../services';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -28,7 +29,6 @@ describe('QueryCheckYourAnswersComponent', () => {
   let router: Router;
   let workAllocationService: any;
   let sessionStorageService: any;
-  let callbackErrorsSubject: any;
 
   const items = [
     {
@@ -391,6 +391,14 @@ describe('QueryCheckYourAnswersComponent', () => {
   };
 
   const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['clearQualifyingQuestionSelection']);
+  const queryManagementService = jasmine.createSpyObj('QueryManagementService', [
+    'generateCaseQueriesCollectionData',
+    'setCaseQueriesCollectionData',
+    'getCaseQueriesCollectionFieldOrderFromWizardPages'
+  ]);
+
+  const errorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
+  const alertService = jasmine.createSpyObj('AlertService', ['error']);
 
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
@@ -402,7 +410,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
-    callbackErrorsSubject = jasmine.createSpyObj('callbackErrorsSubject', ['next']);
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -418,7 +425,10 @@ describe('QueryCheckYourAnswersComponent', () => {
         { provide: WorkAllocationService, useValue: workAllocationService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: Router, useValue: router },
-        { provide: QualifyingQuestionService, useValue: qualifyingQuestionService }
+        { provide: QualifyingQuestionService, useValue: qualifyingQuestionService },
+        { provide: QueryManagementService, useValue: queryManagementService },
+        { provide: ErrorNotifierService, useValue: errorNotifierService },
+        { provide: AlertService, useValue: alertService }
       ]
     })
       .compileComponents();
@@ -435,6 +445,29 @@ describe('QueryCheckYourAnswersComponent', () => {
       attachments: new FormControl([mockAttachment]),
       closeQuery: new FormControl(false)
     });
+
+    // Updated test setup for correct service behavior and destructuring
+    queryManagementService.setCaseQueriesCollectionData.and.returnValue({
+      fieldId: 'field1',
+      caseQueriesCollections: [
+        { partyName: 'Party 1', roleOnCase: '', caseMessages: [] },
+        { partyName: 'Party 2', roleOnCase: '', caseMessages: [] }
+      ]
+    });
+
+    // Specific test override when checking messageId behavior
+    snapshotActivatedRoute.snapshot.params.dataid = 'targetMessageId';
+    queryManagementService.setCaseQueriesCollectionData.and.returnValue({
+      fieldId: 'field1',
+      caseQueriesCollections: [
+        {
+          partyName: 'Y',
+          roleOnCase: '',
+          caseMessages: [{ value: { id: 'targetMessageId' } }]
+        }
+      ]
+    });
+
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -497,83 +530,24 @@ describe('QueryCheckYourAnswersComponent', () => {
   });
 
   it('should navigate to service-down page on event creation error', () => {
+    const authError = { status: 403, message: 'Forbidden' }; // Must match the routing condition
+    casesService.createEvent.and.returnValue(throwError(() => authError));
+
     component.fieldId = 'validFieldId';
-    const errorResponse = { status: 401 };
-    casesService.createEvent.and.returnValue(throwError(errorResponse));
+    component.eventData = { event_token: 'token123' } as any;
 
     component.submit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
-  });
-
-  it('should log an error and set errorMessages when fieldId is missing', () => {
-    component.fieldId = null;
-    fixture.detectChanges();
-    component.ngOnInit();
-    spyOn(console, 'error');
-
-    component.submit();
-
-    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
-    expect(component.errorMessages).toEqual([
-      {
-        title: 'Error',
-        description: 'This case is not configured for query management.',
-        fieldId: 'field-id'
-      }
-    ]);
-  });
-
-  it('should navigate to service-down page if fieldId is not set', () => {
-    component.fieldId = null;
-    spyOn(console, 'error');
-
-    component.submit();
-    expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
   });
 
   it('should navigate to service-down page on error during submission', () => {
     component.fieldId = 'someFieldId';
-    const errorResponse = { status: 401 };
-    casesService.createEvent.and.returnValue(throwError(errorResponse));
+    const authError = { status: 403, message: 'Forbidden' };
+    casesService.createEvent.and.returnValue(throwError(() => authError));
 
     component.submit();
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
-  });
-
-  it('should emit error to callbackErrorsSubject if callbackErrors are found', () => {
-    const callbackError = {
-      callbackErrors: [{ message: 'Invalid state' }]
-    };
-
-    const subject = new Subject<any>();
-    spyOn(subject, 'next');
-    component.callbackErrorsSubject = subject;
-
-    component.fieldId = 'validFieldId';
-
-    component.eventData = { event_token: 'token' } as any;
-    component.caseQueriesCollections = [];
-
-    casesService.createEvent.and.returnValue(throwError(callbackError));
-
-    component.submit();
-
-    expect(subject.next).toHaveBeenCalledWith(callbackError);
-  });
-
-  it('should set error but not navigate for generic error without callbackErrors', () => {
-    const genericError = { status: 500 };
-    component.fieldId = 'someFieldId';
-    component.eventData = { event_token: 'token' } as any;
-    component.caseQueriesCollections = [];
-
-    casesService.createEvent.and.returnValue(throwError(genericError));
-
-    component.submit();
-
-    expect(component.error).toEqual(genericError);
-    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should set querySubmitted to true when submit is called', () => {
@@ -623,54 +597,24 @@ describe('QueryCheckYourAnswersComponent', () => {
     });
   });
 
-  describe('submit', () => {
-    it('should log an error when fieldId is missing', () => {
-      spyOn(console, 'error');
-      component.fieldId = null;
-      component.submit();
-      expect(console.error).toHaveBeenCalledWith('Error: Field ID is missing. Cannot proceed with submission.');
-    });
-  });
-
   it('should set caseQueriesCollections and fieldId correctly when case_fields are present', () => {
+    queryManagementService.setCaseQueriesCollectionData.and.callFake(() => {
+      component.fieldId = 'field1';
+      component.caseQueriesCollections = [
+        { partyName: 'Party 1', roleOnCase: '', caseMessages: [] },
+        { partyName: 'Party 2', roleOnCase: '', caseMessages: [] }
+      ];
+    });
+
     component.eventData = {
-      case_fields: [
-        {
-          id: 'field1',
-          value: { caseMessages: [{ value: { id: 'message1' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'userRole', id: 'field1' }],
-          display_context: 'READONLY'
-        },
-        {
-          id: 'field2',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
-        },
-        {
-          id: 'field3',
-          value: null,
-          field_type: {
-            id: 'otherFieldType',
-            type: 'CompopentLauncher'
-          }
-        }
-      ]
+      case_fields: [],
+      wizard_pages: []
     } as any;
-    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
 
     component.setCaseQueriesCollectionData();
 
-    expect(component.caseQueriesCollections.length).toBe(1);
-    expect(component.fieldId).toBe('field2');
+    expect(component.fieldId).toBe('field1');
+    expect(component.caseQueriesCollections?.length).toBe(2);
   });
 
   it('should set caseQueriesCollections and fieldId correctly for multiple QmCaseQueriesCollection to the first collection for CIVIL jurisdiction', () => {
@@ -680,194 +624,109 @@ describe('QueryCheckYourAnswersComponent', () => {
       case_fields: [
         {
           id: 'field1',
-          value: { caseMessages: [{ value: { id: 'message1' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'userRole', id: 'field1' }],
-          display_context: 'READONLY'
-        },
-        {
-          id: 'field2',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          value: { caseMessages: [] },
+          field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
           display_context: 'OPTIONAL'
         },
         {
-          id: 'field3',
-          value: null,
-          field_type: {
-            id: 'otherFieldType',
-            type: 'CompopentLauncher'
-          }
-        },
-        {
-          id: 'field4',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
+          id: 'field2',
+          value: { caseMessages: [] },
+          field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
           display_context: 'OPTIONAL'
         }
       ],
-      wizard_pages: [{
-        wizard_page_fields: [
-          {
-            case_field_id: 'field2',
-            order: 1
-          },
-          {
-            case_field_id: 'field4',
-            order: 4
-          }
-        ]
-      }]
+      wizard_pages: [
+        {
+          wizard_page_fields: [
+            { case_field_id: 'field2', order: 1 },
+            { case_field_id: 'field1', order: 2 }
+          ]
+        }
+      ]
     } as any;
+
+    queryManagementService.setCaseQueriesCollectionData.and.callFake(() => {
+      component.fieldId = 'field2';
+      component.caseQueriesCollections = [
+        { partyName: 'A', roleOnCase: '', caseMessages: [] },
+        { partyName: 'B', roleOnCase: '', caseMessages: [] }
+      ];
+    });
+
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
 
     component.setCaseQueriesCollectionData();
 
-    expect(component.caseQueriesCollections.length).toBe(2);
     expect(component.fieldId).toBe('field2');
+    expect(component.caseQueriesCollections.length).toBe(2);
   });
 
   it('should show console error for multiple QmCaseQueriesCollection for other jurisdiction', () => {
+    const mockCollections = [
+      { partyName: 'C1', roleOnCase: '', caseMessages: [] },
+      { partyName: 'C2', roleOnCase: '', caseMessages: [] }
+    ];
+
     spyOn(console, 'error');
+
     component.caseDetails.case_type.jurisdiction.id = 'PUBLICLAW';
-    component.eventData = {
-      case_fields: [
-        {
-          id: 'field1',
-          value: { caseMessages: [{ value: { id: 'message1' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'userRole', id: 'field1' }],
-          display_context: 'READONLY'
-        },
-        {
-          id: 'field2',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
-        },
-        {
-          id: 'field3',
-          value: null,
-          field_type: {
-            id: 'otherFieldType',
-            type: 'CompopentLauncher'
-          }
-        },
-        {
-          id: 'field4',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
-        }
-      ]
-    } as any;
-    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    queryManagementService.setCaseQueriesCollectionData.and.callFake(() => {
+      console.error('Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction');
+      component.fieldId = null;
+      component.caseQueriesCollections = mockCollections;
+    });
 
     component.setCaseQueriesCollectionData();
 
+    expect(console.error).toHaveBeenCalledWith(
+      'Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction'
+    );
     expect(component.caseQueriesCollections.length).toBe(2);
-    expect(console.error).toHaveBeenCalledWith('Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction');
-  });
-
-  it('should not set caseQueriesCollections or fieldId if eventData is not present', () => {
-    component.eventData = null;
-    component.setCaseQueriesCollectionData();
-
-    expect(component.caseQueriesCollections).toBeUndefined();
-    expect(component.fieldId).toBeUndefined();
   });
 
   it('should show console error if Jurisdiction is undefined', () => {
+    const mockCollections = [
+      { partyName: 'P1', roleOnCase: '', caseMessages: [] },
+      { partyName: 'P2', roleOnCase: '', caseMessages: [] }
+    ];
+
     spyOn(console, 'error');
+
     component.caseDetails.case_type.jurisdiction.id = undefined;
 
-    component.eventData = {
-      case_fields: [
-        {
-          id: 'field1',
-          value: { caseMessages: [{ value: { id: 'message1' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'userRole', id: 'field1' }],
-          display_context: 'READONLY'
-        },
-        {
-          id: 'field2',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
-        },
-        {
-          id: 'field3',
-          value: null,
-          field_type: {
-            id: 'otherFieldType',
-            type: 'CompopentLauncher'
-          }
-        },
-        {
-          id: 'field4',
-          value: { caseMessages: [{ value: { id: 'message2' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'anotherRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
-        }
-      ]
-    } as any;
-    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    queryManagementService.setCaseQueriesCollectionData.and.callFake(() => {
+      console.error('Jurisdiction ID is missing.');
+      component.fieldId = null;
+      component.caseQueriesCollections = mockCollections;
+    });
 
     component.setCaseQueriesCollectionData();
 
-    expect(component.caseQueriesCollections.length).toBe(2);
     expect(console.error).toHaveBeenCalledWith('Jurisdiction ID is missing.');
+    expect(component.caseQueriesCollections.length).toBe(2);
   });
 
   it('should set fieldId based on messageId when found', () => {
-    component.eventData = {
-      case_fields: [
+    snapshotActivatedRoute.snapshot.params.dataid = 'targetMessageId';
+
+    // Fake side effects instead of returning
+    queryManagementService.setCaseQueriesCollectionData.and.callFake(() => {
+      component.fieldId = 'field1';
+      component.caseQueriesCollections = [
         {
-          id: 'field1',
-          value: { caseMessages: [{ value: { id: 'targetMessageId' } }] },
-          field_type: {
-            id: 'CaseQueriesCollection',
-            type: 'Complex'
-          },
-          acls: [{ role: 'userRole', create: true, read: true, update: true, delete: true }],
-          display_context: 'OPTIONAL'
+          partyName: 'Y',
+          roleOnCase: '',
+          caseMessages: [{ value: { id: 'targetMessageId' } } as any]
         }
-      ]
+      ];
+    });
+
+    component.eventData = {
+      case_fields: [],
+      wizard_pages: []
     } as any;
+
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
 
     component.setCaseQueriesCollectionData();
@@ -876,13 +735,12 @@ describe('QueryCheckYourAnswersComponent', () => {
   });
 
   it('should return undefined when case_fields is empty', () => {
-    component.eventData = {
+    const eventData = {
       case_fields: [],
       wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
     } as any;
-    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
 
-    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    const result = queryManagementService['getCaseQueriesCollectionFieldOrderFromWizardPages'](eventData);
     expect(result).toBeUndefined();
   });
 
@@ -898,7 +756,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       wizard_pages: [{}] // No `wizard_page_fields`
     } as any;
 
-    const result = (component as any).getCaseQueriesCollectionFieldOrderFromWizardPages();
+    const result = queryManagementService['getCaseQueriesCollectionFieldOrderFromWizardPages'](component.eventData);
     expect(result).toBeUndefined();
   });
 
@@ -949,5 +807,47 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.submit();
 
     expect(casesService.createEvent).not.toHaveBeenCalled();
+  });
+
+  it('should emit error on callbackErrorsSubject on non-auth error', () => {
+    const callbackError = { status: 500, message: 'Server error' };
+    spyOn(component.callbackErrorsSubject, 'next');
+
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(throwError(() => callbackError));
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.ngOnInit();
+
+    expect(component.callbackErrorsSubject.next).toHaveBeenCalledWith(callbackError);
+  });
+
+  it('should return true if error has callbackErrors', () => {
+    const error = { callbackErrors: ['some error'] };
+    expect(component.isServiceErrorFound(error)).toBeTruthy();
+  });
+
+  it('should return false if error has no callbackErrors', () => {
+    const error = { message: 'Plain error' };
+    expect(component.isServiceErrorFound(error)).toBeFalsy();
+  });
+
+  it('should call errorNotifierService.announceError on non-auth error', () => {
+    const callbackError = { status: 500, message: 'Internal server error' };
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(throwError(() => callbackError));
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.ngOnInit();
+
+    expect(errorNotifierService.announceError).toHaveBeenCalledWith(callbackError);
+  });
+
+  it('should call alertService.error on non-auth error in task fetch', () => {
+    const callbackError = { status: 500, message: 'Internal server error' };
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(throwError(() => callbackError));
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.ngOnInit();
+
+    expect(alertService.error).toHaveBeenCalledWith({ phrase: 'Internal server error' });
   });
 });

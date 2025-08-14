@@ -2,15 +2,14 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import {
   CaseEventTrigger,
-  CaseField,
   CaseView,
   CaseViewTrigger,
-  ErrorMessage
+  ErrorMessage,
+  HttpError
 } from '../../../../../../../lib/shared/domain';
-import { ErrorNotifierService, SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
@@ -18,7 +17,11 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
 import { FormDocument } from '../../../../../../../lib/shared/domain/document';
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { Task } from '../../../../../domain/work-allocation/Task';
-import { USER_DETAILS } from '../../../../../utils';
+import { QueryManagementService } from '../../services/query-management.service';
+import {
+  AlertService,
+  ErrorNotifierService
+} from '../../../../../services';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -28,19 +31,26 @@ import { USER_DETAILS } from '../../../../../utils';
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
   private readonly RESPOND_TO_QUERY_EVENT_TRIGGER_ID = 'queryManagementRespondQuery';
-
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
+
+  public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
+  public static readonly TRIGGER_TEXT_START = 'Continue';
+
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
   public readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
   public readonly QM_SELECT_FIRST_COLLECTION = 'selectFirstCollection';
   public readonly QM_COLLECTION_PROMPT = 'promptQmCollection';
   public readonly CIVIL_JURISDICTION = 'CIVIL';
 
+  public triggerTextStart = QueryCheckYourAnswersComponent.TRIGGER_TEXT_START;
+  public triggerTextIgnoreWarnings = QueryCheckYourAnswersComponent.TRIGGER_TEXT_CONTINUE;
+
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public eventData: CaseEventTrigger | null = null;
   @Input() public multipleFollowUpFeature: boolean;
+  @Input() public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
@@ -62,8 +72,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public filteredTasks: Task[] = [];
   public readyToSubmit: boolean;
   public isSubmitting: boolean = false;
-
+  public messageId: string;
   public callbackErrorsSubject: Subject<any> = new Subject();
+
   public error: any;
 
   constructor(
@@ -72,13 +83,16 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     private readonly casesService: CasesService,
     private readonly caseNotifier: CaseNotifier,
     private readonly workAllocationService: WorkAllocationService,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly qualifyingQuestionService: QualifyingQuestionService
+    private readonly qualifyingQuestionService: QualifyingQuestionService,
+    private queryManagementService: QueryManagementService,
+    private readonly errorNotifierService: ErrorNotifierService,
+    private readonly alertService: AlertService,
   ) {}
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
     this.tid = this.route.snapshot.queryParams?.tid;
+    this.messageId= this.route.snapshot.params.dataid;
 
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
@@ -113,9 +127,24 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
               this.readyToSubmit = true;
             }
           },
-          error: (error) => {
-            console.error('Error in searchTasksSubscription:', error);
+          error: (error: HttpError) => {
             this.readyToSubmit = false;
+            if (error.status !== 401 && error.status !== 403) {
+              this.errorNotifierService.announceError(error);
+              this.alertService.error({ phrase: error.message });
+              console.error('Error occurred while fetching event data:', error);
+              this.callbackErrorsSubject.next(error);
+            } else {
+              this.errorMessages = [
+                {
+                  title: 'Error',
+                  description: 'Something unexpected happened. Please try again later.',
+                  fieldId: 'field-id'
+                }
+              ];
+            }
+
+            window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
           }
         });
     } else {
@@ -126,6 +155,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.createEventSubscription?.unsubscribe();
     this.searchTasksSubscription?.unsubscribe();
+    this.callbackErrorsSubject?.unsubscribe();
   }
 
   public goBack(): void {
@@ -137,21 +167,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Check if fieldId is null or undefined
-    if (!this.fieldId) {
-      console.error('Error: Field ID is missing. Cannot proceed with submission.');
-      this.errorMessages = [
-        {
-          title: 'Error',
-          description: 'This case is not configured for query management.',
-          fieldId: 'field-id'
-        }
-      ];
-      window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    const data = this.generateCaseQueriesCollectionData();
+    const data = this.qmCaseQueriesCollectionData;
     const createEvent$ = this.createEvent(data);
 
     this.isSubmitting = true;
@@ -226,201 +242,14 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       this.error = null;
       this.callbackErrorsSubject.next(error);
     } else {
-       if (error && error.status !== 401 && error.status !== 403) {
+      if (error && error.status !== 401 && error.status !== 403) {
         this.error = error;
-       } else {
-        this.router.navigate(['/', 'service-down']);
-       }
-    }
-    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-  }
-
-  private generateCaseQueriesCollectionData(): QmCaseQueriesCollection {
-    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
-
-    const caseMessage = this.queryCreateContext === QueryCreateContext.NEW_QUERY
-      ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
-      : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails, this.queryCreateContext);
-
-    const messageId = this.route.snapshot.params.dataid; // Get the message ID from route params (if present)
-    const isNewQuery = this.queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query
-
-    // Check if the field ID has been set dynamically
-    if (!this.fieldId) {
-      console.error('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
-      this.router.navigate(['/', 'service-down']);
-    }
-
-    // Initialize new query data structure
-    const newQueryData: QmCaseQueriesCollection = {};
-
-    if (this.caseQueriesCollections?.length) {
-      let matchedCollection;
-
-      // If it's not a new query, try to find the existing collection with the message ID
-      if (!isNewQuery && messageId) {
-        matchedCollection = this.caseQueriesCollections.find((collection) =>
-          collection.caseMessages.some((message) => message.value.id === messageId)
-        );
-      }
-
-      if (matchedCollection) {
-        // Append the new case message to the matched collection's caseMessages
-        matchedCollection.caseMessages.push({
-          id: null,
-          value: caseMessage
-        });
-
-        // Add the matched collection to newQueryData
-        newQueryData[this.fieldId] = {
-          ...matchedCollection, // Keep existing data intact
-          caseMessages: [...matchedCollection.caseMessages] // Append the updated messages array
-        };
       } else {
-        // Use partyName from the first collection (assumption: all share the same party)
-        const originalPartyName = this.caseQueriesCollections[0].partyName;
-
-        // If no collection matches, or it's a new query
-        newQueryData[this.fieldId] = {
-          partyName: originalPartyName,
-          roleOnCase: '', // Not returned by CCD
-          caseMessages: [
-            {
-              id: null,
-              value: caseMessage
-            }
-          ]
-        };
-
-        // If caseQueriesCollections is not empty, append its data
-        newQueryData[this.fieldId].caseMessages.push(
-          ...this.caseQueriesCollections.flatMap((collection) => collection.caseMessages)
-        );
-      }
-    } else {
-      // If there are no existing collections, create a new one (e.g., for new queries)
-      newQueryData[this.fieldId] = {
-        partyName: currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`, // Not returned by CCD
-        roleOnCase: '', // Not returned by CCD
-        caseMessages: [
-          {
-            id: null,
-            value: caseMessage
-          }
-        ]
-      };
-    }
-    return newQueryData;
-  }
-
-  public setCaseQueriesCollectionData(): void {
-    if (this.eventData?.case_fields?.length) {
-      // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-      // Counts number qmCaseQueriesCollections
-      const numberOfCaseQueriesCollections = this.eventData?.case_fields?.filter(
-        (caseField) =>
-          caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-          caseField.field_type.type === this.FIELD_TYPE_COMPLEX && caseField.display_context !== this.DISPLAY_CONTEXT_READONLY
-      )?.length || 0;
-
-      this.caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
-        // Extract the ID based on conditions, updating this.fieldId dynamically
-        this.extractCaseQueryId(caseField, numberOfCaseQueriesCollections);
-
-        const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField);
-        if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
-          acc.push(extractedCaseQueriesFromCaseField);
-        }
-        return acc;
-      }, []);
-    }
-  }
-
-  private extractCaseQueryId(data: CaseField, count: number): void {
-    const { id, value } = data;
-    const messageId = this.route.snapshot.params.dataid;
-
-    // Check if the field_type matches CaseQueriesCollection and type is Complex
-    if (data.field_type.id === this.CASE_QUERIES_COLLECTION_ID && data.field_type.type === this.FIELD_TYPE_COMPLEX) {
-      if (this.isNewQueryContext(data)) {
-        // If there is more than one qmCaseQueriesCollection, pick the one with the lowest order
-        if (count > 1) {
-          if (!this.handleMultipleCollections()) {
-            return;
-          }
-        } else {
-          // Set the field ID dynamically based on the extracted data
-          this.fieldId = id; // Store the ID for use in generating newQueryData
-        }
-      }
-
-      // If messageId is present, find the corresponding case message
-      this.setMessageFieldId(messageId, value, id);
-    }
-  }
-
-  private setMessageFieldId(messageId, value, id: string) {
-    if (messageId && value?.caseMessages) {
-      // If a matching message is found, set the fieldId to the corresponding id
-      const matchedMessage = value?.caseMessages?.find((message) => message.value.id === messageId);
-      if (matchedMessage) {
-        this.fieldId = id;
+        this.router.navigate(['/', 'service-down']);
       }
     }
-  }
 
-  private isNewQueryContext(data: CaseField): boolean {
-    return this.queryCreateContext === QueryCreateContext.NEW_QUERY && data.display_context !== this.DISPLAY_CONTEXT_READONLY;
-  }
-
-  private handleMultipleCollections(): boolean {
-    const jurisdictionId = this.caseDetails?.case_type?.jurisdiction?.id;
-
-    if (!jurisdictionId) {
-      console.error('Jurisdiction ID is missing.');
-      return false;
-    }
-
-    if (this.getCollectionSelectionMethod(jurisdictionId) === this.QM_SELECT_FIRST_COLLECTION) {
-      // Pick the collection with the lowest order
-      this.fieldId = this.getCaseQueriesCollectionFieldOrderFromWizardPages()?.id;
-    } else {
-      // Display Error, for now, until EXUI-2644 is implemented
-      console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
-      return false;
-    }
-
-    return true;
-  }
-
-  private getCaseQueriesCollectionFieldOrderFromWizardPages(): CaseField | undefined {
-    const candidateFields = this.eventData?.case_fields?.filter(
-      (field) =>
-        field.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-        field.field_type.type === this.FIELD_TYPE_COMPLEX &&
-        field.display_context !== this.DISPLAY_CONTEXT_READONLY
-    );
-
-    if (!candidateFields?.length) {
-      return undefined;
-    }
-
-    const firstPageFields = this.eventData?.wizard_pages?.[0]?.wizard_page_fields;
-
-    if (!firstPageFields) {
-      return undefined;
-    }
-
-    return candidateFields
-      .map((field) => {
-        const wizardField = firstPageFields.find((f) => f.case_field_id === field.id);
-        return { field, order: wizardField?.order ?? Number.MAX_SAFE_INTEGER };
-      })
-      .sort((a, b) => a.order - b.order)[0]?.field;
-  }
-
-  private getCollectionSelectionMethod(jurisdiction: string): string {
-    return jurisdiction.toUpperCase() === this.CIVIL_JURISDICTION ? this.QM_SELECT_FIRST_COLLECTION : this.QM_COLLECTION_PROMPT;
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
   }
 
   private getDocumentAttachments(): void {
@@ -434,5 +263,17 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public isServiceErrorFound(error: any): boolean {
     return !!(error?.callbackErrors?.length);
   }
-}
 
+  public setCaseQueriesCollectionData(): void {
+    if (!this.eventData) {
+      console.warn('Event data not available; skipping collection setup.');
+    }
+
+    this.queryManagementService.setCaseQueriesCollectionData(
+      this.eventData,
+      this.queryCreateContext,
+      this.caseDetails,
+      this.messageId
+    );
+  }
+}
