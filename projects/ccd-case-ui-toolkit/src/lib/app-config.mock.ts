@@ -219,10 +219,6 @@ export class AppMockConfig implements AbstractAppConfig {
     return [];
   }
 
-  public getIcpEnable(): boolean {
-    return false;
-  }
-
   public logMessage(msg: string): void {
     console.log(msg);
   }
