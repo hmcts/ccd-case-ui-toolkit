@@ -322,6 +322,23 @@ describe('FormValueService', () => {
     });
   });
 
+  describe('sanitise for Date field', () => {
+    it('should remove trailing Z from the date', () => {
+      const data = {
+        fl404CustomFields: {
+          fl404bDateOrderEnd: '2025-07-01T10:00:00.000Z'
+        }
+      };
+      const actual = {
+        fl404CustomFields: {
+          fl404bDateOrderEnd: '2025-07-01T10:00:00.000'
+        }
+      };
+      expect(formValueService.sanitise(data)).toEqual(actual);
+    });
+
+  });
+
   describe('removeNullLabels', () => {
     it('should remove unnecessary fields', () => {
       const data = { fieldId: null, type: 'Label', label: 'Text Field 0' };
