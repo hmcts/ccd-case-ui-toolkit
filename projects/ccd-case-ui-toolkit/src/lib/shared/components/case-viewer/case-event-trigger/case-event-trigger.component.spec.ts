@@ -2,15 +2,16 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
+import { ActivityPollingService, ActivitySockerService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 import { EventTriggerResolver } from '../services';
+import { MODES } from '../../../services/activity/utils';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -80,8 +81,8 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   const caseActivityComponentMock: any = MockComponent({
-    selector: 'ccd-activity',
-    inputs: ['caseId', 'displayMode']
+    selector: 'ccd-case-activity',
+    inputs: ['caseId', 'iconOnly']
   });
 
   const caseHeaderComponentMock: any = MockComponent({
@@ -136,6 +137,8 @@ describe('CaseEventTriggerComponent', () => {
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
+  let activityService: any;;
+  let activitySocketService: any;
   const finalUrl = '/cases/case-details/1707912713167104#Claim%20details';
 
   beforeEach(waitForAsync(() => {
@@ -152,6 +155,13 @@ describe('CaseEventTriggerComponent', () => {
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
     activityPollingService.postEditActivity.and.returnValue(of(true));
+    activitySocketService = {
+      editCalls: [],
+      connected: new BehaviorSubject<boolean>(false),
+      editCase: (caseId: string) => {
+        activitySocketService.editCalls.push(caseId);
+      }
+    }
     router = {
       navigate: jasmine.createSpy('navigate'),
       url: '',
@@ -186,6 +196,7 @@ describe('CaseEventTriggerComponent', () => {
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivityPollingService, useValue: activityPollingService },
+          { provide: ActivityService, useValue: activityService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: LoadingService, useValue: loadingService },
           { provide: EventTriggerResolver, useValue: eventResolverService }

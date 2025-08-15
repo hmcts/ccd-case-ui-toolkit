@@ -135,8 +135,8 @@ const markdownComponentMock: any = MockComponent({
 });
 
 const caseActivityComponentMock: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 const fieldReadComponentMock: any = MockComponent({
@@ -738,7 +738,7 @@ describe('CaseFullAccessViewComponent', () => {
     router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
-  
+
 it('should set case view tab based on navigation end event', () => {
     // Mock tabGroup._tabs with some dummy values for testing
     component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
@@ -873,13 +873,13 @@ it('should set case view tab based on navigation end event', () => {
       component.errorSubscription = new Subscription();
       component.subscription = new Subscription();
       component['subs'] = [new Subscription(), new Subscription()];
-  
+
       spyOn(component.activitySubscription, 'unsubscribe');
       spyOn(component.caseSubscription, 'unsubscribe');
       spyOn(component.errorSubscription, 'unsubscribe');
       spyOn(component.subscription, 'unsubscribe');
       component['subs'].forEach(sub => spyOn(sub, 'unsubscribe'));
-  
+
       component.ngOnDestroy();
       component['activityPollingService'].isEnabled
       if (component['activityPollingService'].isEnabled) {
@@ -896,9 +896,9 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
       component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
     });
-    
-  
-    
+
+
+
 
     xit('should render each compound field without label as a cell spanning 2 columns', () => {
       const headers = de

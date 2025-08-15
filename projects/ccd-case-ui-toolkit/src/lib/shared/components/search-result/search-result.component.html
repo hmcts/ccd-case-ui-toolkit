@@ -44,7 +44,7 @@
           </div>
         </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;" scope="col">&ZeroWidthSpace;</th>
+      <th *ngIf="activityEnabled" class="activity-column"></th>
     </tr>
   </thead>
 
@@ -78,9 +78,10 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
             <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
       </tr>
