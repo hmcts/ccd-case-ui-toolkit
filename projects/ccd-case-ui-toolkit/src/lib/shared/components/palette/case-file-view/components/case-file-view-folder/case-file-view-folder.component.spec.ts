@@ -425,21 +425,6 @@ describe('CaseFileViewFolderComponent', () => {
     expect(fakeAnchorElement.remove).toHaveBeenCalled();
   });
 
-  // it('should get documents from category without upload timestamp when feature toggle is off', () => {
-  //   const documents = categoriesAndDocumentsTestData.categories[0].documents;
-  //   mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
-  //   fixture.detectChanges();
-  //   documentsTreeNodes.forEach((n) => n.upload_timestamp = '');
-  //   expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
-  // });
-
-  // it('should get uncategorised documents', () => {
-  //   mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
-  //   fixture.detectChanges();
-  //   uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
-  //   expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
-  // });
-
   it('should expand all folders when expandAll event fired', () => {
     spyOn(component.nestedTreeControl, 'expandDescendants');
     component.expandAll(true);

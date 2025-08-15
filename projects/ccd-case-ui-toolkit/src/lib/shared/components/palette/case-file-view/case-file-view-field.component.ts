@@ -24,8 +24,6 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public errorMessages = [] as string[];
   private caseVersion: number;
   public caseField: CaseField;
-  public icp_jurisdictions: string[] = [];
-  public icpEnabled: boolean = false;
   public caseId: string;
 
   constructor(private readonly elementRef: ElementRef,
@@ -127,10 +125,5 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
     }
-  }
-
-  public isIcpEnabled(): boolean {
-    return this.icpEnabled && ((this.icp_jurisdictions?.length < 1) || this.icp_jurisdictions.includes(
-      this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id));
   }
 }
