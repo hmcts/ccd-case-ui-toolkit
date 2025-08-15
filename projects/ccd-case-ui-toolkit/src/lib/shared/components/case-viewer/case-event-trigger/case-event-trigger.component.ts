@@ -4,9 +4,20 @@ import { Observable, Subscription, of } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
+import {
+  ActivityPollingService,
+  ActivityService,
+  ActivitySocketService,
+  AlertService,
+  EventStatusService,
+  FieldsUtils,
+  LoadingService,
+  SessionStorageService
+} from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { EventTriggerResolver } from '../services';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { MODES } from '../../../services/activity/utils';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -35,7 +46,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly loadingService: LoadingService,
-    private eventTriggerResolver: EventTriggerResolver
+    private eventTriggerResolver: EventTriggerResolver,
+    private readonly activitySocketService: ActivitySocketService,
+    private readonly activityService: ActivityService
   ) {
     this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
@@ -58,6 +71,23 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
           // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
         });
       });
+      this.activityService.modeSubject
+        .pipe(filter(mode => !!mode))
+        .pipe(distinctUntilChanged())
+        .subscribe(mode => {
+          if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+            this.activitySocketService.connected
+              .subscribe(connected => {
+                if (connected) {
+                  this.activitySocketService.editCase(this.caseDetails.case_id);
+                }
+              });
+          } else if (mode === MODES.polling) {
+            this.ngZone.runOutsideAngular(() => {
+              this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
+            });
+          }
+        });
     }
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
