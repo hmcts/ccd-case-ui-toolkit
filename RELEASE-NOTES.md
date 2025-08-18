@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.35
+**EXUI-3403** Update payment components
+
 ### Version 7.2.34
 **EXUI-3387** Lines appear in Query Subject and extra spacing in Query Body when submitting a query with empty spaces
 
