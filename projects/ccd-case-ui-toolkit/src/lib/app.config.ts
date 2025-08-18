@@ -31,7 +31,6 @@ export abstract class AbstractAppConfig {
   public abstract getCaseDataUrl(): string;
   public abstract getDocumentManagementUrl(): string;
   public abstract getDocumentManagementUrlV2(): string;
-  public abstract getDocumentSecureMode(): boolean;
   public abstract getCdamExclusionList(): string;
   public abstract getDocumentSecureModeCaseTypeExclusions(): string;
   public abstract getRemoteDocumentManagementUrl(): string;

@@ -32,7 +32,6 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseDataUrl: () => 'caseDataUrl',
   getDocumentManagementUrl: () => 'documentManagementUrl',
   getDocumentManagementUrlV2: () => 'documentManagementUrlV2',
-  getDocumentSecureMode: () => true,
   getCdamExclusionList: () => 'DIVORCE',
   getDocumentSecureModeCaseTypeExclusions: () => 'DIVORCE',
   getRemoteDocumentManagementUrl: () => 'remoteDocumentManagementUrl',
