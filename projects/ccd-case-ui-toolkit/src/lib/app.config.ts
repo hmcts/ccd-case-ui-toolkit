@@ -192,4 +192,3 @@ export class CaseEditorConfig {
   public case_data_store_api_url: string;
   public events_to_hide: string[];
 }
-
