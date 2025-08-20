@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.36-remove-feature-flag-2",
+  "version": "7.2.37-remove-feature-flag",
   "engines": {
     "node": ">=18.19.0"
   },
