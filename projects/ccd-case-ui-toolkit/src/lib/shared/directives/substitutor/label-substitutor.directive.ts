@@ -1,10 +1,11 @@
-import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { Subscription } from 'rxjs';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -19,11 +20,13 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private initialLabel: string;
   private initialHintText: string;
+  private languageSubscription: Subscription
 
   constructor(
     private readonly fieldsUtils: FieldsUtils,
     private readonly placeholderService: PlaceholderService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe
+    private readonly rpxTranslationPipe: RpxTranslatePipe,
+    private readonly rpxTranslationService: RpxTranslationService
   ) {}
 
   public ngOnInit(): void {
@@ -31,6 +34,15 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.initialHintText = this.caseField.hint_text;
     this.formGroup = this.formGroup || new FormGroup({});
 
+    this.languageSubscription = this.rpxTranslationService.language$.subscribe((lang) => {
+      setTimeout(() => {
+        console.log('lang: ', lang);
+        this.onLanguageChange();
+      }, 100);
+    });
+  }
+
+  private applySubstitutions(): void {
     const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
@@ -41,10 +53,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
         const translated = this.rpxTranslationPipe.transform(oldLabel)
         const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
         this.caseField.label = transSubstitutedLabel;
-        this.caseField.isTranslated = true;
+        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy';
       } else {
         this.caseField.label = substitutedLabel;
-        this.caseField.isTranslated = false;
+        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy';
       }
     }
     if (this.shouldSubstitute('hint_text')) {
@@ -55,12 +67,28 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
+  private onLanguageChange(): void {
+    if (this.initialLabel) {
+      this.caseField.label = this.initialLabel;
+    }
+    if (this.initialHintText) {
+      this.caseField.hint_text = this.initialHintText;
+    }
+    this.caseField.isTranslated = false;
+
+    this.applySubstitutions();
+  }
+
   public ngOnDestroy(): void {
     if (this.initialLabel) {
       this.caseField.label = this.initialLabel;
     }
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
+    }
+    this.caseField.isTranslated = false;
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
     }
   }
 
