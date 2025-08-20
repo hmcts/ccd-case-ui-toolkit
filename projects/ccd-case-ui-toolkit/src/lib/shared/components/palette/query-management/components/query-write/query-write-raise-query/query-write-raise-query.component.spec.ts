@@ -1,12 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Pipe, PipeTransform } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
+import { ActivatedRoute } from '@angular/router';
+import { QueryManagementService } from '../../../services';
+import { of } from 'rxjs';
+import { Pipe, PipeTransform } from '@angular/core';
+import { QueryCreateContext } from '../../../models';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
-  public transform(value: string, ...args: any[]) {
+  public transform(value: string): string {
     return value;
   }
 }
@@ -14,12 +17,30 @@ class MockRpxTranslatePipe implements PipeTransform {
 describe('QueryWriteRaiseQueryComponent', () => {
   let component: QueryWriteRaiseQueryComponent;
   let fixture: ComponentFixture<QueryWriteRaiseQueryComponent>;
+  let queryManagementServiceSpy: jasmine.SpyObj<QueryManagementService>;
+  let routeStub;
 
   beforeEach(async () => {
+    routeStub = {
+      snapshot: {
+        params: {
+          dataid: 'mock-message-id'
+        }
+      }
+    };
+
+    queryManagementServiceSpy = jasmine.createSpyObj('QueryManagementService', [
+      'setCaseQueriesCollectionData',
+      'generateCaseQueriesCollectionData'
+    ]);
+
     await TestBed.configureTestingModule({
-      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe]
-    })
-      .compileComponents();
+      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
+      providers: [
+        { provide: ActivatedRoute, useValue: routeStub },
+        { provide: QueryManagementService, useValue: queryManagementServiceSpy }
+      ]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -32,6 +53,11 @@ describe('QueryWriteRaiseQueryComponent', () => {
       isHearingRelated: new FormControl(null, Validators.required),
       attachments: new FormControl([])
     });
+
+    component.caseDetails = {} as any;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.eventData = {} as any;
+    component.queryItem = {} as any;
     fixture.detectChanges();
   });
 
@@ -70,5 +96,69 @@ describe('QueryWriteRaiseQueryComponent', () => {
     component.formGroup.get('subject').markAsTouched();
     const message = component.getSubjectErrorMessage();
     expect(message).toBe(component.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH);
+  });
+
+  it('should call setCaseQueriesCollectionData and generateCaseQueriesCollectionData on ngOnChanges when triggerSubmission is true', () => {
+    const mockGeneratedData = { fieldId: { caseMessages: [] } };
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(true);
+    queryManagementServiceSpy.generateCaseQueriesCollectionData.and.returnValue(mockGeneratedData);
+
+    spyOn(component.queryDataCreated, 'emit');
+
+    component.triggerSubmission = true;
+    component.ngOnChanges();
+
+    expect(queryManagementServiceSpy.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(component.queryDataCreated.emit).toHaveBeenCalledWith(mockGeneratedData);
+  });
+
+  it('should not call generateCaseQueriesCollectionData if triggerSubmission is false', () => {
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(true);
+    component.triggerSubmission = false;
+
+    spyOn(component.queryDataCreated, 'emit');
+
+    component.ngOnChanges();
+
+    expect(queryManagementServiceSpy.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).not.toHaveBeenCalled();
+    expect(component.queryDataCreated.emit).not.toHaveBeenCalled();
+  });
+
+  it('should not call anything if setCaseQueriesCollectionData returns false', () => {
+  // Spy on the internal generateCaseQueriesCollectionData method
+    const generateSpy = spyOn<any>(component, 'generateCaseQueriesCollectionData');
+    const emitSpy = spyOn(component.queryDataCreated, 'emit');
+
+    // Arrange: Make sure setCaseQueriesCollectionData returns false
+    spyOn(component, 'setCaseQueriesCollectionData').and.returnValue(false);
+
+    // Act
+    component.triggerSubmission = true;
+    component.ngOnChanges();
+
+    // Assert
+    expect(component.setCaseQueriesCollectionData).toHaveBeenCalled();
+    expect(generateSpy).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+
+  it('should warn and return false when eventData is null in setCaseQueriesCollectionData()', () => {
+    spyOn(console, 'warn');
+    component.eventData = null;
+    const result = component.setCaseQueriesCollectionData();
+    expect(console.warn).toHaveBeenCalledWith('Event data not available; skipping collection setup.');
+    expect(result).toBeFalsy();
+  });
+
+  it('should correctly assign messageIdfrom route params on ngOnChanges', () => {
+    component.triggerSubmission = false;
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(false);
+
+    component.ngOnChanges();
+
+    expect(component.messageId).toBe('mock-message-id');
   });
 });
