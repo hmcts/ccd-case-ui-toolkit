@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.23-exui-2761-rc2
+**EXUI-2761** url change
+
 ### Version 7.2.36
 **EXUI-3150** QM: Refactor approach to translations for qualifying questions
 
