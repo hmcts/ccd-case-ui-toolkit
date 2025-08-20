@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 export class CaseReviewSpecificAccessRejectComponent implements OnInit {
 
   public caseId: string;
+  public jurisdiction: string;
+  public caseType: string;
   public readonly retunToTask = 'Return to the Tasks tab for this case';
   public readonly returnToMyTask = 'Return to My tasks';
 
@@ -15,5 +17,7 @@ export class CaseReviewSpecificAccessRejectComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.data.case.case_id;
+    this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    this.caseType = this.route.snapshot.data.case.case_type.id;
   }
 }
