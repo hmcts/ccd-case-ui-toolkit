@@ -76,6 +76,7 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
   getWAServiceConfig: () => 'waServiceConfig',
   getEventsToHide: () => [],
+  getIcpJurisdictions: () => ['IA'],
   getIcpEnable: () => true,
   logMessage: () => {}
 };
