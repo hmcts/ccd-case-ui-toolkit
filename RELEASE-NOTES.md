@@ -1,5 +1,20 @@
 ## RELEASE NOTES
 
+### Version 7.2.23-exui-2761-rc2
+**EXUI-2761** url change
+
+### Version 7.2.36
+**EXUI-3150** QM: Refactor approach to translations for qualifying questions
+
+### Version 7.2.35
+**EXUI-3403** Update payment components
+
+### Version 7.2.34
+**EXUI-3387** Lines appear in Query Subject and extra spacing in Query Body when submitting a query with empty spaces
+
+### Version 7.2.33
+**EXUI-3398** Update Copy for Closed Functionality Messaging
+
 ### Version 7.2.32
 **EXUI-3389** Follow-up Query Response Missing Standard Footer Message
 

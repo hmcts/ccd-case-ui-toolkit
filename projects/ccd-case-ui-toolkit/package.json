@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.32-javascript-void-removal",
+  "version": "7.2.32-3044-2761",
   "engines": {
     "node": ">=18.19.0"
   },
