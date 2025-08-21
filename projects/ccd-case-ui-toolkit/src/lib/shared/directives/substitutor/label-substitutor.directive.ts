@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -34,9 +34,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.initialHintText = this.caseField.hint_text;
     this.formGroup = this.formGroup || new FormGroup({});
 
-    this.languageSubscription = this.rpxTranslationService.language$.subscribe((lang) => {
+    this.languageSubscription = this.rpxTranslationService.language$.subscribe(() => {
+      // timeout is required to prevent race conditions with translation pipe
       setTimeout(() => {
-        console.log('lang: ', lang);
         this.onLanguageChange();
       }, 100);
     });
@@ -56,7 +56,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
         this.caseField.isTranslated = this.rpxTranslationService.language === 'cy';
       } else {
         this.caseField.label = substitutedLabel;
-        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy';
+        this.caseField.isTranslated = false;
       }
     }
     if (this.shouldSubstitute('hint_text')) {
