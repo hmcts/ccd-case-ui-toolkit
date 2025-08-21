@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.36
+**EXUI-3150** QM: Refactor approach to translations for qualifying questions
+
 ### Version 7.2.35
 **EXUI-3403** Update payment components
 
