@@ -34,7 +34,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.initialHintText = this.caseField.hint_text;
     this.formGroup = this.formGroup || new FormGroup({});
 
-    this.languageSubscription = this.rpxTranslationService.language$.subscribe(() => {
+    this.languageSubscription = this.rpxTranslationService.language$.subscribe((lang) => {
       // timeout is required to prevent race conditions with translation pipe
       setTimeout(() => {
         this.onLanguageChange();
