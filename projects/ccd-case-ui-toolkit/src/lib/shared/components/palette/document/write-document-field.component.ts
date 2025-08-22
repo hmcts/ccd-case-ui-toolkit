@@ -149,7 +149,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (allowedRegex) {
       fileTypeRegex = new RegExp(`(${allowedRegex.replace(/,/g, '|')})`, 'i');
     }
-    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)){
+    if (fileInput.target?.files[0] && !fileInput.target?.files[0]?.name?.match(fileTypeRegex)) {
       this.invalidFileFormat();
     } else if (fileInput.target.files[0]) {
       this.selectedFile = fileInput.target.files[0];
@@ -264,7 +264,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
-    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+    if (this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)) {
       this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
     }
   }
@@ -276,7 +276,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -298,7 +298,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string')){
+    if (document.upload_timestamp && (typeof document.upload_timestamp === 'string')) {
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
@@ -314,31 +314,36 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private getErrorMessage(error: HttpError): string {
-    switch (error.status) {
-      case 0:
-      case 502:
-        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
-      case 422:
-      case 500:
-        {
-          let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
-          if (error?.error) {
-            const fullError = error.error;
-            const start = fullError.indexOf('{');
-            if (start >= 0) {
-              const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-              const obj = JSON.parse(json);
-              if (obj?.error) {
-                errorMsg = obj.error;
-              }
-            }
-          }
-          return errorMsg;
-        }
-      case 429:
-        return error?.error;
-      default:
-        return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    if (error.status === 0 || error.status === 502) {
+      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    }
+    if (error.status === 422 || error.status === 500) {
+      if (this.fileSecureModeOn) {
+        return this.extractSecureErrorMessage(error) || WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+      }
+      return error.error || WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    if (error.status === 429) {
+      return error?.error;
+    }
+    return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+  }
+
+  private extractSecureErrorMessage(error: HttpError): string | undefined {
+    if (!error?.error) {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    const fullError = error.error;
+    const start = fullError.indexOf('{');
+    if (start < 0) {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+    }
+    try {
+      const json = fullError.substring(start, fullError.length - 1).replace(/<EOL>/g, '');
+      const obj = JSON.parse(json);
+      return obj?.error;
+    } catch {
+      return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
   }
 

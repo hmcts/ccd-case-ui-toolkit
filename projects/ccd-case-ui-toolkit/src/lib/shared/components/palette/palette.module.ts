@@ -23,6 +23,7 @@ import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 import { CaseEditDataModule } from '../../commons/case-edit-data';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { TranslatedMarkdownModule } from '../../directives/welsh-translated-markdown';
 import { PipesModule } from '../../pipes/pipes.module';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';
@@ -133,9 +134,11 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent,
+  CloseQueryComponent
+
 } from './query-management';
-import { QualifyingQuestionService } from './query-management/services';
+import { QualifyingQuestionService, QueryManagementService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -143,6 +146,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
+import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
 
 const PALETTE_COMPONENTS = [
@@ -273,6 +277,7 @@ const PALETTE_COMPONENTS = [
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
   QueryConfirmationComponent,
+  CloseQueryComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
@@ -296,6 +301,7 @@ const PALETTE_COMPONENTS = [
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
+    TranslatedMarkdownModule,
     MarkdownModule.forChild(),
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
@@ -353,6 +359,8 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     LinkedCasesService,
     QualifyingQuestionService,
+    QueryManagementUtils,
+    QueryManagementService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
