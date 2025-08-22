@@ -70,18 +70,11 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private onLanguageChange(): void {
-    if (this.initialLabel) {
-      this.caseField.label = this.initialLabel;
-    }
-    if (this.initialHintText) {
-      this.caseField.hint_text = this.initialHintText;
-    }
-    this.caseField.isTranslated = false;
-
+    this.resetToInitialValues();
     this.applySubstitutions();
   }
 
-  public ngOnDestroy(): void {
+  private resetToInitialValues(): void {
     if (this.initialLabel) {
       this.caseField.label = this.initialLabel;
     }
@@ -89,6 +82,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       this.caseField.hint_text = this.initialHintText;
     }
     this.caseField.isTranslated = false;
+  }
+
+  public ngOnDestroy(): void {
+    this.resetToInitialValues();
     if (this.languageSubscription) {
       this.languageSubscription.unsubscribe();
     }
