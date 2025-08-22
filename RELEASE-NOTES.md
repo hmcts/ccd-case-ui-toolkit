@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.2.37
+**EXUI-3318** Media Viewer - Logic around handling element transforms for redactions
+
+### Version 7.2.36
+**EXUI-3150** QM: Refactor approach to translations for qualifying questions
+
 ### Version 7.2.35
 **EXUI-3403** Update payment components
 
