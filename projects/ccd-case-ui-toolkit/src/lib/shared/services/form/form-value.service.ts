@@ -278,6 +278,10 @@ export class FormValueService {
       return this.sanitiseArray(rawValue);
     }
 
+    if (FieldTypeSanitiser.DATE_FORMAT.test(rawValue)) {
+      return rawValue.replace(/Z$/, '')
+    }
+
     switch (typeof rawValue) {
       case 'object':
         return this.sanitiseObject(rawValue);
@@ -296,6 +300,28 @@ export class FormValueService {
         delete data[dataKey];
       }
     }
+  }
+
+  public checkValuesSetInCollection(caseField: any, data: any): any {
+    for (const field in data) {
+      const fieldId = data[field].id;
+      if (Array.isArray(caseField.data[fieldId])) {
+        for (const subField in caseField.data[fieldId]) {
+          if (
+            data[field]?._value &&
+            typeof data[field]._value[subField] === 'object' &&
+            Object.keys(caseField.data[fieldId][subField] ?? {}).every((key) => key in data[field]._value[subField])
+          ) {
+            if (caseField.data[fieldId][subField] !== data[field]?._value[subField]) {
+              caseField.data[fieldId][subField] = data[field]._value[subField];
+            }
+          }
+        }
+      } else if ((data[field]._value) && (caseField.data[fieldId] !== data[field]._value)) {
+        caseField.data[fieldId] = data[field]._value;
+      }
+    }
+    return caseField;
   }
 
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
