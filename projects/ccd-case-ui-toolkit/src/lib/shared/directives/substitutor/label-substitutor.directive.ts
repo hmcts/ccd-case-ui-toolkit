@@ -40,6 +40,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
         this.onLanguageChange();
       }, 100);
     });
+
+    this.applySubstitutions()
   }
 
   private applySubstitutions(): void {
