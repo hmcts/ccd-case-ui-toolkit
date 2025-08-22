@@ -74,7 +74,7 @@
                       </th>
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
+                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']" [caseFields]="caseFields"
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
                           </ccd-field-read>
                         </span>
@@ -83,7 +83,7 @@
                     <tr *ngSwitchCase="false" class="compound-field">
                       <th [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']" [caseFields]="caseFields"
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
                           </ccd-field-read>
                         </span>

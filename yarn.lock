@@ -4585,7 +4585,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.4"
+    "@hmcts/media-viewer": "npm:4.1.3-ped-ac3"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -4628,7 +4628,7 @@ __metadata:
     gh-pages: "npm:^2.0.0"
     git-message: "npm:^2.0.2"
     govuk-elements-sass: "npm:^3.1.2"
-    govuk-frontend: "npm:^4.2.0"
+    govuk-frontend: "npm:^4.9.0"
     govuk_frontend_toolkit: "npm:^9.0.0"
     gulp: "npm:^4.0.2"
     gulp-inline-ng2-template: "npm:^5.0.1"
@@ -4693,7 +4693,6 @@ __metadata:
     tslint: "npm:^6.1.3"
     typescript: "npm:~5.4.5"
     underscore: "npm:^1.9.1"
-    util: "npm:^0.12.5"
     webpack: "npm:^5.88.2"
     webpack-angular-externals: "npm:^1.0.2"
     webpack-cli: "npm:^4.4.0"
@@ -4726,9 +4725,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.4":
-  version: 4.1.4
-  resolution: "@hmcts/media-viewer@npm:4.1.4"
+"@hmcts/media-viewer@npm:4.1.3-ped-ac3":
+  version: 4.1.3-ped-ac3
+  resolution: "@hmcts/media-viewer@npm:4.1.3-ped-ac3"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -4747,7 +4746,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f9ab2add6c701fc70662bfca316a347badc49e17bbc13dc72898b2ecf378891762cf9676a9e8f8373eda020cdbcb594c71e66dd8d5274ab4a3934c3f9e59c7f5
+  checksum: 10/1a01fbbec9e79dce5855bb086ae62e2640c484e1632204e065af44fa237d27ef9b7c1fa68bfb686c4926d78681a1ff6f0d948e2d27e5e284d4c2d8c8f3ffc040
   languageName: node
   linkType: hard
 
@@ -17620,10 +17619,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.2.0":
-  version: 4.7.0
-  resolution: "govuk-frontend@npm:4.7.0"
-  checksum: 10/f97dbe62e77ba74b88f80afa597faaf89453d077c7c97b452107f531a8f2432d9daafdb05895bea1713532a77a1bbe2af7f648df0f6c5a25fb6b86825b55acf0
+"govuk-frontend@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "govuk-frontend@npm:4.9.0"
+  checksum: 10/03bae503b0c5aabcfb2724409f55f2221101a60f5334488319c9911408637efaa6737b733d4774436a520e9a79bf52bd9ae9a9e60f61a929c529b8125c0d5e29
   languageName: node
   linkType: hard
 
@@ -30118,7 +30117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:^0.12.4, util@npm:^0.12.5":
+"util@npm:^0.12.4":
   version: 0.12.5
   resolution: "util@npm:0.12.5"
   dependencies:
