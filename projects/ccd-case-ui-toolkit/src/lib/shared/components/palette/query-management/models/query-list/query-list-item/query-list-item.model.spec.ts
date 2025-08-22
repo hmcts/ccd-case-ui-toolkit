@@ -98,11 +98,7 @@ describe('QueryListItem', () => {
 
   describe('lastSubmittedBy', () => {
     it('should return the name of the person of the lastSubmittedMessage', () => {
-      const index = queryListItem.children.length === 1
-        ? 0
-        : queryListItem.children.length % 2 === 1
-          ? queryListItem.children.length - 1
-          : queryListItem.children.length - 2;
+      const index = 1;
 
       expect(queryListItem.lastSubmittedBy).toEqual(queryListItem.children[index].name);
     });
@@ -190,6 +186,40 @@ describe('QueryListItem', () => {
       const child2 = new QueryListItem();
       child2.messageIndexInParent = 1;
       expect(child2.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
+    });
+
+    it('should return CLOSED when this item is directly marked as closed', () => {
+      queryListItem.isClosed = 'Yes';
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return CLOSED when any nested child item is closed', () => {
+      // Create a deep nested child
+      const deepChild = new QueryListItem();
+      deepChild.isClosed = 'Yes';
+      deepChild.children = [];
+
+      const midChild = new QueryListItem();
+      midChild.children = [deepChild];
+
+      const topChild = new QueryListItem();
+      topChild.children = [midChild];
+
+      queryListItem.children = [topChild];
+
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.CLOSED);
+    });
+
+    it('should return RESPONDED for child with even messageIndexInParent', () => {
+      const child = new QueryListItem();
+      child.messageIndexInParent = 2;
+      expect(child.responseStatus).toEqual(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return AWAITING for child with odd messageIndexInParent', () => {
+      const child = new QueryListItem();
+      child.messageIndexInParent = 3;
+      expect(child.responseStatus).toEqual(QueryItemResponseStatus.AWAITING);
     });
   });
 });

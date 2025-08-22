@@ -17,6 +17,18 @@
      </div>
    </div>
 
+   <div *ngIf="error && (error.details || error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+    <h3 class="heading-h3 error-summary-heading" id="event_error-summary-heading">
+      The event could not be created
+    </h3>
+    <p>{{error.message}}</p>
+    <ul *ngIf="error.details?.field_errors" class="error-summary-list">
+      <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
+    </ul>
+  </div>
+
+  <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject"></ccd-callback-errors>
+
     <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
       <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
     </ng-container>
@@ -114,6 +126,22 @@
             [attachments]="attachments"
           >
           </ccd-query-attachments-read>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Closing the query' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.get('closeQuery')?.value ? 'I want to close this query' : 'No answer' | rpxTranslate }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">

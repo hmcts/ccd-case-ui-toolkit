@@ -8,5 +8,5 @@
   </span>
 
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': numberControl.errors && numberControl.dirty}"
-   [id]="id()" type="number" [formControl]="numberControl">
+   [id]="id()" type="text" inputmode="decimal" pattern="^[-+]?[0-9]+(?:\.?[0-9]+)?$" [formControl]="numberControl">
 </div>

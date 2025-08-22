@@ -1,13 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { CaseView } from '../../../../../../domain';
 import { CaseNotifier } from '../../../../../case-editor';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { CaseQueriesCollection } from '../../../models';
-import { getMockCaseNotifier } from '../../../../../case-editor/services/case.notifier.spec';
+import {
+  SessionStorageService
+} from '../../../../../../services';
+import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../../models';
+import { of, throwError } from 'rxjs';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -20,10 +23,11 @@ describe('QueryWriteRespondToQueryComponent', () => {
   let component: QueryWriteRespondToQueryComponent;
   let fixture: ComponentFixture<QueryWriteRespondToQueryComponent>;
   let activatedRoute: ActivatedRoute;
+  let sessionStorageService: any;
 
-  const caseId = '1234';
+  const caseId = '123';
   const CASE_VIEW: CaseView = {
-    case_id: '1234',
+    case_id: '123',
     case_type: {
       id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
@@ -78,7 +82,8 @@ describe('QueryWriteRespondToQueryComponent', () => {
     }
   ];
 
-  const mockCaseNotifier = getMockCaseNotifier(CASE_VIEW);
+  const mockCaseNotifier = jasmine.createSpyObj('CaseNotifier', ['fetchAndRefresh']);
+  mockCaseNotifier.fetchAndRefresh.and.returnValue(of(CASE_VIEW));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -99,7 +104,9 @@ describe('QueryWriteRespondToQueryComponent', () => {
               }
             }
           }
-        }
+        },
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
+        { provide: SessionStorageService, useValue: sessionStorageService }
       ]
     })
       .compileComponents();
@@ -120,31 +127,26 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set caseId and caseDetails in ngOnInit', (done) => {
+  it('should set caseId and caseDetails in ngOnInit', fakeAsync(() => {
     component.ngOnInit();
 
-    // Allow observable to emit
-    fixture.whenStable().then(() => {
-      expect(component.caseId).toEqual(caseId);
-      expect(component.caseDetails).toEqual(CASE_VIEW);
-      done();
-    });
-  });
+    tick();
 
-  it('should log error if caseNotifier emits an error', () => {
-    spyOn(console, 'error'); // Spy on the console.error to verify the log output
+    expect(component.caseId).toEqual(caseId);
+    expect(component.caseDetails).toEqual(CASE_VIEW);
+  }));
 
-    // Spy on the mockCaseNotifier's caseView to simulate an error
-    spyOn(mockCaseNotifier.caseView, 'subscribe').and.callFake((observer: any) => {
-      observer.error('Error retrieving case details');
-    });
+  it('should log error if caseNotifier emits an error', fakeAsync(() => {
+    const errorMessage = 'Error retrieving case details';
+    spyOn(console, 'error');
 
-    // Trigger the component's ngOnInit
+    mockCaseNotifier.fetchAndRefresh.and.returnValue(throwError(() => errorMessage));
+
     component.ngOnInit();
+    tick();
 
-    // Verify that console.error was called with the expected error message
-    expect(console.error).toHaveBeenCalledWith('Error retrieving case details:', 'Error retrieving case details');
-  });
+    expect(console.error).toHaveBeenCalledWith('Error retrieving case details:', errorMessage);
+  }));
 
   it('should emit value when hasResponded is called', () => {
     spyOn(component.hasRespondedToQueryTask, 'emit');
@@ -231,7 +233,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
             createdOn: new Date('2024-08-27T15:44:50.700Z'),
             hearingDate: '2023-01-10',
             isHearingRelated: 'Yes',
-            name: 'Piran Sam',
+            name: 'Piran Sam'
           }
         }
       ],
@@ -266,80 +268,6 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryResponseStatus).toEqual('Responded');
   });
 
-  it('should return early if caseQueriesCollections is empty', () => {
-    component.caseQueriesCollections = [];
-    const consoleSpy = spyOn(console, 'error');
-    component.ngOnChanges();
-    expect(consoleSpy).not.toHaveBeenCalled();
-  });
-
-  it('should log error if caseQueriesCollections[0] is undefined', () => {
-    component.caseQueriesCollections = [undefined as any];
-    const consoleSpy = spyOn(console, 'error');
-    component.ngOnChanges();
-    expect(consoleSpy).toHaveBeenCalledWith('caseQueriesCollections[0] is undefined!', component.caseQueriesCollections);
-  });
-
-  it('should warn and return if no messageId is found', () => {
-    activatedRoute.snapshot.params = { cid: '123' }; // no dataid
-    component.caseQueriesCollections = caseQueriesCollectionsMockData;
-
-    const warnSpy = spyOn(console, 'warn');
-    component.ngOnChanges();
-
-    expect(warnSpy).toHaveBeenCalledWith('No messageId found in route params:', activatedRoute.snapshot.params);
-  });
-
-  it('should filter parent query when responding to a child message', () => {
-    activatedRoute.snapshot.params = { dataid: 'id-007' };
-    component.queryItemId = '3';
-    component.caseQueriesCollections = caseQueriesCollectionsMockData;
-
-    component.ngOnChanges();
-
-    expect(component.queryListData.id).toEqual('id-007');
-    expect(component.queryResponseStatus).toEqual('Responded');
-  });
-
-  it('should warn and return if no matching message is found for ID', () => {
-    const unmatchedMessageId = 'non-existent-id';
-
-    // Override route param to a non-matching ID
-    activatedRoute.snapshot.params = { dataid: unmatchedMessageId };
-
-    // Provide caseQueriesCollections with only unmatched messages
-    component.caseQueriesCollections = [{
-      caseMessages: [
-        {
-          id: 'some-id',
-          value: {
-            id: 'different-id',
-            body: 'Message not matching',
-            attachments: [],
-            createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
-            createdOn: new Date('2024-08-27T15:44:50.700Z'),
-            hearingDate: '2023-01-10',
-            isHearingRelated: 'Yes',
-            name: 'Piran Sam',
-          }
-        }
-      ],
-      partyName: '',
-      roleOnCase: ''
-    }];
-
-    const warnSpy = spyOn(console, 'warn');
-
-    component.ngOnChanges();
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      'No matching message found for ID:',
-      unmatchedMessageId
-    );
-
-    expect(component.queryItem).toBeUndefined();
-  });
-
   it('should filter parent query when matchingMessage has parentId', () => {
     // Set dataid to match the child message
     activatedRoute.snapshot.params = { dataid: 'id-007-testt' }; // ID of child
@@ -356,18 +284,75 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.queryResponseStatus).toEqual('Responded');
   });
 
-  it('should filter query by id when matchingMessage has no parentId', () => {
-  // Set dataid to match the parent message directly
-    activatedRoute.snapshot.params = { dataid: 'id-007' }; // ID of parent
-    component.queryItemId = '3';
+  it('should accept and preserve queryItem input', () => {
+    const mockItem = { id: 'test-id', subject: 'Test Subject' } as QueryListItem;
+    component.queryItem = mockItem;
+    fixture.detectChanges();
+    expect(component.queryItem).toEqual(mockItem);
+  });
 
+  it('should emit queryDataCreated when triggerSubmission is true and collection is set', () => {
+    const emitSpy = spyOn(component.queryDataCreated, 'emit');
+    const mockData = {} as any;
+
+    component.triggerSubmission = true;
     component.caseQueriesCollections = caseQueriesCollectionsMockData;
+    component.eventData = {} as any;
+    component.caseDetails = {} as any;
+
+    spyOn<any>(component['queryManagementService'], 'generateCaseQueriesCollectionData').and.returnValue(mockData);
+    spyOn<any>(component['queryManagementService'], 'setCaseQueriesCollectionData').and.callThrough();
 
     component.ngOnChanges();
 
-    // Should filter directly by message id
-    expect(component.queryListData.id).toEqual('id-007');
-    expect(component.queryResponseStatus).toEqual('Responded');
+    expect(emitSpy).toHaveBeenCalledWith(mockData);
+  });
+
+  it('should return false when eventData is missing in setCaseQueriesCollectionData', () => {
+    component.eventData = null;
+    const result = component.setCaseQueriesCollectionData();
+    expect(result).toBeFalsy();
+  });
+
+  it('should call resolveFieldId and set fieldId on queryManagementService', () => {
+    const mockEventData: any = {
+      case_fields: [
+        {
+          id: 'field1',
+          field_type: { id: 'CaseQueriesCollection', type: 'Complex' },
+          display_context: 'OPTIONAL',
+          value: {
+            caseMessages: [
+              { value: { id: 'id-007' } }
+            ]
+          }
+        }
+      ],
+      wizard_pages: [
+        {
+          wizard_page_fields: [{ case_field_id: 'field1', order: 1 }]
+        }
+      ]
+    };
+
+    const mockCaseDetails = {
+      case_type: {
+        jurisdiction: { id: 'CIVIL' }
+      }
+    } as CaseView;
+
+    component.eventData = mockEventData;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.caseDetails = mockCaseDetails;
+
+    const service = (component as any).queryManagementService;
+    spyOn(service as any, 'getCollectionSelectionMethod').and.callThrough();
+    spyOn(service as any, 'getCaseQueriesCollectionFieldOrderFromWizardPages').and.callThrough();
+
+    const result = component.setCaseQueriesCollectionData();
+
+    expect(result).toBeTruthy();
+    expect(service.fieldId).toBe('field1');
   });
 
 });

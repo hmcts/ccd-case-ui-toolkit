@@ -40,8 +40,8 @@ export class QueryManagementUtils {
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
-    const subject = formGroup.get('subject').value;
-    const body = formGroup.get('body').value;
+    const subject = formGroup.get('subject').value.trim();
+    const body = formGroup.get('body').value.trim();
     const isHearingRelated = formGroup.get('isHearingRelated').value ? 'Yes' : 'No';
     const hearingDate = (isHearingRelated === 'Yes')
       ? this.formattedDate(formGroup.get('hearingDate').value)
@@ -62,13 +62,14 @@ export class QueryManagementUtils {
   public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
-    const body = formGroup.get('body').value;
+    const body = formGroup.get('body').value.trim();
     const attachments = formGroup.get('attachments').value;
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
+    const isClosed = formGroup.get('closeQuery').value ? 'Yes' : 'No';
 
     return {
       id: uuidv4(),
-      subject: queryItem.subject,
+      subject: queryItem.subject.trim(),
       name: currentUserName,
       body,
       attachments: formDocument,
@@ -76,7 +77,8 @@ export class QueryManagementUtils {
       hearingDate: queryItem.hearingDate,
       createdOn: new Date(),
       createdBy: currentUserId,
-      parentId: queryItem.id
+      parentId: queryItem.id,
+      isClosed
     };
   }
 
