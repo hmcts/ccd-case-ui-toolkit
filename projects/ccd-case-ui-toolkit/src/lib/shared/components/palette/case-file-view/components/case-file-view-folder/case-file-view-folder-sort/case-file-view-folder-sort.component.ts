@@ -16,19 +16,17 @@ export class CaseFileViewFolderSortComponent implements OnInit {
 
   public overlayMenuItems: CaseFileViewOverlayMenuItem[] = [
     { actionText: 'A to Z ascending', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortAscending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
-    { actionText: 'Z to A descending', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
+    { actionText: 'Z to A descending', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) }
   ];
 
   constructor(private readonly appConfig: AbstractAppConfig) { }
 
   public ngOnInit(): void {
-    if (this.appConfig.getEnableCaseFileViewVersion1_1()) {
-      this.overlayMenuItems = [
-        { actionText: 'A to Z ascending', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortAscending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
-        { actionText: 'Z to A descending', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
-        { actionText: 'Recent first', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP) },
-        { actionText: 'Oldest first', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortAscending.emit(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP) },
-      ];
-    }
+    this.overlayMenuItems = [
+      { actionText: 'A to Z ascending', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortAscending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
+      { actionText: 'Z to A descending', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_NAME) },
+      { actionText: 'Recent first', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortDescending.emit(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP) },
+      { actionText: 'Oldest first', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortAscending.emit(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP) }
+    ];
   }
 }

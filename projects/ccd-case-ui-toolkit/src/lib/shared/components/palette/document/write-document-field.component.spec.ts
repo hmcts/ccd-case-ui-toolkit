@@ -139,7 +139,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -692,7 +692,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -918,7 +918,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of(undefined);
