@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.15-govuk-frontend-upgrade",
+  "version": "7.2.15-properties-upgrade",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -91,7 +91,6 @@
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
-    "util": "^0.12.5",
     "yargs": "17.7.2",
     "yargs-parser": "^21.1.1",
     "zone.js": "^0.14.10"

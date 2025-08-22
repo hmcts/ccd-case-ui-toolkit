@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.15-govuk-frontend-upgrade",
+  "version": "7.2.15-properties-upgrade",
   "engines": {
     "node": ">=18.19.0"
   },
