@@ -8,8 +8,11 @@ import {
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
 } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
-
+import { BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
+import {
+  ActivityService,
+  ActivitySocketService,
+} from '../../services';
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
@@ -107,7 +110,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
     private readonly browserService: BrowserService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly activitySocketService: ActivitySocketService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -145,6 +149,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
+      this.watchResults();
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
@@ -366,7 +371,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return condition ? '&#9660;' : '&#9650;';
   }
 
-  public activityEnabled(): boolean {
+  public get activityEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
@@ -441,6 +446,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if ($event.key === 'Space') {
       if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
         this.changeSelection(c);
+      }
+    }
+  }
+
+  private watchResults(): void {
+    if (this.activitySocketService.isEnabled) {
+      if (this.resultView && this.resultView.results) {
+        const caseIds: string[] = this.resultView.results.map(value => value.case_id);
+        this.activitySocketService.watchCases(caseIds);
+      } else {
+        this.activitySocketService.watchCases([]);
       }
     }
   }
