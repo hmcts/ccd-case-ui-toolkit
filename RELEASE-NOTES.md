@@ -3,6 +3,12 @@
 ### Version 7.2.23-exui-2761-rc2
 **EXUI-2761** url change
 
+### Version 7.2.38
+**EXUI-2953** Query Management - Multiple follow up query functionality
+
+### Version 7.2.37
+**EXUI-3318** Media Viewer - Logic around handling element transforms for redactions
+
 ### Version 7.2.36
 **EXUI-3150** QM: Refactor approach to translations for qualifying questions
 
