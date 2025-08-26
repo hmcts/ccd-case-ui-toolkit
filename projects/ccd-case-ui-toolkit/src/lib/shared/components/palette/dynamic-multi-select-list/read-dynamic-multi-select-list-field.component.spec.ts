@@ -4,6 +4,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadDynamicMultiSelectListFieldComponent } from './read-dynamic-multi-select-list-field.component';
 
 const FIELD_ID = 'ReadOnlyFieldId';
@@ -85,6 +86,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
+            MockRpxTranslatePipe,
             // Mocks
             fieldReadComponentMock
           ],
@@ -151,6 +153,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
+            MockRpxTranslatePipe,
             // Mocks
             fieldReadComponentMock
           ],
