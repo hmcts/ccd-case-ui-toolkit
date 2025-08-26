@@ -4,11 +4,13 @@ import { SessionStorageService } from '../../../../../services';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
-import { Constants } from '../../../../../commons/constants';
 import { PUI_CASE_MANAGER } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseNotifier } from '../../../../case-editor/services';
+import { BehaviorSubject } from 'rxjs';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
@@ -166,6 +168,16 @@ describe('QueryDetailsComponent', () => {
     }
   };
 
+  class MockCaseNotifier {
+    public caseView = new BehaviorSubject({
+      case_type: {
+        jurisdiction: {
+          id: 'CIVIL'
+        }
+      }
+    });
+  }
+
   beforeEach(async () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
     await TestBed.configureTestingModule({
@@ -176,7 +188,14 @@ describe('QueryDetailsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: ActivatedRoute, useValue: snapshotActivatedRoute }
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
+        {
+          provide: AbstractAppConfig,
+          useValue: {
+            getEnableServiceSpecificMultiFollowups: () => ['CIVIL', 'FAMILY']
+          }
+        },
+        { provide: CaseNotifier, useClass: MockCaseNotifier }
       ]
     })
       .compileComponents();
@@ -186,6 +205,7 @@ describe('QueryDetailsComponent', () => {
     fixture = TestBed.createComponent(QueryDetailsComponent);
     component = fixture.componentInstance;
     component.query = queryListItem;
+    component.ngOnInit();
     fixture.detectChanges();
   });
 
@@ -320,6 +340,104 @@ describe('QueryDetailsComponent', () => {
 
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBeTruthy();
+    });
+
+    it('should emit false and return false if last child is FOLLOWUP and multiple follow-up is enabled', () => {
+      spyOn(component, 'isInternalUser').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+      // Add a FOLLOWUP message as last child
+      component.query.children = [
+        ...component.query.children,
+        Object.assign(new QueryListItem(), {
+          ...component.query.children[0],
+          messageType: 'FOLLOWUP'
+        })
+      ];
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+
+    it('should emit false and return false if last child is RESPOND message', () => {
+      spyOn(component, 'isInternalUser').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+      component.query.children = [
+        ...component.query.children,
+        Object.assign(new QueryListItem(), {
+          ...component.query.children[0],
+          messageType: 'RESPOND'
+        })
+      ];
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
+      expect(result).toBeFalsy();
+    });
+    it('should fallback to internal user check if no FOLLOWUP or RESPOND in children', () => {
+      spyOn(component, 'isInternalUser').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
+
+      component.query.children = [
+        Object.assign(new QueryListItem(), {
+          ...component.query.children[0],
+          messageType: undefined
+        })
+      ];
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.isInternalUser).toHaveBeenCalled();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBe(true);
+    });
+
+    it('should treat multi-follow-up as disabled if config returns empty list', () => {
+      // Override config manually for this test
+      component['abstractConfig'].getEnableServiceSpecificMultiFollowups = () => [];
+
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+      component.query.children = [
+        Object.assign(new QueryListItem(), {
+          messageType: 'FOLLOWUP'
+        })
+      ];
+
+      spyOn(component, 'isInternalUser').and.returnValue(false);
+
+      const result = component.hasRespondedToQuery();
+      expect(result).toBeFalsy();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(component.currentJurisdictionId).toBe('CIVIL');
+      expect(component.isMultipleFollowUpEnabled).toBeTruthy();
+    });
+
+    it('should return false if last child is FOLLOWUP and jurisdiction is not enabled', () => {
+      component.query.children.push(
+        Object.assign(new QueryListItem(), {
+          messageType: 'FOLLOWUP'
+        })
+      );
+
+      ((component['caseNotifier'] as unknown) as MockCaseNotifier).caseView.next({
+        case_type: {
+          jurisdiction: {
+            id: 'IMMIGRATION'
+          }
+        }
+      });
+
+      spyOn(component, 'isInternalUser').and.returnValue(true);
+      component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+      const result = component.hasRespondedToQuery();
+
+      expect(result).toBeDefined();
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(false);
     });
   });
 });

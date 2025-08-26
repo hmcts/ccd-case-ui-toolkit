@@ -1,4 +1,4 @@
-import { SessionStorageService } from "./services";
+import { SessionStorageService } from './services';
 
 export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
