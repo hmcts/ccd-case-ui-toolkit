@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.38-exui-3323-2
+**EXUI-3323** Fix translation of non-translatable strings
+
 ### Version 7.2.38
 **EXUI-2953** Query Management - Multiple follow up query functionality
 
