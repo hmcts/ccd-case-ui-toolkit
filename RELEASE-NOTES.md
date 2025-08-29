@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.23-exui-2761-rc2
+**EXUI-2761** url change
+
 ### Version 7.2.38
 **EXUI-2953** Query Management - Multiple follow up query functionality
 
