@@ -17,6 +17,7 @@ export interface CaseMessage {
   createdBy: string;
   parentId?: string;
   isClosed?: string;
+  messageType?: string;
 }
 
 export interface QueryMessage {

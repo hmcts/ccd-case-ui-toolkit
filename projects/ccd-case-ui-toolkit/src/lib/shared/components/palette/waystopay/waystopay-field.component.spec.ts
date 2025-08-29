@@ -78,7 +78,8 @@ const APP_CONFIG: AbstractAppConfig = {
   getEventsToHide: () => [],
   getIcpJurisdictions: () => ['IA'],
   getIcpEnable: () => true,
-  logMessage: () => {}
+  logMessage: () => {},
+  getEnableServiceSpecificMultiFollowups: () => ['IA']
 };
 
 let paymentWebComponentMock;

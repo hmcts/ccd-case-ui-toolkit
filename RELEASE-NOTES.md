@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.38
+**EXUI-2953** Query Management - Multiple follow up query functionality
+
 ### Version 7.2.37
 **EXUI-3318** Media Viewer - Logic around handling element transforms for redactions
 
