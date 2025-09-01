@@ -723,15 +723,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false,
     clearNonCase = false, fromPreviousPage = false): CaseEventData {
     // Get the data for the fields specified.
-    let formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
+    const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 
     // Sort out the dynamic lists.
     this.formValueService.sanitiseDynamicLists(caseFields, formFields);
-
-    // we only want to ensure this when the field_type is a collection of complex fields
-    if (caseFields.some((field) => field.field_type?.type === 'Collection' && field.field_type?.collection_field_type?.type === 'Complex')) {
-      formFields = this.formValueService.checkValuesSetInCollection(formFields, caseFields);
-    }
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
