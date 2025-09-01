@@ -278,10 +278,6 @@ export class FormValueService {
       return this.sanitiseArray(rawValue);
     }
 
-    if (FieldTypeSanitiser.DATE_FORMAT.test(rawValue)) {
-      return rawValue.replace(/Z$/, '')
-    }
-
     switch (typeof rawValue) {
       case 'object':
         return this.sanitiseObject(rawValue);
