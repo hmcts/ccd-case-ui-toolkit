@@ -67,12 +67,11 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   }
 
   public detectChangesAndEmit(changes) {
-    const current = this.formValueService.sanitise(changes);
-    const isEqual = this.deepEqual(this.initial, current);
-    this.valuesChanged.emit(!isEqual);
+    const current = JSON.stringify(this.formValueService.sanitise(changes));
+    this.initial !== current ? this.valuesChanged.emit(true) : this.valuesChanged.emit(false);
   }
 
-  private deepEqual(obj1: any, obj2: any): boolean {
+  /*private deepEqual(obj1: any, obj2: any): boolean {
     // Simple deep equality check
     if (obj1 === obj2) {
       return true;
@@ -91,5 +90,5 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
       }
     }
     return true;
-  }
+  }*/
 }
