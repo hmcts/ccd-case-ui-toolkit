@@ -74,7 +74,7 @@ describe('Date input component', () => {
     expect(component.displaySecond).toBeNull();
   });
 
-  it('should verify hours, minutes, seconds value from date', async () => {
+  it('should verify day, month, year value from date', async () => {
     component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
     fixture.detectChanges();
