@@ -13,7 +13,7 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCasesFromResponse">
           <td>
-            <p class="govuk-body"><a target="_blank" href="cases/case-details/{{ case.service }}/{{ case.caseType }}/{{case.caseReference}}"
+            <p class="govuk-body"><a target="_blank" href="cases/case-details/{{case.caseReference}}"
                 rel="noopener"><span class="govuk-link">{{case.caseName}} <br>
                   {{case.caseReference | ccdCaseReference}}</span></a></p>
           </td>
@@ -24,7 +24,7 @@
           <td *ngIf="case && case.reasons">
             <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
               {{reason.value | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1"
-                href="cases/case-details/{{ case.service }}/{{ case.caseType }}/{{ case.caseReference }}"
+                href="cases/case-details/{{ case.caseReference }}"
                   *ngIf="hasLeadCaseOrConsolidated(reason.value.Reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
               <br *ngIf="!isLast" />
             </span>

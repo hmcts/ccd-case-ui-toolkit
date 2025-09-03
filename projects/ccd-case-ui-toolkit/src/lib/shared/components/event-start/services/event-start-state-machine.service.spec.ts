@@ -31,7 +31,7 @@ describe('EventStartStateMachineService', () => {
     case_id: '1620409659381330',
     case_management_category: null,
     case_name: 'Alan Jonson',
-    case_type_id: 'Appeal-864',
+    case_type_id: null,
     created_date: '2021-04-19T14:00:00.000+0000',
     due_date: '2021-05-20T16:00:00.000+0000',
     execution_type: null,
@@ -193,7 +193,7 @@ describe('EventStartStateMachineService', () => {
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.tasks[0].jurisdiction}/${context.tasks[0].case_type_id}/${context.caseId}/trigger/${context.eventId}`],
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: mockRoute });
   });
 
@@ -209,7 +209,7 @@ describe('EventStartStateMachineService', () => {
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.tasks[0].jurisdiction}/${context.tasks[0].case_type_id}/${context.caseId}/trigger/${context.eventId}`],
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: mockRoute });
   });
 
@@ -221,7 +221,7 @@ describe('EventStartStateMachineService', () => {
     service.addTransitions();
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.tasks[0].jurisdiction}/${context.tasks[0].case_type_id}/${context.caseId}/task-unassigned`],
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-unassigned`],
       { queryParams: {}, relativeTo: mockRoute });
   });
 
@@ -233,7 +233,7 @@ describe('EventStartStateMachineService', () => {
     service.addTransitions();
     service.startStateMachine(stateMachine);
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.tasks[0].jurisdiction}/${context.tasks[0].case_type_id}/${context.caseId}/task-assigned`],
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-assigned`],
       { queryParams: context.tasks[0], relativeTo: context.route });
   });
   it('should action no task available', () => {

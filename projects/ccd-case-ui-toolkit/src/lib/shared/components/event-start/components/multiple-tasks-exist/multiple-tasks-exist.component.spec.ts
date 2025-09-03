@@ -16,13 +16,7 @@ describe('MultipleTasksExistComponent', () => {
     snapshot: {
       data: {
         case: {
-          case_id: '1620409659381330',
-          case_type: {
-            id: 'TestCaseType',
-            jurisdiction: {
-              id: 'TestJurisdiction'
-            }
-          }
+          case_id: '1620409659381330'
         }
       }
     }

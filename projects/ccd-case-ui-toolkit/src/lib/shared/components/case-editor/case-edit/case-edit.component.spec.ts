@@ -1477,31 +1477,6 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
-        component.caseDetails = {
-          case_type: {
-            id: 'case_view_1_type_id',
-            name: 'case view 1 type',
-            jurisdiction: {
-              id: 'case_view_1_jurisdiction_id',
-              name: 'case view 1 jurisdiction',
-            },
-          },
-          state: {
-            id: 'case_view_1_state_id',
-            name: 'case view 1 state',
-          },
-          channels: [],
-          tabs: [],
-          triggers: [],
-          events: [],
-          metadataFields: [],
-          basicFields: {
-            caseNameHmctsInternal: 'Dummy vs Dummy',
-            caseManagementLocation: {
-              baseLocation: 22
-            }
-          }
-        };
 
         formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({

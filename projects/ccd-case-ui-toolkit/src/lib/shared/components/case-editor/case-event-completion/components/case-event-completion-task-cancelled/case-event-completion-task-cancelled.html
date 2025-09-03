@@ -23,7 +23,7 @@
       <button class="govuk-button govuk-!-margin-right-2" data-module="govuk-button" (click)="onContinue()">
         {{'Continue' | rpxTranslate}}
       </button>
-      <a [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'tasks']"
+      <a [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']"
               class="govuk-button govuk-button--secondary" data-module="govuk-button">
         {{'Cancel' | rpxTranslate}}
       </a>

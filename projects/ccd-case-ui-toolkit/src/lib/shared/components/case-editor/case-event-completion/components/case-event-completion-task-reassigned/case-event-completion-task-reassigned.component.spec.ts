@@ -46,7 +46,7 @@ describe('TaskReassignedComponent', () => {
     case_id: '1620409659381330',
     case_management_category: null,
     case_name: 'Alan Jonson',
-    case_type_id: 'Appeal-864',
+    case_type_id: null,
     created_date: '2021-04-19T14:00:00.000+0000',
     due_date: '2021-05-20T16:00:00.000+0000',
     execution_type: null,

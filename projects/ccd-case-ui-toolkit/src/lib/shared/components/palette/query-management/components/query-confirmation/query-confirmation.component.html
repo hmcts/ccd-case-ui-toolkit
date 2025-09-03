@@ -14,7 +14,7 @@
           <p>{{'When the response is available it will be added to the \'Queries\' section.' | rpxTranslate}}</p>
           <p>
             {{'You can' | rpxTranslate}}
-            <a class="govuk-link" href="javascript:void(0)" routerLink="/cases/case-details/{{jurisdiction}}/{{caseType}}/{{caseId}}">{{'Go back to the case' | rpxTranslate}}</a>
+            <a class="govuk-link" href="javascript:void(0)" routerLink="/cases/case-details/{{caseId}}">{{'Go back to the case' | rpxTranslate}}</a>
           </p>
         </div>
       </ng-container>
@@ -25,8 +25,8 @@
         </div>
         <div class="govuk-body">
           {{'You can' | rpxTranslate}}
-          <a class="govuk-link" id="tasks-link" href="javascript:void(0)" routerLink="/cases/case-details/{{jurisdiction}}/{{caseType}}/{{caseId}}/tasks">{{'return to tasks' | rpxTranslate}}</a> or
-          <a class="govuk-link" id="case-link" href="javascript:void(0)" routerLink="/cases/case-details/{{jurisdiction}}/{{caseType}}/{{caseId}}">{{'Go back to the case' | rpxTranslate}}</a>
+          <a class="govuk-link" id="tasks-link" href="javascript:void(0)" routerLink="/cases/case-details/{{caseId}}/tasks">{{'return to tasks' | rpxTranslate}}</a> or
+          <a class="govuk-link" id="case-link" href="javascript:void(0)" routerLink="/cases/case-details/{{caseId}}">{{'Go back to the case' | rpxTranslate}}</a>
         </div>
       </ng-container>
     </div>

@@ -56,7 +56,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.linkedCasesService.caseFieldValue = this.caseField?.value ?? [];
+    this.linkedCasesService.caseFieldValue = this.caseField?.value || [];
     let labelField = document.getElementsByClassName('govuk-heading-l');
     if (labelField && labelField.length) {
       labelField[0].replaceWith('');
@@ -72,7 +72,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   }
 
   public reloadCurrentRoute(): void {
-    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseJurisdictionID, this.linkedCasesService.caseDetails.case_type, this.linkedCasesService.caseDetails.case_id], { fragment: 'Linked cases' });
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id], { fragment: 'Linked cases' });
   }
 
   public getFailureLinkedToNotification(evt): void {

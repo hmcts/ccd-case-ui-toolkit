@@ -18,15 +18,13 @@ describe('EventStartGuard', () => {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
       task_title: 'Some lovely task name',
       dueDate: '2021-05-20T16:00:00.000+0000',
-      description: '[End the appeal](/cases/case-details/${[JURISDICTION]}/${[CASE_TYPE]}/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
+      description: '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
       location_name: 'Newcastle',
       location_id: '366796',
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
       permissions: [],
-      jurisdiction: 'TestJurisdiction',
-      case_type_id: 'TestCaseType'
     }
   ];
 
@@ -101,14 +99,12 @@ describe('EventStartGuard', () => {
   it('canActivate should navigate to event-start if task is required for event', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
     const route = createActivatedRouteSnapshot('1620409659381330', 'eventId');
-    guard.jurisdiction = 'jid';
-    guard.caseType = 'ctid';
     const payload: TaskPayload = { task_required_for_event: true} as TaskPayload;
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(false);
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/jid/ctid/1620409659381330/event-start`], { queryParams: { caseId: '1620409659381330', eventId: 'eventId', taskId: undefined } });
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1620409659381330/event-start'], { queryParams: { caseId: '1620409659381330', eventId: 'eventId', taskId: undefined } });
     });
   });
 
@@ -177,12 +173,10 @@ describe('EventStartGuard', () => {
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
-      guard.jurisdiction = 'jid';
-      guard.caseType = 'ctid';
       const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null, null, null)).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/jid/ctid/${caseId}/multiple-tasks-exist`]);
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
@@ -247,7 +241,7 @@ describe('EventStartGuard - error', () => {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
       task_title: 'Some lovely task name',
       dueDate: '2021-05-20T16:00:00.000+0000',
-      description: '[End the appeal](/cases/case-details/${[JURISDICTION]}/${[CASE_TYPE]}/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
+      description: '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
       location_name: 'Newcastle',
       location_id: '366796',
       case_id: '1620409659381330',

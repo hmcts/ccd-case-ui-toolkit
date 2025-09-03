@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 7.2.23-srt-rc1
-**EXUI-3431** Bug fixes for EXUI-477 / 2744 / 2761 / 2786 / 2801 / 2900 / 3003 / 3005 / 3044 / 3045 / 3066
+### Version 7.2.23-srt-rc5
+**EXUI-3431** Bug fixes for EXUI-477 / 2786 / 2801 / 2900 
 
 ### Version 7.2.38
 **EXUI-2953** Query Management - Multiple follow up query functionality

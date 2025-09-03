@@ -20,9 +20,7 @@ describe('BeforeYouStartComponent', () => {
     serverLinkedApiError: null,
     hasContinuedFromStart: false,
     casesToUnlink: [],
-    initialCaseLinks: [],
-    caseJurisdictionID: 'TEST_JURISDICTION',
-    caseDetails: { case_type: 'TEST_CASE_TYPE' },
+    initialCaseLinks: []
   };
 
   const mockRouter = {
