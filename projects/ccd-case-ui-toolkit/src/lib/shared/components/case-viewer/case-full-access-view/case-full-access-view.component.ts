@@ -38,6 +38,7 @@ import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { MODES } from '../../../services/activity/utils';
 
 
 @Component({
@@ -72,7 +73,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public socketConnectSub: Subscription;
-  public caseSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
   public message: string;
   public subscription: Subscription;

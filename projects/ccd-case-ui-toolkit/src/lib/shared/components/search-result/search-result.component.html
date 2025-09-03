@@ -116,7 +116,7 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
             <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
           </div>
