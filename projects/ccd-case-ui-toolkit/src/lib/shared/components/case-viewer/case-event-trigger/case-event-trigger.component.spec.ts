@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
@@ -6,12 +7,11 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, ActivitySockerService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 import { EventTriggerResolver } from '../services';
-import { MODES } from '../../../services/activity/utils';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -188,6 +188,7 @@ describe('CaseEventTriggerComponent', () => {
           fieldWriteComponentMock,
           CaseReferencePipe
         ],
+         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: CaseNotifier, useValue: caseNotifier },
@@ -199,7 +200,9 @@ describe('CaseEventTriggerComponent', () => {
           { provide: ActivityService, useValue: activityService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: LoadingService, useValue: loadingService },
-          { provide: EventTriggerResolver, useValue: eventResolverService }
+          { provide: EventTriggerResolver, useValue: eventResolverService },
+          { provide: CasesService, useValue: casesService },
+          { provide: ActivitySocketService, useValue: activitySocketService }
         ]
       })
       .compileComponents();
@@ -210,15 +213,18 @@ describe('CaseEventTriggerComponent', () => {
     fixture.detectChanges();
   }));
 
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  }
+);
+
   it('should edit case with sanitised data when form submitted', () => {
     component.submit()(SANITISED_EDIT_FORM);
-
     expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM);
   });
 
   it('should edit case with sanitised data when form validated', () => {
     component.validate()(SANITISED_EDIT_FORM, PAGE_ID);
-
     expect(casesService.validateCase).toHaveBeenCalledWith(CASE_DETAILS.case_type.id, SANITISED_EDIT_FORM, PAGE_ID);
   });
 
@@ -392,4 +398,4 @@ describe('CaseEventTriggerComponent', () => {
     expect(loadingService.hasSharedSpinner).toBeTruthy();
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   });
-});
+ });

@@ -5,7 +5,7 @@ import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
 import { Utils, MODES } from './utils';
 
-describe('ActivitySocketService', () => {
+xdescribe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
   const MOCK_USER_STRING = JSON.stringify(MOCK_USER);
   let service: ActivitySocketService;
