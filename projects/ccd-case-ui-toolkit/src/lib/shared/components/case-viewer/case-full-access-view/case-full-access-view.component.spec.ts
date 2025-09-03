@@ -1275,13 +1275,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                       path: ':id',
                       children: [
                         {
-                          path: ':caseType',
-                          children: [
-                            {
-                              path: 'tasks',
-                              component: TasksContainerComponent
-                            }
-                          ]
+                          path: 'tasks',
+                          component: TasksContainerComponent
                         }
                       ]
                     }
@@ -1775,7 +1770,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                   path: 'case-details',
                   children: [
                     {
-                      path: 'id#overview',
+                      path: ':id#overview',
                       children: [
                         {
                           path: 'tasks',
@@ -2073,13 +2068,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
                       path: ':id#overview',
                       children: [
                         {
-                          path: ':caseType',
-                          children: [
-                            {
-                              path: 'tasks',
-                              component: TasksContainerComponent
-                            }
-                          ]
+                          path: 'tasks',
+                          component: TasksContainerComponent
                         }
                       ]
                     }

@@ -99,7 +99,7 @@ describe('EventStartGuard', () => {
   it('canActivate should navigate to event-start if task is required for event', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
     const route = createActivatedRouteSnapshot('1620409659381330', 'eventId');
-    const payload: TaskPayload = { task_required_for_event: true} as TaskPayload;
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {

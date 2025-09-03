@@ -236,6 +236,7 @@ describe('EventStartStateMachineService', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/task-assigned`],
       { queryParams: context.tasks[0], relativeTo: context.route });
   });
+
   it('should action no task available', () => {
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);

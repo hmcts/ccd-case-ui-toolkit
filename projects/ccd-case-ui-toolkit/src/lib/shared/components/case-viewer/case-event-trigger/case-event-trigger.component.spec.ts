@@ -380,5 +380,5 @@ describe('CaseEventTriggerComponent', () => {
     component.ngOnInit();
     expect(loadingService.hasSharedSpinner).toBeTruthy();
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
-  })
+  });
 });
