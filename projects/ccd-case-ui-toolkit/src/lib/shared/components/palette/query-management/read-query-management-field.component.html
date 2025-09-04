@@ -14,26 +14,35 @@
   ></ccd-query-details>
 
   <ng-container *ngIf="!isInternalUser() && !isQueryClosed">
-    <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
+    <ng-container *ngIf="(messageType && messageType === followUpQuery  && isMultipleFollowUpEnabled) || (messageType && messageType === respondToQuery); else sequentialQuery">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
         {{ 'Ask a follow-up question' | rpxTranslate }}
       </button>
     </ng-container>
+    <ng-template #sequentialQuery>
+      <ng-container *ngIf="query?.children?.length > 0 && query?.children?.length % 2 === 1; else queryIsInReview">
+        <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
+                [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
+          {{ 'Ask a follow-up question' | rpxTranslate }}
+        </button>
+      </ng-container>
 
-    <ng-template #queryIsInReview>
-      <div>
-        <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
-        <p>{{ 'Our team will read your query and respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
-      </div>
+      <ng-template #queryIsInReview>
+        <div>
+          <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
+          <p>{{ 'Our team will read your query and respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
+        </div>
+      </ng-template>
     </ng-template>
+
   </ng-container>
   <ng-container *ngIf="isQueryClosed">
     <div class="govuk-warning-text">
       <span aria-hidden="true" class="govuk-warning-text__icon">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-visually-hidden">Warning</span>
-        <p class="qm-service-message govuk-!-font-weight-bold">{{ 'This query has been closed by court staff.' | rpxTranslate }}</p>
+        <p class="qm-service-message govuk-!-font-weight-bold">{{ 'This query has been closed by HMCTS staff.' | rpxTranslate }}</p>
       </strong>
     </div>
   </ng-container>
