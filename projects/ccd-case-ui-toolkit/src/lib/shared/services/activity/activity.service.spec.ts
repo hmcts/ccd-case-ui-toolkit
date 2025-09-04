@@ -1,4 +1,4 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { SessionStorageService } from '../session';
@@ -14,14 +14,14 @@ const response = {
   map: () => ({})
 };
 
-xdescribe('ActivityService', () => {
+describe('ActivityService', () => {
   beforeEach((() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    httpService.get.and.returnValue(Observable.of(response));
-    httpService.post.and.returnValue(Observable.of(response));
+    httpService.get.and.returnValue(of(response));
+    httpService.post.and.returnValue(of(response));
     sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
@@ -100,13 +100,13 @@ xdescribe('ActivityService', () => {
   });
 });
 
-  xit('should access AppConfig and HttpService for postActivity', () => {
+  it('should access AppConfig and HttpService for postActivity', () => {
     activityService.postActivity('1111', 'edit');
     expect(httpService.post).toHaveBeenCalled();
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
   });
 
-  xit('should verify user authorization once', () => {
+  it('should verify user authorization once', () => {
     activityService.verifyUserIsAuthorized();
     activityService.verifyUserIsAuthorized();
 
@@ -121,7 +121,7 @@ xdescribe('ActivityService', () => {
     expect(activityService.isEnabled).toBeFalsy();
   });
 
-  xit('should return enabled when activity url is not emty', () => {
+  it('should return enabled when activity url is not emty', () => {
     appConfig.getActivityUrl.and.returnValue('www');
     activityService['userAuthorised'] = true;
 
@@ -139,7 +139,7 @@ xdescribe('ActivityService', () => {
     expect(activityService.isEnabled).toBeFalsy();
   });
 
-  xit('should return enabled when error different than 403', () => {
+  it('should return enabled when error different than 403', () => {
     const error = {
       status: 400
     };

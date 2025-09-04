@@ -1582,7 +1582,7 @@ describe('CaseEditComponent', () => {
     });
   });
 
-  xdescribe('profile not available in route', () => {
+  describe('profile not available in route', () => {
     const USER = {
       idam: {
         id: 'userId',

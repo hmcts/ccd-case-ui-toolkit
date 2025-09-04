@@ -23,6 +23,8 @@ import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemCompa
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
+import { MODES } from '../../services/activity/utils';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 
 @Component({
   selector: 'ccd-field-read',
@@ -33,7 +35,7 @@ class FieldReadComponent {
   public caseField: string;
 }
 
-xdescribe('SearchResultComponent', () => {
+describe('SearchResultComponent', () => {
   describe('with results', () => {
     const JURISDICTION: Jurisdiction = {
       id: 'TEST',
@@ -175,9 +177,13 @@ xdescribe('SearchResultComponent', () => {
     });
 
     beforeEach(waitForAsync(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
-      activityService.isEnabled = true;
+         activityService = {
+          mode: MODES.polling,
+          modeSubject: new BehaviorSubject<string>(MODES.polling),
+          isEnabled: true,
+          postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
+          errorSource: new Subject<any>()
+        };
 
       searchHandler = createSpyObj('searchHandler', ['applyFilters', 'navigateToCase']);
 
@@ -796,10 +802,17 @@ xdescribe('SearchResultComponent', () => {
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
+    
 
     beforeEach(waitForAsync(() => {
-      activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
-      activityService.postActivity.and.returnValue(switchMap);
+       activityService = {
+          mode: MODES.polling,
+          modeSubject: new BehaviorSubject<string>(MODES.polling),
+          isEnabled: true,
+          postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
+          errorSource: new Subject<any>()
+        };
+
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
       TestBed
