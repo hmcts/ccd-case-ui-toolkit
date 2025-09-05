@@ -118,7 +118,41 @@ describe('ActivitySocketService', () => {
       activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
-
   });
 
+  describe('watchCases', () => {
+    beforeEach(() => {
+      activityService.mode = MODES.socket;
+    });
+    it('should emit a "watch" event with the case IDs', () => {
+      spyOn(service.socket, 'emit');
+      const caseIds = ['case1', 'case2', 'case3'];
+      service.watchCases(caseIds);
+      expect(service.socket.emit).toHaveBeenCalledWith('watch', { caseIds });
+    });
+  });
+
+  describe('viewCase', () => {
+    beforeEach(() => {
+      activityService.mode = MODES.socket;
+    });
+    it('should emit a "view" event with the case ID', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case42';
+      service.viewCase(caseId);
+      expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
+    });
+  });
+
+  describe('editCase', () => {
+    beforeEach(() => {
+      activityService.mode = MODES.socket;
+    });
+    it('should emit an "edit" event with the case ID', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case42';
+      service.editCase(caseId);
+      expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
+    });
+  });
 });

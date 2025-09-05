@@ -830,6 +830,24 @@ it('should set case view tab based on navigation end event', () => {
     expect(header.componentInstance.caseDetails).toEqual(caseViewData);
   });
 
+  describe('isFieldToHaveNoLabel    ', () => {
+    it('should return true when field is a complex field of type CaseFlags and mode is EXTERNAL', () => {
+      const field = new CaseField();
+      field.field_type = { type: 'ComponentLauncher' } as any;
+      field.display_context_parameter = '#ARGUMENT(CaseFileView)' as any;
+      expect(component.isFieldToHaveNoLabel(field)).toBeTruthy();
+    });
+
+    it('should return false when field is a complex field of type CaseFlags and mode is INTERNAL', () => {
+      const field = new CaseField();
+      field.field_type = { type: 'CaseFlags' } as any;
+
+      expect(component.isFieldToHaveNoLabel(field)).toBeFalsy();
+    });
+  });
+
+
+
   describe('tabs', () => {
     it('should render the correct tabs based on show_condition', () => {
       // we expect address tab not to be rendered
