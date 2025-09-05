@@ -82,8 +82,7 @@ describe('WriteNumberFieldComponent', () => {
   it('should render text input element linked to formControl', () => {
     const input = de.query($INPUT);
 
-    expect(input.nativeElement.getAttribute('type')).toBe('text');
-    expect(input.nativeElement.getAttribute('inputmode')).toBe('decimal');
+    expect(input.nativeElement.getAttribute('type')).toBe('number');
     expect(input.componentInstance.formControl).toEqual(component.numberControl);
   });
 });
