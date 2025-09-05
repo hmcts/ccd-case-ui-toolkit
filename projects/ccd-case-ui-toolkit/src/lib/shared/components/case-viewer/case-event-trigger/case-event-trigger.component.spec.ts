@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
@@ -12,6 +12,7 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 import { EventTriggerResolver } from '../services';
+import { MODES } from '../../../services/activity/utils';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -169,6 +170,14 @@ describe('CaseEventTriggerComponent', () => {
     };
     router.navigate.and.returnValue({ then: (f) => f() });
     router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: finalUrl } });
+
+    activityService = {
+              mode: MODES.polling,
+              modeSubject: new BehaviorSubject<string>(MODES.polling),
+              isEnabled: true,
+              postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
+              errorSource: new Subject<any>()
+            };
 
     TestBed
       .configureTestingModule({
@@ -397,5 +406,12 @@ describe('CaseEventTriggerComponent', () => {
     component.ngOnInit();
     expect(loadingService.hasSharedSpinner).toBeTruthy();
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
+  });
+
+  it('should call postEditActivity of activityPollingService with relavant case ID when calling postEditActivity from component', () => {
+    component.postEditActivity();
+
+    // Assert the service was called
+    expect(activityPollingService.postEditActivity).toHaveBeenCalledWith(CASE_DETAILS.case_id);
   });
  });

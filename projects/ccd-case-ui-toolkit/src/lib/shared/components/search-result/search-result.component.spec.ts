@@ -573,6 +573,11 @@ describe('SearchResultComponent', () => {
       expect(component.selectedCases.length).toEqual(4);
     });
 
+    it('should return false for allOnPageSelected if no cases selected', () => {
+      component.selectedCases = [];
+      expect(component.allOnPageSelected()).toBeFalsy();
+    });
+
     it('should be able to unselect all', () => {
       component.selectedCases = [
         {
