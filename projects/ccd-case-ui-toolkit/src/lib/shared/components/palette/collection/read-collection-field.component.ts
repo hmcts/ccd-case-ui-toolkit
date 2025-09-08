@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
+import { CaseField } from '../../../../shared/domain/definition/case-field.model';
 
 @Component({
   selector: 'ccd-read-collection-field',
@@ -9,6 +10,8 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 })
 export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
+  @Input()
+  public caseFields: CaseField[] = [];
   public isDisplayContextParameterAvailable = false;
 
   public ngOnInit(): void {
