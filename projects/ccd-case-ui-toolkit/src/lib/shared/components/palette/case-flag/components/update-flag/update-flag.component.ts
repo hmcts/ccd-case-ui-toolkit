@@ -36,7 +36,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
   public validStatusProgressions: string[];
   public readonly caseFlagStatusEnum = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
-  private readonly textMaxCharLimit = 200;
+  private readonly textMaxCharLimit = 1000;
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
   private flagDetail: FlagDetail;
   public caseFlagDisplayContextParameter = CaseFlagDisplayContextParameter;
