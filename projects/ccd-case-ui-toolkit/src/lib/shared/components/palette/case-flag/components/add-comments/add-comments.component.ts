@@ -25,7 +25,7 @@ export class AddCommentsComponent extends AbstractJourneyComponent implements On
   public addCommentsHint: AddCommentsStep;
   public addCommentsStepEnum = AddCommentsStep;
   public readonly flagCommentsControlName = 'flagComments';
-  private readonly commentsMaxCharLimit = 200;
+  private readonly commentsMaxCharLimit = 1000;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
 

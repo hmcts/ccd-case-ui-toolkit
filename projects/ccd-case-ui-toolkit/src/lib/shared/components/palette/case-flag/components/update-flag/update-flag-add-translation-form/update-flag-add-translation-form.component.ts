@@ -29,7 +29,7 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
   public flagCommentsWelshCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public updateFlagAddTranslationStepEnum = UpdateFlagAddTranslationStep;
   public readonly caseFlagFormFields = CaseFlagFormFields;
-  private readonly textMaxCharLimit = 200;
+  private readonly textMaxCharLimit = 1000;
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
