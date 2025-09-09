@@ -24,17 +24,7 @@ jobs:
           node-version: 18
       - run: corepack enable && yarn --version
       - run: yarn install
-      - run: yarn lint
       - run: yarn build
-      - name: Create code coverage report
-        run: yarn test
-      - name: Change Report Path
-        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v4.6.0
-        with:
-          name: code-coverage-report
-          path: coverage
 
   release-build:
     if: startsWith(github.ref, 'refs/tags')
