@@ -14,7 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import clone from 'just-clone';
 import { MockComponent } from 'ng2-mock-component';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
@@ -30,6 +30,7 @@ import { HttpError } from '../../../domain/http';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
 import {
   ActivityService,
+  ActivitySocketService,
   AuthService,
   CaseFieldService,
   ErrorNotifierService,
@@ -53,13 +54,14 @@ import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
+import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, CasesService, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
+import { MODES } from '../../../services/activity/utils';
 
 @Component({
   // tslint:disable-next-line
@@ -135,8 +137,8 @@ const markdownComponentMock: any = MockComponent({
 });
 
 const caseActivityComponentMock: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 const fieldReadComponentMock: any = MockComponent({
@@ -589,14 +591,16 @@ let de: DebugElement;
 
 let orderService: OrderService;
 let mockCallbackErrorSubject: any;
-let activityService: jasmine.SpyObj<ActivityPollingService>;
+let activityService: any;
 let draftService: jasmine.SpyObj<DraftService>;
 let alertService: jasmine.SpyObj<AlertService>;
+let casesService: jasmine.SpyObj<CasesService>;
 let dialog: jasmine.SpyObj<MatDialog>;
 let matDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
 let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
+let activitySocketService: any;
 
 describe('CaseFullAccessViewComponent', () => {
   let caseViewData: CaseView;
@@ -619,6 +623,18 @@ describe('CaseFullAccessViewComponent', () => {
   let errorSource: Subject<any>;
   beforeEach((() => {
     mockRouterEvents = of(new NavigationEnd(1, 'url', 'urlAfterRedirects'));
+
+    casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
+    casesService.createEvent.and.returnValue(of(true));
+    casesService.validateCase.and.returnValue(of(true));
+
+    activitySocketService = {
+          editCalls: [],
+          connected: new BehaviorSubject<boolean>(false),
+          editCase: (caseId: string) => {
+            activitySocketService.editCalls.push(caseId);
+          }
+    };
 
     router = {
       events: mockRouterEvents,
@@ -654,10 +670,17 @@ describe('CaseFullAccessViewComponent', () => {
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
+   
+    // activityService = jasmine.createSpyObj<ActivityService>('activityService', ['modeSubject']);
+    // activityService.modeSubject.and.returnValue(new BehaviorSubject<string>(MODES.polling));
 
-    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity', 'isEnabled']);
-    activityService.postViewActivity.and.returnValue(of());
-    activityService.isEnabled.valueOf();
+    activityService = {
+      mode: MODES.polling,
+      modeSubject: new BehaviorSubject<string>(MODES.polling),
+      isEnabled: true,
+      postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
+      errorSource: new Subject<any>()
+    };
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
@@ -704,6 +727,10 @@ describe('CaseFullAccessViewComponent', () => {
           { provide: MatDialog, useValue: dialog },
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ActivityService, useValue: activityService },
+          // { provide: ActivityService, useValue: jasmine.createSpyObj('ActivityService', ['method1', 'method2']) },
+          { provide: CasesService, useValue: casesService },
+          { provide: ActivitySocketService, useValue: activitySocketService },
           DeleteOrCancelDialogComponent,
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
@@ -738,7 +765,7 @@ describe('CaseFullAccessViewComponent', () => {
     router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
-  
+
 it('should set case view tab based on navigation end event', () => {
     // Mock tabGroup._tabs with some dummy values for testing
     component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
@@ -802,6 +829,24 @@ it('should set case view tab based on navigation end event', () => {
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(caseViewData);
   });
+
+  describe('isFieldToHaveNoLabel    ', () => {
+    it('should return true when field is a complex field of type CaseFlags and mode is EXTERNAL', () => {
+      const field = new CaseField();
+      field.field_type = { type: 'ComponentLauncher' } as any;
+      field.display_context_parameter = '#ARGUMENT(CaseFileView)' as any;
+      expect(component.isFieldToHaveNoLabel(field)).toBeTruthy();
+    });
+
+    it('should return false when field is a complex field of type CaseFlags and mode is INTERNAL', () => {
+      const field = new CaseField();
+      field.field_type = { type: 'CaseFlags' } as any;
+
+      expect(component.isFieldToHaveNoLabel(field)).toBeFalsy();
+    });
+  });
+
+
 
   describe('tabs', () => {
     it('should render the correct tabs based on show_condition', () => {
@@ -873,13 +918,13 @@ it('should set case view tab based on navigation end event', () => {
       component.errorSubscription = new Subscription();
       component.subscription = new Subscription();
       component['subs'] = [new Subscription(), new Subscription()];
-  
+
       spyOn(component.activitySubscription, 'unsubscribe');
       spyOn(component.caseSubscription, 'unsubscribe');
       spyOn(component.errorSubscription, 'unsubscribe');
       spyOn(component.subscription, 'unsubscribe');
       component['subs'].forEach(sub => spyOn(sub, 'unsubscribe'));
-  
+
       component.ngOnDestroy();
       component['activityPollingService'].isEnabled
       if (component['activityPollingService'].isEnabled) {
@@ -896,9 +941,9 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
       component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
     });
-    
-  
-    
+
+
+
 
     xit('should render each compound field without label as a cell spanning 2 columns', () => {
       const headers = de
@@ -2689,12 +2734,21 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
     expect(selectedTab.id).toEqual('HistoryTab');
   });
 });
-xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
+
+describe('CaseFullAccessViewComponent - print and event selector disabled', () => {
+  const orderServiceStub = {
+    // return the input if it's an array; otherwise return []
+    sort: (items?: any[], _order?: number, _field?: string) =>
+      Array.isArray(items) ? items : [],
+    sortFields: (fields?: any[]) =>
+      Array.isArray(fields) ? fields : []
+  };
+
   beforeEach((() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
     let convertHrefToRouterMockService: jasmine.SpyObj<ConvertHrefToRouterService>;
-  let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
+    let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
 
     draftService = createSpyObj('draftService', ['deleteDraft']);
     draftService.deleteDraft.and.returnValue(of({}));
@@ -2751,8 +2805,9 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           { provide: ErrorNotifierService, useValue: errorNotifierService },
           { provide: CaseNotifier, useValue: caseNotifier },
           { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
+          { provide: OrderService, useValue: orderServiceStub },
           { provide: ActivityPollingService, useValue: activityService },
+          { provide: ActivityService, useValue: jasmine.createSpyObj('ActivityService', ['method1', 'method2']) },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
           { provide: MatDialog, useValue: dialog },
@@ -2764,7 +2819,22 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           DeleteOrCancelDialogComponent,
           LoadingService,
           { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
-          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
+          { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) },
+            // ⬇️ Prevent Angular from constructing the real Activity graph/socket stack
+          { provide: ActivityService, useValue: {
+              init: () => {},
+              start: () => {},
+              stop: () => {},
+              getViewers: () => of([]),
+              activity$: of([]),
+            }
+          },
+          { provide: ActivitySocketService, useValue: {
+              connect: () => of(null),
+              disconnect: () => {},
+              messages$: of(null),
+            }
+          }
         ]
       })
       .compileComponents();
@@ -2779,7 +2849,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     fixture.detectChanges();
   }));
 
-  it('should not display print and event selector if disabled via inputs', () => {
+  xit('should not display print and event selector if disabled via inputs', () => {
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     const printLink = de.query($PRINT_LINK);
 
