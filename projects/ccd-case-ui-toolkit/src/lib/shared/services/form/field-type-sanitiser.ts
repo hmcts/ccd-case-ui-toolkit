@@ -76,6 +76,7 @@ export class FieldTypeSanitiser {
       return { ...field, field_type: { ...field?.field_type } } as CaseField;
     });
   }
+
   private checkNestedDynamicList(caseField: CaseField, fieldData: any = null): void {
     caseField.field_type.complex_fields.forEach((complexField) => {
       if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {

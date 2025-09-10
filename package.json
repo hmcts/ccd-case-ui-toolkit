@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.36-3044-2761-rc1",
+  "version": "7.2.41-3044-2761-rc1",
   "engines": {
     "node": ">=18.19.0"
   },
@@ -63,7 +63,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.2.18",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.1.4",
+    "@hmcts/media-viewer": "4.1.6",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -71,7 +71,7 @@
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
-    "govuk-frontend": "^4.2.0",
+    "govuk-frontend": "^4.9.0",
     "json-server": "^0.15.1",
     "lz-string": "^1.5.0",
     "marked": "^12.0.1",
@@ -86,12 +86,11 @@
     "pegjs": "^0.10.0",
     "prism": "^4.1.2",
     "prismjs": "^1.29.0",
-    "rpx-xui-translation": "1.1.0",
+    "rpx-xui-translation": "1.1.2",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
-    "util": "^0.12.5",
     "yargs": "17.7.2",
     "yargs-parser": "^21.1.1",
     "zone.js": "^0.14.10"
