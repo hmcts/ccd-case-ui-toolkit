@@ -16,7 +16,7 @@
             {{case.caseName}}  <br> {{case.caseReference | ccdCaseReference}}
           </td>
           <td class="govuk-table__cell">
-            <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
+            <a href="#" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange(); $event.preventDefault()">Change</a>
           </td>
         </tr>
         <tr class="govuk-table__row" *ngIf="!casesToUnlink.length">
@@ -55,7 +55,7 @@
           </td>
           <td class="govuk-table__cell"></td>
           <td class="govuk-table__cell" *ngIf="isLinkCasesJourney">
-            <a href="javascript:void(0)" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange()">Change</a>
+            <a href="#" class="govuk-link govuk-link--no-visited-state float-right" (click)="onChange(); $event.preventDefault()">Change</a>
           </td>
         </tr>
         <tr class="govuk-table__row" *ngIf="!linkedCases.length">
