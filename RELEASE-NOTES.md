@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.2.41
+**EXUI-3323** Fix translation of non-translatable strings
+
+### Version 7.2.40
+**EXUI-3431** Bug fixes for EXUI-477 / 2786 / 2801 / 2900
+
 ### Version 7.2.39
 **EXUI-3453** MV - Slowness when changing pages
 
