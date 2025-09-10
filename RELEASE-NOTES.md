@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.42
+**EXUI-2614** Remove LaunchDarkly feature flags - Group 3
+
 ### Version 7.2.41
 **EXUI-3323** Fix translation of non-translatable strings
 
