@@ -65,7 +65,6 @@ const APP_CONFIG: AbstractAppConfig = {
   getWorkAllocationApiUrl: () => 'workAllocationApiUrl',
   getUserInfoApiUrl: () => 'userInfoApiUrl',
   getAccessManagementBasicViewMock: () => ({}),
-  getAccessManagementMode: () => true,
   getAccessManagementRequestReviewMockModel: () => ({}),
   getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
   getLocationRefApiUrl: () => 'locationRefApiUrl',

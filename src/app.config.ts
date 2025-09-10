@@ -71,10 +71,6 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
 
-  getAccessManagementMode(): boolean {
-    return undefined;
-  }
-
   getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }

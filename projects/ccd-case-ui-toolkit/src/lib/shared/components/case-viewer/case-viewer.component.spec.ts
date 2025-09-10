@@ -134,7 +134,6 @@ describe('CaseViewerComponent', () => {
   let casesService: any;
   casesService = createSpyObj('casesService', ['getCaseViewV2']);
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
-    'getAccessManagementMode',
     'getAccessManagementBasicViewMock'
   ]);
 
@@ -144,7 +143,6 @@ describe('CaseViewerComponent', () => {
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = {} as Data;
 
-  mockAppConfig.getAccessManagementMode.and.returnValue(false);
   mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({ active: false });
 
   beforeEach(waitForAsync(() => {
@@ -225,7 +223,6 @@ describe('CaseViewerComponent', () => {
 
     it('should return true if feature toggling is true and user has access other than CHALLENGED or SPECIFIC', () => {
       mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
-      mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.hasStandardAccess()).toBeTruthy();
@@ -238,9 +235,8 @@ describe('CaseViewerComponent', () => {
       CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
 
       mockActivatedRoute.snapshot.data = {
-        case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
+        case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS
       } as Data;
-      mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.hasStandardAccess()).toBeFalsy();
@@ -254,9 +250,8 @@ describe('CaseViewerComponent', () => {
       CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
 
       mockActivatedRoute.snapshot.data = {
-        case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
+        case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS
       } as Data;
-      mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.hasStandardAccess()).toBeTruthy();

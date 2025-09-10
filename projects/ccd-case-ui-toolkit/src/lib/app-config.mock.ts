@@ -163,10 +163,6 @@ export class AppMockConfig implements AbstractAppConfig {
     return null;
   }
 
-  public getAccessManagementMode(): boolean {
-    return false;
-  }
-
   public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return {};
   }

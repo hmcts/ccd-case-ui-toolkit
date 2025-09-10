@@ -80,10 +80,6 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
 
-  public getAccessManagementMode(): boolean {
-    return undefined;
-  }
-
   public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
@@ -161,7 +157,6 @@ export class CaseEditorConfig {
   public work_allocation_api_url: string;
   public user_info_api_url: string;
   public wa_service_config?: any;
-  public access_management_mode?: boolean;
   public access_management_basic_view_mock?: {
     active?: boolean,
     basicFields?: {
