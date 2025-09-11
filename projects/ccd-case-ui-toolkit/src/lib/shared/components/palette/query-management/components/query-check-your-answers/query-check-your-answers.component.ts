@@ -49,6 +49,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public eventData: CaseEventTrigger | null = null;
+  @Input() public multipleFollowUpFeature: boolean;
   @Input() public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();

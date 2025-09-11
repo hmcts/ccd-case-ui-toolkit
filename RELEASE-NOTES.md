@@ -1,7 +1,22 @@
 ## RELEASE NOTES
 
-### Version 7.2.37-exui-2916-4
+### Version 7.2.42-exui-2916
 **EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
+
+### Version 7.2.42
+**EXUI-2614** Remove LaunchDarkly feature flags - Group 3
+
+### Version 7.2.41
+**EXUI-3323** Fix translation of non-translatable strings
+
+### Version 7.2.40
+**EXUI-3431** Bug fixes for EXUI-477 / 2786 / 2801 / 2900
+
+### Version 7.2.39
+**EXUI-3453** MV - Slowness when changing pages
+
+### Version 7.2.38
+**EXUI-2953** Query Management - Multiple follow up query functionality
 
 ### Version 7.2.37
 **EXUI-3318** Media Viewer - Logic around handling element transforms for redactions
