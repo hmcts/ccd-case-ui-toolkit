@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -89,7 +89,7 @@ class TasksContainerComponent {
 
 @Component({
   selector: 'ccd-event-trigger',
-  template: ``
+  template: ''
 })
 class EventTriggerComponent {
   @Input()
@@ -110,7 +110,7 @@ class EventTriggerComponent {
 
 @Component({
   selector: 'ccd-callback-errors',
-  template: ``
+  template: ''
 })
 class CallbackErrorsComponent {
   @Input()
@@ -738,7 +738,7 @@ describe('CaseFullAccessViewComponent', () => {
     router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
-  
+
 it('should set case view tab based on navigation end event', () => {
     // Mock tabGroup._tabs with some dummy values for testing
     component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
@@ -873,13 +873,13 @@ it('should set case view tab based on navigation end event', () => {
       component.errorSubscription = new Subscription();
       component.subscription = new Subscription();
       component['subs'] = [new Subscription(), new Subscription()];
-  
+
       spyOn(component.activitySubscription, 'unsubscribe');
       spyOn(component.caseSubscription, 'unsubscribe');
       spyOn(component.errorSubscription, 'unsubscribe');
       spyOn(component.subscription, 'unsubscribe');
       component['subs'].forEach(sub => spyOn(sub, 'unsubscribe'));
-  
+
       component.ngOnDestroy();
       component['activityPollingService'].isEnabled
       if (component['activityPollingService'].isEnabled) {
@@ -896,9 +896,9 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
       component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
     });
-    
-  
-    
+
+
+
 
     xit('should render each compound field without label as a cell spanning 2 columns', () => {
       const headers = de
@@ -1365,7 +1365,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   }));
 
   it('should render two prepended tabs', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = d.query(By.css('mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(6);
   });

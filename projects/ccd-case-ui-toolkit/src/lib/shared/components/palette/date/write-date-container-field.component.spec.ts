@@ -1,10 +1,10 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RpxTranslationService } from 'rpx-xui-translation';
 
@@ -17,6 +17,10 @@ import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.comp
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateContainerFieldComponent } from './write-date-container-field.component';
 import { WriteDateFieldComponent } from './write-date-field.component';
+// import { MomentDateAdapter } from '@angular/material-moment-adapter';
+// import { NgxMatMomentAdapter } from '@ngxmc/datetime-picker-moment-adapter';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -40,14 +44,13 @@ describe('WriteDateContainerFieldComponent', () => {
   let component: WriteDateContainerFieldComponent;
   let de: DebugElement;
   const caseFieldService = new CaseFieldService();
-
+  // class MockNgxMatDateAdapter {
+  //   // Add only the methods your component/test actually calls, or leave empty if not needed
+  // }
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [
-          NgxMatDatetimePickerModule,
-          NgxMatTimepickerModule,
-          NgxMatNativeDateModule,
           NoopAnimationsModule,
           MatFormFieldModule,
           MatInputModule,
@@ -63,9 +66,13 @@ describe('WriteDateContainerFieldComponent', () => {
           FormatTranslatorService,
           { provide: CaseFieldService, useValue: caseFieldService },
           {
-            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate'])
+            provide: RpxTranslationService,
+            useValue: jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'translate'])
           },
+          { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+          { provide: MAT_DATE_FORMATS, useValue: { parse: {}, display: {} } },
+          { provide: MAT_DATE_FORMATS, useValue: { parse: {}, display: {} } },
+          { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {} },
         ]
       })
       .compileComponents();

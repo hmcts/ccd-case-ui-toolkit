@@ -36,7 +36,7 @@ export abstract class AbstractFormFieldComponent {
     const existing = container.controls[this.caseField.id];
     // update the field value which has been set in mid-event call back
     if (existing) {
-      if(existing.value === null && this.caseField?.value) {
+      if (existing.value === null && this.caseField?.value) {
         existing.value = this.caseField.value;
       }
       if (replace) {

@@ -1,8 +1,9 @@
-import { NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+
 import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
+import { componentWrapperDecorator, moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { FormatTranslatorService } from '../../../../shared/services/case-fields/format-translator.service';
@@ -15,30 +16,40 @@ const caseFieldType = createFieldType('date', 'Date');
 const caseField = createCaseField('id', 'Date', 'Enter your date of birth', caseFieldType, 'MANDATORY');
 const caseFieldService = new CaseFieldService();
 
-export default {
+const Meta: Meta<DatetimePickerComponent> = {
   title: 'shared/components/palette/datetime-picker/DatetimePickerComponent',
   component: DatetimePickerComponent,
   decorators: [
     moduleMetadata({
       imports: [PaletteModule, BrowserAnimationsModule],
       declarations: [StorybookComponent],
-      providers: [FormatTranslatorService,
-        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+      providers: [
+        FormatTranslatorService,
+        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
         { provide: CaseFieldService, useValue: caseFieldService }
-        ]
+      ]
     }),
-    componentWrapperDecorator(story => `<storybook-wrapper>${story}</storybook-wrapper>`),
-  ]
-} as Meta;
+    componentWrapperDecorator((story) => `<storybook-wrapper>${story}</storybook-wrapper>`)
+  ],
+  tags: ['autodocs']
+};
 
-const template: Story<DatetimePickerComponent> = (args: DatetimePickerComponent) => ({
-  props: args,
-});
+export default Meta;
 
-export const standard: Story = template.bind({});
+type Story = StoryObj<DatetimePickerComponent>;
+//
+// const template: Story<DatetimePickerComponent> = (args: DatetimePickerComponent) => ({
+//   props: args,
+// });
 
-standard.args = {
-  caseField,
-  dateControl: new FormControl(new Date())
+export const standard: Story = {
+  args: {
+    caseField,
+    dateControl: new FormControl(new Date()),
+  },
+  // If you prefer the old “template” pattern, keep it here:
+  render: (args: DatetimePickerComponent) => ({ props: args }),
 };

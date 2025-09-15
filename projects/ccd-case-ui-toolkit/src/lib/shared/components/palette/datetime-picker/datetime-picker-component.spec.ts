@@ -1,10 +1,8 @@
-import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,9 +12,17 @@ import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { FieldLabelPipe, FirstErrorPipe } from '../utils';
+import { FirstErrorPipe } from '../utils';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MomentDateAdapter,MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import {
+  NgxMatDatetimepicker,
+  NgxMatDateAdapter,
+  NgxMatDatepickerInput,
+  NgxMatDatepickerActions
+} from '@ngxmc/datetime-picker';
 
 describe('DatetimePickerComponent', () => {
   let component: DatetimePickerComponent;
@@ -46,22 +52,29 @@ describe('DatetimePickerComponent', () => {
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
         NoopAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
         MatDatepickerModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgxMatDatetimepicker,
+        NgxMatDatepickerInput,
+        NgxMatDatepickerActions
       ],
       declarations: [
-        DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
+        DatetimePickerComponent, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
       ],
       providers: [FormatTranslatorService,
-        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        {
+          provide: DateAdapter,
+          useClass: MomentDateAdapter,
+          deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+        },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: NgxMatDateAdapter, useExisting: DateAdapter },
         { provide: CaseFieldService, useValue: caseFieldService }
       ]
     })
@@ -158,18 +171,6 @@ describe('DatetimePickerComponent', () => {
 
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
-
-    const secondDateEntryParameter = 'DD+MM+YYYY ss:mm:HH';
-
-    const SECOND_CASE_FIELD: CaseField = ({
-      id: FIELD_ID,
-      label: 'X',
-      display_context: 'OPTIONAL',
-      field_type: FIELD_TYPE,
-      value: initialDateTime,
-      dateTimeEntryFormat: secondDateEntryParameter
-    }) as CaseField;
-
     // EUI-4118 - changed test to refer back to previous case field due to intermittent errors based on reactive form
     component.caseField = CASE_FIELD;
     component.ngOnInit();
@@ -349,7 +350,6 @@ describe('DatetimePickerComponent', () => {
     discardPeriodicTasks();
   }));
 
-  
   xit('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);
@@ -548,14 +548,11 @@ describe('DatetimePickerComponent', () => {
       dateTimeEntryFormat: initialDateEntryParameter
     }) as CaseField;
 
-
-
     expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
     expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
   }));
 
   it('should be able to confirm datepicker formatting is wrong', fakeAsync(() => {
-
     fixture.detectChanges();
     tick(1);
 

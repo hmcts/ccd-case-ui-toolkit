@@ -1,15 +1,20 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, NgModule, Provider, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MAT_LEGACY_DATE_LOCALE as MAT_DATE_LOCALE } from '@angular/material/legacy-core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatButtonModule } from '@angular/material/button';
+import { NgxMatDatepickerActions, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  provideMomentDateAdapter
+} from '@angular/material-moment-adapter';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
@@ -148,6 +153,7 @@ import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from 
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker/datetime-picker-utils';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -303,15 +309,12 @@ const PALETTE_COMPONENTS = [
     LabelSubstitutorModule,
     TranslatedMarkdownModule,
     MarkdownModule.forChild(),
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     MatAutocompleteModule,
-    CdkTreeModule,
-    OverlayModule,
+    MatButtonModule,
+    NgxMatDatetimepicker,
     PaymentLibModule,
     ScrollToModule.forRoot(),
     RpxTranslationModule.forChild(),
@@ -321,7 +324,9 @@ const PALETTE_COMPONENTS = [
     MediaViewerModule,
     LoadingModule,
     MarkdownComponentModule,
-    ErrorsModule
+    ErrorsModule,
+    NgxMatDatepickerInput,
+    NgxMatDatepickerActions
   ],
   declarations: [
     FixedListPipe,
@@ -336,9 +341,6 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    NgxMatTimepickerModule,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,
@@ -361,7 +363,10 @@ const PALETTE_COMPONENTS = [
     QualifyingQuestionService,
     QueryManagementUtils,
     QueryManagementService,
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    provideMomentDateAdapter(),
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }, // ← set useUtc here
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
