@@ -7,9 +7,9 @@ import { take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
 import { CaseView } from '../../../domain/case-view/case-view.model';
-import { DocumentData, FormDocument } from '../../../domain/document/document-data.model'
+import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
 import { HttpError } from '../../../domain/http/http-error.model';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service'
+import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
@@ -198,9 +198,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public getUploadedFileName(): any {
     if (this.uploadedDocument) {
       return this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).value;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   private resetUpload(): void {
@@ -223,7 +222,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private openDialog(dialogConfig): void {
     const dialogRef = this.dialog.open(DocumentDialogComponent, dialogConfig);
-    this.dialogSubscription = dialogRef.beforeClosed().subscribe(result => {
+    this.dialogSubscription = dialogRef.beforeClosed().subscribe((result) => {
       this.confirmReplaceResult = result;
       this.triggerReplace();
     });
@@ -241,6 +240,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private isUpLoadingAFile(): boolean {
     return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS;
   }
+
   private validateFormUploadedDocument(): boolean {
     if (!this.uploadedDocument) {
       return true;
@@ -280,7 +280,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
-      }
+      };
     }
 
     documentFormGroup = this.fileSecureModeOn ? {
@@ -302,7 +302,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       documentFormGroup = {
         ...documentFormGroup,
         ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
-      }
+      };
     }
 
     documentFormGroup = this.fileSecureModeOn ? {
@@ -352,12 +352,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('files', selectedFile, selectedFile.name);
     documentUpload.append('classification', 'PUBLIC');
 
-    if (this.appConfig.getDocumentSecureMode()) {
-      const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
-      const caseTypeJurisdictionId = this.jurisdictionId ? this.jurisdictionId : null;
-      documentUpload.append('caseTypeId', caseTypeId);
-      documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
-    }
+    const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
+    const caseTypeJurisdictionId = this.jurisdictionId ? this.jurisdictionId : null;
+    documentUpload.append('caseTypeId', caseTypeId);
+    documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
 
     return documentUpload;
   }

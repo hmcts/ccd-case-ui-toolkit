@@ -147,10 +147,6 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
-  public getDocumentSecureMode(): boolean {
-    return false;
-  }
-
   public getCdamExclusionList(): string {
     return '';
   }
@@ -213,10 +209,6 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getEventsToHide(): string[] {
     return [];
-  }
-
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    return true;
   }
 
   public getIcpEnable(): boolean {
