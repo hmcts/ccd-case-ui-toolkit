@@ -75,14 +75,8 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
               this.addressOptions.push(new AddressOption(address, null));
             }
           );
-          this.addressOptions.unshift(
-            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
-          );
         }, (error) => {
           console.log(`An error occurred retrieving addresses for postcode ${postcode}. ${error}`);
-          this.addressOptions.unshift(
-            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
-          );
         });
       this.addressList.setValue(undefined);
       this.refocusElement();
@@ -147,11 +141,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public buildIdPrefix(elementId: string): string {
     return `${this.idPrefix}_${elementId}`;
-  }
-
-  private defaultLabel(numberOfAddresses) {
-    return numberOfAddresses === 0 ? 'No address found'
-      : `${numberOfAddresses}${numberOfAddresses === 1 ? ' address ' : ' addresses '}found`;
   }
 
   private setFormValue() {
