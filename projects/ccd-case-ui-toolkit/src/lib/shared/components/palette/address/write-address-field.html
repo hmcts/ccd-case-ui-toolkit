@@ -21,6 +21,9 @@
         <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
           {{addressOption.description | rpxTranslate}}
         </option>
+         <!-- <option *ngFor="let addressOption of addressOptions; let i = index" [ngValue]="addressOption.value">
+          {{i === 0 ? (addressOption.description | rpxTranslate) : addressOption.description}}
+        </option> -->
       </select>
     </div>
 
