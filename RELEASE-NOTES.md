@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.2.23-exui-2761-rc2
-**EXUI-2761** url change
+### Version 7.2.42
+**EXUI-2614** Remove LaunchDarkly feature flags - Group 3
+
+### Version 7.2.41
+**EXUI-3323** Fix translation of non-translatable strings
+
+### Version 7.2.40
+**EXUI-3431** Bug fixes for EXUI-477 / 2786 / 2801 / 2900
+
+### Version 7.2.39
+**EXUI-3453** MV - Slowness when changing pages
 
 ### Version 7.2.38
 **EXUI-2953** Query Management - Multiple follow up query functionality

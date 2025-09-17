@@ -138,8 +138,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
-      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
+      documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -156,8 +155,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
-      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? document.upload_timestamp.toString() : '';
+      documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
       documents.push(documentTreeNode);
     });

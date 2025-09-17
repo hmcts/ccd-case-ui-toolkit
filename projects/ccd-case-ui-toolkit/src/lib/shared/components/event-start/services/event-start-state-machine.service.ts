@@ -159,6 +159,7 @@ export class EventStartStateMachineService {
   public entryActionForStateTaskUnAssigned(state: State, context: EventStartStateMachineContext): void {
     let navigationURL = '';
     let theQueryParams: Params = {};
+
     if (context.tasks[0].assignee) {
       // Task is assigned to some other user, navigate to task assigned error page
       navigationURL = `/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/task-assigned`;

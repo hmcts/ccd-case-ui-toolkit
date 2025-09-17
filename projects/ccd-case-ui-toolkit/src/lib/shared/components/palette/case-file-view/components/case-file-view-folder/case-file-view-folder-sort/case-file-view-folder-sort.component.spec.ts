@@ -13,7 +13,6 @@ describe('CaseFileViewFolderSortComponent', () => {
   let mockAppConfig: any;
 
   beforeEach(async () => {
-    mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getEnableCaseFileViewVersion1_1']);
     await TestBed.configureTestingModule({
       declarations: [ CaseFileViewFolderSortComponent, CaseFileViewOverlayMenuComponent ],
       imports: [ OverlayModule ],
@@ -47,16 +46,8 @@ describe('CaseFileViewFolderSortComponent', () => {
   });
 
   it('should have sort by upload date options if feature toggle is on', () => {
-    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(true);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.overlayMenuItems.length).toEqual(4);
-  });
-
-  it('should not have sort by upload date options if feature toggle is off', () => {
-    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
-    fixture.detectChanges();
-    component.ngOnInit();
-    expect(component.overlayMenuItems.length).toEqual(2);
   });
 });
