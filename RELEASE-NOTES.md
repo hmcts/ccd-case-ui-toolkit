@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.43
+**EXUI-2616** Remove LaunchDarkly feature flags - Group 5
+
 ### Version 7.2.42
 **EXUI-2614** Remove LaunchDarkly feature flags - Group 3
 
