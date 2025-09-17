@@ -171,10 +171,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.print_service_url;
   }
 
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode;
-  }
-
   public getWAServiceConfig(): any {
     return this.config.wa_service_config;
   }
