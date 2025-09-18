@@ -50,7 +50,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);
       this.setUserAccessType(this.caseDetails);
     } else {
-      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+      this.caseSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
         console.info('Setting the case into case viewer component as retrieved from XHR request.');
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
@@ -60,11 +60,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public setUserAccessType(caseDetails: CaseView): void {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
-      const accessProcess = caseDetails.metadataFields.find(metadataField =>
+      const accessProcess = caseDetails.metadataFields.find((metadataField) =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCESS_ID);
-      const accessGranted = caseDetails.metadataFields.find(metadataField =>
+      const accessGranted = caseDetails.metadataFields.find((metadataField) =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
-        this.accessGranted = accessGranted ? accessGranted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
+      this.accessGranted = accessGranted ? accessGranted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
       this.userAccessType = accessProcess ? accessProcess.value : null;
     }
   }
@@ -74,14 +74,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public hasStandardAccess(): boolean {
-    const featureToggleOn = this.appConfig.getAccessManagementMode();
-    return featureToggleOn ?
-            !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true
-            : true;
+    return !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
   }
 
   private suffixDuplicateTabs(tabs: CaseTab[]): CaseTab[] {
-
     const count = {};
     const firstOccurences = {};
 
@@ -92,10 +88,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       itemCount = count[item];
       itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
 
-      if (count[item] > 1)
+      if (count[item] > 1) {
         tabs[i].label = tabs[i].label + Array(count[item] - 1).fill('_').join('');
-      else
+      } else {
         firstOccurences[item] = i;
+      }
     }
 
     return tabs;
