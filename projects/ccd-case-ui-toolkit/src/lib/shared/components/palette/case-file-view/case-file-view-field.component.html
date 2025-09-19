@@ -9,7 +9,7 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngFor="let errorMessage of errorMessages">
-            <a href="javascript:void(0);">{{ errorMessage }}</a>
+            <button type="button" class="govuk-js-link">{{ errorMessage }}</button>
           </li>
         </ul>
       </div>
