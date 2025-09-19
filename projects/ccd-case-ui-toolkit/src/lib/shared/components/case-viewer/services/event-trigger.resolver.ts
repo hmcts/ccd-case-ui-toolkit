@@ -10,7 +10,7 @@ import { ProfileService } from '../../../services/profile/profile.service';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
-import { LoadingService } from '../../../services';
+import { LoadingService, SessionStorageService } from '../../../services';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -28,10 +28,44 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     private router: Router,
     private appConfig: AbstractAppConfig,
     private errorNotifier: ErrorNotifierService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly sessionStorageService: SessionStorageService,
     ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
+    const jurisdiction = route.parent?.paramMap.get('jurisdiction') || route.paramMap.get('jurisdiction');
+    const caseType = route.parent?.paramMap.get('caseType') || route.paramMap.get('caseType');
+    const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
+    const cid = route.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
+    const query = route.queryParams;
+
+    // If jurisdiction or caseType are missing, redirect to correct URL
+    if (!jurisdiction || !caseType) {
+      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
+      const jurisdictionId = caseInfo?.jurisdiction;
+      const caseTypeId = caseInfo?.caseType;
+      const caseId = caseInfo?.caseId;
+      if (!jurisdictionId || !caseTypeId || !caseId || (caseId !== cid)) {
+        this.alertService.error({ phrase: 'Cannot determine jurisdiction and case type' });
+        this.router.navigate([this.router.url]);
+        return Promise.resolve(null);
+      }
+
+      this.router.navigate([
+        '/cases/case-details',
+        jurisdictionId,
+        caseTypeId,
+        cid,
+        'trigger',
+        eventTriggerId
+      ], {
+      queryParams: {
+        ...query
+      }
+      });
+      return Promise.resolve(null);
+    }
+
     if (this.isRootTriggerEventRoute(route)) {
       return this.getAndCacheEventTrigger(route);
     }
@@ -55,6 +89,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     // tslint:disable-next-line: prefer-const
     let caseTypeId: string;
     const jurisdiction = route.parent.paramMap.get('jurisdiction');
+    const caseType = route.parent.paramMap.get('caseType');
     const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
     if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
@@ -79,8 +114,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
-          caseTypeId = route.parent.paramMap.get('caseType');
-          this.router.navigate([`/cases/case-details/${jurisdiction}/${caseTypeId}/${cid}/tasks`]);
+          this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}/tasks`]);
           return throwError(error);
         })
       ).toPromise();

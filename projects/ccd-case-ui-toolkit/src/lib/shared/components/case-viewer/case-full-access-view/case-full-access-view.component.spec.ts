@@ -739,7 +739,7 @@ describe('CaseFullAccessViewComponent', () => {
     fixture.detectChanges();
   }));
   
-it('should set case view tab based on navigation end event', () => {
+  it('should set case view tab based on navigation end event', () => {
     // Mock tabGroup._tabs with some dummy values for testing
     component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
 
@@ -766,6 +766,21 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.tabGroup._tabs[1].textLabel).toEqual('Tab2');
     });
   })
+
+  it('should call setCaseInfo', () => {
+    spyOn<any>(component, 'setCaseInfo');
+    component.ngOnInit();
+    expect((component as any).setCaseInfo).toHaveBeenCalled();
+  });
+
+  it('should call setCaseInfo and update sessionStorage if caseId differs', () => {
+    sessionStorageMockService.getItem.and.returnValue(JSON.stringify({ caseId: 'old' }));
+    component.caseDetails.case_id = 'new';
+    component.caseDetails.case_type.jurisdiction.id = 'jid';
+    component.caseDetails.case_type.id = 'ctid';
+    component['setCaseInfo']();
+    expect(sessionStorageMockService.setItem).toHaveBeenCalled();
+  });
 
   it('should call reset for linkedCaseService and caseFlagStateService oninit', () => {
     const linkedCasesService = TestBed.inject(LinkedCasesService);
