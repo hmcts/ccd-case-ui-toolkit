@@ -89,15 +89,13 @@ describe('CaseSpecificAccessRequestComponent', () => {
   };
   const mockActivatedRoute = new MockActivatedRoute();
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
-    'getAccessManagementMode',
-    'getAccessManagementRequestReviewMockModel',
+    'getAccessManagementRequestReviewMockModel'
   ]);
   let router: Router;
   let location: Location;
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = ({} as Data);
-  mockAppConfig.getAccessManagementMode.and.returnValue(true);
   mockAppConfig.getAccessManagementRequestReviewMockModel.and.returnValue(
     ACCESS_MANAGEMENT_REQUEST_REVIEW
   );
