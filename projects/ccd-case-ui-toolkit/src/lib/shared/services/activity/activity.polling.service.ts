@@ -113,14 +113,12 @@ export class ActivityPollingService {
 
   private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
-    // console.log('issuing batch request for cases: ' + caseIds);
     this.ngZone.runOutsideAngular(() => {
       // run polling outside angular zone so it does not trigger change detection
       this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
         // process activity inside zone so it triggers change detection for activity.component.ts
         (activities: Activity[]) => this.ngZone.run(() => {
           activities.forEach((activity) => {
-            // console.log('pushing activity: ' + activity.caseId);
             requests.get(activity.caseId).next(activity);
           });
         },

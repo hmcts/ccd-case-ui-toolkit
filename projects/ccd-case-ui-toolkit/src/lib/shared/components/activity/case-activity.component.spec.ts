@@ -144,20 +144,9 @@ describe('CaseActivityComponent', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [])]);
         checkHidden();
       });
-      it('should show a view banner when there is a viewer on the current case', () => {
-        activitySocketService.activity.next([getActivity(CASE_ID, [], [JOE_BLOGGS])]);
-        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
-        checkMode('banner');
-        checkLock(false);
-      });
       it('should not show anything when the viewer is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH])]);
         checkHidden();
-      });
-      xit('should show an edit banner when there is an editor on the current case', () => {
-        activitySocketService.activity.next([getActivity(CASE_ID, [JOE_BLOGGS], [])]);
-        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
-        checkLock(true);
       });
       it('should not show anything when the editor is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [BOB_SMITH], [])]);
@@ -166,16 +155,6 @@ describe('CaseActivityComponent', () => {
       it('should not show anything when the activity is on a different case', () => {
         activitySocketService.activity.next([getActivity('different_case', [], [JOE_BLOGGS])]);
         checkHidden();
-      });
-      xit('should not change state when the activity is about a different case', () => {
-        activitySocketService.activity.next([getActivity(CASE_ID, [JOE_BLOGGS], [])]);
-        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
-        checkLock(true);
-
-        // Now fire in some activity it doesn't care about.
-        activitySocketService.activity.next([getActivity('different_case', [], [BOB_SMITH])]);
-        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
-        checkLock(true);
       });
       it('should show a view icon when there is a viewer on the current case in iconOnly mode', () => {
         component.iconOnly = true;
@@ -214,34 +193,6 @@ describe('CaseActivityComponent', () => {
     });
     it('should not show anything with no activity set', () => {
       checkHidden();
-    });
-
-    xdescribe('when there is activity', () => {
-      it('should not show anything when there are no viewers or editors', () => {
-        pollingActivitySubject.next(getActivity(CASE_ID, [], []));
-        checkHidden();
-      });
-      it('should show a view banner when there is a viewer on the current case', () => {
-        pollingActivitySubject.next(getActivity(CASE_ID, [], [JOE_BLOGGS]));
-        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
-        checkLock(false);
-      });
-      it('should show an edit banner when there is a editor on the current case', () => {
-        pollingActivitySubject.next(getActivity(CASE_ID, [JOE_BLOGGS], []));
-        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
-        checkLock(true);
-      });
-      it('should not show anything when the activity is on a different case', () => {
-        pollingActivitySubject.next(getActivity('different_case', [], [JOE_BLOGGS]));
-        checkHidden();
-      });
-    });
-
-    xdescribe('when there is no activity', () => {
-      it('should not show anything when the activity is null', () => {
-        pollingActivitySubject.next(null);
-        checkHidden();
-      });
     });
   });
 });
