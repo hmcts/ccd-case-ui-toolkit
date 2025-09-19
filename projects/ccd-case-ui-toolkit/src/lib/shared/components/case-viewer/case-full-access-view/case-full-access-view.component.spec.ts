@@ -670,9 +670,6 @@ describe('CaseFullAccessViewComponent', () => {
 
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
-   
-    // activityService = jasmine.createSpyObj<ActivityService>('activityService', ['modeSubject']);
-    // activityService.modeSubject.and.returnValue(new BehaviorSubject<string>(MODES.polling));
 
     activityService = {
       mode: MODES.polling,
@@ -728,7 +725,6 @@ describe('CaseFullAccessViewComponent', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ActivityService, useValue: activityService },
-          // { provide: ActivityService, useValue: jasmine.createSpyObj('ActivityService', ['method1', 'method2']) },
           { provide: CasesService, useValue: casesService },
           { provide: ActivitySocketService, useValue: activitySocketService },
           DeleteOrCancelDialogComponent,

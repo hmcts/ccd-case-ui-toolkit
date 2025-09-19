@@ -75,12 +75,6 @@ export class ActivityService {
   public getActivities(...caseId: string[]): Observable<Activity[]> {
     try {
       const options = this.getOptions();
-      // const url = `${this.activityUrl()}/cases/${caseId.join(',')}/activity`;
-      // return this.http
-      //   .get(url, options, false, ActivityService.handleHttpError)
-      //   .pipe(
-      //     map(response => response)
-      //   );
       const url = `${this.activityUrl}/cases/${caseId.join(',')}/activity`;
       return this.http.get(url, options, false, ActivityService.handleHttpError);
     } catch (error) {
@@ -93,27 +87,13 @@ export class ActivityService {
       const options = this.getOptions();
       const url = `${this.activityUrl}/cases/${caseId}/activity`;
       const body = { activity };
-      // return this.http
-      //   .post(url, body, options, false)
-      //   .pipe(
-      //     map(response => response)
-      //   );
-        return this.http.post(url, body, options, false);
+      return this.http.post(url, body, options, false);
     } catch (error) {
       console.log(`user may not be authenticated.${error}`);
     }
   }
 
   public verifyUserIsAuthorized(): void {
-    // if (this.sessionStorageService.getItem(USER_DETAILS) && this.activityUrl() && this.userAuthorised === undefined) {
-    //   this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
-    //     () => this.userAuthorised = true,
-    //     error => {
-    //       this.userAuthorised = [401, 403].indexOf(error.status) <= -1;
-    //     }
-    //   );
-    // }
-
      if (this.activityUrl && this.userAuthorised === undefined) {
       if (this.mode === MODES.polling) {
         this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
@@ -126,7 +106,6 @@ export class ActivityService {
             }
         });
       } else if (this.mode !== MODES.off) {
-        // TODO: Implement a proper authorisation mechanism for sockets.
         this.userAuthorised = true;
       }
     }

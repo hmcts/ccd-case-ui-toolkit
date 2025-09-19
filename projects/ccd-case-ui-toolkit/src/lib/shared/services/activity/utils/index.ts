@@ -82,7 +82,6 @@ const UTILS = {
           resultText = `${resultText}s`;
         }
       } else {
-        // resultText = resultText.replace(/(.*)\,(.*?)$/, '$1 and$2');
         resultText = replaceLastCommaWithAnd(resultText);
       }
       let preSuffix = '';
@@ -120,9 +119,9 @@ const UTILS = {
 
 function replaceLastCommaWithAnd(text: string): string {
   const i = text.lastIndexOf(',');
-  if (i === -1) return text;                 // no comma → nothing to do
-  const after = text.slice(i + 1);           // keep original spacing (like the old regex)
-  return text.slice(0, i) + ' and' + after;  // no extra space unless `after` starts with one
+  if (i === -1) return text;                 
+  const after = text.slice(i + 1);          
+  return text.slice(0, i) + ' and' + after;
 }
 
 export const Utils = {
