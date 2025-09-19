@@ -4,7 +4,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { createCaseEventTrigger } from '../../../fixture';
-import { ErrorNotifierService, HttpService, LoadingService, ProfileNotifier, ProfileService } from '../../../services';
+import { ErrorNotifierService, HttpService, LoadingService, ProfileNotifier, ProfileService, SessionStorageService } from '../../../services';
 import { CaseResolver } from './case.resolver';
 import { EventTriggerResolver } from './event-trigger.resolver';
 
@@ -32,6 +32,7 @@ describe('EventTriggerResolver', () => {
   let alertService: any;
   let orderService: any;
   let loadingService: any;
+  let sessionStorageService: any;
 
   let route: any;
 
@@ -79,6 +80,7 @@ describe('EventTriggerResolver', () => {
     profileService = createSpyObj<ProfileService>('profileService', ['get']);
     profileNotifier = new ProfileNotifier();
     errorNotifier = new ErrorNotifierService();
+    sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
 
     router = createSpyObj('router', ['navigate']);
 
@@ -88,7 +90,7 @@ describe('EventTriggerResolver', () => {
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     httpService.get.and.returnValue(of(MOCK_PROFILE));
 
-    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier, router, appConfig, errorNotifier, loadingService);
+    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier, router, appConfig, errorNotifier, loadingService, sessionStorageService);
 
     route = {
       firstChild: {
@@ -110,8 +112,11 @@ describe('EventTriggerResolver', () => {
     });
 
     route.parent.paramMap.get.and.callFake(key => {
-      // tslint:disable-next-line:switch-default
       switch (key) {
+        case 'jurisdiction':
+          return 'PRIVATELAW';
+        case 'caseType':
+          return 'PRLAPPS';
         case PARAM_CASE_ID:
           return CASE_ID;
       }
@@ -140,7 +145,7 @@ describe('EventTriggerResolver', () => {
     expect(profileService.get).toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).toHaveBeenCalledWith(undefined, EVENT_TRIGGER_ID, CASE_ID, IGNORE_WARNING_VALUE);
     expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
-    expect(route.paramMap.get).toHaveBeenCalledTimes(1);
+    expect(route.paramMap.get).toHaveBeenCalledTimes(3);
     expect(eventTriggerResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
   });
 
@@ -155,6 +160,16 @@ describe('EventTriggerResolver', () => {
         paramMap: createSpyObj('paramMap', ['get']),
       }
     };
+    route.parent.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return 'PRIVATELAW';
+        case 'caseType':
+          return 'PRLAPPS';
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     expect(eventTriggerResolver['cachedEventTrigger']).toBeUndefined();
     profileService.get.and.returnValue(PROFILE_OBS);
@@ -167,25 +182,35 @@ describe('EventTriggerResolver', () => {
     expect(profileService.get).toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).toHaveBeenCalled();
     expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
-    expect(route.paramMap.get).toHaveBeenCalledTimes(1);
+    expect(route.paramMap.get).toHaveBeenCalledTimes(3);
     expect(eventTriggerResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
   });
 
   it('should return cached event trigger when route is not trigger/:eid if cache is not empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+      url: ['someChild']
+      },
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get']),
       parent: {
-        paramMap: createSpyObj('paramMap', ['get'])
+      paramMap: createSpyObj('paramMap', ['get'])
       },
       params: {
-        eid: EVENT_TRIGGER_ID,
-        cid: '42'
+      eid: EVENT_TRIGGER_ID,
+      cid: '42'
       }
     };
+    route.parent.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return 'PRIVATELAW';
+        case 'caseType':
+          return 'PRLAPPS';
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     eventTriggerResolver['cachedEventTrigger'] = EVENT_TRIGGER;
     profileService.get.and.returnValue(PROFILE_OBS);
@@ -248,5 +273,131 @@ describe('EventTriggerResolver', () => {
     expect(profileService.get).toHaveBeenCalledWith();
     expect(casesService.getEventTrigger).toHaveBeenCalled();
     expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
+  });
+
+it('should redirect and return null if jurisdiction or caseType are missing and caseInfo is incomplete', async () => {
+    route.parent.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return null;
+        case 'caseType':
+          return null;
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
+    route.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return null;
+        case 'caseType':
+          return null;
+        case PARAM_EVENT_ID:
+          return EVENT_TRIGGER_ID;
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
+    sessionStorageService.getItem.and.returnValue('{}');
+    eventTriggerResolver
+      .resolve(route)
+      .then(result => {
+        expect(result).toBeNull();
+        expect(alertService.error).toHaveBeenCalledWith({ phrase: 'Cannot determine jurisdiction and case type' });
+        expect(router.navigate).toHaveBeenCalledWith([router.url]);
+      });
+  });
+
+  it('should redirect to correct URL if jurisdiction or caseType are missing but caseInfo is present', async () => {
+    const caseInfo = {
+      jurisdiction: 'testJurisdiction',
+      caseType: 'testCaseType',
+      caseId: CASE_ID
+    };
+    route.parent.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return null;
+        case 'caseType':
+          return null;
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
+    route.paramMap.get.and.callFake(key => {
+      switch (key) {
+        case 'jurisdiction':
+          return null;
+        case 'caseType':
+          return null;
+        case PARAM_EVENT_ID:
+          return EVENT_TRIGGER_ID;
+        case PARAM_CASE_ID:
+          return CASE_ID;
+      }
+    });
+    route.queryParams = { foo: 'bar' };
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(caseInfo));
+    eventTriggerResolver
+      .resolve(route)
+      .then(result => {
+        expect(result).toBeNull();
+        expect(router.navigate).toHaveBeenCalledWith([
+          '/cases/case-details',
+          caseInfo.jurisdiction,
+          caseInfo.caseType,
+          CASE_ID,
+          'trigger',
+          EVENT_TRIGGER_ID
+        ], { queryParams: { foo: 'bar' } });
+      });
+  });
+
+  it('should reset cached event trigger', () => {
+    eventTriggerResolver['cachedEventTrigger'] = EVENT_TRIGGER;
+    eventTriggerResolver.resetCachedEventTrigger();
+    expect(eventTriggerResolver['cachedEventTrigger']).toBeNull();
+  });
+
+  it('should set ignoreWarning to false if not valid value', async () => {
+    route.queryParamMap.get.and.returnValue('invalid');
+    casesService.getEventTrigger.and.callFake((caseTypeId, eventTriggerId, cid, ignoreWarning) => {
+      expect(ignoreWarning).toBe('false');
+      return EVENT_TRIGGER_OBS;
+    });
+    profileService.get.and.returnValue(PROFILE_OBS);
+    await eventTriggerResolver.resolve(route);
+  });
+
+  it('should call profileNotifier.announceProfile with cachedProfile', async () => {
+    eventTriggerResolver['cachedProfile'] = PROFILE;
+    spyOn(profileNotifier, 'announceProfile');
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
+    await eventTriggerResolver.resolve(route);
+    expect(profileNotifier.announceProfile).toHaveBeenCalledWith(PROFILE);
+  });
+
+  it('should call profileNotifier.announceProfile after profileService.get', async () => {
+    eventTriggerResolver['cachedProfile'] = undefined;
+    spyOn(profileNotifier, 'announceProfile');
+    profileService.get.and.returnValue(of(PROFILE));
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
+    await eventTriggerResolver.resolve(route);
+    expect(profileNotifier.announceProfile).toHaveBeenCalledWith(PROFILE);
+  });
+
+  it('should handle error in getAndCacheEventTrigger and propagate error', async () => {
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
+    profileService.get.and.returnValue(PROFILE_OBS);
+    spyOn(errorNotifier, 'announceError');
+    try {
+      await eventTriggerResolver.resolve(route);
+      fail('Should throw');
+    } catch (err) {
+      expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
+      expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
+      expect(errorNotifier.announceError).toHaveBeenCalledWith(jasmine.objectContaining({ message: ERROR.message }));
+      expect(router.navigate).toHaveBeenCalled();
+    }
   });
 });
