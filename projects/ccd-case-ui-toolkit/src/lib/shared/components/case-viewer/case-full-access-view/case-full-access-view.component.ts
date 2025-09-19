@@ -136,6 +136,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     this.checkRouteAndSetCaseViewTab();
 
+    this.setCaseInfo();
+
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
     this.linkedCasesService.resetLinkedCaseData();
@@ -147,6 +149,19 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
+    }
+  }
+
+  private setCaseInfo(): void {
+    const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
+    console.log('Case Info from session storage: ', caseInfo);
+    if (caseInfo?.caseId !== this.caseDetails.case_id) {
+      const newCaseInfo = {
+        caseId: this.caseDetails.case_id,
+        jurisdiction: this.caseDetails.case_type.jurisdiction.id,
+        caseType: this.caseDetails.case_type.id
+      };
+      this.sessionStorageService.setItem('caseInfo', JSON.stringify(newCaseInfo));
     }
   }
 
