@@ -62,7 +62,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.2.18",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "link:../media-viewer/dist/media-viewer",
+    "@hmcts/media-viewer": "file:../media-viewer/dist/media-viewer",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@ngxmc/datetime-picker": "^18.2.2",
