@@ -16,7 +16,10 @@ import { CaseChallengedAccessRequestComponent } from './case-challenged-access-r
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 import createSpyObj = jasmine.createSpyObj;
 
-@Component({ template: `` })
+@Component({
+    template: ``,
+    standalone: false
+})
 class StubComponent { }
 
 describe('CaseChallengedAccessRequestComponent', () => {

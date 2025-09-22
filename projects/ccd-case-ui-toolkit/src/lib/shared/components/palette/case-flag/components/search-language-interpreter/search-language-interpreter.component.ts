@@ -13,9 +13,10 @@ import { MultipageComponentStateService } from "../../../../../services";
 
 
 @Component({
-  selector: 'ccd-search-language-interpreter',
-  templateUrl: './search-language-interpreter.component.html',
-  styleUrls: ['./search-language-interpreter.component.scss']
+    selector: 'ccd-search-language-interpreter',
+    templateUrl: './search-language-interpreter.component.html',
+    styleUrls: ['./search-language-interpreter.component.scss'],
+    standalone: false
 })
 export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent implements OnInit, Journey {
   public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {

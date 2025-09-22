@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-  selector: 'ccd-write-date-field',
-  templateUrl: './write-date-field.html'
+    selector: 'ccd-write-date-field',
+    templateUrl: './write-date-field.html',
+    standalone: false
 })
 export class WriteDateFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

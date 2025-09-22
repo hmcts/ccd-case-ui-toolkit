@@ -62,17 +62,19 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'mat-tab-group',
-  template: '<ng-content></ng-content>'
+    // tslint:disable-next-line
+    selector: 'mat-tab-group',
+    template: '<ng-content></ng-content>',
+    standalone: false
 })
 class TabsComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'mat-tab',
-  template: '<ng-content></ng-content>'
+    // tslint:disable-next-line
+    selector: 'mat-tab',
+    template: '<ng-content></ng-content>',
+    standalone: false
 })
 class TabComponent {
   @Input()
@@ -80,16 +82,18 @@ class TabComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'exui-tasks-container',
-  template: '<p>Tasks Container</p>'
+    // tslint:disable-next-line
+    selector: 'exui-tasks-container',
+    template: '<p>Tasks Container</p>',
+    standalone: false
 })
 class TasksContainerComponent {
 }
 
 @Component({
-  selector: 'ccd-event-trigger',
-  template: ''
+    selector: 'ccd-event-trigger',
+    template: '',
+    standalone: false
 })
 class EventTriggerComponent {
   @Input()
@@ -109,8 +113,9 @@ class EventTriggerComponent {
 }
 
 @Component({
-  selector: 'ccd-callback-errors',
-  template: ''
+    selector: 'ccd-callback-errors',
+    template: '',
+    standalone: false
 })
 class CallbackErrorsComponent {
   @Input()

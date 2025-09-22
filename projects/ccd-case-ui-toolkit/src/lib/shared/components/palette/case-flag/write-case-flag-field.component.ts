@@ -15,9 +15,10 @@ import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldSta
 import { LinkedCasesService } from '../linked-cases/services';
 
 @Component({
-  selector: 'ccd-write-case-flag-field',
-  templateUrl: './write-case-flag-field.component.html',
-  styleUrls: ['./write-case-flag-field.component.scss']
+    selector: 'ccd-write-case-flag-field',
+    templateUrl: './write-case-flag-field.component.html',
+    styleUrls: ['./write-case-flag-field.component.scss'],
+    standalone: false
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, OnDestroy, Journey {
   //public formGroup: FormGroup;

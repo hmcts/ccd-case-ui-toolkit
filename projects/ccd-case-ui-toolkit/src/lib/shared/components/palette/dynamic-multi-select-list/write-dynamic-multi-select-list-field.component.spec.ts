@@ -62,7 +62,10 @@ const FIELD_TYPE: FieldType = {
 };
 
 let caseField: CaseField;
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

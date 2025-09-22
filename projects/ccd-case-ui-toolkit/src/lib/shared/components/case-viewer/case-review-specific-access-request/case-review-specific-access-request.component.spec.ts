@@ -70,7 +70,10 @@ class MockActivatedRoute implements ActivatedRoute {
   }
 }
 
-@Component({ template: `` })
+@Component({
+    template: ``,
+    standalone: false
+})
 class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ccd-document-dialog',
-  templateUrl: './document-dialog.component.html',
-  styleUrls: ['../action-dialog.component.scss']
+    selector: 'ccd-document-dialog',
+    templateUrl: './document-dialog.component.html',
+    styleUrls: ['../action-dialog.component.scss'],
+    standalone: false
 })
 export class DocumentDialogComponent implements OnInit {
 

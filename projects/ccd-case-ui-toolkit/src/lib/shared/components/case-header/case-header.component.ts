@@ -4,9 +4,10 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { Draft } from '../../domain/draft.model';
 
 @Component({
-  selector: 'ccd-case-header',
-  templateUrl: './case-header.html',
-  styleUrls: ['./case-header.scss']
+    selector: 'ccd-case-header',
+    templateUrl: './case-header.html',
+    styleUrls: ['./case-header.scss'],
+    standalone: false
 })
 
 export class CaseHeaderComponent implements OnInit {

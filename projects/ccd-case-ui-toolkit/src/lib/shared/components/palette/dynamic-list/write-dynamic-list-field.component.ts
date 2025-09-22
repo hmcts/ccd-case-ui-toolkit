@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-  selector: 'ccd-write-dynamic-list-field',
-  templateUrl: './write-dynamic-list-field.html'
+    selector: 'ccd-write-dynamic-list-field',
+    templateUrl: './write-dynamic-list-field.html',
+    standalone: false
 })
 export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
