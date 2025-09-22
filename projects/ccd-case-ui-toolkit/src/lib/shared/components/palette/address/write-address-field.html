@@ -18,8 +18,14 @@
       </label>
       <span class="error-message" *ngIf="noAddressSelected">{{errorMessage | rpxTranslate}}</span>
       <select class="form-control ccd-dropdown addressList" [id]="createElementId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
+        <option *ngIf="addressOptions.length === 0" [ngValue]="undefined">
+          {{'No address found' | rpxTranslate}}
+        </option>
+        <option *ngIf="addressOptions.length > 0" [ngValue]="undefined">
+          {{addressOptions.length}} {{(addressOptions.length === 1 ? 'address found' : 'addresses found') | rpxTranslate}}
+        </option>
         <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
-          {{addressOption.description | rpxTranslate}}
+          {{addressOption.description}}
         </option>
       </select>
     </div>
