@@ -113,22 +113,50 @@ export class ActivityPollingService {
 
   private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
+
+    // Pre-bind handlers to avoid deeply nested inline callbacks
+    const onNext = this.createActivitiesHandler(requests);
+    const onError = this.createErrorHandler(requests);
+
     this.ngZone.runOutsideAngular(() => {
       // run polling outside angular zone so it does not trigger change detection
-      this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
-        // process activity inside zone so it triggers change detection for activity.component.ts
-        (activities: Activity[]) => this.ngZone.run(() => {
-          activities.forEach((activity) => {
-            requests.get(activity.caseId).next(activity);
-          });
-        },
-          (err) => {
-            console.log(`error: ${err}`);
-            Array.from(requests.values()).forEach((subject) => subject.error(err));
-          }
-        )
-      );
+      this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe({
+        next: onNext,
+        error: onError
+      });
     });
+  }
+
+  private createActivitiesHandler(requests: Map<string, Subject<Activity>>) {
+    // single-level function: process inside Angular zone
+    return (activities: Activity[]) => this.processActivitiesInsideZone(activities, requests);
+  }
+
+  private processActivitiesInsideZone(
+    activities: Activity[],
+    requests: Map<string, Subject<Activity>>
+  ): void {
+    // process activity inside zone so it triggers change detection for activity.component.ts
+    this.ngZone.run(() => {
+      for (const activity of activities) {
+        const subject = requests.get(activity.caseId);
+        if (subject) {
+          subject.next(activity);
+        }
+      }
+    });
+  }
+
+  private createErrorHandler(requests: Map<string, Subject<Activity>>) {
+    return (err: unknown) => this.handlePollingError(err, requests);
+  }
+
+  private handlePollingError(err: unknown, requests: Map<string, Subject<Activity>>): void {
+    for (const subject of requests.values()) {
+      if (!subject.closed) {
+        subject.error(err);
+      }
+    }
   }
 
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {

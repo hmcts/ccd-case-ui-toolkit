@@ -46,7 +46,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly loadingService: LoadingService,
-    private eventTriggerResolver: EventTriggerResolver,
+    private readonly eventTriggerResolver: EventTriggerResolver,
     private readonly activitySocketService: ActivitySocketService,
     private readonly activityService: ActivityService
   ) {

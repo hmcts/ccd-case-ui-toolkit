@@ -1,8 +1,6 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';

@@ -13,7 +13,7 @@ import { Utils, MODES } from './utils';
   providedIn: 'root'
 })
 export class ActivitySocketService {
-  public static SOCKET_MODES: MODES[] = [ MODES.socket, MODES.socketLongPoll ];
+  public static readonly SOCKET_MODES: MODES[] = [ MODES.socket, MODES.socketLongPoll ];
 
   public activity: Observable<CaseActivityInfo[]>;
   public connect: Observable<any>;

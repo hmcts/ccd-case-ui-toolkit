@@ -8,11 +8,8 @@ import {
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
 } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
-import {
-  ActivityService,
-  ActivitySocketService,
-} from '../../services';
+import { ActivityService,
+  ActivitySocketService,BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
