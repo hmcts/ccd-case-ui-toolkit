@@ -3208,7 +3208,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.6"
+    "@hmcts/media-viewer": "link:../media-viewer/dist/media-viewer"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@ngxmc/datetime-picker": "npm:^18.2.2"
@@ -3350,30 +3350,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.6":
-  version: 4.1.6
-  resolution: "@hmcts/media-viewer@npm:4.1.6"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^20.0.0"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^17.3.8
-    "@angular/common": ^17.3.8
-    "@angular/core": ^17.3.8
-    "@angular/forms": ^17.3.8
-    "@angular/material": ^17.3.8
-    "@angular/platform-browser": ^17.3.8
-    "@ngrx/effects": ^17.0.0
-    "@ngrx/router-store": ^17.0.0
-    "@ngrx/store": ^17.0.0
-    "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/70feae33b5852991d5db7271783a9b39441f6ad6c7be92179ece96b83e8e09fed8f79b4731dec48f7a8ba223cad036feafccb763066bb511f5369fce4354b9bf
+"@hmcts/media-viewer@link:../media-viewer/dist/media-viewer::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/media-viewer@link:../media-viewer/dist/media-viewer::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
@@ -4003,115 +3984,6 @@ __metadata:
   version: 3.0.3
   resolution: "@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.3"
   conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-android-arm64@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-android-arm64@npm:0.1.80"
-  conditions: os=android & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-darwin-arm64@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-darwin-arm64@npm:0.1.80"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-darwin-x64@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-darwin-x64@npm:0.1.80"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.80"
-  conditions: os=linux & cpu=arm
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-arm64-gnu@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-arm64-gnu@npm:0.1.80"
-  conditions: os=linux & cpu=arm64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-arm64-musl@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-arm64-musl@npm:0.1.80"
-  conditions: os=linux & cpu=arm64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.80"
-  conditions: os=linux & cpu=riscv64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-x64-gnu@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-x64-gnu@npm:0.1.80"
-  conditions: os=linux & cpu=x64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-linux-x64-musl@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-linux-x64-musl@npm:0.1.80"
-  conditions: os=linux & cpu=x64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas-win32-x64-msvc@npm:0.1.80":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas-win32-x64-msvc@npm:0.1.80"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/canvas@npm:^0.1.65":
-  version: 0.1.80
-  resolution: "@napi-rs/canvas@npm:0.1.80"
-  dependencies:
-    "@napi-rs/canvas-android-arm64": "npm:0.1.80"
-    "@napi-rs/canvas-darwin-arm64": "npm:0.1.80"
-    "@napi-rs/canvas-darwin-x64": "npm:0.1.80"
-    "@napi-rs/canvas-linux-arm-gnueabihf": "npm:0.1.80"
-    "@napi-rs/canvas-linux-arm64-gnu": "npm:0.1.80"
-    "@napi-rs/canvas-linux-arm64-musl": "npm:0.1.80"
-    "@napi-rs/canvas-linux-riscv64-gnu": "npm:0.1.80"
-    "@napi-rs/canvas-linux-x64-gnu": "npm:0.1.80"
-    "@napi-rs/canvas-linux-x64-musl": "npm:0.1.80"
-    "@napi-rs/canvas-win32-x64-msvc": "npm:0.1.80"
-  dependenciesMeta:
-    "@napi-rs/canvas-android-arm64":
-      optional: true
-    "@napi-rs/canvas-darwin-arm64":
-      optional: true
-    "@napi-rs/canvas-darwin-x64":
-      optional: true
-    "@napi-rs/canvas-linux-arm-gnueabihf":
-      optional: true
-    "@napi-rs/canvas-linux-arm64-gnu":
-      optional: true
-    "@napi-rs/canvas-linux-arm64-musl":
-      optional: true
-    "@napi-rs/canvas-linux-riscv64-gnu":
-      optional: true
-    "@napi-rs/canvas-linux-x64-gnu":
-      optional: true
-    "@napi-rs/canvas-linux-x64-musl":
-      optional: true
-    "@napi-rs/canvas-win32-x64-msvc":
-      optional: true
-  checksum: 10/cfebaeeadc6e7629319ed7e9cd1daf61403de07ee762d7032bcb5a236549b2b53a9cbae63e2058a81e0766f4f40c8fd4d179d46318407d5a74fef2122df9be06
   languageName: node
   linkType: hard
 
@@ -6259,20 +6131,6 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 10/e804622c4573a37444e25c83952a4b509464da0a10efd3da955083540e93067924c4a893f89ac2c03cba46344eb45773d5c6bce8b17d43edeb690cfcaf6740b0
-  languageName: node
-  linkType: hard
-
-"@swimlane/ngx-datatable@npm:^20.0.0":
-  version: 20.1.0
-  resolution: "@swimlane/ngx-datatable@npm:20.1.0"
-  dependencies:
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/common": ">=11.0.2"
-    "@angular/core": ">=11.0.2"
-    "@angular/platform-browser": ">=11.0.2"
-    rxjs: ^6.6.3 || ^7.4.0
-  checksum: 10/e3d500f986096c5d5062480e755568984147123f0665c141ad517d52de3f6b1ef3ab306f355e4a8fef14c8305d85e6de7d0c4c8e0437acc3556765a59ee3577e
   languageName: node
   linkType: hard
 
@@ -12626,19 +12484,6 @@ __metadata:
   dependencies:
     once: "npm:^1.4.0"
   checksum: 10/1e0cfa6e7f49887544e03314f9dfc56a8cb6dde910cbb445983ecc2ff426fc05946df9d75d8a21a3a64f2cecfe1bf88f773952029f46756b2ed64a24e95b1fb8
-  languageName: node
-  linkType: hard
-
-"engine.io-client@npm:~6.6.1":
-  version: 6.6.3
-  resolution: "engine.io-client@npm:6.6.3"
-  dependencies:
-    "@socket.io/component-emitter": "npm:~3.1.0"
-    debug: "npm:~4.3.1"
-    engine.io-parser: "npm:~5.2.1"
-    ws: "npm:~8.17.1"
-    xmlhttprequest-ssl: "npm:~2.1.1"
-  checksum: 10/c5b8e7eb0f2637b21a63780214878b842306247f540cccab7a4d15606d142e42878cc79607f8f77fa29f016b6854702b7d5ad275df7ad6150f08954a1e2c332a
   languageName: node
   linkType: hard
 
@@ -20519,19 +20364,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutable-div@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "mutable-div@npm:2.0.0"
-  dependencies:
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/common": ^16.2.12
-    "@angular/core": ^16.2.12
-    hammerjs: ^2.0.8
-  checksum: 10/d1d30ef2a2413d7a30b73e71391d5d344e246b0fed96a14d97a478dcf13b5cbabc9f79d7cdf47766374c75c939c8b82b68e37ff55f796c1652b042ddfd973494
-  languageName: node
-  linkType: hard
-
 "mute-stdout@npm:^1.0.0":
   version: 1.0.1
   resolution: "mute-stdout@npm:1.0.1"
@@ -22275,18 +22107,6 @@ __metadata:
     sha.js: "npm:^2.4.11"
     to-buffer: "npm:^1.2.0"
   checksum: 10/980cf2977aa84ec3166fde195a28464ab494131c0a5778fc8f20b8894410747e502159c19ef2b41842c728bc52ba49ffee6847e3ee61ac0d482689f85d8a1b30
-  languageName: node
-  linkType: hard
-
-"pdfjs-dist@npm:^4.10.38":
-  version: 4.10.38
-  resolution: "pdfjs-dist@npm:4.10.38"
-  dependencies:
-    "@napi-rs/canvas": "npm:^0.1.65"
-  dependenciesMeta:
-    "@napi-rs/canvas":
-      optional: true
-  checksum: 10/2fee929540863a32a368c02fe445550ce6f0992a08ccfaa05f2e2e185e8ac98b43eda6f88c94c366b86fe99149478eeff7ebb57793270b030c7af54169a4a54c
   languageName: node
   linkType: hard
 
@@ -25199,18 +25019,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io-client@npm:^4.8.0":
-  version: 4.8.1
-  resolution: "socket.io-client@npm:4.8.1"
-  dependencies:
-    "@socket.io/component-emitter": "npm:~3.1.0"
-    debug: "npm:~4.3.2"
-    engine.io-client: "npm:~6.6.1"
-    socket.io-parser: "npm:~4.2.4"
-  checksum: 10/7480cf1ab30eba371a96dd1ce2ce9018dcbeaf81035a066fb89d99df0d0a6388b05840c92d970317c739956b68b28b0f4833f3b18e460a24eef557b9bca127c1
-  languageName: node
-  linkType: hard
-
 "socket.io-parser@npm:~4.2.4":
   version: 4.2.4
   resolution: "socket.io-parser@npm:4.2.4"
@@ -27787,15 +27595,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.0.3":
-  version: 11.1.0
-  resolution: "uuid@npm:11.1.0"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/d2da43b49b154d154574891ced66d0c83fc70caaad87e043400cf644423b067542d6f3eb641b7c819224a7cd3b4c2f21906acbedd6ec9c6a05887aa9115a9cf5
-  languageName: node
-  linkType: hard
-
 "uuid@npm:^3.0.0, uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
@@ -29031,13 +28830,6 @@ __metadata:
   dependencies:
     sax: "npm:^1.2.4"
   checksum: 10/b62fe5b2de3c9f79e5d26d1737583a7988dcc19eb0bb1710480940b0500c50f5d565ebf9682b5be0b43658811ab919e05cab45b8ad5e8fee4bb9300a3e3cd758
-  languageName: node
-  linkType: hard
-
-"xmlhttprequest-ssl@npm:1.6.3":
-  version: 1.6.3
-  resolution: "xmlhttprequest-ssl@npm:1.6.3"
-  checksum: 10/525dc9ecc7ce11c0404284e3580ea594d5414588adb3e4e52cd9b3c1a892b1f9f27e2cfb2299868de10aba57ca68ee476d6b26f9ba287dec48cc960f2f811cb3
   languageName: node
   linkType: hard
 
