@@ -2,7 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "7.2.41",
   "engines": {
-    "node": ">=18.19.0"
+    "node": ">=20.19.0"
   },
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
@@ -63,10 +63,7 @@
     "@hmcts/ccpay-web-component": "6.2.18",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "file:../media-viewer/dist/media-viewer",
-    "@ngrx/effects": "17.2.0",
-    "@ngrx/store": "^17.2.0",
     "@ngxmc/moment-adapter": "^18.0.0",
-    "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
@@ -116,7 +113,7 @@
     "@storybook/testing-library": "^0.2.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
-    "@types/node": "^18.19.0",
+    "@types/node": "^20.19.0",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",
     "@types/webpack": "^4.41.25",
@@ -200,7 +197,6 @@
     "handlebars": "^4.7.7",
     "https-proxy-agent": "^2.2.3",
     "lodash": "^4.17.21",
-    "marked": "^0.7.0",
     "minimatch": "^8.0.4",
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
