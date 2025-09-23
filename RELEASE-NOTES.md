@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.45
+**EXUI-3498** Web-component version 6.3.3
+
 ### Version 7.2.44
 **EXUI-3406** Move rpxTranslate pipe from 'ccd-markdown' component to parent components where needed
 
