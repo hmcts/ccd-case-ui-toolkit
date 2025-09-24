@@ -13,6 +13,7 @@ export class CaseField implements Orderable {
   public hidden: boolean;
   public hiddenCannotChange: boolean;
   public label: string;
+  public originalLabel?: string;
   public order?: number;
   @Exclude()
   public parent?: CaseField;
