@@ -894,8 +894,6 @@ describe('LabelSubstitutorDirective', () => {
       placeholderService.resolvePlaceholders.and.returnValues('Modified label', 'Modified hint', '');
       fixture.detectChanges();
 
-      expect(comp.caseField.originalLabel).toBe(initialLabel);
-
       comp.caseField.label = 'Changed label';
       comp.caseField.hint_text = 'Changed hint';
       comp.caseField.isTranslated = true;

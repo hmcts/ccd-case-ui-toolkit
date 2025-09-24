@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.46-exui-2916-1
+### Version 7.2.46-exui-2916-2
 **EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
 
 ### Version 7.2.46
