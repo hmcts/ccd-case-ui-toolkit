@@ -18,7 +18,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
-  private initialLabel: string;
   private initialHintText: string;
   private languageSubscription: Subscription
 
@@ -30,8 +29,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
+    this.caseField.originalLabel = this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.subscribe(() => {
@@ -52,10 +51,11 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
       if (oldLabel && oldLabel !== substitutedLabel) {
         // we need to translate the uninterpolated data then substitute the values in translated string
+        this.caseField.originalLabel = substitutedLabel;
         const translated = this.rpxTranslationPipe.transform(oldLabel)
         const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
         this.caseField.label = transSubstitutedLabel;
-        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy';
+        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy' && translated !== oldLabel;
       } else {
         this.caseField.label = substitutedLabel;
         this.caseField.isTranslated = false;
@@ -75,8 +75,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private resetToInitialValues(): void {
-    if (this.initialLabel) {
-      this.caseField.label = this.initialLabel;
+    if (this.caseField?.originalLabel) {
+      this.caseField.label = this.caseField.originalLabel;
     }
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
