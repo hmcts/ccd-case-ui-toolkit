@@ -894,13 +894,15 @@ describe('LabelSubstitutorDirective', () => {
       placeholderService.resolvePlaceholders.and.returnValues('Modified label', 'Modified hint', '');
       fixture.detectChanges();
 
+      expect(comp.caseField.originalLabel).toBe(initialLabel);
+
       comp.caseField.label = 'Changed label';
       comp.caseField.hint_text = 'Changed hint';
       comp.caseField.isTranslated = true;
 
       fixture.destroy();
 
-      expect(comp.caseField.label).toBe(initialLabel);
+      expect(comp.caseField.label).toBe('Modified label');
       expect(comp.caseField.hint_text).toBe(initialHint);
       expect(comp.caseField.isTranslated).toBe(false);
     });
