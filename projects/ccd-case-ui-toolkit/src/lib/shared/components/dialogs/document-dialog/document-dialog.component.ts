@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ccd-document-dialog',
-  templateUrl: './document-dialog.component.html',
-  styleUrls: ['../action-dialog.component.scss']
+    selector: 'ccd-document-dialog',
+    templateUrl: './document-dialog.component.html',
+    styleUrls: ['../action-dialog.component.scss'],
+    standalone: false
 })
 export class DocumentDialogComponent implements OnInit {
 

@@ -1,46 +1,46 @@
 import {
-  NgxMatDateAdapter,
-  NgxMatDateFormats,
-  NgxMatDatetimepicker,
-  NGX_MAT_DATE_FORMATS
-} from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+  MAT_DATE_FORMATS,
+  MatDateFormats,
+  MAT_DATE_LOCALE,
+  ThemePalette,
+  DateAdapter
+} from '@angular/material/core';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter
+} from '@angular/material-moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MAT_LEGACY_DATE_LOCALE, LegacyThemePalette as ThemePalette } from '@angular/material/legacy-core';
 import { Moment } from 'moment/moment';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { CUSTOM_MOMENT_FORMATS } from './date-picker-utils';
 
 @Component({
   selector: 'ccd-datetime-picker',
-  templateUrl: './datetime-picker.component.html',
-  styleUrls: ['./datetime-picker.component.scss'],
+  templateUrl: './date-picker.component.html',
+  styleUrls: ['./date-picker.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
     {
-      provide: NgxMatDateAdapter,
-      useClass: NgxMatMomentAdapter,
-      deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
-  ]
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ],
+  standalone: false
 })
 
-export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
-
-  public showSpinners = true;
+export class DatePickerComponent extends AbstractFormFieldComponent implements OnInit {
   public showSeconds = false;
   public touchUi = false;
   public enableMeridian = false;
-  public stepHour = 1;
-  public stepMinute = 1;
-  public stepSecond = 1;
   public color: ThemePalette = 'primary';
   public disableMinute = true;
   public hideTime = true;
@@ -48,12 +48,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public startView = 'month';
   public yearSelection = false;
   public checkTime = true;
-  public stringEdited = false;
   public minError = false;
   public maxError = false;
   public dateTimeEntryFormat: string;
 
-  @ViewChild('picker', { static: false }) public datetimePicker: NgxMatDatetimepicker<any>;
+  @ViewChild('picker', { static: false }) public datetimePicker: MatDatepicker<any>;
   @ViewChild('input', { static: false }) public inputElement: ElementRef<HTMLInputElement>;
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
@@ -63,7 +62,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
-    @Inject(NGX_MAT_DATE_FORMATS) private readonly ngxMatDateFormats: NgxMatDateFormats) {
+    @Inject(MAT_DATE_FORMATS) private readonly matDateFormats: MatDateFormats) {
     super();
   }
 
@@ -88,8 +87,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public setDateTimeFormat(): void {
-    this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
-    this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
+    this.matDateFormats.parse.dateInput = this.dateTimeEntryFormat;
+    this.matDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
 
   /*
@@ -137,7 +136,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     }
 
     if (this.checkTime) {
-
       if (this.formatTranslationService.hasSeconds(dateTimePickerFormat)) {
         this.showSeconds = true;
         this.hideMinutes = false;

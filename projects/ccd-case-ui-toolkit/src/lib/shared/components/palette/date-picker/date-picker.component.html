@@ -18,33 +18,23 @@
              [min]="minDate(caseField)"
              [max]="maxDate(caseField)"
              [formControl]="dateControl"
-             [ngxMatDatetimePicker]="picker"
+             [matDatepicker]="picker"
              (focusin)="focusIn()"
              (focusout)="focusOut()"
              (dateChange)="valueChanged()"
              ng-model-options="{timezone:'utc'}"
       >
       <mat-datepicker-toggle matSuffix [for]="picker" id="pickerOpener"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker
-                               [color]="color"
-                               [touchUi]="touchUi"
-                               [hideTime]="hideTime"
-                               [startView]="startView"
-                               [stepHour]="stepHour"
-                               [stepSecond]="stepSecond"
-                               [stepMinute]="stepMinute"
-                               [showSeconds]="showSeconds"
-                               [showSpinners]="showSpinners"
-                               [disableMinute]="disableMinute"
-                               [enableMeridian]="enableMeridian"
-                               (yearSelected)="yearSelected($event)"
-                               (monthSelected)="monthSelected($event)"
-                               (opened)="toggleClick()"
-      >
-        <ngx-mat-datepicker-actions>
-          <button mat-raised-button color="primary" ngxMatDatepickerApply>Confirm</button>
-        </ngx-mat-datepicker-actions>
-      </ngx-mat-datetime-picker>
+      <mat-datepicker #picker
+                      [color]="color"
+                      [startView]="startView"
+                      (yearSelected)="yearSelected($event)"
+                      (monthSelected)="monthSelected($event)"
+                      (opened)="toggleClick()">
+        <mat-datepicker-actions>
+          <button mat-raised-button color="primary" matDatepickerApply>Confirm</button>
+        </mat-datepicker-actions>
+      </mat-datepicker>
     </div>
   </fieldset>
 </div>

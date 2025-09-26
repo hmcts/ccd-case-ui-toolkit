@@ -14,11 +14,11 @@ describe('CaseFileViewFolderSortComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CaseFileViewFolderSortComponent, CaseFileViewOverlayMenuComponent ],
-      imports: [ OverlayModule ],
-      providers: [{provide: AbstractAppConfig, useValue: mockAppConfig}]
+      declarations: [CaseFileViewFolderSortComponent, CaseFileViewOverlayMenuComponent],
+      imports: [OverlayModule],
+      providers: [{ provide: AbstractAppConfig, useValue: mockAppConfig }]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

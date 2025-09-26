@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'cut-header-bar',
-  templateUrl: './header-bar.html',
-  styleUrls: ['./header-bar.scss']
+    selector: 'cut-header-bar',
+    templateUrl: './header-bar.html',
+    styleUrls: ['./header-bar.scss'],
+    standalone: false
 })
 export class HeaderBarComponent {
 

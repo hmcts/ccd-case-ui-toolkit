@@ -8,7 +8,8 @@ import { OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-case-viewer',
-  templateUrl: './case-viewer.component.html'
+  templateUrl: './case-viewer.component.html',
+  standalone: false
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly METADATA_FIELD_ACCESS_PROCESS_ID = '[ACCESS_PROCESS]';
@@ -86,6 +87,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     for (let i = 0, c = tabs.length; i < c; i++) {
       item = tabs[i].label;
       itemCount = count[item];
+      // eslint-disable-next-line eqeqeq
       itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
 
       if (count[item] > 1) {

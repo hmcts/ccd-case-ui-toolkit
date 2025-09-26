@@ -7,7 +7,8 @@ import { EventCompletionStateMachineContext } from '../../../domain';
 import { CaseEventCompletionTaskCancelledComponent } from './case-event-completion-task-cancelled.component';
 
 @Component({
-  template: '<app-case-event-completion-task-cancelled [context]="context"></app-case-event-completion-task-cancelled>'
+    template: '<app-case-event-completion-task-cancelled [context]="context"></app-case-event-completion-task-cancelled>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(CaseEventCompletionTaskCancelledComponent, { static: true }) public appComponentRef: CaseEventCompletionTaskCancelledComponent;

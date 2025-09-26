@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseViewEvent } from '../../../domain';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseField } from '../../../domain';
+import { FieldType } from '../../../domain';
 import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
 
 describe('CaseHistoryViewerFieldComponent', () => {
@@ -68,16 +68,13 @@ describe('CaseHistoryViewerFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     eventLogComponentMock = MockComponent({ selector: 'ccd-event-log', inputs: [
       'events'
-    ]});
+    ] });
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [eventLogComponentMock],
         declarations: [
-          CaseHistoryViewerFieldComponent,
-
-          // Mocks
-          eventLogComponentMock
+          CaseHistoryViewerFieldComponent
         ]
       })
       .compileComponents();

@@ -4,8 +4,8 @@ import {
   SimpleChanges, ViewChild, ViewContainerRef
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
-import { MatLegacyTab as MatTab, MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
@@ -39,9 +39,10 @@ import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
-  selector: 'ccd-case-full-access-view',
-  templateUrl: './case-full-access-view.component.html',
-  styleUrls: ['./case-full-access-view.component.scss']
+    selector: 'ccd-case-full-access-view',
+    templateUrl: './case-full-access-view.component.html',
+    styleUrls: ['./case-full-access-view.component.scss'],
+    standalone: false
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';

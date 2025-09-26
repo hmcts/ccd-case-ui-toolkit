@@ -19,9 +19,10 @@ const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
 const REGION_LIST_AND_FRC_FILTER = 'regionList';
 
 @Component({
-  selector: 'ccd-workbasket-filters',
-  templateUrl: './workbasket-filters.component.html',
-  styleUrls: ['./workbasket-filters.component.scss']
+    selector: 'ccd-workbasket-filters',
+    templateUrl: './workbasket-filters.component.html',
+    styleUrls: ['./workbasket-filters.component.scss'],
+    standalone: false
 })
 export class WorkbasketFiltersComponent implements OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';

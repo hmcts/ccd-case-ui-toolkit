@@ -15,17 +15,17 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => MoneyGbpInputComponent),
-      multi: true,
+      multi: true
     },
     {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => MoneyGbpInputComponent),
-      multi: true,
+      multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
-
   private static readonly PATTERN_REGEXP = new RegExp('^-?\\d*(\\.\\d{0,2})?$');
 
   @Input()
@@ -47,7 +47,6 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
 
   // change events from the textarea
   public onChange(event) {
-
     // get value from input
     const newValue = event.target.value;
 
@@ -118,5 +117,4 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   }
 
   private propagateChange = (_: any) => { };
-
 }

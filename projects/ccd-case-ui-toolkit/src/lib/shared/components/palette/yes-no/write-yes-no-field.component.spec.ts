@@ -54,15 +54,13 @@ describe('WriteYesNoFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           WriteYesNoFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-
-          // Mocks
-          inputComponentMock
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: YesNoService, useValue: yesNoService }

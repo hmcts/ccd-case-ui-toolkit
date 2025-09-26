@@ -22,6 +22,6 @@ import { RouterModule } from '@angular/router';
   exports: [
     MarkdownComponent,
     RouterLinkComponent
-  ],
+  ]
 })
 export class MarkdownComponentModule {}

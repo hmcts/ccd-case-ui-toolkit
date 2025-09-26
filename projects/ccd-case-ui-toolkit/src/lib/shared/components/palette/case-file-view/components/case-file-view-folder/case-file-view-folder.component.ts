@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -22,7 +22,8 @@ export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 @Component({
   selector: 'ccd-case-file-view-folder',
   templateUrl: './case-file-view-folder.component.html',
-  styleUrls: ['./case-file-view-folder.component.scss']
+  styleUrls: ['./case-file-view-folder.component.scss'],
+  standalone: false
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
@@ -53,9 +54,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       return this.nestedDataSource.reduce((acc, item) => {
         return acc + item.childDocumentCount;
       }, 0);
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   constructor(
@@ -68,10 +68,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public collapseAll(expand: boolean) {
     this.nestedTreeControl.collapseAll();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public expandAll(expand: boolean) {
     this.nestedDataSource.forEach((node) => {
       this.nestedTreeControl.expandDescendants(node);
@@ -87,7 +89,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.documentFilterSubscription = this.documentSearchFormControl.valueChanges.pipe(
       tap((searchTerm: string) => this.searchTermLength = searchTerm.length),
       switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase()).pipe())
-    ).subscribe(documentTreeData => {
+    ).subscribe((documentTreeData) => {
       this.nestedDataSource = documentTreeData;
       this.nestedTreeControl.dataNodes = documentTreeData;
       this.searchTermLength >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS
@@ -96,7 +98,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
-    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe((categoriesAndDocuments) => {
       const categories = categoriesAndDocuments.categories;
       this.categories = categories;
       // Generate document tree data from categories
@@ -124,14 +126,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
       return [
         ...tree,
-        newDocumentTreeNode,
-      ].sort((a,b) => a.category_order - b.category_order);
+        newDocumentTreeNode
+      ].sort((a, b) => a.category_order - b.category_order);
     }, []);
   }
 
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
-    documents.forEach(document => {
+    documents.forEach((document) => {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
@@ -148,7 +150,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
     const documents: DocumentTreeNode[] = [];
-    uncategorisedDocuments.forEach(document => {
+    uncategorisedDocuments.forEach((document) => {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
@@ -224,7 +226,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public sortDataSourceAscending(column: number) {
-    const sortedData = this.nestedDataSource.map(item => {
+    const sortedData = this.nestedDataSource.map((item) => {
       item.sortChildrenAscending(column, SortOrder.ASCENDING);
       return item;
     });
@@ -233,7 +235,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public sortDataSourceDescending(column: number) {
-    const sortedData = this.nestedDataSource.map(item => {
+    const sortedData = this.nestedDataSource.map((item) => {
       item.sortChildrenDescending(column, SortOrder.DESCENDING);
       return item;
     });
@@ -263,7 +265,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     const newObjects = flattenedArray.filter((item) => {
       return prevSelected.includes(item.name);
     });
-    newObjects.forEach(object => this.nestedTreeControl.expand(object));
+    newObjects.forEach((object) => this.nestedTreeControl.expand(object));
   }
 
   public ngOnDestroy(): void {
@@ -276,7 +278,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       data: { categories: this.categories, document: node }
     });
 
-    dialogRef.afterClosed().subscribe(newCatId => {
+    dialogRef.afterClosed().subscribe((newCatId) => {
       if (newCatId) {
         this.moveDocument.emit({ newCategory: newCatId, document: node });
       }

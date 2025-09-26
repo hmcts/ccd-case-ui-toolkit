@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ccd-remove-dialog',
-  templateUrl: './remove-dialog.component.html',
-  styleUrls: ['../action-dialog.component.scss']
+    selector: 'ccd-remove-dialog',
+    templateUrl: './remove-dialog.component.html',
+    styleUrls: ['../action-dialog.component.scss'],
+    standalone: false
 })
 export class RemoveDialogComponent {
 

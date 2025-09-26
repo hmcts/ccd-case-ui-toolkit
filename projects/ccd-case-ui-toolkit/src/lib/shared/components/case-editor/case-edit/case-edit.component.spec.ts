@@ -1,27 +1,26 @@
-import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { CaseView, FieldType, HttpError, Profile } from '../../../domain';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
+import { CaseEventTrigger } from '../../../domain';
+import { CaseField } from '../../../domain';
+import { createCaseEventTrigger } from '../../../fixture';
+import { FieldsFilterPipe } from '../../../pipes';
 import { AlertService, FieldsPurger, FieldsUtils, LoadingService, ReadCookieService, SessionStorageService, WindowService } from '../../../services';
-import { FormErrorService, FormValueService } from '../../../services/form';
+import { FormErrorService, FormValueService } from '../../../services';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
 import { CaseNotifier, WorkAllocationService } from '../services';
-import { WizardFactoryService } from '../services/wizard-factory.service';
+import { WizardFactoryService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
-import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { EventDetails, Task } from '../../../domain/work-allocation/Task';
 
 describe('CaseEditComponent', () => {
@@ -54,7 +53,7 @@ describe('CaseEditComponent', () => {
       type: 'Text'
     },
     display_context: 'READONLY',
-    show_condition: 'PersonLastName=\"Smith\"'
+    show_condition: 'PersonLastName="Smith"'
   }) as CaseField;
 
   const CASE_FIELD_1: CaseField = ({
@@ -188,11 +187,10 @@ describe('CaseEditComponent', () => {
       },
       complete_task: true
     }
-  }};
+  } };
 
   let fixture: ComponentFixture<CaseEditComponent>;
   let component: CaseEditComponent;
-  let de: DebugElement;
 
   const eventTriggerHeaderComponentMock: any = MockComponent({
     selector: 'ccd-event-trigger-header',
@@ -218,7 +216,6 @@ describe('CaseEditComponent', () => {
   let submitHandler: any;
   let formErrorService: jasmine.SpyObj<FormErrorService>;
   let formValueService: jasmine.SpyObj<FormValueService>;
-  let callbackErrorsSubject: any;
   let wizard: jasmine.SpyObj<Wizard>;
   let routerStub: any;
   const fieldsUtils = new FieldsUtils();
@@ -272,7 +269,6 @@ describe('CaseEditComponent', () => {
       submitHandler = createSpyObj('submitHandler', ['applyFilters']);
       submitHandler.applyFilters.and.returnValue();
 
-      callbackErrorsSubject = createSpyObj('callbackErrorsSubject', ['next']);
       wizard = createSpyObj<Wizard>('wizard', ['getPage', 'firstPage', 'nextPage', 'previousPage', 'hasPreviousPage']);
       wizard.pages = [];
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
@@ -320,17 +316,18 @@ describe('CaseEditComponent', () => {
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
+            RouterTestingModule,
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           declarations: [
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
-            FieldsFilterPipe,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            FieldsFilterPipe
+
           ],
           providers: [
             WizardFactoryService,
@@ -342,13 +339,13 @@ describe('CaseEditComponent', () => {
             { provide: ConditionalShowRegistrarService, useValue: registrarService },
             { provide: Router, useValue: routerStub },
             { provide: ActivatedRoute, useValue: route },
-            { provide: WorkAllocationService, useValue: mockWorkAllocationService},
-            { provide: SessionStorageService, useValue: mockSessionStorageService},
+            { provide: WorkAllocationService, useValue: mockWorkAllocationService },
+            { provide: SessionStorageService, useValue: mockSessionStorageService },
             { provide: AlertService, useValue: mockAlertService },
             { provide: ReadCookieService, useValue: mockCookieService },
             WindowService,
             { provide: LoadingService, loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             LinkedCasesService,
             { provide: AbstractAppConfig, useValue: mockabstractConfig }
           ]
@@ -361,8 +358,7 @@ describe('CaseEditComponent', () => {
       component.eventTrigger = EVENT_TRIGGER;
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
-      mockSessionStorageService.getItem.and.returnValues('example url', 'true')
-      de = fixture.debugElement;
+      mockSessionStorageService.getItem.and.returnValues('example url', 'true');
       fixture.detectChanges();
     }));
     // Moved this test case to case-edit-page.component
@@ -629,7 +625,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           nextPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.pages = [currentPage, nextPage];
@@ -659,7 +655,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_3.retain_hidden_value = true;
           nextPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
@@ -690,7 +686,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           CASE_FIELD_3_COMPLEX.retain_hidden_value = false;
           nextPage.case_fields = [CASE_FIELD_2_COMPLEX, CASE_FIELD_3_COMPLEX];
@@ -726,7 +722,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COLLECTION.retain_hidden_value = true;
           CASE_FIELD_3_COLLECTION.retain_hidden_value = false;
           nextPage.case_fields = [CASE_FIELD_2_COLLECTION, CASE_FIELD_3_COLLECTION];
@@ -769,7 +765,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           nextPage.case_fields = [CASE_FIELD_2_COMPLEX];
           nextPage.wizard_page_fields = [WIZARD_PAGE_2];
@@ -798,7 +794,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const nextPage = new WizardPage();
-          nextPage.show_condition = 'PersonFirstName=\"John\"';
+          nextPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
           nextPage.case_fields = [CASE_FIELD_3_COLLECTION];
           nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
@@ -830,7 +826,7 @@ describe('CaseEditComponent', () => {
             currentPage.case_fields = [CASE_FIELD_1];
             wizard.getPage.and.returnValue(currentPage);
             const nextPage = new WizardPage();
-            nextPage.show_condition = 'PersonFirstName=\"John\"';
+            nextPage.show_condition = 'PersonFirstName="John"';
             CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
             nextPage.case_fields = [CASE_FIELD_3_COLLECTION];
             nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
@@ -850,7 +846,8 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = false;
             component.eventTrigger.show_event_notes = false;
-            spyOn(component, 'submitForm').and.callFake(() => { });
+            spyOn(component, 'submitForm').and.callFake(() => {
+            });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -861,7 +858,8 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = true;
             component.eventTrigger.show_event_notes = true;
-            spyOn(component, 'submitForm').and.callFake(() => { });
+            spyOn(component, 'submitForm').and.callFake(() => {
+            });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).not.toHaveBeenCalled();
@@ -872,7 +870,8 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue({ something: 'something' });
             component.eventTrigger.show_event_notes = null;
             component.eventTrigger.show_event_notes = null;
-            spyOn(component, 'submitForm').and.callFake(() => { });
+            spyOn(component, 'submitForm').and.callFake(() => {
+            });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -904,7 +903,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           previousPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.pages = [previousPage, currentPage];
@@ -934,7 +933,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_3.retain_hidden_value = true;
           previousPage.case_fields = [CASE_FIELD_2, CASE_FIELD_3];
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
@@ -965,7 +964,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           CASE_FIELD_3_COMPLEX.retain_hidden_value = false;
           previousPage.case_fields = [CASE_FIELD_2_COMPLEX, CASE_FIELD_3_COMPLEX];
@@ -1001,7 +1000,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COLLECTION.retain_hidden_value = true;
           CASE_FIELD_3_COLLECTION.retain_hidden_value = false;
           previousPage.case_fields = [CASE_FIELD_2_COLLECTION, CASE_FIELD_3_COLLECTION];
@@ -1044,7 +1043,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_2_COMPLEX.retain_hidden_value = true;
           previousPage.case_fields = [CASE_FIELD_2_COMPLEX];
           previousPage.wizard_page_fields = [WIZARD_PAGE_2];
@@ -1073,7 +1072,7 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_1];
           wizard.getPage.and.returnValue(currentPage);
           const previousPage = new WizardPage();
-          previousPage.show_condition = 'PersonFirstName=\"John\"';
+          previousPage.show_condition = 'PersonFirstName="John"';
           CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
           previousPage.case_fields = [CASE_FIELD_3_COLLECTION];
           previousPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
@@ -1121,7 +1120,7 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
         };
         const actual = component.getStatus(response);
-        expect(actual).toEqual(response['callback_response_status']);
+        expect(actual).toEqual(response.callback_response_status);
       });
 
       it('should get callback_response_status', () => {
@@ -1132,7 +1131,7 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_COMPLETED'
         };
         const actual = component.getStatus(response);
-        expect(actual).toEqual(response['delete_draft_response_status']);
+        expect(actual).toEqual(response.delete_draft_response_status);
       });
     });
 
@@ -1173,14 +1172,20 @@ describe('CaseEditComponent', () => {
 
     describe('submitForm', () => {
       it('should submit case', () => {
-        const userInfo = {id: "id"};
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
-        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), JSON.stringify(mockTaskEventCompletionInfo), JSON.stringify({userInfo}))
+        const userInfo = { id: 'id' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: Date.now()
+        };
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), JSON.stringify(mockTaskEventCompletionInfo), JSON.stringify({ userInfo }));
         const mockClass = {
           submit: () => of({})
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
-          userInfo: {id: 'id'},
+          userInfo: { id: 'id' },
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
@@ -1199,7 +1204,7 @@ describe('CaseEditComponent', () => {
           eventTrigger: component.eventTrigger,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.isSubmitting).toEqual(false);
@@ -1235,7 +1240,7 @@ describe('CaseEditComponent', () => {
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.confirm).toHaveBeenCalled();
@@ -1261,9 +1266,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1273,13 +1278,13 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.confirm).toHaveBeenCalled();
@@ -1304,9 +1309,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1316,13 +1321,13 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
         expect(mockabstractConfig.logMessage).toHaveBeenCalledWith('postCompleteTaskIfRequired with assignNeeded: taskId 1 and event name Test Trigger');
         expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
@@ -1340,9 +1345,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1352,13 +1357,13 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
@@ -1377,9 +1382,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1389,13 +1394,13 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(mockWorkAllocationService.completeTask).not.toHaveBeenCalled();
@@ -1411,9 +1416,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1423,13 +1428,13 @@ describe('CaseEditComponent', () => {
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.confirm).toHaveBeenCalled();
@@ -1458,7 +1463,7 @@ describe('CaseEditComponent', () => {
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(formErrorService.mapFieldErrors).toHaveBeenCalled();
@@ -1484,7 +1489,7 @@ describe('CaseEditComponent', () => {
           eventCanBeCompleted: false,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.confirm).not.toHaveBeenCalled();
@@ -1511,7 +1516,7 @@ describe('CaseEditComponent', () => {
           eventCanBeCompleted: true,
           caseDetails: component.caseDetails,
           form: component.form,
-          submit: mockClass.submit,
+          submit: mockClass.submit
         });
 
         expect(component.confirm).not.toHaveBeenCalled();
@@ -1526,57 +1531,99 @@ describe('CaseEditComponent', () => {
       });
 
       it('should return false when there is a task present that does not match the current case', () => {
-        const mockTask = {id: '123', case_id: '987654321'};
+        const mockTask = { id: '123', case_id: '987654321' };
         expect(component.taskExistsForThisEvent(mockTask as Task, null, mockEventDetails)).toBe(false);
       });
 
       it('should return true when there is a task present that matches the current case when there is no event in session storage', () => {
-        const mockTask = {id: '123', case_id: '123456789', description: 'test test test [testEvent]'};
+        const mockTask = { id: '123', case_id: '123456789', description: 'test test test [testEvent]' };
         expect(component.taskExistsForThisEvent(mockTask as Task, null, mockEventDetails)).toBe(true);
       });
 
       it('should return true when there is a task present that matches the current case and current event', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: Date.now()
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
 
       it('should return false when there is a task present that matches the current case but does not match the event', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent2', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent2',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: Date.now()
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
       });
 
       it('should return true when there is a task present that matches the current case, does not match the event but does not match the task associated with the event in session storage', () => {
         // highly unlikely to occur but feasible scenario
-        const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEventCompletionInfo = {taskId: '1234', eventId: 'testEvent2', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '1234',
+          eventId: 'testEvent2',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: Date.now()
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
 
       it('should return true when there is a task present that matches the current case, matches the event and does not match the task associated with the event in session storage', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEventCompletionInfo = {taskId: '1234', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '1234',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: Date.now()
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
 
       it('should return false when there is a task present that matches the current case, matches the event but does not match the user', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '2', createdTimestamp: Date.now()};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '2',
+          createdTimestamp: Date.now()
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
       });
 
       it('should return false when there is a task present that matches the current case, matches the event but the timestamp is older than day ago', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const dayAndTwoHoursAgo = new Date().getTime() - (26*60*60*1000);
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: dayAndTwoHoursAgo};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const dayAndTwoHoursAgo = new Date().getTime() - (26 * 60 * 60 * 1000);
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: dayAndTwoHoursAgo
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
       });
 
       it('should return true when there is a task present that matches the current case, matches the event but the timestamp is less than day ago', () => {
-        const mockTask = {id: '123', case_id: '123456789'};
-        const twoHoursAgo = new Date().getTime() - (2*60*60*1000);
-        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: twoHoursAgo};
+        const mockTask = { id: '123', case_id: '123456789' };
+        const twoHoursAgo = new Date().getTime() - (2 * 60 * 60 * 1000);
+        const mockTaskEventCompletionInfo = {
+          taskId: '123',
+          eventId: 'testEvent',
+          caseId: '123456789',
+          userId: '1',
+          createdTimestamp: twoHoursAgo
+        };
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
     });
@@ -1607,9 +1654,7 @@ describe('CaseEditComponent', () => {
       isSolicitor: FUNC,
       isCourtAdmin: FUNC
     };
-
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
-
+    of(PROFILE);
     beforeEach(waitForAsync(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
       cancelHandler.applyFilters.and.returnValue();
@@ -1617,7 +1662,6 @@ describe('CaseEditComponent', () => {
       submitHandler = createSpyObj('submitHandler', ['applyFilters']);
       submitHandler.applyFilters.and.returnValue();
 
-      callbackErrorsSubject = createSpyObj('callbackErrorsSubject', ['next']);
       wizard = createSpyObj<Wizard>('wizard', ['getPage', 'firstPage', 'nextPage', 'previousPage', 'hasPreviousPage']);
       wizard.pages = [];
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
@@ -1639,7 +1683,7 @@ describe('CaseEditComponent', () => {
                     roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                   }
                 },
-                isSolicitor: () => false,
+                isSolicitor: () => false
               }
             }
           }
@@ -1678,8 +1722,8 @@ describe('CaseEditComponent', () => {
             { provide: ActivatedRoute, useValue: mockRouteNoProfile },
             SessionStorageService,
             WindowService,
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AbstractAppConfig, useValue: mockabstractConfig },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
+            { provide: AbstractAppConfig, useValue: mockabstractConfig }
           ]
         })
         .compileComponents();
@@ -1691,7 +1735,6 @@ describe('CaseEditComponent', () => {
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
 
-      de = fixture.debugElement;
       fixture.detectChanges();
     }));
   });

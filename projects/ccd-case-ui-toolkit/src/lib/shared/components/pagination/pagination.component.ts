@@ -7,18 +7,20 @@ function coerceToBoolean(input: string | boolean): boolean {
 @Component({
   selector: 'ccd-pagination',
   templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss']
+  styleUrls: ['./pagination.component.scss'],
+  standalone: false
 })
 export class PaginationComponent {
   @Input()
   public visibilityLabel: string;
+
   @Input() public id: string;
   @Input() public maxSize = 7;
   @Input() public previousLabel = 'Previous';
   @Input() public nextLabel = 'Next';
   @Input() public screenReaderPaginationLabel = 'Pagination';
   @Input() public screenReaderPageLabel = 'page';
-  @Input() public screenReaderCurrentLabel = `You're on page`;
+  @Input() public screenReaderCurrentLabel = 'You\'re on page';
   @Output() public pageChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() public pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
 

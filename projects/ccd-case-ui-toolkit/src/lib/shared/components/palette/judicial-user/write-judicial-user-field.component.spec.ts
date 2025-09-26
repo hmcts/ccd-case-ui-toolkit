@@ -1,21 +1,27 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
-import { CaseField, CaseType, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
+import { CaseField, CaseType, FieldType, Jurisdiction } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
-import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
+import {
+  CaseFlagRefdataService,
+  FieldsUtils,
+  FormValidatorsService,
+  JurisdictionService,
+  SessionStorageService
+} from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
-import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from '../../case-editor';
 import { MockComponent } from 'ng2-mock-component';
 import { getMockCaseNotifier } from '../../case-editor/services/case.notifier.spec';
+import createSpyObj = jasmine.createSpyObj;
 
 const VALUE = {
   idamId: 'idam123',
@@ -24,7 +30,7 @@ const VALUE = {
 const FIELD_ID = 'JudicialUserField';
 const FIELD_TYPE: FieldType = {
   id: 'JudicialUser',
-  type: 'Complex',
+  type: 'Complex'
 };
 const IDAM_ID: CaseField = {
   id: 'idamId',
@@ -136,12 +142,13 @@ const JURISDICTION_JUF: Jurisdiction = {
   id: 'JUF',
   name: 'Jurisdiction Judicial User Field',
   description: '',
-  caseTypes: [CASE_TYPE_JUF],
+  caseTypes: [CASE_TYPE_JUF]
 };
 
 @Pipe({
   name: 'ccdFirstError',
-  pure: false
+  pure: false,
+  standalone: false
 })
 class MockFirstErrorPipe implements PipeTransform {
   transform(value: ValidationErrors, args?: string): string {
@@ -181,9 +188,10 @@ describe('WriteJudicialUserFieldComponent', () => {
       imports: [
         ReactiveFormsModule,
         MatAutocompleteModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        MockComponent({ selector: 'ccd-field-read', inputs: ['caseField'] })
       ],
-      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe, MockComponent({ selector: 'ccd-field-read', inputs: ['caseField'] })],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },
@@ -223,7 +231,8 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     expect(component.jurisdiction).toEqual('CIVIL');
     expect(component.caseType).toEqual('CIVIL');
@@ -265,7 +274,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('No results found');
   });
 
@@ -281,7 +290,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     expect(component.filterJudicialUsers).toHaveBeenCalledWith('col');
     let filteredJudicialUsers: JudicialUserModel[];
-    component.filteredJudicialUsers$.subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
+    component.filteredJudicialUsers$.subscribe((judicialUsers) => filteredJudicialUsers = judicialUsers);
     expect(filteredJudicialUsers).toEqual(undefined);
   });
 
@@ -297,7 +306,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     expect(component.filterJudicialUsers).toHaveBeenCalledWith('123');
     expect(component.invalidSearchTerm).toBe(true);
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Invalid search term');
   });
 
@@ -313,7 +322,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     expect(component.filterJudicialUsers).toHaveBeenCalledWith('123');
     expect(component.invalidSearchTerm).toBe(true);
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Invalid search term');
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -363,7 +372,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     // Subscribe to the observable to execute it and trigger calls to services
     let filteredJudicialUsers: JudicialUserModel[];
-    component.filterJudicialUsers('jas').subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
+    component.filterJudicialUsers('jas').subscribe((judicialUsers) => filteredJudicialUsers = judicialUsers);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('CIVIL');
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).not.toHaveBeenCalled();
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
@@ -379,7 +388,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     // Subscribe to the observable to execute it and trigger calls to services
     let filteredJudicialUsers: JudicialUserModel[];
-    component.filterJudicialUsers('jas').subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
+    component.filterJudicialUsers('jas').subscribe((judicialUsers) => filteredJudicialUsers = judicialUsers);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('CIVIL');
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith('BBA3');
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
@@ -429,7 +438,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toEqual(' No Email ');
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[3]]));
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -461,7 +470,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     selectedJudicial.dispatchEvent(new InputEvent('blur'));
     expect(judicialUserField.setValue).toHaveBeenCalledWith(null);
@@ -485,7 +494,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-mdc-autocomplete-panel')).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     selectedJudicial.dispatchEvent(new InputEvent('blur'));
     expect(judicialUserField.setValue).not.toHaveBeenCalledWith(null);
@@ -521,5 +530,4 @@ describe('WriteJudicialUserFieldComponent', () => {
     const errorMessageElement = fixture.debugElement.query(By.css('.error-message')).nativeElement;
     expect(errorMessageElement.textContent).toContain('Judicial User is required');
   });
-
 });

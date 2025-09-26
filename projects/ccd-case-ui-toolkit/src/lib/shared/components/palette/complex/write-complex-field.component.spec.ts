@@ -37,7 +37,10 @@ describe('WriteComplexFieldComponent', () => {
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
-  @Pipe({ name: 'ccdIsReadOnly' })
+  @Pipe({
+    name: 'ccdIsReadOnly',
+    standalone: false
+})
   class IsReadOnlyPipeMock implements PipeTransform {
     public transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
@@ -56,6 +59,8 @@ describe('WriteComplexFieldComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          fieldWriteComponentMock,
+          fieldReadComponentMock,
           PaletteUtilsModule,
           ConditionalShowModule
         ],
@@ -64,8 +69,6 @@ describe('WriteComplexFieldComponent', () => {
           FieldsFilterPipe,
 
           // Mocks
-          fieldWriteComponentMock,
-          fieldReadComponentMock,
           IsReadOnlyPipeMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe

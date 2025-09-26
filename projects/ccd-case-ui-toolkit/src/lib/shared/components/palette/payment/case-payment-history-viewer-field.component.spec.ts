@@ -10,7 +10,6 @@ import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-v
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'CasePaymentHistoryViewer',
     type: 'CasePaymentHistoryViewer'
@@ -19,7 +18,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
+    field_type: FIELD_TYPE
   }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
@@ -42,32 +41,29 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
     paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
-        'API_ROOT',
-        'CCD_CASE_NUMBER',
-        'BULKSCAN_API_ROOT',
-        'ISBSENABLE',
-        'SELECTED_OPTION',
-        'VIEW',
-        'REFUNDS_API_ROOT',
-        'NOTIFICATION_API_ROOT',
-        'TAKEPAYMENT',
-        'SERVICEREQUEST',
-        'PAYMENT_GROUP_REF',
-        'EXC_REFERENCE',
-        'DCN_NUMBER',
-        'LOGGEDINUSERROLES',
-        'LOGGEDINUSEREMAIL',
-        'ISPAYMENTSTATUSENABLED'
-      ]});
+      'API_ROOT',
+      'CCD_CASE_NUMBER',
+      'BULKSCAN_API_ROOT',
+      'ISBSENABLE',
+      'SELECTED_OPTION',
+      'VIEW',
+      'REFUNDS_API_ROOT',
+      'NOTIFICATION_API_ROOT',
+      'TAKEPAYMENT',
+      'SERVICEREQUEST',
+      'PAYMENT_GROUP_REF',
+      'EXC_REFERENCE',
+      'DCN_NUMBER',
+      'LOGGEDINUSERROLES',
+      'LOGGEDINUSEREMAIL',
+      'ISPAYMENTSTATUSENABLED'
+    ] });
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [paymentWebComponent],
         declarations: [
-          CasePaymentHistoryViewerFieldComponent,
-
-          // Mocks
-          paymentWebComponent
+          CasePaymentHistoryViewerFieldComponent
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
@@ -101,25 +97,25 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
   it('Returns correct base url', () => {
     expect(component.getBaseURL()).toEqual(PAYMENTS_URL);
-});
+  });
 
-it('returns correct bulkscan url', () => {
+  it('returns correct bulkscan url', () => {
     expect(component.getPayBulkScanBaseURL()).toEqual(BULKSCAN_API_URL);
-});
+  });
 
-it('returns correct refunds url', () => {
+  it('returns correct refunds url', () => {
     expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
-});
+  });
 
-it('returns correct notification url', () => {
-  expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
-});
+  it('returns correct notification url', () => {
+    expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
+  });
 
-it('returns empty roles when not initialized', () => {
+  it('returns empty roles when not initialized', () => {
     expect(component.getUserRoles().length).toBe(0);
-});
+  });
 
-it('returns empty email when not initialized', () => {
+  it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
-});
+  });
 });

@@ -13,9 +13,10 @@ import { CaseHistory } from './domain/case-history.model';
 import { CaseHistoryService } from './services/case-history.service';
 
 @Component({
-  selector: 'ccd-case-history',
-  templateUrl: './case-history.component.html',
-  styleUrls: ['./case-history.component.scss']
+    selector: 'ccd-case-history',
+    templateUrl: './case-history.component.html',
+    styleUrls: ['./case-history.component.scss'],
+    standalone: false
 })
 export class CaseHistoryComponent implements OnInit, OnDestroy {
   public static readonly PARAM_EVENT_ID = 'eid';

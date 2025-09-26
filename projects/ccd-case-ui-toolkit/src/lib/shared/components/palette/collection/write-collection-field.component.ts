@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
@@ -24,9 +24,10 @@ type CollectionItem = {
 };
 
 @Component({
-  selector: 'ccd-write-collection-field',
-  templateUrl: './write-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+    selector: 'ccd-write-collection-field',
+    templateUrl: './write-collection-field.html',
+    styleUrls: ['./collection-field.scss'],
+    standalone: false
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()

@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
 import { waitForAsync } from '@angular/core/testing';
@@ -76,15 +77,15 @@ describe('DocumentManagementService', () => {
       documentManagementService.uploadFile(new FormData())
         .subscribe(() => {
           expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
-          headers: new HttpHeaders(),
-          observe: 'body'
+            headers: new HttpHeaders(),
+            observe: 'body'
           });
         });
     }));
 
     it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe(documentMetadata => {
+        .subscribe((documentMetadata) => {
           expect(documentMetadata).toEqual(RESPONSE);
         });
     }));
@@ -132,7 +133,7 @@ describe('DocumentManagementService', () => {
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
       caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType2' } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
-     const url = documentManagementService['getDocStoreUrl']();
+      const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
     });
 
@@ -166,7 +167,7 @@ describe('DocumentManagementService', () => {
   describe('Media viewer', () => {
     const FIELD_TYPE: FieldType = {
       id: 'Collection',
-      type: 'Collection',
+      type: 'Collection'
     };
     const CASE_FIELD: CaseField = ({
       id: 'x',
@@ -182,19 +183,19 @@ describe('DocumentManagementService', () => {
       content_type: 'pdf'
     };
     const MEDIA_VIEWER_IMAGE_JPEG = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.jpeg',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.jpeg',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_IMAGE_GIF = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.gif',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.gif',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_IMAGE_PNG = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.png',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.png',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_DOC = {
       document_binary_url: 'https://www.example.com/binary',

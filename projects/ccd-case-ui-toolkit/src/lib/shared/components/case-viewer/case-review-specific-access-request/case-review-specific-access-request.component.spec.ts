@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, DebugElement, Type } from '@angular/core';
+import { Component, Type } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
@@ -21,8 +21,8 @@ const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel =
     dateSubmitted: '2021-11-02T14:43:56.576Z',
     reasonForCaseAccess:
       'To view details of the other case linked to the parties/family on my current case.',
-    requestFrom: 'Judge Randel-Combeswardly',
-  },
+    requestFrom: 'Judge Randel-Combeswardly'
+  }
 };
 
 class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
@@ -70,11 +70,13 @@ class MockActivatedRoute implements ActivatedRoute {
   }
 }
 
-@Component({ template: `` })
+@Component({
+  template: '',
+  standalone: false
+})
 class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {
-  let de: DebugElement;
   let component: CaseReviewSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseReviewSpecificAccessRequestComponent>;
   const caseId = '1234123412341234';
@@ -83,9 +85,9 @@ describe('CaseSpecificAccessRequestComponent', () => {
       data: {
         case: {
           case_id: caseId
-        },
-      },
-    },
+        }
+      }
+    }
   };
   const mockActivatedRoute = new MockActivatedRoute();
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
@@ -119,8 +121,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
       providers: [
         FormBuilder,
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: AbstractAppConfig, useValue: mockAppConfig },
-      ],
+        { provide: AbstractAppConfig, useValue: mockAppConfig }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CaseReviewSpecificAccessRequestComponent);
@@ -130,7 +132,6 @@ describe('CaseSpecificAccessRequestComponent', () => {
     component.hint = ReviewSpecificAccessRequestPageText.HINT;
     component.caseRefLabel = ReviewSpecificAccessRequestPageText.CASE_REF;
     component.setMockData();
-    de = fixture.debugElement;
     fixture.detectChanges();
     router = TestBed.get(Router);
     location = TestBed.get(Location);

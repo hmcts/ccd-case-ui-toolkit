@@ -9,18 +9,19 @@ import { CaseFlagState, Language } from '../../domain';
 import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 import { AbstractJourneyComponent } from '../../../base-field';
-import { MultipageComponentStateService } from "../../../../../services";
-
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
   templateUrl: './search-language-interpreter.component.html',
-  styleUrls: ['./search-language-interpreter.component.scss']
+  styleUrls: ['./search-language-interpreter.component.scss'],
+  standalone: false
 })
 export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent implements OnInit, Journey {
   public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
     return SearchLanguageInterpreterStep;
   }
+
   public readonly SearchLanguageInterpreterControlNames = SearchLanguageInterpreterControlNames;
 
   @Input()
@@ -46,8 +47,8 @@ export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
 
-  constructor(private readonly rpxTranslationService: RpxTranslationService, 
-    multipageComponentStateService: MultipageComponentStateService) { 
+  constructor(private readonly rpxTranslationService: RpxTranslationService,
+    multipageComponentStateService: MultipageComponentStateService) {
     super(multipageComponentStateService);
   }
 
@@ -61,13 +62,13 @@ export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent
     this.filteredLanguages$ = this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).valueChanges.pipe(
       // Need to check type of input because it changes to object (i.e. Language) when a value is selected from the
       // autocomplete panel, instead of string when a value is being typed in
-      map(input => typeof input === 'string' ? input : input.value),
-      map(searchTerm => {
+      map((input) => typeof input === 'string' ? input : input.value),
+      map((searchTerm) => {
         // Update the current search term
         this.searchTerm = searchTerm;
         return this.filterLanguages(searchTerm);
       }),
-      tap(languages => this.noResults = languages.length === 0)
+      tap((languages) => this.noResults = languages.length === 0)
     );
   }
 
@@ -144,7 +145,7 @@ export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent
     }
 
     return this.flagType.listOfValues
-      ? this.flagType.listOfValues.filter(language =>
+      ? this.flagType.listOfValues.filter((language) =>
         // If a language has both English and Welsh values, match only on the value appropriate for the page language,
         // i.e. if RpxTranslationService.language is 'cy' then match on the value_cy property only. This is to prevent
         // cross-matches, where a user enters a search term in English and sees the corresponding Welsh value (because

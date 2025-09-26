@@ -22,18 +22,18 @@ const CASE_VIEW_FROM_ROUTE: CaseView = {
     name: 'case view 1 type',
     jurisdiction: {
       id: 'case_view_1_jurisdiction_id',
-      name: 'case view 1 jurisdiction',
-    },
+      name: 'case view 1 jurisdiction'
+    }
   },
   state: {
     id: 'case_view_1_state_id',
-    name: 'case view 1 state',
+    name: 'case view 1 state'
   },
   channels: [],
   tabs: [],
   triggers: [],
   events: [],
-  metadataFields: [],
+  metadataFields: []
 };
 
 const META_DATA_FIELD_WITH_CHALLENGED_ACCESS: CaseField = new CaseField();
@@ -46,18 +46,18 @@ const CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS: CaseView = {
     name: 'case view 1 type',
     jurisdiction: {
       id: 'case_view_1_jurisdiction_id',
-      name: 'case view 1 jurisdiction',
-    },
+      name: 'case view 1 jurisdiction'
+    }
   },
   state: {
     id: 'case_view_1_state_id',
-    name: 'case view 1 state',
+    name: 'case view 1 state'
   },
   channels: [],
   tabs: [],
   triggers: [],
   events: [],
-  metadataFields: [META_DATA_FIELD_WITH_CHALLENGED_ACCESS],
+  metadataFields: [META_DATA_FIELD_WITH_CHALLENGED_ACCESS]
 };
 
 const CASE_VIEW_FROM_CASE_NOTIFIER: CaseView = {
@@ -66,18 +66,18 @@ const CASE_VIEW_FROM_CASE_NOTIFIER: CaseView = {
     name: 'case view 2 type',
     jurisdiction: {
       id: 'case_view_2_jurisdiction_id',
-      name: 'case view 2 jurisdiction',
-    },
+      name: 'case view 2 jurisdiction'
+    }
   },
   state: {
     id: 'case_view_2_state_id',
-    name: 'case view 2 state',
+    name: 'case view 2 state'
   },
   channels: [],
   tabs: [],
   triggers: [],
   events: [],
-  metadataFields: [],
+  metadataFields: []
 };
 
 class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
@@ -128,11 +128,9 @@ class MockActivatedRoute implements ActivatedRoute {
 describe('CaseViewerComponent', () => {
   let fixture: ComponentFixture<CaseViewerComponent>;
   let component: CaseViewerComponent;
-  let de: DebugElement;
 
   const mockActivatedRoute = new MockActivatedRoute();
-  let casesService: any;
-  casesService = createSpyObj('casesService', ['getCaseViewV2']);
+  const casesService = createSpyObj('casesService', ['getCaseViewV2']);
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementBasicViewMock'
   ]);
@@ -154,12 +152,11 @@ describe('CaseViewerComponent', () => {
         { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: OrderService, useValue: new OrderService() }
-      ],
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CaseViewerComponent);
     component = fixture.componentInstance;
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 

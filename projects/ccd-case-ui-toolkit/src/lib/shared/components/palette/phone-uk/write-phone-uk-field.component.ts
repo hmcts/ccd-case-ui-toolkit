@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-  selector: 'ccd-write-phone-uk-field',
-  templateUrl: './write-phone-uk-field.html'
+    selector: 'ccd-write-phone-uk-field',
+    templateUrl: './write-phone-uk-field.html',
+    standalone: false
 })
 export class WritePhoneUKFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

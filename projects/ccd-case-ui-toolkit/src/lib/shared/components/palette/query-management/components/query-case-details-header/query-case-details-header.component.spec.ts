@@ -16,9 +16,12 @@ import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-@Pipe({ name: 'ccdCaseReference' })
+@Pipe({
+  name: 'ccdCaseReference',
+  standalone: false
+})
 class MockCaseReferencePipe implements PipeTransform {
-  public transform(value: string, ...args: any[]) {
+  public transform(value: string, ..._args: any[]) {
     return value;
   }
 }
@@ -41,13 +44,14 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
+      imports: [markdownComponentMock],
       declarations: [QueryCaseDetailsHeaderComponent, MockCaseReferencePipe,
         CaseReferencePipe,
         LabelSubstitutorDirective,
-        LabelFieldComponent,
+        LabelFieldComponent
 
         // Mocks
-        markdownComponentMock
+        // markdownComponentMock
       ],
       providers: [
         FieldsUtils,
@@ -61,7 +65,7 @@ describe('QueryCaseDetailsHeaderComponent', () => {
         HttpHandler
       ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

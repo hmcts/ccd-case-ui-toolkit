@@ -92,17 +92,17 @@ export abstract class AbstractAppConfig {
   }
 
   public getEnvironment() {
-    if (this.getActivityUrl()?.includes('.aat.'))
+    if (this.getActivityUrl()?.includes('.aat.')) {
       return 'aat';
-    else if (this.getActivityUrl()?.includes('.preview.'))
+    } else if (this.getActivityUrl()?.includes('.preview.')) {
       return 'preview';
-    else if (this.getActivityUrl()?.includes('.demo.'))
+    } else if (this.getActivityUrl()?.includes('.demo.')) {
       return 'demo';
-    else if (this.getActivityUrl()?.includes('.ithc.'))
+    } else if (this.getActivityUrl()?.includes('.ithc.')) {
       return 'ithc';
+    }
     return 'prod';
   }
-
 
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;

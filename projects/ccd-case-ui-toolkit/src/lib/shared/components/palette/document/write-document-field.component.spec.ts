@@ -1,13 +1,14 @@
+/* eslint-disable dot-notation, @typescript-eslint/no-unused-vars */
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, DocumentData, FieldType, HttpError, Jurisdiction } from '../../../domain';
+import { CaseField, DocumentData, FieldType, HttpError } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -19,8 +20,6 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { HttpErrorResponse } from '@angular/common/http';
-import { mock } from 'node:test';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -96,7 +95,6 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 describe('WriteDocumentFieldComponent', () => {
-
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -147,13 +145,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -239,6 +236,7 @@ describe('WriteDocumentFieldComponent', () => {
       beforeClosed() {
         return of('Replace');
       },
+      //eslint ignore @typescript-eslint/no-empty-function
       close(r: any) {
       }
     };
@@ -402,7 +400,7 @@ describe('WriteDocumentFieldComponent', () => {
     error.error = 'Unknown error';
     error.status = 422;
     const errorMsgSpy = spyOn<any>(component, 'getErrorMessage');
-    component['handleDocumentUploadError'](error);;
+    component['handleDocumentUploadError'](error);
 
     expect(errorMsgSpy).toHaveBeenCalledWith(error);
   });
@@ -413,13 +411,12 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileValidationsOnTabSpy).toHaveBeenCalled();
   });
 
-
   it('should cover the 429 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 429,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -428,11 +425,11 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should cover the 422 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 422,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -441,11 +438,11 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should cover the 502 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 502,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -665,7 +662,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   let fixture: ComponentFixture<WriteDocumentFieldComponent>;
   let component: WriteDocumentFieldComponent;
-  let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
   let appConfig;
@@ -678,7 +674,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const eventTriggerService: any = {};
 
   beforeEach(waitForAsync(() => {
-
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
@@ -700,13 +695,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mocks
-          readDocumentComponentMock,
+          // Mock
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -731,7 +725,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     component.caseField = CASE_FIELD_MANDATORY;
 
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
@@ -795,7 +788,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
-
   });
 
   it('createDocumentForm - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
@@ -875,11 +867,9 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 });
 
 describe('WriteDocumentFieldComponent', () => {
-
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
-  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
-  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+  By.css('.button[title=Replace]');
 
   const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',
@@ -888,13 +878,8 @@ describe('WriteDocumentFieldComponent', () => {
 
   let fixture: ComponentFixture<WriteDocumentFieldComponent>;
   let component: WriteDocumentFieldComponent;
-  let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
-
-  let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
-  let componentDialog: DocumentDialogComponent;
-  let deDialog: DebugElement;
   let mockDialog: any;
   let mockMatDialogRef: any;
   let appConfig: any;
@@ -926,13 +911,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -958,7 +942,6 @@ describe('WriteDocumentFieldComponent', () => {
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
 
-    de = fixture.debugElement;
     component.ngOnInit();
     fixture.detectChanges();
   }));

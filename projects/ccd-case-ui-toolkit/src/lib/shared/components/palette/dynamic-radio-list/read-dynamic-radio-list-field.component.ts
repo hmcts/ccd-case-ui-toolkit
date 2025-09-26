@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-  selector: 'ccd-read-dynamic-radio-list-field',
-  template: '<span class="text-16">{{caseField.value | ccdDynamicRadioList:caseField.list_items | rpxTranslate}}</span>',
+    selector: 'ccd-read-dynamic-radio-list-field',
+    template: '<span class="text-16">{{caseField.value | ccdDynamicRadioList:caseField.list_items | rpxTranslate}}</span>',
+    standalone: false
 })
 export class ReadDynamicRadioListFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

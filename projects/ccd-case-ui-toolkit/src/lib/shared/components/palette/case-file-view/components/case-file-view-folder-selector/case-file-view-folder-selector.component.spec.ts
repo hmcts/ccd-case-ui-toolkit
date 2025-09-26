@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view-folder-selector.component';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 
@@ -19,7 +19,7 @@ describe('CaseFileViewFolderSelectorComponent', () => {
           useValue: matDialogRef
         },
         {
-          provide: MAT_LEGACY_DIALOG_DATA,
+          provide: MAT_DIALOG_DATA,
           useValue: { categories: categoriesAndDocumentsTestData.categories, document: categoriesAndDocumentsTestData.uncategorised_documents }
         }
       ]

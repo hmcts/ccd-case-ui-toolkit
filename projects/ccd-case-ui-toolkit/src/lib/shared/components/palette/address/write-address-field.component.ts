@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { Component, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddressValidationConstants } from '../../../commons/address-validation-constants';
@@ -12,7 +13,8 @@ import { AddressOption } from './address-option.model';
 @Component({
   selector: 'ccd-write-address-field',
   templateUrl: 'write-address-field.html',
-  styleUrls: ['write-address-field.scss']
+  styleUrls: ['write-address-field.scss'],
+  standalone: false
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
   @ViewChild('writeComplexFieldComponent', { static: false })
@@ -52,7 +54,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
     this.addressesService.getMandatoryError().subscribe((value: boolean) => {
       this.updateErrorsOnContinue(value);
-    })
+    });
   }
 
   public findAddress() {
@@ -69,9 +71,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.caseField.value = null;
       this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
-        result => {
+        (result) => {
           result.forEach(
-            address => {
+            (address) => {
               this.addressOptions.push(new AddressOption(address, null));
             }
           );
@@ -98,7 +100,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public isComplexWithHiddenFields() {
     if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
-      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true)) {
+      && this.caseField.field_type.complex_fields.some((cf) => cf.hidden === true)) {
       return true;
     }
   }

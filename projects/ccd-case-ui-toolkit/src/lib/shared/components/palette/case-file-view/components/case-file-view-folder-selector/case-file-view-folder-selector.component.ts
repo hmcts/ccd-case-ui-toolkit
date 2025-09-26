@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef , MAT_LEGACY_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef , MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
 
 @Component({
-  selector: 'xui-case-file-view-folder-selector',
-  templateUrl: './case-file-view-folder-selector.component.html',
-  styleUrls: ['./case-file-view-folder-selector.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'xui-case-file-view-folder-selector',
+    templateUrl: './case-file-view-folder-selector.component.html',
+    styleUrls: ['./case-file-view-folder-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
   public currentCategories: CaseFileViewCategory[] = [];
@@ -15,7 +16,7 @@ export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
 
   constructor(
         public dialogRef: MatDialogRef<CaseFileViewFolderSelectorComponent>,
-        @Inject(MAT_LEGACY_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: DocumentTreeNode }
+        @Inject(MAT_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: DocumentTreeNode }
   ) {
     this.currentCategories = [...this.data.categories];
   }

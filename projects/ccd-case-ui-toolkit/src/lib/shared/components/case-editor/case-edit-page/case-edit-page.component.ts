@@ -1,6 +1,6 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -27,9 +27,10 @@ import { LinkedCasesService } from '../../palette/linked-cases/services/linked-c
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 
 @Component({
-  selector: 'ccd-case-edit-page',
-  templateUrl: 'case-edit-page.html',
-  styleUrls: ['./case-edit-page.scss']
+    selector: 'ccd-case-edit-page',
+    templateUrl: 'case-edit-page.html',
+    styleUrls: ['./case-edit-page.scss'],
+    standalone: false
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy, JourneyInstigator {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';

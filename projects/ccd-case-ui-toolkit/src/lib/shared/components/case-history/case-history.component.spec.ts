@@ -107,19 +107,18 @@ describe('CaseHistoryComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          linkComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponent,
+          markdownComponent
         ],
         declarations: [
           CaseHistoryComponent,
           LabelSubstitutorDirective,
-
           // Mocks
-          fieldReadComponentMock,
-          caseHeaderComponent,
-          linkComponentMock,
           CcdTabFieldsPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
-          markdownComponent,
           RpxTranslatePipe
         ],
         providers: [

@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseField } from '../../../domain';
+import { FieldType } from '../../../domain';
+import { FixedListPipe } from '../fixed-list';
 import { ReadDynamicMultiSelectListFieldComponent } from './read-dynamic-multi-select-list-field.component';
 
 const FIELD_ID = 'ReadOnlyFieldId';
@@ -39,7 +39,7 @@ const FIELD_LIST_ITEMS = [
 ];
 const FIELD_TYPE: FieldType = {
   id: 'MultiSelectList',
-  type: 'MultiSelectList',
+  type: 'MultiSelectList'
 };
 const VALUES = [
   {
@@ -82,13 +82,11 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
-            MockRpxTranslatePipe,
-            // Mocks
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -149,13 +147,11 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
-            MockRpxTranslatePipe,
-            // Mocks
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: []
         })

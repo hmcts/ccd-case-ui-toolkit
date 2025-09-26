@@ -6,6 +6,7 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
 @Component({
     selector: 'ccd-search-filters-wrapper',
     templateUrl: './search-filters-wrapper.component.html',
+    standalone: false
 })
 
 export class SearchFiltersWrapperComponent implements OnInit {
