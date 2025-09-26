@@ -1,11 +1,11 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, throwError } from 'rxjs';
 
 import { CaseDetails, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
-import { HttpError } from '../../../domain/http';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { HttpError } from '../../../domain';
+import { createCaseEventTrigger } from '../../../fixture';
 import { AlertService } from '../../../services';
 import { CasesService, EventTriggerService } from '../services';
 import { CaseProgressComponent } from './case-progress.component';
@@ -19,7 +19,6 @@ const caseEditComponent: any = MockComponent({
 });
 
 describe('CaseProgressComponent event trigger resolved and draft does not exist', () => {
-
   const CTID_UNDEFINED = undefined;
   const JID = 'PROBATE';
   const CTID = 'ComplexTestType';
@@ -92,7 +91,6 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
   let fixture: ComponentFixture<CaseProgressComponent>;
   let component: CaseProgressComponent;
-  let de: DebugElement;
 
   let cancelHandler: any;
   let submitHandler: any;
@@ -127,20 +125,19 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: AlertService, useValue: alertService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: EventTriggerService, useValue: eventTriggerService }
         ]
       })
       .compileComponents();
 
-      fixture = TestBed.createComponent(CaseProgressComponent);
-      component = fixture.componentInstance;
-      component.case = CASE_VIEW_DATA.case_id;
-      component.event = ETID;
-      component.cancelled.subscribe(cancelHandler.applyFilters);
-      component.submitted.subscribe(submitHandler.applyFilters);
+    fixture = TestBed.createComponent(CaseProgressComponent);
+    component = fixture.componentInstance;
+    component.case = CASE_VIEW_DATA.case_id;
+    component.event = ETID;
+    component.cancelled.subscribe(cancelHandler.applyFilters);
+    component.submitted.subscribe(submitHandler.applyFilters);
 
-      de = fixture.debugElement;
-      fixture.detectChanges();
+    fixture.detectChanges();
   }));
 
   it('should get event trigger on loading and announce it', () => {
@@ -152,7 +149,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   it('should emit submitted event when submitted emitter is called', () => {
     component.ngOnInit();
 
-    const event = {id: 1, name: 'name'};
+    const event = { id: 1, name: 'name' };
     component.emitSubmitted(event);
     expect(submitHandler.applyFilters).toHaveBeenCalledWith(event);
   });
@@ -160,7 +157,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   it('should emit submitted event when submitted emitter is called', () => {
     component.ngOnInit();
 
-    const event = {id: 1, name: 'name'};
+    const event = { id: 1, name: 'name' };
     component.emitSubmitted(event);
     expect(submitHandler.applyFilters).toHaveBeenCalledWith(event);
   });
@@ -168,7 +165,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   it('should emit cancelled event when cancelled emitter is called', () => {
     component.ngOnInit();
 
-    const event = {id: 1, name: 'name'};
+    const event = { id: 1, name: 'name' };
     component.emitCancelled(event);
     expect(cancelHandler.applyFilters).toHaveBeenCalledWith(event);
   });
@@ -184,7 +181,6 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
     expect(casesService.validateCase).toHaveBeenCalledWith(CTID, SANITISED_EDIT_FORM, PAGE_ID);
   });
-
 });
 
 describe('CaseProgressComponent failed to resolve case details or event trigger', () => {
@@ -216,7 +212,6 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
 
   let fixture: ComponentFixture<CaseProgressComponent>;
   let component: CaseProgressComponent;
-  let de: DebugElement;
 
   let cancelHandler: any;
   let submitHandler: any;
@@ -248,18 +243,17 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: AlertService, useValue: alertService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: EventTriggerService, useValue: eventTriggerService }
         ]
       })
       .compileComponents();
 
-      fixture = TestBed.createComponent(CaseProgressComponent);
-      component = fixture.componentInstance;
-      component.cancelled.subscribe(cancelHandler.applyFilters);
-      component.submitted.subscribe(submitHandler.applyFilters);
+    fixture = TestBed.createComponent(CaseProgressComponent);
+    component = fixture.componentInstance;
+    component.cancelled.subscribe(cancelHandler.applyFilters);
+    component.submitted.subscribe(submitHandler.applyFilters);
 
-      de = fixture.debugElement;
-      fixture.detectChanges();
+    fixture.detectChanges();
   }));
 
   it('should alert warning message and never announce event trigger if getting case details fails', () => {
