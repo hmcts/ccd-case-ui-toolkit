@@ -862,7 +862,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_HASH).value).toEqual('new_document_hash');
 
     // Expect the UPLOAD_TIMESTAMP control to be removed
-    expect(component.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
   });
 });
 
