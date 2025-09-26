@@ -81,12 +81,10 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
-            FixedListPipe,
-            // Mocks
-            fieldReadComponentMock
+            FixedListPipe
           ],
           providers: []
         })
@@ -147,12 +145,10 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
-            FixedListPipe,
-            // Mocks
-            fieldReadComponentMock
+            FixedListPipe
           ],
           providers: []
         })

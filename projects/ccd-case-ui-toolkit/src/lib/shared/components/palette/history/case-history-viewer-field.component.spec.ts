@@ -72,12 +72,9 @@ describe('CaseHistoryViewerFieldComponent', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [eventLogComponentMock],
         declarations: [
-          CaseHistoryViewerFieldComponent,
-
-          // Mocks
-          eventLogComponentMock
+          CaseHistoryViewerFieldComponent
         ]
       })
       .compileComponents();

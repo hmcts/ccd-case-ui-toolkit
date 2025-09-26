@@ -1,13 +1,13 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, DocumentData, FieldType, HttpError, Jurisdiction } from '../../../domain';
+import { CaseField, DocumentData, FieldType, HttpError } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -19,8 +19,6 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { HttpErrorResponse } from '@angular/common/http';
-import { mock } from 'node:test';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -147,13 +145,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -700,13 +697,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mocks
-          readDocumentComponentMock,
+          // Mock
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -926,13 +922,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],

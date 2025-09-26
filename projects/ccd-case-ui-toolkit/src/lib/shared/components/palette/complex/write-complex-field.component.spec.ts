@@ -59,6 +59,8 @@ describe('WriteComplexFieldComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          fieldWriteComponentMock,
+          fieldReadComponentMock,
           PaletteUtilsModule,
           ConditionalShowModule
         ],
@@ -67,8 +69,6 @@ describe('WriteComplexFieldComponent', () => {
           FieldsFilterPipe,
 
           // Mocks
-          fieldWriteComponentMock,
-          fieldReadComponentMock,
           IsReadOnlyPipeMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe

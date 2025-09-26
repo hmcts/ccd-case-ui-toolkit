@@ -116,13 +116,11 @@ describe('Ways To Pay Component', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          paymentWebComponentMock
         ],
         declarations: [
-          WaysToPayFieldComponent,
-
-          // Mocks
-          paymentWebComponentMock
+          WaysToPayFieldComponent
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: APP_CONFIG },

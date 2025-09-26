@@ -55,11 +55,10 @@ describe('LabelFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [markdownComponentMock],
         declarations: [
           LabelFieldComponent,
-          LabelSubstitutorDirective,
-          markdownComponentMock
+          LabelSubstitutorDirective
         ],
         providers: [
           FieldsUtils,

@@ -25,19 +25,17 @@ describe('MoneyGbpInputComponent', () => {
       'change',
       'keyup',
       'disabled'
-    ]});
+    ] });
 
     TestBed
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputMockComponent
         ],
         declarations: [
-          MoneyGbpInputComponent,
-
-          // Mocks
-          inputMockComponent
+          MoneyGbpInputComponent
         ],
         providers: []
       })

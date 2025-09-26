@@ -82,7 +82,7 @@ import {
   WriteComplexFieldComponent
 } from './complex';
 import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
-import { DatetimePickerComponent } from './datetime-picker';
+import { DatePickerComponent } from './date-picker';
 import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
@@ -153,11 +153,12 @@ import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from 
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker/datetime-picker-utils';
+import { CUSTOM_MOMENT_FORMATS } from './date-picker/date-picker-utils';
+import { MatTimepickerInput } from '@angular/material/timepicker';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
-  DatetimePickerComponent,
+  DatePickerComponent,
   WaysToPayFieldComponent,
   FieldReadComponent,
   FieldWriteComponent,
@@ -292,42 +293,43 @@ const PALETTE_COMPONENTS = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CaseEditDataModule,
-    PaletteUtilsModule,
-    PipesModule,
-    BannersModule,
-    HeadersModule,
-    FootersModule,
-    BodyModule,
-    FormModule,
-    TabsModule,
-    LabelSubstitutorModule,
-    TranslatedMarkdownModule,
-    MarkdownModule.forChild(),
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    NgxMatDatetimepicker,
-    PaymentLibModule,
-    ScrollToModule.forRoot(),
-    RpxTranslationModule.forChild(),
-    CdkTreeModule,
-    OverlayModule,
-    MatDialogModule,
-    MediaViewerModule,
-    LoadingModule,
-    MarkdownComponentModule,
-    ErrorsModule,
-    NgxMatDatepickerInput,
-    NgxMatDatepickerActions
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CaseEditDataModule,
+        PaletteUtilsModule,
+        PipesModule,
+        BannersModule,
+        HeadersModule,
+        FootersModule,
+        BodyModule,
+        FormModule,
+        TabsModule,
+        LabelSubstitutorModule,
+        TranslatedMarkdownModule,
+        MarkdownModule.forChild(),
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        NgxMatDatetimepicker,
+        PaymentLibModule,
+        ScrollToModule.forRoot(),
+        RpxTranslationModule.forChild(),
+        CdkTreeModule,
+        OverlayModule,
+        MatDialogModule,
+        MediaViewerModule,
+        LoadingModule,
+        MarkdownComponentModule,
+        ErrorsModule,
+        NgxMatDatepickerInput,
+        NgxMatDatepickerActions,
+        MatTimepickerInput
+    ],
   declarations: [
     FixedListPipe,
     FixedRadioListPipe,

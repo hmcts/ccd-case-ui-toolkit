@@ -1,4 +1,3 @@
-import { NgxMatDatetimepicker, NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@ngxmc/datetime-picker';
 import {
   MAT_DATE_FORMATS,
   MatDateFormats,
@@ -13,40 +12,35 @@ import {
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { CUSTOM_MOMENT_FORMATS } from './date-picker-utils';
 
 @Component({
-    selector: 'ccd-datetime-picker',
-    templateUrl: './datetime-picker.component.html',
-    styleUrls: ['./datetime-picker.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    providers: [
-        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-        },
-        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-        { provide: NGX_MAT_DATE_FORMATS, useExisting: MAT_DATE_FORMATS },
-        { provide: NgxMatDateAdapter, useExisting: DateAdapter }
-    ],
-    standalone: false
+  selector: 'ccd-datetime-picker',
+  templateUrl: './date-picker.component.html',
+  styleUrls: ['./date-picker.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ],
+  standalone: false
 })
 
-export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {
-  public showSpinners = true;
+export class DatePickerComponent extends AbstractFormFieldComponent implements OnInit {
   public showSeconds = false;
   public touchUi = false;
   public enableMeridian = false;
-  public stepHour = 1;
-  public stepMinute = 1;
-  public stepSecond = 1;
   public color: ThemePalette = 'primary';
   public disableMinute = true;
   public hideTime = true;
@@ -54,12 +48,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public startView = 'month';
   public yearSelection = false;
   public checkTime = true;
-  public stringEdited = false;
   public minError = false;
   public maxError = false;
   public dateTimeEntryFormat: string;
 
-  @ViewChild('picker', { static: false }) public datetimePicker: NgxMatDatetimepicker<any>;
+  @ViewChild('picker', { static: false }) public datetimePicker: MatDatepicker<any>;
   @ViewChild('input', { static: false }) public inputElement: ElementRef<HTMLInputElement>;
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
@@ -69,7 +62,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
-    @Inject(MAT_DATE_FORMATS) private readonly ngxMatDateFormats: MatDateFormats) {
+    @Inject(MAT_DATE_FORMATS) private readonly matDateFormats: MatDateFormats) {
     super();
   }
 
@@ -94,8 +87,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   }
 
   public setDateTimeFormat(): void {
-    this.ngxMatDateFormats.parse.dateInput = this.dateTimeEntryFormat;
-    this.ngxMatDateFormats.display.dateInput = this.dateTimeEntryFormat;
+    this.matDateFormats.parse.dateInput = this.dateTimeEntryFormat;
+    this.matDateFormats.display.dateInput = this.dateTimeEntryFormat;
   }
 
   /*

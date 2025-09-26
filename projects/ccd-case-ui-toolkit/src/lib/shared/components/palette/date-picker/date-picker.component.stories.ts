@@ -9,16 +9,16 @@ import { createCaseField, createFieldType } from '../../../../shared/fixture/sha
 import { FormatTranslatorService } from '../../../../shared/services/case-fields/format-translator.service';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { PaletteModule } from '../palette.module';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import { DatetimePickerComponent } from './datetime-picker.component';
+import { CUSTOM_MOMENT_FORMATS } from './date-picker-utils';
+import { DatePickerComponent } from './date-picker.component';
 
 const caseFieldType = createFieldType('date', 'Date');
 const caseField = createCaseField('id', 'Date', 'Enter your date of birth', caseFieldType, 'MANDATORY');
 const caseFieldService = new CaseFieldService();
 
-const Meta: Meta<DatetimePickerComponent> = {
+const Meta: Meta<DatePickerComponent> = {
   title: 'shared/components/palette/datetime-picker/DatetimePickerComponent',
-  component: DatetimePickerComponent,
+  component: DatePickerComponent,
   decorators: [
     moduleMetadata({
       imports: [PaletteModule, BrowserAnimationsModule],
@@ -39,7 +39,7 @@ const Meta: Meta<DatetimePickerComponent> = {
 
 export default Meta;
 
-type Story = StoryObj<DatetimePickerComponent>;
+type Story = StoryObj<DatePickerComponent>;
 //
 // const template: Story<DatetimePickerComponent> = (args: DatetimePickerComponent) => ({
 //   props: args,
@@ -51,5 +51,5 @@ export const standard: Story = {
     dateControl: new FormControl(new Date()),
   },
   // If you prefer the old “template” pattern, keep it here:
-  render: (args: DatetimePickerComponent) => ({ props: args }),
+  render: (args: DatePickerComponent) => ({ props: args }),
 };

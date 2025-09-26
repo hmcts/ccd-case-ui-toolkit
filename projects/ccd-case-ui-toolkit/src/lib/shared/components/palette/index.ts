@@ -7,7 +7,7 @@ export * from './case-link';
 export * from './collection';
 export * from './complex';
 export * from './date';
-export * from './datetime-picker';
+export * from './date-picker';
 export * from './document';
 export * from './dynamic-list';
 export * from './dynamic-multi-select-list';

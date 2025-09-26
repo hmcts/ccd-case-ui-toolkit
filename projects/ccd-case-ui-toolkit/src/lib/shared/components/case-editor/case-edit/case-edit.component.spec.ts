@@ -320,17 +320,18 @@ describe('CaseEditComponent', () => {
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
+            RouterTestingModule,
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           declarations: [
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
-            FieldsFilterPipe,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            FieldsFilterPipe
+
           ],
           providers: [
             WizardFactoryService,

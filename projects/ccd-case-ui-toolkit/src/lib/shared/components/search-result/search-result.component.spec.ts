@@ -25,9 +25,9 @@ import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
-    selector: 'ccd-field-read',
-    template: `{{caseField.value}}`,
-    standalone: false
+  selector: 'ccd-field-read',
+  template: '{{caseField.value}}',
+  standalone: false
 })
 class FieldReadComponent {
   @Input()
@@ -188,7 +188,8 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            caseActivityComponent
           ],
           declarations: [
             FieldReadComponent,
@@ -198,7 +199,6 @@ describe('SearchResultComponent', () => {
 
             // Mocks
             MockRpxTranslatePipe,
-            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],
@@ -278,8 +278,8 @@ describe('SearchResultComponent', () => {
       const headRow = de.query(By.css('div>table>thead>tr'));
       // added +1 for case activity column
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
-      RESULT_VIEW.columns.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.label)))
+      RESULT_VIEW.columns.forEach((col) => {
+        expect(headRow.children.find((c) => c.nativeElement.textContent.trim().startsWith(col.label)))
           .toBeTruthy(`Could not find header ${col.label}`);
       });
     });
@@ -451,7 +451,7 @@ describe('SearchResultComponent', () => {
         },
         supplementary_data: {
           orgs_assigned_users: { '9QV1DT1': 3 }
-        },
+        }
       };
       expect(component.canBeShared(caseView)).toEqual(true);
     });
@@ -481,7 +481,7 @@ describe('SearchResultComponent', () => {
         },
         supplementary_data: {
           orgs_assigned_users: { '9QV1DT1': 3 }
-        },
+        }
       }];
       expect(component.canAnyBeShared()).toEqual(true);
     });
@@ -806,6 +806,7 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
+            caseActivityComponent,
             RouterTestingModule
           ],
           declarations: [
@@ -816,7 +817,6 @@ describe('SearchResultComponent', () => {
 
             // Mocks
             MockRpxTranslatePipe,
-            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],

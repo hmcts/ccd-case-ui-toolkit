@@ -13,7 +13,7 @@ import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
+import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateContainerFieldComponent } from './write-date-container-field.component';
 import { WriteDateFieldComponent } from './write-date-field.component';
@@ -60,7 +60,7 @@ describe('WriteDateContainerFieldComponent', () => {
           FormModule,
         ],
         declarations: [
-          WriteDateContainerFieldComponent, WriteDateFieldComponent, DatetimePickerComponent, MockRpxTranslatePipe
+          WriteDateContainerFieldComponent, WriteDateFieldComponent, DatePickerComponent, MockRpxTranslatePipe
         ],
         providers: [
           FormatTranslatorService,

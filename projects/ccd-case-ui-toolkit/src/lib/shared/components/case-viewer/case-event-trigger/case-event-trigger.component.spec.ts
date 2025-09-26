@@ -163,19 +163,19 @@ describe('CaseEventTriggerComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
-          ReactiveFormsModule
-        ],
-        declarations: [
-          caseEditComponentMock,
-          CaseEventTriggerComponent,
-
-          // Mocks
+          ReactiveFormsModule,
           caseActivityComponentMock,
           caseHeaderComponentMock,
           eventTriggerHeaderComponentMock,
           routerLinkComponentMock,
           fieldReadComponentMock,
-          fieldWriteComponentMock,
+          caseEditComponentMock,
+          fieldWriteComponentMock
+        ],
+        declarations: [
+          CaseEventTriggerComponent,
+
+          // Mocks
           CaseReferencePipe
         ],
         providers: [

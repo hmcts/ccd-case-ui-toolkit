@@ -64,12 +64,10 @@ describe('CaseViewComponent', () => {
 
         TestBed
           .configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, caseViewerComponentMock],
             declarations: [
-              CaseViewComponent,
+              CaseViewComponent
 
-              // Mocks
-              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -110,12 +108,10 @@ describe('CaseViewComponent', () => {
 
         TestBed
           .configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, caseViewerComponentMock],
             declarations: [
-              CaseViewComponent,
+              CaseViewComponent
 
-              // Mocks
-              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -156,12 +152,9 @@ describe('CaseViewComponent', () => {
 
         TestBed
           .configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, caseViewerComponentMock],
             declarations: [
-              CaseViewComponent,
-
-              // Mocks
-              caseViewerComponentMock
+              CaseViewComponent
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -201,12 +194,9 @@ describe('CaseViewComponent', () => {
 
         TestBed
           .configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, caseViewerComponentMock],
             declarations: [
-              CaseViewComponent,
-
-              // Mocks
-              caseViewerComponentMock
+              CaseViewComponent
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},

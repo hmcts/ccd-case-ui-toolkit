@@ -118,9 +118,9 @@ describe('CaseListFiltersComponent', () => {
         mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
         mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
         TestBed.configureTestingModule({
+          imports: [workbasketFiltersComponent],
             declarations: [
-                CaseListFiltersComponent,
-                workbasketFiltersComponent
+                CaseListFiltersComponent
             ],
             providers: [
                 { provide: DefinitionsService, useValue: mockDefinitionsService }

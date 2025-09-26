@@ -21,13 +21,13 @@ describe('ReadCollectionFieldComponent', () => {
   };
   const VALUES = [
     {
-      value: 'Pierre',
+      value: 'Pierre'
     },
     {
-      value: 'Paul',
+      value: 'Paul'
     },
     {
-      value: 'Jacques',
+      value: 'Jacques'
     }
   ];
   const CASE_FIELD: CaseField = ({
@@ -50,12 +50,9 @@ describe('ReadCollectionFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [fieldReadComponentMock],
         declarations: [
-          ReadCollectionFieldComponent,
-
-          // Mocks
-          fieldReadComponentMock
+          ReadCollectionFieldComponent
         ],
         providers: []
       })
@@ -142,13 +139,13 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   };
   const VALUES = [
     {
-      value: 'Pierre',
+      value: 'Pierre'
     },
     {
-      value: 'Paul',
+      value: 'Paul'
     },
     {
-      value: 'Jacques',
+      value: 'Jacques'
     }
   ];
 
@@ -172,12 +169,9 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [fieldReadComponentMock],
         declarations: [
-          ReadCollectionFieldComponent,
-
-          // Mocks
-          fieldReadComponentMock
+          ReadCollectionFieldComponent
         ],
         providers: []
       })

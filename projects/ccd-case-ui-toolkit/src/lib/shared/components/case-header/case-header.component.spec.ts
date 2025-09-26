@@ -29,13 +29,12 @@ describe('CaseHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
+        imports: [markdownComponentMock],
         declarations: [
           CaseHeaderComponent,
           CaseReferencePipe,
           LabelSubstitutorDirective,
-          LabelFieldComponent,
-          // Mocks
-          markdownComponentMock
+          LabelFieldComponent
         ],
         providers: [
           FieldsUtils,
