@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation, @typescript-eslint/no-unused-vars */
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -94,7 +95,6 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 describe('WriteDocumentFieldComponent', () => {
-
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -137,7 +137,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -236,6 +236,7 @@ describe('WriteDocumentFieldComponent', () => {
       beforeClosed() {
         return of('Replace');
       },
+      //eslint ignore @typescript-eslint/no-empty-function
       close(r: any) {
       }
     };
@@ -399,7 +400,7 @@ describe('WriteDocumentFieldComponent', () => {
     error.error = 'Unknown error';
     error.status = 422;
     const errorMsgSpy = spyOn<any>(component, 'getErrorMessage');
-    component['handleDocumentUploadError'](error);;
+    component['handleDocumentUploadError'](error);
 
     expect(errorMsgSpy).toHaveBeenCalledWith(error);
   });
@@ -410,13 +411,12 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileValidationsOnTabSpy).toHaveBeenCalled();
   });
 
-
   it('should cover the 429 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 429,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -425,11 +425,11 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should cover the 422 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 422,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -438,11 +438,11 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should cover the 502 status code', () => {
-    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
       status: 502,
       error: 'Unknown error'
-    } as HttpError
+    } as HttpError;
 
     component['handleDocumentUploadError'](status);
     fixture.detectChanges();
@@ -662,7 +662,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   let fixture: ComponentFixture<WriteDocumentFieldComponent>;
   let component: WriteDocumentFieldComponent;
-  let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
   let appConfig;
@@ -675,7 +674,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const eventTriggerService: any = {};
 
   beforeEach(waitForAsync(() => {
-
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
@@ -689,7 +687,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -727,7 +725,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     component.caseField = CASE_FIELD_MANDATORY;
 
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
@@ -791,7 +788,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
-
   });
 
   it('createDocumentForm - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
@@ -866,16 +862,14 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_HASH).value).toEqual('new_document_hash');
 
     // Expect the UPLOAD_TIMESTAMP control to be removed
-    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
+    expect(component.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
   });
 });
 
 describe('WriteDocumentFieldComponent', () => {
-
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
-  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
-  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+  By.css('.button[title=Replace]');
 
   const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',
@@ -884,13 +878,8 @@ describe('WriteDocumentFieldComponent', () => {
 
   let fixture: ComponentFixture<WriteDocumentFieldComponent>;
   let component: WriteDocumentFieldComponent;
-  let de: DebugElement;
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
-
-  let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
-  let componentDialog: DocumentDialogComponent;
-  let deDialog: DebugElement;
   let mockDialog: any;
   let mockMatDialogRef: any;
   let appConfig: any;
@@ -914,7 +903,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getDocumentSecureMode', 'getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of(undefined);
@@ -953,7 +942,6 @@ describe('WriteDocumentFieldComponent', () => {
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
 
-    de = fixture.debugElement;
     component.ngOnInit();
     fixture.detectChanges();
   }));

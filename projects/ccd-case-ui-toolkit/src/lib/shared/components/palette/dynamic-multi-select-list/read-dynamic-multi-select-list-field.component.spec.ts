@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseField } from '../../../domain';
 import { FieldType } from '../../../domain';
 import { FixedListPipe } from '../fixed-list';
@@ -84,7 +85,8 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
-            FixedListPipe
+            FixedListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -148,7 +150,8 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           imports: [fieldReadComponentMock],
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
-            FixedListPipe
+            FixedListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

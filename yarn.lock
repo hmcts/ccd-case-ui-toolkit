@@ -2832,9 +2832,9 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccpay-web-component": "npm:6.2.18"
+    "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "file:../media-viewer/dist/media-viewer"
+    "@hmcts/media-viewer": "npm:4.1.6-angular-20"
     "@ngrx/effects": "npm:^20"
     "@ngrx/store": "npm:^20"
     "@ngxmc/datetime-picker": "npm:^19"
@@ -2956,15 +2956,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.2.18":
-  version: 6.2.18
-  resolution: "@hmcts/ccpay-web-component@npm:6.2.18"
+"@hmcts/ccpay-web-component@npm:6.3.3":
+  version: 6.3.3
+  resolution: "@hmcts/ccpay-web-component@npm:6.3.3"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/faaf9f1bd721c591aa0c9acd9186dd46b7431a906bb2d608a8f5ec92b2233d25d326cf6d8822d93a9c281e162d91e21cd5e6a0118eb4c44b5ea8b676f6fffa82
+  checksum: 10/2a644862d3ad12454ccca4f60b6a7672f3222515beb63fb09363bdf6dcabefb27b3eecaa7377eb2c334f9e56a437298546ec3a3b1b920b83d29f76edcc2f5b73
   languageName: node
   linkType: hard
 
@@ -2975,9 +2975,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@file:../media-viewer/dist/media-viewer::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A.":
-  version: 4.1.6-angular-19.2.15
-  resolution: "@hmcts/media-viewer@file:../media-viewer/dist/media-viewer#../media-viewer/dist/media-viewer::hash=f30908&locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A."
+"@hmcts/media-viewer@npm:4.1.6-angular-20":
+  version: 4.1.6-angular-20
+  resolution: "@hmcts/media-viewer@npm:4.1.6-angular-20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -2996,7 +2996,7 @@ __metadata:
     "@ngrx/router-store": ^19
     "@ngrx/store": ^19
     "@ngrx/store-devtools": ^19
-  checksum: 10/ce07f1b49b0c6c6becc55405dbcd55b3e963d2cd6b75dc0e68a0f61a0b4308d22a08fd4676c30e4c5c2a5acd2d4437fac6ae63a8e6023ac42706c821aa3ed8aa
+  checksum: 10/5834dd762671114a60b327e403fa3271983708527f410dadf4ff947761149893c2f5ee12e1072ab3729d893fac28fedff7664d566b89c55523decc6d91c76b72
   languageName: node
   linkType: hard
 

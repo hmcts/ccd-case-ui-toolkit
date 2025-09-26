@@ -4,7 +4,6 @@ import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit'
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-
   protected config: CaseEditorConfig = {
     'api_url': '/aggregated',
     'case_data_url': '/data',
@@ -98,7 +97,7 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
     return this.getCaseDataUrl()
-      + `/internal`
+      + '/internal'
       + `/cases/${caseId}`
       + `/events/${eventId}`;
   }
@@ -148,7 +147,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl() {
-    return this.getCaseDataUrl() + `/internal/banners/`;
+    return this.getCaseDataUrl() + '/internal/banners/';
   }
 
   public getPrdUrl(): string {
@@ -169,10 +168,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getRemotePrintServiceUrl(): string {
     return this.config.print_service_url;
-  }
-
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode;
   }
 
   public getWAServiceConfig(): any {

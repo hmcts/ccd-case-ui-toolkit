@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { Component, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddressValidationConstants } from '../../../commons/address-validation-constants';
@@ -10,10 +11,10 @@ import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { AddressOption } from './address-option.model';
 
 @Component({
-    selector: 'ccd-write-address-field',
-    templateUrl: 'write-address-field.html',
-    styleUrls: ['write-address-field.scss'],
-    standalone: false
+  selector: 'ccd-write-address-field',
+  templateUrl: 'write-address-field.html',
+  styleUrls: ['write-address-field.scss'],
+  standalone: false
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
   @ViewChild('writeComplexFieldComponent', { static: false })
@@ -53,7 +54,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
     this.addressesService.getMandatoryError().subscribe((value: boolean) => {
       this.updateErrorsOnContinue(value);
-    })
+    });
   }
 
   public findAddress() {
@@ -70,20 +71,14 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.caseField.value = null;
       this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
-        result => {
+        (result) => {
           result.forEach(
-            address => {
+            (address) => {
               this.addressOptions.push(new AddressOption(address, null));
             }
           );
-          this.addressOptions.unshift(
-            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
-          );
         }, (error) => {
           console.log(`An error occurred retrieving addresses for postcode ${postcode}. ${error}`);
-          this.addressOptions.unshift(
-            new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
-          );
         });
       this.addressList.setValue(undefined);
       this.refocusElement();
@@ -105,7 +100,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public isComplexWithHiddenFields() {
     if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
-      && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true)) {
+      && this.caseField.field_type.complex_fields.some((cf) => cf.hidden === true)) {
       return true;
     }
   }
@@ -148,11 +143,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public buildIdPrefix(elementId: string): string {
     return `${this.idPrefix}_${elementId}`;
-  }
-
-  private defaultLabel(numberOfAddresses) {
-    return numberOfAddresses === 0 ? 'No address found'
-      : `${numberOfAddresses}${numberOfAddresses === 1 ? ' address ' : ' addresses '}found`;
   }
 
   private setFormValue() {

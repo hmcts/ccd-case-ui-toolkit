@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
 import { waitForAsync } from '@angular/core/testing';
@@ -25,13 +26,12 @@ describe('DocumentManagementService', () => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
-      'getAnnotationApiUrl', 'getDocumentSecureMode', 'getCdamExclusionList', 'getDocumentManagementUrlV2'
+      'getAnnotationApiUrl', 'getCdamExclusionList', 'getDocumentManagementUrlV2'
     ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
     appConfig.getRemoteHrsUrl.and.returnValue(REMOTE_HRS_URL);
     appConfig.getHrsUrl.and.returnValue(HRS_URL);
-    appConfig.getDocumentSecureMode.and.returnValue(false);
     appConfig.getCdamExclusionList.and.returnValue('');
     caseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['caseView']);
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
@@ -77,15 +77,15 @@ describe('DocumentManagementService', () => {
       documentManagementService.uploadFile(new FormData())
         .subscribe(() => {
           expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
-          headers: new HttpHeaders(),
-          observe: 'body'
+            headers: new HttpHeaders(),
+            observe: 'body'
           });
         });
     }));
 
     it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe(documentMetadata => {
+        .subscribe((documentMetadata) => {
           expect(documentMetadata).toEqual(RESPONSE);
         });
     }));
@@ -106,7 +106,6 @@ describe('DocumentManagementService', () => {
     });
 
     it('should return DocumentManagementUrlV2 when document secure mode is enabled and case type is not in exclusion list', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: CASE_TYPE_ID } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
@@ -115,7 +114,6 @@ describe('DocumentManagementService', () => {
     });
 
     it('should return DocumentManagementUrl when document secure mode is enabled and case type is in exclusion list', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: EXCLUDED_CASE_TYPE_ID } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
@@ -123,17 +121,7 @@ describe('DocumentManagementService', () => {
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
     });
 
-    it('should return DocumentManagementUrl when document secure mode is disabled', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(false);
-      appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID);
-      caseNotifier.caseView = of({ case_type: { id: CASE_TYPE_ID } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
-      const url = documentManagementService['getDocStoreUrl']();
-      expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
-    });
-
     it('should return DocumentManagementUrlV2 when exclusions contains multiple values and file is not excluded', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
       caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType3' } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
@@ -142,16 +130,14 @@ describe('DocumentManagementService', () => {
     });
 
     it('should return DocumentManagementUrl when exclusions contains multiple values and file is excluded', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
       caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType2' } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
-     const url = documentManagementService['getDocStoreUrl']();
+      const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
     });
 
     it('should handle when there is no files in exclusion list', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: 'caseType2' } });
       documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
@@ -160,7 +146,6 @@ describe('DocumentManagementService', () => {
     });
 
     it('should handle when there is no case in case_notifier', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of(undefined);
       jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ currentCaseType: { id: 'caseType2' } }));
@@ -170,7 +155,6 @@ describe('DocumentManagementService', () => {
     });
 
     it('should handle when there is no case in case_notifier', () => {
-      appConfig.getDocumentSecureMode.and.returnValue(true);
       appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of(undefined);
       jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
@@ -183,7 +167,7 @@ describe('DocumentManagementService', () => {
   describe('Media viewer', () => {
     const FIELD_TYPE: FieldType = {
       id: 'Collection',
-      type: 'Collection',
+      type: 'Collection'
     };
     const CASE_FIELD: CaseField = ({
       id: 'x',
@@ -199,19 +183,19 @@ describe('DocumentManagementService', () => {
       content_type: 'pdf'
     };
     const MEDIA_VIEWER_IMAGE_JPEG = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.jpeg',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.jpeg',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_IMAGE_GIF = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.gif',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.gif',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_IMAGE_PNG = {
-        document_binary_url: 'https://www.example.com/binary',
-        document_filename: 'sample.png',
-        content_type: 'image'
+      document_binary_url: 'https://www.example.com/binary',
+      document_filename: 'sample.png',
+      content_type: 'image'
     };
     const MEDIA_VIEWER_DOC = {
       document_binary_url: 'https://www.example.com/binary',

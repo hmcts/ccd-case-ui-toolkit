@@ -31,7 +31,6 @@ export abstract class AbstractAppConfig {
   public abstract getCaseDataUrl(): string;
   public abstract getDocumentManagementUrl(): string;
   public abstract getDocumentManagementUrlV2(): string;
-  public abstract getDocumentSecureMode(): boolean;
   public abstract getCdamExclusionList(): string;
   public abstract getDocumentSecureModeCaseTypeExclusions(): string;
   public abstract getRemoteDocumentManagementUrl(): string;
@@ -80,10 +79,6 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
 
-  public getAccessManagementMode(): boolean {
-    return undefined;
-  }
-
   public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
@@ -97,17 +92,17 @@ export abstract class AbstractAppConfig {
   }
 
   public getEnvironment() {
-    if (this.getActivityUrl()?.includes('.aat.'))
+    if (this.getActivityUrl()?.includes('.aat.')) {
       return 'aat';
-    else if (this.getActivityUrl()?.includes('.preview.'))
+    } else if (this.getActivityUrl()?.includes('.preview.')) {
       return 'preview';
-    else if (this.getActivityUrl()?.includes('.demo.'))
+    } else if (this.getActivityUrl()?.includes('.demo.')) {
       return 'demo';
-    else if (this.getActivityUrl()?.includes('.ithc.'))
+    } else if (this.getActivityUrl()?.includes('.ithc.')) {
       return 'ithc';
+    }
     return 'prod';
   }
-
 
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
@@ -122,7 +117,6 @@ export abstract class AbstractAppConfig {
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
   public abstract getEventsToHide(): string[];
-  public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }
 export class CaseEditorConfig {
   public api_url: string;
@@ -161,7 +155,6 @@ export class CaseEditorConfig {
   public work_allocation_api_url: string;
   public user_info_api_url: string;
   public wa_service_config?: any;
-  public access_management_mode?: boolean;
   public access_management_basic_view_mock?: {
     active?: boolean,
     basicFields?: {
@@ -195,7 +188,6 @@ export class CaseEditorConfig {
   public case_flags_refdata_api_url: string;
   public rd_common_data_api_url: string;
   public case_data_store_api_url: string;
-  public enable_case_file_view_version_1_1: boolean;
   public icp_enabled: boolean;
   public icp_jurisdictions: string[];
   public events_to_hide: string[];

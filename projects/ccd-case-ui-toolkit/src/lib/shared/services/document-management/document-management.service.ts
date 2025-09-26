@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { delay, map, switchMap, take } from 'rxjs/operators';
+import { delay, take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
@@ -65,7 +65,7 @@ export class DocumentManagementService {
     // correct headers and values automatically
     const headers = new HttpHeaders();
     return this.http
-      .post(url, formData, {headers, observe: 'body'})
+      .post(url, formData, { headers, observe: 'body' })
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
   }
 
@@ -105,25 +105,24 @@ export class DocumentManagementService {
       return DocumentManagementService.RTF;
     } else if (fileExtension.toLowerCase() === 'pdf') {
       return DocumentManagementService.PDF;
-    } else {
-      return fileExtension;
     }
+    return fileExtension;
   }
 
   public isImage(imageType: string): boolean {
-    return DocumentManagementService.imagesList.find(e => e === imageType) !== undefined;
+    return DocumentManagementService.imagesList.find((e) => e === imageType) !== undefined;
   }
 
   public isWord(wordType: string): boolean {
-    return DocumentManagementService.wordList.find(e => e === wordType) !== undefined;
+    return DocumentManagementService.wordList.find((e) => e === wordType) !== undefined;
   }
 
   public isExcel(excelType: string): boolean {
-    return DocumentManagementService.excelList.find(e => e === excelType) !== undefined;
+    return DocumentManagementService.excelList.find((e) => e === excelType) !== undefined;
   }
 
   public isPowerpoint(powerpointType: string): boolean {
-    return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
+    return DocumentManagementService.powerpointList.find((e) => e === powerpointType) !== undefined;
   }
 
   private transformDocumentUrl(documentBinaryUrl: string): string {
@@ -145,13 +144,8 @@ export class DocumentManagementService {
   public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
-    const documentSecureModeEnabled = this.appConfig.getDocumentSecureMode();
-    // if the documentSecureModeEnabled is false, return false
-    if (!documentSecureModeEnabled){
-      return false;
-    }
-    // if the documentSecureModeEnabled is true, and the case is not in the exclusion list, return true
-    if (documentSecureModeEnabled && !isDocumentOnExclusionList){
+
+    if (!isDocumentOnExclusionList){
       return true;
     }
     // if documentSecureModeEnabled is true, and case is in the exclusion list, return false
