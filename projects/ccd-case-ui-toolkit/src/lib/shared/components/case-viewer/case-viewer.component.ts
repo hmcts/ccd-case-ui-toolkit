@@ -87,7 +87,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     for (let i = 0, c = tabs.length; i < c; i++) {
       item = tabs[i].label;
       itemCount = count[item];
-      itemCount = count[item] = (itemCount === null ? 1 : itemCount + 1);
+      // eslint-disable-next-line eqeqeq
+      itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
 
       if (count[item] > 1) {
         tabs[i].label = tabs[i].label + Array(count[item] - 1).fill('_').join('');
