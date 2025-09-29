@@ -6,106 +6,6 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
-  /**
-   * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
-   * There are two exceptions:
-   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
-   *      form= { 'list': ['code1', 'code2'],
-   *              'list---LABEL': ['label1', 'label2'] },
-   *      fieldKey=list,
-   *      colIndex=0,
-   *      value=label1, label2
-   * 2) In case of a collection of simple fields is identified as a leaf all values are joined seperated by a comma
-   *      form= { 'collection': [{ 'value': 'value1' }, { 'value': 'value2' }] }
-   *      fieldKey=collection
-   *      colIndex=1
-   *      value=value1, value2
-   *
-   * Other examples:
-   * 1) simple field reference: form={ 'PersonFirstName': 'John' }, fieldKey=PersonFirstName, value=John
-   * 2) complex field reference:
-   *      form= { complex1': { 'simple11': 'value11', 'simple12': 'value12', 'complex2': { 'simple21': 'value21' } }},
-   *      fieldKey=complex1.complex2.simple21
-   *      colIndex=0,
-   *      value=value21
-   * 3) complex field with collection field with complex field reference:
-   *      form= { 'complex1': {
-   *               'collection1': [
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value1',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value12'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               },
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value2',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value21'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               },
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value3',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value31'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               }
-   *             ]}}
-   *      fieldKey=complex1.collection1.complex2.complex3.complex4.simple2
-   *      colIndex=2,
-   *      value=value21
-   * 4) collection of complex types
-   *      form= { 'collection1': [
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value11',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value12'
-   *                               }
-   *                             }
-   *                         }}
-   *               },
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value21',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value22'
-   *                               }
-   *                             }
-   *                         }}
-   *               },
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value31',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value32'
-   *                               }
-   *                             }
-   *                           }}
-   *               }
-   *             ]}
-   *      fieldKey=collection1.complex1.complex2.complex3.simple2
-   *      colIndex=2
-   *      value=value32
-   *
-   * If key is pointing at a complex or collection leaf (not simple, collection of simple or multiselect types) then undefined is returned.
-   * Also no key referring a leaf that is contained within collection will contain index number. The index is passed as an argument to the
-   * method.
-   */
   public static getFieldValue(form, fieldKey, colIndex) {
     const fieldIds = fieldKey.split('.');
     const currentFieldId = fieldIds[0];
@@ -276,6 +176,10 @@ export class FormValueService {
   private sanitiseValue(rawValue: any): any {
     if (Array.isArray(rawValue)) {
       return this.sanitiseArray(rawValue);
+    }
+
+    if (FieldTypeSanitiser.DATE_FORMAT.test(rawValue)) {
+      return rawValue.replace(/Z$/, '')
     }
 
     switch (typeof rawValue) {
