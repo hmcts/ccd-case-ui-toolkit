@@ -366,7 +366,7 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   it('should cancel navigate to linked cases tab', () => {
-    const routerWithModifiedUrl = TestBed.get(Router);
+    const routerWithModifiedUrl = TestBed.inject(Router);
     routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
