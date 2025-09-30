@@ -360,6 +360,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
     return 'Cancel';
   }
+
+  private redirectIfFormEmpty(): void {
     const data = this.editForm?.getRawValue()?.data;
     const isEmpty = !data || (typeof data === 'object' && Object.keys(data).length === 0);
 
