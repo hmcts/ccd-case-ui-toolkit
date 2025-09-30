@@ -29,7 +29,7 @@
     "docs": "compodoc -p tsconfig.json -d docs --disableCoverage --disablePrivate --disableProtected --disableInternal --disableLifeCycleHooks",
     "explorer": "source-map-explorer ./dist/index.umd.js",
     "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs",
-    "lint": "ng lint ccd-case-ui-toolkit  && ng lint ccd-case-ui-toolkit-lib",
+    "lint": "ng lint ccd-case-ui-toolkit",
     "ngcompile": "node_modules/.bin/ngc -p tsconfig-aot.json",
     "postversion": "git push && git push --tags",
     "prebuild": "rimraf dist tmp",
