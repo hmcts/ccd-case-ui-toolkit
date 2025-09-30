@@ -5,9 +5,10 @@ function coerceToBoolean(input: string | boolean): boolean {
 }
 
 @Component({
-  selector: 'ccd-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss']
+    selector: 'ccd-pagination',
+    templateUrl: './pagination.component.html',
+    styleUrls: ['./pagination.component.scss'],
+    standalone: false
 })
 export class PaginationComponent {
   @Input()

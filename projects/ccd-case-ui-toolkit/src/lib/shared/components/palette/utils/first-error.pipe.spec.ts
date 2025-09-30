@@ -3,7 +3,10 @@ import { Replacements, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { FirstErrorPipe } from './first-error.pipe';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 export class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string, args: { [key: string]: string } = {}) {
     return value;

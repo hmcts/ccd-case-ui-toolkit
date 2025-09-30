@@ -12,13 +12,14 @@ import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'r
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
-  template: `
+    template: `
     <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [contextFields]="caseFields"
         [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
       <td>{{caseField.value}}</td>
-    </tr>`
+    </tr>`,
+    standalone: false
 })
 class TestHostComponent {
 

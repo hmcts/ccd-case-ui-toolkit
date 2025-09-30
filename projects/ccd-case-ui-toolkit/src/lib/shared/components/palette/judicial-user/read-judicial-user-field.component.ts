@@ -5,8 +5,9 @@ import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-  selector: 'ccd-read-judicial-user-field',
-  templateUrl: './read-judicial-user-field.component.html'
+    selector: 'ccd-read-judicial-user-field',
+    templateUrl: './read-judicial-user-field.component.html',
+    standalone: false
 })
 export class ReadJudicialUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
 

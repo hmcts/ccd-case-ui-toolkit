@@ -62,17 +62,19 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'mat-tab-group',
-  template: '<ng-content></ng-content>'
+    // tslint:disable-next-line
+    selector: 'mat-tab-group',
+    template: '<ng-content></ng-content>',
+    standalone: false
 })
 class TabsComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'mat-tab',
-  template: '<ng-content></ng-content>'
+    // tslint:disable-next-line
+    selector: 'mat-tab',
+    template: '<ng-content></ng-content>',
+    standalone: false
 })
 class TabComponent {
   @Input()
@@ -80,16 +82,18 @@ class TabComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
-  selector: 'exui-tasks-container',
-  template: '<p>Tasks Container</p>'
+    // tslint:disable-next-line
+    selector: 'exui-tasks-container',
+    template: '<p>Tasks Container</p>',
+    standalone: false
 })
 class TasksContainerComponent {
 }
 
 @Component({
-  selector: 'ccd-event-trigger',
-  template: ``
+    selector: 'ccd-event-trigger',
+    template: ``,
+    standalone: false
 })
 class EventTriggerComponent {
   @Input()
@@ -109,8 +113,9 @@ class EventTriggerComponent {
 }
 
 @Component({
-  selector: 'ccd-callback-errors',
-  template: ``
+    selector: 'ccd-callback-errors',
+    template: ``,
+    standalone: false
 })
 class CallbackErrorsComponent {
   @Input()
@@ -671,7 +676,12 @@ describe('CaseFullAccessViewComponent', () => {
         imports: [
           PaletteUtilsModule,
           PaymentLibModule,
-          RouterTestingModule
+          RouterTestingModule,
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -682,11 +692,6 @@ describe('CaseFullAccessViewComponent', () => {
           TabComponent,
           EventTriggerComponent,
           // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
-          markdownComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -738,7 +743,7 @@ describe('CaseFullAccessViewComponent', () => {
     router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
-  
+
 it('should set case view tab based on navigation end event', () => {
     // Mock tabGroup._tabs with some dummy values for testing
     component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
@@ -873,13 +878,13 @@ it('should set case view tab based on navigation end event', () => {
       component.errorSubscription = new Subscription();
       component.subscription = new Subscription();
       component['subs'] = [new Subscription(), new Subscription()];
-  
+
       spyOn(component.activitySubscription, 'unsubscribe');
       spyOn(component.caseSubscription, 'unsubscribe');
       spyOn(component.errorSubscription, 'unsubscribe');
       spyOn(component.subscription, 'unsubscribe');
       component['subs'].forEach(sub => spyOn(sub, 'unsubscribe'));
-  
+
       component.ngOnDestroy();
       component['activityPollingService'].isEnabled
       if (component['activityPollingService'].isEnabled) {
@@ -896,9 +901,9 @@ it('should set case view tab based on navigation end event', () => {
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
       component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
     });
-    
-  
-    
+
+
+
 
     xit('should render each compound field without label as a cell spanning 2 columns', () => {
       const headers = de
@@ -1286,7 +1291,10 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           ]),
           StoreModule.forRoot({}),
-          EffectsModule.forRoot([])
+          EffectsModule.forRoot([]),
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1296,9 +1304,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           EventTriggerComponent,
           CallbackErrorsComponent,
           // Mocks
-          caseActivityComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1423,7 +1428,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           ]),
           StoreModule.forRoot({}),
-          EffectsModule.forRoot([])
+          EffectsModule.forRoot([]),
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1433,9 +1441,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           EventTriggerComponent,
           CallbackErrorsComponent,
           // Mocks
-          caseActivityComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1637,7 +1642,10 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
             }
           ]),
           StoreModule.forRoot({}),
-          EffectsModule.forRoot([])
+          EffectsModule.forRoot([]),
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1647,9 +1655,6 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           EventTriggerComponent,
           CallbackErrorsComponent,
           // Mocks
-          caseActivityComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1784,7 +1789,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             }
           ]),
           StoreModule.forRoot({}),
-          EffectsModule.forRoot([])
+          EffectsModule.forRoot([]),
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1794,9 +1802,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           EventTriggerComponent,
           CallbackErrorsComponent,
           // Mocks
-          caseActivityComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -2079,7 +2084,10 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
             }
           ]),
           StoreModule.forRoot({}),
-          EffectsModule.forRoot([])
+          EffectsModule.forRoot([]),
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -2089,9 +2097,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           EventTriggerComponent,
           CallbackErrorsComponent,
           // Mocks
-          caseActivityComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -2251,7 +2256,10 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
           }
         ]),
         StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
+        EffectsModule.forRoot([]),
+        caseActivityComponentMock,
+        caseHeaderComponentMock,
+        linkComponentMock
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -2261,9 +2269,6 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
         EventTriggerComponent,
         CallbackErrorsComponent,
         // Mocks
-        caseActivityComponentMock,
-        caseHeaderComponentMock,
-        linkComponentMock,
         MockRpxTranslatePipe
       ],
       providers: [
@@ -2725,7 +2730,12 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
-          PaymentLibModule
+          PaymentLibModule,
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -2736,11 +2746,6 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           TabsComponent,
           TabComponent,
           // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
-          markdownComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [

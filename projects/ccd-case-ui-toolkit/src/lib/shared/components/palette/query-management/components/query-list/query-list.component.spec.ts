@@ -4,7 +4,10 @@ import { SortOrder } from '../../../complex/sort-order';
 import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem, QueryMessage } from '../../models';
 import { QueryListComponent } from './query-list.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

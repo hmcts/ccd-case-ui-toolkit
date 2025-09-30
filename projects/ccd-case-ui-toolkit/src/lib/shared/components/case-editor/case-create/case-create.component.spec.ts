@@ -94,12 +94,10 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
     TestBed
       .configureTestingModule({
-        imports: [
-        ],
+        imports: [caseEditComponentMock],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          caseEditComponentMock,
-          CaseCreateComponent,
+          CaseCreateComponent
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
@@ -234,12 +232,10 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
 
     TestBed
       .configureTestingModule({
-        imports: [
-        ],
+        imports: [caseEditComponentMock],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          caseEditComponentMock,
-          CaseCreateComponent,
+          CaseCreateComponent
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
@@ -250,16 +246,16 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
       })
       .compileComponents();
 
-      fixture = TestBed.createComponent(CaseCreateComponent);
-      component = fixture.componentInstance;
-      component.jurisdiction = JID;
-      component.caseType = CTID;
-      component.event = ETID;
-      component.cancelled.subscribe(cancelHandler.applyFilters);
-      component.submitted.subscribe(submitHandler.applyFilters);
+    fixture = TestBed.createComponent(CaseCreateComponent);
+    component = fixture.componentInstance;
+    component.jurisdiction = JID;
+    component.caseType = CTID;
+    component.event = ETID;
+    component.cancelled.subscribe(cancelHandler.applyFilters);
+    component.submitted.subscribe(submitHandler.applyFilters);
 
-      de = fixture.debugElement;
-      fixture.detectChanges();
+    de = fixture.debugElement;
+    fixture.detectChanges();
   }));
 
   it('should update draft when saveDraft called with sanitised data for second time', () => {
@@ -300,12 +296,10 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [
-        ],
+        imports: [caseEditComponentMock],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          caseEditComponentMock,
-          CaseCreateComponent,
+          CaseCreateComponent
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
@@ -316,13 +310,13 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
       })
       .compileComponents();
 
-      fixture = TestBed.createComponent(CaseCreateComponent);
-      component = fixture.componentInstance;
-      component.cancelled.subscribe(cancelHandler.applyFilters);
-      component.submitted.subscribe(submitHandler.applyFilters);
+    fixture = TestBed.createComponent(CaseCreateComponent);
+    component = fixture.componentInstance;
+    component.cancelled.subscribe(cancelHandler.applyFilters);
+    component.submitted.subscribe(submitHandler.applyFilters);
 
-      de = fixture.debugElement;
-      fixture.detectChanges();
+    de = fixture.debugElement;
+    fixture.detectChanges();
   }));
 
   it('should alert warning message and never announce event trigger if getting event trigger fails', () => {

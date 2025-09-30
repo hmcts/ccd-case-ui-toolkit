@@ -10,8 +10,9 @@ import { AbstractFieldWriteJourneyComponent } from '../../../base-field';
 import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
-  selector: 'ccd-unlink-cases',
-  templateUrl: './unlink-cases.component.html'
+    selector: 'ccd-unlink-cases',
+    templateUrl: './unlink-cases.component.html',
+    standalone: false
 })
 export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent implements OnInit, Journey {
 

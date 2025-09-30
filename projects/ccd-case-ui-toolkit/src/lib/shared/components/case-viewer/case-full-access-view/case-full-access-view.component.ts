@@ -39,9 +39,10 @@ import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
-  selector: 'ccd-case-full-access-view',
-  templateUrl: './case-full-access-view.component.html',
-  styleUrls: ['./case-full-access-view.component.scss']
+    selector: 'ccd-case-full-access-view',
+    templateUrl: './case-full-access-view.component.html',
+    styleUrls: ['./case-full-access-view.component.scss'],
+    standalone: false
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
