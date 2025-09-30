@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Draft, DRAFT_PREFIX } from '../../domain/draft.model';
 
 @Pipe({
-  name: 'ccdCaseReference'
+    name: 'ccdCaseReference',
+    standalone: false
 })
 export class CaseReferencePipe implements PipeTransform {
 

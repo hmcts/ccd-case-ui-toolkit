@@ -3,8 +3,9 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-  selector: 'ccd-write-order-summary-field',
-  templateUrl: './write-order-summary-field.html'
+    selector: 'ccd-write-order-summary-field',
+    templateUrl: './write-order-summary-field.html',
+    standalone: false
 })
 export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

@@ -121,14 +121,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -371,14 +371,14 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -488,14 +488,14 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -578,14 +578,14 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -685,14 +685,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -788,14 +788,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },

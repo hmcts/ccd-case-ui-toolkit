@@ -7,7 +7,10 @@ import { of } from 'rxjs';
 import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string): string {
     return value;

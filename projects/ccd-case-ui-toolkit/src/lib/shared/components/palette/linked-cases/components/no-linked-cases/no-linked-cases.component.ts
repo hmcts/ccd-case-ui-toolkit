@@ -6,8 +6,9 @@ import { MultipageComponentStateService } from '../../../../../services';
 import { Journey } from '../../../../../domain';
 
 @Component({
-  selector: 'ccd-no-linked-cases',
-  templateUrl: './no-linked-cases.component.html'
+    selector: 'ccd-no-linked-cases',
+    templateUrl: './no-linked-cases.component.html',
+    standalone: false
 })
 export class NoLinkedCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
 

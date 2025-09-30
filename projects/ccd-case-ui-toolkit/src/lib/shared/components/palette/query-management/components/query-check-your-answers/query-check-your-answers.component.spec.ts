@@ -13,7 +13,10 @@ import { QueryCheckYourAnswersComponent } from './query-check-your-answers.compo
 import { QualifyingQuestionService } from '../../services/qualifying-question.service';
 import { QueryManagementService } from '../../services';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, args?: any): string {
     return value;

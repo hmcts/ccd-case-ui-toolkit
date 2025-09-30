@@ -13,8 +13,9 @@ import { QueryManagementService } from '../../../services';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'ccd-query-write-raise-query',
-  templateUrl: './query-write-raise-query.component.html'
+    selector: 'ccd-query-write-raise-query',
+    templateUrl: './query-write-raise-query.component.html',
+    standalone: false
 })
 export class QueryWriteRaiseQueryComponent implements OnChanges {
   @Input() public formGroup: FormGroup;

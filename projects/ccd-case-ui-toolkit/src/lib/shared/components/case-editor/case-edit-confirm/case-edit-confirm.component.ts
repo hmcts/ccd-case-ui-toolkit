@@ -9,8 +9,9 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation } from '../domain/confirmation.model';
 
 @Component({
-  templateUrl: './case-edit-confirm.html',
-  styleUrls: ['../case-edit.scss']
+    templateUrl: './case-edit-confirm.html',
+    styleUrls: ['../case-edit.scss'],
+    standalone: false
 })
 export class CaseEditConfirmComponent {
   public eventTrigger: CaseEventTrigger;

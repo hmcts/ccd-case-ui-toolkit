@@ -24,9 +24,10 @@ type CollectionItem = {
 };
 
 @Component({
-  selector: 'ccd-write-collection-field',
-  templateUrl: './write-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+    selector: 'ccd-write-collection-field',
+    templateUrl: './write-collection-field.html',
+    styleUrls: ['./collection-field.scss'],
+    standalone: false
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()

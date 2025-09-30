@@ -7,9 +7,10 @@ import { MultipageComponentStateService } from '../../../../../services';
 import { Journey } from '../../../../../domain';
 
 @Component({
-  selector: 'ccd-linked-cases-check-your-answers',
-  templateUrl: './check-your-answers.component.html',
-  styleUrls: ['./check-your-answers.component.scss']
+    selector: 'ccd-linked-cases-check-your-answers',
+    templateUrl: './check-your-answers.component.html',
+    styleUrls: ['./check-your-answers.component.scss'],
+    standalone: false
 })
 export class CheckYourAnswersComponent extends AbstractJourneyComponent implements OnInit, Journey {
 

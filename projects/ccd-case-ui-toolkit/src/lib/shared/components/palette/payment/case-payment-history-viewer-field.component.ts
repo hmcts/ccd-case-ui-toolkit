@@ -4,8 +4,9 @@ import { SessionStorageService } from '../../../services/session/session-storage
 import { PaymentField } from '../base-field/payment-field.component';
 
 @Component({
-  selector: 'ccd-case-payment-history-viewer-field',
-  templateUrl: 'case-payment-history-viewer-field.html',
+    selector: 'ccd-case-payment-history-viewer-field',
+    templateUrl: 'case-payment-history-viewer-field.html',
+    standalone: false
 })
 export class CasePaymentHistoryViewerFieldComponent extends PaymentField {
   constructor(

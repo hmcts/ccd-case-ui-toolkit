@@ -8,8 +8,9 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 
 @Component({
-  selector: 'ccd-case-challenged-access-request',
-  templateUrl: './case-challenged-access-request.component.html'
+    selector: 'ccd-case-challenged-access-request',
+    templateUrl: './case-challenged-access-request.component.html',
+    standalone: false
 })
 export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public static CANCEL_LINK_DESTINATION = '/work/my-work/list';

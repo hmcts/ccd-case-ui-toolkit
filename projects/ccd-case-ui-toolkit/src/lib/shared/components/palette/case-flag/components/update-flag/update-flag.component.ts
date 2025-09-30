@@ -16,8 +16,9 @@ import { AbstractJourneyComponent } from '../../../base-field';
 import { MultipageComponentStateService } from "../../../../../services";
 
 @Component({
-  selector: 'ccd-update-flag',
-  templateUrl: './update-flag.component.html'
+    selector: 'ccd-update-flag',
+    templateUrl: './update-flag.component.html',
+    standalone: false
 })
 export class UpdateFlagComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;

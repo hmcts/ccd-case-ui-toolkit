@@ -14,8 +14,9 @@ import { LinkedCasesService } from './services';
 import { MultipageComponentStateService } from '../../../services';
 
 @Component({
-  selector: 'ccd-write-linked-cases-field',
-  templateUrl: './write-linked-cases-field.component.html'
+    selector: 'ccd-write-linked-cases-field',
+    templateUrl: './write-linked-cases-field.component.html',
+    standalone: false
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, AfterViewInit, OnDestroy {
   public caseEditForm: FormGroup;

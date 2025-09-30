@@ -9,7 +9,10 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ShowCondition } from './domain/conditional-show.model';
 
-@Directive({ selector: '[ccdConditionalShowForm]' })
+@Directive({
+    selector: '[ccdConditionalShowForm]',
+    standalone: false
+})
 /** Hides and shows all fields in a form. Works on read only fields and form fields.
  *  The show condition is evaluated on all the fields of the page. i.e. read only and form fields.
  *  Evaluation of the show condition includes disabled fields, which can be on their initial value or empty. Executes on the

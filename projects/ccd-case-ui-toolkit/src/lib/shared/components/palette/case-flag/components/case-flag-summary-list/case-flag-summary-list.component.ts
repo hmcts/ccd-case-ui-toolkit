@@ -9,8 +9,9 @@ import {
 } from '../../enums';
 
 @Component({
-  selector: 'ccd-case-flag-summary-list',
-  templateUrl: './case-flag-summary-list.component.html'
+    selector: 'ccd-case-flag-summary-list',
+    templateUrl: './case-flag-summary-list.component.html',
+    standalone: false
 })
 export class CaseFlagSummaryListComponent implements OnInit {
   @Input() public flagForSummaryDisplay: FlagDetailDisplay;

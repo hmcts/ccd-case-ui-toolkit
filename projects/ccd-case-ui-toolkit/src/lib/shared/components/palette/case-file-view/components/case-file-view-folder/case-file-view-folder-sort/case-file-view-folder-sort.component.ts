@@ -4,9 +4,10 @@ import { CaseFileViewSortColumns } from '../../../../../../domain/case-file-view
 import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
 
 @Component({
-  selector: 'ccd-case-file-view-folder-sort',
-  templateUrl: './case-file-view-folder-sort.component.html',
-  styleUrls: ['./case-file-view-folder-sort.component.scss']
+    selector: 'ccd-case-file-view-folder-sort',
+    templateUrl: './case-file-view-folder-sort.component.html',
+    styleUrls: ['./case-file-view-folder-sort.component.scss'],
+    standalone: false
 })
 export class CaseFileViewFolderSortComponent implements OnInit {
   public isOpen = false;

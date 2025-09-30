@@ -2,10 +2,11 @@ import { Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 import { CaseField, FieldType, FormDocument } from '../../../../../domain';
 
 @Component({
-  selector: 'ccd-query-attachments-read',
-  templateUrl: './query-attachments-read.component.html',
-  styleUrls: ['./query-attachments-read.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'ccd-query-attachments-read',
+    templateUrl: './query-attachments-read.component.html',
+    styleUrls: ['./query-attachments-read.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class QueryAttachmentsReadComponent implements OnChanges {
   @Input() public attachments: FormDocument[];

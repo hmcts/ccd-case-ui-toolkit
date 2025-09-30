@@ -29,7 +29,12 @@
             ],
             "styles": [],
             "scripts": [],
-            "preserveSymlinks": true
+            "preserveSymlinks": true,
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            }
           },
           "configurations": {
             "production": {

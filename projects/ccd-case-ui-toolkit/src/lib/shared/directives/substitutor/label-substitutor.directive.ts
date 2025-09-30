@@ -6,7 +6,10 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
 
-@Directive({ selector: '[ccdLabelSubstitutor]' })
+@Directive({
+    selector: '[ccdLabelSubstitutor]',
+    standalone: false
+})
 /**
  * Checks all labels and substitutes any placholders that reference other fields values.
  */

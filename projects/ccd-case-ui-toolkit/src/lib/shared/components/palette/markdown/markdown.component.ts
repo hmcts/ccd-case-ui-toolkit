@@ -3,9 +3,10 @@ import * as marked from 'marked';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'ccd-markdown',
-  templateUrl: './markdown.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'ccd-markdown',
+    templateUrl: './markdown.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MarkdownComponent implements OnInit {
   @Input() public content: string;

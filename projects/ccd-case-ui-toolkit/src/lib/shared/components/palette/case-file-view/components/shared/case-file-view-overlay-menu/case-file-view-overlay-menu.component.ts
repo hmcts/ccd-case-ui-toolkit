@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from './case-file-view-overlay-menu-item.model';
 
 @Component({
-  selector: 'ccd-case-file-view-overlay-menu',
-  templateUrl: './case-file-view-overlay-menu.component.html',
-  styleUrls: ['./case-file-view-overlay-menu.component.scss']
+    selector: 'ccd-case-file-view-overlay-menu',
+    templateUrl: './case-file-view-overlay-menu.component.html',
+    styleUrls: ['./case-file-view-overlay-menu.component.scss'],
+    standalone: false
 })
 export class CaseFileViewOverlayMenuComponent {
   @Input() public title: string = '';

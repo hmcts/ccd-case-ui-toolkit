@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-task-reassigned',
-  templateUrl: './task-reassigned.component.html'
+    selector: 'app-task-reassigned',
+    templateUrl: './task-reassigned.component.html',
+    standalone: false
 })
 export class TaskReassignedComponent {
 
