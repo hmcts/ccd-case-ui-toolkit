@@ -1,10 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-<<<<<<< HEAD
-  "version": "7.2.37-accessibility-fix-1",
-=======
-  "version": "7.2.46",
->>>>>>> 53bca8e1e05aba579a2639c44bb283345090e341
+  "version": "7.2.46-exui-2986",
   "engines": {
     "node": ">=18.19.0"
   },
