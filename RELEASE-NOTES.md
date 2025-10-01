@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.46-exui-2986
+### Version 7.2.46-exui-2986-2
 **EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
 
 ### Version 7.2.46
