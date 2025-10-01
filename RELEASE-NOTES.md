@@ -1,5 +1,35 @@
 ## RELEASE NOTES
 
+### Version 7.2.46
+**EXUI-2836** PED: Duplicate calls being received when users leave
+
+### Version 7.2.45
+**EXUI-3498** Web-component version 6.3.3
+
+### Version 7.2.44
+**EXUI-3406** Move rpxTranslate pipe from 'ccd-markdown' component to parent components where needed
+
+### Version 7.2.43
+**EXUI-2616** Remove LaunchDarkly feature flags - Group 5
+
+### Version 7.2.42
+**EXUI-2614** Remove LaunchDarkly feature flags - Group 3
+
+### Version 7.2.41
+**EXUI-3323** Fix translation of non-translatable strings
+
+### Version 7.2.40
+**EXUI-3431** Bug fixes for EXUI-477 / 2786 / 2801 / 2900
+
+### Version 7.2.39
+**EXUI-3453** MV - Slowness when changing pages
+
+### Version 7.2.38
+**EXUI-2953** Query Management - Multiple follow up query functionality
+
+### Version 7.2.37
+**EXUI-3318** Media Viewer - Logic around handling element transforms for redactions
+
 ### Version 7.2.36
 **EXUI-3150** QM: Refactor approach to translations for qualifying questions
 

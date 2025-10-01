@@ -32,7 +32,6 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseDataUrl: () => 'caseDataUrl',
   getDocumentManagementUrl: () => 'documentManagementUrl',
   getDocumentManagementUrlV2: () => 'documentManagementUrlV2',
-  getDocumentSecureMode: () => true,
   getCdamExclusionList: () => 'DIVORCE',
   getDocumentSecureModeCaseTypeExclusions: () => 'DIVORCE',
   getRemoteDocumentManagementUrl: () => 'remoteDocumentManagementUrl',
@@ -65,7 +64,6 @@ const APP_CONFIG: AbstractAppConfig = {
   getWorkAllocationApiUrl: () => 'workAllocationApiUrl',
   getUserInfoApiUrl: () => 'userInfoApiUrl',
   getAccessManagementBasicViewMock: () => ({}),
-  getAccessManagementMode: () => true,
   getAccessManagementRequestReviewMockModel: () => ({}),
   getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
   getLocationRefApiUrl: () => 'locationRefApiUrl',
@@ -77,10 +75,10 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
   getWAServiceConfig: () => 'waServiceConfig',
   getEventsToHide: () => [],
-  getEnableCaseFileViewVersion1_1: () => true,
   getIcpJurisdictions: () => ['IA'],
   getIcpEnable: () => true,
-  logMessage: () => {}
+  logMessage: () => {},
+  getEnableServiceSpecificMultiFollowups: () => ['IA']
 };
 
 let paymentWebComponentMock;

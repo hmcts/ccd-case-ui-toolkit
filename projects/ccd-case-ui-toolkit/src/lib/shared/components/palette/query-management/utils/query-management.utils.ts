@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Document, FormDocument, CaseField } from '../../../../domain';
-import { CaseMessage, QueryListItem } from '../models';
+import { CaseMessage, QueryCreateContext, QueryListItem } from '../models';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
@@ -55,17 +55,25 @@ export class QueryManagementUtils {
       isHearingRelated,
       hearingDate,
       createdOn: new Date(),
-      createdBy: currentUserId
+      createdBy: currentUserId,
+      messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
     };
   }
 
-  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
+  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string): CaseMessage {
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value.trim();
     const attachments = formGroup.get('attachments').value;
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
     const isClosed = formGroup.get('closeQuery').value ? 'Yes' : 'No';
+
+    const messageType =
+      messageTypeParam === QueryCreateContext.RESPOND
+        ? QueryCreateContext.RESPOND
+        : messageTypeParam === QueryCreateContext.FOLLOWUP
+          ? QueryCreateContext.FOLLOWUP
+          : undefined;
 
     return {
       id: uuidv4(),
@@ -78,7 +86,8 @@ export class QueryManagementUtils {
       createdOn: new Date(),
       createdBy: currentUserId,
       parentId: queryItem.id,
-      isClosed
+      isClosed,
+      messageType
     };
   }
 

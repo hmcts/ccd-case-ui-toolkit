@@ -147,10 +147,6 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
-  public getDocumentSecureMode(): boolean {
-    return false;
-  }
-
   public getCdamExclusionList(): string {
     return '';
   }
@@ -161,10 +157,6 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getWAServiceConfig(): any {
     return null;
-  }
-
-  public getAccessManagementMode(): boolean {
-    return false;
   }
 
   public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
@@ -219,10 +211,6 @@ export class AppMockConfig implements AbstractAppConfig {
     return [];
   }
 
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    return true;
-  }
-
   public getIcpEnable(): boolean {
     return false;
   }
@@ -230,7 +218,12 @@ export class AppMockConfig implements AbstractAppConfig {
   public getIcpJurisdictions(): string[] {
     return ['', ''];
   }
+
   public logMessage(msg: string): void {
     console.log(msg);
+  }
+
+  public getEnableServiceSpecificMultiFollowups(): string[] {
+    return [];
   }
 }
