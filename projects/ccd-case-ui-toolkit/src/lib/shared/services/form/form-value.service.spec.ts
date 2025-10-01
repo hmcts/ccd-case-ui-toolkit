@@ -322,21 +322,97 @@ describe('FormValueService', () => {
     });
   });
 
-  describe('sanitise for Date field', () => {
-    it('should remove trailing Z from the date', () => {
-      const data = {
-        fl404CustomFields: {
-          fl404bDateOrderEnd: '2025-07-01T10:00:00.000Z'
-        }
-      };
-      const actual = {
-        fl404CustomFields: {
-          fl404bDateOrderEnd: '2025-07-01T10:00:00.000'
-        }
-      };
-      expect(formValueService.sanitise(data)).toEqual(actual);
+  describe('sanitise for DateTime field for dateTimePicker control', () => {
+    let caseFields: CaseField[];
+
+    beforeEach(() => {
+      caseFields = [];
     });
 
+    it('should return rawValue if caseFields is falsy', () => {
+      const rawValue = { date: '2024-06-01T12:00:00.000Z' };
+      expect(formValueService.sanitiseDateTimes(null, rawValue)).toBe(rawValue);
+      expect(formValueService.sanitiseDateTimes(undefined, rawValue)).toBe(rawValue);
+    });
+
+    it('should return rawValue if rawValue is falsy', () => {
+      expect(formValueService.sanitiseDateTimes([], null)).toBe(null);
+      expect(formValueService.sanitiseDateTimes([], undefined)).toBe(undefined);
+    });
+
+    it('should return rawValue if rawValue is not an object', () => {
+      expect(formValueService.sanitiseDateTimes([], 'string')).toBe('string');
+      expect(formValueService.sanitiseDateTimes([], 123)).toBe(123);
+    });
+
+    it('should remove trailing Z from DateTime fields', () => {
+      const fieldType = new FieldType();
+      fieldType.type = 'DateTime';
+      const caseField: CaseField = ({
+        id: 'dateField',
+        label: 'dateField',
+        field_type: fieldType,
+        dateTimeEntryFormat: 'yyyy-MM-ddTHH:mm:ss.SSS'
+      }) as CaseField;
+      caseFields = [caseField];
+      const rawValue = { dateField: '2024-06-01T12:00:00.000Z' };
+      const result = formValueService.sanitiseDateTimes(caseFields, rawValue);
+      expect(result.dateField).toBe('2024-06-01T12:00:00.000');
+    });
+
+    it('should not change DateTime field if no trailing Z', () => {
+      const fieldType = new FieldType();
+      fieldType.type = 'DateTime';
+      const caseField: CaseField = ({
+        id: 'dateField',
+        label: 'dateField',
+        field_type: fieldType,
+        dateTimeEntryFormat: 'yyyy-MM-ddTHH:mm:ss.SSS'
+      }) as CaseField;
+      caseFields = [caseField];
+      const rawValue = { dateField: '2024-06-01T12:00:00.000' };
+      const result = formValueService.sanitiseDateTimes(caseFields, rawValue);
+      expect(result.dateField).toBe('2024-06-01T12:00:00.000');
+    });
+
+    it('should not change DateTime field if dateTimeEntryFormat is not set', () => {
+      const fieldType = new FieldType();
+      fieldType.type = 'DateTime';
+      const caseField: CaseField = ({
+        id: 'dateField',
+        label: 'dateField',
+        field_type: fieldType,
+        dateTimeEntryFormat: ''
+      }) as CaseField;
+      caseFields = [caseField];
+      const rawValue = { dateField: '2024-06-01T12:00:00.000Z' };
+      const result = formValueService.sanitiseDateTimes(caseFields, rawValue);
+      expect(result.dateField).toBe('2024-06-01T12:00:00.000Z');
+    });
+
+    it('should handle nested Complex fields with DateTime', () => {
+      const fieldType = new FieldType();
+      fieldType.type = 'DateTime';  
+      const caseField: CaseField = ({
+        id: 'nestedDate',
+        label: 'nestedDate',
+        field_type: fieldType,
+        dateTimeEntryFormat: 'yyyy-MM-ddTHH:mm:ss.SSS'
+      }) as CaseField;
+
+      const complexField: CaseField = ({
+        id: 'complex',
+        field_type: Object.assign(new FieldType(), {
+          type: 'Complex',
+          complex_fields: [caseField]
+        })
+      }) as CaseField
+
+      caseFields = [complexField];
+      const rawValue = { complex: { nestedDate: '2024-06-01T12:00:00.000Z' } };
+      const result = formValueService.sanitiseDateTimes(caseFields, rawValue);
+      expect(result.complex.nestedDate).toBe('2024-06-01T12:00:00.000');
+    });
   });
 
   describe('removeNullLabels', () => {
