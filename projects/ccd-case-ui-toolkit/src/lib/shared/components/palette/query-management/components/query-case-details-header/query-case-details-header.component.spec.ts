@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -58,7 +58,8 @@ describe('QueryCaseDetailsHeaderComponent', () => {
         RpxTranslationService,
         RpxTranslationConfig,
         HttpClient,
-        HttpHandler
+        HttpHandler,
+        provideNgReflectAttributes()
       ]
     })
       .compileComponents();

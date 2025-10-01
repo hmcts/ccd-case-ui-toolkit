@@ -224,7 +224,7 @@
     "hosted-git-info": "^3.0.8",
     "normalize-url": "^6.0.1",
     "trim-newlines": "^3.0.1",
-    "typescript": "~5.7.0"
+    "typescript": "~5.9.2"
   },
   "nyc": {
     "include": [

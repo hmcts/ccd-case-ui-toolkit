@@ -154,9 +154,12 @@ describe('CaseEventTriggerComponent', () => {
     activityPollingService.postEditActivity.and.returnValue(of(true));
     router = {
       navigate: jasmine.createSpy('navigate'),
-      url: '',
       getCurrentNavigation: jasmine.createSpy('getCurrentNavigation')
     };
+    Object.defineProperty(router, 'url', {
+      get: () => '',
+      configurable: true
+    });
     router.navigate.and.returnValue({ then: (f) => f() });
     router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: finalUrl } });
 
@@ -367,7 +370,7 @@ describe('CaseEventTriggerComponent', () => {
 
   it('should cancel navigate to linked cases tab', () => {
     const routerWithModifiedUrl = TestBed.inject(Router);
-    routerWithModifiedUrl.url = 'linkCases';
+    spyOnProperty(routerWithModifiedUrl, 'url', 'get').and.returnValue('linkCases');
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
     expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Claim details' });

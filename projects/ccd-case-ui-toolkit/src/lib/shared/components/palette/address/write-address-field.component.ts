@@ -70,9 +70,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.caseField.value = null;
       this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
-        result => {
+        (result) => {
           result.forEach(
-            address => {
+            (address) => {
               this.addressOptions.push(new AddressOption(address, null));
             }
           );

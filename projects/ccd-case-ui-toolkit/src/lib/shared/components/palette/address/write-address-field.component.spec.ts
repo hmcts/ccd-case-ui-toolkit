@@ -311,7 +311,7 @@ describe('WriteAddressFieldComponent', () => {
   });
 
   it('should clear the error when postcode is not blank', () => {
-
+    addressesService.getAddressesForPostcode.and.returnValue(of([]));
     writeAddressFieldComponent.missingPostcode = true;
     fixture.detectChanges();
 

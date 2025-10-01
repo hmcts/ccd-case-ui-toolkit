@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -67,7 +67,8 @@ describe('LabelFieldComponent', () => {
           RpxTranslationService,
           RpxTranslationConfig,
           HttpClient,
-          HttpHandler
+          HttpHandler,
+          provideNgReflectAttributes()
         ]
       })
       .compileComponents();
