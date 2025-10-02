@@ -2,6 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseField, Document, FormDocument } from '../../../../../../domain';
 import { QueryWriteAddDocumentsComponent } from './query-write-add-documents.component';
+import { MockComponent } from 'ng2-mock-component';
+
+const writeCollectionFieldComponentMock: any = MockComponent({
+  selector: 'ccd-write-collection-field',
+  inputs: ['caseFields']
+});
 
 describe('QueryWriteAddDocumentsComponent', () => {
   let component: QueryWriteAddDocumentsComponent;
@@ -9,7 +15,7 @@ describe('QueryWriteAddDocumentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QueryWriteAddDocumentsComponent ],
+      declarations: [ QueryWriteAddDocumentsComponent, writeCollectionFieldComponentMock ],
       imports: [ ReactiveFormsModule ]
     })
     .compileComponents();
