@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { CloseQueryComponent } from './close-query.component';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
-import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
 
 describe('CloseQueryComponent', () => {
   let component: CloseQueryComponent;
