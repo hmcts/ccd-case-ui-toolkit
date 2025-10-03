@@ -10,6 +10,7 @@ export class FormValidatorsService {
   private static readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
     'Date', 'MoneyGBP', 'Label', 'JudicialUser'
   ];
+
   private static readonly DEFAULT_INPUT_TEXT = 'text';
   private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
@@ -62,11 +63,23 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
+    const aTagPattern = /<a\b[^>]*(>|$)/i;
+    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img\b[^>]{0,500}(?:>|$))/i;
+    const hasDangerousAttrs = /\bon\w+\s*=/i;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return (value && pattern.test(value)) ? { markDownPattern: {} } : null;
+      if (
+        value &&
+        (
+          pattern.test(value) ||
+          aTagPattern.test(value) ||
+          hasDangerousAttrs.test(value)
+        )
+      ) {
+        return { markDownPattern: {} };
+      }
+      return null;
     };
   }
 
