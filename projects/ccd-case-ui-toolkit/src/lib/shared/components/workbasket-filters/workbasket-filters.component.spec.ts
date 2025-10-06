@@ -1135,6 +1135,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
 
 describe('with no defaults', () => {
   const SELECT_A_VALUE = 'Select a value';
+  const ANY = 'Any';
   const JURISDICTION_ONE: Jurisdiction = {
     id: 'J1',
     name: 'Jurisdiction 1',
@@ -1180,7 +1181,7 @@ describe('with no defaults', () => {
           { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: AlertService, useValue: alertService },
-          { provide: WindowService, useValue: windowService },
+          { provide: WindowService, useValue: windowService }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
@@ -1300,9 +1301,11 @@ describe('with no defaults', () => {
     expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
     expect(selector.children[1].nativeElement.textContent).toEqual(JURISDICTION_ONE.name);
     selector = de.query(By.css('#wb-case-type'));
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
+    expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+    expect(selector.nativeElement.selectedIndex).toEqual(0);
     selector = de.query(By.css('#wb-case-state'));
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
+    expect(selector.children[0].nativeElement.textContent).toEqual(ANY);
+    expect(selector.nativeElement.selectedIndex).toEqual(0);
 
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');

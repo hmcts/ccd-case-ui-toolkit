@@ -825,13 +825,17 @@ describe('WriteCollectionFieldComponent', () => {
 
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
-    component.caseField = ({ ...component.caseField, field_type: { id: 'TextField', type: 'Text' } as FieldType } as CaseField);
-    component.caseFields = [{...component.caseField } as CaseField];
+    component.caseField = ({ ...component.caseField, field_type: {
+        id: 'Text',
+        type: 'Collection',
+        collection_field_type: { id: 'Text', type: 'Text' }
+      } as FieldType } as CaseField);
+    component.caseFields = [{ ...component.caseField } as CaseField];
     addButton.nativeElement.click();
     fixture.detectChanges();
 
     const writeFields = de.queryAll($WRITE_FIELDS);
 
-    expect(writeFields.length).toEqual(2);
+    expect(writeFields.length).toEqual(3);
   });
 });
