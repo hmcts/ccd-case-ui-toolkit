@@ -6,7 +6,6 @@ import { delay } from 'rxjs/operators';
 import { CaseField } from '../../../../domain/definition';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../domain';
 import { ManageCaseFlagsLabelDisplayPipe } from './manage-case-flags-label-display.pipe';
-import { UpdateFlagTitleDisplayPipe } from './update-flag-title-display.pipe';
 
 describe('ManageCaseFlagsLabelDisplayPipe', () => {
   const flagsData = [
