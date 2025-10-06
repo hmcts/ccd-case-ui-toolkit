@@ -4,7 +4,6 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { Language } from '../domain';
 import { LanguageInterpreterDisplayPipe } from './language-interpreter-display.pipe';
-import { UpdateFlagTitleDisplayPipe } from './update-flag-title-display.pipe';
 
 describe('LanguageInterpreterDisplayPipe', () => {
   const language1 = {
