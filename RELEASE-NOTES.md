@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.47
+**EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
+
 ### Version 7.2.46
 **EXUI-2836** PED: Duplicate calls being received when users leave
 
