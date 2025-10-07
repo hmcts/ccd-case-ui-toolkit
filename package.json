@@ -2,7 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "7.2.46",
   "engines": {
-    "node": ">=18.19.0"
+    "node": ">=20.19.0"
   },
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
@@ -117,7 +117,7 @@
     "@storybook/testing-library": "^0.2.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
-    "@types/node": "^18.19.0",
+    "@types/node": "^20.19.0",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",
     "@types/webpack": "^4.41.25",
