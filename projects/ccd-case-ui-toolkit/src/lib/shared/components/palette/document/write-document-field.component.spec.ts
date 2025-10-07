@@ -772,6 +772,36 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.fileUploadMessages).toEqual('File required');
   });
 
+  it('should be log if file is securemode', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    expect(component.caseField.value).toBeTruthy();
+
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is enabled for case with case ref:: 12345');
+  });
+
+  it('should be log if file is NOT securemode', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    expect(component.caseField.value).toBeTruthy();
+
+    component.fileChangeEvent({
+      target: {
+        files: []
+      }
+    });
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is disabled for case with case ref:: 12345');
+  });
+
   it('should be valid if no document specified for upload for not read only. Empty file.', () => {
     // Initialization.
     component.valid = true;
