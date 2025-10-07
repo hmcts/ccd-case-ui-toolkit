@@ -107,7 +107,14 @@ const UTILS = {
       return '';
     },
     stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => {
-      const userId = user ? user['id'] : undefined;
+      console.log('stripUserFromActivity: activity = ' + JSON.stringify(activity));
+
+      console.log('stripUserFromActivity: user = ' + JSON.stringify(user));
+      
+      const userId = user ? user['uid'] : undefined;
+      
+      console.log('stripUserFromActivity: userIdentity = ' + user['identity']);
+
       if (userId && UTILS.activity.hasViewersOrEditors(activity)) {
         activity.editors = activity.editors.filter(e => e.id !== userId);
         activity.viewers = activity.viewers.filter(v => v.id !== userId);

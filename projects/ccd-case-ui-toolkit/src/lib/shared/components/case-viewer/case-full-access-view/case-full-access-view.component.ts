@@ -147,6 +147,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           this.socketConnectSub = this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {
+                console.log('ActivitySocketService connected going to viewCase for caseId: ' + this.caseDetails.case_id);
                 this.activitySocketService.viewCase(this.caseDetails.case_id);
               }
             });
