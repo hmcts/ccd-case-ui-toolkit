@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.48
+**EXUI-3469** Vulnerabilities identified for Media Viewer
+
 ### Version 7.2.47
 **EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
 
