@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
@@ -20,7 +21,7 @@ import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
-import { Router } from '@angular/router';
+
 
 // @dynamic
 @Component({
