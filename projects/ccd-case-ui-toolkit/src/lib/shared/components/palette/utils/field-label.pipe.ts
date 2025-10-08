@@ -31,4 +31,8 @@ export class FieldLabelPipe implements PipeTransform {
       return field.label;
     }
   }
+
+  public getOriginalLabelForYesNoTranslation(field: CaseField): string {
+    return field.originalLabel || field.label;
+  }
 }
