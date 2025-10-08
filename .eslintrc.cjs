@@ -21,6 +21,7 @@ module.exports = {
     '@typescript-eslint/no-extra-semi': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-require-imports': 'off',
     'array-bracket-spacing': 'error',
     'arrow-parens': ['error', 'always'],
     'arrow-spacing': 'error',
@@ -85,4 +86,12 @@ module.exports = {
     'space-in-parens': ['error', 'never'],
     'switch-colon-spacing': 'error'
   }
+  'overrides': [
+    {
+      files: ['src/assets/**/*.js'],
+      rules: {
+        '@typescript-eslint/no-unused-expressions': 'off'
+      }
+    }
+  ]
 };
