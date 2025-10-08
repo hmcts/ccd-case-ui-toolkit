@@ -85,7 +85,7 @@ module.exports = {
     'semi-style': ['error', 'last'],
     'space-in-parens': ['error', 'never'],
     'switch-colon-spacing': 'error'
-  }
+  },
   'overrides': [
     {
       files: ['src/assets/**/*.js'],
