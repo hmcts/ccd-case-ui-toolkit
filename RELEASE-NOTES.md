@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.2.46-exui-2986-3
+### Version 7.2.49-exui-2986
 **EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
+### Version 7.2.49
+**EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
+
+### Version 7.2.48
+**EXUI-3469** Vulnerabilities identified for Media Viewer
+
+### Version 7.2.47
+**EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
 
 ### Version 7.2.46
 **EXUI-2836** PED: Duplicate calls being received when users leave
