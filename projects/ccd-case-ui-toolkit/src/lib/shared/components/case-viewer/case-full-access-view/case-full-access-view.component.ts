@@ -136,6 +136,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     this.checkRouteAndSetCaseViewTab();
 
+    this.setCaseInfo();
+
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
     this.linkedCasesService.resetLinkedCaseData();
@@ -147,6 +149,19 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
+    }
+  }
+
+  private setCaseInfo(): void {
+    const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
+    console.log('Case Info from session storage: ', caseInfo);
+    if (caseInfo?.caseId !== this.caseDetails.case_id) {
+      const newCaseInfo = {
+        caseId: this.caseDetails.case_id,
+        jurisdiction: this.caseDetails.case_type.jurisdiction.id,
+        caseType: this.caseDetails.case_type.id
+      };
+      this.sessionStorageService.setItem('caseInfo', JSON.stringify(newCaseInfo));
     }
   }
 
@@ -296,7 +311,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       // found tasks or hearing tab
       if (foundTab) {
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
           // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
@@ -310,7 +325,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // select the first tab checking if the tab is visible
         const preSelectTab: CaseTab = this.findPreSelectedActiveTab();
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
           // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
@@ -358,13 +373,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
       const tab = matTab['_viewContainerRef'] as ViewContainerRef;
       const id = (tab.element.nativeElement as HTMLElement).id;
-      // cases/case-details/:caseId/hearings
-      // cases/case-details/:caseId/roles-and-access
-      this.router.navigate([id], { relativeTo: this.route });
+      // cases/case-details/:jurisdiction/:caseType/:caseId/hearings
+      // cases/case-details/:jurisdiction/:caseType/:caseId/roles-and-access
+      this.router.navigate([
+        'cases',
+        'case-details',
+        this.caseDetails.case_type.jurisdiction.id,
+        this.caseDetails.case_type.id,
+        this.caseDetails.case_id,
+        id
+      ], { relativeTo: this.route.root });
     } else {
       // Routing here is based on tab label, not ideal
-      // cases/case-details/:caseId#tabLabel
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel });
+      // cases/case-details/:jurisdiction/:caseType/:caseId#tabLabel
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
 
