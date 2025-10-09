@@ -598,6 +598,16 @@ describe('DatetimePickerComponent', () => {
     const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
     expect(expectedFormattedValue).toEqual('Invalid date');
   });
+
+  it('should set the correct formatted value in dateControl', () => {
+    fixture.detectChanges();
+    const inputValue = '01-03-2025 11:00 am';
+    component.inputElement.nativeElement.value = inputValue;
+    component.dateTimeEntryFormat = 'DD-MM-YYYY hh:mm a';
+    component.focusOut();
+    const expectedFormattedValue = moment(inputValue, component.dateTimeEntryFormat).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    expect(moment(component.dateControl.value).format('YYYY-MM-DDTHH:mm:ss.SSS')).toEqual(expectedFormattedValue);
+  });
 });
 
 function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {

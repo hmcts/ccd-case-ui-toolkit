@@ -728,8 +728,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     // Sort out the dynamic lists.
     this.formValueService.sanitiseDynamicLists(caseFields, formFields);
 
+    // sanitise dateTimes for dateTimePicker
+    const sanitisedData = this.formValueService.sanitiseData(caseFields, formFields);
+
     // Get hold of the CaseEventData.
-    const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
+    const caseEventData: CaseEventData = this.formValueService.sanitise(sanitisedData) as CaseEventData;
 
     // delete fields which are not part of the case event journey wizard pages case fields
     this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, this.eventTrigger.case_fields, fromPreviousPage, this.editForm.controls['data'].value);

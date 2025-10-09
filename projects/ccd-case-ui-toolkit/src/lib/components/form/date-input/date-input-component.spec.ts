@@ -74,9 +74,29 @@ describe('Date input component', () => {
     expect(component.displaySecond).toBeNull();
   });
 
-  it('should verify day, month, year value from date', async () => {
+  it('should verify day, month, year, hours, minutes, seconds value from date', async () => {
+    component.isDateTime = true;
     component.id = 'dateField';
-    component.writeValue('2021-04-09T08:02:27.542');
+    component.writeValue('2021-03-09T08:02:27.542');
+    fixture.detectChanges();
+    const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+    expect(monthInput.value).toBe('03');
+    const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+    expect(dayInput.value).toBe('09');
+    const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+    expect(yearInput.value).toBe('2021');
+    const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+    expect(hourInput.value).toBe('08');
+    const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+    expect(minuteInput.value).toBe('02');
+    const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+    expect(secondInput.value).toBe('27');
+  });
+
+  it('should verify hours, minutes, seconds value from date', async () => {
+    component.isDateTime = true;
+    component.id = 'dateField';
+    component.writeValue('2021-04-09');
     fixture.detectChanges();
     const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
     expect(monthInput.value).toBe('04');
@@ -84,6 +104,12 @@ describe('Date input component', () => {
     expect(dayInput.value).toBe('09');
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
     expect(yearInput.value).toBe('2021');
+    const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+    expect(hourInput.value).toBe('');
+    const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+    expect(minuteInput.value).toBe('');
+    const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+    expect(secondInput.value).toBe('');
   });
 
   it('should verify day, month, year value from date', async () => {
@@ -95,7 +121,7 @@ describe('Date input component', () => {
     const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
     expect(dayInput.value).toBe('');
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
-    expect(yearInput.value).toBe('someRandomValue');
+    expect(yearInput.value).toBe('');
   });
 
   it('should be valid when the date is in correct format', () => {
@@ -138,6 +164,16 @@ describe('Date input component', () => {
     component.mandatory = true;
     const results = component.validate({ value: null } as FormControl);
     expect(results).toEqual({ required: 'This field is required' });
+  });
+
+  it('should clear display values for invalid date string', () => {
+      component.writeValue('invalid-date');
+      expect(component.displayYear).toBe('');
+      expect(component.displayMonth).toBe('');
+      expect(component.displayDay).toBe('');
+      expect(component.displayHour).toBe('');
+      expect(component.displayMinute).toBe('');
+      expect(component.displaySecond).toBe('');
   });
 
   describe('day input component', () => {
@@ -245,6 +281,48 @@ describe('Date input component', () => {
       const result = component.yearId();
 
       expect(result).toBe('start-year');
+    });
+  });
+
+  describe('hour input component', () => {
+    it('hour input should set utc value based on the date input', async () => {
+      component.isDateTime = true;
+      component.writeValue('2021-03-09T10:30:00.000');
+      component.id = 'hoursInput';
+      component.hourChange('10');
+      component.displayHour = '10';
+      component.minuteChange('30');
+      component.displayMinute = '30';
+      component.secondChange('00');
+      component.displaySecond = '00';
+      fixture.detectChanges();
+      const hourInput = await de.query(By.css(`#${component.hourId()}`)).componentInstance;
+      const minuteInput = await de.query(By.css(`#${component.minuteId()}`)).componentInstance;
+      const secondInput = await de.query(By.css(`#${component.secondId()}`)).componentInstance;
+      expect(hourInput.value).toBe('10');
+      expect(minuteInput.value).toBe('30');
+      expect(secondInput.value).toBe('00');
+      expect(onChange).toHaveBeenCalledWith('2021-03-09T10:30:00.000');
+    });
+  });
+
+  describe('inputFocus and touch', () => {
+    it('should mark as untouched if not touched', () => {
+      component.formControl = new FormControl();
+      component.isTouched = false;
+      let markedUntouched = false;
+      component.formControl.markAsUntouched = () => { markedUntouched = true; };
+      component.inputFocus();
+      expect(markedUntouched).toBe(true);
+    });
+
+    it('should mark as touched if touched', () => {
+      component.formControl = new FormControl();
+      component.isTouched = true;
+      let markedTouched = false;
+      component.formControl.markAsTouched = () => { markedTouched = true; };
+      component.touch();
+      expect(markedTouched).toBe(true);
     });
   });
 });
