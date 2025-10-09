@@ -19,7 +19,7 @@ import {
   SortOrder
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import { ActivityService, ActivitySocketService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -170,6 +170,7 @@ describe('SearchResultComponent', () => {
     let activityService: any;
     let searchHandler;
     let appConfig: any;
+    let activitySocketService: any;
     const caseReferencePipe = new CaseReferencePipe();
     const caseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
@@ -189,6 +190,12 @@ describe('SearchResultComponent', () => {
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
+
+      activitySocketService = {
+        watching: [],
+        isEnabled: true,
+        watchCases: jasmine.createSpy('watchCases')
+      };
 
       TestBed
         .configureTestingModule({
@@ -216,7 +223,8 @@ describe('SearchResultComponent', () => {
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
             BrowserService,
-            SessionStorageService
+            SessionStorageService,
+            { provide: ActivitySocketService, useValue: activitySocketService },
           ]
         })
         .compileComponents();
@@ -747,6 +755,17 @@ describe('SearchResultComponent', () => {
       component.ngOnInit();
       expect(component.selectedCases.length).toEqual(2);
     });
+
+    it('should call watchCases for activity', () => {
+      component['watchResults']();
+      expect(activitySocketService.watchCases).toHaveBeenCalled();
+    });
+
+    it('should call clickCase emit when goToCase is triggered', () => {
+      spyOn(component.clickCase, 'emit');
+      component.goToCase('DRAFT190');
+      expect(component.clickCase.emit).toHaveBeenCalled();
+    });
   });
 
   describe('without results', () => {
@@ -807,6 +826,7 @@ describe('SearchResultComponent', () => {
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
+    let activitySocketService: any;
     
 
     beforeEach(waitForAsync(() => {
@@ -816,6 +836,12 @@ describe('SearchResultComponent', () => {
           isEnabled: true,
           postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
           errorSource: new Subject<any>()
+        };
+
+        activitySocketService = {
+          watching: [],
+          isEnabled: true,
+          watchCases: jasmine.createSpy('watchCases')
         };
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
@@ -846,7 +872,8 @@ describe('SearchResultComponent', () => {
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
             BrowserService,
-            SessionStorageService
+            SessionStorageService,
+            { provide: ActivitySocketService, useValue: activitySocketService },
           ]
         })
         .compileComponents();
@@ -941,6 +968,11 @@ describe('SearchResultComponent', () => {
       component.consumerSortParameters = { column: 'PersonLastName', order: SortOrder.ASCENDING, type: 'Text' };
 
       expect(component.isSortAscending(column)).toBe(null);
+    });
+
+    it('should call watchCases for activity with empty array if there is no result', () => {
+      component['watchResults']();
+      expect(activitySocketService.watchCases).toHaveBeenCalledWith([]);
     });
   });
 });
