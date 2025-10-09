@@ -65,9 +65,8 @@ describe('CaseFileViewFieldComponent', () => {
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
-    mockabstractConfig = createSpyObj<AbstractAppConfig>('LoadingService', ['getIcpJurisdictions', 'getIcpEnable']);
+    mockabstractConfig = createSpyObj<AbstractAppConfig>('LoadingService', ['getIcpJurisdictions']);
     mockabstractConfig.getIcpJurisdictions.and.returnValue('["ST_CIC", "IA"]');
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
 
@@ -92,7 +91,7 @@ describe('CaseFileViewFieldComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseNotifier, useValue: ['ST-CIC'] },
-        { provide: AbstractAppConfig, useValue: mockabstractConfig },
+        { provide: AbstractAppConfig, useValue: mockabstractConfig }
 
       ]
     })
@@ -246,14 +245,7 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.errorMessages).toEqual(errorMessagesFromElements);
   });
 
-  it('should disable icp when config contains false', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(false);
-    fixture.detectChanges();
-    expect(component.icpEnabled).toBeFalsy();
-  });
-
   it('should enable icp when config contains true', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
     fixture.detectChanges();
     expect(component.icpEnabled).toBeTruthy();
   });

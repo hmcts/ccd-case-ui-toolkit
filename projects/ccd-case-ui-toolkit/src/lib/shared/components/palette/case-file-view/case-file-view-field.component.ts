@@ -55,7 +55,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     // As there can be more than one intersecting role, if any acls are update: true
     this.allowMoving = acls.some(acl => acl.update);
     this.icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
-    this.icpEnabled = this.abstractConfig.getIcpEnable();
+    this.icpEnabled = true;
   }
 
   public ngAfterViewInit(): void {
