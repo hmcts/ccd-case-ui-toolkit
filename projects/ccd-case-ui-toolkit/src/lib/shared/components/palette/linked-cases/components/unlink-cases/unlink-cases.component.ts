@@ -163,7 +163,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
       this.errorMessages.push({
         title: 'case-selection',
         description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
-        fieldId: `case-reference-${this.linkedCases[0].caseReference}`
+        fieldId: `case-reference-${this.linkedCases[0]?.caseReference}`
       });
       this.unlinkErrorMessage = LinkedCasesErrorMessages.UnlinkCaseSelectionError;
       navigateToNextPage = false;
