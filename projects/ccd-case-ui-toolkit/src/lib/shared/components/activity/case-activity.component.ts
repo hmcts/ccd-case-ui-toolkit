@@ -36,13 +36,11 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    console.log('CaseActivityComponent.ngOnInit for caseId: ' + this.caseId);
     this.modeSubscription = this.activityService.modeSubject
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         this.destroy();
-        console.log('mode: => ' + mode);
         if (mode === MODES.polling) {
           this.initPolling();
         } else if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
@@ -66,25 +64,14 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
   }
 
   private initSocket(): void {
-    console.log('this.socket.activity = ' + JSON.stringify(this.socket.activity));
-
-    // const thisCase: CaseActivityInfo = {"caseId":"1712141847061149","viewers":[{"id":"1712141847061149","forename":"SSC","surname":"Super User"}],"unknownViewers":0,"editors":[{"id":"1712141847061149","forename":"SSC","surname":"Super User"}],"unknownEditors":0}
-
-    // this.handleActivity(Utils.activity.stripUserFromActivity(thisCase, this.socket.user));
-
     this.socketSubscription = this.socket.activity.subscribe(activity => {
-      console.log('activity from socket: => ' + JSON.stringify(activity));
       if (Array.isArray(activity)) {
         const thisCase: CaseActivityInfo = activity.find(item => item.caseId === this.caseId);
-        
-        console.log('thisCase = ' + JSON.stringify(thisCase));
-
         // Only do something if this update is one we care about - i.e., it's the current case.
         if (thisCase) {
           this.handleActivity(Utils.activity.stripUserFromActivity(thisCase, this.socket.user));
         }
       } else {
-        console.log('activity not an array: => ' + JSON.stringify(activity));
         this.handleActivity(undefined);
       }
     });

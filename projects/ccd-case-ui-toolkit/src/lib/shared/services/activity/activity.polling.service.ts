@@ -110,26 +110,6 @@ export class ActivityPollingService {
     this.maxRequestsPerBatch = this.config.getActivityMaxRequestPerBatch();
   }
 
-  //  private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
-  //   const caseIds = Array.from(requests.keys()).join();
-  //   this.ngZone.runOutsideAngular(() => {
-  //     // run polling outside angular zone so it does not trigger change detection
-  //     this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
-  //       // process activity inside zone so it triggers change detection for activity.component.ts
-  //       (activities: Activity[]) => this.ngZone.run(() => {
-  //         activities.forEach((activity) => {
-  //           requests.get(activity.caseId).next(activity);
-  //         });
-  //       },
-  //         (err) => {
-  //           console.log(`error: ${err}`);
-  //           Array.from(requests.values()).forEach((subject) => subject.error(err));
-  //         }
-  //       )
-  //     );
-  //   });
-  // }
-
   private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
 

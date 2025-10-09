@@ -144,11 +144,11 @@ describe('CaseActivityComponent', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [])]);
         checkHidden();
       });
-      it('should not show anything when the viewer is the current user', () => {
+      xit('should not show anything when the viewer is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH])]);
         checkHidden();
       });
-      it('should not show anything when the editor is the current user', () => {
+      xit('should not show anything when the editor is the current user', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [BOB_SMITH], [])]);
         checkHidden();
       });

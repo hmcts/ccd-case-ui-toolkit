@@ -47,23 +47,18 @@ export class ActivitySocketService {
   }
 
   public watchCases(caseIds: string[]): void {
-    console.log('ActivitySocketService.watchCases: ' + caseIds);
     this.socket.emit('watch', { caseIds });
   }
 
   public viewCase(caseId: string): void {
-    console.log('ActivitySocketService.viewCase: ' + caseId);
     this.socket.emit('view', { caseId });
   }
 
   public editCase(caseId: string): void {
-    console.log('ActivitySocketService.editCase: ' + caseId);
     this.socket.emit('edit', { caseId });
   }
 
   private init(): void {
-    console.log('ActivitySocketService.init for user: ' + JSON.stringify(this.user));
-
     this.socket = Utils.getSocket(this.user, this.activityService.mode === MODES.socket);
     this.connect = this.getObservableOnSocketEvent<any>('connect');
     this.connect_error = this.getObservableOnSocketEvent<any>('connect_error');
@@ -87,7 +82,6 @@ export class ActivitySocketService {
     if (this.socket) {
       this.socket.close();
       this.socket = undefined;
-      console.log('ActivitySocketService.destroy');
     }
   }
 

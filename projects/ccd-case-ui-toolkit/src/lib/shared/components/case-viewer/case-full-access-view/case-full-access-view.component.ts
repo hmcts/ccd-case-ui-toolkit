@@ -144,10 +144,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
-          this.socketConnectSub = this.activitySocketService.connected
+          this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {
-                console.log('ActivitySocketService connected going to viewCase for caseId: ' + this.caseDetails.case_id);
                 this.activitySocketService.viewCase(this.caseDetails.case_id);
               }
             });
@@ -157,10 +156,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           });
         }
       });
-
-    if (this.socketConnectSub) {
-      this.socketConnectSub.unsubscribe();
-    }
 
     this.checkRouteAndSetCaseViewTab();
 
@@ -192,6 +187,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
+    this.unsubscribe(this.socketConnectSub);
     this.subs.forEach(s => s.unsubscribe());
   }
 

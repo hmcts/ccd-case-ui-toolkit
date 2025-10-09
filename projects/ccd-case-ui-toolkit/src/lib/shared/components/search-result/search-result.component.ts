@@ -125,7 +125,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
     this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
-    console.log('this.resultView: in ngoninit' + JSON.stringify(this.resultView.results));
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -152,7 +151,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
-    console.log('this.resultView: in ngonchanges' + JSON.stringify(this.resultView.results));
   }
 
   public isTranslatable(col: SearchResultViewColumn): boolean {

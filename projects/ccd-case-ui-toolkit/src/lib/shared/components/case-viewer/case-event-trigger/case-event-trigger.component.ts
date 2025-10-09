@@ -54,7 +54,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    console.log('CaseEventTriggerComponent.ngOnInit');
     if (this.loadingService.hasSharedSpinner()){
       this.loadingService.unregisterSharedSpinner();
     }
@@ -67,23 +66,14 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe(() => {
-          // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
-        });
-      });
       this.activityService.modeSubject
         .pipe(filter(mode => !!mode))
         .pipe(distinctUntilChanged())
         .subscribe(mode => {
-          console.log('mode: => ' + mode);
-          console.log('ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1 =>', ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1)
           if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
-            console.log('this.activitySocketService.connected =>', this.activitySocketService.connected)
             this.activitySocketService.connected
               .subscribe(connected => {
                 if (connected) {
-                  console.log('calling edit');
                   this.activitySocketService.editCase(this.caseDetails.case_id);
                 }
               });
@@ -97,7 +87,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
-    console.log('caseDetails = ' + JSON.stringify(this.caseDetails));
   }
 
   public ngOnDestroy(): void {
@@ -111,7 +100,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public postEditActivity(): Observable<Activity[]> {
-    console.log('Posting EDIT activity for caseId: ' + this.caseDetails.case_id);
     return this.activityPollingService.postEditActivity(this.caseDetails.case_id);
   }
 
