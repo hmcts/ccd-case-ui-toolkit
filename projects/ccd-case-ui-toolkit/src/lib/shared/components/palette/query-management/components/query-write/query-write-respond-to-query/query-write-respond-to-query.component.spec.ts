@@ -12,7 +12,10 @@ import {
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../../models';
 import { of, throwError } from 'rxjs';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
     return value;

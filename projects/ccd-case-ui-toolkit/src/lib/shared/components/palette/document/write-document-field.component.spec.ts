@@ -147,13 +147,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -700,13 +699,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -926,13 +924,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],

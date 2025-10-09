@@ -1,9 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { QueryCaseDetailsHeaderComponent } from './query-case-details-header.component';
 
 import { By } from '@angular/platform-browser';
@@ -16,7 +15,10 @@ import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-@Pipe({ name: 'ccdCaseReference' })
+@Pipe({
+  name: 'ccdCaseReference',
+  standalone: false
+})
 class MockCaseReferencePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
     return value;
@@ -41,13 +43,11 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
+      imports: [markdownComponentMock],
       declarations: [QueryCaseDetailsHeaderComponent, MockCaseReferencePipe,
         CaseReferencePipe,
         LabelSubstitutorDirective,
-        LabelFieldComponent,
-
-        // Mocks
-        markdownComponentMock
+        LabelFieldComponent
       ],
       providers: [
         FieldsUtils,
@@ -58,10 +58,11 @@ describe('QueryCaseDetailsHeaderComponent', () => {
         RpxTranslationService,
         RpxTranslationConfig,
         HttpClient,
-        HttpHandler
+        HttpHandler,
+        provideNgReflectAttributes()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

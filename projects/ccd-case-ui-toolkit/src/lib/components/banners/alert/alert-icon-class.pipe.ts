@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AlertComponent } from './alert.component';
 
 @Pipe({
-  name: 'cutAlertIconClass'
+    name: 'cutAlertIconClass',
+    standalone: false
 })
 export class AlertIconClassPipe implements PipeTransform {
   private static readonly CLASS_WARNING = 'icon-alert';

@@ -17,19 +17,20 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 
 @Component({
-  selector: 'ccd-datetime-picker',
-  templateUrl: './datetime-picker.component.html',
-  styleUrls: ['./datetime-picker.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  providers: [
-    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-    {
-      provide: NgxMatDateAdapter,
-      useClass: NgxMatMomentAdapter,
-      deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-    },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
-  ]
+    selector: 'ccd-datetime-picker',
+    templateUrl: './datetime-picker.component.html',
+    styleUrls: ['./datetime-picker.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    providers: [
+        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        {
+            provide: NgxMatDateAdapter,
+            useClass: NgxMatMomentAdapter,
+            deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+        },
+        { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    ],
+    standalone: false
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {

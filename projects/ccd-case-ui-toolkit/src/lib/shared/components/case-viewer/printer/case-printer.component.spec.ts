@@ -83,12 +83,12 @@ describe('CasePrinterComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          caseHeaderComponentMock
         ],
         declarations: [
           CasePrinterComponent,
           PrintUrlPipe,
           // Mocks
-          caseHeaderComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [

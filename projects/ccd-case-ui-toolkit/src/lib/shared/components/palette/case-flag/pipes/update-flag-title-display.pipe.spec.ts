@@ -1,4 +1,4 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Injector } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
@@ -129,35 +129,46 @@ describe('UpdateFlagTitleDisplayPipe', () => {
   ] as FlagsWithFormGroupPath[];
   let mockRpxTranslationService: any;
   let mockChangeDetectorRef: any;
+  let pipe: UpdateFlagTitleDisplayPipe;
 
   beforeEach(waitForAsync(() => {
     const source = new BehaviorSubject<RpxLanguage>('en');
     let currentLanguage: RpxLanguage = 'en';
     mockRpxTranslationService = {
       language$: source.asObservable(),
+      get language() {
+        return currentLanguage;
+      },
       set language(lang: RpxLanguage) {
         currentLanguage = lang;
         source.next(lang);
-      },
-      get language() {
-        return currentLanguage;
       }
     };
     mockChangeDetectorRef = {
       markForCheck: () => {}
     };
     TestBed.configureTestingModule({
-      declarations: [UpdateFlagTitleDisplayPipe],
       providers: [
+        UpdateFlagTitleDisplayPipe,
         { provide: RpxTranslationService, useValue: mockRpxTranslationService },
-        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef }
+        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef },
+        {
+          provide: Injector,
+          useValue: {
+            get: (token: any) => {
+              if (token === ChangeDetectorRef) {
+                return mockChangeDetectorRef;
+              }
+              throw new Error('Unknown dependency');
+            }
+          }
+        }
       ]
-    })
-    .compileComponents();
+    });
+    pipe = TestBed.inject(UpdateFlagTitleDisplayPipe);
   }));
 
   it('should get correct flag name', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     let flagDetail = flagsData[2].flags.details[0];
     expect(pipe.getFlagName(flagDetail)).toEqual('Flag 4');
     flagDetail = flagsData[3].flags.details[0];
@@ -167,7 +178,6 @@ describe('UpdateFlagTitleDisplayPipe', () => {
   });
 
   it('should get correct flag name when page language is set to Welsh', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     let flagDetail = flagsData[3].flags.details[0];
     expect(pipe.getFlagName(flagDetail)).toEqual('Fflag 5, Dummy subtype value - Welsh');
@@ -177,12 +187,10 @@ describe('UpdateFlagTitleDisplayPipe', () => {
   });
 
   it('should get flag comment', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     expect(pipe.getFlagComments(flagsData[3].flags.details[0])).toEqual(' - Fifth flag');
   });
 
   it('should get flag comment when page language is set to Welsh', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     expect(pipe.getFlagComments(flagsData[3].flags.details[0])).toEqual(' - Fifth flag - Welsh');
     // No Welsh flag comment is available (undefined flagComment_cy), so fall back on English comment
@@ -190,13 +198,11 @@ describe('UpdateFlagTitleDisplayPipe', () => {
   });
 
   it('should return the English formatted string for the flag details', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDetail = flagsData[3].flags.details[0];
     expect(pipe.transform(flagDetail)).toEqual('Flag 5, Dummy subtype value - Fifth flag');
   });
 
   it('should return the Welsh formatted string for the flag details', () => {
-    const pipe = new UpdateFlagTitleDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDetail = flagsData[3].flags.details[0];
     expect(pipe.transform(flagDetail)).toEqual('Fflag 5, Dummy subtype value - Welsh - Fifth flag - Welsh');

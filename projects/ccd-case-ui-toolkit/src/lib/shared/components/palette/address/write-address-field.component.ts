@@ -10,9 +10,10 @@ import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { AddressOption } from './address-option.model';
 
 @Component({
-  selector: 'ccd-write-address-field',
-  templateUrl: 'write-address-field.html',
-  styleUrls: ['write-address-field.scss']
+    selector: 'ccd-write-address-field',
+    templateUrl: 'write-address-field.html',
+    styleUrls: ['write-address-field.scss'],
+    standalone: false
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
   @ViewChild('writeComplexFieldComponent', { static: false })
@@ -69,9 +70,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.caseField.value = null;
       this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
-        result => {
+        (result) => {
           result.forEach(
-            address => {
+            (address) => {
               this.addressOptions.push(new AddressOption(address, null));
             }
           );

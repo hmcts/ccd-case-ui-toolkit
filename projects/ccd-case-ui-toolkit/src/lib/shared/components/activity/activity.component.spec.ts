@@ -100,12 +100,11 @@ describe('CcdActivityComponent', () => {
     activityPollingService.isEnabled = true;
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [activityIconComponentMock,
+          activityBannerComponentMock],
         declarations: [
           ActivityComponent,
           // Mocks
-          activityIconComponentMock,
-          activityBannerComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [

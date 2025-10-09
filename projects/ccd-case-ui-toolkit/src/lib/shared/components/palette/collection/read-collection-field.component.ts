@@ -4,9 +4,10 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { CaseField } from '../../../../shared/domain/definition/case-field.model';
 
 @Component({
-  selector: 'ccd-read-collection-field',
-  templateUrl: './read-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+    selector: 'ccd-read-collection-field',
+    templateUrl: './read-collection-field.html',
+    styleUrls: ['./collection-field.scss'],
+    standalone: false
 })
 export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

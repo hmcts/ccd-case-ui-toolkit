@@ -10,9 +10,10 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
 
 @Component({
-  selector: 'ccd-case-file-view-field',
-  templateUrl: './case-file-view-field.component.html',
-  styleUrls: ['./case-file-view-field.component.scss'],
+    selector: 'ccd-case-file-view-field',
+    templateUrl: './case-file-view-field.component.html',
+    styleUrls: ['./case-file-view-field.component.scss'],
+    standalone: false
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {
   public static readonly PARAM_CASE_ID = 'cid';

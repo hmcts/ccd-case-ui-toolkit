@@ -5,7 +5,8 @@ import { PaymentField } from '../base-field/payment-field.component';
 
 @Component({
     selector: 'ccd-ways-to-pay-field',
-    templateUrl: './waystopay-field.component.html'
+    templateUrl: './waystopay-field.component.html',
+    standalone: false
 })
 export class WaysToPayFieldComponent extends PaymentField {
   constructor(

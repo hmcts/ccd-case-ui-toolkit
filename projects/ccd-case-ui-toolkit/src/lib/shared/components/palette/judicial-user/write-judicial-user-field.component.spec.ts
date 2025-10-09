@@ -140,8 +140,9 @@ const JURISDICTION_JUF: Jurisdiction = {
 };
 
 @Pipe({
-  name: 'ccdFirstError',
-  pure: false
+    name: 'ccdFirstError',
+    pure: false,
+    standalone: false
 })
 class MockFirstErrorPipe implements PipeTransform {
   transform(value: ValidationErrors, args?: string): string {
@@ -181,9 +182,10 @@ describe('WriteJudicialUserFieldComponent', () => {
       imports: [
         ReactiveFormsModule,
         MatAutocompleteModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        MockComponent({ selector: 'ccd-field-read', inputs: ['caseField'] })
       ],
-      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe, MockComponent({ selector: 'ccd-field-read', inputs: ['caseField'] })],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },

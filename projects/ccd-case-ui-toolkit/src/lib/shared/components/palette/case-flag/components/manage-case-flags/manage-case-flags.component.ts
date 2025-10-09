@@ -8,10 +8,11 @@ import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, Ca
 import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
-  selector: 'ccd-manage-case-flags',
-  templateUrl: './manage-case-flags.component.html',
-  styleUrls: ['./manage-case-flags.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'ccd-manage-case-flags',
+    templateUrl: './manage-case-flags.component.html',
+    styleUrls: ['./manage-case-flags.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ManageCaseFlagsComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;

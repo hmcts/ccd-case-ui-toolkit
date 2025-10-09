@@ -19,9 +19,10 @@ interface LinkedCasesResponse {
 }
 
 @Component({
-  selector: 'ccd-linked-cases-to-table',
-  templateUrl: './linked-cases-to-table.component.html',
-  styleUrls: ['./linked-cases-to-table.component.scss']
+    selector: 'ccd-linked-cases-to-table',
+    templateUrl: './linked-cases-to-table.component.html',
+    styleUrls: ['./linked-cases-to-table.component.scss'],
+    standalone: false
 })
 export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
