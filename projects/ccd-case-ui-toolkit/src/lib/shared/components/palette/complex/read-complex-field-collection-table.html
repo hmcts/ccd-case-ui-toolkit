@@ -9,8 +9,8 @@
     <tr>
       <th *ngFor="let heading of columns" scope="col">
         <span class="text-16">{{columnsAllLabels[heading].label | rpxTranslate}}</span>
-        <a href="javascript:void(0)"
-           (click)="sortRowsByColumns(heading)"
+        <a href="#"
+           (click)="sortRowsByColumns(heading); $event.preventDefault()"
            (keyup.enter)="sortRowsByColumns(heading)"
            class="sort-widget"
            [attr.aria-label]="'Sort ' + columnsAllLabels[heading].label | rpxTranslate"
@@ -37,7 +37,7 @@
         </ng-container>
         <td>
           <div style="float: right;">
-            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="accordion-img" class="accordion-image"/></a>
+            <a href="#" (click)="$event.preventDefault()"> <img src="{{ getImage(i) }}" alt="accordion-img" class="accordion-image"/></a>
           </div>
         </td>
       </tr>

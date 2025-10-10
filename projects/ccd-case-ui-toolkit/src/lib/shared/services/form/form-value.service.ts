@@ -6,106 +6,6 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
-  /**
-   * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
-   * There are two exceptions:
-   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
-   *      form= { 'list': ['code1', 'code2'],
-   *              'list---LABEL': ['label1', 'label2'] },
-   *      fieldKey=list,
-   *      colIndex=0,
-   *      value=label1, label2
-   * 2) In case of a collection of simple fields is identified as a leaf all values are joined seperated by a comma
-   *      form= { 'collection': [{ 'value': 'value1' }, { 'value': 'value2' }] }
-   *      fieldKey=collection
-   *      colIndex=1
-   *      value=value1, value2
-   *
-   * Other examples:
-   * 1) simple field reference: form={ 'PersonFirstName': 'John' }, fieldKey=PersonFirstName, value=John
-   * 2) complex field reference:
-   *      form= { complex1': { 'simple11': 'value11', 'simple12': 'value12', 'complex2': { 'simple21': 'value21' } }},
-   *      fieldKey=complex1.complex2.simple21
-   *      colIndex=0,
-   *      value=value21
-   * 3) complex field with collection field with complex field reference:
-   *      form= { 'complex1': {
-   *               'collection1': [
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value1',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value12'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               },
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value2',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value21'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               },
-   *               { 'value': {
-   *                   'complex2': {
-   *                     'simple1': 'value3',
-   *                     'complex3': {
-   *                       'complex4': {
-   *                         'simple2': 'value31'
-   *                       }
-   *                     }
-   *                   }
-   *                 }
-   *               }
-   *             ]}}
-   *      fieldKey=complex1.collection1.complex2.complex3.complex4.simple2
-   *      colIndex=2,
-   *      value=value21
-   * 4) collection of complex types
-   *      form= { 'collection1': [
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value11',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value12'
-   *                               }
-   *                             }
-   *                         }}
-   *               },
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value21',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value22'
-   *                               }
-   *                             }
-   *                         }}
-   *               },
-   *               { 'value': {'complex1': {
-   *                             'simple1': 'value31',
-   *                             'complex2': {
-   *                               'complex3': {
-   *                                 'simple2': 'value32'
-   *                               }
-   *                             }
-   *                           }}
-   *               }
-   *             ]}
-   *      fieldKey=collection1.complex1.complex2.complex3.simple2
-   *      colIndex=2
-   *      value=value32
-   *
-   * If key is pointing at a complex or collection leaf (not simple, collection of simple or multiselect types) then undefined is returned.
-   * Also no key referring a leaf that is contained within collection will contain index number. The index is passed as an argument to the
-   * method.
-   */
   public static getFieldValue(form, fieldKey, colIndex) {
     const fieldIds = fieldKey.split('.');
     const currentFieldId = fieldIds[0];
@@ -202,6 +102,13 @@ export class FormValueService {
     return this.sanitiseObject(rawValue);
   }
 
+  public sanitiseData(caseFields: CaseField[], rawValue: any): any {
+    return {
+      ...rawValue,
+      data: this.sanitiseDateTimes(caseFields, rawValue.data)
+    };
+  }
+
   public sanitiseCaseReference(reference: string): string {
     // strip non digits
     const s: string = reference.replace(/[\D]/g, '');
@@ -223,6 +130,63 @@ export class FormValueService {
 
   public sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
+  }
+
+  public sanitiseDateTimes(caseFields: CaseField[], rawValue: any): any {
+    if (!caseFields || !rawValue || typeof rawValue !== 'object') {
+      return rawValue;
+    }
+
+    const sanitiseField = (fields: CaseField[], value: any) => {
+      if (!fields || !value) return;
+
+      for (const field of fields) {
+        if (!field || !field.field_type) continue;
+
+        const fieldValue = value[field.id];
+
+        // Check for null, undefined, empty object, empty array, empty string or number value
+        const isBlankObject = fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue) && Object.keys(fieldValue).length === 0;
+        const isBlankArray = Array.isArray(fieldValue) && fieldValue.length === 0;
+        const isNullOrUndefined = fieldValue === null || fieldValue === undefined;
+        const isEmptyString = fieldValue === '';
+        const isNumber = typeof fieldValue === 'number';
+
+        if (isNullOrUndefined || isBlankObject || isBlankArray || isEmptyString || isNumber) {
+          // Skip processing if fieldValue is null, undefined, a blank object, a blank array, empty string, or a number
+          continue;
+        }
+        if (field.field_type.type === 'Complex' && field.field_type.complex_fields) {
+          sanitiseField(field.field_type.complex_fields, fieldValue);
+        } else if (field.field_type.type === 'Collection' && field.field_type.collection_field_type) {
+          const items = fieldValue;
+          if (Array.isArray(items)) {
+            for (const item of items) {
+              if (field.field_type.collection_field_type.type === 'Complex' && item && item.value) {
+          sanitiseField(field.field_type.collection_field_type.complex_fields, item.value);
+              } else if (
+          field.field_type.collection_field_type.type === 'DateTime' &&
+          field.dateTimeEntryFormat &&
+          typeof item.value === 'string'
+              ) {
+          item.value = item.value.replace(/Z$/, '');
+              }
+            }
+          }
+        } else if (
+          field.field_type.type === 'DateTime' &&
+          field.dateTimeEntryFormat &&
+          typeof fieldValue === 'string'
+        ) {
+          value[field.id] = fieldValue.replace(/Z$/, '');
+        }
+      }
+    };
+
+    // Clone rawValue to avoid mutating the original object
+    const result = JSON.parse(JSON.stringify(rawValue));
+    sanitiseField(caseFields, result);
+    return result;
   }
 
   private sanitiseObject(rawObject: object): object {
@@ -277,6 +241,7 @@ export class FormValueService {
     if (Array.isArray(rawValue)) {
       return this.sanitiseArray(rawValue);
     }
+
 
     switch (typeof rawValue) {
       case 'object':
