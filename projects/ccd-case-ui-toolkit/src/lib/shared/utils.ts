@@ -10,3 +10,9 @@ export function isInternalUser(sessionStorageService: SessionStorageService): bo
     && !(userDetails.roles.includes(PUI_CASE_MANAGER)
       || userDetails.roles.some((role) => role.toLowerCase().includes(JUDGE)));
 }
+
+export function isjudiciaryUser(sessionStorageService: SessionStorageService): boolean {
+  const userDetails = JSON.parse(sessionStorageService?.getItem(USER_DETAILS));
+  return userDetails && userDetails.roles
+    && (userDetails.roles.some((role) => role.toLowerCase().includes(JUDGE)));
+}
