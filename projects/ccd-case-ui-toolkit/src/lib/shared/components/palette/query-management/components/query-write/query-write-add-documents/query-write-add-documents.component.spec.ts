@@ -6,7 +6,7 @@ import { MockComponent } from 'ng2-mock-component';
 
 const writeCollectionFieldComponentMock: any = MockComponent({
   selector: 'ccd-write-collection-field',
-  inputs: ['caseFields']
+  inputs: ['caseField']
 });
 
 describe('QueryWriteAddDocumentsComponent', () => {
