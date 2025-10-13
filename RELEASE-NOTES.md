@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.49
+**EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
+
 ### Version 7.2.48
 **EXUI-3469** Vulnerabilities identified for Media Viewer
 
