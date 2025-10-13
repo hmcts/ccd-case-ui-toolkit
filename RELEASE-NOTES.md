@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.50-exui-3209
+**EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
+
 ### Version 7.2.50
 **EXUI-3455** redirect page back to /cases/case-filter to when form has no data
 
