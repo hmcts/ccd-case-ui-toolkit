@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
@@ -20,6 +21,7 @@ import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+
 
 // @dynamic
 @Component({
@@ -80,6 +82,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly formValidatorsService: FormValidatorsService,
     private readonly caseFlagStateService: CaseFlagStateService,
     private readonly linkedCasesService: LinkedCasesService,
+    private readonly router: Router,
   ) {
   }
 
@@ -88,6 +91,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
+    this.redirectIfFormEmpty();
     this.wizard = this.caseEdit.wizard;
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.caseEdit.isSubmitting = false;
@@ -357,6 +361,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       return 'Return to case list';
     }
     return 'Cancel';
+  }
+
+  private redirectIfFormEmpty(): void {
+    const data = this.editForm?.getRawValue()?.data;
+    const isEmpty = !data || (typeof data === 'object' && Object.keys(data).length === 0);
+
+    if (isEmpty) {
+      this.router.navigate(['/cases/case-filter']);
+    }
   }
 }
 
