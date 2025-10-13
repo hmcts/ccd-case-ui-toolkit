@@ -1,5 +1,5 @@
 <div class="form-group" [ngClass]="{'form-group-error': !!textControl && !textControl.valid && (textControl.dirty || textControl.touched)}">
-  <label [for]="id()">
+  <label [for]="id()" *ngIf="!caseField.hidden">
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
@@ -7,5 +7,5 @@
     {{textControl.errors | ccdFirstError:caseField.label}}
   </span>
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
-  [id]="id()" type="text" [formControl]="textControl" (blur)="onBlur($event)" [attr.aria-hidden]="caseField.hidden">
+    [id]="id()" [type]="caseField.hidden ? 'hidden' : 'text'" [formControl]="textControl" (blur)="onBlur($event)">
 </div>
