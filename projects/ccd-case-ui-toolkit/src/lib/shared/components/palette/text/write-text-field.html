@@ -7,5 +7,5 @@
     {{textControl.errors | ccdFirstError:caseField.label}}
   </span>
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
-  [id]="id()" type="text" [formControl]="textControl" (blur)="onBlur($event)">
+  [id]="id()" type="text" [formControl]="textControl" (blur)="onBlur($event)" [attr.aria-hidden]="caseField.hidden">
 </div>
