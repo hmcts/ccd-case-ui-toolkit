@@ -1,12 +1,14 @@
 ## RELEASE NOTES
 
-### Version 7.2.49-srt-rc1
+### Version 7.2.51
 **EXUI-3066** Dates/Times: Accept input in local time
 **EXUI-3005** timestamp values displayed
 **EXUI-3003** Notice of Change Timestamp showing as GMT
 **EXUI-2761** Include service and case type IDs in Manage Case URLs
 **EXUI-3044** Update Content Security Policy
 
+### Version 7.2.50
+**EXUI-3455** redirect page back to /cases/case-filter to when form has no data
 
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
