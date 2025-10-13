@@ -65,7 +65,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    if (this.activityPollingService.isEnabled) {
+    // if (this.activityPollingService.isEnabled) {
       this.activityService.modeSubject
         .pipe(filter(mode => !!mode))
         .pipe(distinctUntilChanged())
@@ -83,7 +83,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
             });
           }
         });
-    }
+   // }
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
