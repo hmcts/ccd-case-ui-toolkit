@@ -270,13 +270,20 @@ describe('ReadQueryManagementFieldComponent', () => {
     });
   });
 
-  describe('isjudiciaryUser', () => {
+  describe('isJudiciaryUser', () => {
     it('should return true if the user has a judge role', () => {
       USER.roles.push(JUDGE);
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
-      expect(component.isjudiciaryUser()).toBeTruthy();
+      expect(component.isJudiciaryUser()).toBeTruthy();
       USER.roles.pop();
+    });
+
+     it('should return false if the user does not have a judge role', () => {
+      USER.roles = [];
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isJudiciaryUser()).toBeFalsy();
     });
   });
 

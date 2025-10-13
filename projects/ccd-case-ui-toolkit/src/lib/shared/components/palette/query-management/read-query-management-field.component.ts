@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
-import { isInternalUser, isjudiciaryUser } from '../../../utils';
+import { isInternalUser, isJudiciaryUser } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from './models';
@@ -105,9 +105,8 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     return isInternalUser(this.sessionStorageService);
   }
 
-   public isjudiciaryUser(): boolean {
-    console.log('isjudiciaryUser: ', isjudiciaryUser(this.sessionStorageService));
-    return isjudiciaryUser(this.sessionStorageService);
+  public isJudiciaryUser(): boolean {
+    return isJudiciaryUser(this.sessionStorageService);
   }
 
   public getMessageType(query: any): string | undefined {
