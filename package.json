@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.1-angular-20",
+  "version": "7.3.2-angular-20",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -64,8 +64,8 @@
     "@hmcts/ccpay-web-component": "6.3.3",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.1.8",
-    "@ngrx/effects": "17.2.0",
-    "@ngrx/store": "^17.2.0",
+    "@ngrx/effects": "^20.0.1",
+    "@ngrx/store": "^20.0.1",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
