@@ -2844,12 +2844,4 @@ describe('CaseFullAccessViewComponent - print and event selector disabled', () =
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
-
-  xit('should not display print and event selector if disabled via inputs', () => {
-    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    const printLink = de.query($PRINT_LINK);
-
-    expect(eventTriggerElement).toBeFalsy();
-    expect(printLink).toBeFalsy();
-  });
 })
