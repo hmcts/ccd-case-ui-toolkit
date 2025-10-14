@@ -78,7 +78,11 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
-          this.router.navigate([`/cases/case-details/${cid}/tasks`]);
+          // EXUI-2730 - Added logic to prevent navigation to tasks while on a case details page
+          // Unsure if actually necessary but left in place to mitigate risk
+          if (!this.router.url || !this.router.url.includes('/cases/case-details/')) {
+            this.router.navigate([`/cases/case-details/${cid}/tasks`]);
+          }
           return throwError(error);
         })
       ).toPromise();

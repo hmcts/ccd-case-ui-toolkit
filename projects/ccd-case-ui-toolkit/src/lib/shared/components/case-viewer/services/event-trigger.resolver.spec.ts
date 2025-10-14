@@ -213,11 +213,32 @@ describe('EventTriggerResolver', () => {
        expect(err).toBeTruthy();
        expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
        expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
-       expect(router.navigate).toHaveBeenCalled();
+       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${CASE_ID}/tasks`]);
         done();
       });
     expect(profileService.get).toHaveBeenCalledWith();
   });
+
+  it('should not navigate to tasks on error if url is present', done => {
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
+    profileService.get.and.returnValue(PROFILE_OBS);
+    router.url = '/cases/case-details/';
+
+    eventTriggerResolver
+      .resolve(route)
+      .then(data => {
+        fail(data);
+      }, err => {
+      err.details = { eventId: 'createBundle', ...err.details };
+       expect(err).toBeTruthy();
+       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
+       expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
+       expect(router.navigate).not.toHaveBeenCalledWith([`/cases/case-details/${CASE_ID}/tasks`]);
+        done();
+      });
+    expect(profileService.get).toHaveBeenCalledWith();
+  });
+
 
   it('should return cached profile without making API call', () => {
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
