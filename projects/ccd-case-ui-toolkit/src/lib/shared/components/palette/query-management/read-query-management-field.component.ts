@@ -101,7 +101,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   }
 
   public isInternalUser(): boolean {
-    console.log('isInternalUser: ', isInternalUser(this.sessionStorageService));
     return isInternalUser(this.sessionStorageService);
   }
 

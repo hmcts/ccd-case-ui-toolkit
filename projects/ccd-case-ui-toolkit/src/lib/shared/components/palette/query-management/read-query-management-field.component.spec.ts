@@ -279,7 +279,7 @@ describe('ReadQueryManagementFieldComponent', () => {
       USER.roles.pop();
     });
 
-     it('should return false if the user does not have a judge role', () => {
+    it('should return false if the user does not have a judge role', () => {
       USER.roles = [];
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
