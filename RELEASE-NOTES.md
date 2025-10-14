@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.50-exui-3209
+### Version 7.2.50-exui-3209-1
 **EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
 
 ### Version 7.2.50
