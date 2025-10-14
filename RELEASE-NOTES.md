@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 7.2.50
-**EXUI-3455** redirect page back to /cases/case-filter to when form has no data
-
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
 
