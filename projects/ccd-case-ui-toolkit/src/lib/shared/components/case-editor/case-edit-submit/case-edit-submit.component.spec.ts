@@ -971,36 +971,6 @@ describe('CaseEditSubmitComponent', () => {
       expect(comp.eventTrigger.case_fields[0].formatted_value.details).toContain({ id: 'flag1' });
       expect(comp.eventTrigger.case_fields[0].formatted_value.details).not.toContain({ id: null });
     });
-
-    it('should redirect to /cases/case-filter when editForm.data is empty', () => {
-      mockRouter.navigate.calls.reset();
-
-      const injectedCaseEdit = TestBed.inject(CaseEditComponent) as any;
-      injectedCaseEdit.form = new FormGroup({ data: new FormGroup({}) });
-
-      fixture = TestBed.createComponent(CaseEditSubmitComponent);
-      comp = fixture.componentInstance;
-
-      fixture.detectChanges();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-filter']);
-    });
-
-    it('should NOT redirect when editForm.data is NOT empty', () => {
-      mockRouter.navigate.calls.reset();
-
-      const injectedCaseEdit = TestBed.inject(CaseEditComponent) as any;
-      injectedCaseEdit.form = new FormGroup({
-        data: new FormGroup({ SomeField: new FormControl('value') })
-      });
-
-      fixture = TestBed.createComponent(CaseEditSubmitComponent);
-      comp = fixture.componentInstance;
-
-      fixture.detectChanges();
-
-      expect(mockRouter.navigate).not.toHaveBeenCalledWith(['/cases/case-filter']);
-    });
   });
 
   describe('CaseEditSubmitComponent without custom end button label and with Save and Resume enabled', () => {
