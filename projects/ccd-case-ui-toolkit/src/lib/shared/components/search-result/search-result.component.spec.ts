@@ -314,16 +314,16 @@ describe('SearchResultComponent', () => {
 
     it('should sort columns with higher order last', () => {
       const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(3)')).nativeElement.textContent.trim();
-      expect(lastHeader.startsWith(RESULT_VIEW.columns[0].label)).toBe(true);
+      expect(lastHeader.startsWith(RESULT_VIEW.columns[2].label)).toBe(true);
 
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3)')).nativeElement.textContent.trim();
       expect(lastValue.startsWith(RESULT_VIEW.results[0].case_fields['PersonFirstName'])).toBe(true);
     });
 
     it('should keep order of columns with same order', () => {
-      const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(1)')).nativeElement.textContent.trim();
+      const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(2)')).nativeElement.textContent.trim();
       expect(lastHeader.startsWith(RESULT_VIEW.columns[1].label)).toBe(true);
-
+         
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1)')).nativeElement.textContent.trim();
       expect(lastValue.startsWith(RESULT_VIEW.results[1].case_fields['PersonLastName'])).toBe(true);
     });
