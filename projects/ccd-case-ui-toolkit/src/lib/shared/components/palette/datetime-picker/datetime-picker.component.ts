@@ -230,9 +230,9 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
         const utcValue = localMoment.clone().utc().format(this.momentFormat);
         this.dateControl.setValue(utcValue);
         this.inputElement.nativeElement.value = localMoment.format(this.dateTimeEntryFormat);
-        if (this.datetimePicker) {
-          this.datetimePicker.select(localMoment); // guarded from recursion
-        }
+        // if (this.datetimePicker) {
+        //   this.datetimePicker.select(localMoment); // guarded from recursion
+        // }
         this.isUpdating = false;
       } else {
         const keepErrorText = this.inputElement.nativeElement.value;
