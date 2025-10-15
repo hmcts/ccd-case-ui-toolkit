@@ -102,13 +102,6 @@ export class FormValueService {
     return this.sanitiseObject(rawValue);
   }
 
-  public sanitiseData(caseFields: CaseField[], rawValue: any): any {
-    return {
-      ...rawValue,
-      data: this.sanitiseDateTimes(caseFields, rawValue.data)
-    };
-  }
-
   public sanitiseCaseReference(reference: string): string {
     // strip non digits
     const s: string = reference.replace(/[\D]/g, '');
@@ -130,63 +123,6 @@ export class FormValueService {
 
   public sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
-  }
-
-  public sanitiseDateTimes(caseFields: CaseField[], rawValue: any): any {
-    if (!caseFields || !rawValue || typeof rawValue !== 'object') {
-      return rawValue;
-    }
-
-    const sanitiseField = (fields: CaseField[], value: any) => {
-      if (!fields || !value) return;
-
-      for (const field of fields) {
-        if (!field || !field.field_type) continue;
-
-        const fieldValue = value[field.id];
-
-        // Check for null, undefined, empty object, empty array, empty string or number value
-        const isBlankObject = fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue) && Object.keys(fieldValue).length === 0;
-        const isBlankArray = Array.isArray(fieldValue) && fieldValue.length === 0;
-        const isNullOrUndefined = fieldValue === null || fieldValue === undefined;
-        const isEmptyString = fieldValue === '';
-        const isNumber = typeof fieldValue === 'number';
-
-        if (isNullOrUndefined || isBlankObject || isBlankArray || isEmptyString || isNumber) {
-          // Skip processing if fieldValue is null, undefined, a blank object, a blank array, empty string, or a number
-          continue;
-        }
-        if (field.field_type.type === 'Complex' && field.field_type.complex_fields) {
-          sanitiseField(field.field_type.complex_fields, fieldValue);
-        } else if (field.field_type.type === 'Collection' && field.field_type.collection_field_type) {
-          const items = fieldValue;
-          if (Array.isArray(items)) {
-            for (const item of items) {
-              if (field.field_type.collection_field_type.type === 'Complex' && item && item.value) {
-          sanitiseField(field.field_type.collection_field_type.complex_fields, item.value);
-              } else if (
-          field.field_type.collection_field_type.type === 'DateTime' &&
-          field.dateTimeEntryFormat &&
-          typeof item.value === 'string'
-              ) {
-          item.value = item.value.replace(/Z$/, '');
-              }
-            }
-          }
-        } else if (
-          field.field_type.type === 'DateTime' &&
-          field.dateTimeEntryFormat &&
-          typeof fieldValue === 'string'
-        ) {
-          value[field.id] = fieldValue.replace(/Z$/, '');
-        }
-      }
-    };
-
-    // Clone rawValue to avoid mutating the original object
-    const result = JSON.parse(JSON.stringify(rawValue));
-    sanitiseField(caseFields, result);
-    return result;
   }
 
   private sanitiseObject(rawObject: object): object {
@@ -241,7 +177,6 @@ export class FormValueService {
     if (Array.isArray(rawValue)) {
       return this.sanitiseArray(rawValue);
     }
-
 
     switch (typeof rawValue) {
       case 'object':

@@ -10,7 +10,7 @@ export class FieldTypeSanitiser {
   public static readonly FIELD_TYPE_DYNAMIC_RADIO_LIST: FieldTypeEnum = 'DynamicRadioList';
   public static readonly FIELD_TYPE_DYNAMIC_MULTISELECT_LIST: FieldTypeEnum = 'DynamicMultiSelectList';
   public static readonly DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList', 'DynamicMultiSelectList'];
-  public static readonly DATE_FORMAT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+
   /**
    * This method finds dynamiclists in a form and replaces their string
    * values, with a JSON object, as below:

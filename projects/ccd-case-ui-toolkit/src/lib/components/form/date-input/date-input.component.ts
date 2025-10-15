@@ -71,42 +71,19 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public writeValue(obj: string): void { // 2018-04-09T08:02:27.542
     if (obj) {
       this.rawValue = this.removeMilliseconds(obj);
-      this.getLocalDateTimeString(this.rawValue);
+      // needs to handle also partial dates, e.g. -05-2016 (missing day)
+      const [datePart, timePart] = this.rawValue.split('T');
+      const dateValues = datePart.split('-');
+      this.year = this.displayYear = dateValues[0] || '';
+      this.month = this.displayMonth = dateValues[1] || '';
+      this.day = this.displayDay = dateValues[2] || '';
+      if (timePart) {
+        const timeParts = timePart.split(':');
+        this.hour = this.displayHour = timeParts[0] || '';
+        this.minute = this.displayMinute = timeParts[1] || '';
+        this.second = this.displaySecond = timeParts[2] || '';
+      }
     }
-  }
-
-  private getLocalDateTimeString(dateInput: string): void {
-    const date = new Date(dateInput);
-    if (isNaN(date.getTime())) {
-      // Not a valid date
-      this.year = this.displayYear = '';
-      this.month = this.displayMonth = '';
-      this.day = this.displayDay = '';
-      this.hour = this.displayHour = '';
-      this.minute = this.displayMinute = '';
-      this.second = this.displaySecond = '';
-      return;
-    }
-
-    const localDate = this.getOffsetDate(date);
-    this.year = this.displayYear = String(localDate.getFullYear());
-    this.month = this.displayMonth = this.padZero(localDate.getMonth() + 1);
-    this.day = this.displayDay = this.padZero(localDate.getDate());
-
-    if (dateInput.includes('T')) {
-      this.hour = this.displayHour = this.padZero(localDate.getHours());
-      this.minute = this.displayMinute = this.padZero(localDate.getMinutes());
-      this.second = this.displaySecond = this.padZero(localDate.getSeconds());
-    } else {
-      this.hour = this.displayHour = '';
-      this.minute = this.displayMinute = '';
-      this.second = this.displaySecond = '';
-    }
-  }
-
-  private getOffsetDate(date: Date): Date {
-    const localOffset = - date.getTimezoneOffset() / 60;
-    return new Date(date.getTime() + localOffset * 3600 * 1000);
   }
 
   public validate(control: AbstractControl): ValidationErrors {
@@ -141,7 +118,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.day = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -151,7 +128,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.month = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -162,7 +139,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.year = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) && this.viewValue().includes('T') ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -172,7 +149,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.hour = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -182,7 +159,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.minute = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -193,7 +170,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
     // get value from input
     this.second = value;
 
-    this.rawValue = this.isDateFormat(this.viewValue()) ? this.convertToUTC(this.viewValue()) : this.viewValue();
+    this.rawValue = this.viewValue();
 
     // update the form
     this.propagateChange(this.rawValue);
@@ -235,27 +212,6 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
 
   public secondId() {
     return this.id + '-second';
-  }
-
-  // convert the dates to UTC before sending to the backend
-  private convertToUTC(input: string): string | null {
-    if (!input) return null;
-
-    const date = new Date(input);
-
-    const year = date.getUTCFullYear();
-    const month = this.padZero(date.getUTCMonth() + 1);
-    const day = this.padZero(date.getUTCDate());
-    const hour = this.padZero(date.getUTCHours());
-    const minute = this.padZero(date.getUTCMinutes());
-    const second = this.padZero(date.getUTCSeconds());
-    const ms = date.getUTCMilliseconds().toString().padStart(3, '0');
-
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}.${ms}`;
-  }
-
-  private padZero(value: number): string {
-    return value.toString().padStart(2, '0');
   }
 
   private viewValue(): string {

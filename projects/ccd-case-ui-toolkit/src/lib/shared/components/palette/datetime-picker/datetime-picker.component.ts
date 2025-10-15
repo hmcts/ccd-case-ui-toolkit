@@ -52,7 +52,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public minError = false;
   public maxError = false;
   public dateTimeEntryFormat: string;
-  private isUpdating = false;
 
   @ViewChild('picker', { static: false }) public datetimePicker: NgxMatDatetimepicker<any>;
   @ViewChild('input', { static: false }) public inputElement: ElementRef<HTMLInputElement>;
@@ -79,7 +78,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
-      this.loadValue();
+      this.formatValueAndSetErrors();
     }, 1000);
     // when the status changes check that the maximum/minimum date has not been exceeded
     this.dateControl.statusChanges.subscribe(() => {
@@ -198,51 +197,22 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     }
   }
 
-  private loadValue(): void {
-    if (this.inputElement.nativeElement.value) {
-      const inputValue = this.inputElement.nativeElement.value;
-      const formValue = moment(inputValue, this.dateTimeEntryFormat).format(this.momentFormat);
-      if (formValue !== 'Invalid date') {
-        const localMoment = moment.utc(formValue).local();
-        this.dateControl.setValue(moment(formValue).format(this.momentFormat));
-        this.inputElement.nativeElement.value = localMoment.format(this.dateTimeEntryFormat);
-        if (this.datetimePicker) {
-          this.datetimePicker.select(localMoment);
-        }
-      } else {
-      // If invalid, just show the raw value
-        this.inputElement.nativeElement.value = this.dateControl.value;
-      }
-    } else {
-      this.inputElement.nativeElement.value = '';
-    }
-  }
-
   private formatValueAndSetErrors(): void {
-    if (this.isUpdating) return;
-    this.isUpdating = true;
-
     if (this.inputElement.nativeElement.value) {
-      const inputValue = this.inputElement.nativeElement.value;
-      const formValue = moment(inputValue, this.dateTimeEntryFormat).format(this.momentFormat);
-      const localMoment = moment(inputValue, this.dateTimeEntryFormat, true);
+      let formValue = this.inputElement.nativeElement.value;
+      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
       if (formValue !== 'Invalid date') {
-        const utcValue = localMoment.clone().utc().format(this.momentFormat);
-        this.dateControl.setValue(utcValue);
-        this.inputElement.nativeElement.value = localMoment.format(this.dateTimeEntryFormat);
-        // if (this.datetimePicker) {
-        //   this.datetimePicker.select(localMoment); // guarded from recursion
-        // }
-        this.isUpdating = false;
+        // if not invalid set the value as the formatted value
+        this.dateControl.setValue(formValue);
       } else {
+        // ensure that the datepicker picks up the invalid error
         const keepErrorText = this.inputElement.nativeElement.value;
         this.dateControl.setValue(keepErrorText);
         this.inputElement.nativeElement.value = keepErrorText;
-        this.isUpdating = false;
       }
     } else {
+      // ensure required errors are picked up if relevant
       this.dateControl.setValue('');
-      this.isUpdating = false;
     }
   }
 }
