@@ -3,8 +3,8 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-date-field',
-  template: `<span class="text-16">{{caseField.value | ccdDate:'local':caseField.dateTimeDisplayFormat}}</span>`
+  template: `<span class="text-16">{{caseField.value | ccdDate:'utc':caseField.dateTimeDisplayFormat}}</span>`
 })
 export class ReadDateFieldComponent extends AbstractFieldReadComponent {
-  public timeZone = 'local';
+  public timeZone = 'utc';
 }
