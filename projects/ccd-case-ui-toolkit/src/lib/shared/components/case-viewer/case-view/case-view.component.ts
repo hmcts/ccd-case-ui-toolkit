@@ -12,9 +12,9 @@ import { CasesService } from '../../case-editor/services/cases.service';
 
 
 @Component({
-    selector: 'ccd-case-view',
-    templateUrl: 'case-view.component.html',
-    standalone: false
+  selector: 'ccd-case-view',
+  templateUrl: 'case-view.component.html',
+  standalone: false
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
 

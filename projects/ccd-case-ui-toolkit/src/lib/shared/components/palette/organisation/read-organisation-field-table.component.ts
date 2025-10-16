@@ -8,10 +8,10 @@ import { OrganisationService, OrganisationVm } from '../../../services/organisat
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-    selector: 'ccd-read-organisation-field-table',
-    templateUrl: './read-organisation-field-table.component.html',
-    styleUrls: ['./organisation-field.scss'],
-    standalone: false
+  selector: 'ccd-read-organisation-field-table',
+  templateUrl: './read-organisation-field-table.component.html',
+  styleUrls: ['./organisation-field.scss'],
+  standalone: false
 })
 
 export class ReadOrganisationFieldTableComponent extends AbstractFieldReadComponent implements OnInit {

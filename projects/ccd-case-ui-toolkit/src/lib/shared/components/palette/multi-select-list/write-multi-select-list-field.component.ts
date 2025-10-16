@@ -4,9 +4,9 @@ import { AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-    selector: 'ccd-write-multi-select-list-field',
-    templateUrl: './write-multi-select-list-field.html',
-    standalone: false
+  selector: 'ccd-write-multi-select-list-field',
+  templateUrl: './write-multi-select-list-field.html',
+  standalone: false
 })
 export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

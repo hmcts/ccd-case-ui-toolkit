@@ -18,10 +18,10 @@ import createSpyObj = jasmine.createSpyObj;
 const CLASS = 'person-first-name-cls';
 
 @Component({
-    template: `
+  template: `
     <div class="${CLASS}"></div>
   `,
-    standalone: false
+  standalone: false
 })
 class FieldTestComponent { }
 

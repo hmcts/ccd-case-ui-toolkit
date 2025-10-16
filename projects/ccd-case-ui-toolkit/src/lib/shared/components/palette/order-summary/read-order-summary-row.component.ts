@@ -4,12 +4,12 @@ import { FeeValue } from './fee-value.model';
 
 @Component({
     // tslint:disable-next-line
-    selector: '[ccdReadOrderSummaryRow]',
-    templateUrl: './read-order-summary-row.html',
-    styleUrls: [
-        './read-order-summary-row.scss'
-    ],
-    standalone: false
+  selector: '[ccdReadOrderSummaryRow]',
+  templateUrl: './read-order-summary-row.html',
+  styleUrls: [
+    './read-order-summary-row.scss'
+  ],
+  standalone: false
 })
 export class ReadOrderSummaryRowComponent extends AbstractFieldReadComponent implements OnInit {
 

@@ -10,10 +10,10 @@ import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
 import { QueryManagementService } from '../../../services';
 @Component({
-    selector: 'ccd-query-write-respond-to-query',
-    templateUrl: './query-write-respond-to-query.component.html',
-    styleUrls: ['./query-write-respond-to-query.component.scss'],
-    standalone: false
+  selector: 'ccd-query-write-respond-to-query',
+  templateUrl: './query-write-respond-to-query.component.html',
+  styleUrls: ['./query-write-respond-to-query.component.scss'],
+  standalone: false
 })
 
 export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {

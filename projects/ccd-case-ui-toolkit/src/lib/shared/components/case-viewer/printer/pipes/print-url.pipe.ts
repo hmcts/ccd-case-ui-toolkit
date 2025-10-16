@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractAppConfig } from '../../../../../app.config';
 
 @Pipe({
-    name: 'ccdPrintUrl',
-    standalone: false
+  name: 'ccdPrintUrl',
+  standalone: false
 })
 export class PrintUrlPipe implements PipeTransform {
   private static readonly MSIE_BROWSER_NAME = 'MSIE';

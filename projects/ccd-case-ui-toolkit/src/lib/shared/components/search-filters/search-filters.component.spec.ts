@@ -125,9 +125,9 @@ const CRUD_FILTERED_CASE_TYPES: CaseType[] = [
 const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 
 @Component({
-    selector: 'ccd-field-write',
-    template: `{{value}}`,
-    standalone: false
+  selector: 'ccd-field-write',
+  template: `{{value}}`,
+  standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
 }

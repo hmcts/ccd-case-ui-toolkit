@@ -4,9 +4,9 @@ import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
 
 @Component({
-    selector: 'ccd-search-filters-wrapper',
-    templateUrl: './search-filters-wrapper.component.html',
-    standalone: false
+  selector: 'ccd-search-filters-wrapper',
+  templateUrl: './search-filters-wrapper.component.html',
+  standalone: false
 })
 
 export class SearchFiltersWrapperComponent implements OnInit {

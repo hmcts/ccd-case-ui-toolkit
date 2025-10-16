@@ -5,8 +5,8 @@ import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem, Q
 import { QueryListComponent } from './query-list.component';
 
 @Pipe({
-    name: 'rpxTranslate',
-    standalone: false
+  name: 'rpxTranslate',
+  standalone: false
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {

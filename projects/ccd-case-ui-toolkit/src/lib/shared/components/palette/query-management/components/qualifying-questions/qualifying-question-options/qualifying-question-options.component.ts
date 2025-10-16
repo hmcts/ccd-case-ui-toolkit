@@ -7,9 +7,9 @@ import { QualifyingQuestion } from '../../../models';
 import { QualifyingQuestionService } from '../../../services';
 
 @Component({
-    selector: 'ccd-qualifying-question-options',
-    templateUrl: './qualifying-question-options.component.html',
-    standalone: false
+  selector: 'ccd-qualifying-question-options',
+  templateUrl: './qualifying-question-options.component.html',
+  standalone: false
 })
 export class QualifyingQuestionOptionsComponent implements OnInit {
   @Input() public qualifyingQuestionsControl: FormControl;

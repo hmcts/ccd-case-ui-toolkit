@@ -6,10 +6,10 @@ import { CommonDataService } from '../../../services/common-data-service/common-
 import { LinkedCasesService } from './services';
 
 @Component({
-    selector: 'ccd-read-linked-cases-field',
-    templateUrl: './read-linked-cases-field.component.html',
-    styleUrls: ['./read-linked-cases-field.component.scss'],
-    standalone: false
+  selector: 'ccd-read-linked-cases-field',
+  templateUrl: './read-linked-cases-field.component.html',
+  styleUrls: ['./read-linked-cases-field.component.scss'],
+  standalone: false
 })
 export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   public caseField: CaseField;

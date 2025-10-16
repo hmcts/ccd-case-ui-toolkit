@@ -4,9 +4,9 @@ import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
 
 @Component({
-    selector: 'ccd-case-list-filters',
-    templateUrl: './case-list-filters.component.html',
-    standalone: false
+  selector: 'ccd-case-list-filters',
+  templateUrl: './case-list-filters.component.html',
+  standalone: false
 })
 export class CaseListFiltersComponent implements OnInit {
 

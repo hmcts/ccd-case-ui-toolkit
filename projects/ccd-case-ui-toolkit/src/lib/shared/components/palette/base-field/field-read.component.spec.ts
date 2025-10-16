@@ -40,19 +40,19 @@ const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
 const CLASS = 'text-cls';
 
 @Component({
-    template: `
+  template: `
     <span class="${CLASS}"></span>
   `,
-    standalone: false
+  standalone: false
 })
 class FieldTestComponent { }
 
 @Component({
-    selector: 'ccd-field-read-label',
-    template: `
+  selector: 'ccd-field-read-label',
+  template: `
     <ng-content></ng-content>
   `,
-    standalone: false
+  standalone: false
 })
 class FieldReadLabelComponent {
   @Input()

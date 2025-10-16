@@ -8,9 +8,9 @@ import { EventStartStateMachineContext } from './models/event-start-state-machin
 import { EventStartStateMachineService } from './services/event-start-state-machine.service';
 
 @Component({
-    selector: 'ccd-event-start',
-    templateUrl: './event-start.component.html',
-    standalone: false
+  selector: 'ccd-event-start',
+  templateUrl: './event-start.component.html',
+  standalone: false
 })
 export class EventStartComponent implements OnInit {
 

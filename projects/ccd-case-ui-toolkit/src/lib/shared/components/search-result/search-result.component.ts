@@ -11,10 +11,10 @@ import { CaseReferencePipe } from '../../pipes';
 import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
 
 @Component({
-    selector: 'ccd-search-result',
-    templateUrl: './search-result.component.html',
-    styleUrls: ['./search-result.component.scss'],
-    standalone: false
+  selector: 'ccd-search-result',
+  templateUrl: './search-result.component.html',
+  styleUrls: ['./search-result.component.scss'],
+  standalone: false
 })
 export class SearchResultComponent implements OnChanges, OnInit {
 

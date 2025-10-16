@@ -6,9 +6,9 @@ import { CaseworkerService } from '../../../case-editor/services/case-worker.ser
 import { JudicialworkerService } from '../../../case-editor/services/judicial-worker.service';
 
 @Component({
-    selector: 'app-task-assigned',
-    templateUrl: './task-assigned.component.html',
-    standalone: false
+  selector: 'app-task-assigned',
+  templateUrl: './task-assigned.component.html',
+  standalone: false
 })
 export class TaskAssignedComponent implements OnInit, OnDestroy {
 

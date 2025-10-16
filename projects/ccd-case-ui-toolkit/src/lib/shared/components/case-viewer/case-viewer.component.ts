@@ -7,9 +7,9 @@ import { CaseNotifier } from '../case-editor';
 import { OrderService } from '../../services';
 
 @Component({
-    selector: 'ccd-case-viewer',
-    templateUrl: './case-viewer.component.html',
-    standalone: false
+  selector: 'ccd-case-viewer',
+  templateUrl: './case-viewer.component.html',
+  standalone: false
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly METADATA_FIELD_ACCESS_PROCESS_ID = '[ACCESS_PROCESS]';

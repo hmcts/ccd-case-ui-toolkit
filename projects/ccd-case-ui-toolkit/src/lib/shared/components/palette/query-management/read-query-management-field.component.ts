@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'ccd-read-query-management-field',
-    templateUrl: './read-query-management-field.component.html',
-    standalone: false
+  templateUrl: './read-query-management-field.component.html',
+  standalone: false
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
   public caseQueriesCollections: CaseQueriesCollection[];

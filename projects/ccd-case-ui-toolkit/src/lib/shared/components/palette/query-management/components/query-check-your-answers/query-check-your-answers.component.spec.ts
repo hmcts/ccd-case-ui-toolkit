@@ -14,8 +14,8 @@ import { QualifyingQuestionService } from '../../services/qualifying-question.se
 import { QueryManagementService } from '../../services';
 
 @Pipe({
-    name: 'rpxTranslate',
-    standalone: false
+  name: 'rpxTranslate',
+  standalone: false
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, args?: any): string {

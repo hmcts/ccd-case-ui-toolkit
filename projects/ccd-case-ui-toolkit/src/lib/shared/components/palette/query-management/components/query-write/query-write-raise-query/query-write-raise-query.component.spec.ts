@@ -8,8 +8,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 
 @Pipe({
-    name: 'rpxTranslate',
-    standalone: false
+  name: 'rpxTranslate',
+  standalone: false
 })
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string): string {

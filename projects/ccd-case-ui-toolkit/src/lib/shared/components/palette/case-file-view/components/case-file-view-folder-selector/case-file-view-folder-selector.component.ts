@@ -4,11 +4,11 @@ import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
 
 @Component({
-    selector: 'xui-case-file-view-folder-selector',
-    templateUrl: './case-file-view-folder-selector.component.html',
-    styleUrls: ['./case-file-view-folder-selector.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'xui-case-file-view-folder-selector',
+  templateUrl: './case-file-view-folder-selector.component.html',
+  styleUrls: ['./case-file-view-folder-selector.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
   public currentCategories: CaseFileViewCategory[] = [];

@@ -6,9 +6,9 @@ import { CaseField, FieldType, FormDocument } from '../../../../../../domain';
 import { QueryManagementUtils } from '../../../utils/query-management.utils';
 
 @Component({
-    selector: 'ccd-query-write-add-documents',
-    templateUrl: './query-write-add-documents.component.html',
-    standalone: false
+  selector: 'ccd-query-write-add-documents',
+  templateUrl: './query-write-add-documents.component.html',
+  standalone: false
 })
 export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, OnDestroy {
   public static DOCUMENTS_FORM_CONTROL_NAME = 'documentCollection';

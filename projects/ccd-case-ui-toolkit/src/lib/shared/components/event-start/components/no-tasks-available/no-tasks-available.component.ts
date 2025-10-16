@@ -2,9 +2,9 @@ import { Component, Input } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-no-tasks-available',
-    templateUrl: './no-tasks-available.component.html',
-    standalone: false
+  selector: 'app-no-tasks-available',
+  templateUrl: './no-tasks-available.component.html',
+  standalone: false
 })
 export class NoTasksAvailableComponent {
 

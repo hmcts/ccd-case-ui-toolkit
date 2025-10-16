@@ -3,12 +3,12 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { FeeValue } from './fee-value.model';
 
 @Component({
-    selector: 'ccd-read-order-summary-field',
-    templateUrl: './read-order-summary-field.html',
-    styleUrls: [
-        './read-order-summary-field.scss'
-    ],
-    standalone: false
+  selector: 'ccd-read-order-summary-field',
+  templateUrl: './read-order-summary-field.html',
+  styleUrls: [
+    './read-order-summary-field.scss'
+  ],
+  standalone: false
 })
 export class ReadOrderSummaryFieldComponent extends AbstractFieldReadComponent {
 

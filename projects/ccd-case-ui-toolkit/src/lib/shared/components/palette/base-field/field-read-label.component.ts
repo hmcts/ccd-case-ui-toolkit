@@ -5,12 +5,12 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
 @Component({
-    selector: 'ccd-field-read-label',
-    templateUrl: './field-read-label.html',
-    styleUrls: [
-        './field-read-label.scss'
-    ],
-    standalone: false
+  selector: 'ccd-field-read-label',
+  templateUrl: './field-read-label.html',
+  styleUrls: [
+    './field-read-label.scss'
+  ],
+  standalone: false
 })
 export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {
 

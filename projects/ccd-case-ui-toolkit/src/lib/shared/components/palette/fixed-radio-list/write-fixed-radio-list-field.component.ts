@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-    selector: 'ccd-write-fixed-radio-list-field',
-    templateUrl: './write-fixed-radio-list-field.html',
-    standalone: false
+  selector: 'ccd-write-fixed-radio-list-field',
+  templateUrl: './write-fixed-radio-list-field.html',
+  standalone: false
 })
 export class WriteFixedRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

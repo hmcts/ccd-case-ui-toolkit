@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from './case-file-view-overlay-menu-item.model';
 
 @Component({
-    selector: 'ccd-case-file-view-overlay-menu',
-    templateUrl: './case-file-view-overlay-menu.component.html',
-    styleUrls: ['./case-file-view-overlay-menu.component.scss'],
-    standalone: false
+  selector: 'ccd-case-file-view-overlay-menu',
+  templateUrl: './case-file-view-overlay-menu.component.html',
+  styleUrls: ['./case-file-view-overlay-menu.component.scss'],
+  standalone: false
 })
 export class CaseFileViewOverlayMenuComponent {
   @Input() public title: string = '';
@@ -27,7 +27,7 @@ export class CaseFileViewOverlayMenuComponent {
       setTimeout(()=>{
         const el = document.querySelector('.overlay-menu__item:first-of-type');
         if(el) { (el as HTMLElement).focus(); }
-      },0); 
+      },0);
     }
   }
 }

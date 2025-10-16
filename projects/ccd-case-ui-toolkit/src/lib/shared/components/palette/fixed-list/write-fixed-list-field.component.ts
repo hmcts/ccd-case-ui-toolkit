@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-    selector: 'ccd-write-fixed-list-field',
-    templateUrl: './write-fixed-list-field.html',
-    standalone: false
+  selector: 'ccd-write-fixed-list-field',
+  templateUrl: './write-fixed-list-field.html',
+  standalone: false
 })
 export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

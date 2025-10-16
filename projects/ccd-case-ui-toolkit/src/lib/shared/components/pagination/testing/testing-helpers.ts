@@ -67,7 +67,7 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
  * Test Component for testing the default controls component
  */
 @Component({
-    template: `
+  template: `
     <ul>
         <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
     </ul>
@@ -77,7 +77,7 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
                     [maxSize]="maxSize"
                     [autoHide]="autoHide">
     </ccd-pagination>`,
-    standalone: false
+  standalone: false
 })
 export class ComponentTestComponent {
   public maxSize = 9;

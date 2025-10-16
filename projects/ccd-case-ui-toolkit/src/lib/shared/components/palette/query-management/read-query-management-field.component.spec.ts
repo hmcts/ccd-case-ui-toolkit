@@ -13,15 +13,15 @@ import { BehaviorSubject, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
-    selector: 'dummy-component',
-    template: '',
-    standalone: false
+  selector: 'dummy-component',
+  template: '',
+  standalone: false
 })
 class DummyComponent { }
 
 @Pipe({
-    name: 'rpxTranslate',
-    standalone: false
+  name: 'rpxTranslate',
+  standalone: false
 })
 class MockTranslatePipe implements PipeTransform {
   public transform(value: any, ...args: any[]): any {

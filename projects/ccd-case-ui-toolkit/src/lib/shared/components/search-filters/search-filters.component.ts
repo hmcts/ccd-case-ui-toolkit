@@ -19,9 +19,9 @@ const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
 const FORM_GROUP_VALUE_LOC_STORAGE = 'search-form-group-value';
 const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 @Component({
-    selector: 'ccd-search-filters',
-    templateUrl: './search-filters.component.html',
-    standalone: false
+  selector: 'ccd-search-filters',
+  templateUrl: './search-filters.component.html',
+  standalone: false
 })
 
 export class SearchFiltersComponent implements OnInit {

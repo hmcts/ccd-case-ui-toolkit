@@ -9,10 +9,10 @@ import { CaseLinkResponse, LinkedCasesResponse } from '../../domain/linked-cases
 import { LinkedCasesService } from '../../services';
 
 @Component({
-    selector: 'ccd-linked-cases-from-table',
-    templateUrl: './linked-cases-from-table.component.html',
-    styleUrls: ['./linked-cases-from-table.component.scss'],
-    standalone: false
+  selector: 'ccd-linked-cases-from-table',
+  templateUrl: './linked-cases-from-table.component.html',
+  styleUrls: ['./linked-cases-from-table.component.scss'],
+  standalone: false
 })
 
 export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {

@@ -2,16 +2,16 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'ccd-query-write-date-input',
-    templateUrl: './query-write-date-input.component.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => QueryWriteDateInputComponent),
-            multi: true
-        }
-    ],
-    standalone: false
+  selector: 'ccd-query-write-date-input',
+  templateUrl: './query-write-date-input.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => QueryWriteDateInputComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class QueryWriteDateInputComponent implements ControlValueAccessor {
   @Input() public formControlName: string;

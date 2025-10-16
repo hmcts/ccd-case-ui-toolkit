@@ -10,10 +10,10 @@ import { AbstractAppConfig } from '../../../../../../app.config';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'ccd-query-details',
-    templateUrl: './query-details.component.html',
-    styleUrls: ['./query-details.component.scss'],
-    standalone: false
+  selector: 'ccd-query-details',
+  templateUrl: './query-details.component.html',
+  styleUrls: ['./query-details.component.scss'],
+  standalone: false
 })
 export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
   @Input() public query: QueryListItem;
