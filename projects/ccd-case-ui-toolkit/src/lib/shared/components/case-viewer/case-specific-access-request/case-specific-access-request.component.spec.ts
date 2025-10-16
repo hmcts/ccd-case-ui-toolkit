@@ -17,8 +17,8 @@ import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './mo
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
-    template: ``,
-    standalone: false
+  template: ``,
+  standalone: false
 })
 class StubComponent { }
 

@@ -4,10 +4,10 @@ import { Activity, ActivityInfo, DisplayMode } from '../../domain/activity/activ
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 
 @Component({
-    selector: 'ccd-activity',
-    templateUrl: './activity.component.html',
-    styleUrls: ['./activity.component.css'],
-    standalone: false
+  selector: 'ccd-activity',
+  templateUrl: './activity.component.html',
+  styleUrls: ['./activity.component.css'],
+  standalone: false
 })
 export class ActivityComponent implements OnInit, OnDestroy {
   public activity: Activity;

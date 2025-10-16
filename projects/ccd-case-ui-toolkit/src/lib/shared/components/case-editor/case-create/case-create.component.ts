@@ -11,9 +11,9 @@ import { CasesService } from '../services/cases.service';
 import { EventTriggerService } from '../services/event-trigger.service';
 
 @Component({
-    selector: 'ccd-case-create',
-    templateUrl: 'case-create.component.html',
-    standalone: false
+  selector: 'ccd-case-create',
+  templateUrl: 'case-create.component.html',
+  standalone: false
 })
 export class CaseCreateComponent implements OnInit {
 

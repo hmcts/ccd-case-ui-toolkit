@@ -71,8 +71,8 @@ class MockActivatedRoute implements ActivatedRoute {
 }
 
 @Component({
-    template: ``,
-    standalone: false
+  template: ``,
+  standalone: false
 })
 class StubComponent { }
 

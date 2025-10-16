@@ -6,9 +6,9 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
 
 @Component({
-    selector: 'ccd-case-edit-form',
-    templateUrl: 'case-edit-form.html',
-    standalone: false
+  selector: 'ccd-case-edit-form',
+  templateUrl: 'case-edit-form.html',
+  standalone: false
 })
 export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
 

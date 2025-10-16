@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { TabComponent } from './tab.component';
 
 @Component({
-    selector: 'cut-tabs',
-    templateUrl: './tabs.component.html',
-    styleUrls: [
-        './tabs.component.scss'
-    ],
-    standalone: false
+  selector: 'cut-tabs',
+  templateUrl: './tabs.component.html',
+  styleUrls: [
+    './tabs.component.scss'
+  ],
+  standalone: false
 })
 export class TabsComponent implements AfterContentInit {
 

@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'case-review-specific-access-reject',
-    templateUrl: './case-review-specific-access-reject.component.html',
-    standalone: false
+  selector: 'case-review-specific-access-reject',
+  templateUrl: './case-review-specific-access-reject.component.html',
+  standalone: false
 })
 export class CaseReviewSpecificAccessRejectComponent implements OnInit {
 

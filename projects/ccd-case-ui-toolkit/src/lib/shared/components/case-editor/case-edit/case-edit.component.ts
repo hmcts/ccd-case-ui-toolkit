@@ -29,11 +29,11 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
 
 @Component({
-    selector: 'ccd-case-edit',
-    templateUrl: 'case-edit.component.html',
-    styleUrls: ['../case-edit.scss'],
-    providers: [GreyBarService],
-    standalone: false
+  selector: 'ccd-case-edit',
+  templateUrl: 'case-edit.component.html',
+  styleUrls: ['../case-edit.scss'],
+  providers: [GreyBarService],
+  standalone: false
 })
 export class CaseEditComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';

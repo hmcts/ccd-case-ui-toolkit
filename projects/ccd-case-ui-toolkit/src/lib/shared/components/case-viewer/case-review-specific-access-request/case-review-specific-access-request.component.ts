@@ -7,10 +7,10 @@ import { CaseView, ErrorMessage, ReviewSpecificAccessRequest } from '../../../do
 import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
 
 @Component({
-    selector: 'ccd-case-review-specific-access-request',
-    templateUrl: './case-review-specific-access-request.component.html',
-    styleUrls: ['./case-review-specific-access-request.component.scss'],
-    standalone: false
+  selector: 'ccd-case-review-specific-access-request',
+  templateUrl: './case-review-specific-access-request.component.html',
+  styleUrls: ['./case-review-specific-access-request.component.scss'],
+  standalone: false
 })
 export class CaseReviewSpecificAccessRequestComponent
   implements OnInit, OnDestroy {

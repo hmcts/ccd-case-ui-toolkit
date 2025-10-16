@@ -13,10 +13,10 @@ export class DateTimeFormatUtils {
 }
 
 @Component({
-    selector: 'ccd-case-list',
-    templateUrl: './case-list.component.html',
-    styleUrls: ['./case-list.component.scss'],
-    standalone: false
+  selector: 'ccd-case-list',
+  templateUrl: './case-list.component.html',
+  styleUrls: ['./case-list.component.scss'],
+  standalone: false
 })
 export class CaseListComponent {
 

@@ -14,9 +14,9 @@ import { CaseEventCompletionTaskReassignedComponent } from './components/case-ev
 export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventCompletionComponent>('');
 
 @Component({
-    selector: 'ccd-case-event-completion',
-    templateUrl: './case-event-completion.html',
-    standalone: false
+  selector: 'ccd-case-event-completion',
+  templateUrl: './case-event-completion.html',
+  standalone: false
 })
 export class CaseEventCompletionComponent implements OnChanges, EventCompletionComponentEmitter {
   @Input()
