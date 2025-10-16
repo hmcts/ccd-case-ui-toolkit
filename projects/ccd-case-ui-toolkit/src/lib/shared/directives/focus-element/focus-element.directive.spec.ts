@@ -4,11 +4,11 @@ import { By } from '@angular/platform-browser';
 import { FocusElementDirective } from './focus-element.directive';
 
 @Component({
-    template: `
+  template: `
     <input type='text' id='firstName' name='firstName'>
     <input type='text' id='lastName' name='lastName' focusElement>
     <input type='text' id='postcode' name='postcode'>`,
-    standalone: false
+  standalone: false
 })
 class TestFocusComponent {
 }

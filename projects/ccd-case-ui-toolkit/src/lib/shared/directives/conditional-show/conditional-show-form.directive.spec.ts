@@ -11,7 +11,7 @@ import { GreyBarService } from './services/grey-bar.service';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
-    template: `
+  template: `
       <div ccdConditionalShowForm [formGroup]="formGroup" [contextFields]="caseFields">
         <div>text field</div>
         <label>Yes</label>
@@ -21,7 +21,7 @@ import createSpyObj = jasmine.createSpyObj;
         <input type="text" [hidden]="makeHidden" formControlName="carMake" id="CarMake"/>
         <input type="text" [hidden]="modelHidden" formControlName="carModel" id="CarModel"/>"
       </div>`,
-    standalone: false
+  standalone: false
 })
 
 class TestHostComponent {

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'cut-footer-bar',
-    templateUrl: './footer.html',
-    styleUrls: ['./footer.scss'],
-    standalone: false
+  selector: 'cut-footer-bar',
+  templateUrl: './footer.html',
+  styleUrls: ['./footer.scss'],
+  standalone: false
 })
 export class FooterComponent {
 

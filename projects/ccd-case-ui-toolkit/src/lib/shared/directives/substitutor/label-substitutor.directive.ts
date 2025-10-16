@@ -8,8 +8,8 @@ import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 
 @Directive({
-    selector: '[ccdLabelSubstitutor]',
-    standalone: false
+  selector: '[ccdLabelSubstitutor]',
+  standalone: false
 })
 /**
  * Checks all labels and substitutes any placholders that reference other fields values.

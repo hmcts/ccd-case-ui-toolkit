@@ -22,9 +22,9 @@ import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
-    selector: 'ccd-field-write',
-    template: `{{value}}`,
-    standalone: false
+  selector: 'ccd-field-write',
+  template: `{{value}}`,
+  standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
 }

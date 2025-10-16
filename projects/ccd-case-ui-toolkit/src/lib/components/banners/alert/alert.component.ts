@@ -8,12 +8,12 @@ export enum AlertMessageType {
 }
 
 @Component({
-    selector: 'cut-alert',
-    templateUrl: './alert.component.html',
-    styleUrls: [
-        './alert.component.scss'
-    ],
-    standalone: false
+  selector: 'cut-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: [
+    './alert.component.scss'
+  ],
+  standalone: false
 })
 export class AlertComponent {
 

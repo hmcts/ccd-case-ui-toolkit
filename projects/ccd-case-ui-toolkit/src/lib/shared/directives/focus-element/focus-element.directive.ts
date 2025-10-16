@@ -1,8 +1,8 @@
 import { AfterContentInit, Directive, ElementRef, Renderer2 } from '@angular/core';
 
 @Directive({
-    selector: '[focusElement]',
-    standalone: false
+  selector: '[focusElement]',
+  standalone: false
 })
 /**
  * Focuses the host element after the content of the view has been initialised. Works on writable fields. If the

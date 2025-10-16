@@ -12,9 +12,9 @@ import { USER_DETAILS } from '../../utils';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({
-    selector: 'ccd-create-case-filters',
-    templateUrl: './create-case-filters.component.html',
-    standalone: false
+  selector: 'ccd-create-case-filters',
+  templateUrl: './create-case-filters.component.html',
+  standalone: false
 })
 export class CreateCaseFiltersComponent implements OnInit {
 
