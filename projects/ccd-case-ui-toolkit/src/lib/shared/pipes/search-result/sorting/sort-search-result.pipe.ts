@@ -4,8 +4,8 @@ import { SearchResultViewItem } from '../../../domain/search/search-result-view-
 import { SortParameters } from '../../../domain/search/sorting/sort-parameters';
 
 @Pipe({
-    name: 'ccdSortSearchResult',
-    standalone: false
+  name: 'ccdSortSearchResult',
+  standalone: false
 })
 export class SortSearchResultPipe implements PipeTransform {
 

@@ -15,10 +15,10 @@ import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldSta
 import { LinkedCasesService } from '../linked-cases/services';
 
 @Component({
-    selector: 'ccd-write-case-flag-field',
-    templateUrl: './write-case-flag-field.component.html',
-    styleUrls: ['./write-case-flag-field.component.scss'],
-    standalone: false
+  selector: 'ccd-write-case-flag-field',
+  templateUrl: './write-case-flag-field.component.html',
+  styleUrls: ['./write-case-flag-field.component.scss'],
+  standalone: false
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, OnDestroy, Journey {
   //public formGroup: FormGroup;
@@ -166,15 +166,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     }
 
     // CSFD-16.
-    // Setup the page number to initially be the same value as 
-    // the start page number. Provided that some state exists within 
+    // Setup the page number to initially be the same value as
+    // the start page number. Provided that some state exists within
     // the page state service, use that instaead.
     //
-    // If isDisplayContextParameterUpdate is true, then the starting page must be 
+    // If isDisplayContextParameterUpdate is true, then the starting page must be
     // the value of 4. Otherwise, it's 0. However, we're using an enum to simplify
     // this process.
     //
-    // It might help to take a look at the template file. 
+    // It might help to take a look at the template file.
     if (this.isDisplayContextParameterUpdate) {
       this.journeyStartPageNumber = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
       this.journeyEndPageNumber = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
@@ -183,19 +183,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       this.journeyEndPageNumber = CaseFlagFieldState.FLAG_STATUS;
     }
 
-    // Now that we've set the start page number, let's set the current page number. 
+    // Now that we've set the start page number, let's set the current page number.
     this.journeyPageNumber = this.journeyStartPageNumber;
 
-    // If we've navigated to this page, then we know by default, we want to set the 
-    // journey page number to the field state. 
+    // If we've navigated to this page, then we know by default, we want to set the
+    // journey page number to the field state.
     if (this.navigatedTo) {
       const pageNo = this.fieldState === CaseFlagFieldState.FLAG_STATUS ? this.fieldState -1 : this.fieldState;
       this.journeyPageNumber = pageNo;
       this.journeyPreviousPageNumber = pageNo+1;
     }
 
-    // Provided we have some stored state, i.e. when going backwards, we want 
-    // to get the last visited page, etc. 
+    // Provided we have some stored state, i.e. when going backwards, we want
+    // to get the last visited page, etc.
     const state = this.multipageComponentStateService.getJourneyState(this);
 
     if (state) {

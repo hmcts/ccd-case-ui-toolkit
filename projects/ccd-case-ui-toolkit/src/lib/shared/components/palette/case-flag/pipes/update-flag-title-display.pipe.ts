@@ -6,9 +6,9 @@ import { map } from 'rxjs/operators';
 import { FlagDetail } from '../domain';
 
 @Pipe({
-    name: 'updateFlagTitleDisplay',
-    pure: false,
-    standalone: false
+  name: 'updateFlagTitleDisplay',
+  pure: false,
+  standalone: false
 })
 export class UpdateFlagTitleDisplayPipe extends AsyncPipe implements PipeTransform {
   private languageObservables = new Map<string, Observable<string>>();

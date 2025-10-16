@@ -3,10 +3,10 @@ import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
-    selector: 'ccd-read-complex-field-table',
-    templateUrl: './read-complex-field-table.html',
-    styleUrls: ['./read-complex-field-table.scss'],
-    standalone: false
+  selector: 'ccd-read-complex-field-table',
+  templateUrl: './read-complex-field-table.html',
+  styleUrls: ['./read-complex-field-table.scss'],
+  standalone: false
 })
 export class ReadComplexFieldTableComponent extends AbstractFieldReadComponent implements OnInit {
   // parent_ can be replaced with any ***_ - underscore is only important character

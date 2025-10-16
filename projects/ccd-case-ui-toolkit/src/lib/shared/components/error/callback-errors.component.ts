@@ -4,9 +4,9 @@ import { HttpError } from '../../domain/http';
 import { CallbackErrorsContext } from './domain/error-context';
 
 @Component({
-    selector: 'ccd-callback-errors',
-    templateUrl: './callback-errors.html',
-    standalone: false
+  selector: 'ccd-callback-errors',
+  templateUrl: './callback-errors.html',
+  standalone: false
 })
 export class CallbackErrorsComponent implements OnInit {
 

@@ -9,9 +9,9 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
 @Component({
-    selector: 'ccd-read-document-field',
-    templateUrl: './read-document-field.html',
-    standalone: false
+  selector: 'ccd-read-document-field',
+  templateUrl: './read-document-field.html',
+  standalone: false
 })
 export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnDestroy {
 

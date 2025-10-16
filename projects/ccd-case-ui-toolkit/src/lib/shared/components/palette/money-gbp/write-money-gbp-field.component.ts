@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
-    selector: 'ccd-write-money-gbp-field',
-    templateUrl: './write-money-gbp-field.html',
-    standalone: false
+  selector: 'ccd-write-money-gbp-field',
+  templateUrl: './write-money-gbp-field.html',
+  standalone: false
 })
 export class WriteMoneyGbpFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

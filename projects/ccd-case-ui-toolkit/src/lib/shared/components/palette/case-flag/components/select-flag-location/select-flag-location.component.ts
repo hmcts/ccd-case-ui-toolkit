@@ -6,9 +6,9 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMes
 import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.component';
 
 @Component({
-    selector: 'ccd-select-flag-location',
-    templateUrl: './select-flag-location.component.html',
-    standalone: false
+  selector: 'ccd-select-flag-location',
+  templateUrl: './select-flag-location.component.html',
+  standalone: false
 })
 export class SelectFlagLocationComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;

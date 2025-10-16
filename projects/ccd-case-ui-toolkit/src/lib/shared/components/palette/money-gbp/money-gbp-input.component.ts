@@ -11,19 +11,19 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
                     (change)="onChange($event)"
                     (keyup)="onChange($event)"
                     [disabled]="disabled"/>`,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => MoneyGbpInputComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => MoneyGbpInputComponent),
-            multi: true,
-        }
-    ],
-    standalone: false
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MoneyGbpInputComponent),
+      multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => MoneyGbpInputComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
 

@@ -3,8 +3,8 @@ import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../domain/definition/case-field.model';
 
 @Pipe({
-    name: 'ccdCollectionTableCaseFieldsFilter',
-    standalone: false
+  name: 'ccdCollectionTableCaseFieldsFilter',
+  standalone: false
 })
 export class CcdCollectionTableCaseFieldsFilterPipe implements PipeTransform {
 

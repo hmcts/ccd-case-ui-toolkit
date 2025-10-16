@@ -6,9 +6,9 @@ import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagF
 import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
-    selector: 'ccd-add-comments',
-    templateUrl: './add-comments.component.html',
-    standalone: false
+  selector: 'ccd-add-comments',
+  templateUrl: './add-comments.component.html',
+  standalone: false
 })
 export class AddCommentsComponent extends AbstractJourneyComponent implements OnInit, Journey {
 

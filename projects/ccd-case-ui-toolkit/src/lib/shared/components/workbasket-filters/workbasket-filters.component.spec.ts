@@ -1135,7 +1135,6 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
 
 describe('with no defaults', () => {
   const SELECT_A_VALUE = 'Select a value';
-  const ANY = 'Any';
   const JURISDICTION_ONE: Jurisdiction = {
     id: 'J1',
     name: 'Jurisdiction 1',
@@ -1304,7 +1303,7 @@ describe('with no defaults', () => {
     expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
     expect(selector.nativeElement.selectedIndex).toEqual(0);
     selector = de.query(By.css('#wb-case-state'));
-    expect(selector.children[0].nativeElement.textContent).toEqual(ANY);
+    expect(selector.children[0].nativeElement.textContent).toEqual('Any');
     expect(selector.nativeElement.selectedIndex).toEqual(0);
 
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');

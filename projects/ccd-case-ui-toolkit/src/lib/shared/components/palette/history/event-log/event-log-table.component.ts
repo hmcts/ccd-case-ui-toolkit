@@ -4,10 +4,10 @@ import { CaseViewEvent } from '../../../../domain';
 import { SessionStorageService } from '../../../../services';
 
 @Component({
-    selector: 'ccd-event-log-table',
-    templateUrl: './event-log-table.component.html',
-    styleUrls: ['./event-log-table.scss'],
-    standalone: false
+  selector: 'ccd-event-log-table',
+  templateUrl: './event-log-table.component.html',
+  styleUrls: ['./event-log-table.scss'],
+  standalone: false
 })
 export class EventLogTableComponent implements OnInit {
   @Input()

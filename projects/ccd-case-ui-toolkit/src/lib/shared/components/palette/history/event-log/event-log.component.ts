@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
 
 @Component({
-    selector: 'ccd-event-log',
-    templateUrl: './event-log.component.html',
-    styleUrls: ['./event-log.scss'],
-    standalone: false
+  selector: 'ccd-event-log',
+  templateUrl: './event-log.component.html',
+  styleUrls: ['./event-log.scss'],
+  standalone: false
 })
 export class EventLogComponent implements OnInit {
 

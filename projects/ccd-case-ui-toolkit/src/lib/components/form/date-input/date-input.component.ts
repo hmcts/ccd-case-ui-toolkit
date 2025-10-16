@@ -2,21 +2,21 @@ import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
-    selector: 'cut-date-input',
-    templateUrl: './date-input.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => DateInputComponent),
-            multi: true
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => DateInputComponent),
-            multi: true
-        }
-    ],
-    standalone: false
+  selector: 'cut-date-input',
+  templateUrl: './date-input.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DateInputComponent),
+      multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => DateInputComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class DateInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input()

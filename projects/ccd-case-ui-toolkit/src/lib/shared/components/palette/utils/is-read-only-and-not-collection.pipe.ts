@@ -3,8 +3,8 @@ import { CaseField } from '../../../domain/definition';
 import { CaseFieldService } from '../../../services/case-fields';
 
 @Pipe({
-    name: 'ccdIsReadOnlyAndNotCollection',
-    standalone: false
+  name: 'ccdIsReadOnlyAndNotCollection',
+  standalone: false
 })
 export class IsReadOnlyAndNotCollectionPipe implements PipeTransform {
 

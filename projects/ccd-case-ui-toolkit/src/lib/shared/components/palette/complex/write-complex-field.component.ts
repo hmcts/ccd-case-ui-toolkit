@@ -14,10 +14,10 @@ import { IsCompoundPipe } from '../utils/is-compound.pipe';
 const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
 
 @Component({
-    selector: 'ccd-write-complex-type-field',
-    templateUrl: './write-complex-field.html',
-    styleUrls: ['./read-complex-field-table.scss'],
-    standalone: false
+  selector: 'ccd-write-complex-type-field',
+  templateUrl: './write-complex-field.html',
+  styleUrls: ['./read-complex-field-table.scss'],
+  standalone: false
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   @Input()

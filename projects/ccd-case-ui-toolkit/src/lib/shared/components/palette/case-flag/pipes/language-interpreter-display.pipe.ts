@@ -6,9 +6,9 @@ import { map } from 'rxjs/operators';
 import { Language } from '../domain';
 
 @Pipe({
-    name: 'languageInterpreterDisplay',
-    pure: false,
-    standalone: false
+  name: 'languageInterpreterDisplay',
+  pure: false,
+  standalone: false
 })
 export class LanguageInterpreterDisplayPipe extends AsyncPipe implements PipeTransform {
   private languageObservables = new Map<string, Observable<string>>();

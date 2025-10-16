@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 @Component({
-    selector: 'ccd-save-or-discard-dialog',
-    templateUrl: './save-or-discard-dialog.component.html',
-    styleUrls: ['../action-dialog.component.scss'],
-    standalone: false
+  selector: 'ccd-save-or-discard-dialog',
+  templateUrl: './save-or-discard-dialog.component.html',
+  styleUrls: ['../action-dialog.component.scss'],
+  standalone: false
 })
 export class SaveOrDiscardDialogComponent {
 

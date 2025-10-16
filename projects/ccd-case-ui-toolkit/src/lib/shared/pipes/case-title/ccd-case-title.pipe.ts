@@ -4,8 +4,8 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 
 @Pipe({
-    name: 'ccdCaseTitle',
-    standalone: false
+  name: 'ccdCaseTitle',
+  standalone: false
 })
 export class CcdCaseTitlePipe implements PipeTransform {
   constructor(private readonly placeholderService: PlaceholderService, private readonly fieldsUtils: FieldsUtils) {

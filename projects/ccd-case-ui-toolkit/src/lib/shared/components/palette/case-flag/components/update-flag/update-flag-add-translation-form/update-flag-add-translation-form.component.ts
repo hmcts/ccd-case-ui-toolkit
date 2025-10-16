@@ -12,9 +12,9 @@ import {
 import { AbstractJourneyComponent } from '../../../../base-field';
 
 @Component({
-    selector: 'ccd-update-flag-add-translation-form',
-    templateUrl: './update-flag-add-translation-form.component.html',
-    standalone: false
+  selector: 'ccd-update-flag-add-translation-form',
+  templateUrl: './update-flag-add-translation-form.component.html',
+  standalone: false
 })
 export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;

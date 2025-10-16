@@ -9,10 +9,10 @@ import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList'];
 
 @Component({
-    selector: 'ccd-field-write',
-    templateUrl: './field-write.component.html',
-    styleUrls: ['./field-write.component.scss'],
-    standalone: false
+  selector: 'ccd-field-write',
+  templateUrl: './field-write.component.html',
+  styleUrls: ['./field-write.component.scss'],
+  standalone: false
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
 

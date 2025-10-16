@@ -3,8 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../domain/definition/case-field.model';
 
 @Pipe({
-    name: 'ccdFieldLabel',
-    standalone: false
+  name: 'ccdFieldLabel',
+  standalone: false
 })
 export class MockFieldLabelPipe implements PipeTransform {
   public transform (field: CaseField): string {

@@ -5,9 +5,9 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { switchMap } from 'rxjs/operators';
 
 @Pipe({
-    name: 'ccdFirstError',
-    pure: false,
-    standalone: false
+  name: 'ccdFirstError',
+  pure: false,
+  standalone: false
 })
 export class FirstErrorPipe implements PipeTransform, OnDestroy {
   private asyncPipe: AsyncPipe;

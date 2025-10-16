@@ -12,10 +12,10 @@ import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.c
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 @Component({
-    selector: 'ccd-select-flag-type',
-    templateUrl: './select-flag-type.component.html',
-    styleUrls: ['./select-flag-type.component.scss'],
-    standalone: false
+  selector: 'ccd-select-flag-type',
+  templateUrl: './select-flag-type.component.html',
+  styleUrls: ['./select-flag-type.component.scss'],
+  standalone: false
 })
 export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {
   @Input()

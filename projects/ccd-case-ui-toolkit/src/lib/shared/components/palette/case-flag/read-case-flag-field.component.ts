@@ -9,10 +9,10 @@ import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagDisplayContextParameter, CaseFlagStatus } from './enums';
 
 @Component({
-    selector: 'ccd-read-case-flag-field',
-    templateUrl: './read-case-flag-field.component.html',
-    styleUrls: ['./read-case-flag-field.component.scss'],
-    standalone: false
+  selector: 'ccd-read-case-flag-field',
+  templateUrl: './read-case-flag-field.component.html',
+  styleUrls: ['./read-case-flag-field.component.scss'],
+  standalone: false
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
   public flagsData: FlagsWithFormGroupPath[];

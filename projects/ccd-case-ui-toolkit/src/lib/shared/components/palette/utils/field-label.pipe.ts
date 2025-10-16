@@ -3,9 +3,9 @@ import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { CaseField } from '../../../domain/definition/case-field.model';
 
 @Pipe({
-    name: 'ccdFieldLabel',
-    pure: false,
-    standalone: false
+  name: 'ccdFieldLabel',
+  pure: false,
+  standalone: false
 })
 export class FieldLabelPipe implements PipeTransform {
 

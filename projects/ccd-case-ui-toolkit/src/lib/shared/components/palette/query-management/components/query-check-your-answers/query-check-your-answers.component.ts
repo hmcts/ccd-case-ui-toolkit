@@ -24,10 +24,10 @@ import {
 } from '../../../../../services';
 
 @Component({
-    selector: 'ccd-query-check-your-answers',
-    templateUrl: './query-check-your-answers.component.html',
-    styleUrls: ['./query-check-your-answers.component.scss'],
-    standalone: false
+  selector: 'ccd-query-check-your-answers',
+  templateUrl: './query-check-your-answers.component.html',
+  styleUrls: ['./query-check-your-answers.component.scss'],
+  standalone: false
 })
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
