@@ -449,12 +449,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   private watchResults(): void {
     if (this.activitySocketService.isEnabled) {
-      if (this.resultView && this.resultView.results) {
-        const caseIds: string[] = this.resultView.results.map(value => value.case_id);
-        this.activitySocketService.watchCases(caseIds);
-      } else {
-        this.activitySocketService.watchCases([]);
-      }
+      const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
+      this.activitySocketService.watchCases(caseIds);
     }
   }
 

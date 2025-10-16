@@ -138,7 +138,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
-        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+        if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
           this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {

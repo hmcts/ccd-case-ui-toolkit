@@ -97,7 +97,7 @@ export class ActivityService {
         this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
           () => this.userAuthorised = true,
           error => {
-            if ([401, 403].indexOf(error.status) > -1) {
+            if ([401, 403].includes(error.status)) {
               this.userAuthorised = false;
             } else {
               this.userAuthorised = true;

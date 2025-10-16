@@ -40,7 +40,7 @@ export class ActivitySocketService {
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         this.destroy();
-        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+        if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
           this.init();
         }
       });

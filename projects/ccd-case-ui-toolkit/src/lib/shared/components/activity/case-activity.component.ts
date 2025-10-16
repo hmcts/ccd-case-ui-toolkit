@@ -43,7 +43,7 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
         this.destroy();
         if (mode === MODES.polling) {
           this.initPolling();
-        } else if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+        } else if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
           this.initSocket();
         }
       });
