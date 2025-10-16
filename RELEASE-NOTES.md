@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.2.49
+**EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
+
+### Version 7.2.48
+**EXUI-3469** Vulnerabilities identified for Media Viewer
+
+### Version 7.2.47
+**EXUI-2916** Welsh Translation - issues seen during Testing of EXUI-1848
+
+### Version 7.2.46
+**EXUI-2836** PED: Duplicate calls being received when users leave
+
+### Version 7.2.45
+**EXUI-3498** Web-component version 6.3.3
+
+### Version 7.2.44
+**EXUI-3406** Move rpxTranslate pipe from 'ccd-markdown' component to parent components where needed
+
 ### Version 7.2.43
 **EXUI-2616** Remove LaunchDarkly feature flags - Group 5
 
