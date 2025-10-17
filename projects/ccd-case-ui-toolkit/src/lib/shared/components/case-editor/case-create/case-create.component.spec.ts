@@ -246,13 +246,13 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CaseCreateComponent);
-    component = fixture.componentInstance;
-    component.jurisdiction = JID;
-    component.caseType = CTID;
-    component.event = ETID;
-    component.cancelled.subscribe(cancelHandler.applyFilters);
-    component.submitted.subscribe(submitHandler.applyFilters);
+      fixture = TestBed.createComponent(CaseCreateComponent);
+      component = fixture.componentInstance;
+      component.jurisdiction = JID;
+      component.caseType = CTID;
+      component.event = ETID;
+      component.cancelled.subscribe(cancelHandler.applyFilters);
+      component.submitted.subscribe(submitHandler.applyFilters);
 
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -310,13 +310,16 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CaseCreateComponent);
-    component = fixture.componentInstance;
-    component.cancelled.subscribe(cancelHandler.applyFilters);
-    component.submitted.subscribe(submitHandler.applyFilters);
+      fixture = TestBed.createComponent(CaseCreateComponent);
+      component = fixture.componentInstance;
+      component.jurisdiction = JID;
+      component.caseType = CTID;
+      component.event = ETID;
+      component.cancelled.subscribe(cancelHandler.applyFilters);
+      component.submitted.subscribe(submitHandler.applyFilters);
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
+      de = fixture.debugElement;
+      fixture.detectChanges();
   }));
 
   it('should alert warning message and never announce event trigger if getting event trigger fails', () => {

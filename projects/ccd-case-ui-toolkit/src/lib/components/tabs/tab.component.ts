@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  sselector: 'cut-tab',
+  selector: 'cut-tab',
   templateUrl: './tab.component.html',
   styleUrls: [
     './tabs.component.scss'

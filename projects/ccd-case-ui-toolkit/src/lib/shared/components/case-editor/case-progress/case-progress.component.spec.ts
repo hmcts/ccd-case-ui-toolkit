@@ -132,15 +132,15 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CaseProgressComponent);
-    component = fixture.componentInstance;
-    component.case = CASE_VIEW_DATA.case_id;
-    component.event = ETID;
-    component.cancelled.subscribe(cancelHandler.applyFilters);
-    component.submitted.subscribe(submitHandler.applyFilters);
+      fixture = TestBed.createComponent(CaseProgressComponent);
+      component = fixture.componentInstance;
+      component.case = CASE_VIEW_DATA.case_id;
+      component.event = ETID;
+      component.cancelled.subscribe(cancelHandler.applyFilters);
+      component.submitted.subscribe(submitHandler.applyFilters);
 
-    de = fixture.debugElement;
-    fixture.detectChanges();
+      de = fixture.debugElement;
+      fixture.detectChanges();
   }));
 
   it('should get event trigger on loading and announce it', () => {

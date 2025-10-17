@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'cut-phase-bar',
-  templateUrl: './phase.html',
-  styleUrls: ['./phase.scss'],
-  standalone: false
+    selector: 'cut-phase-bar',
+    templateUrl: './phase.html',
+    styleUrls: ['./phase.scss'],
+    standalone: false
 })
 export class PhaseComponent {
 
