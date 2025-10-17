@@ -144,14 +144,6 @@ describe('CaseActivityComponent', () => {
         activitySocketService.activity.next([getActivity(CASE_ID, [], [])]);
         checkHidden();
       });
-      xit('should not show anything when the viewer is the current user', () => {
-        activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH])]);
-        checkHidden();
-      });
-      xit('should not show anything when the editor is the current user', () => {
-        activitySocketService.activity.next([getActivity(CASE_ID, [BOB_SMITH], [])]);
-        checkHidden();
-      });
       it('should not show anything when the activity is on a different case', () => {
         activitySocketService.activity.next([getActivity('different_case', [], [JOE_BLOGGS])]);
         checkHidden();
