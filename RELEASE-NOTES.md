@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.49-exui-2821-1
+**EXUI-2821** Media Viewer - Search/Present button issues
+
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
 
