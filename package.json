@@ -80,7 +80,7 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.31",
     "ngx-chips": "^3.0.0",
-    "ngx-markdown": "^19",
+    "ngx-markdown": "^20",
     "ngx-pagination": "6.0.3",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",

@@ -3104,7 +3104,7 @@ __metadata:
     ng-packagr: "npm:^20.3.0"
     ng2-mock-component: "npm:^0.1.1"
     ngx-chips: "npm:^3.0.0"
-    ngx-markdown: "npm:^19"
+    ngx-markdown: "npm:^20"
     ngx-pagination: "npm:6.0.3"
     npm-registry-fetch: "npm:^4.0.5"
     nyc: "npm:^13.0.1"
@@ -21202,9 +21202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^19":
-  version: 19.1.1
-  resolution: "ngx-markdown@npm:19.1.1"
+"ngx-markdown@npm:^20":
+  version: 20.1.0
+  resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
     clipboard: "npm:^2.0.11"
     emoji-toolkit: "npm:>= 8.0.0 < 10.0.0"
@@ -21213,10 +21213,10 @@ __metadata:
     prismjs: "npm:^1.30.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^19.0.0
-    "@angular/core": ^19.0.0
-    "@angular/platform-browser": ^19.0.0
-    marked: ^15.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    marked: ^15.0.0 || ^16.0.0
     rxjs: ^6.5.3 || ^7.4.0
     zone.js: ~0.15.0
   dependenciesMeta:
@@ -21230,7 +21230,7 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10/3c1a21765f28e75ee9b8fd330ea4a494616715a0a1f07ad830bf9085cc321920b9fe654e9edbcc60e1251758b8f4c7f106a8dd3b5770225e8fc02a5960497276
+  checksum: 10/e63550b8b561ddcc29445de5edf034ea0fff6089fbaef5377bdffda3d5632cc829f0b55edbeb9235dfe30935e2a5ee4eb0e6dbd3b476a92f1313fa743cfc2f91
   languageName: node
   linkType: hard
 

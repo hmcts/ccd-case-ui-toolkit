@@ -270,6 +270,11 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
   ERROR.message = 'ERROR!';
   const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
 
+  // Define identifiers used by component under test
+  const JID = 'PROBATE';
+  const CTID = 'ComplexTestType';
+  const ETID = 'TEST_TRIGGER';
+
   let fixture: ComponentFixture<CaseCreateComponent>;
   let component: CaseCreateComponent;
   let de: DebugElement;
