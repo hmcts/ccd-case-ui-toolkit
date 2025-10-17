@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.49-exui-2488-1
+**EXUI-2488** Index navigation - media viewer
+
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
 
