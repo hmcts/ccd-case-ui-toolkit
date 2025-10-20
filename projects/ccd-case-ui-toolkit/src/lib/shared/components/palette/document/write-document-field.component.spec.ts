@@ -772,7 +772,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.fileUploadMessages).toEqual('File required');
   });
 
-  it('should be log if file is securemode', () => {
+  it('should be logged as enabled if file is securemode', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
@@ -787,7 +787,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is enabled for case with case ref:: 12345');
   });
 
-  it('should be log if file is NOT securemode', () => {
+  it('should be logged as disabled if file is NOT securemode', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
     caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
