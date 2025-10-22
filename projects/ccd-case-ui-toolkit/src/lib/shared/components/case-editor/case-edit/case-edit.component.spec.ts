@@ -882,7 +882,7 @@ describe('CaseEditComponent', () => {
         it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
-
+          routerStub.url = 'test.com';
           fixture.detectChanges();
           expect(component.checkPageRefresh()).toBe(false);
         });
