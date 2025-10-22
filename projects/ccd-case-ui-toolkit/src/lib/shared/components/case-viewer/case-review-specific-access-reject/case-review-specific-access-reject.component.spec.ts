@@ -9,11 +9,20 @@ describe('CaseReviewSpecificAccessRejectComponent', () => {
   let component: CaseReviewSpecificAccessRejectComponent;
   let fixture: ComponentFixture<CaseReviewSpecificAccessRejectComponent>;
   const caseId = '1234123412341234';
+  const caseTypeId = 'TestCaseType';
+  const caseJurisdictionId = 'TestJurisdiction';
+
   const mockRoute = {
     snapshot: {
       data: {
         case: {
-          case_id: caseId
+          case_id: caseId,
+          case_type: {
+            id: caseTypeId,
+            jurisdiction: {
+              id: caseJurisdictionId
+            }
+          }
         }
       }
     }
@@ -55,6 +64,6 @@ describe('CaseReviewSpecificAccessRejectComponent', () => {
     const myTaskLinkElement = fixture.debugElement.nativeElement.querySelector('.govuk-button');
     expect(myTaskLinkElement.getAttribute('href')).toEqual(`tasks/list`);
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('.cancel a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${caseId}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${caseJurisdictionId}/${caseTypeId}/${caseId}`);
   });
 });

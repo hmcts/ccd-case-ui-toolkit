@@ -15,6 +15,6 @@
   <div class="govuk-form-group govuk-form-group--error">
     <h2 class="govuk-heading-m">{{'No task available' | rpxTranslate}}</h2>
     <p>{{'You should have an assigned task for this event, but something has gone wrong.' | rpxTranslate}}</p>
-    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
+    <a [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
   </div>
 </div>
