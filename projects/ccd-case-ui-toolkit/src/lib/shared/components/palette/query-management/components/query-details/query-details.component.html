@@ -1,7 +1,7 @@
 <ng-container *ngIf="query">
   <p *ngIf="showItem">
     <br />
-    <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</a>
+    <button type="button" class="govuk-js-link" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</button>
   </p>
   <div>
     <table class="govuk-table query-details-table" [attr.aria-describedby]="'Details of the query' | rpxTranslate">

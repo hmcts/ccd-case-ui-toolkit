@@ -18,6 +18,8 @@ describe('NoLinkedCasesComponent', () => {
 
   const linkedCasesService = {
     caseId: '1682374819203471',
+    caseJurisdictionID: 'TEST_JURISDICTION',
+    caseDetails: { case_type: 'TEST_CASE_TYPE' },
     getAllLinkedCaseInformation() {}
   };
 
@@ -46,6 +48,6 @@ describe('NoLinkedCasesComponent', () => {
 
   it('should back button navigate to linked cases tab', () => {
     component.onBack();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseId], { fragment: 'Linked cases' });
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', 'TEST_JURISDICTION', 'TEST_CASE_TYPE', caseId], { fragment: 'Linked cases' });
   });
 });
