@@ -153,7 +153,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // we should try and work out if they have been through the journey or not and prevent them submitting directly
     if (this.router.url.indexOf('/submit') !== -1 && !this.initialUrl) {
       // we only want to check if the user has done this if there is a multi-page journey
-      if(this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+      if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
         console.log('User has navigated to the end of an event journey directly, reset their journey');
         const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
         this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
