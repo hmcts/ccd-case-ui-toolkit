@@ -237,7 +237,7 @@ describe('EventTriggerResolver', () => {
        expect(err).toBeTruthy();
        expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
        expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
-       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${CASE_ID}/tasks`]);
+       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/PRIVATELAW/PRLAPPS/${CASE_ID}/tasks`]);
         done();
       });
     expect(profileService.get).toHaveBeenCalledWith();
