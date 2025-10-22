@@ -45,13 +45,13 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
 
   public getImage(row): string {
     if (this.isHidden[row]) {
-      return 'img/accordion-plus.png';
+      return 'assets/img/accordion-plus.png';
     } else {
       if (this.isVerticleDataNotEmpty(row)) {
-        return 'img/accordion-minus.png';
+        return 'assets/img/accordion-minus.png';
       } else {
         this.isHidden[row] = true;
-        return 'img/accordion-plus.png';
+        return 'assets/img/accordion-plus.png';
       }
     }
   }
