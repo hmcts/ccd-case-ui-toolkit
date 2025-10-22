@@ -14,9 +14,13 @@ export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   public notifyEventCompletionCancelled: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public caseId: string;
+  public jurisdiction: string;
+  public caseType: string;
 
   public ngOnInit(): void {
     this.caseId = this.context.caseId;
+    this.jurisdiction = this.context.task.jurisdiction;
+    this.caseType = this.context.task.case_type_id;
   }
 
   public onContinue(): void {

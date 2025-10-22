@@ -16,6 +16,6 @@
     <h2 class="govuk-heading-m">{{'Task conflict' | rpxTranslate}}</h2>
     <p>{{'This task cannot be completed due to conflict with another task or tasks for this case.' | rpxTranslate}}</p>
     <p>{{'If the problem persists, contact William Priest' | rpxTranslate}}</p>
-    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
+    <a [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
   </div>
 </div>

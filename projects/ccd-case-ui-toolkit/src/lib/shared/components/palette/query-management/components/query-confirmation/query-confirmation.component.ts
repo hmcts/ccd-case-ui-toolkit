@@ -12,6 +12,8 @@ export class QueryConfirmationComponent implements OnInit {
   @Input() public callbackConfirmationMessageText: { [key: string]: string } = {};
 
   public caseId = '';
+  public jurisdiction = '';
+  public caseType = '';
   public queryCreateContextEnum = QueryCreateContext;
 
   constructor(private readonly route: ActivatedRoute) {
@@ -19,5 +21,7 @@ export class QueryConfirmationComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
+    this.jurisdiction = this.route.snapshot.params.jurisdiction;
+    this.caseType = this.route.snapshot.params.caseType;
   }
 }

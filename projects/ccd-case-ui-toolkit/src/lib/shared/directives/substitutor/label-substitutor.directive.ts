@@ -84,7 +84,11 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
     }
-    this.caseField.isTranslated = false;
+
+    // Check if isTranslated is a property on caseField before setting it
+    if (this.caseField) {
+      this.caseField.isTranslated = false;
+    }
   }
 
   public ngOnDestroy(): void {
