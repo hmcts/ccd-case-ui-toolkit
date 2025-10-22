@@ -1,5 +1,15 @@
 ## RELEASE NOTES
 
+### Version 7.2.52
+**EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
+
+### Version 7.2.51
+**EXUI-2761** Include service and case type IDs in Manage Case URLs
+**EXUI-3044** Update Content Security Policy
+
+### Version 7.2.50 - REVERTED FROM MASTER
+**EXUI-3455** redirect page back to /cases/case-filter to when form has no data
+
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build
 

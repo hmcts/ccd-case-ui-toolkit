@@ -45,7 +45,7 @@
                 <ccd-markdown [content]="organisation.address"></ccd-markdown>
               </td>
               <td class="td-select">
-                <a href="javascript:void(0);" (click)="selectOrg(organisation)" title="{{'Select the organisation' | rpxTranslate}} {{organisation.name}}">
+                <a href="#" (click)="selectOrg(organisation); $event.preventDefault()" title="{{'Select the organisation' | rpxTranslate}} {{organisation.name}}">
                   {{'Select' | rpxTranslate}}
                 </a>
               </td>
@@ -68,7 +68,7 @@
                 <ccd-markdown [content]="selectedOrg.address"></ccd-markdown>
               </td>
               <td class="td-select">
-                <a href="javascript:void(0);" (click)="deSelectOrg()"
+                <a href="#" (click)="deSelectOrg(); $event.preventDefault()"
                    title="{{'Clear organisation selection for' | rpxTranslate}} {{selectedOrg.name}}">
                   {{'Clear' | rpxTranslate}}
                 </a>

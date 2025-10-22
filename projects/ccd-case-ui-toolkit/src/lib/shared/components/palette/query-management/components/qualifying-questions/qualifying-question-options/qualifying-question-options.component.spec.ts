@@ -18,10 +18,14 @@ describe('QualifyingQuestionOptionsComponent', () => {
     navigate: jasmine.createSpy('navigate')
   };
   const caseId = '12345';
+  const jurisdictionId = 'TestJurisdiction';
+  const caseTypeId = 'TestCaseType';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: caseId
+        cid: caseId,
+        jurisdiction: jurisdictionId,
+        caseType: caseTypeId
       }
     }
   };
@@ -69,7 +73,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
 
   it('should have the link to case details queries tab', () => {
     component.click();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Queries' });
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', 'TestJurisdiction', 'TestCaseType', '12345'], { fragment: 'Queries' });
   });
 
   describe('displayError', () => {

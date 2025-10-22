@@ -43,8 +43,8 @@
                     </td>
                     <ng-container *ngIf="!caseEdit.isCaseFlagSubmission">
                       <td class="valign-top check-your-answers__change case-field-change">
-                        <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
-                          href="javascript:void(0)">
+                        <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id); $event.preventDefault()"
+                          href="#">
                           <span class="text-16" attr.aria-label="{{'Change' | rpxTranslate}} {{ field.label | rpxTranslate }}">
                             {{'Change' | rpxTranslate}}
                           </span>
@@ -119,7 +119,7 @@
       </button>
     </div>
     <p class="cancel">
-      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">{{getCancelText() | rpxTranslate}}</a>
+      <a (click)="cancel(); $event.preventDefault()" href="#" [class.disabled]="caseEdit.isSubmitting">{{getCancelText() | rpxTranslate}}</a>
     </p>
   </form>
 </div>
