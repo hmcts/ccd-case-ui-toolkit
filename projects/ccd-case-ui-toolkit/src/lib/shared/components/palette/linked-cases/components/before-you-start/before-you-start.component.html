@@ -5,7 +5,7 @@
       <span class="govuk-visually-hidden">Error:</span> {{serverLinkedApiError.message}}
     </p>
     <p class="govuk-body">
-      <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">Go back to the Linked cases tab</a>
+      <button type="button" class="govuk-js-link" (click)="onBack()">Go back to the Linked cases tab</button>
     </p>
   </div>
   <div *ngIf="!serverLinkedApiError">
