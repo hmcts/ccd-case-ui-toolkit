@@ -39,7 +39,7 @@
   </button>
   <div class="govuk-grid-column-full govuk-!-padding-left-0">
     <p>
-      <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">
+      <a class="govuk-body" (click)="onCancel(); $event.preventDefault()" href="#">
         {{'Cancel' | rpxTranslate}}
       </a>
     </p>
