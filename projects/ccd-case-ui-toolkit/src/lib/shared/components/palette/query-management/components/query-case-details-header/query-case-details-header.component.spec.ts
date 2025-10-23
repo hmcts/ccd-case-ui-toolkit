@@ -16,6 +16,8 @@ import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Pipe({ name: 'ccdCaseReference' })
 class MockCaseReferencePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
@@ -41,6 +43,7 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
+      imports: [CommonModule, FormsModule, ReactiveFormsModule],
       declarations: [QueryCaseDetailsHeaderComponent, MockCaseReferencePipe,
         CaseReferencePipe,
         LabelSubstitutorDirective,
