@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -9,6 +9,7 @@ import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
 import { QualifyingQuestionService } from '../../../services';
 import { QualifyingQuestion } from '../../../models';
+import { CommonModule } from '@angular/common';
 
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
@@ -34,6 +35,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [CommonModule, FormsModule, ReactiveFormsModule],
       declarations: [
         QualifyingQuestionOptionsComponent,
         MockRpxTranslatePipe
