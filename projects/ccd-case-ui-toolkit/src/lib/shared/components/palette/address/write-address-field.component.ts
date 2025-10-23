@@ -36,6 +36,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public missingPostcode = false;
   public noAddressSelected = false;
+  public loadingAddresses = false;
 
   constructor(addressesService: AddressesService, private readonly isCompoundPipe: IsCompoundPipe) {
     super();
@@ -65,17 +66,20 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.missingPostcode = true;
     } else {
       this.missingPostcode = false;
+      this.loadingAddresses = true;
       const postcode = this.postcode.value;
       this.caseField.value = null;
       this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
-        result => {
+        (result) => {
+          this.loadingAddresses = false;
           result.forEach(
-            address => {
+            (address) => {
               this.addressOptions.push(new AddressOption(address, null));
             }
           );
         }, (error) => {
+          this.loadingAddresses = false;
           console.log(`An error occurred retrieving addresses for postcode ${postcode}. ${error}`);
         });
       this.addressList.setValue(undefined);
