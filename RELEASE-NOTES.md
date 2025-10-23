@@ -1,9 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.2.52
+**EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
+
 ### Version 7.2.51
-**EXUI-3066** Dates/Times: Accept input in local time
-**EXUI-3005** timestamp values displayed
-**EXUI-3003** Notice of Change Timestamp showing as GMT
 **EXUI-2761** Include service and case type IDs in Manage Case URLs
 **EXUI-3044** Update Content Security Policy
 
