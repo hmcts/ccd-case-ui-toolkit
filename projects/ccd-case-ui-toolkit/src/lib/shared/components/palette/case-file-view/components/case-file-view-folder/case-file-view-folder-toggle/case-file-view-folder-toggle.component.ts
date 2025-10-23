@@ -6,6 +6,7 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
   selector: "ccd-case-file-view-folder-toggle",
   templateUrl: "./case-file-view-folder-toggle.component.html",
   styleUrls: ["./case-file-view-folder-toggle.component.scss"],
+  standalone: false
 })
 export class CaseFileViewFolderToggleComponent {
   public isOpen = false;

@@ -7,7 +7,8 @@ import { OrderService } from '../../services/order/order.service';
 @Component({
   selector: 'ccd-event-trigger',
   templateUrl: './event-trigger.component.html',
-  styleUrls: ['./event-trigger.component.scss']
+  styleUrls: ['./event-trigger.component.scss'],
+  standalone: false
 })
 export class EventTriggerComponent implements OnChanges, OnInit {
 

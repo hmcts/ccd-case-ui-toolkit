@@ -6,7 +6,8 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
 @Component({
   selector: 'ccd-activity',
   templateUrl: './activity.component.html',
-  styleUrls: ['./activity.component.css']
+  styleUrls: ['./activity.component.css'],
+  standalone: false
 })
 export class ActivityComponent implements OnInit, OnDestroy {
   public activity: Activity;

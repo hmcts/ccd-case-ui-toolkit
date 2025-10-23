@@ -5,7 +5,8 @@ import { CaseFlagStatus } from '../../enums';
 @Component({
   selector: 'ccd-case-flag-table',
   templateUrl: './case-flag-table.component.html',
-  styleUrls: ['./case-flag-table.component.scss']
+  styleUrls: ['./case-flag-table.component.scss'],
+  standalone: false
 })
 export class CaseFlagTableComponent {
   @Input() public tableCaption: string;

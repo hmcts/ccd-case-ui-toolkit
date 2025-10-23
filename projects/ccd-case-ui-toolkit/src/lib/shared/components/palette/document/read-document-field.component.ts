@@ -10,7 +10,8 @@ const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
 @Component({
   selector: 'ccd-read-document-field',
-  templateUrl: './read-document-field.html'
+  templateUrl: './read-document-field.html',
+  standalone: false
 })
 export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnDestroy {
 

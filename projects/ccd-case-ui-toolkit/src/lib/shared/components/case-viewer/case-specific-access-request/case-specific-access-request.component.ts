@@ -18,6 +18,7 @@ import {
 @Component({
   selector: 'ccd-case-specific-access-request',
   templateUrl: './case-specific-access-request.component.html',
+  standalone: false
 })
 export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public static CANCEL_LINK_DESTINATION = '/work/my-work/list';

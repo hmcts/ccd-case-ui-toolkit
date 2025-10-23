@@ -7,7 +7,8 @@ import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-
   selector: 'xui-case-file-view-folder-selector',
   templateUrl: './case-file-view-folder-selector.component.html',
   styleUrls: ['./case-file-view-folder-selector.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
   public currentCategories: CaseFileViewCategory[] = [];
