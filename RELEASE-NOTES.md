@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.54
+**EXUI-3555** Judges should be able to respond to queries
+
 ### Version 7.2.53
 **EXUI-2519** Angular error in query-write-raise-query.component
 
