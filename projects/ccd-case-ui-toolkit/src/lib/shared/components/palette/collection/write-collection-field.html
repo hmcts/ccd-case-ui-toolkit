@@ -2,7 +2,7 @@
 
   <div class="panel collection-indicator">
 
-    <h2 class="heading-h2 error-spacing">
+    <h2 class="heading-h2 error-spacing" *ngIf="!caseField.hidden">
       {{(caseField | ccdFieldLabel)}}
     </h2>
     <button class="button write-collection-add-item__top" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">{{'Add new' | rpxTranslate}}</button>
