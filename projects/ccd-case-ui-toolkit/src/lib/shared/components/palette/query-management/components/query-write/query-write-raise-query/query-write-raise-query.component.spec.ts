@@ -42,7 +42,8 @@ describe('QueryWriteRaiseQueryComponent', () => {
     ]);
 
     await TestBed.configureTestingModule({
-      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe, queryCaseDetailsHeaderComponentMock],
+      imports: [queryCaseDetailsHeaderComponentMock],
+      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: routeStub },
         { provide: QueryManagementService, useValue: queryManagementServiceSpy }

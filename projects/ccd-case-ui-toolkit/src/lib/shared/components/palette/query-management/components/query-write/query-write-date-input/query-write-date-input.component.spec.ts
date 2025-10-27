@@ -27,8 +27,8 @@ describe('QueryWriteDateInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, ReactiveFormsModule],
-      declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe, queryCaseDetailsHeaderComponentMock]
+      imports: [CommonModule, FormsModule, ReactiveFormsModule, queryCaseDetailsHeaderComponentMock],
+      declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe]
     }).compileComponents();
   });
 
