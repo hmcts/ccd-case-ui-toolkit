@@ -15,15 +15,10 @@ import { text } from '../../../../../test/helpers';
 import { LabelFieldComponent } from '../../../../palette';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-@Pipe({
-  name: 'ccdCaseReference',
-  standalone: false
-})
-class MockCaseReferencePipe implements PipeTransform {
-  public transform(value: string, ...args: any[]) {
-    return value;
-  }
-}
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+// NOTE: Original test used a MockCaseReferencePipe. The real CaseReferencePipe is not standalone
+// and can be declared directly. The mock is removed to avoid Angular standalone declaration errors.
 
 describe('QueryCaseDetailsHeaderComponent', () => {
   const markdownComponentMock: any = MockComponent({
@@ -43,8 +38,8 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
-      imports: [markdownComponentMock],
-      declarations: [QueryCaseDetailsHeaderComponent, MockCaseReferencePipe,
+      imports: [markdownComponentMock, CommonModule, FormsModule, ReactiveFormsModule],
+      declarations: [QueryCaseDetailsHeaderComponent,
         CaseReferencePipe,
         LabelSubstitutorDirective,
         LabelFieldComponent

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.7-angular-20",
+  "version": "7.3.1-srt-rc1",
   "engines": {
     "node": ">=20.19.0"
   },
