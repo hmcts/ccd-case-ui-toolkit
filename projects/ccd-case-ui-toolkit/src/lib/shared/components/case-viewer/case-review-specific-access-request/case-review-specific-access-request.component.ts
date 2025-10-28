@@ -9,7 +9,8 @@ import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRe
 @Component({
   selector: 'ccd-case-review-specific-access-request',
   templateUrl: './case-review-specific-access-request.component.html',
-  styleUrls: ['./case-review-specific-access-request.component.scss']
+  styleUrls: ['./case-review-specific-access-request.component.scss'],
+  standalone: false
 })
 export class CaseReviewSpecificAccessRequestComponent
   implements OnInit, OnDestroy {

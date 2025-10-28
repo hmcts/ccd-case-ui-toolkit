@@ -10,7 +10,8 @@ import { EventTriggerResolver } from '../services';
 
 @Component({
   selector: 'ccd-case-event-trigger',
-  templateUrl: './case-event-trigger.html'
+  templateUrl: './case-event-trigger.html',
+  standalone: false
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public static readonly EVENT_COMPLETION_MESSAGE = `Case #%CASEREFERENCE% has been updated with event: %NAME%`;

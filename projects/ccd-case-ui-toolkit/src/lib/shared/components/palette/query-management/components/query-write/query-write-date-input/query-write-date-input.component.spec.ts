@@ -6,7 +6,10 @@ import { CommonModule } from '@angular/common';
 import { MockComponent } from 'ng2-mock-component';
 
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, ...args: any[]): string {
     return value;
@@ -24,8 +27,8 @@ describe('QueryWriteDateInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, ReactiveFormsModule],
-      declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe, queryCaseDetailsHeaderComponentMock]
+      imports: [CommonModule, FormsModule, ReactiveFormsModule, queryCaseDetailsHeaderComponentMock],
+      declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe]
     }).compileComponents();
   });
 

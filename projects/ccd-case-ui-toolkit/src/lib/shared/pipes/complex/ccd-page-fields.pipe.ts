@@ -5,7 +5,8 @@ import { WizardPage } from '../../components/case-editor/domain/wizard-page.mode
 import { CaseField } from '../../domain/definition';
 
 @Pipe({
-  name: 'ccdPageFields'
+  name: 'ccdPageFields',
+  standalone: false
 })
 export class CcdPageFieldsPipe implements PipeTransform {
   public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {

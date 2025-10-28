@@ -50,12 +50,9 @@ describe('ReadCollectionFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [fieldReadComponentMock],
         declarations: [
-          ReadCollectionFieldComponent,
-
-          // Mocks
-          fieldReadComponentMock
+          ReadCollectionFieldComponent
         ],
         providers: []
       })
@@ -172,12 +169,9 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [fieldReadComponentMock],
         declarations: [
-          ReadCollectionFieldComponent,
-
-          // Mocks
-          fieldReadComponentMock
+          ReadCollectionFieldComponent
         ],
         providers: []
       })

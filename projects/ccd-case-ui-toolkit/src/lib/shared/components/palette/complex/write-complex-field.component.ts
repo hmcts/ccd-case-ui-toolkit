@@ -16,7 +16,8 @@ const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
 @Component({
   selector: 'ccd-write-complex-type-field',
   templateUrl: './write-complex-field.html',
-  styleUrls: ['./read-complex-field-table.scss']
+  styleUrls: ['./read-complex-field-table.scss'],
+  standalone: false
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   @Input()

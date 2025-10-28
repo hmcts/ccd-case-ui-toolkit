@@ -8,7 +8,8 @@ import { FlagDetail } from '../domain';
 
 @Pipe({
   name: 'flagFieldDisplay',
-  pure: false
+  pure: false,
+  standalone: false
 })
 export class FlagFieldDisplayPipe extends AsyncPipe implements PipeTransform {
   private languageObservables = new Map<string, Observable<string>>();

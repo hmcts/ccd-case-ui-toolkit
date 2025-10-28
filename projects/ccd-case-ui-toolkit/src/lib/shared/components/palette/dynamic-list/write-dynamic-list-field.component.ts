@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-dynamic-list-field',
-  templateUrl: './write-dynamic-list-field.html'
+  templateUrl: './write-dynamic-list-field.html',
+  standalone: false
 })
 export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

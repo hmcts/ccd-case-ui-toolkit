@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-fixed-radio-list-field',
-  templateUrl: './write-fixed-radio-list-field.html'
+  templateUrl: './write-fixed-radio-list-field.html',
+  standalone: false
 })
 export class WriteFixedRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
