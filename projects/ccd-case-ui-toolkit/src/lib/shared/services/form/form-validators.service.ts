@@ -66,7 +66,7 @@ export class FormValidatorsService {
     const inlineMarkdownPattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
 
     // Matches [[text]](url), [[[text]]](url), etc
-    const multiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<word>[A-Za-z0-9 ]{1,500})(?<closes>\]+)\((?<url>(?:https?:\/\/)?(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}(?:\/[^\s)]*)?)\)/gi;
+    const multiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<text>(?:[^\[\]\\]|\\.){1,500})(?<closes>\]+)\((?<url>(?:https?:\/\/)?(?:[A-Za-z0-9-]{1,63}\.){1,10}[A-Za-z]{2,24}(?:\/[^\s)]{0,1024})?)\)/i;
     // Helper: does value contain any valid multi-bracket match with equal counts?
     const hasMultiBracket = (s: string) => {
       const rx = new RegExp(multiBracketPattern.source, multiBracketPattern.flags);
@@ -87,7 +87,7 @@ export class FormValidatorsService {
     const referenceBoxPattern = /(!)?\[((?:[^\[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
 
     // Single-line, pragmatic CommonMark-style reference definition e.g. [text]: http://example.com
-    const referenceUrlPattern = /^[ \t]{0,3}\[([^\]]{1,100})\]:[ \t]*<?([^\s>]{1,500})>?[ \t]*(?:(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?[ \t]*$/m;
+    const referenceUrlPattern = /^[ \t]{0,3}\[([^\]]{1,100})\]:[ \t]*<?([^\s>]{1,2048})>?[ \t]*(?:(?:"([^"\r\n]{0,300})"|'([^'\r\n]{0,300})'|\(([^)\r\n]{0,300})\)))?[ \t]*$/m;
 
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
