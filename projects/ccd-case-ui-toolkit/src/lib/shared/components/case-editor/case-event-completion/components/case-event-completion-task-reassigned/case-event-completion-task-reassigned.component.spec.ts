@@ -17,7 +17,8 @@ import createSpyObj = jasmine.createSpyObj;
 import { getMockCaseNotifier } from '../../../services/case.notifier.spec';
 
 @Component({
-  template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>'
+  template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>',
+  standalone: false
 })
 class WrapperComponent {
   @ViewChild(CaseEventCompletionTaskReassignedComponent, { static: true }) public appComponentRef: CaseEventCompletionTaskReassignedComponent;
@@ -46,7 +47,7 @@ describe('TaskReassignedComponent', () => {
     case_id: '1620409659381330',
     case_management_category: null,
     case_name: 'Alan Jonson',
-    case_type_id: null,
+    case_type_id: 'Appeal-864',
     created_date: '2021-04-19T14:00:00.000+0000',
     due_date: '2021-05-20T16:00:00.000+0000',
     execution_type: null,

@@ -11,7 +11,8 @@ import { CaseEditComponent } from '../../../case-edit';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
-  templateUrl: './case-event-completion-task-reassigned.html'
+  templateUrl: './case-event-completion-task-reassigned.html',
+  standalone: false
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
   @Input()
@@ -25,6 +26,8 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public subscription: Subscription;
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(private readonly sessionStorageService: SessionStorageService,
     private readonly judicialworkerService: JudicialworkerService,
@@ -35,6 +38,8 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // Get case id and task from the parent component
     this.caseId = this.context.caseId;
     const task = this.context.reassignedTask;
+    this.jurisdiction = task.jurisdiction;
+    this.caseType = task.case_type_id;
 
     // Current user is a caseworker?
     this.caseworkerSubscription = this.caseworkerService.getCaseworkers(task.jurisdiction).subscribe(result => {

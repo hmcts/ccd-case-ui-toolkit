@@ -10,7 +10,8 @@ const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList']
 
 @Component({
   selector: 'ccd-field-read',
-  templateUrl: './field-read.html'
+  templateUrl: './field-read.html',
+  standalone: false
 })
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
   @Input()

@@ -7,7 +7,10 @@ import { PlaceholderService } from './services/placeholder.service';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 
-@Directive({ selector: '[ccdLabelSubstitutor]' })
+@Directive({
+  selector: '[ccdLabelSubstitutor]',
+  standalone: false
+})
 /**
  * Checks all labels and substitutes any placholders that reference other fields values.
  */
@@ -81,7 +84,11 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
     }
-    this.caseField.isTranslated = false;
+
+    // Check if isTranslated is a property on caseField before setting it
+    if (this.caseField) {
+      this.caseField.isTranslated = false;
+    }
   }
 
   public ngOnDestroy(): void {

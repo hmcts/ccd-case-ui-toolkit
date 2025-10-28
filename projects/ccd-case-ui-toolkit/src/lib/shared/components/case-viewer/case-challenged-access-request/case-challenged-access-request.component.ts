@@ -9,7 +9,8 @@ import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPag
 
 @Component({
   selector: 'ccd-case-challenged-access-request',
-  templateUrl: './case-challenged-access-request.component.html'
+  templateUrl: './case-challenged-access-request.component.html',
+  standalone: false
 })
 export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public static CANCEL_LINK_DESTINATION = '/work/my-work/list';

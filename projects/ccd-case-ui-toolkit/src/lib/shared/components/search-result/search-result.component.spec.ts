@@ -28,7 +28,8 @@ import { BehaviorSubject, of, Subject } from 'rxjs';
 
 @Component({
   selector: 'ccd-field-read',
-  template: `{{caseField.value}}`
+  template: `{{caseField.value}}`,
+  standalone: false
 })
 class FieldReadComponent {
   @Input()
@@ -200,7 +201,8 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            caseActivityComponent
           ],
           declarations: [
             FieldReadComponent,
@@ -210,7 +212,6 @@ describe('SearchResultComponent', () => {
 
             // Mocks
             MockRpxTranslatePipe,
-            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],
@@ -849,7 +850,8 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            caseActivityComponent
           ],
           declarations: [
             FieldReadComponent,
@@ -859,7 +861,6 @@ describe('SearchResultComponent', () => {
 
             // Mocks
             MockRpxTranslatePipe,
-            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],

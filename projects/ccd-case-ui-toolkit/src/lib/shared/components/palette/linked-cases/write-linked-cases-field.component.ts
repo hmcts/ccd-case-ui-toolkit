@@ -15,7 +15,8 @@ import { MultipageComponentStateService } from '../../../services';
 
 @Component({
   selector: 'ccd-write-linked-cases-field',
-  templateUrl: './write-linked-cases-field.component.html'
+  templateUrl: './write-linked-cases-field.component.html',
+  standalone: false
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, AfterViewInit, OnDestroy {
   public caseEditForm: FormGroup;
@@ -165,7 +166,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
 
   public proceedToNextPage(): void {
     if (this.isAtFinalPage()) {
-      // Set the journey page to the end page. 
+      // Set the journey page to the end page.
       this.journeyPageNumber = this.journeyEndPageNumber;
       // Continue button event must be allowed in final page
       this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(true);
