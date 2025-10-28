@@ -44,7 +44,7 @@ export class FormValidatorsService {
       }
       control.setValidators(validators);
     } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || caseField.field_type.type === 'TextArea')
-    || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
+      || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
       control.setValidators(this.markDownPatternValidator());
     }
 
@@ -52,7 +52,7 @@ export class FormValidatorsService {
   }
 
   public static emptyValidator(): ValidatorFn {
-    const validator = (control: AbstractControl):ValidationErrors | null => {
+    const validator = (control: AbstractControl): ValidationErrors | null => {
       if (control?.value?.toString().trim().length === 0) {
         return { required: {} };
       }
@@ -62,11 +62,39 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
+    // Matches: [text](url), ![alt](url), <img ...>, <a ...>...</a>
+    const inlineMarkdownPattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
+
+    // Matches [[text]](url), [[[text]]](url), etc
+    const multiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<word>[A-Za-z0-9 ]{1,500})(?<closes>\]+)\((?<url>(?:https?:\/\/)?(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}(?:\/[^\s)]*)?)\)/gi;
+    // Helper: does value contain any valid multi-bracket match with equal counts?
+    const hasMultiBracket = (s: string) => {
+      const rx = new RegExp(multiBracketPattern.source, multiBracketPattern.flags);
+      let m: RegExpExecArray | null;
+      while ((m = rx.exec(s)) !== null) {
+        const groups = m.groups || {};
+        // ensure there is a matching number of opening and closing brackets
+        const opens = (groups.opens as string | undefined)?.length ?? 0;
+        const closes = (groups.closes as string | undefined)?.length ?? 0;
+        if (opens === closes) return true;
+        // safety: avoid infinite loops on zero-length matches
+        if (m.index === rx.lastIndex) rx.lastIndex++;
+      }
+      return false;
+    };
+
+    // Matches: [text][id], ![alt][id], and the collapsed form [text][]
+    const referenceBoxPattern = /(!)?\[((?:[^\[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
+
+    // Single-line, pragmatic CommonMark-style reference definition e.g. [text]: http://example.com
+    const referenceUrlPattern = /^[ \t]{0,3}\[([^\]]{1,100})\]:[ \t]*<?([^\s>]{1,500})>?[ \t]*(?:(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?[ \t]*$/m;
+
+    // Matches: autolinks such as <http://example.com>
+    const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return (value && pattern.test(value)) ? { markDownPattern: {} } : null;
+      return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || referenceUrlPattern.test(value) || autolinkPattern.test(value) || hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
     };
   }
 
