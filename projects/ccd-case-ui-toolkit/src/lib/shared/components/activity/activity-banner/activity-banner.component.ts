@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'ccd-activity-banner',
   templateUrl: './activity-banner.component.html',
+  standalone: false,
   styleUrls: ['./activity-banner.component.scss']
 })
 export class ActivityBannerComponent {

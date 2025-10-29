@@ -14,6 +14,7 @@ interface ActivityDetails {
 @Component({
   selector: 'ccd-case-activity',
   templateUrl: './case-activity.component.html',
+  standalone: false,
   styleUrls: ['./case-activity.component.scss']
 })
 export class CaseActivityComponent implements OnInit, OnDestroy {
