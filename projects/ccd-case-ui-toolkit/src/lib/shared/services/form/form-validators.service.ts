@@ -97,8 +97,8 @@ export class FormValidatorsService {
   // Check for multi-bracket markdown links and validate destination URL
   private static hasMultiBracket(value: string): boolean {
     // 1) Detect [[...]](  — small, linear pattern (no named groups, no optional branch)
-    //    We don't try to grab the whole destination here; just detect the shape.
-    const initialMultiBracketPattern = /\[+[^\]\n]{1,80}\]+ ?\(/;
+    //    We don't try to grab the whole link here; just detect the shape.
+    const initialMultiBracketPattern = /\[+[^\[\]\n]{1,80}\]+\(/i;
 
     // 2) Url must be "balanced () segments, no spaces" (linear)
     //    e.g.  abc(def)ghi is OK; spaces or <> disallowed
