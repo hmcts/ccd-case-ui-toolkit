@@ -96,7 +96,7 @@ export class FormValidatorsService {
 
   // Check for multi-bracket markdown links and validate destination URL
   private static hasMultiBracket(value: string): boolean {
-    const MAX_DEST = 2048;    // inside (...) excluding the final ')'
+    const maxUrlString = 2048;    // inside (...) excluding the final ')'
 
     // Sonar-friendly detector: opening-run + text + first closing ']'
     const openingTextClosePattern = /\[{1,10}[^[\]\n]{1,60}\]/;
@@ -109,12 +109,14 @@ export class FormValidatorsService {
 
     while (scanIndex < totalLength) {
       const seg = this.findOpeningTextClose(value, scanIndex, openingTextClosePattern);
-      if (!seg) return false;                        // no candidate -> no match
+      if (!seg) {
+        return false; // no candidate -> no match
+      }
 
       const runs = this.extendClosingRunAndRequireParen(value, seg.absStart, seg.afterFirstClose);
       if (runs && runs.openingRunCount === runs.closingRunCount) {
-        if (this.hasBalancedDestination(value, runs.afterOpenParen, MAX_DEST, destinationPattern)) {
-          return true;                               // valid multi-bracket link found
+        if (this.hasBalancedDestination(value, runs.afterOpenParen, maxUrlString, destinationPattern)) {
+          return true; // valid multi-bracket link found
         }
       }
 
@@ -132,7 +134,9 @@ export class FormValidatorsService {
   ): { absStart: number; afterFirstClose: number } | null {
     const slice = source.slice(fromIndex);
     const match = pattern.exec(slice);
-    if (!match) return null;
+    if (!match) {
+      return null;
+    }
     const absStart = fromIndex + match.index;
     const afterFirstClose = absStart + match[0].length; // index just after the first ']'
     return { absStart, afterFirstClose };
@@ -148,7 +152,9 @@ export class FormValidatorsService {
 
     // Count opening '[' run (e.g., '[[[')
     let openingRunCount = 0;
-    for (let i = absStart; i < n && source[i] === '['; i++) openingRunCount++;
+    for (let i = absStart; i < n && source[i] === '['; i++) {
+      openingRunCount++;
+    }
 
     // Extend closing ']' run forward from the first one
     let closingRunCount = 1;
@@ -159,8 +165,9 @@ export class FormValidatorsService {
     }
 
     // '(' must immediately follow the full closing run
-    if (afterClosingRun >= n || source[afterClosingRun] !== '(') return null;
-
+    if (afterClosingRun >= n || source[afterClosingRun] !== '(') {
+      return null;
+    }
     return { openingRunCount, closingRunCount, afterOpenParen: afterClosingRun + 1 };
   }
 
@@ -189,7 +196,8 @@ export class FormValidatorsService {
       } else if (ch === ' ' || ch === '\t' || ch === '<' || ch === '>' || ch === '\n') {
         return false; // illegal destination character
       }
-      cursor++; consumed++;
+      cursor++;
+      consumed++;
     }
     return false; // ran out without a valid closing ')'
   }
