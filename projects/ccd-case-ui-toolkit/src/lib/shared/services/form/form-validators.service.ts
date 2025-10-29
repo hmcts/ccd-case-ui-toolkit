@@ -96,45 +96,59 @@ export class FormValidatorsService {
 
   // Check for multi-bracket markdown links and validate destination URL
   private static hasMultiBracket(value: string): boolean {
-    // 1) Detect [[...]](  — small, linear pattern (no named groups, no optional branch)
-    //    We don't try to grab the whole link here; just detect the shape.
-    const initialMultiBracketPattern = /\[+[^\[\]\n]{1,80}\]+\(/i;
+    // 1) Detect just the opening-run + text + the *first* closing ']' (no '(' in regex)
+    //    We will extend the closing-bracket run in code.
+    const openingTextClosePattern = /\[{1,10}[^\[\]\n]{1,60}\]/;
 
-    // 2) Url must be "balanced () segments, no spaces" (linear)
-    //    e.g.  abc(def)ghi is OK; spaces or <> disallowed
+    // 2) Destination must be "balanced () segments, no spaces/</>/newline"
     const followingMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
 
-    let i = 0;
-    while (i < value.length) {
-      const mainRegEx = initialMultiBracketPattern.exec(value.slice(i));
-      if (!mainRegEx) return false;
+    let scanIndex = 0;
+    const totalLength = value.length;
 
-      const absStart = i + mainRegEx.index;            // absolute index of the match
-      const afterOpen = absStart + mainRegEx[0].length; // index right after '('
+    while (scanIndex < totalLength) {
+      const match = openingTextClosePattern.exec(value.slice(scanIndex));
+      if (!match) return false;
 
-      // Count the opening and closing bracket runs to ensure they're balanced.
-      // (We already matched "[+ ... ]+(", so extract those runs from the source.)
-      // Find the '[' run
-      let openRun = 0, j = absStart;
-      while (j < value.length && value[j] === '[') { openRun++; j++; }
-      // Find the ']' run (scan back from '(')
-      let k = afterOpen - 2; // char before '('
-      let closeRun = 0;
-      while (k >= 0 && value[k] === ']') { closeRun++; k--; }
+      const absStart = scanIndex + match.index;               // absolute start of '[['... segment
+      const afterFirstClose = absStart + match[0].length;     // index *after the first* closing ']'
 
-      if (openRun === closeRun) {
-        // Find a closing ')' that yields a valid ending.
-        // We try successive ')' to accommodate balanced parentheses in the URL.
-        let close = value.indexOf(')', afterOpen);
-        while (close !== -1) {
-          const possibleEnding = value.slice(afterOpen, close).trim();
-          if (possibleEnding.length && followingMultiBracketPattern.test(possibleEnding)) return true;
-          close = value.indexOf(')', close + 1);
+      // Count opening '[' run at the beginning (e.g., '[[[')
+      let openingRunCount = 0;
+      for (let i = absStart; i < totalLength && value[i] === '['; i++) openingRunCount++;
+
+      // Extend the closing ']' run forward from the first one we matched
+      let closingRunCount = 1;                                 // we already matched one ']'
+      let afterClosingRun = afterFirstClose;
+      while (afterClosingRun < totalLength && value[afterClosingRun] === ']') {
+        closingRunCount++;
+        afterClosingRun++;
+      }
+
+      // Require '(' immediately after the full closing-bracket run
+      if (afterClosingRun >= totalLength || value[afterClosingRun] !== '(') {
+        // Not an inline link; advance and keep scanning
+        scanIndex = absStart + 1;
+        continue;
+      }
+      const afterOpenParen = afterClosingRun + 1; // first char inside destination
+
+      // Bracket runs must be balanced (same number of '[' and ']')
+      if (openingRunCount === closingRunCount) {
+        // Find a ')' that yields a valid destination (supports balanced inner parentheses)
+        let closeParenIndex = value.indexOf(')', afterOpenParen);
+        while (closeParenIndex !== -1) {
+          const candidateDest = value.slice(afterOpenParen, closeParenIndex);
+          if (candidateDest.length && followingMultiBracketPattern.test(candidateDest)) {
+            return true; // valid multi-bracket link found
+          }
+          // Try the next ')' in case this one closed an inner '('
+          closeParenIndex = value.indexOf(')', closeParenIndex + 1);
         }
       }
 
-      // Advance and keep scanning (avoid stalling)
-      i = absStart + 1;
+      // Advance and continue scanning (avoid stalling on overlaps)
+      scanIndex = absStart + 1;
     }
     return false;
   }
