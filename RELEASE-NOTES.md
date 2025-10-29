@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.2.54-exui-2600
+### Version 7.2.54-exui-2600-1
 **EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
 
 ### Version 7.2.54
