@@ -63,38 +63,17 @@ export class FormValidatorsService {
 
   public static markDownPatternValidator(): ValidatorFn {
     // Matches: [text](url), ![alt](url), <img ...>, <a ...>...</a>
-    const inlineMarkdownPattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
-
-    // Matches [[text]](url), [[[text]]](url), etc
-    const multiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<text>(?:[^\[\]\\]|\\.){1,500})(?<closes>\]+)\((?<url>(?:https?:\/\/)?(?:[A-Za-z0-9-]{1,63}\.){1,10}[A-Za-z]{2,24}(?:\/[^\s)]{0,1024})?)\)/i;
-    // Helper: does value contain any valid multi-bracket match with equal counts?
-    const hasMultiBracket = (s: string) => {
-      const rx = new RegExp(multiBracketPattern.source, multiBracketPattern.flags);
-      let m: RegExpExecArray | null;
-      while ((m = rx.exec(s)) !== null) {
-        const groups = m.groups || {};
-        // ensure there is a matching number of opening and closing brackets
-        const opens = (groups.opens as string | undefined)?.length ?? 0;
-        const closes = (groups.closes as string | undefined)?.length ?? 0;
-        if (opens === closes) return true;
-        // safety: avoid infinite loops on zero-length matches
-        if (m.index === rx.lastIndex) rx.lastIndex++;
-      }
-      return false;
-    };
+    const inlineMarkdownPattern = /(?:!?\[[^\]]{0,500}\]\([^)]{0,500}\)|<(?:img\b[^>]{0,500}>|a\b[^>]{0,500}>[\s\S]*?<\/a>))/i;
 
     // Matches: [text][id], ![alt][id], and the collapsed form [text][]
     const referenceBoxPattern = /(!)?\[((?:[^\[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
-
-    // Single-line, pragmatic CommonMark-style reference definition e.g. [text]: http://example.com
-    const referenceUrlPattern = /^[ \t]{0,3}\[([^\]]{1,100})\]:[ \t]*<?([^\s>]{1,2048})>?[ \t]*(?:(?:"([^"\r\n]{0,300})"|'([^'\r\n]{0,300})'|\(([^)\r\n]{0,300})\)))?[ \t]*$/m;
 
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || referenceUrlPattern.test(value) || autolinkPattern.test(value) || hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
+      return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || this.matchesReferenceUrlDef(value) || autolinkPattern.test(value) || this.hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
     };
   }
 
@@ -113,5 +92,52 @@ export class FormValidatorsService {
       control.updateValueAndValidity();
     }
     return control;
+  }
+
+  private static isBalancedBrackets(opens: string, closes: string) {
+    return opens.length === closes.length;
+  }
+
+  // Check for multi-bracket markdown links and validate destination URL
+  private static hasMultiBracket(s: string): boolean {
+    // Matches [[text]](url), [[[text]]](url), etc
+    const outerMultiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<text>[^\]\n]{1,500})(?<closes>\]+)\((?<dest>[^)]{1,2048})\)/i;
+    const innerMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
+    const regEx = new RegExp(outerMultiBracketPattern.source, outerMultiBracketPattern.flags); // fresh instance
+    let regExArray: RegExpExecArray | null;
+    while ((regExArray = regEx.exec(s))) {
+      const regExGroups: any = regExArray.groups || {};
+      if (!this.isBalancedBrackets(regExGroups.opens || "", regExGroups.closes || "")) {
+        continue;
+      }
+      const dest = String(regExGroups.dest).trim();
+      if (dest.length && innerMultiBracketPattern.test(dest)) {
+        return true;
+      }
+      if (regExArray.index === regEx.lastIndex) {
+        regEx.lastIndex++; // safety
+      }
+    }
+    return false;
+  }
+
+  private static isValidReferenceUrlTitleTail(tail: string): boolean {
+    const possibleTitle = tail.trim();
+    // Accept exactly one of: "title", 'title', (title) — bounded and single-line.
+    if (!possibleTitle || /^"[^"\r\n]{0,300}"$/.test(possibleTitle) || /^'[^'\r\n]{0,300}'$/.test(possibleTitle) || /^\([^)\r\n]{0,300}\)$/.test(possibleTitle)){ 
+      return true;
+    }
+    return false;
+  }
+
+
+  private static matchesReferenceUrlDef(line: string): boolean {
+    // Single-line, pragmatic CommonMark-style reference definition e.g. [text]: http://example.com
+    const baseReferenceUrlPattern = /^[ \t]{0,3}\[([^\]]{1,100})\]:[ \t]*<?([^\s>]{1,2048})>?[ \t]*([^ \t\r\n].*)?$/m;
+
+    const mainRegEx = baseReferenceUrlPattern.exec(line);
+    if (!mainRegEx) return false;
+    const tail = mainRegEx[3] ?? "";
+    return this.isValidReferenceUrlTitleTail(tail);
   }
 }
