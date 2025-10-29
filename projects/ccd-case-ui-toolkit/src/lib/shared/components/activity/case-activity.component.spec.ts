@@ -11,7 +11,7 @@ import { CaseActivityComponent } from './case-activity.component';
 
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({ name: 'rpxTranslate', standalone: false })
 class RpxTranslatePipeStub implements PipeTransform {
   transform(value: any): any {
     // return the key unchanged for tests

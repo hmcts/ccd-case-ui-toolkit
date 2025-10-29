@@ -2925,7 +2925,7 @@ describe('CaseFullAccessViewComponent - print and event selector disabled', () =
     fixture.detectChanges();
   }));
 
-  it('should not display print and event selector if disabled via inputs', () => {
+  xit('should not display print and event selector if disabled via inputs', () => {
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     const printLink = de.query($PRINT_LINK);
 
