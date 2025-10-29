@@ -98,9 +98,9 @@ export class FormValidatorsService {
   private static hasMultiBracket(value: string): boolean {
     // 1) Detect [[...]](  — small, linear pattern (no named groups, no optional branch)
     //    We don't try to grab the whole destination here; just detect the shape.
-    const initialMultiBracketPattern = /\[+[^\]\n]{1,500}\]+\s*\(/i;
+    const initialMultiBracketPattern = /\[+[^\]\n]{1,80}\]+ ?\(/;
 
-    // 2) Destination must be "balanced () segments, no spaces" (linear)
+    // 2) Url must be "balanced () segments, no spaces" (linear)
     //    e.g.  abc(def)ghi is OK; spaces or <> disallowed
     const followingMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
 
