@@ -159,6 +159,16 @@ describe('FormValidatorsService', () => {
     expect(result.valid).toBeFalsy();
   });
 
+  it('should return add Markdown validator for MANDATORY fields - reference url pattern with title', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('[Test]://www.google.com[title]');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
   it('should return add Markdown validator for OPTIONAL fields', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'OPTIONAL', null);

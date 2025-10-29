@@ -94,29 +94,47 @@ export class FormValidatorsService {
     return control;
   }
 
-  private static isBalancedBrackets(opens: string, closes: string) {
-    return opens.length === closes.length;
-  }
-
   // Check for multi-bracket markdown links and validate destination URL
-  private static hasMultiBracket(s: string): boolean {
-    // Matches [[text]](url), [[[text]]](url), etc
-    const outerMultiBracketPattern = /(?<bang>!)?(?<opens>\[+)(?<text>[^\]\n]{1,500})(?<closes>\]+)\((?<dest>[^)]{1,2048})\)/i;
-    const innerMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
-    const regEx = new RegExp(outerMultiBracketPattern.source, outerMultiBracketPattern.flags); // fresh instance
-    let regExArray: RegExpExecArray | null;
-    while ((regExArray = regEx.exec(s))) {
-      const regExGroups: any = regExArray.groups || {};
-      if (!this.isBalancedBrackets(regExGroups.opens || "", regExGroups.closes || "")) {
-        continue;
+  private static hasMultiBracket(value: string): boolean {
+    // 1) Detect [[...]](  — small, linear pattern (no named groups, no optional branch)
+    //    We don't try to grab the whole destination here; just detect the shape.
+    const initialMultiBracketPattern = /\[+[^\]\n]{1,500}\]+\s*\(/i;
+
+    // 2) Destination must be "balanced () segments, no spaces" (linear)
+    //    e.g.  abc(def)ghi is OK; spaces or <> disallowed
+    const followingMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
+
+    let i = 0;
+    while (i < value.length) {
+      const mainRegEx = initialMultiBracketPattern.exec(value.slice(i));
+      if (!mainRegEx) return false;
+
+      const absStart = i + mainRegEx.index;            // absolute index of the match
+      const afterOpen = absStart + mainRegEx[0].length; // index right after '('
+
+      // Count the opening and closing bracket runs to ensure they're balanced.
+      // (We already matched "[+ ... ]+(", so extract those runs from the source.)
+      // Find the '[' run
+      let openRun = 0, j = absStart;
+      while (j < value.length && value[j] === '[') { openRun++; j++; }
+      // Find the ']' run (scan back from '(')
+      let k = afterOpen - 2; // char before '('
+      let closeRun = 0;
+      while (k >= 0 && value[k] === ']') { closeRun++; k--; }
+
+      if (openRun === closeRun) {
+        // Find a closing ')' that yields a valid ending.
+        // We try successive ')' to accommodate balanced parentheses in the URL.
+        let close = value.indexOf(')', afterOpen);
+        while (close !== -1) {
+          const possibleEnding = value.slice(afterOpen, close).trim();
+          if (possibleEnding.length && followingMultiBracketPattern.test(possibleEnding)) return true;
+          close = value.indexOf(')', close + 1);
+        }
       }
-      const dest = String(regExGroups.dest).trim();
-      if (dest.length && innerMultiBracketPattern.test(dest)) {
-        return true;
-      }
-      if (regExArray.index === regEx.lastIndex) {
-        regEx.lastIndex++; // safety
-      }
+
+      // Advance and keep scanning (avoid stalling)
+      i = absStart + 1;
     }
     return false;
   }
@@ -124,7 +142,7 @@ export class FormValidatorsService {
   private static isValidReferenceUrlTitleTail(tail: string): boolean {
     const possibleTitle = tail.trim();
     // Accept exactly one of: "title", 'title', (title) — bounded and single-line.
-    if (!possibleTitle || /^"[^"\r\n]{0,300}"$/.test(possibleTitle) || /^'[^'\r\n]{0,300}'$/.test(possibleTitle) || /^\([^)\r\n]{0,300}\)$/.test(possibleTitle)){ 
+    if (!possibleTitle || /^"[^"\r\n]{0,300}"$/.test(possibleTitle) || /^'[^'\r\n]{0,300}'$/.test(possibleTitle) || /^\([^)\r\n]{0,300}\)$/.test(possibleTitle)) {
       return true;
     }
     return false;
