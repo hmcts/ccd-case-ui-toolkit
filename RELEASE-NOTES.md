@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.54-exui-2600
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
 ### Version 7.2.54
 **EXUI-3555** Judges should be able to respond to queries
 
