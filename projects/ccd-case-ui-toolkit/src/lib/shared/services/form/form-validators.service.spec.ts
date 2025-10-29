@@ -137,6 +137,10 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.valid).toBeFalsy();
+    result.setValue('[[[[[[Test]]]]]](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
   });
 
   it('should return add Markdown validator for MANDATORY fields - reference box pattern', () => {
