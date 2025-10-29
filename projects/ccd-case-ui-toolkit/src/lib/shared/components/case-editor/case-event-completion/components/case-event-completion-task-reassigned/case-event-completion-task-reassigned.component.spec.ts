@@ -17,7 +17,8 @@ import createSpyObj = jasmine.createSpyObj;
 import { getMockCaseNotifier } from '../../../services/case.notifier.spec';
 
 @Component({
-  template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>'
+  template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>',
+  standalone: false
 })
 class WrapperComponent {
   @ViewChild(CaseEventCompletionTaskReassignedComponent, { static: true }) public appComponentRef: CaseEventCompletionTaskReassignedComponent;

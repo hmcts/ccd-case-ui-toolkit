@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractAppConfig } from '../../../../app.config';
 
 @Pipe({
-  name: 'ccdDocumentUrl'
+  name: 'ccdDocumentUrl',
+  standalone: false
 })
 export class DocumentUrlPipe implements PipeTransform {
 

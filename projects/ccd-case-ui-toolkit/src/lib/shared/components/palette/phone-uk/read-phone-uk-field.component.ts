@@ -3,6 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-phone-uk-field',
-  template: `<span class="text-16">{{caseField.value}}</span>`
+  template: `<span class="text-16">{{caseField.value}}</span>`,
+  standalone: false
 })
 export class ReadPhoneUKFieldComponent extends AbstractFieldReadComponent {}

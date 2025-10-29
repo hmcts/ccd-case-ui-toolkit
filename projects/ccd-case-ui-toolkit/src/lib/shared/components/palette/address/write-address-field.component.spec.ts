@@ -44,8 +44,9 @@ describe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-write-complex-type-field`,
-    template: ``
-  })
+    template: ``,
+    standalone: false
+})
   class MockWriteComplexFieldComponent {
 
     @Input()
@@ -310,7 +311,7 @@ describe('WriteAddressFieldComponent', () => {
   });
 
   it('should clear the error when postcode is not blank', () => {
-
+    addressesService.getAddressesForPostcode.and.returnValue(of([]));
     writeAddressFieldComponent.missingPostcode = true;
     fixture.detectChanges();
 

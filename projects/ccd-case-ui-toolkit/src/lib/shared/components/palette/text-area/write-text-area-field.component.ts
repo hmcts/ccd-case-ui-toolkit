@@ -6,7 +6,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 @Component({
   selector: 'ccd-write-text-area-field',
   templateUrl: './write-text-area-field.html',
-  providers: [BrowserService]
+  providers: [BrowserService],
+  standalone: false
 })
 export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public textareaControl: FormControl;

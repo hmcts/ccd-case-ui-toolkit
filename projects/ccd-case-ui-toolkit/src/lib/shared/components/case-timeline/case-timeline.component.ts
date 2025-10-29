@@ -12,7 +12,8 @@ export enum CaseTimelineDisplayMode {
 }
 @Component({
   selector: 'ccd-case-timeline',
-  templateUrl: './case-timeline.component.html'
+  templateUrl: './case-timeline.component.html',
+  standalone: false
 })
 export class CaseTimelineComponent implements OnInit {
 

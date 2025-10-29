@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ccd-case-challenged-access-success',
-  templateUrl: './case-challenged-access-success.component.html'
+  templateUrl: './case-challenged-access-success.component.html',
+  standalone: false
 })
 export class CaseChallengedAccessSuccessComponent implements OnInit {
   public caseId: string;

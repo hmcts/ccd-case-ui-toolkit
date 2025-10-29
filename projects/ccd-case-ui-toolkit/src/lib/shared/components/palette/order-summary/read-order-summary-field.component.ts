@@ -8,6 +8,7 @@ import { FeeValue } from './fee-value.model';
   styleUrls: [
     './read-order-summary-field.scss'
   ],
+  standalone: false
 })
 export class ReadOrderSummaryFieldComponent extends AbstractFieldReadComponent {
 

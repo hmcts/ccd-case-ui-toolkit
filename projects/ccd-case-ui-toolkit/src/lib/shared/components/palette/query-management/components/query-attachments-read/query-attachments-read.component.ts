@@ -5,7 +5,8 @@ import { CaseField, FieldType, FormDocument } from '../../../../../domain';
   selector: 'ccd-query-attachments-read',
   templateUrl: './query-attachments-read.component.html',
   styleUrls: ['./query-attachments-read.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class QueryAttachmentsReadComponent implements OnChanges {
   @Input() public attachments: FormDocument[];

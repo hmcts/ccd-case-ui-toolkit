@@ -7,7 +7,8 @@ import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.c
 
 @Component({
   selector: 'ccd-select-flag-location',
-  templateUrl: './select-flag-location.component.html'
+  templateUrl: './select-flag-location.component.html',
+  standalone: false
 })
 export class SelectFlagLocationComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;

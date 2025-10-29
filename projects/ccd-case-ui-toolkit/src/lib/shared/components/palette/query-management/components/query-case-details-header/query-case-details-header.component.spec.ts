@@ -1,9 +1,8 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { QueryCaseDetailsHeaderComponent } from './query-case-details-header.component';
 
 import { By } from '@angular/platform-browser';
@@ -18,12 +17,8 @@ import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'r
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-@Pipe({ name: 'ccdCaseReference' })
-class MockCaseReferencePipe implements PipeTransform {
-  public transform(value: string, ...args: any[]) {
-    return value;
-  }
-}
+// NOTE: Original test used a MockCaseReferencePipe. The real CaseReferencePipe is not standalone
+// and can be declared directly. The mock is removed to avoid Angular standalone declaration errors.
 
 describe('QueryCaseDetailsHeaderComponent', () => {
   const markdownComponentMock: any = MockComponent({
@@ -43,14 +38,11 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, ReactiveFormsModule],
-      declarations: [QueryCaseDetailsHeaderComponent, MockCaseReferencePipe,
+      imports: [markdownComponentMock, CommonModule, FormsModule, ReactiveFormsModule],
+      declarations: [QueryCaseDetailsHeaderComponent,
         CaseReferencePipe,
         LabelSubstitutorDirective,
-        LabelFieldComponent,
-
-        // Mocks
-        markdownComponentMock
+        LabelFieldComponent
       ],
       providers: [
         FieldsUtils,
@@ -61,10 +53,11 @@ describe('QueryCaseDetailsHeaderComponent', () => {
         RpxTranslationService,
         RpxTranslationConfig,
         HttpClient,
-        HttpHandler
+        HttpHandler,
+        provideNgReflectAttributes()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

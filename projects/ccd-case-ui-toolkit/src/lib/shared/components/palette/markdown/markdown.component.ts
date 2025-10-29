@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'ccd-markdown',
   templateUrl: './markdown.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MarkdownComponent implements OnInit {
   @Input() public content: string;

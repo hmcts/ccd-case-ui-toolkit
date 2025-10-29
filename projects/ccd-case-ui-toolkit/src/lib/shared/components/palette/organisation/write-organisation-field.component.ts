@@ -13,7 +13,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 @Component({
   selector: 'ccd-write-organisation-field',
   templateUrl: './write-organisation-field.component.html',
-  styleUrls: ['./organisation-field.scss']
+  styleUrls: ['./organisation-field.scss'],
+  standalone: false
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

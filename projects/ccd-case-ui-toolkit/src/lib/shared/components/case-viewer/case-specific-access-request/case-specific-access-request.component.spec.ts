@@ -16,7 +16,10 @@ import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './mo
 
 import createSpyObj = jasmine.createSpyObj;
 
-@Component({ template: `` })
+@Component({
+  template: ``,
+  standalone: false
+})
 class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {
@@ -68,8 +71,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     fixture = TestBed.createComponent(CaseSpecificAccessRequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.get(Router);
-    location = TestBed.get(Location);
+    router = TestBed.inject(Router);
+    location = TestBed.inject(Location);
     spyOn(router, 'navigate');
   });
 

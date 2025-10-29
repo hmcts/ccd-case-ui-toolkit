@@ -6,6 +6,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 @Component({
   selector: 'ccd-read-complex-field',
   templateUrl: './read-complex-field.html',
+  standalone: false
 })
 export class ReadComplexFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

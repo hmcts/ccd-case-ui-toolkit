@@ -5,7 +5,8 @@ import { CallbackErrorsContext } from './domain/error-context';
 
 @Component({
   selector: 'ccd-callback-errors',
-  templateUrl: './callback-errors.html'
+  templateUrl: './callback-errors.html',
+  standalone: false
 })
 export class CallbackErrorsComponent implements OnInit {
 
