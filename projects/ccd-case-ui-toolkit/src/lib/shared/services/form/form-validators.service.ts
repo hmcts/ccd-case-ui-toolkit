@@ -66,7 +66,7 @@ export class FormValidatorsService {
     const inlineMarkdownPattern = /(?:!?\[[^\]]{0,500}\]\([^)]{0,500}\)|<(?:img\b[^>]{0,500}>|a\b[^>]{0,500}>[\s\S]*?<\/a>))/i;
 
     // Matches: [text][id], ![alt][id], and the collapsed form [text][]
-    const referenceBoxPattern = /(!)?\[((?:[^\[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
+    const referenceBoxPattern = /(!)?\[((?:[^[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
 
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
@@ -96,61 +96,102 @@ export class FormValidatorsService {
 
   // Check for multi-bracket markdown links and validate destination URL
   private static hasMultiBracket(value: string): boolean {
-    // 1) Detect just the opening-run + text + the *first* closing ']' (no '(' in regex)
-    //    We will extend the closing-bracket run in code.
-    const openingTextClosePattern = /\[{1,10}[^\[\]\n]{1,60}\]/;
+    const MAX_DEST = 2048;    // inside (...) excluding the final ')'
 
-    // 2) Destination must be "balanced () segments, no spaces/</>/newline"
-    const followingMultiBracketPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
+    // Sonar-friendly detector: opening-run + text + first closing ']'
+    const openingTextClosePattern = /\[{1,10}[^[\]\n]{1,60}\]/;
+
+    // Destination must be "balanced () segments, no spaces/</>/newline"
+    const destinationPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
 
     let scanIndex = 0;
     const totalLength = value.length;
 
     while (scanIndex < totalLength) {
-      const match = openingTextClosePattern.exec(value.slice(scanIndex));
-      if (!match) return false;
+      const seg = this.findOpeningTextClose(value, scanIndex, openingTextClosePattern);
+      if (!seg) return false;                        // no candidate -> no match
 
-      const absStart = scanIndex + match.index;               // absolute start of '[['... segment
-      const afterFirstClose = absStart + match[0].length;     // index *after the first* closing ']'
-
-      // Count opening '[' run at the beginning (e.g., '[[[')
-      let openingRunCount = 0;
-      for (let i = absStart; i < totalLength && value[i] === '['; i++) openingRunCount++;
-
-      // Extend the closing ']' run forward from the first one we matched
-      let closingRunCount = 1;                                 // we already matched one ']'
-      let afterClosingRun = afterFirstClose;
-      while (afterClosingRun < totalLength && value[afterClosingRun] === ']') {
-        closingRunCount++;
-        afterClosingRun++;
-      }
-
-      // Require '(' immediately after the full closing-bracket run
-      if (afterClosingRun >= totalLength || value[afterClosingRun] !== '(') {
-        // Not an inline link; advance and keep scanning
-        scanIndex = absStart + 1;
-        continue;
-      }
-      const afterOpenParen = afterClosingRun + 1; // first char inside destination
-
-      // Bracket runs must be balanced (same number of '[' and ']')
-      if (openingRunCount === closingRunCount) {
-        // Find a ')' that yields a valid destination (supports balanced inner parentheses)
-        let closeParenIndex = value.indexOf(')', afterOpenParen);
-        while (closeParenIndex !== -1) {
-          const candidateDest = value.slice(afterOpenParen, closeParenIndex);
-          if (candidateDest.length && followingMultiBracketPattern.test(candidateDest)) {
-            return true; // valid multi-bracket link found
-          }
-          // Try the next ')' in case this one closed an inner '('
-          closeParenIndex = value.indexOf(')', closeParenIndex + 1);
+      const runs = this.extendClosingRunAndRequireParen(value, seg.absStart, seg.afterFirstClose);
+      if (runs && runs.openingRunCount === runs.closingRunCount) {
+        if (this.hasBalancedDestination(value, runs.afterOpenParen, MAX_DEST, destinationPattern)) {
+          return true;                               // valid multi-bracket link found
         }
       }
 
-      // Advance and continue scanning (avoid stalling on overlaps)
-      scanIndex = absStart + 1;
+      // Advance to avoid stalling on overlaps
+      scanIndex = seg.absStart + 1;
     }
     return false;
+  }
+
+  // Find opening '[' run, text, and first closing ']'
+  private static findOpeningTextClose(
+    source: string,
+    fromIndex: number,
+    pattern: RegExp
+  ): { absStart: number; afterFirstClose: number } | null {
+    const slice = source.slice(fromIndex);
+    const match = pattern.exec(slice);
+    if (!match) return null;
+    const absStart = fromIndex + match.index;
+    const afterFirstClose = absStart + match[0].length; // index just after the first ']'
+    return { absStart, afterFirstClose };
+  }
+
+  // Count opening '[' run, extend the ']' run, and require '(' right after the full ']' run
+  private static extendClosingRunAndRequireParen(
+    source: string,
+    absStart: number,
+    afterFirstClose: number
+  ): { openingRunCount: number; closingRunCount: number; afterOpenParen: number } | null {
+    const n = source.length;
+
+    // Count opening '[' run (e.g., '[[[')
+    let openingRunCount = 0;
+    for (let i = absStart; i < n && source[i] === '['; i++) openingRunCount++;
+
+    // Extend closing ']' run forward from the first one
+    let closingRunCount = 1;
+    let afterClosingRun = afterFirstClose;
+    while (afterClosingRun < n && source[afterClosingRun] === ']') {
+      closingRunCount++;
+      afterClosingRun++;
+    }
+
+    // '(' must immediately follow the full closing run
+    if (afterClosingRun >= n || source[afterClosingRun] !== '(') return null;
+
+    return { openingRunCount, closingRunCount, afterOpenParen: afterClosingRun + 1 };
+  }
+
+  // Scan destination from afterOpenParen until its matching ')', enforcing simple URL rules
+  private static hasBalancedDestination(
+    source: string,
+    afterOpenParen: number,
+    maxDest: number,
+    destPattern: RegExp
+  ): boolean {
+    const n = source.length;
+    let depth = 0;
+    let cursor = afterOpenParen;
+    let consumed = 0;
+
+    // Try successive ')' positions to allow inner balanced parentheses.
+    while (cursor < n && consumed <= maxDest) {
+      const ch = source[cursor];
+      if (ch === '(') { depth++; }
+      else if (ch === ')') {
+        if (depth === 0) {
+          const candidate = source.slice(afterOpenParen, cursor);
+          return candidate.length > 0 && destPattern.test(candidate);
+        }
+        depth--;
+      } else if (ch === ' ' || ch === '\t' || ch === '<' || ch === '>' || ch === '\n') {
+        return false; // illegal destination character
+      }
+      cursor++; consumed++;
+    }
+    return false; // ran out without a valid closing ')'
   }
 
   private static isValidReferenceUrlTitleTail(tail: string): boolean {
