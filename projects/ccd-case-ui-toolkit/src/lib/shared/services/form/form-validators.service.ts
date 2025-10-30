@@ -96,13 +96,11 @@ export class FormValidatorsService {
 
   // Check for multi-bracket markdown links and validate destination URL
   private static hasMultiBracket(value: string): boolean {
-    const maxUrlString = 2048;    // inside (...) excluding the final ')'
 
     // Sonar-friendly detector: opening-run + text + first closing ']'
     const openingTextClosePattern = /\[{1,10}[^[\]\n]{1,60}\]/;
 
-    // Destination must be "balanced () segments, no spaces/</>/newline"
-    const destinationPattern = /^[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*$/;
+    // Can add an additional RegEx for additional URL validation rules if needed here
 
     let scanIndex = 0;
     const totalLength = value.length;
@@ -115,9 +113,8 @@ export class FormValidatorsService {
 
       const runs = this.extendClosingRunAndRequireParen(value, seg.absStart, seg.afterFirstClose);
       if (runs && runs.openingRunCount === runs.closingRunCount) {
-        if (this.hasBalancedDestination(value, runs.afterOpenParen, maxUrlString, destinationPattern)) {
-          return true; // valid multi-bracket link found
-        }
+        // If there were additional validation rules, they would be applied here
+        return true;
       }
 
       // Advance to avoid stalling on overlaps
@@ -164,42 +161,7 @@ export class FormValidatorsService {
       afterClosingRun++;
     }
 
-    // '(' must immediately follow the full closing run
-    if (afterClosingRun >= n || source[afterClosingRun] !== '(') {
-      return null;
-    }
     return { openingRunCount, closingRunCount, afterOpenParen: afterClosingRun + 1 };
-  }
-
-  // Scan destination from afterOpenParen until its matching ')', enforcing simple URL rules
-  private static hasBalancedDestination(
-    source: string,
-    afterOpenParen: number,
-    maxDest: number,
-    destPattern: RegExp
-  ): boolean {
-    const n = source.length;
-    let depth = 0;
-    let cursor = afterOpenParen;
-    let consumed = 0;
-
-    // Try successive ')' positions to allow inner balanced parentheses.
-    while (cursor < n && consumed <= maxDest) {
-      const ch = source[cursor];
-      if (ch === '(') { depth++; }
-      else if (ch === ')') {
-        if (depth === 0) {
-          const candidate = source.slice(afterOpenParen, cursor);
-          return candidate.length > 0 && destPattern.test(candidate);
-        }
-        depth--;
-      } else if (ch === ' ' || ch === '\t' || ch === '<' || ch === '>' || ch === '\n') {
-        return false; // illegal destination character
-      }
-      cursor++;
-      consumed++;
-    }
-    return false; // ran out without a valid closing ')'
   }
 
   private static isValidReferenceUrlTitleTail(tail: string): boolean {
