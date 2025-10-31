@@ -18,6 +18,6 @@
     </h2>
     <p>{{"You're starting work which could complete more than one of the active tasks for this case." | rpxTranslate}}</p>
     <p>{{'Return to tasks tab and start the event from there.' | rpxTranslate}}</p>
-    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
+    <a [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
   </div>
 </div>
