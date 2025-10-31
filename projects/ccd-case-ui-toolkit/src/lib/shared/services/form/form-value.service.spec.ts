@@ -1075,5 +1075,250 @@ describe('FormValueService', () => {
         dollar: '$'
       });
     });
+
+    fdescribe('removeHiddenField', () => {
+      let formControls: any;
+      let caseFields: CaseField[];
+      let data: any;
+
+      beforeEach(() => {
+        formControls = {};
+        caseFields = [];
+        data = {};
+      });
+
+      it('should set field to null if hidden and not retain_hidden_value', () => {
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'MANDATORY',
+            retain_hidden_value: false
+          } as CaseField
+        ];
+        formControls = {
+          field1: {
+            caseField: {
+              hidden: true
+            }
+          }
+        };
+        spyOn(console, 'log');
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.field1).toBeNull();
+        expect(console.log).toHaveBeenCalledWith('[FormValueService] Setting field field1 as hidden');
+      });
+
+      it('should not set field to null if retain_hidden_value is true', () => {
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'MANDATORY',
+            retain_hidden_value: true
+          } as CaseField
+        ];
+        formControls = {
+          field1: {
+            caseField: {
+              hidden: true
+            }
+          }
+        };
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.field1).toBe('value1');
+      });
+
+      it('should skip field if formControls[field.id] is undefined', () => {
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'MANDATORY'
+          } as CaseField
+        ];
+        formControls = {};
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.field1).toBe('value1');
+      });
+
+      it('should skip field if field.hidden is true', () => {
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: true,
+            display_context: 'MANDATORY'
+          } as CaseField
+        ];
+        formControls = {
+          field1: {
+            caseField: {
+              hidden: false
+            }
+          }
+        };
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.field1).toBe('value1');
+      });
+
+      it('should skip readonly fields that are not labels', () => {
+        spyOn(FormValueService as any, 'isLabel').and.returnValue(false);
+        spyOn(FormValueService as any, 'isReadOnly').and.returnValue(true);
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'READONLY'
+          } as CaseField
+        ];
+        formControls = {
+          field1: {
+            caseField: {
+              hidden: false
+            }
+          }
+        };
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.field1).toBe('value1');
+      });
+
+      it('should recurse into Complex fields', () => {
+        data = {
+          complex1: {
+            subfield: 'subvalue'
+          }
+        };
+        caseFields = [
+          {
+            id: 'complex1',
+            field_type: {
+              type: 'Complex',
+              complex_fields: [
+                {
+                  id: 'subfield',
+                  field_type: { type: 'Text' } as FieldType,
+                  hidden: false,
+                  display_context: 'MANDATORY'
+                }
+              ]
+            } as any,
+            hidden: false,
+            display_context: 'MANDATORY'
+          } as CaseField
+        ];
+        formControls = {
+          complex1: {
+            caseField: { hidden: false },
+            controls: {
+              subfield: {
+                caseField: { hidden: true }
+              }
+            }
+          }
+        };
+        spyOn(console, 'log');
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.complex1.subfield).toBeNull();
+        expect(console.log).toHaveBeenCalledWith('[FormValueService] Setting field subfield as hidden');
+      });
+
+      it('should recurse into Collection fields of Complex type', () => {
+        data = {
+          collection1: [
+            { subfield: 'val1' },
+            { subfield: 'val2' }
+          ]
+        };
+        caseFields = [
+          {
+            id: 'collection1',
+            field_type: {
+              type: 'Collection',
+              collection_field_type: {
+                type: 'Complex',
+                complex_fields: [
+                  {
+                    id: 'subfield',
+                    field_type: { type: 'Text' } as FieldType,
+                    hidden: false,
+                    display_context: 'MANDATORY'
+                  }
+                ]
+              }
+            } as any,
+            hidden: false,
+            display_context: 'MANDATORY'
+          } as CaseField
+        ];
+        formControls = {
+          collection1: {
+            caseField: { hidden: false },
+            controls: {
+              subfield: {
+                caseField: { hidden: true }
+              }
+            }
+          }
+        };
+        spyOn(console, 'log');
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.collection1[0].subfield).toBeNull();
+        expect(data.collection1[1].subfield).toBeNull();
+        expect(console.log).toHaveBeenCalledWith('[FormValueService] Setting field subfield as hidden');
+      });
+
+      it('should do nothing if clearNonCase is false', () => {
+        data = { field1: 'value1' };
+        caseFields = [
+          {
+            id: 'field1',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'MANDATORY'
+          } as CaseField
+        ];
+        formControls = {
+          field1: {
+            caseField: {
+              hidden: true
+            }
+          }
+        };
+        formValueService.removeHiddenField(data, caseFields, false, formControls);
+        expect(data.field1).toBe('value1');
+      });
+
+      it('should not set field to null if field.id is "caseLinks"', () => {
+        data = { caseLinks: 'someValue' };
+        caseFields = [
+          {
+            id: 'caseLinks',
+            field_type: { type: 'Text' } as FieldType,
+            hidden: false,
+            display_context: 'MANDATORY',
+            retain_hidden_value: false
+          } as CaseField
+        ];
+        formControls = {
+          caseLinks: {
+            caseField: {
+              hidden: true
+            }
+          }
+        };
+        formValueService.removeHiddenField(data, caseFields, true, formControls);
+        expect(data.caseLinks).toBe('someValue');
+      });
+    });
   });
 });
