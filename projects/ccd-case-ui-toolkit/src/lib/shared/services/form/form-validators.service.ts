@@ -66,6 +66,7 @@ export class FormValidatorsService {
     const aTagPattern = /<a\b[^>]*(>|$)/i;
     const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img\b[^>]{0,500}(?:>|$))/i;
     const hasDangerousAttrs = /\bon\w+\s*=/i;
+    const scriptTagPattern = /<script\b[^>]*(>|$)/i;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
@@ -74,6 +75,7 @@ export class FormValidatorsService {
         (
           pattern.test(value) ||
           aTagPattern.test(value) ||
+          scriptTagPattern.test(value) ||
           hasDangerousAttrs.test(value)
         )
       ) {

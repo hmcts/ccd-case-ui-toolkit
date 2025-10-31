@@ -164,4 +164,122 @@ describe('FormValidatorsService', () => {
 
     expect(result.valid).toBeFalsy();
   });
+
+  it('should invalidate value containing <script> tag', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<script>alert(1)</script>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should invalidate value containing incomplete <script tag', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'TextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<script src="x.js"');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should invalidate value containing inline event handler attribute', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<div onclick="doSomething()">Test</div>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should allow similar text without angle brackets or handlers', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('script alert(1) onclick test');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeTruthy();
+  });
+
+  describe('Extended markdown/script regex coverage', () => {
+    function validatorOnly(): (value: string) => boolean {
+      const v = FormValidatorsService.markDownPatternValidator();
+      return (value: string) => v(new FormControl(value)) !== null; // true if invalid
+    }
+    const isInvalid = validatorOnly();
+
+    it('should invalidate uppercase IMG tag', () => {
+      expect(isInvalid('<IMG src="x">')).toBeTruthy();
+    });
+
+    it('should invalidate uppercase SCRIPT tag', () => {
+      expect(isInvalid('<SCRIPT>alert(1)</SCRIPT>')).toBeTruthy();
+    });
+
+    it('should invalidate markdown link exactly at boundary (500 chars inside brackets)', () => {
+      const inner = 'a'.repeat(500);
+      const link = `[${inner}](target)`;
+      expect(isInvalid(link)).toBeTruthy();
+    });
+
+    it('should allow markdown link exceeding boundary (501 chars inside brackets)', () => {
+      const inner = 'a'.repeat(501);
+      const link = `[${inner}](target)`;
+      expect(isInvalid(link)).toBeFalsy();
+    });
+
+    it('should invalidate image markdown exactly at boundary (500 chars alt)', () => {
+      const inner = 'i'.repeat(500);
+      const img = `![${inner}](src)`;
+      expect(isInvalid(img)).toBeTruthy();
+    });
+
+    it('should allow image markdown exceeding boundary (501 chars alt)', () => {
+      const inner = 'i'.repeat(501);
+      const img = `![${inner}](src)`;
+      expect(isInvalid(img)).toBeFalsy();
+    });
+
+    it('should invalidate img tag with long attributes within 500 chars', () => {
+      const attrs = 'x'.repeat(400);
+      expect(isInvalid(`<img ${attrs}>`)).toBeTruthy();
+    });
+
+    it('should allow img tag with attributes exceeding 500 chars', () => {
+      const attrs = 'y'.repeat(501);
+      expect(isInvalid(`<img ${attrs}>`)).toBeFalsy();
+    });
+
+    it('should invalidate multiple dangerous event handlers', () => {
+      expect(isInvalid('<div onclick="x()" onmouseover="y()">test</div>')).toBeTruthy();
+    });
+
+    it('should invalidate standalone onload attribute', () => {
+      expect(isInvalid('onload="do()"')).toBeTruthy();
+    });
+
+    it('should allow similar words like onclicked without space or equals', () => {
+      expect(isInvalid('This is onclicked and onmouseovered text')).toBeFalsy();
+    });
+
+    it('should invalidate mixed content containing both markdown and script', () => {
+      expect(isInvalid('[link](url)<script>bad()</script>')).toBeTruthy();
+    });
+
+    it('should invalidate incomplete opening script tag with attributes', () => {
+      expect(isInvalid('<script type="text/javascript"')).toBeTruthy();
+    });
+
+    it('should invalidate script tag with newline before closing bracket', () => {
+      expect(isInvalid('<script\n>alert()</script>')).toBeTruthy();
+    });
+
+    it('should allow benign angle brackets not forming tags', () => {
+      expect(isInvalid('< notatag > just text')).toBeFalsy();
+    });
+  });
 });
