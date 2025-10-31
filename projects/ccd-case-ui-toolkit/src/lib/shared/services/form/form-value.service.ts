@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { CaseField, FieldTypeEnum } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class FormValueService {
@@ -361,6 +362,60 @@ export class FormValueService {
       for (const objCollection of data[field.id]) {
         if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).indexOf('id') > -1) {
           data[field.id] = [];
+        }
+      }
+    }
+  }
+  // exui-3582 When a form field becomes hidden due to the user’s input in the event journey, 
+  // its stored value must be cleared and it must not be submitted or persisted.
+  public removeHiddenField(data: object, caseFields: CaseField[], clearNonCase: boolean, formControls: { [key: string]: AbstractControl }): void {
+    if (clearNonCase && data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (!FormValueService.isLabel(field) && FormValueService.isReadOnly(field)) {
+          // Retain anything that is readonly and not a label.
+          continue;
+        }
+        // Check if formControls[field.id] exists before accessing its properties
+        const caseField = formControls[field.id] ? formControls[field.id]['caseField'] as CaseField : undefined;
+        if (caseField === undefined || field.hidden === true) {
+          continue;
+        }
+
+        const hasValue = data.hasOwnProperty(field.id) && data[field.id] != null &&
+          (typeof data[field.id] !== 'object' || Object.keys(data[field.id]).length > 0);
+
+        if (
+          caseField?.hidden === true &&
+          field.display_context !== 'HIDDEN' &&
+          field.display_context !== 'HIDDEN_TEMP' &&
+          !field.retain_hidden_value &&
+          field.id !== 'caseLinks' &&
+          hasValue
+        ) {
+          data[field.id] = null;
+          console.log(`[FormValueService] Setting field ${field.id} as hidden`);
+          continue; // If field is now hidden, skip checking its children
+        }
+        if (field.field_type) {
+          switch (field.field_type.type) {
+          case 'Complex':
+            if (data[field.id] && formControls[field.id] && formControls[field.id]['controls']) {
+            this.removeHiddenField(data[field.id], field.field_type.complex_fields, clearNonCase, formControls[field.id]['controls']);
+            }
+            break;
+          case 'Collection':
+            const collection = data[field.id];
+            if (collection && Array.isArray(collection) && field.field_type.collection_field_type.type === 'Complex') {
+            for (const item of collection) {
+              if (formControls[field.id] && formControls[field.id]['controls']) {
+              this.removeHiddenField(item, field.field_type.collection_field_type.complex_fields, clearNonCase, formControls[field.id]['controls']);
+              }
+            }
+            }
+            break;
+          default:
+            break;
+          }
         }
       }
     }
