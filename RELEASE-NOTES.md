@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.54-exui-2986
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
 ### Version 7.2.54
 **EXUI-3555** Judges should be able to respond to queries
 
