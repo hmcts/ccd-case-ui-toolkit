@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.54-exui-2489
+**EXUI-2489** Index navigation 2 - media viewer
+
 ### Version 7.2.54
 **EXUI-3555** Judges should be able to respond to queries
 
