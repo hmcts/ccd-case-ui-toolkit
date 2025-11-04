@@ -112,7 +112,8 @@ export class FormValidatorsService {
       }
 
       const runs = this.extendClosingRunAndRequireParen(value, seg.absStart, seg.afterFirstClose);
-      if (runs && runs.openingRunCount === runs.closingRunCount) {
+      // if there is more than one opening '[' and there is at least a matching number of closing ']'
+      if (runs && runs.openingRunCount > 1 && runs.openingRunCount === runs.closingRunCount) {
         // If there were additional validation rules, they would be applied here
         return true;
       }
