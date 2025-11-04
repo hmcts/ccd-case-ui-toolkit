@@ -25,7 +25,7 @@ describe('DocumentManagementService', () => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
-      'getAnnotationApiUrl', 'getCdamExclusionList', 'getDocumentManagementUrlV2'
+      'getAnnotationApiUrl', 'getCdamExclusionList', 'getDocumentManagementUrlV2', 'logMessage'
     ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);

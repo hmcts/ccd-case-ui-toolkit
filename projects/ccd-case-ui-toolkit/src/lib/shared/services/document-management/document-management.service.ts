@@ -63,6 +63,7 @@ export class DocumentManagementService {
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
+    this.appConfig.logMessage(`Uploading document for case type: ${this.caseTypeId}, with url: ${url}`);
     const headers = new HttpHeaders();
     return this.http
       .post(url, formData, {headers, observe: 'body'})
@@ -145,7 +146,7 @@ export class DocumentManagementService {
   public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
-
+    this.appConfig.logMessage(`isDocumentOnExclusionList: ${isDocumentOnExclusionList}`);
     if (!isDocumentOnExclusionList){
       return true;
     }
