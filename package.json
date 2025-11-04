@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.54-markdown-validation-improve",
+  "version": "7.2.54-markdown-add-validation",
   "engines": {
     "node": ">=18.19.0"
   },
