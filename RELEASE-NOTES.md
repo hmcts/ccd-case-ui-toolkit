@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.57
+**EXUI-3055** Add message in Payment History tab
+
 ### Version 7.2.56
 **EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
 
