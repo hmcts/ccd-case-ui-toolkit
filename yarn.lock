@@ -3274,9 +3274,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.9-cme-779-prerelease"
     "@hmcts/frontend": "npm:0.0.50-alpha"
+<<<<<<< HEAD
     "@hmcts/media-viewer": "npm:4.1.9-cme-776-angular-20"
     "@ngrx/effects": "npm:^20.0.1"
     "@ngrx/store": "npm:^20.0.1"
+=======
+    "@hmcts/media-viewer": "npm:4.1.9"
+    "@ngrx/effects": "npm:17.2.0"
+    "@ngrx/store": "npm:^17.2.0"
+>>>>>>> origin/master
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@storybook/addon-actions": "npm:^6.5.10"
     "@storybook/addon-essentials": "npm:^6.5.10"
@@ -3413,9 +3419,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@hmcts/media-viewer@npm:4.1.9-cme-776-angular-20":
   version: 4.1.9-cme-776-angular-20
   resolution: "@hmcts/media-viewer@npm:4.1.9-cme-776-angular-20"
+=======
+"@hmcts/media-viewer@npm:4.1.9":
+  version: 4.1.9
+  resolution: "@hmcts/media-viewer@npm:4.1.9"
+>>>>>>> origin/master
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3429,12 +3441,21 @@ __metadata:
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
     "@angular/material": ^17.3.8
+<<<<<<< HEAD
     "@angular/platform-browser": ^20.0.0
     "@ngrx/effects": ^20
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
   checksum: 10/9ee138d7057e807b64312aa3a8ed0038dbcaa414c6df874dd77a413eed110167c25c934b45a46347ee5f4b119e9e57f699ba0126e6d8ed94942dd6c47e2aa99b
+=======
+    "@angular/platform-browser": ^17.3.8
+    "@ngrx/effects": ^17.0.0
+    "@ngrx/router-store": ^17.0.0
+    "@ngrx/store": ^17.0.0
+    "@ngrx/store-devtools": ^17.0.0
+  checksum: 10/4b05afef2bb83816390cb57da887f70180734e62e23b5f470aa0b13afc7bcff44c9913feb305da839c54a4f7651f948f992d4e6322be354fb79318182c9b9192
+>>>>>>> origin/master
   languageName: node
   linkType: hard
 

@@ -95,7 +95,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
       // use the documentManagement service to check if the document upload should use CDAM
       if (this.documentManagement.isDocumentSecureModeEnabled()) {
+        this.appConfig.logMessage(`CDAM is enabled for case with case ref:: ${caseDetails?.case_id}`);
         this.fileSecureModeOn = true;
+      } else {
+        this.appConfig.logMessage(`CDAM is disabled for case with case ref:: ${caseDetails?.case_id}`);
       }
       this.dialogConfig = initDialog();
       let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
