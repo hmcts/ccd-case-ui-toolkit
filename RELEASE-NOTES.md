@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.2.57
+**EXUI-3055** Add message in Payment History tab
+
+### Version 7.2.56
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
+### Version 7.2.55
+**EXUI-3552** Some of the requests for document create are going to XUI and not CDAM
+
 ### Version 7.2.54
 **EXUI-3555** Judges should be able to respond to queries
 
