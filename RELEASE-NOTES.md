@@ -1,9 +1,21 @@
 ## RELEASE NOTES
 
+### Version 7.2.56
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
+### Version 7.2.55
+**EXUI-3552** Some of the requests for document create are going to XUI and not CDAM
+
+### Version 7.2.54
+**EXUI-3555** Judges should be able to respond to queries
+
+### Version 7.2.53
+**EXUI-2519** Angular error in query-write-raise-query.component
+
+### Version 7.2.52
+**EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
+
 ### Version 7.2.51
-**EXUI-3066** Dates/Times: Accept input in local time
-**EXUI-3005** timestamp values displayed
-**EXUI-3003** Notice of Change Timestamp showing as GMT
 **EXUI-2761** Include service and case type IDs in Manage Case URLs
 **EXUI-3044** Update Content Security Policy
 
