@@ -740,18 +740,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // removeHiddenFields while are hidden in the UI
     // Only remove hidden fields if editForm and its controls are available
-    if (
-      this.editForm &&
-      this.editForm.controls &&
-      this.editForm.controls['data'] &&
-      this.editForm.controls['data']['controls']
-    ) {
-      this.formValueService.removeHiddenField(
-      caseEventData.data,
-      caseFields,
-      clearNonCase,
-      this.editForm.controls['data']['controls']
-      );
+    if (this.editForm?.controls?.['data']?.['controls']) {
+      this.formValueService.removeHiddenField(caseEventData.data, caseFields, clearNonCase, this.editForm.controls['data']['controls']);
     }
 
     return caseEventData;

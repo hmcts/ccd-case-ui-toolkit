@@ -366,7 +366,7 @@ export class FormValueService {
       }
     }
   }
-  // exui-3582 When a form field becomes hidden due to the user’s input in the event journey, 
+  // exui-3582 When a form field becomes hidden based on user’s input in the event journey, 
   // its stored value must be cleared and it must not be submitted or persisted.
   public removeHiddenField(data: object, caseFields: CaseField[], clearNonCase: boolean, formControls: { [key: string]: AbstractControl }): void {
     if (clearNonCase && data && caseFields && caseFields.length > 0) {
@@ -393,24 +393,28 @@ export class FormValueService {
           hasValue
         ) {
           data[field.id] = null;
-          console.log(`[FormValueService] Setting field ${field.id} as hidden`);
           continue; // If field is now hidden, skip checking its children
         }
         if (field.field_type) {
           switch (field.field_type.type) {
           case 'Complex':
-            if (data[field.id] && formControls[field.id] && formControls[field.id]['controls']) {
-            this.removeHiddenField(data[field.id], field.field_type.complex_fields, clearNonCase, formControls[field.id]['controls']);
+            const complexData = data[field.id] ?? data['value'];
+            if (complexData && formControls[field.id] && formControls[field.id]['controls']) {
+              this.removeHiddenField(complexData, field.field_type.complex_fields, clearNonCase, formControls[field.id]['controls']);
             }
             break;
           case 'Collection':
             const collection = data[field.id];
             if (collection && Array.isArray(collection) && field.field_type.collection_field_type.type === 'Complex') {
-            for (const item of collection) {
-              if (formControls[field.id] && formControls[field.id]['controls']) {
-              this.removeHiddenField(item, field.field_type.collection_field_type.complex_fields, clearNonCase, formControls[field.id]['controls']);
-              }
-            }
+              collection.forEach((item, index) => {
+                if (formControls[field.id] && formControls[field.id]['controls'] && formControls[field.id]['controls'][index]) {
+                    const itemControls = formControls[field.id]?.['controls']?.[index]?.['controls']?.['value'];
+                    const collectionData = item['value'] ?? item;
+                    if (collectionData && itemControls?.['controls']) {
+                      this.removeHiddenField(collectionData, field.field_type.collection_field_type.complex_fields, clearNonCase, itemControls['controls']);
+                    }
+                }
+              });
             }
             break;
           default:

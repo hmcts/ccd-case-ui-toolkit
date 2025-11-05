@@ -332,18 +332,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
     // removeHiddenFields while are hidden in the UI
     // Only remove hidden fields if editForm and its controls are available
-    if (
-      form &&
-      form.controls &&
-      form.controls['data'] &&
-      form.controls['data']['controls']
-    ) {
-      this.formValueService.removeHiddenField(
-      caseEventData.data,
-      pageListCaseFields,
-      true,
-      form.controls['data']['controls']
-      );
+    if (form?.controls?.['data']?.['controls']) {
+      this.formValueService.removeHiddenField(caseEventData.data, pageListCaseFields, true, form.controls['data']['controls']);
     }
 
     caseEventData.event_token = eventTrigger.event_token;

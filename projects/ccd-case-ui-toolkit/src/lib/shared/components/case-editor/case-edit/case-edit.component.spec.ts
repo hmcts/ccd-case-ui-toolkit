@@ -295,6 +295,7 @@ describe('CaseEditComponent', () => {
       mockabstractConfig = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['logMessage']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
+      formValueService.removeHiddenField = jasmine.createSpy('removeHiddenField').and.callFake((...args: any[]) => {});
 
       route = {
         queryParams: of({ Origin: 'viewDraft' }),
