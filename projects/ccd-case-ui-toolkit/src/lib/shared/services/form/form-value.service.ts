@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-
+import { AbstractControl } from '@angular/forms';
 import { CaseField, FieldTypeEnum } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
-import { AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class FormValueService {
