@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+
 import { Observable, of, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
@@ -175,68 +177,68 @@ describe('CaseFileViewFieldComponent', () => {
 
   it('should register loadingToken, call updateDocumentCategory and unregister loadingToken on finalize ' +
     'when calling moveDocument and successful', () => {
-      const document = new DocumentTreeNode();
-      Object.assign(document, {
-        document: {
-          name: 'name',
-          type: DocumentTreeNodeType.DOCUMENT,
-          children: [],
-          document_filename: 'document_filename',
-          document_binary_url: 'document_binary_url',
-          attribute_path: 'attribute_path'
-        },
-        newCategory: 'newCategoryId'
-      });
-
-      const data = {
-        document,
-        newCategory: 'newCategoryId'
-      };
-
-      mockCaseFileViewService.updateDocumentCategory.and.returnValue(of({ response: true }));
-      component.reloadPage = () => { };
-      spyOn(component, 'reloadPage').and.callThrough();
-      spyOn(component, 'resetErrorMessages').and.callThrough();
-
-      component.moveDocument(data);
-
-      expect(mockCaseFileViewService.updateDocumentCategory)
-        // @ts-expect-error - component.caseVersion is a private property
-        .toHaveBeenCalledWith(cidParam, component.caseVersion, data.document.attribute_path, data.newCategory);
-      // @ts-expect-error - loadingService private property
-      expect(component.loadingService.register).toHaveBeenCalled();
-      // @ts-expect-error - loadingService private property
-      expect(component.loadingService.unregister).toHaveBeenCalled();
-      expect(component.resetErrorMessages).toHaveBeenCalled();
-      expect(component.reloadPage).toHaveBeenCalled();
+    const document = new DocumentTreeNode();
+    Object.assign(document, {
+      document: {
+        name: 'name',
+        type: DocumentTreeNodeType.DOCUMENT,
+        children: [],
+        document_filename: 'document_filename',
+        document_binary_url: 'document_binary_url',
+        attribute_path: 'attribute_path'
+      },
+      newCategory: 'newCategoryId'
     });
+
+    const data = {
+      document,
+      newCategory: 'newCategoryId'
+    };
+
+    mockCaseFileViewService.updateDocumentCategory.and.returnValue(of({ response: true }));
+    component.reloadPage = () => { };
+    spyOn(component, 'reloadPage').and.callThrough();
+    spyOn(component, 'resetErrorMessages').and.callThrough();
+
+    component.moveDocument(data);
+
+    expect(mockCaseFileViewService.updateDocumentCategory)
+    // @ts-expect-error - component.caseVersion is a private property
+      .toHaveBeenCalledWith(cidParam, component.caseVersion, data.document.attribute_path, data.newCategory);
+    // @ts-expect-error - loadingService private property
+    expect(component.loadingService.register).toHaveBeenCalled();
+    // @ts-expect-error - loadingService private property
+    expect(component.loadingService.unregister).toHaveBeenCalled();
+    expect(component.resetErrorMessages).toHaveBeenCalled();
+    expect(component.reloadPage).toHaveBeenCalled();
+  });
 
   it('should set errorMessages after calling updateDocumentCategory and unregister loadingToken on finalize ' +
     'when calling moveDocument and it throws an error', () => {
-      const document = new DocumentTreeNode();
-      Object.assign(document, {
-        document: {
-          name: 'name',
-          type: DocumentTreeNodeType.DOCUMENT,
-          children: [],
-          document_filename: 'document_filename',
-          document_binary_url: 'document_binary_url',
-          attribute_path: 'attribute_path'
-        },
-        newCategory: 'newCategoryId'
-      });
-
-      const data = {
-        document,
-        newCategory: 'newCategoryId'
-      };
-
-      expect(component.errorMessages.length).toBe(0);
-      mockCaseFileViewService.updateDocumentCategory.and.returnValue(throwError({ response: 'error' }));
-      component.reloadPage = () => { };
-      component.moveDocument(data);
-      expect(component.errorMessages.length).toBe(1);
+    const document = new DocumentTreeNode();
+    Object.assign(document, {
+      document: {
+        name: 'name',
+        type: DocumentTreeNodeType.DOCUMENT,
+        children: [],
+        document_filename: 'document_filename',
+        document_binary_url: 'document_binary_url',
+        attribute_path: 'attribute_path'
+      },
+      newCategory: 'newCategoryId'
     });
+
+    const data = {
+      document,
+      newCategory: 'newCategoryId'
+    };
+
+    expect(component.errorMessages.length).toBe(0);
+    mockCaseFileViewService.updateDocumentCategory.and.returnValue(throwError({ response: 'error' }));
+    component.reloadPage = () => { };
+    component.moveDocument(data);
+    expect(component.errorMessages.length).toBe(1);
+  });
 
   it('should display the error messages', () => {
     component.errorMessages = ['Error 1', 'Error 2'];
@@ -270,5 +272,125 @@ describe('CaseFileViewFieldComponent', () => {
     fixture.detectChanges();
     const callIcpEnabled = component.isIcpEnabled();
     expect(callIcpEnabled).toBeTruthy();
+  });
+
+  describe('moveDocument error mapping (explicit statuses)', () => {
+    const makeData = () => {
+      const document = new DocumentTreeNode();
+      Object.assign(document, {
+        document_filename: 'document_filename',
+        document_binary_url: 'document_binary_url',
+        attribute_path: 'attribute_path'
+      });
+      return { document, newCategory: 'newCategoryId' };
+    };
+
+    const makeHttpError = (status: number, error: any = {}) =>
+      new HttpErrorResponse({ status, error });
+
+    it('400 → default BadRequest message (no backend message)', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.BadRequest, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The request was invalid. Check the document path and destination folder.');
+    });
+
+    it('409 → stale version guidance', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.Conflict, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('This case changed since you opened it. Refresh and try again.');
+    });
+
+    it('404 → not found message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.NotFound, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The document or destination folder could not be found.');
+    });
+
+    it('401 → permission message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.Unauthorized, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('You do not have permission to move this document to the selected folder.');
+    });
+
+    it('403 → permission message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.Forbidden, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('You do not have permission to move this document to the selected folder.');
+    });
+
+    it('503 → temporary service issue message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.ServiceUnavailable, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The service is temporarily unavailable. Please try again in a moment.');
+    });
+
+    it('504 → temporary service issue message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.GatewayTimeout, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The service is temporarily unavailable. Please try again in a moment.');
+    });
+
+    it('defaults to the generic message for unknown status codes (e.g. 500 or 418)', () => {
+      const data = {
+        document: Object.assign(new DocumentTreeNode(), {
+          document_filename: 'dummy.pdf',
+          document_binary_url: '/test/binary',
+          attribute_path: 'path'
+        }),
+        newCategory: 'category'
+      };
+
+      // 500 is not handled explicitly in switch; should hit "default" case
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => new HttpErrorResponse({ status: 500, error: {} }))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('We couldn\'t move the document. Please try again.');
+    });
   });
 });
