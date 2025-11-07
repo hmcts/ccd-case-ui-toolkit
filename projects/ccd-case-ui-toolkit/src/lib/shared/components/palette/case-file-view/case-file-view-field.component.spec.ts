@@ -274,7 +274,7 @@ describe('CaseFileViewFieldComponent', () => {
     expect(callIcpEnabled).toBeTruthy();
   });
 
-  describe('moveDocument error mapping', () => {
+  describe('moveDocument error mapping (explicit statuses)', () => {
     const makeData = () => {
       const document = new DocumentTreeNode();
       Object.assign(document, {
@@ -285,27 +285,49 @@ describe('CaseFileViewFieldComponent', () => {
       return { document, newCategory: 'newCategoryId' };
     };
 
-    it('maps 409 Conflict to stale version guidance', () => {
+    const makeHttpError = (status: number, error: any = {}) =>
+      new HttpErrorResponse({ status, error });
+
+    it('400 → default BadRequest message (no backend message)', () => {
       const data = makeData();
       mockCaseFileViewService.updateDocumentCategory.and.returnValue(
-        throwError(() => new HttpErrorResponse({
-          status: HttpStatusCode.Conflict,
-          error: {}
-        }))
+        throwError(() => makeHttpError(HttpStatusCode.BadRequest, {}))
       );
 
       component.moveDocument(data);
 
-      expect(component.errorMessages[0]).toBe('This case changed since you opened it. Refresh and try again.');
+      expect(component.errorMessages[0])
+        .toBe('The request was invalid. Check the document path and destination folder.');
     });
 
-    it('maps 401/403 to permission message (403 example)', () => {
+    it('409 → stale version guidance', () => {
       const data = makeData();
       mockCaseFileViewService.updateDocumentCategory.and.returnValue(
-        throwError(() => new HttpErrorResponse({
-          status: HttpStatusCode.Forbidden,
-          error: {}
-        }))
+        throwError(() => makeHttpError(HttpStatusCode.Conflict, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('This case changed since you opened it. Refresh and try again.');
+    });
+
+    it('404 → not found message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.NotFound, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The document or destination folder could not be found.');
+    });
+
+    it('401 → permission message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.Unauthorized, {}))
       );
 
       component.moveDocument(data);
@@ -314,19 +336,61 @@ describe('CaseFileViewFieldComponent', () => {
         .toBe('You do not have permission to move this document to the selected folder.');
     });
 
-    it('falls back to a generic message for 5xx without backend details', () => {
+    it('403 → permission message', () => {
       const data = makeData();
       mockCaseFileViewService.updateDocumentCategory.and.returnValue(
-        throwError(() => new HttpErrorResponse({
-          status: 500,
-          error: {}
-        }))
+        throwError(() => makeHttpError(HttpStatusCode.Forbidden, {}))
       );
 
       component.moveDocument(data);
 
-      expect(component.errorMessages[0]).toBe('We couldn\'t move the document. Please try again.');
+      expect(component.errorMessages[0])
+        .toBe('You do not have permission to move this document to the selected folder.');
+    });
+
+    it('503 → temporary service issue message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.ServiceUnavailable, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The service is temporarily unavailable. Please try again in a moment.');
+    });
+
+    it('504 → temporary service issue message', () => {
+      const data = makeData();
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => makeHttpError(HttpStatusCode.GatewayTimeout, {}))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('The service is temporarily unavailable. Please try again in a moment.');
+    });
+
+    it('defaults to the generic message for unknown status codes (e.g. 500 or 418)', () => {
+      const data = {
+        document: Object.assign(new DocumentTreeNode(), {
+          document_filename: 'dummy.pdf',
+          document_binary_url: '/test/binary',
+          attribute_path: 'path'
+        }),
+        newCategory: 'category'
+      };
+
+      // 500 is not handled explicitly in switch; should hit "default" case
+      mockCaseFileViewService.updateDocumentCategory.and.returnValue(
+        throwError(() => new HttpErrorResponse({ status: 500, error: {} }))
+      );
+
+      component.moveDocument(data);
+
+      expect(component.errorMessages[0])
+        .toBe('We couldn\'t move the document. Please try again.');
     });
   });
-
 });

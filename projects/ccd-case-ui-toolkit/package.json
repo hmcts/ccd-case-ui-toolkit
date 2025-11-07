@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.58-update-all-error-message",
+  "version": "7.2.58-update-all-error-message-1",
   "engines": {
     "node": ">=18.19.0"
   },
