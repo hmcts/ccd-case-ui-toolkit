@@ -63,13 +63,10 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [paymentWebComponent],
         declarations: [
-          CasePaymentHistoryViewerFieldComponent,
-
-          // Mocks
-          MockRpxTranslatePipe,
-          paymentWebComponent
+         CasePaymentHistoryViewerFieldComponent,
+         MockRpxTranslatePipe,
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },

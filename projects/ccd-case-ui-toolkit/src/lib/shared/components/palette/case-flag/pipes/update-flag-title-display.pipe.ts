@@ -7,7 +7,8 @@ import { FlagDetail } from '../domain';
 
 @Pipe({
   name: 'updateFlagTitleDisplay',
-  pure: false
+  pure: false,
+  standalone: false
 })
 export class UpdateFlagTitleDisplayPipe extends AsyncPipe implements PipeTransform {
   private languageObservables = new Map<string, Observable<string>>();

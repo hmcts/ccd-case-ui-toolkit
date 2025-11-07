@@ -6,7 +6,8 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
 @Component({
   selector: 'ccd-case-file-view-folder-sort',
   templateUrl: './case-file-view-folder-sort.component.html',
-  styleUrls: ['./case-file-view-folder-sort.component.scss']
+  styleUrls: ['./case-file-view-folder-sort.component.scss'],
+  standalone: false
 })
 export class CaseFileViewFolderSortComponent implements OnInit {
   public isOpen = false;

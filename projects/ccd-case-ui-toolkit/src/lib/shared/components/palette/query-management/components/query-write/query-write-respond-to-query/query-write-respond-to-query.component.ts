@@ -12,7 +12,8 @@ import { QueryManagementService } from '../../../services';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
-  styleUrls: ['./query-write-respond-to-query.component.scss']
+  styleUrls: ['./query-write-respond-to-query.component.scss'],
+  standalone: false
 })
 
 export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {

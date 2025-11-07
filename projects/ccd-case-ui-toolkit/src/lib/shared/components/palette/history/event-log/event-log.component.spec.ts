@@ -11,8 +11,9 @@ describe('EventLogComponent', () => {
 
   @Component({
     selector: 'ccd-event-log-table',
-    template: ``
-  })
+    template: ``,
+    standalone: false
+})
   class EventLogTableComponent {
     @Input()
     public events: CaseViewEvent[];
@@ -29,8 +30,9 @@ describe('EventLogComponent', () => {
 
   @Component({
     selector: 'ccd-event-log-details',
-    template: ``
-  })
+    template: ``,
+    standalone: false
+})
   class EventLogDetailsComponent {
     @Input()
     public event: CaseViewEvent;

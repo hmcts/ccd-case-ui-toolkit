@@ -46,14 +46,14 @@ describe('WritePhoneUKFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           WritePhoneUKFieldComponent,
           // Mocks
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          inputComponentMock
+          MockFieldLabelPipe
         ],
         providers: []
       })

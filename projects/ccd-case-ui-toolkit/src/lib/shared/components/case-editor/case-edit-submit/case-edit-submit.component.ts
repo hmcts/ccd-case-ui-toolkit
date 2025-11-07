@@ -25,7 +25,8 @@ import { LinkedCasesService } from '../../palette/linked-cases/services/linked-c
 @Component({
   selector: 'ccd-case-edit-submit',
   templateUrl: 'case-edit-submit.html',
-  styleUrls: ['../case-edit.scss']
+  styleUrls: ['../case-edit.scss'],
+  standalone: false
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public eventTrigger: CaseEventTrigger;

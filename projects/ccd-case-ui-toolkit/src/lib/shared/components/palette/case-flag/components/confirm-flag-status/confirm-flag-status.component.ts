@@ -13,7 +13,8 @@ import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
   selector: 'ccd-confirm-flag-status',
-  templateUrl: './confirm-flag-status.component.html'
+  templateUrl: './confirm-flag-status.component.html',
+  standalone: false
 })
 export class ConfirmFlagStatusComponent extends AbstractJourneyComponent implements OnInit, Journey {
 

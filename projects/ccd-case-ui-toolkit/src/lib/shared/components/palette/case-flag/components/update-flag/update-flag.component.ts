@@ -17,7 +17,8 @@ import { MultipageComponentStateService } from "../../../../../services";
 
 @Component({
   selector: 'ccd-update-flag',
-  templateUrl: './update-flag.component.html'
+  templateUrl: './update-flag.component.html',
+  standalone: false
 })
 export class UpdateFlagComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
@@ -49,7 +50,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
   }
 
   constructor(
-    private readonly rpxTranslationService: RpxTranslationService, 
+    private readonly rpxTranslationService: RpxTranslationService,
     multipageComponentStateService: MultipageComponentStateService
   ) {
     super(multipageComponentStateService);

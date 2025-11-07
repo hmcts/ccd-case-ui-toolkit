@@ -320,17 +320,17 @@ describe('CaseEditComponent', () => {
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
+            RouterTestingModule,
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           declarations: [
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
-            FieldsFilterPipe,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            FieldsFilterPipe
           ],
           providers: [
             WizardFactoryService,
@@ -1607,7 +1607,7 @@ describe('CaseEditComponent', () => {
     });
   });
 
-  xdescribe('profile not available in route', () => {
+  describe('profile not available in route', () => {
     const USER = {
       idam: {
         id: 'userId',
@@ -1681,16 +1681,14 @@ describe('CaseEditComponent', () => {
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
-          ],
-          declarations: [
-            CaseEditComponent,
-
-            // Mocks
+            RouterTestingModule,
             eventTriggerHeaderComponentMock,
             routerLinkComponentMock,
             fieldReadComponentMock,
             fieldWriteComponentMock
+          ],
+          declarations: [
+            CaseEditComponent
           ],
           providers: [
             WizardFactoryService,
