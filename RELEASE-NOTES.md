@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.57-exui-2821-1
+**EXUI-2821** Media Viewer - Search/Present button issues
+
 ### Version 7.2.57
 **EXUI-3055** Add message in Payment History tab
 
