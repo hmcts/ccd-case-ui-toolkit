@@ -1,7 +1,32 @@
 ## RELEASE NOTES
 
-### Version 7.2.49-exui-2821-1
+### Version 7.2.57-exui-2821-1
 **EXUI-2821** Media Viewer - Search/Present button issues
+
+### Version 7.2.57
+**EXUI-3055** Add message in Payment History tab
+
+### Version 7.2.56
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
+### Version 7.2.55
+**EXUI-3552** Some of the requests for document create are going to XUI and not CDAM
+
+### Version 7.2.54
+**EXUI-3555** Judges should be able to respond to queries
+
+### Version 7.2.53
+**EXUI-2519** Angular error in query-write-raise-query.component
+
+### Version 7.2.52
+**EXUI-3209** Accessibility: WAVE Reports 3 Errors on upload Additional Applications Page
+
+### Version 7.2.51
+**EXUI-2761** Include service and case type IDs in Manage Case URLs
+**EXUI-3044** Update Content Security Policy
+
+### Version 7.2.50 - REVERTED FROM MASTER
+**EXUI-3455** redirect page back to /cases/case-filter to when form has no data
 
 ### Version 7.2.49
 **EXUI-3457** ManageCaseLink Event Not working-Breaking the Nightly build

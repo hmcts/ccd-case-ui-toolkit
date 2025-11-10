@@ -1,3 +1,10 @@
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
+        {{PAYMENT_HISTORY_WARNING | rpxTranslate}}
+    </strong>
+</div>
 <ccpay-payment-lib
     [API_ROOT]="getBaseURL()"
     [CCD_CASE_NUMBER]="caseReference"

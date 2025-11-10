@@ -10,7 +10,7 @@
      <div class="govuk-error-summary__body">
        <ul class="govuk-list govuk-error-summary__list">
          <li *ngFor="let errorMessage of errorMessages">
-           <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
+           <a [id]="'error-' + errorMessage.fieldId" href="#" (click)="$event.preventDefault()"
              class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
          </li>
        </ul>
@@ -55,10 +55,10 @@
           {{ queryCreateContext === queryCreateContextEnum.RESPOND ? queryItem.subject : formGroup.get('subject')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a  *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" 
-            href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button"  *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" 
+            class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+        </button>
         </dd>
       </div>
     </dl>
@@ -72,9 +72,9 @@
           {{ formGroup.get('body')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button" class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+          </button>
         </dd>
       </div>
     </dl>
@@ -93,9 +93,9 @@
           </ng-template>
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button" class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+          </button>
         </dd>
       </div>
 
@@ -109,9 +109,9 @@
           {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button" class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+          </button>
         </dd>
       </div>
     </dl>
@@ -128,9 +128,9 @@
           </ccd-query-attachments-read>
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button" class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+          </button>
         </dd>
       </div>
     </dl>
@@ -144,9 +144,9 @@
           {{ formGroup.get('closeQuery')?.value ? 'I want to close this query' : 'No answer' | rpxTranslate }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <button type="button" class="govuk-js-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
-          </a>
+          </button>
         </dd>
       </div>
     </dl>

@@ -8,10 +8,14 @@ describe('CaseChallengedAccessSuccessComponent', () => {
   let component: CaseChallengedAccessSuccessComponent;
   let fixture: ComponentFixture<CaseChallengedAccessSuccessComponent>;
   const caseId = '1234123412341234';
+  const jurisdictionId = 'TestJurisdiction';
+  const caseTypeId = 'TestCaseType';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: caseId
+        cid: caseId,
+        jurisdiction: jurisdictionId,
+        caseType: caseTypeId
       }
     }
   };
@@ -41,6 +45,6 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('p.govuk-body a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toContain(`/cases/case-details/${caseId}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toContain(`/cases/case-details/${jurisdictionId}/${caseTypeId}/${caseId}`);
   });
 });

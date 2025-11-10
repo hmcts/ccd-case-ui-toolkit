@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -9,6 +9,7 @@ import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
 import { QualifyingQuestionService } from '../../../services';
 import { QualifyingQuestion } from '../../../models';
+import { CommonModule } from '@angular/common';
 
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
@@ -17,10 +18,14 @@ describe('QualifyingQuestionOptionsComponent', () => {
     navigate: jasmine.createSpy('navigate')
   };
   const caseId = '12345';
+  const jurisdictionId = 'TestJurisdiction';
+  const caseTypeId = 'TestCaseType';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: caseId
+        cid: caseId,
+        jurisdiction: jurisdictionId,
+        caseType: caseTypeId
       }
     }
   };
@@ -30,6 +35,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [CommonModule, FormsModule, ReactiveFormsModule],
       declarations: [
         QualifyingQuestionOptionsComponent,
         MockRpxTranslatePipe
@@ -67,7 +73,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
 
   it('should have the link to case details queries tab', () => {
     component.click();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Queries' });
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', 'TestJurisdiction', 'TestCaseType', '12345'], { fragment: 'Queries' });
   });
 
   describe('displayError', () => {
