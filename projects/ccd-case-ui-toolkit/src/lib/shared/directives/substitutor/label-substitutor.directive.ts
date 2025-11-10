@@ -5,7 +5,7 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { Subscription } from 'rxjs';
+import { skip, Subscription } from 'rxjs';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -33,7 +33,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.caseField.originalLabel = this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
-    this.languageSubscription = this.rpxTranslationService.language$.subscribe(() => {
+    this.languageSubscription = this.rpxTranslationService.language$.pipe(
+      skip(1)
+    ).subscribe(() => {
       this.onLanguageChange();
     });
 
