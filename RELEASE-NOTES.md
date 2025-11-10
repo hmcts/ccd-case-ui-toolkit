@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.57-exui-1580-1
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
 ### Version 7.2.57
 **EXUI-3055** Add message in Payment History tab
 
