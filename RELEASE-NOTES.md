@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.58-exui-3053
+**EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
 ### Version 7.2.58
 **EXUI-2821** Media Viewer - Search/Present button issues
 
