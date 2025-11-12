@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.2.59
+**EXUI-3661** Performance issues on screens to return data
+**EXUI-3681** Users unable to upload documents
+
 ### Version 7.2.58
 **EXUI-2821** Media Viewer - Search/Present button issues
 
