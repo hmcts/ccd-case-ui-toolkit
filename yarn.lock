@@ -4585,7 +4585,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.9-exui-2821-1"
+    "@hmcts/media-viewer": "npm:4.1.10"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -4725,9 +4725,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.9-exui-2821-1":
-  version: 4.1.9-exui-2821-1
-  resolution: "@hmcts/media-viewer@npm:4.1.9-exui-2821-1"
+"@hmcts/media-viewer@npm:4.1.10":
+  version: 4.1.10
+  resolution: "@hmcts/media-viewer@npm:4.1.10"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -4746,7 +4746,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/b1f4075dbf58b32f2b5fc6fbd6591154d41f440f8fc77e17a2c1f7bafa0be2f6415ba1615e3894db5ba42f2fa37965598ac97c979874b9b64e8bbea9f13f81b2
+  checksum: 10/ba36eec0bbcc75d7c17a76e9869c605a2224ed89e49d1814c351975ce94cc853dd6386c30159485596c55b7af69b8f0f6a51b60476cfa61e228d95c7d2f0eb1e
   languageName: node
   linkType: hard
 
