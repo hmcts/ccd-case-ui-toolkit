@@ -235,5 +235,5 @@
     "sourceMap": false,
     "instrument": false
   },
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.11.0"
 }
