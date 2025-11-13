@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.59-exui-3066
+**EXUI-3066** HALO-23226 Dates/Times: Accept input in local time
+
 ### Version 7.2.59
 **EXUI-3661** Performance issues on screens to return data
 **EXUI-3681** Users unable to upload documents
