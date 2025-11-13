@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.2.59-exui-3053
+**EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
 ### Version 7.2.59
 **EXUI-3661** Performance issues on screens to return data
 **EXUI-3681** Users unable to upload documents
