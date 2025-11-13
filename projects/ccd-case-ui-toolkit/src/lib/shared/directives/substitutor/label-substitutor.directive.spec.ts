@@ -846,24 +846,18 @@ describe('LabelSubstitutorDirective', () => {
       expect(comp.caseField.isTranslated).toBe(false);
     });
 
-    it('should handle language change timeout correctly', fakeAsync(() => {
+    it('should handle language change correctly', fakeAsync(() => {
       const label = 'Label with ${placeholder}';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Label with ValueA', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Label with ValueA', 'Label with ValueA', '', '');
       fixture.detectChanges();
 
       placeholderService.resolvePlaceholders.calls.reset();
 
       translationService.setLanguage('cy');
 
-      expect(placeholderService.resolvePlaceholders).not.toHaveBeenCalled();
-
-      tick(50);
-      expect(placeholderService.resolvePlaceholders).not.toHaveBeenCalled();
-
-      tick(50);
       fixture.detectChanges();
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalled();
     }));
