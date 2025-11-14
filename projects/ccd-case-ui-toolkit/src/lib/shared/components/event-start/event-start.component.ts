@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
+import { AbstractAppConfig } from '../../../app.config';
 import { Task } from '../../domain/work-allocation/Task';
 import { ReadCookieService } from '../../services/cookie/read-cookie-service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
@@ -20,7 +21,8 @@ export class EventStartComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly cookieService: ReadCookieService) {
+    private readonly cookieService: ReadCookieService,
+    private readonly abstractConfig: AbstractAppConfig) {
   }
 
   public ngOnInit(): void {
@@ -43,7 +45,7 @@ export class EventStartComponent implements OnInit {
     };
 
     // Initialise state machine
-    this.service = new EventStartStateMachineService();
+    this.service = new EventStartStateMachineService(this.abstractConfig);
     this.stateMachine = this.service.initialiseStateMachine(this.context);
     // Create states
     this.service.createStates(this.stateMachine);
