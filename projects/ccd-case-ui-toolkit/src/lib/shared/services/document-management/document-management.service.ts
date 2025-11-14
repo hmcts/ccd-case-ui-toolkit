@@ -146,7 +146,6 @@ export class DocumentManagementService {
   public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
-    this.appConfig.logMessage(`isDocumentOnExclusionList: ${isDocumentOnExclusionList}`);
     if (!isDocumentOnExclusionList){
       return true;
     }
