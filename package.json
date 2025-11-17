@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.57-exui-2906-activity-tracker",
+  "version": "7.2.59",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -63,7 +63,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.9-cme-779-prerelease",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.1.9-cme-776-angular-20",
+    "@hmcts/media-viewer": "4.1.10",
     "@ngrx/effects": "^20.0.1",
     "@ngrx/store": "^20.0.1",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
