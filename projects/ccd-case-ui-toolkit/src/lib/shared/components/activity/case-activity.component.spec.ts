@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { Activity, CaseActivityInfo, User } from '../../domain';
-import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService, SessionStorageService } from '../../services';
 import { MODES, Utils } from '../../services/activity/utils';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
@@ -28,6 +28,7 @@ describe('CaseActivityComponent', () => {
   let activityService: any;
   let activityPollingService: any;
   let activitySocketService: any;
+  let sessionStorageService: any;
   let pollingActivitySubject: Subject<Activity>;
 
   const getActivity = (caseId: string, editors: User[], viewers: User[]): Activity | CaseActivityInfo => {
@@ -80,6 +81,7 @@ describe('CaseActivityComponent', () => {
       },
       user: BOB_SMITH
     };
+    sessionStorageService = { getUserDetails: () => BOB_SMITH, getItem: (_k:any) => null } 
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['postActivity']);
     activityService.modeSubject = new BehaviorSubject<string>(undefined);
     pollingActivitySubject = new Subject<Activity>();
@@ -109,7 +111,8 @@ describe('CaseActivityComponent', () => {
       providers: [
         { provide: ActivityService, useValue: activityService },
         { provide: ActivityPollingService, useValue: activityPollingService },
-        { provide: ActivitySocketService, useValue: activitySocketService }
+        { provide: ActivitySocketService, useValue: activitySocketService },
+        { provide: SessionStorageService, useValue: sessionStorageService }
       ]
     }).compileComponents();
 
