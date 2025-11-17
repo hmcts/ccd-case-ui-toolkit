@@ -25,7 +25,7 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  private caseTypeId: string = '';
+  private readonly caseTypeId: string = '';
 
   constructor(
     private readonly http: HttpService,
