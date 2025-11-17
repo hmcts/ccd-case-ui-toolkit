@@ -462,11 +462,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.sessionStorageService.setItem('taskCompletionError', 'false');
     submit(caseEventData).pipe(switchMap((response) => {
       eventResponse = response;
+      this.abstractConfig.logMessage(`Event ${this.eventCompletionParams?.eventId} of case Id ${this.eventCompletionParams?.caseId} and taskId ${this.eventCompletionParams?.task?.id}`);
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
         // on event completion ensure the previous event clientContext/taskEventCompletionInfo removed
         // Note - Not removeTaskFromClientContext because could interfere with other logic
+        this.abstractConfig.logMessage(`Clearing client context and task event completion info after event ${this.eventCompletionParams?.eventId} submission of case Id ${this.eventCompletionParams?.caseId} and task Id ${this.eventCompletionParams?.task?.id}`);
         this.sessionStorageService.removeItem(CaseEditComponent.CLIENT_CONTEXT);
         this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO)
         this.isSubmitting = false;
@@ -476,6 +478,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           this.finishEventCompletionLogic(eventResponse);
         },
         error => {
+          this.abstractConfig.logMessage(`An error occurred while submission of event ${this.eventCompletionParams?.eventId} and case Id ${this.eventCompletionParams?.caseId} and taskId ${this.eventCompletionParams?.task?.id}`);
           if (!eventResponse) {
             // event submission error
             this.error = error;
