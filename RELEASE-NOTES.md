@@ -1,5 +1,18 @@
 ## RELEASE NOTES
 
+### Version 7.2.59
+**EXUI-3661** Performance issues on screens to return data
+**EXUI-3681** Users unable to upload documents
+
+### Version 7.2.58
+**EXUI-2821** Media Viewer - Search/Present button issues
+
+### Version 7.2.57
+**EXUI-3055** Add message in Payment History tab
+
+### Version 7.2.56
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
 ### Version 7.2.55
 **EXUI-3552** Some of the requests for document create are going to XUI and not CDAM
 
