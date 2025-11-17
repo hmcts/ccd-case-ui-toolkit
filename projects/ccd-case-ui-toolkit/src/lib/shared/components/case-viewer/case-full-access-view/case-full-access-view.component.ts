@@ -39,6 +39,7 @@ import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { MODES } from '../../../services/activity/utils';
+import { isSolicitorUser } from '../../../utils';
 
 
 @Component({
@@ -139,7 +140,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
-        if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
+        if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
           this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
@@ -8,6 +8,7 @@ import { UserInfo } from '../../domain/user';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';
 import { Utils, MODES } from './utils';
+import { isSolicitorUser } from '../../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class ActivitySocketService {
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
         this.destroy();
-        if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
+        if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
           this.init();
         }
       });

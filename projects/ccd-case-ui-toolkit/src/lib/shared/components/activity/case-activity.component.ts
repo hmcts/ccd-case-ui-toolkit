@@ -3,8 +3,9 @@ import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { Activity, CaseActivityInfo } from '../../domain/activity';
-import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService, SessionStorageService } from '../../services';
 import { Utils, MODES } from '../../services/activity/utils';
+import { isSolicitorUser } from '../../utils';
 
 interface ActivityDetails {
   viewers: string;
@@ -33,7 +34,8 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
   constructor(
     private readonly activityService: ActivityService,
     private readonly polling: ActivityPollingService,
-    private readonly socket: ActivitySocketService
+    private readonly socket: ActivitySocketService,
+    private readonly sessionStorageService: SessionStorageService,
   ) {}
 
   public ngOnInit(): void {
@@ -44,7 +46,7 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
         this.destroy();
         if (mode === MODES.polling) {
           this.initPolling();
-        } else if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
+        } else if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
           this.initSocket();
         }
       });

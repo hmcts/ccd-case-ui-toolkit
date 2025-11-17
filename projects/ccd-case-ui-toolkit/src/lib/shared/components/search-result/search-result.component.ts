@@ -10,6 +10,7 @@ import {
 import { CaseReferencePipe } from '../../pipes';
 import { ActivityService,
   ActivitySocketService,BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
+import { isSolicitorUser } from '../../utils';
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
@@ -147,7 +148,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
-      this.watchResults();
+      if(!isSolicitorUser(this.sessionStorageService)) {
+        this.watchResults();
+      }
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;

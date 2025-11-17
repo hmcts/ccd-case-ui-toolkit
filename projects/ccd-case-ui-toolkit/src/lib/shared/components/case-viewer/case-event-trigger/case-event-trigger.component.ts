@@ -18,6 +18,7 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 import { EventTriggerResolver } from '../services';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { MODES } from '../../../services/activity/utils';
+import { isSolicitorUser } from '../../../utils';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -70,7 +71,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         .pipe(filter(mode => !!mode))
         .pipe(distinctUntilChanged())
         .subscribe(mode => {
-          if (ActivitySocketService.SOCKET_MODES.includes(mode)) {
+          if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
               this.activitySocketService.connected
                 .subscribe(connected => {
                 if (connected) {
