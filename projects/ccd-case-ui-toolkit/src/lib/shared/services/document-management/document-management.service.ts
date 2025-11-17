@@ -32,7 +32,7 @@ export class DocumentManagementService {
     private readonly appConfig: AbstractAppConfig
   ) {
     const currUrl = window.location.pathname;
-    if (currUrl.indexOf('/case-details/') > -1){
+    if (currUrl.includes('/case-details/')) {
       this.caseTypeId = currUrl.split('/')[4];
     }
     console.log(this.caseTypeId);

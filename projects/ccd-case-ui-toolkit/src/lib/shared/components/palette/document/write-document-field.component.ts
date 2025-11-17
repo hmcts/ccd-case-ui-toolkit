@@ -71,7 +71,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public ngOnInit(): void {
     // Wait for both observables to emit at least once
     const currUrl = window.location.pathname;
-    if (currUrl.indexOf('/case-details/') > -1) {
+    if (currUrl.includes('/case-details/')) {
       this.caseTypeId = currUrl.split('/')[4];
     }
     this.caseNotifierSubscription = combineLatest([
