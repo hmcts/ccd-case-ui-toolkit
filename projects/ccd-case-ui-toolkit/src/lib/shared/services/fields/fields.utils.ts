@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import moment from 'moment';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../components/palette/case-flag/domain/case-flag.model';
@@ -527,7 +528,7 @@ export class FieldsUtils {
                 // These two fields are date-time fields
                 case 'dateTimeModified':
                 case 'dateTimeCreated':
-                  return { [k]: detail.value[k] ? new Date(detail.value[k]) : null, id: detail.id };
+                  return { [k]: detail.value[k] ? moment.utc(detail.value[k]).local().toDate() : null, id: detail.id };
                 // This field is a "yes/no" field
                 case 'hearingRelevant':
                   return detail.value[k].toUpperCase() === 'YES' ? { [k]: true, id: detail.id } : { [k]: false, id: detail.id };
