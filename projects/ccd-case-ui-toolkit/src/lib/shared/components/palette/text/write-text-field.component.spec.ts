@@ -46,14 +46,14 @@ describe('WriteTextFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           WriteTextFieldComponent,
           // Mocks
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          inputComponentMock
+          MockFieldLabelPipe
         ],
         providers: []
       })

@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ccd-case-specific-access-success',
-  templateUrl: './case-specific-access-success.component.html'
+  templateUrl: './case-specific-access-success.component.html',
+  standalone: false
 })
 export class CaseSpecificAccessSuccessComponent implements OnInit {
 

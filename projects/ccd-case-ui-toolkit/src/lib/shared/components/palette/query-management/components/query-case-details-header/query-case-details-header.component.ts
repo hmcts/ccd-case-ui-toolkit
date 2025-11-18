@@ -4,7 +4,8 @@ import { CaseField } from '../../../../../domain/definition/case-field.model';
 
 @Component({
   selector: 'ccd-query-case-details-header',
-  templateUrl: './query-case-details-header.component.html'
+  templateUrl: './query-case-details-header.component.html',
+  standalone: false
 })
 
 export class QueryCaseDetailsHeaderComponent implements OnInit {

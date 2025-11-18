@@ -8,6 +8,7 @@ import { TabComponent } from './tab.component';
   styleUrls: [
     './tabs.component.scss'
   ],
+  standalone: false
 })
 export class TabsComponent implements AfterContentInit {
 
