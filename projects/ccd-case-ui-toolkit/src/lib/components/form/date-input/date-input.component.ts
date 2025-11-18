@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import moment from 'moment';
 
 @Component({
   selector: 'cut-date-input',
@@ -71,17 +72,32 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   public writeValue(obj: string): void { // 2018-04-09T08:02:27.542
     if (obj) {
       this.rawValue = this.removeMilliseconds(obj);
-      // needs to handle also partial dates, e.g. -05-2016 (missing day)
-      const [datePart, timePart] = this.rawValue.split('T');
-      const dateValues = datePart.split('-');
-      this.year = this.displayYear = dateValues[0] || '';
-      this.month = this.displayMonth = dateValues[1] || '';
-      this.day = this.displayDay = dateValues[2] || '';
-      if (timePart) {
-        const timeParts = timePart.split(':');
-        this.hour = this.displayHour = timeParts[0] || '';
-        this.minute = this.displayMinute = timeParts[1] || '';
-        this.second = this.displaySecond = timeParts[2] || '';
+
+      // for DateTime fields, convert from UTC to local time for display
+      if (this.isDateTime && this.rawValue.includes('T')) {
+        const utcMoment = moment.utc(this.rawValue);
+        const localMoment = utcMoment.local();
+
+        this.year = this.displayYear = localMoment.format('YYYY');
+        this.month = this.displayMonth = localMoment.format('MM');
+        this.day = this.displayDay = localMoment.format('DD');
+        this.hour = this.displayHour = localMoment.format('HH');
+        this.minute = this.displayMinute = localMoment.format('mm');
+        this.second = this.displaySecond = localMoment.format('ss');
+      } else {
+        // for Date fields (no time), parse normally
+        // needs to handle also partial dates, e.g. -05-2016 (missing day)
+        const [datePart, timePart] = this.rawValue.split('T');
+        const dateValues = datePart.split('-');
+        this.year = this.displayYear = dateValues[0] || '';
+        this.month = this.displayMonth = dateValues[1] || '';
+        this.day = this.displayDay = dateValues[2] || '';
+        if (timePart) {
+          const timeParts = timePart.split(':');
+          this.hour = this.displayHour = timeParts[0] || '';
+          this.minute = this.displayMinute = timeParts[1] || '';
+          this.second = this.displaySecond = timeParts[2] || '';
+        }
       }
     }
   }
@@ -227,7 +243,14 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
           this.minute ? this.pad(this.minute) : '',
           this.second ? this.pad(this.second) : ''
         ].join(':');
-        return `${date}T${time}.000`;
+        const localDateTimeString = `${date}T${time}.000`;
+
+        // convert from local time to UTC for storage
+        const localMoment = moment(localDateTimeString);
+        const utcMoment = localMoment.utc();
+
+        // return in the expected format
+        return utcMoment.format('YYYY-MM-DDTHH:mm:ss.000');
       } else {
         return date;
       }
