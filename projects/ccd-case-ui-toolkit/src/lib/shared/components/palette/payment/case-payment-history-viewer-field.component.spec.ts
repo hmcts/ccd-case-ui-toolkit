@@ -6,6 +6,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -64,7 +65,11 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
       .configureTestingModule({
         imports: [paymentWebComponent],
         declarations: [
-          CasePaymentHistoryViewerFieldComponent
+          CasePaymentHistoryViewerFieldComponent,
+
+          // Mocks
+          MockRpxTranslatePipe,
+          paymentWebComponent
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },

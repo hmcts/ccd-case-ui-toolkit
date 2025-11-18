@@ -139,7 +139,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -691,7 +691,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -770,20 +770,54 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.fileUploadMessages).toEqual('File required');
   });
 
-  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-    // Initialization.
-    component.valid = true;
-    component.caseField = CASE_FIELD;
+  it('should be logged as enabled if file is securemode', () => {
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
     component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
-    expect(component.valid).toBeTruthy();
+    component.fileChangeEvent({
+      target: {
+        files: [
+          file
+        ]
+      }
+    });
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
+    expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is enabled for case with case ref:: 12345');
+  });
+
+  it('should be logged as disabled if file is NOT securemode', () => {
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    component.fileChangeEvent({
+      target: {
+        files: [
+          file
+        ]
+      }
+    });
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is disabled for case with case ref:: 12345');
+  });
+
+  it('should set caseId from caseNotifier', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    expect(component.caseField.value).toBeTruthy();
 
     component.fileChangeEvent({
       target: {
         files: []
       }
     });
-    expect(component.valid).toBeTruthy();
+    expect(component.caseId).toBe('12345');
   });
 
   it('should cancel file upload', () => {
@@ -916,7 +950,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of(undefined);
