@@ -28,7 +28,6 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
       useClass: NgxMatMomentAdapter,
       deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    // { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }
   ]
 })
@@ -75,21 +74,12 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.configureDatePicker(this.dateTimeEntryFormat);
 
     const existingControl = (this.parent || this.formGroup)?.controls?.[this.caseField.id];
-    console.log('[DatetimePicker] ngOnInit for field:', this.caseField.id);
-    console.log('[DatetimePicker] caseField.value:', this.caseField.value);
-    console.log('[DatetimePicker] existingControl exists:', !!existingControl);
-    console.log('[DatetimePicker] existingControl.value:', existingControl?.value);
 
-    // register the main control with parent form (will return existing control if present)
-    // for when we're navigating back to an existing form
+    // for when navigating back to an existing form
     this.dateControl = (this.caseField.isMandatory ?
       this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
       : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
 
-    console.log('[DatetimePicker] After registerControl, dateControl.value:', this.dateControl.value);
-
-    // after registerControl, use dateControl.value as the source of truth
-    // (it will have the existing value if navigating back, or caseField.value if new)
     let initialUtcValue = this.dateControl.value;
     let initialLocalValue: string;
 
@@ -98,14 +88,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       const utcMoment = moment.utc(initialUtcValue);
       const localMoment = utcMoment.local();
       initialLocalValue = localMoment.format('YYYY-MM-DDTHH:mm:ss.SSS');
-      console.log('[DatetimePicker] Converted UTC to local:', initialUtcValue, '->', initialLocalValue);
     } else {
       initialLocalValue = initialUtcValue || '';
     }
 
-    // create local display control with correct initial value
     this.localDisplayControl = new FormControl(initialLocalValue);
-    console.log('[DatetimePicker] localDisplayControl initialized with:', initialLocalValue);
 
     // sync local display control to main control with UTC conversion
     this.localDisplayControl.valueChanges.subscribe(localValue => {
@@ -122,7 +109,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       }
     });
 
-    // sync validation errors from local control to main control
     this.localDisplayControl.statusChanges.subscribe(() => {
       this.minError = this.localDisplayControl.hasError('matDatetimePickerMin');
       this.maxError = this.localDisplayControl.hasError('matDatetimePickerMax');
@@ -268,14 +254,11 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
       if (this.localDisplayControl.value) {
         // control has a value but input doesn't - this happens when navigating back
         // manually sync the control value to the input element
-        console.log('[DatetimePicker] formatValueAndSetErrors: Input empty but control has value, syncing:', this.localDisplayControl.value);
         const controlValue = this.localDisplayControl.value;
         const parsedMoment = moment(controlValue, this.momentFormat);
         if (parsedMoment.isValid()) {
-          // format according to the display format and update the input
           const formattedValue = parsedMoment.format(this.dateTimeEntryFormat);
           this.inputElement.nativeElement.value = formattedValue;
-          console.log('[DatetimePicker] Set input value to:', formattedValue);
         }
       } else if (!this.dateControl.value) {
         this.localDisplayControl.setValue('');
