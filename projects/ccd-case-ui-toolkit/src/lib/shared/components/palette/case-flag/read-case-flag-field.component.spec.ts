@@ -3,6 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import * as moment from 'moment';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, Jurisdiction } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -619,8 +620,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
     expect(component.flagsData[2].flags.details.length).toBe(1);
     expect(component.flagsData[2].flags.details[0].name).toEqual(caseLevelFlagDetailsValue.name);
-    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
-    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeModified).local().toDate());
+    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeCreated).local().toDate());
     expect(component.flagsData[2].flags.details[0].hearingRelevant).toBe(true);
     expect(component.flagsData[3].flags.flagsCaseFieldId).toEqual(witnessCaseFlagGroupInternalFieldId);
     expect(component.flagsData[3].flags.partyName).toEqual(witnessCaseFlagPartyName);
@@ -702,8 +703,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
     expect(component.flagsData[2].flags.details.length).toBe(1);
     expect(component.flagsData[2].flags.details[0].name).toEqual(caseLevelFlagDetailsValue.name);
-    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
-    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeModified).local().toDate());
+    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeCreated).local().toDate());
     expect(component.flagsData[2].flags.details[0].hearingRelevant).toBe(true);
     expect(component.flagsData[3].flags.flagsCaseFieldId).toEqual(witnessCaseFlagGroupInternalFieldId);
     expect(component.flagsData[3].flags.partyName).toEqual(witnessCaseFlagPartyName);
@@ -779,8 +780,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
     expect(component.flagsData[2].flags.details.length).toBe(1);
     expect(component.flagsData[2].flags.details[0].name).toEqual(caseLevelFlagDetailsValue.name);
-    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
-    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeModified).local().toDate());
+    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(moment.utc(caseLevelFlagDetailsValue.dateTimeCreated).local().toDate());
     expect(component.flagsData[2].flags.details[0].hearingRelevant).toBe(true);
     expect(component.flagsData[3].flags.flagsCaseFieldId).toEqual(witnessCaseFlagGroupInternalFieldId);
     expect(component.flagsData[3].flags.partyName).toEqual(witnessCaseFlagPartyName);
