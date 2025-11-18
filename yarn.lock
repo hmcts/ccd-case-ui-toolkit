@@ -4536,9 +4536,9 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.9-cme-779-prerelease"
+    "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.10"
+    "@hmcts/media-viewer": "npm:4.2.0"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -4629,7 +4629,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.1.2-CME-780-9"
+    rpx-xui-translation: "npm:1.2.0"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -4658,15 +4658,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease":
-  version: 6.5.9-cme-779-prerelease
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease"
+"@hmcts/ccpay-web-component@npm:6.5.14":
+  version: 6.5.14
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.14"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^18.2.13
-    "@angular/core": ^18.2.13
-  checksum: 10/cd40af41e8b6f6987838e8be6d7368e9dd77b297a5ebdcb1f5d3f12b190f64a6e8983f6067ea8c8d89a424930a630a64c259c87fec4a62d28235f37d0a3c1c6f
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/db9415edf6cd2a26b5e15a2cbbe72c729038c15b9c13313837f92da0bcbbd764d8d7bb6e2a7b54e820879bffe48a705ae84fffbc019e16279311f3b611235731
   languageName: node
   linkType: hard
 
@@ -4677,9 +4677,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.10":
-  version: 4.1.10
-  resolution: "@hmcts/media-viewer@npm:4.1.10"
+"@hmcts/media-viewer@npm:4.2.0":
+  version: 4.2.0
+  resolution: "@hmcts/media-viewer@npm:4.2.0"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -4688,17 +4688,17 @@ __metadata:
     tslib: "npm:^2.3.0"
     uuid: "npm:^11.0.3"
   peerDependencies:
-    "@angular/animations": ^17.3.8
-    "@angular/common": ^17.3.8
-    "@angular/core": ^17.3.8
-    "@angular/forms": ^17.3.8
+    "@angular/animations": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
     "@angular/material": ^17.3.8
-    "@angular/platform-browser": ^17.3.8
-    "@ngrx/effects": ^17.0.0
-    "@ngrx/router-store": ^17.0.0
-    "@ngrx/store": ^17.0.0
-    "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/ba36eec0bbcc75d7c17a76e9869c605a2224ed89e49d1814c351975ce94cc853dd6386c30159485596c55b7af69b8f0f6a51b60476cfa61e228d95c7d2f0eb1e
+    "@angular/platform-browser": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/router-store": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+  checksum: 10/231cbc6a91766a1a24cc8648041a6bdb9193595364fb723366f80e841fd195a9f1f66bdeecb7c458fcc073a3e4cdfc456b698b2d1134cd2e165713db39e876fc
   languageName: node
   linkType: hard
 
@@ -27163,9 +27163,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.1.2-CME-780-9":
-  version: 1.1.2-CME-780-9
-  resolution: "rpx-xui-translation@npm:1.1.2-CME-780-9"
+"rpx-xui-translation@npm:1.2.0":
+  version: 1.2.0
+  resolution: "rpx-xui-translation@npm:1.2.0"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -27173,7 +27173,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ^20.3.1
-  checksum: 10/82126cfbc5984c0e3718a173e8e29d35c18f56e01dbe10241b7bd3f17ce5df065421dffc030db0dc88ec807597aa5aadb55b3349c03ac8335dc44189886aec0a
+  checksum: 10/5eea929cc08f8d089adc64790201fbb24c248c29e8a9fcc5d35eac70c0e9f47bce211dec291eddfece69a8ba0ee5ffbcac3a3e1fb749a316a47f3b6fed48e7ec
   languageName: node
   linkType: hard
 
