@@ -262,7 +262,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const userId = userInfo.id ? userInfo.id : userInfo.uid;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
-      this.abstractConfig.logMessage(`task ${taskInSessionStorage.id} exist for this event for caseId and eventId as ${caseId} ${eventId}`);
+      this.abstractConfig.logMessage(`task ${taskInSessionStorage?.id} exist for this event for caseId and eventId as ${caseId} ${eventId}`);
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId,
@@ -507,13 +507,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (task && assignNeeded && taskToBeCompleted) {
-      this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (task && taskToBeCompleted) {
-      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }
-    this.abstractConfig.logMessage(`postCompleteTaskIfRequired: no task to complete for event name ${this.eventTrigger.name} and caseId ${this.caseDetails.case_id}`);
+    this.abstractConfig.logMessage(`postCompleteTaskIfRequired: no task to complete for event name ${this.eventTrigger?.name} and caseId ${this.caseDetails?.case_id}`);
     return of(true);
   }
 

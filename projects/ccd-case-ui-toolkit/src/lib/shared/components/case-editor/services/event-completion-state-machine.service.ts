@@ -87,7 +87,7 @@ export class EventCompletionStateMachineService {
     const assignNeeded = context.sessionStorageService.getItem('assignNeeded');
     context.workAllocationService.getTask(context.task.id).subscribe(
       taskResponse => {
-        this.abstractConfig?.logMessage?.(`entryActionForStateCheckTasksCanBeCompleted: task_state ${taskResponse?.task?.task_state} for task id ${context.task.id}`);
+        this.abstractConfig?.logMessage?.(`entryActionForStateCheckTasksCanBeCompleted: task_state ${taskResponse?.task?.task_state} for task id ${context?.task?.id}`);
         if (taskResponse?.task?.task_state) {
           switch (taskResponse.task.task_state.toUpperCase()) {
             case TaskState.Unassigned:

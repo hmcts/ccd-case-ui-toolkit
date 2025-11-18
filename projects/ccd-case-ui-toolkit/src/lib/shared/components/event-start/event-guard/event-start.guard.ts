@@ -182,6 +182,6 @@ export class EventStartGuard implements CanActivate {
     };
     this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
     this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
-    this.abstractConfig.logMessage(`EventStartGuard:setClientContextStorage: set task ${task.id} in client context for caseId ${caseId} and eventId ${eventId}`); 
+    this.abstractConfig.logMessage(`EventStartGuard:setClientContextStorage: set task ${task?.id} in client context for caseId ${caseId} and eventId ${eventId}`); 
   }
 }

@@ -188,7 +188,7 @@ export class EventStartStateMachineService {
     }
 
     const taskStr = JSON.stringify(task);
-    this.abstractConfig?.logMessage?.(`entryActionForStateOneTaskAssignedToUser: task_state ${task?.task_state} for task id ${task.id}`);
+    this.abstractConfig?.logMessage?.(`entryActionForStateOneTaskAssignedToUser: task_state ${task?.task_state} for task id ${task?.id}`);
     console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
     const currentLanguage = context.cookieService.getCookie('exui-preferred-language');
