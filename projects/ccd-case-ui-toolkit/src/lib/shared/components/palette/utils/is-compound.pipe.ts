@@ -3,7 +3,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldTypeEnum } from '../../../domain/definition/field-type-enum.model';
 
 @Pipe({
-  name: 'ccdIsCompound'
+  name: 'ccdIsCompound',
+  standalone: false
 })
 export class IsCompoundPipe implements PipeTransform {
 

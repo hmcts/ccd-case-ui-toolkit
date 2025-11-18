@@ -12,7 +12,8 @@ import { EventTriggerService } from '../services/event-trigger.service';
 
 @Component({
   selector: 'ccd-case-progress',
-  templateUrl: 'case-progress.component.html'
+  templateUrl: 'case-progress.component.html',
+  standalone: false
 })
 export class CaseProgressComponent implements OnInit {
   @Input()

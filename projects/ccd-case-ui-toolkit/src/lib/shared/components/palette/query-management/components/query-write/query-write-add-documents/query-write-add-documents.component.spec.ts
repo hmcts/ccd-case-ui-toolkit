@@ -15,8 +15,8 @@ describe('QueryWriteAddDocumentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QueryWriteAddDocumentsComponent, writeCollectionFieldComponentMock ],
-      imports: [ ReactiveFormsModule ]
+      declarations: [ QueryWriteAddDocumentsComponent ],
+      imports: [ ReactiveFormsModule, writeCollectionFieldComponentMock ]
     })
     .compileComponents();
   });

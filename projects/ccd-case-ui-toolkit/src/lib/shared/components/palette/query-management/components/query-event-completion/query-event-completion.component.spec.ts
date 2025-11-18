@@ -14,7 +14,8 @@ describe('QueryEventCompletionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QueryEventCompletionComponent, queryEventCompletionComponentMock ]
+      imports: [queryEventCompletionComponentMock],
+      declarations: [ QueryEventCompletionComponent ]
     })
     .compileComponents();
   });
