@@ -4,7 +4,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 
 @Pipe({
   name: 'ccdFieldLabel',
-  pure: false
+  pure: false,
+  standalone: false
 })
 export class FieldLabelPipe implements PipeTransform {
 

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DebugElement } from '@angular/core';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -84,7 +84,8 @@ describe('CaseEditConfirmComponent', () => {
           { provide: Router, useValue: routerStub },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           FieldsUtils,
-          PlaceholderService
+          PlaceholderService,
+          provideNgReflectAttributes()
         ]
       })
       .compileComponents();
