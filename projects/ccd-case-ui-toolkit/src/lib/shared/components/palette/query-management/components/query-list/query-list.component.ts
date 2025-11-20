@@ -14,6 +14,7 @@ export class QueryListComponent implements OnChanges {
   public queryListData: QueryListData | undefined;
   public displayedColumns: QueryListColumn[] = [
     { name: 'subject', displayName: 'Query subject', sortOrder: SortOrder.UNSORTED },
+    { name: 'name', displayName: 'Sender Name', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.UNSORTED },
     { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED },

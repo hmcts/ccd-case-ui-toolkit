@@ -10,6 +10,10 @@
       </caption>
       <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">{{ 'Sender name' | rpxTranslate }}</th>
+        <td class="govuk-table__cell">{{ query.name }}</td>
+      </tr>
+      <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ query.lastSubmittedBy }}</td>
       </tr>
