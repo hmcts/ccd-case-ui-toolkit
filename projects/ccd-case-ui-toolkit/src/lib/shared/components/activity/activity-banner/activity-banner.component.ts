@@ -3,7 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'ccd-activity-banner',
   templateUrl: './activity-banner.component.html',
-  styleUrls: ['./activity-banner.component.css']
+  styleUrls: ['./activity-banner.component.css'],
+  standalone: false
 })
 export class ActivityBannerComponent implements OnInit {
   @Input()

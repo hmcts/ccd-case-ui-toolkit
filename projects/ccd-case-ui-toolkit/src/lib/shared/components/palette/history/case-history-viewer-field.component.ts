@@ -4,5 +4,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 @Component({
   selector: 'ccd-case-history-viewer-field',
   templateUrl: 'case-history-viewer-field.component.html',
+  standalone: false
 })
 export class CaseHistoryViewerFieldComponent extends AbstractFieldReadComponent {}

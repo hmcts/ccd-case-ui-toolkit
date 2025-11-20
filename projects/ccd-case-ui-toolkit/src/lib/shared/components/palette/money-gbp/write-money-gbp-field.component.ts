@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-money-gbp-field',
-  templateUrl: './write-money-gbp-field.html'
+  templateUrl: './write-money-gbp-field.html',
+  standalone: false
 })
 export class WriteMoneyGbpFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
