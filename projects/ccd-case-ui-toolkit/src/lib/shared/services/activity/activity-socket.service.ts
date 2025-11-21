@@ -55,6 +55,10 @@ export class ActivitySocketService {
     this.socket.emit('view', { caseId });
   }
 
+  public stopCase(caseId: string): void {
+    this.socket.emit('stop', { caseId });
+  }
+
   public editCase(caseId: string): void {
     this.socket.emit('edit', { caseId });
   }

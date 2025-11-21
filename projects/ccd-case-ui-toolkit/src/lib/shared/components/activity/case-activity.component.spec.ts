@@ -79,6 +79,7 @@ describe('CaseActivityComponent', () => {
       watchCases: (caseIds: string[]): void => {
         activitySocketService.watching.push(caseIds);
       },
+      stopCase: jasmine.createSpy('stopCase'),
       user: BOB_SMITH
     };
     sessionStorageService = { getUserDetails: () => BOB_SMITH, getItem: (_k:any) => null } 

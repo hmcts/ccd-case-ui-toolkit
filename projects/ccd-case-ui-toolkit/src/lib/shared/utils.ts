@@ -30,7 +30,6 @@ export function isJudiciaryUser(sessionStorageService: SessionStorageService): b
 
 export function isSolicitorUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
-  return userDetails && userDetails?.roles
-    && (userDetails.roleCategory.includes(SOLICITOR));
+  return userDetails && (userDetails.roleCategory === SOLICITOR);
 }
 
