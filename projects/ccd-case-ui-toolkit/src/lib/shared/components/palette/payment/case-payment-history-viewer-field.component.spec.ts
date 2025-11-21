@@ -42,7 +42,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
-    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
+    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', standalone: false, inputs: [
         'API_ROOT',
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
@@ -65,8 +65,10 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
       .configureTestingModule({
         imports: [paymentWebComponent],
         declarations: [
-         CasePaymentHistoryViewerFieldComponent,
-         MockRpxTranslatePipe,
+          CasePaymentHistoryViewerFieldComponent,
+
+          // Mocks
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },

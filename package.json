@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.59-exui-2906-activity-tracker-2",
+  "version": "7.3.0",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -61,11 +61,11 @@
     "@angular/router": "20.3.2",
     "@angular/upgrade": "20.3.2",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.5.9-cme-779-prerelease",
+    "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.1.10",
-    "@ngrx/effects": "^20.0.1",
-    "@ngrx/store": "^20.0.1",
+    "@hmcts/media-viewer": "4.2.0",
+    "@ngrx/effects": "17.2.0",
+    "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
@@ -86,7 +86,7 @@
     "pegjs": "^0.10.0",
     "prism": "^4.1.2",
     "prismjs": "^1.29.0",
-    "rpx-xui-translation": "1.1.2-CME-780-9",
+    "rpx-xui-translation": "1.2.0",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
