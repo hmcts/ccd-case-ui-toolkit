@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -1831,6 +1831,97 @@ describe('CaseEditComponent', () => {
         expect(spy).not.toHaveBeenCalled();
         expect(rawFormValueData['complex1']).toEqual({ sub1: 'editedValue' });
       });
+    });
+  });
+
+  // Helper to build component with minimal deps
+  function buildComponent(routerStub: any): CaseEditComponent {
+    const stub = {} as any;
+    return new CaseEditComponent(
+      new FormBuilder(),
+      stub,                    // CaseNotifier
+      routerStub,              // Router
+      { queryParams: of({}) } as any, // ActivatedRoute
+      stub,                    // FieldsUtils
+      stub,                    // FieldsPurger
+      stub,                    // ConditionalShowRegistrarService
+      { create: () => ({ firstPage: () => null, getPage: () => null }) } as any, // WizardFactoryService
+      { getItem: () => null, removeItem: () => {} } as any, // SessionStorageService
+      { alert: () => Promise.resolve() } as any,            // WindowService
+      { sanitise: (d: any) => d, clearNonCaseFields: () => {}, removeNullLabels: () => {}, removeEmptyDocuments: () => {},
+        removeEmptyCollectionsWithMinValidation: () => {}, repopulateFormDataFromCaseFieldValues: () => {},
+        populateLinkedCasesDetailsFromCaseFields: () => {}, removeCaseFieldsOfType: () => {}, removeUnnecessaryFields: () => {} } as any,
+      { mapFieldErrors: () => {} } as any,                  // FormErrorService
+      { register: () => 'token', unregister: () => {} } as any, // LoadingService
+      { deleteNonValidatedFields: () => {}, validPageListCaseFields: () => [] } as any, // ValidPageListCaseFieldsService
+      { assignAndCompleteTask: () => of(true), completeTask: () => of(true) } as any,   // WorkAllocationService
+      { error: () => {}, setPreserveAlerts: () => {} } as any, // AlertService
+      { logMessage: () => {} } as any,                     // AbstractAppConfig
+      stub                                                 // ReadCookieService
+    );
+  }
+
+  describe('CaseEditComponent monitorBackButtonDuringRefresh', () => {
+    it('should return early when router.events is undefined', () => {
+      const routerStub = { navigateByUrl: () => Promise.resolve(true) }; // no events
+      const component = buildComponent(routerStub);
+      (component as any).monitorBackButtonDuringRefresh();
+      expect((component as any).backSubscription).toBeUndefined();
+    });
+
+    it('should subscribe and set backButtonDuringRefresh=true on popstate when page refreshed and not acknowledged', () => {
+      const events$ = new Subject<any>();
+      const routerStub = {
+        events: events$,
+        navigateByUrl: () => Promise.resolve(true)
+      };
+      const component = buildComponent(routerStub);
+      component.isPageRefreshed = true;
+      component.pageRefreshAcknowledged = false;
+
+      (component as any).monitorBackButtonDuringRefresh();
+      expect((component as any).backSubscription).toBeDefined();
+
+      expect(component.backButtonDuringRefresh).toBeFalsy();
+      events$.next(new NavigationStart(1, '/prev', 'popstate'));
+      expect(component.backButtonDuringRefresh).toBe(true);
+    });
+
+    it('should not set flag when page already acknowledged', () => {
+      const events$ = new Subject<any>();
+      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
+      const component = buildComponent(routerStub);
+      component.isPageRefreshed = true;
+      component.pageRefreshAcknowledged = true;
+
+      (component as any).monitorBackButtonDuringRefresh();
+      events$.next(new NavigationStart(2, '/prev', 'popstate'));
+      expect(component.backButtonDuringRefresh).toBeFalsy();
+    });
+
+    it('should ignore non-popstate navigation triggers', () => {
+      const events$ = new Subject<any>();
+      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
+      const component = buildComponent(routerStub);
+      component.isPageRefreshed = true;
+      component.pageRefreshAcknowledged = false;
+
+      (component as any).monitorBackButtonDuringRefresh();
+      events$.next(new NavigationStart(3, '/prev', 'imperative'));
+      expect(component.backButtonDuringRefresh).toBeFalsy();
+    });
+
+    it('should unsubscribe on ngOnDestroy', () => {
+      const events$ = new Subject<any>();
+      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
+      const component = buildComponent(routerStub);
+      component.isPageRefreshed = true;
+      (component as any).monitorBackButtonDuringRefresh();
+      const sub = (component as any).backSubscription;
+      spyOn(sub, 'unsubscribe').and.callThrough();
+
+      component.ngOnDestroy();
+      expect(sub.unsubscribe).toHaveBeenCalled();
     });
   });
 
