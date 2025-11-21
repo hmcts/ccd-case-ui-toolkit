@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { CaseView, FieldType, HttpError, Profile } from '../../../domain';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -1697,6 +1697,139 @@ describe('CaseEditComponent', () => {
         (component as any).monitorBackButtonDuringRefresh();
 
         expect(routerStub.navigate).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('CaseEditComponent private field handlers', () => {
+    let component: CaseEditComponent;
+
+    // Minimal stubs for required constructor deps
+    const stub = {} as any;
+    const appConfigStub = { logMessage: () => {} } as any;
+
+    beforeEach(() => {
+      component = new CaseEditComponent(
+        new FormBuilder(),
+        stub, // CaseNotifier
+        { events: new Subject(), navigate: () => Promise.resolve(true), navigateByUrl: () => Promise.resolve(true) } as any,
+        { queryParams: of({}) } as any,
+        stub, // FieldsUtils
+        stub, // FieldsPurger
+        stub, // ConditionalShowRegistrarService
+        { create: () => ({}) } as any, // WizardFactoryService
+        { getItem: () => null } as any, // SessionStorageService
+        { alert: () => Promise.resolve() } as any, // WindowService
+        { sanitise: (d: any) => d, clearNonCaseFields: () => {}, removeNullLabels: () => {}, removeEmptyDocuments: () => {},
+          removeEmptyCollectionsWithMinValidation: () => {}, repopulateFormDataFromCaseFieldValues: () => {},
+          populateLinkedCasesDetailsFromCaseFields: () => {}, removeCaseFieldsOfType: () => {} } as any,
+        { mapFieldErrors: () => {} } as any, // FormErrorService
+        { register: () => 't', unregister: () => {} } as any, // LoadingService
+        { deleteNonValidatedFields: () => {}, validPageListCaseFields: () => [] } as any, // ValidPageListCaseFieldsService
+        { assignAndCompleteTask: () => of(true), completeTask: () => of(true) } as any, // WorkAllocationService
+        { error: () => {}, setPreserveAlerts: () => {} } as any, // AlertService
+        appConfigStub, // AbstractAppConfig
+        stub // ReadCookieService
+      );
+    });
+
+    describe('handleNonComplexField', () => {
+      it('should use parentField.formatted_value when parent has formatted_value', () => {
+        const parentField: CaseField = {
+          id: 'parent',
+          formatted_value: { child: 'originalFromParent' }
+        } as any;
+        const caseField: CaseField = {
+          id: 'child',
+          formatted_value: 'shouldNotUseDirect'
+        } as any;
+        const rawFormValueData: any = {};
+
+        (component as any).handleNonComplexField(parentField, rawFormValueData, 'child', caseField);
+
+        expect(rawFormValueData['child']).toBe('originalFromParent');
+      });
+
+      it('should not overwrite when field is hidden and retain_hidden_value is true', () => {
+        const caseField: CaseField = {
+          id: 'child',
+          hidden: true,
+          retain_hidden_value: true,
+          formatted_value: 'originalValue'
+        } as any;
+        const rawFormValueData: any = { child: 'existingValue' };
+
+        (component as any).handleNonComplexField(null, rawFormValueData, 'child', caseField);
+
+        expect(rawFormValueData['child']).toBe('existingValue');
+      });
+
+      it('should set formatted_value when no parent and not (hidden && retain_hidden_value)', () => {
+        const caseField: CaseField = {
+          id: 'child',
+          hidden: false,
+          retain_hidden_value: true, // hidden is false so condition fails
+          formatted_value: 'directFormatted'
+        } as any;
+        const rawFormValueData: any = {};
+
+        (component as any).handleNonComplexField(null, rawFormValueData, 'child', caseField);
+
+        expect(rawFormValueData['child']).toBe('directFormatted');
+      });
+    });
+
+    describe('handleComplexField', () => {
+      it('should call replaceHiddenFormValuesWithOriginalCaseData and assign result when value is not null', () => {
+        const subField: CaseField = {
+          id: 'sub1',
+          hidden: true,
+          retain_hidden_value: true,
+          formatted_value: 'sub1Original',
+          field_type: { type: 'Text' } as any
+        } as any;
+
+        const complexField: CaseField = {
+          id: 'complex1',
+          value: {}, // triggers branch
+          field_type: { type: 'Complex', complex_fields: [subField] } as any
+        } as any;
+
+        const formGroup = new FormGroup({
+          complex1: new FormControl({ sub1: 'editedValue' })
+        });
+
+        const rawFormValueData: any = { complex1: { sub1: 'editedValue' } };
+
+        const spy = spyOn(component as any, 'replaceHiddenFormValuesWithOriginalCaseData')
+          .and.returnValue({ sub1: 'replacedValue' });
+
+        (component as any).handleComplexField(complexField, formGroup, 'complex1', rawFormValueData);
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(jasmine.any(FormGroup), [subField], complexField);
+        expect(rawFormValueData['complex1']).toEqual({ sub1: 'replacedValue' });
+      });
+
+      it('should not modify rawFormValueData when complex field value is null', () => {
+        const complexField: CaseField = {
+          id: 'complex1',
+          value: null,
+          field_type: { type: 'Complex', complex_fields: [] } as any
+        } as any;
+
+        const formGroup = new FormGroup({
+          complex1: new FormControl({ sub1: 'editedValue' })
+        });
+
+        const rawFormValueData: any = { complex1: { sub1: 'editedValue' } };
+
+        const spy = spyOn(component as any, 'replaceHiddenFormValuesWithOriginalCaseData');
+
+        (component as any).handleComplexField(complexField, formGroup, 'complex1', rawFormValueData);
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(rawFormValueData['complex1']).toEqual({ sub1: 'editedValue' });
       });
     });
   });
