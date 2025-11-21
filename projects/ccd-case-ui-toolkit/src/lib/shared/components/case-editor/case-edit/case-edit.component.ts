@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
-import { finalize, switchMap } from 'rxjs/operators';
-import { NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, finalize, switchMap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
@@ -191,7 +189,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.router.url.indexOf('/submit') !== -1 && !this.initialUrl) {
       // we only want to check if the user has done this if there is a multi-page journey
       if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
-        console.log('User has navigated to the end of an event journey directly, reset their journey');
         const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
         await this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
         await this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
@@ -307,7 +304,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
-    const userId = userInfo.id ? userInfo.id : userInfo.uid;
+    const userId = userInfo?.id ? userInfo?.id : userInfo?.uid;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       this.abstractConfig.logMessage(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);

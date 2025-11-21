@@ -1629,6 +1629,66 @@ describe('CaseEditComponent', () => {
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
     });
+
+    describe('error handling', () => {
+      it('should handle submit errors gracefully', () => {
+        const mockClass = {
+          submit: () => throwError({ status: 500, message: 'Server error' })
+        };
+
+        formValueService.sanitise.and.returnValue({ name: 'test' });
+
+        component.submitForm({
+          eventTrigger: component.eventTrigger,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(component.isSubmitting).toBe(false);
+      });
+    });
+
+    describe('monitorBackButtonDuringRefresh', () => {
+      it('should not navigate when isPageRefreshed is false', () => {
+        // Override session storage responses for this test: initialUrl + isPageRefreshed
+        mockSessionStorageService.getItem.and.returnValues('example url', 'false');
+        // Re-run ngOnInit logic manually if needed
+        component.isPageRefreshed = false;
+        routerStub.navigate.calls.reset(); // clear any calls made during first detectChanges
+
+        component.eventTrigger = {
+          wizard_pages: [
+            { id: 'firstPage', order: 1 },
+            { id: 'secondPage', order: 2 }
+          ]
+        } as any;
+
+        (component as any).monitorBackButtonDuringRefresh();
+
+        expect(routerStub.navigate).not.toHaveBeenCalled();
+      });
+  
+      it('should handle missing wizard pages gracefully', () => {
+        component.isPageRefreshed = true;
+        component.eventTrigger = {
+          wizard_pages: []
+        } as any;
+
+        (component as any).monitorBackButtonDuringRefresh();
+
+        expect(routerStub.navigate).not.toHaveBeenCalled();
+      });
+
+      it('should handle undefined wizard pages', () => {
+        component.isPageRefreshed = true;
+        component.eventTrigger = {} as any;
+
+        (component as any).monitorBackButtonDuringRefresh();
+
+        expect(routerStub.navigate).not.toHaveBeenCalled();
+      });
+    });
   });
 
   xdescribe('profile not available in route', () => {
