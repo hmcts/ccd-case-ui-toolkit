@@ -12,7 +12,8 @@ export enum AlertMessageType {
   templateUrl: './alert.component.html',
   styleUrls: [
     './alert.component.scss'
-  ]
+  ],
+  standalone: false
 })
 export class AlertComponent {
 

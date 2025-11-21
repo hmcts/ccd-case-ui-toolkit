@@ -6,6 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: [
     './tabs.component.scss'
   ],
+  standalone: false
 })
 export class TabComponent {
 

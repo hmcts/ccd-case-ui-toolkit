@@ -76,7 +76,8 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
                     (pageBoundsCorrection)="pageChangedBoundsCorrection($event)"
                     [maxSize]="maxSize"
                     [autoHide]="autoHide">
-    </ccd-pagination>`
+    </ccd-pagination>`,
+  standalone: false
 })
 export class ComponentTestComponent {
   public maxSize = 9;

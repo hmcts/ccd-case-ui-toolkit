@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-fixed-list-field',
-  templateUrl: './write-fixed-list-field.html'
+  templateUrl: './write-fixed-list-field.html',
+  standalone: false
 })
 export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

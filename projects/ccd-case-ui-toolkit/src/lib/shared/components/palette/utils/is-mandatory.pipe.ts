@@ -3,7 +3,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 
 @Pipe({
-  name: 'ccdIsMandatory'
+  name: 'ccdIsMandatory',
+  standalone: false
 })
 export class IsMandatoryPipe implements PipeTransform {
 
