@@ -1688,6 +1688,16 @@ describe('CaseEditComponent', () => {
 
         expect(routerStub.navigate).not.toHaveBeenCalled();
       });
+
+      it('should not navigate if eventTrigger is null', () => {
+        component.isPageRefreshed = true;
+        component.eventTrigger = null;
+        routerStub.navigate.calls.reset();
+
+        (component as any).monitorBackButtonDuringRefresh();
+
+        expect(routerStub.navigate).not.toHaveBeenCalled();
+      });
     });
   });
 
