@@ -38,8 +38,7 @@ export class WindowService {
     return window.confirm(message);
   }
 
-  public alert(message: string): Promise<void> {
-    window.alert(message);
-    return Promise.resolve();
+  public alert(message: string): void {
+    return window.alert(message);
   }
 }
