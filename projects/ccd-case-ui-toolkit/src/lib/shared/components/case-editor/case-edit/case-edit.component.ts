@@ -93,6 +93,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public callbackErrorsSubject: Subject<any> = new Subject();
 
   public validPageList: WizardPage[] = [];
+  private preventBackKey = 'preventBackAfterRefresh';
+  private popStateHandler = (ev: PopStateEvent) => this.handlePopState(ev);
+  private handlingPop = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -120,6 +123,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
+    // register popstate listener — safe to always register, behavior gated by session flag
+    window.addEventListener('popstate', this.popStateHandler);
     this.checkPageRefresh();
 
     this.form = this.fb.group({
@@ -141,16 +146,85 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.callbackErrorsSubject) {
       this.callbackErrorsSubject.unsubscribe();
     }
+    // cleanup popstate listener
+    window.removeEventListener('popstate', this.popStateHandler);
+    // clear any temporary session flag
+    this.sessionStorageService.removeItem(this.preventBackKey);
   }
 
   public checkPageRefresh(): boolean {
     if (this.isPageRefreshed && this.initialUrl) {
+      // Remove original event url as it will no longer be used
       this.sessionStorageService.removeItem('eventUrl');
+
+      // Show alert synchronously (your windowsService.alert already does this)
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigate([this.initialUrl], { relativeTo: this.route });
+
+      // Mark that we should prevent/back-redirect handling for the next navigations
+      this.sessionStorageService.setItem(this.preventBackKey, 'true');
+
+      // Navigate to the first visited page and replace current history entry (so the redirect doesn't add a new entry)
+      // Use replaceUrl true to avoid adding a history entry for this navigation
+      this.router.navigate([this.initialUrl], { relativeTo: this.route, replaceUrl: true })
+        .then(() => {
+          // Push a duplicate state so Back will trigger popstate but remain on same URL
+          // This makes it possible to intercept Back and re-route to first page
+          try {
+            history.pushState(null, '', this.initialUrl);
+          } catch (e) {
+            // silent fallback if environment restricts pushState
+            this.abstractConfig.logMessage('history.pushState failed: ' + e);
+          }
+        });
+
       return true;
     }
+
+    // if the url contains /submit there is the potential that the user has gone straight to the submit page
+    // we should try and work out if they have been through the journey or not and prevent them submitting directly
+    if (this.router.url.includes('/submit') && !this.initialUrl) {
+      // we only want to check if the user has done this if there is a multi-page journey
+      if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+        console.log('User has navigated to the end of an event journey directly, reset their journey');
+        const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
+        this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+      }
+    }
     return false;
+  }
+
+  private handlePopState(ev: PopStateEvent): void {
+    // avoid re-entrancy
+    if (this.handlingPop) {
+      return;
+    }
+
+    const shouldPrevent = this.sessionStorageService.getItem(this.preventBackKey) === 'true';
+    if (!shouldPrevent) {
+      return;
+    }
+
+    // Prevent loop during handling
+    this.handlingPop = true;
+
+    // Re-route user back to the initial URL (first page)
+    // Use replaceUrl to avoid adding another entry.
+    // Use a short timeout to let browser settle (helps avoid some race conditions)
+    setTimeout(() => {
+      this.router.navigate([this.initialUrl], { relativeTo: this.route, replaceUrl: true })
+        .finally(() => {
+          // After routing them back, we can remove the session flag so future Back behaves normally
+          this.sessionStorageService.removeItem(this.preventBackKey);
+          // Remove any duplicate states we pushed (best-effort)
+          try {
+            history.replaceState(null, '', this.initialUrl);
+          } catch (e) {
+            // ignore
+          }
+          this.handlingPop = false;
+        });
+    }, 0);
   }
 
   public getPage(pageId: string): WizardPage {
