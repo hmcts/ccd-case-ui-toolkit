@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, NavigationStart, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
-import { filter, finalize, switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
@@ -94,12 +94,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public validPageList: WizardPage[] = [];
 
-  public pageRefreshAcknowledged = false;
-
-  public backButtonDuringRefresh = false;
-
-  private backSubscription: any;
-
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -126,9 +120,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
-    // check whether user selected back button instead of ok button on the browser alert on page refresh
-    this.monitorBackButtonDuringRefresh();
-    void this.checkPageRefresh();
+    this.checkPageRefresh();
 
     this.form = this.fb.group({
       data: new FormGroup({}),
@@ -149,39 +141,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.callbackErrorsSubject) {
       this.callbackErrorsSubject.unsubscribe();
     }
-    this.backSubscription?.unsubscribe();
   }
 
-  private monitorBackButtonDuringRefresh(): void {
-    if (!this.router?.events) {
-      return;
-    }
-    this.backSubscription = this.router.events
-      .pipe(filter(e => e instanceof NavigationStart && (e as NavigationStart).navigationTrigger === 'popstate'))
-      .subscribe(() => {
-        if (this.isPageRefreshed && !this.pageRefreshAcknowledged) {
-          this.backButtonDuringRefresh = true;
-        }
-      });
-  }
-
-  public async checkPageRefresh(): Promise<boolean> {
-    const targetUrl = this.initialUrl; // keep before removal
-    this.pageRefreshAcknowledged = false;
+  public checkPageRefresh(): boolean {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
-      // Optional: prevent user from navigating back before OK
-      const blockPopstate = (ev: PopStateEvent) => {
-        // force forward to target
-        this.router.navigateByUrl(targetUrl, { replaceUrl: true });
-      }
-      window.addEventListener('popstate', blockPopstate, { once: true });
-      await this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.pageRefreshAcknowledged = true;
-      this.backButtonDuringRefresh = false;
-
-      await this.router.navigateByUrl(targetUrl, { replaceUrl: true });
-      window.removeEventListener('popstate', blockPopstate);
+      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
     // if the url contains /submit there is the potential that the user has gone straight to the submit page
@@ -189,9 +155,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.router.url.indexOf('/submit') !== -1 && !this.initialUrl) {
       // we only want to check if the user has done this if there is a multi-page journey
       if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+        console.log('User has navigated to the end of an event journey directly, reset their journey');
         const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
-        await this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-        await this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+        this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
       }
     }
     return false;
@@ -304,7 +271,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
-    const userId = userInfo?.id ? userInfo?.id : userInfo?.uid;
+    const userId = userInfo.id ? userInfo.id : userInfo.uid;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       this.abstractConfig.logMessage(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);

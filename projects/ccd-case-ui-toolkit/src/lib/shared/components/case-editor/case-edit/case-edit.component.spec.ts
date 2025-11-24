@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, Subject, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { CaseView, FieldType, HttpError, Profile } from '../../../domain';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -879,13 +879,12 @@ describe('CaseEditComponent', () => {
           });
         });
 
-        it('should check page is not refreshed', async () => {
+        it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
           routerStub.url = 'test.com';
           fixture.detectChanges();
-          const result = await component.checkPageRefresh();
-          expect(result).toBe(false);
+          expect(component.checkPageRefresh()).toBe(false);
         });
 
         it('should redirect to first wizard page when user navigates directly to submit without initialUrl', async () => {
@@ -902,21 +901,19 @@ describe('CaseEditComponent', () => {
           spyOn((component as any).windowsService, 'alert');
           (routerStub.navigate as jasmine.Spy).and.returnValue(Promise.resolve(true));
 
-          const result = await component.checkPageRefresh();
+          const result = component.checkPageRefresh();
 
           expect(result).toBeFalsy();
           expect((component as any).windowsService.alert).toHaveBeenCalledWith(CaseEditComponent.ALERT_MESSAGE);
           expect(routerStub.navigate).toHaveBeenCalledWith(['firstPage'], { relativeTo: (component as any).route });
         });
 
-        it('should check page is refreshed', async () => {
+        it('should check page is refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = 'test');
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = true);
 
           fixture.detectChanges();
-          const result = await component.checkPageRefresh();
-
-          expect(result).toBe(true);
+          expect(component.checkPageRefresh()).toBe(true);
         });
       });
 
@@ -1628,300 +1625,6 @@ describe('CaseEditComponent', () => {
         const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: twoHoursAgo};
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
       });
-    });
-
-    describe('error handling', () => {
-      it('should handle submit errors gracefully', () => {
-        const mockClass = {
-          submit: () => throwError({ status: 500, message: 'Server error' })
-        };
-
-        formValueService.sanitise.and.returnValue({ name: 'test' });
-
-        component.submitForm({
-          eventTrigger: component.eventTrigger,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.isSubmitting).toBe(false);
-      });
-    });
-
-    describe('monitorBackButtonDuringRefresh', () => {
-      it('should not navigate when isPageRefreshed is false', () => {
-        // Override session storage responses for this test: initialUrl + isPageRefreshed
-        mockSessionStorageService.getItem.and.returnValues('example url', 'false');
-        // Re-run ngOnInit logic manually if needed
-        component.isPageRefreshed = false;
-        routerStub.navigate.calls.reset(); // clear any calls made during first detectChanges
-
-        component.eventTrigger = {
-          wizard_pages: [
-            { id: 'firstPage', order: 1 },
-            { id: 'secondPage', order: 2 }
-          ]
-        } as any;
-
-        (component as any).monitorBackButtonDuringRefresh();
-
-        expect(routerStub.navigate).not.toHaveBeenCalled();
-      });
-  
-      it('should handle missing wizard pages gracefully', () => {
-        component.isPageRefreshed = true;
-        component.eventTrigger = {
-          wizard_pages: []
-        } as any;
-
-        (component as any).monitorBackButtonDuringRefresh();
-
-        expect(routerStub.navigate).not.toHaveBeenCalled();
-      });
-
-      it('should handle undefined wizard pages', () => {
-        component.isPageRefreshed = true;
-        component.eventTrigger = {} as any;
-
-        (component as any).monitorBackButtonDuringRefresh();
-
-        expect(routerStub.navigate).not.toHaveBeenCalled();
-      });
-
-      it('should not navigate if eventTrigger is null', () => {
-        component.isPageRefreshed = true;
-        component.eventTrigger = null;
-        routerStub.navigate.calls.reset();
-
-        (component as any).monitorBackButtonDuringRefresh();
-
-        expect(routerStub.navigate).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('CaseEditComponent private field handlers', () => {
-    let component: CaseEditComponent;
-
-    // Minimal stubs for required constructor deps
-    const stub = {} as any;
-    const appConfigStub = { logMessage: () => {} } as any;
-
-    beforeEach(() => {
-      component = new CaseEditComponent(
-        new FormBuilder(),
-        stub, // CaseNotifier
-        { events: new Subject(), navigate: () => Promise.resolve(true), navigateByUrl: () => Promise.resolve(true) } as any,
-        { queryParams: of({}) } as any,
-        stub, // FieldsUtils
-        stub, // FieldsPurger
-        stub, // ConditionalShowRegistrarService
-        { create: () => ({}) } as any, // WizardFactoryService
-        { getItem: () => null } as any, // SessionStorageService
-        { alert: () => Promise.resolve() } as any, // WindowService
-        { sanitise: (d: any) => d, clearNonCaseFields: () => {}, removeNullLabels: () => {}, removeEmptyDocuments: () => {},
-          removeEmptyCollectionsWithMinValidation: () => {}, repopulateFormDataFromCaseFieldValues: () => {},
-          populateLinkedCasesDetailsFromCaseFields: () => {}, removeCaseFieldsOfType: () => {} } as any,
-        { mapFieldErrors: () => {} } as any, // FormErrorService
-        { register: () => 't', unregister: () => {} } as any, // LoadingService
-        { deleteNonValidatedFields: () => {}, validPageListCaseFields: () => [] } as any, // ValidPageListCaseFieldsService
-        { assignAndCompleteTask: () => of(true), completeTask: () => of(true) } as any, // WorkAllocationService
-        { error: () => {}, setPreserveAlerts: () => {} } as any, // AlertService
-        appConfigStub, // AbstractAppConfig
-        stub // ReadCookieService
-      );
-    });
-
-    describe('handleNonComplexField', () => {
-      it('should use parentField.formatted_value when parent has formatted_value', () => {
-        const parentField: CaseField = {
-          id: 'parent',
-          formatted_value: { child: 'originalFromParent' }
-        } as any;
-        const caseField: CaseField = {
-          id: 'child',
-          formatted_value: 'shouldNotUseDirect'
-        } as any;
-        const rawFormValueData: any = {};
-
-        (component as any).handleNonComplexField(parentField, rawFormValueData, 'child', caseField);
-
-        expect(rawFormValueData['child']).toBe('originalFromParent');
-      });
-
-      it('should not overwrite when field is hidden and retain_hidden_value is true', () => {
-        const caseField: CaseField = {
-          id: 'child',
-          hidden: true,
-          retain_hidden_value: true,
-          formatted_value: 'originalValue'
-        } as any;
-        const rawFormValueData: any = { child: 'existingValue' };
-
-        (component as any).handleNonComplexField(null, rawFormValueData, 'child', caseField);
-
-        expect(rawFormValueData['child']).toBe('existingValue');
-      });
-
-      it('should set formatted_value when no parent and not (hidden && retain_hidden_value)', () => {
-        const caseField: CaseField = {
-          id: 'child',
-          hidden: false,
-          retain_hidden_value: true, // hidden is false so condition fails
-          formatted_value: 'directFormatted'
-        } as any;
-        const rawFormValueData: any = {};
-
-        (component as any).handleNonComplexField(null, rawFormValueData, 'child', caseField);
-
-        expect(rawFormValueData['child']).toBe('directFormatted');
-      });
-    });
-
-    describe('handleComplexField', () => {
-      it('should call replaceHiddenFormValuesWithOriginalCaseData and assign result when value is not null', () => {
-        const subField: CaseField = {
-          id: 'sub1',
-          hidden: true,
-          retain_hidden_value: true,
-          formatted_value: 'sub1Original',
-          field_type: { type: 'Text' } as any
-        } as any;
-
-        const complexField: CaseField = {
-          id: 'complex1',
-          value: {}, // triggers branch
-          field_type: { type: 'Complex', complex_fields: [subField] } as any
-        } as any;
-
-        const formGroup = new FormGroup({
-          complex1: new FormControl({ sub1: 'editedValue' })
-        });
-
-        const rawFormValueData: any = { complex1: { sub1: 'editedValue' } };
-
-        const spy = spyOn(component as any, 'replaceHiddenFormValuesWithOriginalCaseData')
-          .and.returnValue({ sub1: 'replacedValue' });
-
-        (component as any).handleComplexField(complexField, formGroup, 'complex1', rawFormValueData);
-
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith(jasmine.any(FormGroup), [subField], complexField);
-        expect(rawFormValueData['complex1']).toEqual({ sub1: 'replacedValue' });
-      });
-
-      it('should not modify rawFormValueData when complex field value is null', () => {
-        const complexField: CaseField = {
-          id: 'complex1',
-          value: null,
-          field_type: { type: 'Complex', complex_fields: [] } as any
-        } as any;
-
-        const formGroup = new FormGroup({
-          complex1: new FormControl({ sub1: 'editedValue' })
-        });
-
-        const rawFormValueData: any = { complex1: { sub1: 'editedValue' } };
-
-        const spy = spyOn(component as any, 'replaceHiddenFormValuesWithOriginalCaseData');
-
-        (component as any).handleComplexField(complexField, formGroup, 'complex1', rawFormValueData);
-
-        expect(spy).not.toHaveBeenCalled();
-        expect(rawFormValueData['complex1']).toEqual({ sub1: 'editedValue' });
-      });
-    });
-  });
-
-  // Helper to build component with minimal deps
-  function buildComponent(routerStub: any): CaseEditComponent {
-    const stub = {} as any;
-    return new CaseEditComponent(
-      new FormBuilder(),
-      stub,                    // CaseNotifier
-      routerStub,              // Router
-      { queryParams: of({}) } as any, // ActivatedRoute
-      stub,                    // FieldsUtils
-      stub,                    // FieldsPurger
-      stub,                    // ConditionalShowRegistrarService
-      { create: () => ({ firstPage: () => null, getPage: () => null }) } as any, // WizardFactoryService
-      { getItem: () => null, removeItem: () => {} } as any, // SessionStorageService
-      { alert: () => Promise.resolve() } as any,            // WindowService
-      { sanitise: (d: any) => d, clearNonCaseFields: () => {}, removeNullLabels: () => {}, removeEmptyDocuments: () => {},
-        removeEmptyCollectionsWithMinValidation: () => {}, repopulateFormDataFromCaseFieldValues: () => {},
-        populateLinkedCasesDetailsFromCaseFields: () => {}, removeCaseFieldsOfType: () => {}, removeUnnecessaryFields: () => {} } as any,
-      { mapFieldErrors: () => {} } as any,                  // FormErrorService
-      { register: () => 'token', unregister: () => {} } as any, // LoadingService
-      { deleteNonValidatedFields: () => {}, validPageListCaseFields: () => [] } as any, // ValidPageListCaseFieldsService
-      { assignAndCompleteTask: () => of(true), completeTask: () => of(true) } as any,   // WorkAllocationService
-      { error: () => {}, setPreserveAlerts: () => {} } as any, // AlertService
-      { logMessage: () => {} } as any,                     // AbstractAppConfig
-      stub                                                 // ReadCookieService
-    );
-  }
-
-  describe('CaseEditComponent monitorBackButtonDuringRefresh', () => {
-    it('should return early when router.events is undefined', () => {
-      const routerStub = { navigateByUrl: () => Promise.resolve(true) }; // no events
-      const component = buildComponent(routerStub);
-      (component as any).monitorBackButtonDuringRefresh();
-      expect((component as any).backSubscription).toBeUndefined();
-    });
-
-    it('should subscribe and set backButtonDuringRefresh=true on popstate when page refreshed and not acknowledged', () => {
-      const events$ = new Subject<any>();
-      const routerStub = {
-        events: events$,
-        navigateByUrl: () => Promise.resolve(true)
-      };
-      const component = buildComponent(routerStub);
-      component.isPageRefreshed = true;
-      component.pageRefreshAcknowledged = false;
-
-      (component as any).monitorBackButtonDuringRefresh();
-      expect((component as any).backSubscription).toBeDefined();
-
-      expect(component.backButtonDuringRefresh).toBeFalsy();
-      events$.next(new NavigationStart(1, '/prev', 'popstate'));
-      expect(component.backButtonDuringRefresh).toBe(true);
-    });
-
-    it('should not set flag when page already acknowledged', () => {
-      const events$ = new Subject<any>();
-      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
-      const component = buildComponent(routerStub);
-      component.isPageRefreshed = true;
-      component.pageRefreshAcknowledged = true;
-
-      (component as any).monitorBackButtonDuringRefresh();
-      events$.next(new NavigationStart(2, '/prev', 'popstate'));
-      expect(component.backButtonDuringRefresh).toBeFalsy();
-    });
-
-    it('should ignore non-popstate navigation triggers', () => {
-      const events$ = new Subject<any>();
-      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
-      const component = buildComponent(routerStub);
-      component.isPageRefreshed = true;
-      component.pageRefreshAcknowledged = false;
-
-      (component as any).monitorBackButtonDuringRefresh();
-      events$.next(new NavigationStart(3, '/prev', 'imperative'));
-      expect(component.backButtonDuringRefresh).toBeFalsy();
-    });
-
-    it('should unsubscribe on ngOnDestroy', () => {
-      const events$ = new Subject<any>();
-      const routerStub = { events: events$, navigateByUrl: () => Promise.resolve(true) };
-      const component = buildComponent(routerStub);
-      component.isPageRefreshed = true;
-      (component as any).monitorBackButtonDuringRefresh();
-      const sub = (component as any).backSubscription;
-      spyOn(sub, 'unsubscribe').and.callThrough();
-
-      component.ngOnDestroy();
-      expect(sub.unsubscribe).toHaveBeenCalled();
     });
   });
 
