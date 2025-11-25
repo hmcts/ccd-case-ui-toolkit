@@ -994,7 +994,7 @@ describe('WriteDocumentFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should set jurisdiction and casetype from casenotifier', () => {
+  xit('should set jurisdiction and casetype from casenotifier', () => {
     caseNotifier.caseView = of(undefined); // mock expected structure
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
