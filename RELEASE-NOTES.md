@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.0-exui-3066-1
+### Version 7.3.0-exui-3066-2
 **EXUI-3066** HALO-23226 Dates/Times: Accept input in local time
 
 ### Version 7.2.59

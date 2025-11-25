@@ -8,6 +8,9 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+import moment from 'moment-timezone';
+
+moment.tz.setDefault('Europe/London');
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
