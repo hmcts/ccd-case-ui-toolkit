@@ -29,7 +29,8 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
       deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }
-  ]
+  ],
+  standalone: false
 })
 
 export class DatetimePickerComponent extends AbstractFormFieldComponent implements OnInit {

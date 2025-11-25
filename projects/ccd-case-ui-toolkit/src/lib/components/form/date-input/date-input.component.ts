@@ -17,6 +17,7 @@ import moment from 'moment';
       multi: true
     }
   ],
+  standalone: false
 })
 export class DateInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input()

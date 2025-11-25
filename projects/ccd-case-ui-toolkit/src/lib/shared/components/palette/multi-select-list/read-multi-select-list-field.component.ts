@@ -4,6 +4,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 @Component({
   selector: 'ccd-read-multi-select-list-field',
   templateUrl: './read-multi-select-list-field.html',
-  styleUrls: ['./multi-select-list.scss']
+  styleUrls: ['./multi-select-list.scss'],
+  standalone: false
 })
 export class ReadMultiSelectListFieldComponent extends AbstractFieldReadComponent {}

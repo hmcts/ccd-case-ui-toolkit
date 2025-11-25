@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-date-field',
-  templateUrl: './write-date-field.html'
+  templateUrl: './write-date-field.html',
+  standalone: false
 })
 export class WriteDateFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

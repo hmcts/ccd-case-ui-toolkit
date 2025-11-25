@@ -4,7 +4,8 @@ import { LoadingService } from '../../../../services/loading/loading.service';
 
 @Component({
   selector: 'app-multiple-tasks-exist',
-  templateUrl: './multiple-tasks-exist.component.html'
+  templateUrl: './multiple-tasks-exist.component.html',
+  standalone: false
 })
 export class MultipleTasksExistComponent implements OnInit {
 
