@@ -1,10 +1,15 @@
+import moment from 'moment-timezone';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { DatePipe } from './date.pipe';
 
 describe('DatePipe', () => {
 
   let datePipe: DatePipe;
-  const EXPECTED_OFFSET = - new Date(2017, 6, 26).getTimezoneOffset() / 60;
+
+  beforeAll(() => {
+    moment.tz.setDefault('Europe/London');
+  });
+  const EXPECTED_OFFSET = moment.tz('2017-07-26', 'Europe/London').utcOffset() / 60;
 
   beforeEach(() => {
     datePipe = new DatePipe(new FormatTranslatorService());
