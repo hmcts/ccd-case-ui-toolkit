@@ -74,8 +74,6 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
 
-    const existingControl = (this.parent || this.formGroup)?.controls?.[this.caseField.id];
-
     // for when navigating back to an existing form
     this.dateControl = (this.caseField.isMandatory ?
       this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
@@ -250,21 +248,19 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
         this.dateControl.setValue(keepErrorText);
         this.inputElement.nativeElement.value = keepErrorText;
       }
-    } else {
+    } else if (this.localDisplayControl.value) {
       // input is empty - check if we need to sync from control values
-      if (this.localDisplayControl.value) {
-        // control has a value but input doesn't - this happens when navigating back
-        // manually sync the control value to the input element
-        const controlValue = this.localDisplayControl.value;
-        const parsedMoment = moment(controlValue, this.momentFormat);
-        if (parsedMoment.isValid()) {
-          const formattedValue = parsedMoment.format(this.dateTimeEntryFormat);
-          this.inputElement.nativeElement.value = formattedValue;
-        }
-      } else if (!this.dateControl.value) {
-        this.localDisplayControl.setValue('');
-        this.dateControl.setValue('');
+      // control has a value but input doesn't - this happens when navigating back
+      // manually sync the control value to the input element
+      const controlValue = this.localDisplayControl.value;
+      const parsedMoment = moment(controlValue, this.momentFormat);
+      if (parsedMoment.isValid()) {
+        const formattedValue = parsedMoment.format(this.dateTimeEntryFormat);
+        this.inputElement.nativeElement.value = formattedValue;
       }
+    } else if (!this.dateControl.value) {
+      this.localDisplayControl.setValue('');
+      this.dateControl.setValue('');
     }
   }
 }
