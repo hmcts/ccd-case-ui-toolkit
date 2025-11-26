@@ -247,7 +247,12 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
         const localDateTimeString = `${date}T${time}.000`;
 
         // convert from local time to UTC for storage
-        const localMoment = moment(localDateTimeString);
+        const localMoment = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS', true);
+
+        // if invalid, return the raw string for validation to catch
+        if (!localMoment.isValid()) {
+          return localDateTimeString;
+        }
         const utcMoment = localMoment.utc();
 
         // return in the expected format
