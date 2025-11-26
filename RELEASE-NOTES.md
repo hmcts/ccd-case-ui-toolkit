@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.0-exui-3682
+**EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
+
 ### Version 7.2.59
 **EXUI-3661** Performance issues on screens to return data
 **EXUI-3681** Users unable to upload documents
