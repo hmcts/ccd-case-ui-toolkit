@@ -33,7 +33,10 @@ export class DatePipe implements PipeTransform {
         zone = 'utc';
       }
       const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
-      // Make sure we actually have a match.
+      // match contains regex capture groups from DATE_FORMAT_REGEXP (ISO 8601 format):
+      // [1] year, [2] month, [3] day, [4] hour, [5] minute, [6] second, [7] milliseconds,
+      // [8] 'Z', [9] timezone offset sign (+-), [10] timezone offset hours,
+      // [11] timezone offset minutes
       if (match) {
         let momentDate = null;
         const hasTime = match[4] && match[5] && match[6];
