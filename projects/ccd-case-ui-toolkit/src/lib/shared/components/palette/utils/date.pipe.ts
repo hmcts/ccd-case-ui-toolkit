@@ -24,7 +24,8 @@ export class DatePipe implements PipeTransform {
 
   public transform(value: string, zone?: string, format?: string): string {
     let resultDate = null;
-    const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+    const ISO_FORMAT_NO_TZ = 'YYYY-MM-DDTHH:mm:ss.SSS';
+  
     if (value) {
       // included to avoid editing the hour twice on second pass through
       // this occurs on case details when datepipe is applied twice
@@ -32,29 +33,49 @@ export class DatePipe implements PipeTransform {
         zone = 'utc';
       }
       const match: RegExpMatchArray = value.match(DatePipe.DATE_FORMAT_REGEXP);
-      // Make sure we actually have a match.
+      // match contains regex capture groups from DATE_FORMAT_REGEXP (ISO 8601 format):
+      // [1] year, [2] month, [3] day, [4] hour, [5] minute, [6] second, [7] milliseconds,
+      // [8] 'Z', [9] timezone offset sign (+-), [10] timezone offset hours,
+      // [11] timezone offset minutes
       if (match) {
-        let offsetDate = null;
-        const date = this.getDate(match);
-        if (zone === 'local') {
-          offsetDate = this.getOffsetDate(date);
+        let momentDate = null;
+        const hasTime = match[4] && match[5] && match[6];
+        const hasTimezone = match[8];
+
+        if (hasTime) {
+          if (hasTimezone) {
+            const parsed = moment.parseZone(value);
+            if (zone === 'local') {
+              momentDate = parsed.local();
+            } else {
+              momentDate = parsed.utc();
+            }
+          } else {
+              momentDate = moment.utc(value);
+              if (zone === 'local') {
+                momentDate = momentDate.local();
+              }
+          }
         } else {
-          offsetDate = this.getDate(match);
+          // date only value - parse in local timezone to prevent day-shift issues
+          momentDate = moment(value);
         }
+
         // 'short' format is meaningful to formatDate, but not the same meaning as in the unit tests
         if (this.formatTrans && format && format !== 'short') {
           // support for java style formatting strings for dates
           format = this.translateDateFormat(format);
-          resultDate = moment(offsetDate).format(format);
+          resultDate = momentDate.format(format);
         } else {
           // RDM-1149 changed the pipe logic so that it doesn't add an hour to 'Summer Time' dates on DateTime field type
-          resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
+          resultDate = `${momentDate.date()} ${DatePipe.MONTHS[momentDate.month()]} ${momentDate.year()}`;
           if (match[4] && match[5] && match[6] && format !== 'short') {
             resultDate += ', ';
-            resultDate += `${this.getHour(offsetDate.getHours().toString())}:`;
-            resultDate += `${this.pad(offsetDate.getMinutes())}:`;
-            resultDate += `${this.pad(offsetDate.getSeconds())} `;
-            resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM';
+            const hours = momentDate.hours();
+            resultDate += `${this.getHour(hours.toString())}:`;
+            resultDate += `${this.pad(momentDate.minutes())}:`;
+            resultDate += `${this.pad(momentDate.seconds())} `;
+            resultDate += (hours >= 12) ? 'PM' : 'AM';
           }
         }
       } else {
@@ -71,7 +92,7 @@ export class DatePipe implements PipeTransform {
             return this.transform(shortISO, zone, format);
           }
           // If it did include time, we want a full ISO string.
-          const thisMoment = moment(d).format(ISO_FORMAT);
+          const thisMoment = moment(d).format(ISO_FORMAT_NO_TZ);
           return this.transform(thisMoment, zone, format);
         }
       }
@@ -85,27 +106,6 @@ export class DatePipe implements PipeTransform {
     } else {
       return format;
     }
-  }
-
-  private getOffsetDate(date: Date): Date {
-    const localOffset = - date.getTimezoneOffset() / 60;
-    return new Date(date.getTime() + localOffset * 3600 * 1000);
-  }
-
-  private getDate(match: RegExpMatchArray): Date {
-    const year = this.toInt(match[1]);
-    const month = this.toInt(match[2]) - 1;
-    const day = this.toInt(match[3]);
-    let resultDate;
-    if (match[4] && match[5] && match[6]) {
-      const hour = this.toInt(match[4]);
-      const minutes = this.toInt(match[5]);
-      const seconds = this.toInt(match[6]);
-      resultDate = new Date(year, month, day, hour, minutes, seconds, 0);
-    } else {
-      resultDate = new Date(year, month, day);
-    }
-    return resultDate;
   }
 
   private getHour(hourStr: string): number {

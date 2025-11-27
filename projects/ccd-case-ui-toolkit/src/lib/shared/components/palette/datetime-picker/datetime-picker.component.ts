@@ -28,7 +28,7 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
       useClass: NgxMatMomentAdapter,
       deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }
   ],
   standalone: false
 })
@@ -59,6 +59,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
 
+  public localDisplayControl: FormControl;
+
   private minimumDate = new Date('01/01/1800');
   private maximumDate = null;
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
@@ -71,21 +73,52 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public ngOnInit(): void {
     this.dateTimeEntryFormat = this.formatTranslationService.showOnlyDates(this.caseField.dateTimeEntryFormat);
     this.configureDatePicker(this.dateTimeEntryFormat);
-    // set date control based on mandatory field
+
+    // for when navigating back to an existing form
     this.dateControl = (this.caseField.isMandatory ?
       this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
       : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
+
+    let initialUtcValue = this.dateControl.value;
+    let initialLocalValue: string;
+
+    // for DateTime fields, convert UTC to local for display
+    if (initialUtcValue && this.caseField.field_type.type === 'DateTime') {
+      const utcMoment = moment.utc(initialUtcValue);
+      const localMoment = utcMoment.local();
+      initialLocalValue = localMoment.format('YYYY-MM-DDTHH:mm:ss.SSS');
+    } else {
+      initialLocalValue = initialUtcValue || '';
+    }
+
+    this.localDisplayControl = new FormControl(initialLocalValue);
+
+    // sync local display control to main control with UTC conversion
+    this.localDisplayControl.valueChanges.subscribe(localValue => {
+      if (this.caseField.field_type.type === 'DateTime' && localValue) {
+        const parsedLocal = moment(localValue, this.momentFormat);
+        if (parsedLocal.isValid()) {
+          const utcValue = parsedLocal.utc().format(this.momentFormat);
+          this.dateControl.setValue(utcValue, { emitEvent: false });
+        } else {
+          this.dateControl.setValue(localValue, { emitEvent: false });
+        }
+      } else {
+        this.dateControl.setValue(localValue, { emitEvent: false });
+      }
+    });
+
+    this.localDisplayControl.statusChanges.subscribe(() => {
+      this.minError = this.localDisplayControl.hasError('matDatetimePickerMin');
+      this.maxError = this.localDisplayControl.hasError('matDatetimePickerMax');
+    });
+
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {
       this.setDateTimeFormat();
       this.formatValueAndSetErrors();
     }, 1000);
-    // when the status changes check that the maximum/minimum date has not been exceeded
-    this.dateControl.statusChanges.subscribe(() => {
-      this.minError = this.dateControl.hasError('matDatetimePickerMin');
-      this.maxError = this.dateControl.hasError('matDatetimePickerMax');
-    });
   }
 
   public setDateTimeFormat(): void {
@@ -183,7 +216,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   public yearSelected(event: Moment): void {
     if (this.startView === 'multi-year' && this.yearSelection) {
-      this.dateControl.patchValue(event.toISOString());
+      this.localDisplayControl.patchValue(event.toISOString());
       this.datetimePicker.close();
       this.valueChanged();
     }
@@ -191,8 +224,8 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   public monthSelected(event: Moment): void {
     if (this.startView === 'multi-year') {
-      this.dateControl.patchValue(event.toISOString());
-      this.dateControl.patchValue(event.toISOString());
+      this.localDisplayControl.patchValue(event.toISOString());
+      this.localDisplayControl.patchValue(event.toISOString());
       this.datetimePicker.close();
       this.valueChanged();
     }
@@ -201,18 +234,32 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   private formatValueAndSetErrors(): void {
     if (this.inputElement.nativeElement.value) {
       let formValue = this.inputElement.nativeElement.value;
-      formValue = moment(formValue, this.dateTimeEntryFormat).format(this.momentFormat);
-      if (formValue !== 'Invalid date') {
-        // if not invalid set the value as the formatted value
-        this.dateControl.setValue(formValue);
+      const parsedMoment = moment(formValue, this.dateTimeEntryFormat);
+
+      if (parsedMoment.isValid()) {
+        // format the value in local time
+        // localDisplayControl will auto-sync to dateControl with UTC conversion
+        formValue = parsedMoment.format(this.momentFormat);
+        this.localDisplayControl.setValue(formValue);
       } else {
         // ensure that the datepicker picks up the invalid error
         const keepErrorText = this.inputElement.nativeElement.value;
+        this.localDisplayControl.setValue(keepErrorText);
         this.dateControl.setValue(keepErrorText);
         this.inputElement.nativeElement.value = keepErrorText;
       }
-    } else {
-      // ensure required errors are picked up if relevant
+    } else if (this.localDisplayControl.value) {
+      // input is empty - check if we need to sync from control values
+      // control has a value but input doesn't - this happens when navigating back
+      // manually sync the control value to the input element
+      const controlValue = this.localDisplayControl.value;
+      const parsedMoment = moment(controlValue, this.momentFormat);
+      if (parsedMoment.isValid()) {
+        const formattedValue = parsedMoment.format(this.dateTimeEntryFormat);
+        this.inputElement.nativeElement.value = formattedValue;
+      }
+    } else if (!this.dateControl.value) {
+      this.localDisplayControl.setValue('');
       this.dateControl.setValue('');
     }
   }
