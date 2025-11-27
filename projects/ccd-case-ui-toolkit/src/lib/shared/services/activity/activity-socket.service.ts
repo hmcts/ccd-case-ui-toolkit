@@ -51,16 +51,22 @@ export class ActivitySocketService {
     this.socket.emit('watch', { caseIds });
   }
 
-  public viewCase(caseId: string): void {
-    this.socket.emit('view', { caseId });
+  public viewCase(caseId: string, isViewing?: boolean): void {
+    if(isViewing) {
+      this.socket.emit('view', { caseId });
+    }
   }
 
-  public stopCase(caseId: string): void {
+  public stopCase(caseId: string, isStopping?: boolean): void {
+    if(isStopping)  {
     this.socket.emit('stop', { caseId });
+    }
   }
 
-  public editCase(caseId: string): void {
+  public editCase(caseId: string, isEditing?: boolean): void {
+    if(isEditing) {
     this.socket.emit('edit', { caseId });
+    }
   }
 
   private init(): void {

@@ -75,7 +75,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
               this.activitySocketService.connected
                 .subscribe(connected => {
                 if (connected) {
-                  this.activitySocketService.editCase(this.caseDetails.case_id);
+                  this.activitySocketService.editCase(this.caseDetails.case_id, true);
                 }
               });
           } else if (mode === MODES.polling) {

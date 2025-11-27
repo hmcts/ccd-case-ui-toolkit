@@ -110,7 +110,7 @@ describe('ActivitySocketService', () => {
     it('should emit a "view" event with the case ID', () => {
       spyOn(service.socket, 'emit');
       const caseId = 'case42';
-      service.viewCase(caseId);
+      service.viewCase(caseId, true);
       expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
     });
   });
@@ -122,7 +122,7 @@ describe('ActivitySocketService', () => {
     it('should emit an "edit" event with the case ID', () => {
       spyOn(service.socket, 'emit');
       const caseId = 'case42';
-      service.editCase(caseId);
+      service.editCase(caseId, true);
       expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
     });
   });

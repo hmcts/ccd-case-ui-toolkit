@@ -144,7 +144,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           this.activitySocketService.connected
             .subscribe(connected => {
               if (connected) {
-                this.activitySocketService.viewCase(this.caseDetails.case_id);
+                this.activitySocketService.viewCase(this.caseDetails.case_id, true);
               }
             });
         } else if (mode === MODES.polling) {
