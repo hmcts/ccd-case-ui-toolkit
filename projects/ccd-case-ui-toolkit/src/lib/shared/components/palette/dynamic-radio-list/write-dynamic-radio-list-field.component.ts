@@ -4,7 +4,8 @@ import {AbstractFieldWriteComponent} from '../base-field/abstract-field-write.co
 
 @Component({
   selector: 'ccd-write-dynamic-radio-list-field',
-  templateUrl: './write-dynamic-radio-list-field.html'
+  templateUrl: './write-dynamic-radio-list-field.html',
+  standalone: false
 })
 export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

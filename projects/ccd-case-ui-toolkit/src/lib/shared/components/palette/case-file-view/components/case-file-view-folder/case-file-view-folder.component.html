@@ -1,9 +1,9 @@
 <div class="document-filter-container">
   <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
-    <input 
-      class="form-control document-search" 
-      type="search" 
-      id="document-search" 
+    <input
+      class="form-control document-search"
+      type="search"
+      id="document-search"
       name="documentSearchFormControl"
       formControlName="documentSearchFormControl"
       placeholder="Search by document name"
@@ -14,11 +14,11 @@
 <div class="document-folders-header">
   <div class="document-folders-header__title">Documents ({{ documentCount }})</div>
   <div class="document-folders-header__flex">
-    <ccd-case-file-view-folder-toggle 
+    <ccd-case-file-view-folder-toggle
       (expandAll)="expandAll($event)"
       (collapseAll)="collapseAll($event)">
     </ccd-case-file-view-folder-toggle>
-    <ccd-case-file-view-folder-sort 
+    <ccd-case-file-view-folder-sort
       (sortAscending)="sortDataSourceAscending($event)"
       (sortDescending)="sortDataSourceDescending($event)">
     </ccd-case-file-view-folder-sort>
@@ -36,16 +36,16 @@
         <button class="node case-file__node" (click)="selectedNodeItem = node; clickedDocument.emit(node)"
                 [class.node--selected]="selectedNodeItem?.name === node.name">
           <div class="node__icon" disabled>
-            <img src="/assets/img/case-file-view/case-file-view-document.svg" 
+            <img src="/assets/img/case-file-view/case-file-view-document.svg"
               class="node__iconImg"
-              alt="Document icon" 
+              alt="Document icon"
             />
           </div>
           <span class="node__name node-name-document">
             {{ node.name }}
             <br />
             <span class="node__document-upload-timestamp">{{
-              node.upload_timestamp | ccdDate: "local":"dd MMM YYYY HH:mm"
+              node.upload_timestamp | ccdDate: "local":"dd MMM yyyy HH:mm"
               }}</span>
           </span>
         </button>
@@ -64,7 +64,7 @@
       <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">
         <button class="node" cdkTreeNodeToggle>
           <div class="node__icon" [attr.aria-label]="'toggle ' + node.name">
-            <img class="node__iconImg" 
+            <img class="node__iconImg"
                 [src]="nestedTreeControl.isExpanded(node)
                   ? '/assets/images/folder-open.png'
                   : '/assets/images/folder.png'

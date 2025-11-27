@@ -19,7 +19,8 @@ import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html'
+  templateUrl: './write-document-field.html',
+  standalone: false
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';

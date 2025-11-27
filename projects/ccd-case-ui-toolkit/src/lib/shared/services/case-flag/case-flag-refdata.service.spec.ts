@@ -78,8 +78,8 @@ describe('Case Flag Refdata Service', () => {
       ]
     });
     // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9
-    service = TestBed.get(CaseFlagRefdataService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(CaseFlagRefdataService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
