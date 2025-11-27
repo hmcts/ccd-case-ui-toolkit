@@ -32,7 +32,8 @@ import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils'
   selector: 'ccd-case-edit',
   templateUrl: 'case-edit.component.html',
   styleUrls: ['../case-edit.scss'],
-  providers: [GreyBarService]
+  providers: [GreyBarService],
+  standalone: false
 })
 export class CaseEditComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';

@@ -31,13 +31,11 @@ describe('MoneyGbpInputComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputMockComponent
         ],
         declarations: [
-          MoneyGbpInputComponent,
-
-          // Mocks
-          inputMockComponent
+          MoneyGbpInputComponent
         ],
         providers: []
       })
