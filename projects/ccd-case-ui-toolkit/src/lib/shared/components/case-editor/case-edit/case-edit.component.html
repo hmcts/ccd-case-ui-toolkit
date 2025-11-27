@@ -1,1 +1,9 @@
 <router-outlet></router-outlet>
+<!-- Simple centered modal shown on refresh -->
+<div *ngIf="isRefreshModalVisible" class="refresh-modal-backdrop">
+  <div class="refresh-modal">
+    <h2 class="heading-h2">Page refreshed</h2>
+    <p>{{ 'As the page has been refreshed mandatory data is now missing. You will be redirected to the first page of this event.' }}</p>
+    <button class="button" (click)="onRefreshModalOk()">OK</button>
+  </div>
+</div>
