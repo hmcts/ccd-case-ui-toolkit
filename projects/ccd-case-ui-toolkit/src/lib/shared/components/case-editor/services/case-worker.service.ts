@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseworkersByService } from '../../../domain/work-allocation/case-worker.model';
+import { Caseworker, CaseworkersByService } from '../../../domain/work-allocation/case-worker.model';
 import { HttpErrorService } from '../../../services/http/http-error.service';
 import { HttpService } from '../../../services/http/http.service';
 
@@ -16,10 +16,10 @@ export class CaseworkerService {
   ) {
   }
 
-  public getCaseworkers(serviceId): Observable<CaseworkersByService[]> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUsersByServiceName`;
+  public getUserByIdamId(idamId: string): Observable<Caseworker> {
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUserByIdamId`;
     return this.http
-      .post(url, { services: [serviceId]})
+      .post(url, idamId)
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
