@@ -22,6 +22,10 @@ export class ActivitySocketService {
   public disconnect: Observable<any>;
   public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private lastViewEmit = { caseId: '', time: 0 };
+  private lastEditEmit = { caseId: '', time: 0 };
+  private readonly emitCooldownMs = 250; // ignore duplicate emits within 250ms
+
   public socket: Socket;
   private pUser: UserInfo;
   public get user(): UserInfo {
@@ -51,26 +55,97 @@ export class ActivitySocketService {
     this.socket.emit('watch', { caseIds });
   }
 
-  public viewCase(caseId: string, isViewing?: boolean): void {
-    // only emit if viewing is true and socket is connected
-    if(isViewing && this.socket && this.connected.value) {
-      console.log('viewCase emit');
-      this.socket.emit('view', { caseId });
-    }
-  }
+  // public viewCase(caseId: string, isViewing?: boolean): void {
+  //   // only emit if viewing is true and socket is connected
+  //   if(isViewing && this.socket && this.connected.value) {
+  //     console.log('viewCase emit');
+  //     this.socket.emit('view', { caseId });
+  //   }
+  // }
 
-  public stopCase(caseId: string, isStopping?: boolean): void {
-    // only emit if stopping is true
-    if(isStopping) {
-      this.socket.emit('stop', { caseId });
-    }
+  // public stopCase(caseId: string, isStopping?: boolean): void {
+  //   // only emit if stopping is true
+  //   if(isStopping) {
+  //     this.socket.emit('stop', { caseId });
+  //   }
+  // }
+
+  // public editCase(caseId: string, isEditing?: boolean): void {
+  //   // only emit if editing is true and socket is connected
+  //   if(isEditing && this.socket && this.connected.value) {
+  //     console.log('editCase emit');
+  //     this.socket.emit('edit', { caseId });
+  //   }
+  // }
+
+
+  // keep small wrappers to avoid breaking callers
+  public viewCase(caseId: string, isViewing?: boolean): void {
+    if (isViewing) { this.startViewing(caseId); }
   }
 
   public editCase(caseId: string, isEditing?: boolean): void {
-    // only emit if editing is true and socket is connected
-    if(isEditing && this.socket && this.connected.value) {
-      console.log('editCase emit');
+    if (isEditing) { this.startEditing(caseId); }
+  }
+
+  public stopCase(caseId: string, isStopping?: boolean): void {
+    if (isStopping) { this.stopViewing(caseId); }
+  }
+
+  /**
+   * Start viewing a case (explicit).
+   * Only emits when socket exists and is connected.
+   */
+  public startViewing(caseId: string): void {
+    if (!caseId) { return; }
+    if (!this.socket || !this.connected.value) { return; } // defensive
+    const now = Date.now();
+    if (this.lastViewEmit.caseId === caseId && (now - this.lastViewEmit.time) < this.emitCooldownMs) {
+      return; // duplicate within cooldown
+    }
+     
+    console.log('startViewing emit');
+    try {
+      this.socket.emit('view', { caseId });
+      this.lastViewEmit = { caseId, time: now };
+    } catch (e) {
+      console.warn('startViewing emit failed', e);
+    }
+  }
+
+  /**
+   * Stop viewing a case (explicit).
+   * Safe no-op if socket not connected.
+   */
+  public stopViewing(caseId: string): void {
+    if (!caseId) { return; }
+    if (!this.socket || !this.connected.value) { return; }
+    try {
+      this.socket.emit('stop', { caseId });
+      if (this.lastViewEmit.caseId === caseId) {
+        this.lastViewEmit = { caseId: '', time: 0 };
+      }
+    } catch (e) {
+      console.warn('stopViewing emit failed', e);
+    }
+  }
+
+  /**
+   * Start editing a case (explicit).
+   */
+  public startEditing(caseId: string): void {
+    if (!caseId) { return; }
+    if (!this.socket || !this.connected.value) { return; }
+    const now = Date.now();
+    if (this.lastEditEmit.caseId === caseId && (now - this.lastEditEmit.time) < this.emitCooldownMs) {
+      return;
+    }
+    console.log('startEditing emit', caseId);
+    try {
       this.socket.emit('edit', { caseId });
+      this.lastEditEmit = { caseId, time: now };
+    } catch (e) {
+      console.warn('startEditing emit failed', e);
     }
   }
 
