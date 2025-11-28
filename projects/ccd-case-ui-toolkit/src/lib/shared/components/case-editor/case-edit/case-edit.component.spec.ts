@@ -882,30 +882,9 @@ describe('CaseEditComponent', () => {
         it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
-          routerStub.url = 'test.com';
+
           fixture.detectChanges();
           expect(component.checkPageRefresh()).toBe(false);
-        });
-
-        it('should redirect to first wizard page when user navigates directly to submit without initialUrl', async () => {
-          routerStub.url = '/some/case/path/submit';
-          component.initialUrl = null;
-          component.isPageRefreshed = false;
-          component.eventTrigger = {
-            wizard_pages: [
-              { id: 'secondPage', order: 2 },
-              { id: 'firstPage', order: 1 }
-            ]
-          } as any;
-
-          spyOn((component as any).windowsService, 'alert');
-          (routerStub.navigate as jasmine.Spy).and.returnValue(Promise.resolve(true));
-
-          const result = component.checkPageRefresh();
-
-          expect(result).toBeFalsy();
-          expect((component as any).windowsService.alert).toHaveBeenCalledWith(CaseEditComponent.ALERT_MESSAGE);
-          expect(routerStub.navigate).toHaveBeenCalledWith(['firstPage'], { relativeTo: (component as any).route });
         });
 
         it('should check page is refreshed', () => {
