@@ -4,6 +4,8 @@ import { Socket } from 'socket.io-client';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
 import { Utils, MODES } from './utils';
+import { connect } from 'http2';
+import { connected } from 'process';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
@@ -107,8 +109,10 @@ describe('ActivitySocketService', () => {
     beforeEach(() => {
       activityService.mode = MODES.socket;
     });
-    it('should emit a "view" event with the case ID', () => {
+  it('should emit a "view" event with the case ID', () => {
       spyOn(service.socket, 'emit');
+      service.connected.next(true);
+
       const caseId = 'case42';
       service.viewCase(caseId, true);
       expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
@@ -121,6 +125,8 @@ describe('ActivitySocketService', () => {
     });
     it('should emit an "edit" event with the case ID', () => {
       spyOn(service.socket, 'emit');
+      service.connected.next(true);
+      
       const caseId = 'case42';
       service.editCase(caseId, true);
       expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });

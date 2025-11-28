@@ -52,20 +52,25 @@ export class ActivitySocketService {
   }
 
   public viewCase(caseId: string, isViewing?: boolean): void {
-    if(isViewing) {
+    // only emit if viewing is true and socket is connected
+    if(isViewing && this.socket && this.connected.value) {
+      console.log('viewCase emit');
       this.socket.emit('view', { caseId });
     }
   }
 
   public stopCase(caseId: string, isStopping?: boolean): void {
-    if(isStopping)  {
-    this.socket.emit('stop', { caseId });
+    // only emit if stopping is true
+    if(isStopping) {
+      this.socket.emit('stop', { caseId });
     }
   }
 
   public editCase(caseId: string, isEditing?: boolean): void {
-    if(isEditing) {
-    this.socket.emit('edit', { caseId });
+    // only emit if editing is true and socket is connected
+    if(isEditing && this.socket && this.connected.value) {
+      console.log('editCase emit');
+      this.socket.emit('edit', { caseId });
     }
   }
 
