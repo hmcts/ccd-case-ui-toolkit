@@ -132,4 +132,77 @@ describe('ActivitySocketService', () => {
       expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
     });
   });
+
+  describe('explicit start/stop methods (startViewing, stopViewing, startEditing)', () => {
+    beforeEach(() => {
+      activityService.mode = MODES.socket;
+      // mark socket as connected so guarded emits pass
+      service.connected.next(true);
+    });
+
+    it('startViewing should emit "view" when connected', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-view-1';
+
+      service.startViewing(caseId);
+
+      expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
+    });
+
+    it('startViewing should NOT emit when not connected', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-view-2';
+      // disconnect the service
+      service.connected.next(false);
+
+      service.startViewing(caseId);
+
+      expect(service.socket.emit).not.toHaveBeenCalled();
+    });
+
+    it('startViewing should dedupe duplicates when a recent emit exists', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-view-3';
+      // simulate a very recent emit for same caseId
+      (service as any).lastViewEmit = { caseId, time: Date.now() };
+
+      service.startViewing(caseId);
+
+      // blocked by cooldown so no new emit
+      expect(service.socket.emit).not.toHaveBeenCalled();
+    });
+
+    it('stopViewing should emit "stop" when connected and clear lastViewEmit', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-stop-1';
+      // set lastViewEmit so we can verify it's cleared
+      (service as any).lastViewEmit = { caseId, time: Date.now() };
+
+      service.stopViewing(caseId);
+
+      expect(service.socket.emit).toHaveBeenCalledWith('stop', { caseId });
+      // lastViewEmit for that case cleared
+      expect((service as any).lastViewEmit.caseId).toBe('');
+    });
+
+    it('startEditing should emit "edit" when connected', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-edit-1';
+
+      service.startEditing(caseId);
+
+      expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
+    });
+
+    it('startEditing should dedupe duplicate edit emits when recent', () => {
+      spyOn(service.socket, 'emit');
+      const caseId = 'case-edit-2';
+      // simulate recent edit emit
+      (service as any).lastEditEmit = { caseId, time: Date.now() };
+
+      service.startEditing(caseId);
+
+      expect(service.socket.emit).not.toHaveBeenCalled();
+    });
+  });
 });
