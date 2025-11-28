@@ -324,8 +324,30 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
-        // select the first tab checking if the tab is visible
-        const preSelectTab: CaseTab = this.findPreSelectedActiveTab();
+
+        // Prefer tab from FieldsUtils.defaultTabList (e.g. PRLAPPS -> Summary) if present
+        const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
+        let preSelectTab: CaseTab = null;
+
+        if (preferredLabel) {
+          preSelectTab = this.caseDetails.tabs.find(t => (t.label === preferredLabel) || (t.id === preferredLabel)) ?? null;
+        }
+
+        // Fallback to first visible tab if no preferred label found
+        if (!preSelectTab) {
+          preSelectTab = this.findPreSelectedActiveTab();
+        }
+
+        // If the preferred tab exists in caseDetails but is hidden (not rendered in tabGroup), fallback again
+        const renderedTabs = this.tabGroup?._tabs?.toArray?.() ?? [];
+        const preferredRendered = preSelectTab &&
+          renderedTabs.some(mt => mt.textLabel === preSelectTab.label || mt.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
+
+        if (!preferredRendered) {
+          // Default focus: keep natural first visible tab (do not change selectedIndex explicitly)
+          preSelectTab = this.findPreSelectedActiveTab();
+        }
+
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
