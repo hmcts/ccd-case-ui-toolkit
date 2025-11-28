@@ -10,7 +10,7 @@ import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
@@ -20,7 +20,6 @@ import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DRAFT_QUERY_PARAM, DisplayMode, Draft } from '../../../domain';
 import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import {
-  ActivityPollingService,
   AlertService,
   DraftService,
   ErrorNotifierService,
@@ -31,12 +30,17 @@ import {
   OrderService,
   SessionStorageService
 } from '../../../services';
+
+import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../../services/activity';
 import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { MODES } from '../../../services/activity/utils';
+import { isSolicitorUser } from '../../../utils';
+
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -70,6 +74,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public activitySubscription: Subscription;
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
+  public socketConnectSub: Subscription;
   public dialogConfig: MatDialogConfig;
   public message: string;
   public subscription: Subscription;
@@ -92,6 +97,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
     private readonly activityPollingService: ActivityPollingService,
+    private readonly activityService: ActivityService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
@@ -129,11 +136,23 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
     });
 
-    if (this.activityPollingService.isEnabled && !this.activitySubscription) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe();
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
+          this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.viewCase(this.caseDetails.case_id, true);
+              }
+            });
+        } else if (mode === MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postViewActivity().subscribe((_resolved) => { });
+          });
+        }
       });
-    }
 
     this.checkRouteAndSetCaseViewTab();
 
@@ -180,6 +199,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
+    this.unsubscribe(this.socketConnectSub);
     this.subs.forEach(s => s.unsubscribe());
   }
 
@@ -466,6 +486,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
+
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
