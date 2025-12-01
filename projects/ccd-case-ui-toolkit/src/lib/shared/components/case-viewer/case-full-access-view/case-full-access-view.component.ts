@@ -330,7 +330,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         let preSelectTab: CaseTab = null;
 
         if (preferredLabel) {
-          preSelectTab = this.caseDetails.tabs.find(t => (t.label === preferredLabel) || (t.id === preferredLabel)) ?? null;
+          preSelectTab = this.caseDetails.tabs.find(tab => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
         }
 
         // Fallback to first visible tab if no preferred label found
@@ -341,7 +341,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         // If the preferred tab exists in caseDetails but is hidden (not rendered in tabGroup), fallback again
         const renderedTabs = this.tabGroup?._tabs?.toArray?.() ?? [];
         const preferredRendered = preSelectTab &&
-          renderedTabs.some(mt => mt.textLabel === preSelectTab.label || mt.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
+          renderedTabs.some(tab => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
 
         if (!preferredRendered) {
           // Default focus: keep natural first visible tab (do not change selectedIndex explicitly)
