@@ -93,6 +93,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public callbackErrorsSubject: Subject<any> = new Subject();
 
   public validPageList: WizardPage[] = [];
+  private preventBackKey = 'preventBackAfterRefresh';
+  private popStateHandler = (ev: PopStateEvent) => this.handlePopState(ev);
+  private handlingPop = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -120,6 +123,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
+    // register popstate listener — safe to always register, behavior gated by session flag
+    window.addEventListener('popstate', this.popStateHandler);
     this.checkPageRefresh();
 
     this.form = this.fb.group({
@@ -141,16 +146,93 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.callbackErrorsSubject) {
       this.callbackErrorsSubject.unsubscribe();
     }
+    // cleanup popstate listener
+    window.removeEventListener('popstate', this.popStateHandler);
+    // clear any temporary session flag
+    this.sessionStorageService.removeItem(this.preventBackKey);
   }
 
   public checkPageRefresh(): boolean {
+    const currentUrl = this.router?.url || '';
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigate([this.initialUrl], { relativeTo: this.route });
+      this.sessionStorageService.setItem(this.preventBackKey, 'true');
+
+      const navResult = this.router.navigate([this.initialUrl], { relativeTo: this.route, replaceUrl: true });
+
+      const pushStateSafely = () => {
+        try {
+          history.pushState(null, '', this.initialUrl);
+        } catch (e) {
+          this.abstractConfig.logMessage('history.pushState failed: ' + e);
+        }
+      };
+
+      if (navResult && typeof (navResult as any).then === 'function') {
+        (navResult as Promise<boolean>).then(pushStateSafely);
+      } else {
+        // Fallback for stubbed navigate returning void
+        setTimeout(pushStateSafely, 0);
+      }
       return true;
     }
+
+    if (currentUrl.includes('/submit') && !this.initialUrl) {
+      if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+        const firstPageId = this.getFirstPageId();
+        if (firstPageId) {
+          this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+          this.router.navigate([firstPageId], { relativeTo: this.route });
+        }
+      }
+    }
     return false;
+  }
+
+  private getFirstPageId(): string | undefined {
+    const pages = this.eventTrigger?.wizard_pages;
+    if (!pages || !pages.length) { return undefined; }
+    return pages.reduce((min, p) => p.order < min.order ? p : min, pages[0])?.id;
+  }
+
+  private handlePopState(ev: PopStateEvent): void {
+    // avoid re-entrancy
+    if (this.handlingPop) {
+      return;
+    }
+
+    const shouldPrevent = this.sessionStorageService.getItem(this.preventBackKey) === 'true';
+    if (!shouldPrevent) {
+      return;
+    }
+
+    // Prevent loop during handling
+    this.handlingPop = true;
+
+    // Re-route user back to the initial URL (first page)
+    // Use replaceUrl to avoid adding another entry.
+    // Use a short timeout to let browser settle (helps avoid some race conditions)
+    setTimeout(() => {
+      const firstPageId = this.getFirstPageId();
+      let navigationPromise: Promise<boolean>;
+      if (this.router.url.includes('/submit') && !this.initialUrl ) {
+        navigationPromise = this.router.navigate([firstPageId ? firstPageId : 'submit'], { relativeTo: this.route });
+      } else {
+        navigationPromise = this.router.navigate([this.initialUrl], { relativeTo: this.route, replaceUrl: true });
+      }
+      navigationPromise.finally(() => {
+        // After routing them back, we can remove the session flag so future Back behaves normally
+        this.sessionStorageService.removeItem(this.preventBackKey);
+        // Remove any duplicate states we pushed (best-effort)
+        try {
+          history.replaceState(null, '', this.initialUrl);
+        } catch (e) {
+          // ignore
+        }
+        this.handlingPop = false;
+      });
+    }, 0);
   }
 
   public getPage(pageId: string): WizardPage {
@@ -293,8 +375,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getCaseId(caseDetails: CaseView): string {
-    return (caseDetails ? caseDetails.case_id : '');
+  public getCaseId(caseDetails: CaseView): string | undefined {
+    return caseDetails?.case_id;
   }
 
   private getEventId(form: FormGroup): string {
