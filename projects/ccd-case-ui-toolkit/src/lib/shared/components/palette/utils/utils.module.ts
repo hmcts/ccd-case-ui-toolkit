@@ -9,6 +9,7 @@ import { IsCompoundPipe } from './is-compound.pipe';
 import { IsMandatoryPipe } from './is-mandatory.pipe';
 import { IsReadOnlyAndNotCollectionPipe } from './is-read-only-and-not-collection.pipe';
 import { IsReadOnlyPipe } from './is-read-only.pipe';
+import { TextDateTimePipe } from './text-date-time.pipe';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
   ],
   declarations: [
     DatePipe,
+    TextDateTimePipe,
     FieldLabelPipe,
     FirstErrorPipe,
     IsCompoundPipe,
@@ -27,6 +29,7 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
   ],
   exports: [
     DatePipe,
+    TextDateTimePipe,
     FieldLabelPipe,
     FirstErrorPipe,
     IsCompoundPipe,

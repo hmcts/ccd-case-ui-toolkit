@@ -3,7 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-text-area-field',
-  template: `<span style="white-space: pre-wrap">{{ caseField.value }}</span>`,
+  template: `<span style="white-space: pre-wrap">{{ caseField.value | ccdTextDateTime }}</span>`,
   standalone: false
 })
 export class ReadTextAreaFieldComponent extends AbstractFieldReadComponent {}
