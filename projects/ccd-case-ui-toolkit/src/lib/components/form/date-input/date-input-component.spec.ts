@@ -424,7 +424,7 @@ describe('Date input component', () => {
       const calledValue = onChange.calls.mostRecent().args[0];
 
       // verify correct conversion: 08:02:27 BST (UTC+1) should become 07:02:27 UTC
-      expect(calledValue).toBe('2025-04-09T07:02:27.000');
+      expect(calledValue).toBe('2025-04-09T07:02:27.000Z');
     });
 
     it('should return invalid date string when moment cannot parse it', () => {
@@ -459,7 +459,7 @@ describe('Date input component', () => {
       const calledValue = onChange.calls.mostRecent().args[0];
 
       // verify padding was applied and correct UTC conversion
-      expect(calledValue).toBe('2025-04-09T07:02:07.000');
+      expect(calledValue).toBe('2025-04-09T07:02:07.000Z');
     });
 
     it('should return null when no values are set', () => {

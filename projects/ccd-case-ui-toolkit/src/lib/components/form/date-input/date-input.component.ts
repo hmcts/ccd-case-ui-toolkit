@@ -255,8 +255,8 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
         }
         const utcMoment = localMoment.utc();
 
-        // return in the expected format
-        return utcMoment.format('YYYY-MM-DDTHH:mm:ss.000');
+        // return in the expected format with Z suffix to indicate UTC
+        return utcMoment.format('YYYY-MM-DDTHH:mm:ss.000[Z]');
       } else {
         return date;
       }
