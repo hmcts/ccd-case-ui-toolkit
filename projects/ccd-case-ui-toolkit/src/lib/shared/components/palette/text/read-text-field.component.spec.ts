@@ -5,6 +5,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadTextFieldComponent } from './read-text-field.component';
+import { TextDateTimePipe } from '../utils/text-date-time.pipe';
 
 describe('ReadTextFieldComponent', () => {
   const FIELD_TYPE: FieldType = {
@@ -33,7 +34,8 @@ describe('ReadTextFieldComponent', () => {
           imports: [],
           declarations: [
             ReadTextFieldComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            TextDateTimePipe
           ],
           providers: []
         })
@@ -91,7 +93,8 @@ describe('ReadTextFieldComponent', () => {
           imports: [],
           declarations: [
             ReadTextFieldComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            TextDateTimePipe
           ],
           providers: []
         })

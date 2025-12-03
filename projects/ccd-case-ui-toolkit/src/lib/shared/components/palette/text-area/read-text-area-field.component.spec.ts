@@ -7,6 +7,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadTextAreaFieldComponent } from './read-text-area-field.component';
+import { TextDateTimePipe } from '../utils/text-date-time.pipe';
 
 describe('ReadTextAreaFieldComponent', () => {
 
@@ -38,7 +39,8 @@ describe('ReadTextAreaFieldComponent', () => {
           imports: [],
           declarations: [
             ReadTextAreaFieldComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            TextDateTimePipe
           ],
           providers: []
         })
@@ -111,7 +113,8 @@ describe('ReadTextAreaFieldComponent', () => {
           imports: [],
           declarations: [
             ReadTextAreaFieldComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            TextDateTimePipe
           ]
         })
         .compileComponents();
