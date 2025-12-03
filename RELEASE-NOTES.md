@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.2-exui-3682
+### Version 7.3.2-exui-3682-2
 **EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
 
 ### Version 7.3.2
