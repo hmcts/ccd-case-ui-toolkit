@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/shared/domain';
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService } from '../../../../services';
-import { USER_DETAILS } from '../../../../utils';
+import { isInternalUser, isJudiciaryUser, USER_DETAILS } from '../../../../utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,
@@ -26,6 +26,14 @@ export class QueryManagementService {
     private readonly sessionStorageService: SessionStorageService
   ) {}
 
+  public isInternalUser(): boolean {
+    return isInternalUser(this.sessionStorageService);
+  }
+
+  public isJudiciaryUser(): boolean {
+    return isJudiciaryUser(this.sessionStorageService);
+  }
+
   public generateCaseQueriesCollectionData(
     formGroup: FormGroup,
     queryCreateContext: QueryCreateContext,
@@ -40,8 +48,10 @@ export class QueryManagementService {
       console.error('Could not parse USER_DETAILS from session storage:', e);
       currentUserDetails = {};
     }
+
+    const isHmctsStaff= (this.isJudiciaryUser() || this.isInternalUser()) ? 'Yes' : 'No';
     const caseMessage = queryCreateContext === QueryCreateContext.NEW_QUERY
-      ? QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails)
+      ? QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails, isHmctsStaff)
       : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, queryCreateContext);
 
     const isNewQuery = queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query

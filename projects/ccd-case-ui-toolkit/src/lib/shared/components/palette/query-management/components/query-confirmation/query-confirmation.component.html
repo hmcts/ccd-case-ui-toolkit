@@ -9,15 +9,18 @@
           </div>
         </div>
         <div class="govuk-body">
-          <h3 class="govuk-heading-s">{{'What happens next' | rpxTranslate}}</h3>
-          <ccd-markdown [content]="callbackConfirmationMessageText?.body | rpxTranslate"></ccd-markdown>
-          <p>{{'When the response is available it will be added to the \'Queries\' section.' | rpxTranslate}}</p>
+          @if (isHmctsStaff.toLowerCase() !== 'yes') {
+            <h3 class="govuk-heading-s">{{'What happens next' | rpxTranslate}}</h3>
+            <ccd-markdown [content]="callbackConfirmationMessageText?.body | rpxTranslate"></ccd-markdown>
+            <p>{{'When the response is available it will be added to the \'Queries\' section.' | rpxTranslate}}</p>
+          }
           <p>
             {{'You can' | rpxTranslate}}
             <a class="govuk-link" routerLink="/cases/case-details/{{jurisdiction}}/{{caseType}}/{{caseId}}">{{'Go back to the case' | rpxTranslate}}</a>
           </p>
+
         </div>
-      </ng-container>
+      </ng-container> {{isHmctsStaff}} ---
       <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND">
         <div class="govuk-panel govuk-panel--confirmation">
           <h1 class="govuk-panel__title">{{'Query response submitted' | rpxTranslate}}</h1>

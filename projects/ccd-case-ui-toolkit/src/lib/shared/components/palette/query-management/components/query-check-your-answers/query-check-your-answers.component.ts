@@ -55,6 +55,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
+  @Output() public createEventResponse = new EventEmitter<any>();
 
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
@@ -181,6 +182,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             const confirmationHeader = createEventResponse?.after_submit_callback_response?.confirmation_header;
             this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
 
+            this.createEventResponse.emit(createEventResponse);
+
             return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
               this.caseViewTrigger.name
@@ -210,6 +213,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           const confirmationBody = callbackResponse?.after_submit_callback_response?.confirmation_body;
           const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
           this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+          this.createEventResponse.emit(callbackResponse);
+          console.log('Query submitted successfully.', callbackResponse);
         },
         error: (error) => this.handleError(error)
       });
