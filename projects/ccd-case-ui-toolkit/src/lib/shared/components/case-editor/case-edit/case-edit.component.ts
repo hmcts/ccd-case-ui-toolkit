@@ -94,6 +94,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public validPageList: WizardPage[] = [];
 
+  public isRefreshModalVisible = false;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -146,11 +148,25 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public checkPageRefresh(): boolean {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
-      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.isRefreshModalVisible = true;
       this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
+    // if the url contains /submit there is the potential that the user has gone straight to the submit page
+    // we should try and work out if they have been through the journey or not and prevent them submitting directly
+    if (this.router.url.includes('/submit') && !this.initialUrl) {
+      // we only want to check if the user has done this if there is a multi-page journey
+      if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+        const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
+        this.isRefreshModalVisible = true;
+        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+      }
+    }
     return false;
+  }
+
+  public onRefreshModalOk(): void {
+    this.isRefreshModalVisible = false;
   }
 
   public getPage(pageId: string): WizardPage {
