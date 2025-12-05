@@ -3,10 +3,17 @@
     <div class="govuk-grid-column-two-thirds">
       <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY || queryCreateContext === queryCreateContextEnum.FOLLOWUP">
         <div class="govuk-panel govuk-panel--confirmation">
-          <h1 class="govuk-panel__title">{{'Query submitted' | rpxTranslate}}</h1>
-          <div class="qm-confirmation govuk-panel__body">
-            <ccd-markdown [content]="callbackConfirmationMessageText?.header | rpxTranslate"></ccd-markdown>
-          </div>
+
+          @if (isHmctsStaffRaisedQuery?.toLowerCase() === 'yes') {
+              <h1 class="govuk-panel__title">{{'Query response submitted' | rpxTranslate}}</h1>
+              <div class="govuk-panel__body">{{'This query response has been added to the case' | rpxTranslate}}</div>
+          } @else {
+              <h1 class="govuk-panel__title">{{'Query submitted' | rpxTranslate}}</h1>
+              <div class="qm-confirmation govuk-panel__body">
+                <ccd-markdown [content]="callbackConfirmationMessageText?.header | rpxTranslate"></ccd-markdown>
+              </div>
+            }
+
         </div>
         <div class="govuk-body">
           @if (isHmctsStaff.toLowerCase() !== 'yes') {
@@ -20,7 +27,7 @@
           </p>
 
         </div>
-      </ng-container> {{isHmctsStaff}} ---
+      </ng-container>
       <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND">
         <div class="govuk-panel govuk-panel--confirmation">
           <h1 class="govuk-panel__title">{{'Query response submitted' | rpxTranslate}}</h1>

@@ -172,6 +172,10 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const data = this.qmCaseQueriesCollectionData;
     const createEvent$ = this.createEvent(data);
 
+    // Make sure qmCaseQueriesCollectionData is present and non-empty
+    const keys = data && typeof data === 'object' ? Object.keys(data) : [];
+    const fieldId = keys.length ? keys[0] : undefined;
+
     this.isSubmitting = true;
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
@@ -182,7 +186,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             const confirmationHeader = createEventResponse?.after_submit_callback_response?.confirmation_header;
             this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
 
-            this.createEventResponse.emit(createEventResponse);
+            // Emit the extracted collection value (or null if not found)
+            this.createEventResponse.emit(fieldId ? createEventResponse?.data?.[fieldId] ?? null : null);
 
             return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
@@ -213,7 +218,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           const confirmationBody = callbackResponse?.after_submit_callback_response?.confirmation_body;
           const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
           this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
-          this.createEventResponse.emit(callbackResponse);
+          this.createEventResponse.emit(fieldId ? callbackResponse?.data?.[fieldId] ?? null : null);
           console.log('Query submitted successfully.', callbackResponse);
         },
         error: (error) => this.handleError(error)
