@@ -21,7 +21,7 @@
       <td class="govuk-table__cell query-list__cell query-list__cell--first">
         <button type="button" class="govuk-js-link" (click)="showDetails(message)">{{ message.subject }}</button>
       </td>
-      <td class="govuk-table__cell query-list__cell">{{ message.name }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.name }} @if (message?.isHmctsStaff?.toLowerCase() === 'yes') { {{ '- HMCTS' }} }</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }}</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM yyyy HH:mm' }} </td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM yyyy HH:mm' }} </td>
