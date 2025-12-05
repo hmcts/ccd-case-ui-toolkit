@@ -29,7 +29,8 @@ import { CaseFlagStateService } from '../services/case-flag-state.service';
 @Component({
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
-  styleUrls: ['./case-edit-page.scss']
+  styleUrls: ['./case-edit-page.scss'],
+  standalone: false
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy, JourneyInstigator {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';

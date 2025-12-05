@@ -1,12 +1,10 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { delay, map, switchMap, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
-import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
-import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 
 @Injectable()
 export class DocumentManagementService {
@@ -27,35 +25,24 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  private caseTypeId: string = '';
+  private readonly caseTypeId: string = '';
 
   constructor(
     private readonly http: HttpService,
-    private readonly appConfig: AbstractAppConfig,
-    private readonly caseNotifierService: CaseNotifier,
-    private readonly jurisdictionService: JurisdictionService
+    private readonly appConfig: AbstractAppConfig
   ) {
-    combineLatest([
-      this.caseNotifierService.caseView.pipe(take(1)),
-      this.jurisdictionService.getSelectedJurisdiction()
-    ]).subscribe(([caseDetails, jurisdiction]) => {
-      if (caseDetails) {
-        this.caseTypeId = caseDetails?.case_type?.id;
+    const currUrl = window.location.pathname;
+    if (currUrl.includes('/case-details/')) {
+      this.caseTypeId = currUrl.split('/')[4];
+    }
+    console.log(this.caseTypeId);
+    //if the user refreshes on the case creation page the above logic will not work, we can get the caseTypeId from the URL
+    if (!this.caseTypeId) {
+      if (currUrl.indexOf('/case-create/') > -1) {
+        const parts = currUrl.split('/');
+        this.caseTypeId = parts[parts.indexOf('case-create') + 2];
       }
-      if (jurisdiction) {
-        if (jurisdiction.currentCaseType) {
-          this.caseTypeId = jurisdiction.currentCaseType.id;
-        }
-      }
-      //if the user refreshes on the case creation page the above logic will not work, we can get the caseTypeId from the URL
-      if (!this.caseTypeId) {
-        const url = window.location.pathname;
-        if (url.indexOf('/case-create/') > -1) {
-          const parts = url.split('/');
-          this.caseTypeId = parts[parts.indexOf('case-create') + 2];
-        }
-      }
-    });
+    }
   }
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
@@ -146,7 +133,6 @@ export class DocumentManagementService {
   public isDocumentSecureModeEnabled(): boolean {
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
-    this.appConfig.logMessage(`isDocumentOnExclusionList: ${isDocumentOnExclusionList}`);
     if (!isDocumentOnExclusionList){
       return true;
     }

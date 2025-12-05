@@ -5,9 +5,12 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { Subscription } from 'rxjs';
+import { skip, Subscription } from 'rxjs';
 
-@Directive({ selector: '[ccdLabelSubstitutor]' })
+@Directive({
+  selector: '[ccdLabelSubstitutor]',
+  standalone: false
+})
 /**
  * Checks all labels and substitutes any placholders that reference other fields values.
  */
@@ -33,11 +36,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.caseField.originalLabel = this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
-    this.languageSubscription = this.rpxTranslationService.language$.subscribe(() => {
-      // timeout is required to prevent race conditions with translation pipe
-      setTimeout(() => {
-        this.onLanguageChange();
-      }, 100);
+    this.languageSubscription = this.rpxTranslationService.language$.pipe(
+      skip(1)
+    ).subscribe(() => {
+      this.onLanguageChange();
     });
 
     this.applySubstitutions()

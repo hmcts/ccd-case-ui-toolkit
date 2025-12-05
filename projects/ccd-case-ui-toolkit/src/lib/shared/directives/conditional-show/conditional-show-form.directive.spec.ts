@@ -20,7 +20,8 @@ import createSpyObj = jasmine.createSpyObj;
         <input type="radio" [hidden]="carHidden" formControlName="hasCar" id="HasCarN" value="No">
         <input type="text" [hidden]="makeHidden" formControlName="carMake" id="CarMake"/>
         <input type="text" [hidden]="modelHidden" formControlName="carModel" id="CarModel"/>"
-      </div>`
+      </div>`,
+  standalone: false
 })
 
 class TestHostComponent {

@@ -11,7 +11,8 @@ import { AbstractJourneyComponent } from '../../../base-field';
   selector: 'ccd-manage-case-flags',
   templateUrl: './manage-case-flags.component.html',
   styleUrls: ['./manage-case-flags.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class ManageCaseFlagsComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
