@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, StateMachine } from '@edium/fsm';
 import { throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
 import { TaskState } from '../../../domain/work-allocation/Task';
 import { FieldsUtils } from '../../../services';
 import { EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
@@ -22,6 +23,8 @@ export class EventCompletionStateMachineService {
   public stateTaskAssignToUser: State;
   public stateTaskUnassigned: State;
   public stateFinal: State;
+
+  constructor(private readonly abstractConfig: AbstractAppConfig) {}
 
   public initialiseStateMachine(context: EventCompletionStateMachineContext): StateMachine {
     return new StateMachine(EVENT_COMPLETION_STATE_MACHINE, context);
@@ -80,10 +83,11 @@ export class EventCompletionStateMachineService {
     this.addTransitionsForStateTaskUnassigned();
   }
 
-  public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
+  public entryActionForStateCheckTasksCanBeCompleted = (state: State, context: EventCompletionStateMachineContext): void => {
     const assignNeeded = context.sessionStorageService.getItem('assignNeeded');
     context.workAllocationService.getTask(context.task.id).subscribe(
       taskResponse => {
+        this.abstractConfig?.logMessage?.(`entryActionForStateCheckTasksCanBeCompleted: task_state ${taskResponse?.task?.task_state} for task id ${context?.task?.id}`);
         if (taskResponse?.task?.task_state) {
           switch (taskResponse.task.task_state.toUpperCase()) {
             case TaskState.Unassigned:
@@ -119,9 +123,11 @@ export class EventCompletionStateMachineService {
         } else if (!taskResponse?.task) {
           context.alertService.setPreserveAlerts(true);
           context.alertService.warning({ phrase: 'Task statecheck : no task available for completion', replacements: {} });
+          this.abstractConfig?.logMessage?.(`Task statecheck : no task available for completion`);
         } else {
           context.alertService.setPreserveAlerts(true);
           context.alertService.warning({ phrase: 'Task statecheck : no task state available for completion', replacements: {} });
+          this.abstractConfig?.logMessage?.(`Task statecheck : no task state available for completion`);
         }
       },
       error => {
@@ -137,11 +143,12 @@ export class EventCompletionStateMachineService {
     context.component.setTaskState(EventCompletionTaskStates.TaskCancelled);
   }
 
-  public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
+  public entryActionForStateCompleteEventAndTask = (state: State, context: EventCompletionStateMachineContext): void => {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
     const clientContextStr = context.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    this.abstractConfig?.logMessage?.(`entryActionForStateCompleteEventAndTask: userTask task_data ${JSON.stringify(userTask?.task_data?.id)}`);
     if (userTask?.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'false');
       // just set event can be completed

@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig } from '../../../app.config';
 import { Task } from '../../domain/work-allocation/Task';
 import { SessionStorageService } from '../../services';
 import { EventStartComponent } from './event-start.component';
@@ -76,6 +77,10 @@ describe('EventStartComponent', () => {
       'addTransitions',
       'startStateMachine',
     ]);
+    const mockAppConfig: Partial<AbstractAppConfig> = {
+      // add only the methods EventStartComponent uses
+      getCaseDataUrl: () => ''
+    };
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [EventStartComponent],
@@ -85,6 +90,7 @@ describe('EventStartComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: EventStartStateMachineService, useValue: eventStartStateMachineService },
+        { provide: AbstractAppConfig, useValue: mockAppConfig }
       ],
     }).compileComponents();
 
