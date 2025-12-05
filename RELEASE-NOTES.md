@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.3.2
+**EXUI-3334** fixed failing accessibility for minute field
+
+### Version 7.3.1
+**EXUI-3552** CDAM Exclusion using wrong case type
+
+### Version 7.3.0
+**COT-775** Angular 20 upgrade
+
 ### Version 7.2.59
 **EXUI-3661** Performance issues on screens to return data
 **EXUI-3681** Users unable to upload documents
