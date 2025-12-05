@@ -67,6 +67,7 @@ export class QueryConfirmationComponent implements OnInit {
       const child = this.queryListData?.queries
         ?.flatMap((p) => p.children || [])
         .find((c) => c.id === messageId);
+        .find((c) => c.parentId === messageId);
 
       if (!child) {
         console.warn('No matching child found for messageId:', messageId);
