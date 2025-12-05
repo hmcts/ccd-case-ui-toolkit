@@ -55,7 +55,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
-  @Output() public createEventResponse = new EventEmitter<any>();
+  @Output() public createEventResponse = new EventEmitter<CaseQueriesCollection>();
 
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;

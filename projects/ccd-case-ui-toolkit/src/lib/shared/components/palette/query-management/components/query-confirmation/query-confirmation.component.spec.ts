@@ -107,7 +107,7 @@ describe('QueryConfirmationComponent', () => {
     nativeElement = fixture.debugElement.nativeElement;
 
     component.eventResponseData = dummyCaseQueriesCollection;
-    component.getMessageType();
+    component.resolveHmctsStaffRaisedQuery();
     fixture.detectChanges();
   });
 
@@ -163,4 +163,103 @@ describe('QueryConfirmationComponent', () => {
     expect(nativeElement.querySelector('#tasks-link').textContent).toEqual('return to tasks');
     expect(nativeElement.querySelector('#case-link').textContent).toEqual('Go back to the case');
   });
+
+  it('should not throw if eventResponseData is undefined when getMessageType is called', () => {
+    component.eventResponseData = undefined as any;
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+
+    spyOn(console, 'warn');
+
+    expect(() => component.resolveHmctsStaffRaisedQuery()).not.toThrow();
+
+    expect(console.warn).toHaveBeenCalledWith('No event response data available.');
+  });
+
+  it('should call sessionStorageService.getItem when computing HMCTS staff flags on ngOnInit', () => {
+    const sessSpy = (TestBed.inject(SessionStorageService) as jasmine.SpyObj<SessionStorageService>);
+    sessSpy.getItem.calls.reset();
+
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    component.eventResponseData = dummyCaseQueriesCollection;
+
+    component.ngOnInit();
+
+    expect(sessSpy.getItem).toHaveBeenCalled();
+  });
+
+  it('should construct QueryListData when eventResponseData is present', () => {
+    component.eventResponseData = dummyCaseQueriesCollection;
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+    component.resolveHmctsStaffRaisedQuery();
+
+    // queryListData should be defined and contain the queries array
+    expect(component.queryListData).toBeDefined();
+    expect(Array.isArray(component.queryListData?.queries)).toBe(true);
+  });
+  it('should set isHmctsStaffRaisedQuery for FOLLOWUP when a query with matching id is found', () => {
+    (TestBed.inject(ActivatedRoute) as any).snapshot.params.dataid = '111-111';
+
+    component.queryCreateContext = QueryCreateContext.FOLLOWUP;
+
+    // ensure the matching query (outer collection item) has isHmctsStaff set
+    // note: we set it on the inner value but QueryListData should copy it through
+    dummyCaseQueriesCollection.caseMessages[0].value.isHmctsStaff = 'Yes';
+    component.eventResponseData = dummyCaseQueriesCollection;
+
+    // call the method (or ngOnInit) to exercise the branch
+    component.resolveHmctsStaffRaisedQuery();
+
+    expect(component.isHmctsStaffRaisedQuery).toBe('Yes');
+  });
+
+  it('should set isHmctsStaffRaisedQuery for RESPOND when a child is found and parent has isHmctsStaff', () => {
+    (TestBed.inject(ActivatedRoute) as any).snapshot.params.dataid = '111-111';
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+
+    // set parent's isHmctsStaff so the RESPOND branch picks it up
+    dummyCaseQueriesCollection.caseMessages[0].value.isHmctsStaff = 'Yes';
+    component.eventResponseData = dummyCaseQueriesCollection;
+
+    component.resolveHmctsStaffRaisedQuery();
+
+    expect(component.isHmctsStaffRaisedQuery).toBe('Yes');
+  });
+
+  it('should set isHmctsStaffRaisedQuery for RESPOND when a child is found and parent has isHmctsStaff', () => {
+  // For RESPOND, the code finds a child by checking child.parentId === messageId,
+  // so set messageId to the parent's id (111-111) so child lookup succeeds.
+    (TestBed.inject(ActivatedRoute) as any).snapshot.params.dataid = '111-111';
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+
+    // set parent (id = '111-111') isHmctsStaff value so the RESPOND branch picks it up
+    dummyCaseQueriesCollection.caseMessages[0].value.isHmctsStaff = 'Yes';
+    component.eventResponseData = dummyCaseQueriesCollection;
+
+    component.resolveHmctsStaffRaisedQuery();
+
+    expect(component.isHmctsStaffRaisedQuery).toBe('Yes');
+  });
+  it('should warn and return when RESPOND child is not found', () => {
+  // Arrange: Use a dataid that does NOT match any child's parentId
+    (TestBed.inject(ActivatedRoute) as any).snapshot.params.dataid = 'nonexistent-id';
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    component.eventResponseData = dummyCaseQueriesCollection;
+
+    spyOn(console, 'warn');
+
+    component.resolveHmctsStaffRaisedQuery();
+
+    expect(console.warn).toHaveBeenCalledWith(
+      'No matching child found for messageId:',
+      'nonexistent-id'
+    );
+
+    // Component should exit early and not set isHmctsStaffRaisedQuery
+    expect(component.isHmctsStaffRaisedQuery).toBeUndefined();
+  });
+
 });
