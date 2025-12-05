@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.54-3455-rc8",
+  "version": "7.3.0-error-trigger-nav",
   "engines": {
     "node": ">=20.19.0"
   },
