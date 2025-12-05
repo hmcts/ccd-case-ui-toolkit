@@ -13,7 +13,8 @@ import { CreateCaseFiltersSelection } from './create-case-filters-selection.mode
 
 @Component({
   selector: 'ccd-create-case-filters',
-  templateUrl: './create-case-filters.component.html'
+  templateUrl: './create-case-filters.component.html',
+  standalone: false
 })
 export class CreateCaseFiltersComponent implements OnInit {
 

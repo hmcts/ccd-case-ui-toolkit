@@ -41,7 +41,10 @@ const CASE_VIEW_WITH_CHALLENGED_ACCESS: CaseView = {
   }
 };
 
-@Component({template: ``})
+@Component({
+  template: ``,
+  standalone: false
+})
 class StubComponent {}
 
 describe('CaseBasicAccessViewComponent', () => {

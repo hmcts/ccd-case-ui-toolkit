@@ -15,7 +15,8 @@ export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventComp
 
 @Component({
   selector: 'ccd-case-event-completion',
-  templateUrl: './case-event-completion.html'
+  templateUrl: './case-event-completion.html',
+  standalone: false
 })
 export class CaseEventCompletionComponent implements OnChanges, EventCompletionComponentEmitter {
   @Input()
