@@ -219,7 +219,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
           this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
           this.createEventResponse.emit(fieldId ? callbackResponse?.data?.[fieldId] ?? null : null);
-          console.log('Query submitted successfully.', callbackResponse);
         },
         error: (error) => this.handleError(error)
       });
