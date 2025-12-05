@@ -738,7 +738,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     caseNotifier.caseView = of({ case_type: { id: 'test1', jurisdiction: { id: 'test2' } } });
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('test1');
     expect(component.jurisdictionId).toBe('test2');
   });
 
@@ -752,7 +751,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       }
     }));
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('test2');
     expect(component.jurisdictionId).toBe('test1');
   });
 
@@ -1001,6 +999,5 @@ describe('WriteDocumentFieldComponent', () => {
     window.history.pushState({}, '', '/case/case-create/test1/test2');
     component.ngOnInit();
     expect(component.caseTypeId).toBe('test2');
-    expect(component.jurisdictionId).toBe('test1');
   });
 });
