@@ -541,6 +541,66 @@ describe('FieldsUtils', () => {
 
       expect(callbackResponse).toEqual(expected);
     });
+
+    it('should flatten dynamic multi-select values inside collection complex fields', () => {
+      const getDynamicListValueSpy = spyOn<any>(FieldsUtils as any, 'getDynamicListValue').and.callThrough();
+
+      const selection = [
+        { code: '1', value: '1' }
+      ];
+      const callbackResponse = {
+        field_type: {
+          collection_field_type: {
+            complex_fields: [
+              {
+                field_type: {
+                  type: 'DynamicMultiSelectList'
+                },
+                id: 'complex_dmsl',
+                value: undefined,
+                formatted_value: undefined
+              }
+            ],
+            type: 'Complex'
+          },
+          type: 'Collection'
+        },
+        value: [
+          {
+            id: '0',
+            value: {
+              complex_dmsl: {
+                list_items: [
+                  { code: '1', value: '1' },
+                  { code: '2', value: '2' }
+                ],
+                value: selection
+              }
+            }
+          }
+        ]
+      };
+
+      expect(callbackResponse.field_type.collection_field_type.complex_fields[0].value).toBeUndefined();
+      expect(callbackResponse.field_type.collection_field_type.complex_fields[0].formatted_value).toBeUndefined();
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      expect(getDynamicListValueSpy).toHaveBeenCalledWith(callbackResponse.value, 'complex_dmsl');
+      const nestedField = callbackResponse.field_type.collection_field_type.complex_fields[0];
+
+      expect(nestedField.value).toBeDefined();
+      expect(nestedField.formatted_value).toBeDefined();
+      expect(nestedField.value.list_items).toEqual([
+        { code: '1', value: '1' },
+        { code: '2', value: '2' }
+      ]);
+      // Should be a flat array (old code produced a nested array [[...]])
+      expect(Array.isArray(nestedField.value.value)).toBe(true);
+      expect(Array.isArray(nestedField.value.value[0])).toBe(false);
+      expect(nestedField.value.value).toEqual(selection);
+      expect(nestedField.value.value).toBe(selection);
+    });
   });
 
   describe('isFlagsCaseField() function test', () => {

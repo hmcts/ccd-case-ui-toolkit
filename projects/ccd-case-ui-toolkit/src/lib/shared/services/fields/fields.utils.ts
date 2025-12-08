@@ -22,7 +22,7 @@ export class FieldsUtils {
   // Handling of Dynamic Lists in Complex Types
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
-  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList', 'DynamicMultiSelectList'];
 
   public static isValidDisplayContext(ctx: string): boolean {
     return (ctx === 'MANDATORY' || ctx === 'READONLY'
@@ -301,9 +301,12 @@ export class FieldsUtils {
             if (dynamicListValue) {
               const list_items = dynamicListValue[0].list_items;
               const complexValue = dynamicListValue.map(data => data.value);
+              const selectedValue = field.field_type.type === 'DynamicMultiSelectList'
+                ? (complexValue[0] || [])
+                : (complexValue.length > 0 ? complexValue : undefined);
               const value = {
                 list_items,
-                value: complexValue.length > 0 ? complexValue : undefined
+                value: selectedValue
               };
               field.value = {
                 ...value
