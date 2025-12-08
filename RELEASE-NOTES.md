@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.2-exui-3740
+**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
 ### Version 7.3.2
 **EXUI-3334** fixed failing accessibility for minute field
 
