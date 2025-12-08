@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.2-exui-3807-3726-3739
+### Version 7.3.3
 **EXUI-3807** Nightly pipeline failure - Media viewer
 **EXUI-3726** Vulnerabilities - CVE - High - Media viewer
 **EXUI-3739** Fix additional CVE in media-viewer
