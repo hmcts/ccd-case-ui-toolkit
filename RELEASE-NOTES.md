@@ -1,7 +1,12 @@
 ## RELEASE NOTES
 
-### Version 7.3.2-exui-3740
+### Version 7.3.3-exui-3740
 **EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
+### Version 7.3.3
+**EXUI-3807** Nightly pipeline failure - Media viewer
+**EXUI-3726** Vulnerabilities - CVE - High - Media viewer
+**EXUI-3739** Fix additional CVE in media-viewer
 
 ### Version 7.3.2
 **EXUI-3334** fixed failing accessibility for minute field
