@@ -140,6 +140,8 @@ export class FormValueService {
         break;
       } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+      } else if (key === 'servedOrderIds' && Array.isArray(rawObject[key])) {
+        sanitisedObject[key] = this.wrapCollectionItems(rawObject[key]);
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
         if (Array.isArray(sanitisedObject[key])) {
@@ -152,6 +154,15 @@ export class FormValueService {
       }
     }
     return sanitisedObject;
+  }
+
+  private wrapCollectionItems(entries: any[]): any[] {
+    return entries.map((entry: any) => {
+      if (entry && typeof entry === 'object' && entry.value !== undefined) {
+        return entry;
+      }
+      return { id: entry?.id, value: entry?.value ?? entry };
+    });
   }
 
   private sanitiseArray(rawArray: any[]): any[] {
