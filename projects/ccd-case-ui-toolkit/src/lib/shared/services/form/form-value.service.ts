@@ -389,7 +389,7 @@ export class FormValueService {
           field.display_context !== 'HIDDEN_TEMP' &&
           !field.retain_hidden_value &&
           field.id !== 'caseLinks' &&
-          hasValue
+          hasValue && !this.fieldTypeSanitiser.isDynamicList(field.field_type.type)
         ) {
           data[field.id] = null;
           continue; // If field is now hidden, skip checking its children
