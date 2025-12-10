@@ -141,7 +141,9 @@ export class FormValueService {
       } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else if (key === 'servedOrderIds' && Array.isArray(rawObject[key])) {
+        console.log('[sanitiseObject] servedOrderIds (in):', rawObject[key]);
         sanitisedObject[key] = this.wrapCollectionItems(rawObject[key]);
+        console.log('[sanitiseObject] servedOrderIds (out):', sanitisedObject[key]);
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
         if (Array.isArray(sanitisedObject[key])) {
@@ -157,11 +159,34 @@ export class FormValueService {
   }
 
   private wrapCollectionItems(entries: any[]): any[] {
+    console.log('[wrapCollectionItems] entries (in) (rawObject[key]):', entries);
+
     return entries.map((entry: any) => {
       if (entry && typeof entry === 'object' && entry.value !== undefined) {
         return entry;
       }
-      return { id: entry?.id, value: entry?.value ?? entry };
+
+      console.log('[wrapCollectionItems] entry (in):', entry);
+      const id = entry?.id ?? entry?.code ?? entry;
+      console.log('[wrapCollectionItems] id:', id);
+      const code = entry?.code ?? id;
+      console.log('[wrapCollectionItems] code:', code);
+      const label = entry?.label ?? entry?.code ?? id;
+      console.log('[wrapCollectionItems] label:', label);
+      const hasCodeOrLabel = !!(entry?.code || entry?.label);
+      console.log('[wrapCollectionItems] hasCodeOrLabel:', hasCodeOrLabel);
+
+      const normalisedValue = entry?.value !== undefined
+        ? entry.value
+        : hasCodeOrLabel
+          ? { code, label }
+          : entry;
+      console.log('[wrapCollectionItems] normalisedValue:', normalisedValue);
+
+      const normalisedEntry = { ...entry, id, value: normalisedValue };
+      console.log('[wrapCollectionItems] normalisedEntry entry (out):', normalisedEntry);
+
+      return normalisedEntry;
     });
   }
 
@@ -179,9 +204,15 @@ export class FormValueService {
     // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
     // association of a value. In addition, if the array contains items with a "value" object property, return only
     // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray
+    const filtered = rawArray
       .filter(item => !!item)
       .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
+
+    if (filtered.length !== rawArray.length) {
+      console.log('[sanitiseArray] items removed:', { before: rawArray, after: filtered });
+    }
+
+    return filtered;
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -340,6 +371,7 @@ export class FormValueService {
               break;
             case 'Collection':
               // Check for valid collection data
+              console.log('[removeUnnecessaryFields] collection before prune', field.id, data[field.id]);
               this.removeInvalidCollectionData(data, field);
               // Get hold of the collection.
               const collection = data[field.id];
@@ -355,6 +387,7 @@ export class FormValueService {
                   }
                 }
               }
+              console.log('[removeUnnecessaryFields] collection after prune', field.id, data[field.id]);
               break;
             default:
               break;

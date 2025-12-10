@@ -337,6 +337,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       caseEventData.data = {};
     }
 
+    console.log('[generateCaseEventData] final payload data:', caseEventData.data);
+
     return caseEventData;
   }
 
@@ -350,6 +352,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   private replaceEmptyComplexFieldValues(data: object): object {
     Object.keys(data).forEach((key) => {
       if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
+        console.log('[replaceEmptyComplexFieldValues] nulling empty complex field:', key, 'value was:', data[key]);
         data[key] = null;
       }
     });
