@@ -15,7 +15,7 @@
 
   <ng-container *ngIf="!isInternalUser() && !isQueryClosed && !isJudiciaryUser()">
     <ng-container *ngIf="(messageType && messageType === followUpQuery  && isMultipleFollowUpEnabled) ||
-      (messageType && messageType === respondToQuery) || (messageType && messageType === respondToQuery && query?.isHmctsStaff?.toLowerCase() === 'yes'); else sequentialQuery">
+      (messageType && messageType === respondToQuery) || (messageType && messageType === followUpQuery && query?.isHmctsStaff?.toLowerCase() === 'yes'); else sequentialQuery">
       <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
               [routerLink]="['/query-management', 'query', caseId, '4', query.id]">
         {{ 'Ask a follow-up question' | rpxTranslate }}
