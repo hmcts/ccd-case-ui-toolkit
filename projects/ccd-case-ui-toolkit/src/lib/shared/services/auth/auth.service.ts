@@ -1,7 +1,6 @@
 
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { AbstractAppConfig } from '../../../app.config';
-import { DOCUMENT } from '@angular/common';
 
 /**
  * `Oauth2Service` and `AuthService` cannot be merged as it creates a cyclic dependency on `AuthService` through `HttpErrorService`.
