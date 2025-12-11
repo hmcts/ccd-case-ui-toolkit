@@ -73,7 +73,7 @@ export class FormValidatorsService {
 
     // Matches: bare www.example.com autolinks
     // Separate pattern to reduce complexity of the main autolink pattern
-    const wwwAutolinkPattern = /<www.[A-Za-z0-9-]+(?:.[A-Za-z0-9-]+)+(?:\/[^ <>\n]*)?>/;;
+    const wwwAutolinkPattern = /<www.[a-z0-9-]{1,63}(?:.[a-z0-9-]{1,63}){1,10}(?:\/[^\s<>]{0,2048})?>/i;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
