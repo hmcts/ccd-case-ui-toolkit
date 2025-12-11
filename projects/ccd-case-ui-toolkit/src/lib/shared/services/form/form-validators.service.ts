@@ -71,9 +71,13 @@ export class FormValidatorsService {
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
 
+    // Matches: bare www.example.com autolinks
+    // Separate pattern to reduce complexity of the main autolink pattern
+    const wwwAutolinkPattern = /<www.[A-Za-z0-9-]+(?:.[A-Za-z0-9-]+)+(?:\/[^ <>\n]*)?>/;;
+
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || this.matchesReferenceUrlDef(value) || autolinkPattern.test(value) || this.hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
+      return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || this.matchesReferenceUrlDef(value) || autolinkPattern.test(value) || wwwAutolinkPattern.test(value) || this.hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
     };
   }
 
