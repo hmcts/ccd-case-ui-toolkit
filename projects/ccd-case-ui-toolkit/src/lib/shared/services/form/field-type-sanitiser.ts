@@ -91,7 +91,7 @@ export class FieldTypeSanitiser {
     });
   }
 
-  public isDynamicList(fieldType: FieldTypeEnum): boolean {
+  private isDynamicList(fieldType: FieldTypeEnum): boolean {
     return FieldTypeSanitiser.DYNAMIC_LIST_TYPE.indexOf(fieldType) !== -1;
   }
 
