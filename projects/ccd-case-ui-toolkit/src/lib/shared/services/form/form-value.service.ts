@@ -380,8 +380,12 @@ export class FormValueService {
           continue;
         }
 
-        const hasValue = data.hasOwnProperty(field.id) && data[field.id] != null &&
-          (typeof data[field.id] !== 'object' || Object.keys(data[field.id]).length > 0);
+        // check if field contains any value
+        const hasValue = this.fieldTypeSanitiser.isDynamicList(field.field_type.type)
+          ? data.hasOwnProperty(field.id) && data[field.id] != null 
+            && typeof data[field.id] === 'object' && data[field.id]?.value?.length > 0
+          : data.hasOwnProperty(field.id) && data[field.id] != null 
+            && (typeof data[field.id] !== 'object' || Object.keys(data[field.id]).length > 0);
 
         if (
           caseField?.hidden === true &&
@@ -389,10 +393,15 @@ export class FormValueService {
           field.display_context !== 'HIDDEN_TEMP' &&
           !field.retain_hidden_value &&
           field.id !== 'caseLinks' &&
-          hasValue && !this.fieldTypeSanitiser.isDynamicList(field.field_type.type)
+          hasValue
         ) {
-          data[field.id] = null;
-          continue; // If field is now hidden, skip checking its children
+          if (this.fieldTypeSanitiser.isDynamicList(field.field_type.type)) {
+            data[field.id] = { value: null, list_items: data[field.id]?.list_items || [] };
+            continue
+          } else { 
+            data[field.id] = null;
+            continue; // If field is now hidden, skip checking its children
+          }
         }
         if (field.field_type) {
           switch (field.field_type.type) {
