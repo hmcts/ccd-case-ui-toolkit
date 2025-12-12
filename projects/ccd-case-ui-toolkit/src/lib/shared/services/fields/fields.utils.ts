@@ -301,9 +301,12 @@ export class FieldsUtils {
             if (dynamicListValue) {
               const list_items = dynamicListValue[0].list_items;
               const complexValue = dynamicListValue.map(data => data.value);
-              const selectedValue = field.field_type.type === 'DynamicMultiSelectList'
-                ? (complexValue[0] || [])
-                : (complexValue.length > 0 ? complexValue : undefined);
+              let selectedValue;
+              if (field.field_type.type === 'DynamicMultiSelectList') {
+                selectedValue = complexValue[0] || [];
+              } else if (complexValue.length > 0) {
+                selectedValue = complexValue;
+              }
               const value = {
                 list_items,
                 value: selectedValue
