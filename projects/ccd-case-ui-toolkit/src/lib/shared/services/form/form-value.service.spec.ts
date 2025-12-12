@@ -1076,4 +1076,27 @@ describe('FormValueService', () => {
       });
     });
   });
+
+  describe('sanitiseObject', () => {
+    it('should sanitise CaseReference within an object', () => {
+      const data = { CaseReference: '1111-2222-3333-4444', name: 'Test ' };
+      expect(formValueService.sanitise(data)).toEqual({ CaseReference: '1111222233334444', name: 'Test' });
+    });
+
+    it('should populate servedOrderIds from orderList when empty', () => {
+      const data = {
+        servedOrderIds: [],
+        orderList: { value: [{ value: 'order1Id' }, { value: 'order2Id' }] }
+      };
+      expect(formValueService.sanitise(data)).toEqual({
+        servedOrderIds: [{ value: 'order1Id' }, { value: 'order2Id' }],
+        orderList: { value: [{ value: 'order1Id' }, { value: 'order2Id' }] }
+      });
+    });
+
+    it('should remove arrays that sanitise to empty when source was non-empty', () => {
+      const data = { someArray: [{ value: {} }] };
+      expect(formValueService.sanitise(data)).toEqual({});
+    });
+  });
 });
