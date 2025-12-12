@@ -101,6 +101,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -111,6 +113,18 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
+      - name: Pack dist as npm tarball
+        id: pack
+        run: |
+          cd dist/ccd-case-ui-toolkit
+          TAR=$(npm pack)
+          echo "tarball=dist/ccd-case-ui-toolkit/$TAR" >> $GITHUB_OUTPUT
+      - name: Attach tarball to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.pack.outputs.tarball }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
