@@ -138,9 +138,12 @@ export class FormValueService {
       if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null) {
         sanitisedObject = null;
         break;
-      } else if ('CaseReference' === key) {
+      }
+      if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
-      } else if (key === 'servedOrderIds' && Array.isArray(rawObject[key])) {
+        continue;
+      }
+      if (key === 'servedOrderIds' && Array.isArray(rawObject[key])) {
         const orderListValues = (rawObject as any)?.orderList?.value;
         const source = rawObject[key].length === 0 && Array.isArray(orderListValues) ? orderListValues : rawObject[key];
         sanitisedObject[key] = source.map((entry: any) => {
@@ -149,15 +152,14 @@ export class FormValueService {
           }
           return { value: entry?.value };
         });
-      } else {
-        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
-        if (Array.isArray(sanitisedObject[key])) {
-          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
-          // delete the property from the sanatised object
-          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
-            delete sanitisedObject[key];
-          }
-        }
+        continue;
+      }
+
+      sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+      if (Array.isArray(sanitisedObject[key]) && sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+        // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+        // delete the property from the sanatised object
+        delete sanitisedObject[key];
       }
     }
     return sanitisedObject;
