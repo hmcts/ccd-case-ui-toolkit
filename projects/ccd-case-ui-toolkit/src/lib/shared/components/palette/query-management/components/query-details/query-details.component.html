@@ -11,7 +11,7 @@
       <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Sender name' | rpxTranslate }}</th>
-        <td class="govuk-table__cell">{{ query.name }} @if (query?.isHmctsStaff?.toLowerCase() === 'yes') { {{ '- HMCTS' }} }</td>
+        <td class="govuk-table__cell">{{ query.name }} @if (query?.isHmctsStaff?.toLowerCase() === 'yes') { - {{ hmctsStaff }} }</td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
@@ -68,7 +68,7 @@
 
             <tr *ngIf="isInternalUser()" class="govuk-table__row">
               <th scope="row" class="govuk-table__header">{{ 'Caseworker name' | rpxTranslate }}</th>
-              <td class="govuk-table__cell">{{ child.name }}</td>
+              <td class="govuk-table__cell">{{ child.name }} @if (child?.isHmctsStaff?.toLowerCase() === 'yes') { - {{ hmctsStaff }} }</td>
             </tr>
 
             <tr class="govuk-table__row">

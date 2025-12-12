@@ -52,7 +52,7 @@ export class QueryManagementService {
     const isHmctsStaff= (this.isJudiciaryUser() || this.isInternalUser()) ? 'Yes' : 'No';
     const caseMessage = queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails, isHmctsStaff)
-      : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, queryCreateContext);
+      : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, queryCreateContext, isHmctsStaff);
 
     const isNewQuery = queryCreateContext === QueryCreateContext.NEW_QUERY; // Check if this is a new query
 

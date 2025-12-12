@@ -68,7 +68,7 @@ export class QueryManagementUtils {
     return message;
   }
 
-  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string): CaseMessage {
+  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string, isHmctsStaff: string): CaseMessage {
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value.trim();
@@ -83,7 +83,7 @@ export class QueryManagementUtils {
           ? QueryCreateContext.FOLLOWUP
           : undefined;
 
-    return {
+    const message: CaseMessage = {
       id: uuidv4(),
       subject: queryItem.subject.trim(),
       name: currentUserName,
@@ -97,6 +97,14 @@ export class QueryManagementUtils {
       isClosed,
       messageType
     };
+
+    // To be implemented later, once  service have don't their configuration
+    // Add isHmctsStaff when the user is HMCTS staff and responsding to a query
+    // if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
+    //   message.isHmctsStaff = isHmctsStaff;
+    // }
+
+    return message;
   }
 
   public static isObject(elem: any): boolean {
