@@ -191,7 +191,7 @@ export class FormValueService {
   private isDocumentFieldNull(rawObject: any, key: string, documentFieldKeys: string[]): boolean {
     // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
     // properties is null, the entire sanitised object to be returned should be null
-    return documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null;
+    return documentFieldKeys.includes(key) && rawObject[key] === null;
   }
 
   private handleCaseReferenceField(rawObject: any, key: string, sanitisedObject: any): boolean {
@@ -206,7 +206,7 @@ export class FormValueService {
     if (key !== 'servedOrderIds' || !Array.isArray(rawObject[key])) {
       return false;
     }
-    const orderListValues = (rawObject as any)?.orderList?.value;
+    const orderListValues = rawObject?.orderList?.value;
     const source = rawObject[key].length === 0 && Array.isArray(orderListValues) ? orderListValues : rawObject[key];
     sanitisedObject[key] = source.map((entry: any) => {
       if (entry && typeof entry === 'object' && entry.value !== undefined) {
