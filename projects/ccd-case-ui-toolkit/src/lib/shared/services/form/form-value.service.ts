@@ -133,32 +133,19 @@ export class FormValueService {
     let sanitisedObject = {};
     const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
     for (const key in rawObject) {
-      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
-      // properties is null, the entire sanitised object to be returned should be null
-      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null) {
+      if (this.isDocumentFieldNull(rawObject, key, documentFieldKeys)) {
         sanitisedObject = null;
         break;
       }
-      if ('CaseReference' === key) {
-        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+      if (this.handleCaseReferenceField(rawObject, key, sanitisedObject)) {
         continue;
       }
-      if (key === 'servedOrderIds' && Array.isArray(rawObject[key])) {
-        const orderListValues = (rawObject as any)?.orderList?.value;
-        const source = rawObject[key].length === 0 && Array.isArray(orderListValues) ? orderListValues : rawObject[key];
-        sanitisedObject[key] = source.map((entry: any) => {
-          if (entry && typeof entry === 'object' && entry.value !== undefined) {
-            return entry;
-          }
-          return { value: entry?.value };
-        });
+      if (this.handleServedOrderIds(rawObject, key, sanitisedObject)) {
         continue;
       }
 
       sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
-      if (Array.isArray(sanitisedObject[key]) && sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
-        // If the 'sanitised' array is empty, whereas the original array had 1 or more items
-        // delete the property from the sanatised object
+      if (this.shouldRemoveEmptySanitisedArray(rawObject, sanitisedObject, key)) {
         delete sanitisedObject[key];
       }
     }
@@ -200,6 +187,40 @@ export class FormValueService {
       default:
         return rawValue;
     }
+  }
+
+  private isDocumentFieldNull(rawObject: any, key: string, documentFieldKeys: string[]): boolean {
+    // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+    // properties is null, the entire sanitised object to be returned should be null
+    return documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null;
+  }
+
+  private handleCaseReferenceField(rawObject: any, key: string, sanitisedObject: any): boolean {
+    if ('CaseReference' !== key) {
+      return false;
+    }
+    sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+    return true;
+  }
+
+  private handleServedOrderIds(rawObject: any, key: string, sanitisedObject: any): boolean {
+    if (key !== 'servedOrderIds' || !Array.isArray(rawObject[key])) {
+      return false;
+    }
+    const orderListValues = (rawObject as any)?.orderList?.value;
+    const source = rawObject[key].length === 0 && Array.isArray(orderListValues) ? orderListValues : rawObject[key];
+    sanitisedObject[key] = source.map((entry: any) => {
+      if (entry && typeof entry === 'object' && entry.value !== undefined) {
+        return entry;
+      }
+      return { value: entry?.value };
+    });
+    return true;
+  }
+
+  private shouldRemoveEmptySanitisedArray(rawObject: any, sanitisedObject: any, key: string): boolean {
+    // If the 'sanitised' array is empty, whereas the original array had 1 or more items delete the property
+    return Array.isArray(sanitisedObject[key]) && sanitisedObject[key].length === 0 && rawObject[key].length > 0;
   }
 
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
