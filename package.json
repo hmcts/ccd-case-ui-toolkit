@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.3",
+  "version": "7.3.4",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -17,6 +17,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
