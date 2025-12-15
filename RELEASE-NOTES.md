@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.4-exui-3740
+**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
 ### Version 7.3.4
 **EXUI-2451** Gov Notify can get a Markdown link by using 2 sets of square brackets
 **EXUI-2730** Callback data validation errors displaying incorrect data on Overview page
