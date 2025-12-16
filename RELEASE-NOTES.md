@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.6
+**EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
+
+### Version 7.3.5
+**EXUI-3759** Summary tab default - Tactical
+
 ### Version 7.3.4
 **EXUI-2451** Gov Notify can get a Markdown link by using 2 sets of square brackets
 **EXUI-2730** Callback data validation errors displaying incorrect data on Overview page
