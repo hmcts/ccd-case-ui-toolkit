@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.1-angular-20.3.14",
+  "version": "7.3.5",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -17,6 +17,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
@@ -63,7 +64,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.2.0",
+    "@hmcts/media-viewer": "4.2.1",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
