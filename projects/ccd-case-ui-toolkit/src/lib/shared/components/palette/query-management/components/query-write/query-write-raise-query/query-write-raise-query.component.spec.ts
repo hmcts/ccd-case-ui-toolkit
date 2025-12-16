@@ -3,16 +3,23 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 import { ActivatedRoute } from '@angular/router';
 import { QueryManagementService } from '../../../services';
-import { of } from 'rxjs';
 import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
+import { MockComponent } from 'ng2-mock-component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string): string {
     return value;
   }
 }
+const queryCaseDetailsHeaderComponentMock: any = MockComponent({
+  selector: 'ccd-query-case-details-header',
+  inputs: ['caseDetails']
+});
 
 describe('QueryWriteRaiseQueryComponent', () => {
   let component: QueryWriteRaiseQueryComponent;
@@ -35,6 +42,7 @@ describe('QueryWriteRaiseQueryComponent', () => {
     ]);
 
     await TestBed.configureTestingModule({
+      imports: [queryCaseDetailsHeaderComponentMock],
       declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: routeStub },

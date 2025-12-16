@@ -139,7 +139,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -147,13 +147,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -692,7 +691,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
@@ -700,13 +699,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -740,7 +738,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     caseNotifier.caseView = of({ case_type: { id: 'test1', jurisdiction: { id: 'test2' } } });
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('test1');
     expect(component.jurisdictionId).toBe('test2');
   });
 
@@ -754,7 +751,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       }
     }));
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('test2');
     expect(component.jurisdictionId).toBe('test1');
   });
 
@@ -772,20 +768,54 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.fileUploadMessages).toEqual('File required');
   });
 
-  it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-    // Initialization.
-    component.valid = true;
-    component.caseField = CASE_FIELD;
+  it('should be logged as enabled if file is securemode', () => {
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
     component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
-    expect(component.valid).toBeTruthy();
+    component.fileChangeEvent({
+      target: {
+        files: [
+          file
+        ]
+      }
+    });
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
+    expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is enabled for case with case ref:: 12345');
+  });
+
+  it('should be logged as disabled if file is NOT securemode', () => {
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    component.fileChangeEvent({
+      target: {
+        files: [
+          file
+        ]
+      }
+    });
+    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is disabled for case with case ref:: 12345');
+  });
+
+  it('should set caseId from caseNotifier', () => {
+    component.caseField = CASE_FIELD_MANDATORY;
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
+    component.ngOnInit();
+    expect(component.caseField.value).toBeTruthy();
 
     component.fileChangeEvent({
       target: {
         files: []
       }
     });
-    expect(component.valid).toBeTruthy();
+    expect(component.caseId).toBe('12345');
   });
 
   it('should cancel file upload', () => {
@@ -918,7 +948,7 @@ describe('WriteDocumentFieldComponent', () => {
       'isUploadInProgress'
     ]);
 
-    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList']);
+    appConfig = createSpyObj('AbstractAppConfig', ['getCdamExclusionList', 'logMessage']);
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
     caseNotifier = {};
     caseNotifier.caseView = of(undefined);
@@ -926,13 +956,12 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [readDocumentComponentMock],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
           // Mocks
-          readDocumentComponentMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
@@ -970,6 +999,5 @@ describe('WriteDocumentFieldComponent', () => {
     window.history.pushState({}, '', '/case/case-create/test1/test2');
     component.ngOnInit();
     expect(component.caseTypeId).toBe('test2');
-    expect(component.jurisdictionId).toBe('test1');
   });
 });

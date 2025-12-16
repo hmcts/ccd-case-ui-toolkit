@@ -19,7 +19,8 @@ import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
   selector: 'ccd-write-document-field',
-  templateUrl: './write-document-field.html'
+  templateUrl: './write-document-field.html',
+  standalone: false
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   public static readonly DOCUMENT_URL = 'document_url';
@@ -53,6 +54,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public jurisdictionId: string;
   public caseTypeId: string;
   public caseTypeExclusions: string;
+  public caseId: string;
   // Should the file upload use CDAM
   public fileSecureModeOn: boolean = false;
 
@@ -69,19 +71,20 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     // Wait for both observables to emit at least once
+    const currUrl = window.location.pathname;
+    if (currUrl.includes('/case-details/')) {
+      this.caseTypeId = currUrl.split('/')[4];
+    }
     this.caseNotifierSubscription = combineLatest([
       this.caseNotifier.caseView.pipe(take(1)),
       this.jurisdictionService.getSelectedJurisdiction()
     ]).subscribe(([caseDetails, jurisdiction]) => {
       if (caseDetails) {
-        this.caseTypeId = caseDetails?.case_type?.id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseId = caseDetails?.case_id;
       }
       if (jurisdiction) {
         this.jurisdictionId = jurisdiction.id;
-        if (jurisdiction.currentCaseType) {
-          this.caseTypeId = jurisdiction.currentCaseType.id;
-        }
       }
       //if we havent set the value of caseTypeId yet, we can check if its in the url. e.g. case-creation
       if (!this.caseTypeId) {
@@ -361,6 +364,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private handleDocumentUploadResult(result: DocumentData): void {
+    // use the documentManagement service to check if the document upload should use CDAM
+    if (this.documentManagement.isDocumentSecureModeEnabled()) {
+      this.appConfig.logMessage(`CDAM is enabled for case with case ref:: ${this.caseId}`);
+    } else {
+      this.appConfig.logMessage(`CDAM is disabled for case with case ref:: ${this.caseId}`);
+    }
     if (!this.uploadedDocument) {
       if (this.fileSecureModeOn) {
         this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });

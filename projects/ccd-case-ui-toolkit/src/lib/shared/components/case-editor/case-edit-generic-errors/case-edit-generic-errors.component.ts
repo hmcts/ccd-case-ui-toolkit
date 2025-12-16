@@ -6,7 +6,8 @@ import { HttpError } from '../../../domain';
   selector: 'ccd-case-edit-generic-errors',
   templateUrl: 'case-edit-generic-errors.component.html',
   styleUrls: ['../case-edit.scss'],
-  providers: []
+  providers: [],
+  standalone: false
 })
 export class CaseEditGenericErrorsComponent {
   @Input() public error: HttpError;

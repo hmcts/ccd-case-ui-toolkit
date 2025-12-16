@@ -32,14 +32,12 @@ describe('Date input component', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           DateInputComponent,
-          MockRpxTranslatePipe,
-
-          // Mocks
-          inputComponentMock
+          MockRpxTranslatePipe
         ],
         providers: []
       })

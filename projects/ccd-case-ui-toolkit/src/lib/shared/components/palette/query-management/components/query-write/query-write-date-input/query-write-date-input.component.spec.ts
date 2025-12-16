@@ -1,14 +1,25 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QueryWriteDateInputComponent } from './query-write-date-input.component';
+import { CommonModule } from '@angular/common';
+import { MockComponent } from 'ng2-mock-component';
 
-@Pipe({ name: 'rpxTranslate' })
+
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, ...args: any[]): string {
     return value;
   }
 }
+
+const queryCaseDetailsHeaderComponentMock: any = MockComponent({
+  selector: 'ccd-query-case-details-header',
+  inputs: ['caseDetails']
+});
 
 describe('QueryWriteDateInputComponent', () => {
   let component: QueryWriteDateInputComponent;
@@ -16,7 +27,7 @@ describe('QueryWriteDateInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [CommonModule, FormsModule, ReactiveFormsModule, queryCaseDetailsHeaderComponentMock],
       declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe]
     }).compileComponents();
   });
