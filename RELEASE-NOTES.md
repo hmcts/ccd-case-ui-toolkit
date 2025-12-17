@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.6-exui-3866
+**EXUI-3866** CVE Vulnerability - High - CVE-2025-65945 - em-media-viewer
+
 ### Version 7.3.6
 **EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
 
