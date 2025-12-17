@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.7
+**EXUI-3859** Update CDAM logs and casetype retrieval
+
 ### Version 7.3.6
 **EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
 
