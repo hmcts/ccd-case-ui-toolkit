@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.8
+**EXUI-3504** Postcode API duplication / spam request
+
 ### Version 7.3.7
 **EXUI-3859** Update CDAM logs and casetype retrieval
 
