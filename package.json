@@ -38,7 +38,6 @@
     "preversion": "npm run ci",
     "build:ng:test": "ng build",
     "test": "ng test ccd-case-ui-toolkit-lib --code-coverage",
-    "test:codacy-upload": "curl -Ls https://coverage.codacy.com/get.sh | bash && ./codacy-coverage-reporter report -l Typescript -r coverage/ccd-case-ui-toolkit/lcov.info",
     "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "tslint": "tslint",
