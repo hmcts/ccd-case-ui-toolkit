@@ -29,8 +29,6 @@ script:
   - yarn test
   - yarn build
 after_success:
-  - curl -Ls https://coverage.codacy.com/get.sh | bash
-  - ./codacy-coverage-reporter report -l Typescript -r coverage/ccd-case-ui-toolkit/lcov.info
   - yarn coverage
   - '[ "$TRAVIS_BRANCH" = "master" -o "$TRAVIS_PULL_REQUEST" = "true" ] && ./scripts/create-release-tag.sh'
 before_deploy:
