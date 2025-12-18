@@ -51,9 +51,20 @@ export class CaseResolver implements Resolve<CaseView> {
       // the post returns no id
       this.navigateToCaseList();
     } else {
-      return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
-        : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
-        : this.getAndCacheCaseView(cid);
+      const resultPromise =
+        this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
+          : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
+            : this.getAndCacheCaseView(cid);
+
+      return resultPromise.then((caseView) => {
+        const newCaseInfo = {
+          caseId: caseView.case_id,
+          jurisdiction: caseView.case_type.jurisdiction.id,
+          caseType: caseView.case_type.id
+        };
+        this.sessionStorage.setItem('caseInfo', JSON.stringify(newCaseInfo));
+        return caseView;
+      });
     }
   }
 
