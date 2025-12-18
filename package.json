@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.7",
+  "version": "7.3.7-3870",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -62,7 +62,7 @@
     "@angular/router": "^20.3.14",
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.5.15-beta6",
+    "@hmcts/ccpay-web-component": "https://github.com/hmcts/ccpay-web-component/releases/download/6.5.15-beta12/hmcts-ccpay-web-component-6.5.15-beta12.tgz",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.1",
     "@ngrx/effects": "17.2.0",
