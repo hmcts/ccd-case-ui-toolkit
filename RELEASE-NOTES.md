@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.8-exui-3682-4
+**EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
+
 ### Version 7.3.8
 **EXUI-3504** Postcode API duplication / spam request
 
