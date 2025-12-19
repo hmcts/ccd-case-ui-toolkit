@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.8",
+  "version": "7.3.8-marked-CVE",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -106,7 +106,7 @@
     "@angular/cli": "^20.3.9",
     "@angular/compiler-cli": "^20.3.14",
     "@babel/core": "^7.23.0",
-    "@compodoc/compodoc": "1.1.12",
+    "@compodoc/compodoc": "1.1.32",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",
     "@storybook/addon-interactions": "^6.5.10",
@@ -202,7 +202,6 @@
     "handlebars": "^4.7.7",
     "https-proxy-agent": "^2.2.3",
     "lodash": "^4.17.21",
-    "marked": "^0.7.0",
     "minimatch": "^8.0.4",
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
