@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.8-exui-2489
+**EXUI-2489** Index navigation 2 - media viewer
+
 ### Version 7.3.8
 **EXUI-3504** Postcode API duplication / spam request
 
