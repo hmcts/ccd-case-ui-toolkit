@@ -64,11 +64,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
-<<<<<<< HEAD
-    "@hmcts/media-viewer": "4.1.8-exui-2489",
-=======
     "@hmcts/media-viewer": "4.2.1",
->>>>>>> 148bf8c72f5474be1ae207033d6f2c4abcc313df
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
