@@ -22478,12 +22478,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "marked@npm:0.7.0"
+"marked@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "marked@npm:17.0.1"
   bin:
-    marked: ./bin/marked
-  checksum: 10/5601bbd8b33187d00f4d2b981139e3b2aaa9adccf67f3f155607b74711f4c62a56afa366d583df7efc71108e7b69801692c7856536966317b2f09483e2c027dc
+    marked: bin/marked.js
+  checksum: 10/8d39cf5a1eb97288d09d47dba57a613b8c45a212287b27aa16b4bc41baaebb147340c359d379da1bc6d351474d169aa3a63f981770b67f7663ed0a479dd950c2
   languageName: node
   linkType: hard
 
