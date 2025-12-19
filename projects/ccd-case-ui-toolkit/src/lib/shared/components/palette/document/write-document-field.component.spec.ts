@@ -791,6 +791,54 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is disabled || existing case || case ref:: 1234 || jurisdiction:: test-jurisdiction || case type:: sessionCaseType || gotFromCaseInfo:: true');
   });
 
+  it('should set ids from session caseInfo when present and not in create-case journey', () => {
+    // Arrange: simulate caseInfo present in session
+    window.history.pushState({}, '', '/cases/case-details/OTHER/IGNORED/999');
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeTruthy();
+    expect(component.caseTypeId).toBe('sessionCaseType');
+    expect(component.jurisdictionId).toBe('test-jurisdiction');
+    expect(component.caseId).toBe('1234');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-details/IA/Asylum/12345/test/event/random');
+
+    // Clear any prior state
+    component.gotFromCaseInfo = false;
+    component.caseTypeId = undefined;
+    component.jurisdictionId = undefined;
+    component.caseId = undefined as any;
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeFalsy();
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Asylum');
+    expect(component.caseId).toBe('12345');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    // Arrange: no caseInfo available, derive from URL
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-create/IA/Bail/1234');
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Bail');
+    expect(component.caseId).toBe(null);
+  });
+
   it('should cancel file upload', () => {
     component.fileUploadSubscription = new Subscription();
     const fileUploadSubscriptionSpy = spyOn(component.fileUploadSubscription, 'unsubscribe');
@@ -976,6 +1024,6 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     window.history.pushState({}, '', '/case/case-create/test1/test2');
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('sessionCaseType');
+    expect(component.caseTypeId).toBe('test2');
   });
 });

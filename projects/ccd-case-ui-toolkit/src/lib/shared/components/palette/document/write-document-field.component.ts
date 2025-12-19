@@ -76,7 +76,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     const caseInfo = this.documentManagement.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
     const currUrl = window.location.pathname;
     // if the user is not creating a case we can use the caseInfo session storage
-    if (!currUrl.includes('/create-case/')) {
+    if (!currUrl.includes('/case-create/')) {
       if (caseInfo) {
         this.gotFromCaseInfo = true;
         this.caseTypeId = caseInfo.caseType;
@@ -90,13 +90,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         }
       }
     } else {
-      // the user is in the create case journey so we should get dataunde from the url
-      if (currUrl.indexOf('/case-create/') > -1) {
-        const parts = currUrl.split('/');
-        this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
-        this.caseTypeId = parts[parts.indexOf('case-create') + 2];
-        this.caseId = null;
-      }
+      // the user is in the create case journey so we should get data from the url
+      const parts = currUrl.split('/');
+      this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
+      this.caseTypeId = parts[parts.indexOf('case-create') + 2];
+      this.caseId = null;
+      console.log(this.jurisdictionId); console.log(this.caseTypeId);
     }
 
     // use the documentManagement service to check if the document upload should use CDAM
