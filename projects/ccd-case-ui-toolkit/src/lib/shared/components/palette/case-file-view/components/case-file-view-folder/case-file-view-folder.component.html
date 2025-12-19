@@ -1,5 +1,11 @@
 <div class="document-filter-container" role="search">
   <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
+    <label
+      [id]="documentSearchLabelId"
+      class="govuk-visually-hidden"
+      for="document-search">
+    Search by document name
+    </label>
     <input
       class="form-control document-search"
       type="search"
@@ -11,14 +17,14 @@
 </div>
 
 <div class="document-folders-header">
-  <div class="document-folders-header__title" id="document-folders-header-title">
+  <div class="document-folders-header__title" id="document-folders-header-title" aria-hidden="true">
     Documents ({{ documentCount }})
   </div>
   <div
     class="document-folders-header__flex"
-    role="group"
-    aria-label="Document list controls"
-    aria-describedby="document-folders-header-title">
+    role="toolbar"
+    aria-label="Document list actions"
+    aria-labelledby="document-folders-header-title">
     <ccd-case-file-view-folder-toggle
       (expandAll)="expandAll($event)"
       (collapseAll)="collapseAll($event)">
