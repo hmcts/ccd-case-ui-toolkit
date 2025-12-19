@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.6-exui-3682-2
+### Version 7.3.8-exui-3682-3
 **EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
+
+### Version 7.3.8
+**EXUI-3504** Postcode API duplication / spam request
+
+### Version 7.3.7
+**EXUI-3859** Update CDAM logs and casetype retrieval
 
 ### Version 7.3.6
 **EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
