@@ -26,20 +26,17 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  private readonly caseTypeId: string;
+  private caseTypeId: string;
   private caseId?: string;
 
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
     private readonly sessionStorageService: SessionStorageService
-  ) {
-    const caseInfo = this.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
-    const currUrl = this.getCurrentPathname();
-    this.caseTypeId = this.resolveCaseTypeId(caseInfo, currUrl);
-  }
+  ) {}
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
+    this.setCaseInfo();
     const url = this.getDocStoreUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
@@ -49,6 +46,12 @@ export class DocumentManagementService {
     return this.http
       .post(url, formData, { headers, observe: 'body' })
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
+  }
+
+  public setCaseInfo(): void {
+    const caseInfo = this.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
+    const currUrl = this.getCurrentPathname();
+    this.caseTypeId = this.resolveCaseTypeId(caseInfo, currUrl);
   }
 
   public getMediaViewerInfo(documentFieldValue: any): string {
@@ -132,22 +135,21 @@ export class DocumentManagementService {
     currUrl: string
   ): string {
     const caseTypeIdFromSession = caseInfo?.caseType;
+    let caseType = '';
     if (caseTypeIdFromSession) {
       this.caseId = caseInfo?.caseId;
-      return caseTypeIdFromSession;
+      caseType = caseTypeIdFromSession;
     }
-
     const parts = currUrl.split('/');
-    if (currUrl.includes('/case-details/') && parts.length > 4) {
-      return parts[4];
+    if ((currUrl.includes('/case-details/') && parts.length > 4) && caseType === '') {
+      caseType = parts[4];
     }
-
     const caseCreateIndex = parts.indexOf('case-create');
     if (currUrl.includes('/case-create/') && caseCreateIndex > -1 && parts.length > caseCreateIndex + 2) {
-      return parts[caseCreateIndex + 2];
+      caseType = parts[caseCreateIndex + 2];
     }
 
-    return '';
+    return caseType;
   }
 
   private transformDocumentUrl(documentBinaryUrl: string): string {
@@ -158,6 +160,7 @@ export class DocumentManagementService {
   }
 
   private getDocStoreUrl(): string {
+    this.setCaseInfo();
     if (this.isDocumentSecureModeEnabled()) {
       return this.appConfig.getDocumentManagementUrlV2();
     }
@@ -167,6 +170,7 @@ export class DocumentManagementService {
   // return false == document should not use CDAM
   // return true == document should use CDAM
   public isDocumentSecureModeEnabled(): boolean {
+    this.setCaseInfo();
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
     if (!isDocumentOnExclusionList){
