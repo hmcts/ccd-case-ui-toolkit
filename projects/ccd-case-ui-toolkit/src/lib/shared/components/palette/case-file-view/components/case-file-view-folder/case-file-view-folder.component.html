@@ -29,15 +29,26 @@
     No results found
   </div>
   <div>
-    <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+    <cdk-tree
+      [dataSource]="nestedDataSource"
+      [treeControl]="nestedTreeControl"
+      role="tree"
+      aria-label="Case documents">
       <!-- document -->
       <cdk-nested-tree-node class="document-tree-container__node document-tree-container__node--document" *cdkTreeNodeDef="let node">
-        <button class="node case-file__node" (click)="selectedNodeItem = node; clickedDocument.emit(node)"
-                [class.node--selected]="selectedNodeItem?.name === node.name">
-          <div class="node__icon" disabled>
+        <button
+          type="button"
+          class="node case-file__node"
+          role="treeitem"
+          aria-expanded="false"
+          [attr.aria-label]="node.name"
+          (click)="selectedNodeItem = node; clickedDocument.emit(node)"
+          [class.node--selected]="selectedNodeItem?.name === node.name">
+          <div class="node__icon" disabled aria-hidden="true">
             <img src="/assets/img/case-file-view/case-file-view-document.svg"
               class="node__iconImg"
-              alt="Document icon"
+              alt=""
+              aria-hidden="true"
             />
           </div>
           <span class="node__name node-name-document">
@@ -61,18 +72,28 @@
       </cdk-nested-tree-node>
       <!-- folder-->
       <cdk-nested-tree-node class="document-tree-container__node document-tree-container__folder" *cdkTreeNodeDef="let node; when: nestedChildren">
-        <button class="node" cdkTreeNodeToggle>
-          <div class="node__icon" [attr.aria-label]="'toggle ' + node.name">
+        <button
+          type="button"
+          class="node"
+          cdkTreeNodeToggle
+          role="treeitem"
+          [attr.aria-expanded]="nestedTreeControl.isExpanded(node)"
+          [attr.aria-label]="node.name + ' folder, ' + node.childDocumentCount + ' documents'">
+          <div class="node__icon" aria-hidden="true">
             <img class="node__iconImg"
                 [src]="nestedTreeControl.isExpanded(node)
                   ? '/assets/images/folder-open.png'
                   : '/assets/images/folder.png'
-              " alt="Folder icon" />
+              "
+              alt="Folder icon"
+              aria-hidden="true" />
             <span class="node__count">{{ node.childDocumentCount }}</span>
           </div>
           <span class="node__name node__name--folder">{{ node.name }}</span>
         </button>
-        <div [class.document-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+        <div
+          role="group"
+          [class.document-tree-invisible]="!nestedTreeControl.isExpanded(node)">
           <ng-container cdkTreeNodeOutlet></ng-container>
         </div>
       </cdk-nested-tree-node>
