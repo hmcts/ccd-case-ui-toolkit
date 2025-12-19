@@ -22,7 +22,8 @@ export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 @Component({
   selector: 'ccd-case-file-view-folder',
   templateUrl: './case-file-view-folder.component.html',
-  styleUrls: ['./case-file-view-folder.component.scss']
+  styleUrls: ['./case-file-view-folder.component.scss'],
+  standalone: false
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';

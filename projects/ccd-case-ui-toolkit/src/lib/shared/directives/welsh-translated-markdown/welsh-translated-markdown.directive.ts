@@ -71,7 +71,8 @@ import { Subscription } from 'rxjs';
  * otherwise uses English (`markdown`). Reactively updates when the language changes.
  */
 @Directive({
-  selector: '[translatedMarkdown]'
+  selector: '[translatedMarkdown]',
+  standalone: false
 })
 export class TranslatedMarkdownDirective implements OnInit, OnDestroy {
   @Input('translatedMarkdown') dataItem: any;

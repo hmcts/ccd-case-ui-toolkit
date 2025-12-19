@@ -5,7 +5,8 @@ import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } 
 @Component({
   selector: 'ccd-query-list',
   templateUrl: './query-list.component.html',
-  styleUrls: ['./query-list.component.scss']
+  styleUrls: ['./query-list.component.scss'],
+  standalone: false
 })
 export class QueryListComponent implements OnChanges {
   @Input() public caseQueriesCollection: CaseQueriesCollection;

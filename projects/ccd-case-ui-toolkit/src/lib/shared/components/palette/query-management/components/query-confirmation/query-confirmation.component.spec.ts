@@ -5,7 +5,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { QueryCreateContext } from '../../models';
 import { QueryConfirmationComponent } from './query-confirmation.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, args?: any): string {
     return value;

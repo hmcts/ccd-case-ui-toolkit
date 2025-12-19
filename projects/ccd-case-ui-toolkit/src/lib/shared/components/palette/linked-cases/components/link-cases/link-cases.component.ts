@@ -21,7 +21,8 @@ import { MultipageComponentStateService } from '../../../../../services';
 @Component({
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
-  templateUrl: './link-cases.component.html'
+  templateUrl: './link-cases.component.html',
+  standalone: false
 })
 export class LinkCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Output()

@@ -1,7 +1,59 @@
 ## RELEASE NOTES
 
-### Version 7.2.54-exui-2489
+### Version 7.3.8-exui-2489
 **EXUI-2489** Index navigation 2 - media viewer
+
+### Version 7.3.8
+**EXUI-3504** Postcode API duplication / spam request
+
+### Version 7.3.7
+**EXUI-3859** Update CDAM logs and casetype retrieval
+
+### Version 7.3.6
+**EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
+
+### Version 7.3.5
+**EXUI-3759** Summary tab default - Tactical
+
+### Version 7.3.4
+**EXUI-2451** Gov Notify can get a Markdown link by using 2 sets of square brackets
+**EXUI-2730** Callback data validation errors displaying incorrect data on Overview page
+**EXUI-3303** The blue information box remains in Welsh when the user clicks the English translation toggle in the page footer
+**EXUI-3335** Page refresh pop up box bypassed: Lost mandatory data can be submitted
+**EXUI-3365** Ability for manage case HMCTS users to search/filter for "active" users only
+**EXUI-3455** Access any page of 'Create Case' journey through URL
+**EXUI-3481** FieldShowCondtions in nested complex type preventing render on CYA
+**EXUI-3545** IN-53327 Add more logs to provide evidence of root cause
+
+### Version 7.3.3
+**EXUI-3807** Nightly pipeline failure - Media viewer
+**EXUI-3726** Vulnerabilities - CVE - High - Media viewer
+**EXUI-3739** Fix additional CVE in media-viewer
+
+### Version 7.3.2
+**EXUI-3334** fixed failing accessibility for minute field
+
+### Version 7.3.1
+**EXUI-3552** CDAM Exclusion using wrong case type
+
+### Version 7.3.0
+**COT-775** Angular 20 upgrade
+
+### Version 7.2.59
+**EXUI-3661** Performance issues on screens to return data
+**EXUI-3681** Users unable to upload documents
+
+### Version 7.2.58
+**EXUI-2821** Media Viewer - Search/Present button issues
+
+### Version 7.2.57
+**EXUI-3055** Add message in Payment History tab
+
+### Version 7.2.56
+**EXUI-2986** Tool tips are not activated upon tab selection in Mediaviewer
+
+### Version 7.2.55
+**EXUI-3552** Some of the requests for document create are going to XUI and not CDAM
 
 ### Version 7.2.54
 **EXUI-3555** Judges should be able to respond to queries
