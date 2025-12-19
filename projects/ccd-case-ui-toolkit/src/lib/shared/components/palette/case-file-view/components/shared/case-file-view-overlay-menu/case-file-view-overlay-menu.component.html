@@ -24,7 +24,7 @@
       <ul>
         <ng-container *ngFor="let item of menuItems;">
           <li class="overlay-menu__item" tabindex="0" (click)="item.actionFn(); closeOverlay();" (keydown.enter)="item.actionFn(); closeOverlay();">
-            <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{title}} icon'" />
+            <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{item.actionText}} icon" aria-hidden="true" />
             <span class="overlay-menu__actionText">{{item.actionText}}</span>
           </li>
         </ng-container>
