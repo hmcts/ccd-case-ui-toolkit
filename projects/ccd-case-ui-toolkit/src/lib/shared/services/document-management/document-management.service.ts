@@ -41,7 +41,7 @@ export class DocumentManagementService {
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
-    this.appConfig.logMessage(`DMS:: Uploading document for case type: ${this.caseTypeId}, with url: ${url}, and case id: ${this.caseId}`);
+    this.appConfig.logMessage(`DMS:: Uploading document || case type: ${this.caseTypeId} || url: ${url} || case id: ${this.caseId}`);
     const headers = new HttpHeaders();
     return this.http
       .post(url, formData, { headers, observe: 'body' })
@@ -111,7 +111,7 @@ export class DocumentManagementService {
     return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
   }
 
-  public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string } | null {
+  public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string, jurisdiction?: string } | null {
     if (!caseInfo) {
       return null;
     }
