@@ -16,6 +16,7 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { SessionStorageService } from '../../../services/session';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -57,7 +58,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public caseId: string;
   // Should the file upload use CDAM
   public fileSecureModeOn: boolean = false;
-
+  public gotFromCaseInfo: boolean = false;
   constructor(
     private readonly appConfig: AbstractAppConfig,
     private readonly caseNotifier: CaseNotifier,
@@ -65,15 +66,22 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     // Wait for both observables to emit at least once
+    const caseInfo = this.documentManagement.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
     const currUrl = window.location.pathname;
-    if (currUrl.includes('/case-details/')) {
-      this.caseTypeId = currUrl.split('/')[4];
+    if (caseInfo) {
+      this.gotFromCaseInfo = true;
+      this.caseTypeId = caseInfo.caseType;
+    } else {
+      if (currUrl.includes('/case-details/')) {
+        this.caseTypeId = currUrl.split('/')[4];
+      }
     }
     this.caseNotifierSubscription = combineLatest([
       this.caseNotifier.caseView.pipe(take(1)),
@@ -366,9 +374,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     // use the documentManagement service to check if the document upload should use CDAM
     if (this.documentManagement.isDocumentSecureModeEnabled()) {
-      this.appConfig.logMessage(`CDAM is enabled for case with case ref:: ${this.caseId}`);
+      this.appConfig.logMessage(`WDF:: CDAM is enabled for case with case ref:: ${this.caseId}, case type:: ${this.caseTypeId}, gotFromCaseInfo:: ${this.gotFromCaseInfo}`);
     } else {
-      this.appConfig.logMessage(`CDAM is disabled for case with case ref:: ${this.caseId}`);
+      this.appConfig.logMessage(`WDF:: CDAM is disabled for case with case ref:: ${this.caseId}, case type:: ${this.caseTypeId}, gotFromCaseInfo:: ${this.gotFromCaseInfo}`);
     }
     if (!this.uploadedDocument) {
       if (this.fileSecureModeOn) {
