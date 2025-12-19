@@ -11,8 +11,14 @@
 </div>
 
 <div class="document-folders-header">
-  <div class="document-folders-header__title">Documents ({{ documentCount }})</div>
-  <div class="document-folders-header__flex">
+  <div class="document-folders-header__title" id="document-folders-header-title">
+    Documents ({{ documentCount }})
+  </div>
+  <div
+    class="document-folders-header__flex"
+    role="group"
+    aria-label="Document list controls"
+    aria-describedby="document-folders-header-title">
     <ccd-case-file-view-folder-toggle
       (expandAll)="expandAll($event)"
       (collapseAll)="collapseAll($event)">
