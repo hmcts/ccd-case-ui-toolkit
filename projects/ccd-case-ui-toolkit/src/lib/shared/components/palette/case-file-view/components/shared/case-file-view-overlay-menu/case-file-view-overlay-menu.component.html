@@ -1,8 +1,11 @@
 <div>
-  <button type="button" class="overlay-toggle"
+  <button type="button"
+          class="overlay-toggle"
           (click)="$event.stopPropagation(); setOpen()"
-          cdkOverlayOrigin #trigger="cdkOverlayOrigin">
-    <ng-content select="[trigger]"></ng-content>
+          cdkOverlayOrigin #trigger="cdkOverlayOrigin"
+          aria-haspopup="true"
+          [attr.aria-expanded]="isOpen">
+    <ng-content select="[trigger]" aria-hidden="true"></ng-content>
   </button>
 
   <ng-template
