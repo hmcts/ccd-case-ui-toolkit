@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.8",
+  "version": "7.3.8-fix-ip-CVE",
   "engines": {
     "node": ">=20.19.0"
   },
