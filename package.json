@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.8-exui-3849-rc1",
+  "version": "7.3.8-exui-3849-rc2",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -215,7 +215,6 @@
     "url-parse": "^1.5.0",
     "xmlhttprequest-ssl": "1.6.3",
     "y18n": "^4.0.1",
-    "prismjs": "^1.30.0",
     "websocket-extensions": "0.1.4",
     "ini": "^2.0.0",
     "browserslist": "^4.21.0",
