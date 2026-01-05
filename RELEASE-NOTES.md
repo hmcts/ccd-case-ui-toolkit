@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.3.10
+**EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit
+**EXUI-3857** CVE Vulnerability - Critical - CVE-2025-7783 - CCD-Case-UI-Toolkit
+**EXUI-3853** CVE Vulnerability - High - CVE-2024-29415 - CCD-Case-UI-Toolkit
+**EXUI-3855** CVE Vulnerability - High - CVE-2024-21538 - CCD-Case-UI-Toolkit
+
+### Version 7.3.9
+**EXUI-3866** CVE Vulnerability - High - CVE-2025-65945 - em-media-viewer
+
 ### Version 7.3.8
 **EXUI-3504** Postcode API duplication / spam request
 
