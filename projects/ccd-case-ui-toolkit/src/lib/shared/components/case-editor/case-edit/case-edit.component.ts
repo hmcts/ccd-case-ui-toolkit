@@ -32,7 +32,8 @@ import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils'
   selector: 'ccd-case-edit',
   templateUrl: 'case-edit.component.html',
   styleUrls: ['../case-edit.scss'],
-  providers: [GreyBarService]
+  providers: [GreyBarService],
+  standalone: false
 })
 export class CaseEditComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
@@ -93,6 +94,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public validPageList: WizardPage[] = [];
 
+  public isRefreshModalVisible = false;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -145,11 +148,26 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public checkPageRefresh(): boolean {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
-      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.isRefreshModalVisible = true;
       this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
+    // if the url contains /submit there is the potential that the user has gone straight to the submit page
+    // we should try and work out if they have been through the journey or not and prevent them submitting directly
+    const hasSubmitPathOnly = /\/submit(?:\?.*)?$/.test(this.router.url);
+    if (hasSubmitPathOnly && !this.initialUrl) {
+      // we only want to check if the user has done this if there is a multi-page journey
+      if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
+        const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
+        this.isRefreshModalVisible = true;
+        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+      }
+    }
     return false;
+  }
+
+  public onRefreshModalOk(): void {
+    this.isRefreshModalVisible = false;
   }
 
   public getPage(pageId: string): WizardPage {
@@ -262,7 +280,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const userId = userInfo.id ? userInfo.id : userInfo.uid;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
-      this.abstractConfig.logMessage(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);
+      this.abstractConfig.logMessage(`task ${taskInSessionStorage?.id} exist for this event for caseId and eventId as ${caseId} ${eventId}`);
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId,
@@ -280,6 +298,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
       this.isEventCompletionChecksRequired = true;
     } else {
+      this.abstractConfig.logMessage(`task does not exist for caseId and eventId as ${caseId} ${eventId}`);
       // Task not in session storage, proceed to submit
       const caseEventData = this.generateCaseEventData({
         eventTrigger,
@@ -461,11 +480,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.sessionStorageService.setItem('taskCompletionError', 'false');
     submit(caseEventData).pipe(switchMap((response) => {
       eventResponse = response;
+      this.abstractConfig.logMessage(`Event ${this.eventCompletionParams?.eventId} of case Id ${this.eventCompletionParams?.caseId} and taskId ${this.eventCompletionParams?.task?.id}`);
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
         // on event completion ensure the previous event clientContext/taskEventCompletionInfo removed
         // Note - Not removeTaskFromClientContext because could interfere with other logic
+        this.abstractConfig.logMessage(`Clearing client context and task event completion info after event ${this.eventCompletionParams?.eventId} submission of case Id ${this.eventCompletionParams?.caseId} and task Id ${this.eventCompletionParams?.task?.id}`);
         this.sessionStorageService.removeItem(CaseEditComponent.CLIENT_CONTEXT);
         this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO)
         this.isSubmitting = false;
@@ -475,6 +496,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           this.finishEventCompletionLogic(eventResponse);
         },
         error => {
+          this.abstractConfig.logMessage(`An error occurred while submission of event ${this.eventCompletionParams?.eventId} and case Id ${this.eventCompletionParams?.caseId} and taskId ${this.eventCompletionParams?.task?.id}`);
           if (!eventResponse) {
             // event submission error
             this.error = error;
@@ -503,12 +525,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (task && assignNeeded && taskToBeCompleted) {
-      this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (task && taskToBeCompleted) {
-      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }
+    this.abstractConfig.logMessage(`postCompleteTaskIfRequired: no task to complete for event name ${this.eventTrigger?.name} and caseId ${this.caseDetails?.case_id}`);
     return of(true);
   }
 

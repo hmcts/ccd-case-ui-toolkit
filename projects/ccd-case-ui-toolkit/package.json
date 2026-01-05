@@ -1,8 +1,8 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.2.54-exui-2600-1",
+  "version": "7.3.10-exui-2600-1",
   "engines": {
-    "node": ">=18.19.0"
+    "node": ">=20.19.0"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",

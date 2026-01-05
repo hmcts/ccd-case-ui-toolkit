@@ -41,7 +41,8 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
-  styleUrls: ['./case-full-access-view.component.scss']
+  styleUrls: ['./case-full-access-view.component.scss'],
+  standalone: false
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
@@ -115,7 +116,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       return false;
     }));
-    
+
     initDialog();
     this.init();
 
@@ -136,8 +137,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     this.checkRouteAndSetCaseViewTab();
 
-    this.setCaseInfo();
-
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
     this.linkedCasesService.resetLinkedCaseData();
@@ -149,19 +148,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
-    }
-  }
-
-  private setCaseInfo(): void {
-    const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
-    console.log('Case Info from session storage: ', caseInfo);
-    if (caseInfo?.caseId !== this.caseDetails.case_id) {
-      const newCaseInfo = {
-        caseId: this.caseDetails.case_id,
-        jurisdiction: this.caseDetails.case_type.jurisdiction.id,
-        caseType: this.caseDetails.case_type.id
-      };
-      this.sessionStorageService.setItem('caseInfo', JSON.stringify(newCaseInfo));
     }
   }
 
@@ -323,8 +309,30 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
-        // select the first tab checking if the tab is visible
-        const preSelectTab: CaseTab = this.findPreSelectedActiveTab();
+
+        // Prefer tab from FieldsUtils.defaultTabList (e.g. PRLAPPS -> Summary) if present
+        const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
+        let preSelectTab: CaseTab = null;
+
+        if (preferredLabel) {
+          preSelectTab = this.caseDetails.tabs.find(tab => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
+        }
+
+        // Fallback to first visible tab if no preferred label found
+        if (!preSelectTab) {
+          preSelectTab = this.findPreSelectedActiveTab();
+        }
+
+        // If the preferred tab exists in caseDetails but is hidden (not rendered in tabGroup), fallback again
+        const renderedTabs = this.tabGroup?._tabs?.toArray?.() ?? [];
+        const preferredRendered = preSelectTab &&
+          renderedTabs.some(tab => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
+
+        if (!preferredRendered) {
+          // Default focus: keep natural first visible tab (do not change selectedIndex explicitly)
+          preSelectTab = this.findPreSelectedActiveTab();
+        }
+
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the

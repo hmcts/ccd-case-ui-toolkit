@@ -15,7 +15,8 @@ import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-c
 
 @Component({
   selector: 'ccd-field-read',
-  template: ''
+  template: '',
+  standalone: false
 })
 class MockFieldReadComponent {
   @Input()
@@ -27,8 +28,9 @@ class MockFieldReadComponent {
 @Component({
   selector: 'ccd-read-case-link-field',
   template: '<a href="/v2/case/{{caseField.value.CaseReference}}">' +
-    '  <span class="text-16">{{caseField.value.CaseReference}}</span>' +
-    '</a>'
+        '  <span class="text-16">{{caseField.value.CaseReference}}</span>' +
+        '</a>',
+  standalone: false
 })
 class MockReadCaseLinkFieldComponent {
   @Input()

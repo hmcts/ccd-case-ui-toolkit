@@ -12,7 +12,8 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
   selector: 'ccd-write-judicial-user-field',
   styleUrls: ['./write-judicial-user-field.component.scss'],
-  templateUrl: './write-judicial-user-field.component.html'
+  templateUrl: './write-judicial-user-field.component.html',
+  standalone: false
 })
 export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent implements OnInit, OnDestroy {
 
