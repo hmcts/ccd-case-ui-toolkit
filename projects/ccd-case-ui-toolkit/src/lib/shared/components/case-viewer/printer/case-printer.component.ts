@@ -9,7 +9,8 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
-  templateUrl: './case-printer.html'
+  templateUrl: './case-printer.html',
+  standalone: false
 })
 export class CasePrinterComponent implements OnInit, OnDestroy {
 

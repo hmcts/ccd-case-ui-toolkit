@@ -16,7 +16,6 @@ describe('PaginationComponent:', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        PaginationControlsComponent,
         PaginationControlsDirective,
         PaginationComponent,
         ComponentTestComponent,
@@ -51,7 +50,7 @@ describe('PaginationComponent:', () => {
 
   it('should display the correct page links (formatted numbers over 1000) with dot', fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PaginationControlsComponent, PaginationControlsDirective, ComponentTestComponent, PaginatePipe, MockRpxTranslatePipe],
+      declarations: [ PaginationControlsDirective, ComponentTestComponent, PaginatePipe, MockRpxTranslatePipe],
       providers: [PaginationService, { provide: LOCALE_ID, useValue: 'de_DE' }],
     });
 

@@ -7,7 +7,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 import { MockComponent } from 'ng2-mock-component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -39,7 +42,8 @@ describe('QueryWriteRaiseQueryComponent', () => {
     ]);
 
     await TestBed.configureTestingModule({
-      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe, queryCaseDetailsHeaderComponentMock],
+      imports: [queryCaseDetailsHeaderComponentMock],
+      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: routeStub },
         { provide: QueryManagementService, useValue: queryManagementServiceSpy }

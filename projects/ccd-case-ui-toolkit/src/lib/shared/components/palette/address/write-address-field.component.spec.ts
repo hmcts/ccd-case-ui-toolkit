@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { FocusElementModule } from '../../../directives/focus-element';
@@ -44,8 +44,9 @@ describe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-write-complex-type-field`,
-    template: ``
-  })
+    template: ``,
+    standalone: false
+})
   class MockWriteComplexFieldComponent {
 
     @Input()
@@ -310,7 +311,7 @@ describe('WriteAddressFieldComponent', () => {
   });
 
   it('should clear the error when postcode is not blank', () => {
-
+    addressesService.getAddressesForPostcode.and.returnValue(of([]));
     writeAddressFieldComponent.missingPostcode = true;
     fixture.detectChanges();
 
@@ -352,4 +353,74 @@ describe('WriteAddressFieldComponent', () => {
     expect(writeAddressFieldComponent.missingPostcode).toBeTruthy();
   });
 
-})
+  describe('loadingAddresses functionality', () => {
+    it('should initialize loadingAddresses as false', () => {
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+    });
+
+    it('should set loadingAddresses to true when findAddress is called with valid postcode', () => {
+      const addressSubject = new Subject();
+      addressesService.getAddressesForPostcode.and.returnValue(addressSubject.asObservable());
+      writeAddressFieldComponent.postcode.setValue(POSTCODE);
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+      writeAddressFieldComponent.findAddress();
+      expect(writeAddressFieldComponent.loadingAddresses).toBeTruthy();
+      addressSubject.next([]);
+      addressSubject.complete();
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+    });
+
+    it('should set loadingAddresses to false when address service returns successfully', () => {
+      const addresses = [buildAddress(1), buildAddress(2)];
+      addressesService.getAddressesForPostcode.and.returnValue(of(addresses));
+      queryPostcode(POSTCODE);
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+      expect(writeAddressFieldComponent.addressOptions.length).toEqual(2);
+    });
+
+    it('should set loadingAddresses to false when address service returns an error', () => {
+      const errorMessage = 'Service error';
+      const errorSubject = new Subject();
+      addressesService.getAddressesForPostcode.and.returnValue(errorSubject.asObservable());
+      spyOn(console, 'log');
+      writeAddressFieldComponent.postcode.setValue(POSTCODE);
+      writeAddressFieldComponent.findAddress();
+      expect(writeAddressFieldComponent.loadingAddresses).toBeTruthy();
+      errorSubject.error(errorMessage);
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+      expect(console.log).toHaveBeenCalledWith(`An error occurred retrieving addresses for postcode ${POSTCODE}. ${errorMessage}`);
+    });
+
+    it('should not set loadingAddresses to true when postcode is missing', () => {
+      debugElement.query($POSTCODE_LOOKUP_FIND).triggerEventHandler('click', null);
+      fixture.detectChanges();
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+      expect(writeAddressFieldComponent.missingPostcode).toBeTruthy();
+    });
+
+    it('should not set loadingAddresses to true when postcode is invalid', () => {
+      const postcodeField = fixture.debugElement.query($POSTCODE_LOOKUP_INPUT).nativeElement;
+      postcodeField.value = INVALID_POSTCODE;
+      postcodeField.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      debugElement.query($POSTCODE_LOOKUP_FIND).triggerEventHandler('click', null);
+      fixture.detectChanges();
+      expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
+      expect(writeAddressFieldComponent.missingPostcode).toBeTruthy();
+    });
+
+    it('should disable the find address button when loadingAddresses is true', () => {
+      writeAddressFieldComponent.loadingAddresses = true;
+      fixture.detectChanges();
+      const findButton = debugElement.query($POSTCODE_LOOKUP_FIND).nativeElement;
+      expect(findButton.disabled).toBeTruthy();
+    });
+
+    it('should enable the find address button when loadingAddresses is false', () => {
+      writeAddressFieldComponent.loadingAddresses = false;
+      fixture.detectChanges();
+      const findButton = debugElement.query($POSTCODE_LOOKUP_FIND).nativeElement;
+      expect(findButton.disabled).toBeFalsy();
+    });
+  });
+});

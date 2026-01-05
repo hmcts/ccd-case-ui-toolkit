@@ -8,6 +8,7 @@ import { HttpService } from '../http';
 import { DocumentManagementService } from './document-management.service';
 import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
 import { JurisdictionService } from '../jurisdiction';
+import { SessionStorageService } from '../session/session-storage.service';
 
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
@@ -20,6 +21,7 @@ describe('DocumentManagementService', () => {
   let caseNotifier: any;
   let jurisdictionService: any;
   let documentManagementService: DocumentManagementService;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
@@ -35,9 +37,12 @@ describe('DocumentManagementService', () => {
     caseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['caseView']);
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+    mockSessionStorageService.getItem.and.returnValue('{"caseType":"sessionCaseType"}');
+
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     caseNotifier.caseView = of(undefined);
-    documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+    documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
   }));
 
   describe('uploadFile', () => {
@@ -107,7 +112,8 @@ describe('DocumentManagementService', () => {
     it('should return DocumentManagementUrlV2 when document secure mode is enabled and case type is not in exclusion list', () => {
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: CASE_TYPE_ID } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      mockSessionStorageService.getItem.and.returnValue(`{"caseType":"${CASE_TYPE_ID}"}`);
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
@@ -115,7 +121,9 @@ describe('DocumentManagementService', () => {
     it('should return DocumentManagementUrl when document secure mode is enabled and case type is in exclusion list', () => {
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: EXCLUDED_CASE_TYPE_ID } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      window.history.pushState({}, '', '/cases/case-details/jurisdiction/excludedCaseType/12345');
+      mockSessionStorageService.getItem.and.returnValue(`{"caseType":"${EXCLUDED_CASE_TYPE_ID}"}`);
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
     });
@@ -123,7 +131,9 @@ describe('DocumentManagementService', () => {
     it('should return DocumentManagementUrlV2 when exclusions contains multiple values and file is not excluded', () => {
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
       caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType3' } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      window.history.pushState({}, '', '/cases/case-details/jurisdiction/excludedCaseType3/12345');
+      mockSessionStorageService.getItem.and.returnValue('{"caseType":"excludedCaseType3"}');
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
@@ -131,15 +141,18 @@ describe('DocumentManagementService', () => {
     it('should return DocumentManagementUrl when exclusions contains multiple values and file is excluded', () => {
       appConfig.getCdamExclusionList.and.returnValue(EXCLUDED_CASE_TYPE_ID_MULTIPLE_TYPES);
       caseNotifier.caseView = of({ case_type: { id: 'excludedCaseType2' } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
-     const url = documentManagementService['getDocStoreUrl']();
+      window.history.pushState({}, '', '/cases/case-details/jurisdiction/excludedCaseType2/12345');
+      mockSessionStorageService.getItem.and.returnValue('{"caseType":"excludedCaseType2"}');
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
+      const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL);
     });
 
     it('should handle when there is no files in exclusion list', () => {
       appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of({ case_type: { id: 'caseType2' } });
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      mockSessionStorageService.getItem.and.returnValue('{"caseType":"caseType2"}');
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
@@ -148,7 +161,8 @@ describe('DocumentManagementService', () => {
       appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
       caseNotifier.caseView = of(undefined);
       jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ currentCaseType: { id: 'caseType2' } }));
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      mockSessionStorageService.getItem.and.returnValue('{"caseType":"caseType2"}');
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       const url = documentManagementService['getDocStoreUrl']();
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
@@ -158,7 +172,8 @@ describe('DocumentManagementService', () => {
       caseNotifier.caseView = of(undefined);
       jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
       window.history.pushState({}, '', '/case/case-create/test1/test2');
-      documentManagementService = new DocumentManagementService(httpService, appConfig, caseNotifier, jurisdictionService);
+      mockSessionStorageService.getItem.and.returnValue(null);
+      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
       expect((documentManagementService as any)['caseTypeId']).toBe('test2');
     });
   });

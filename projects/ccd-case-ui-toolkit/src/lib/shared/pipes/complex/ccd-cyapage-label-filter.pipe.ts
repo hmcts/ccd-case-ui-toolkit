@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CaseField } from '../../domain';
 
 @Pipe({
-  name: 'ccdCYAPageLabelFilter'
+  name: 'ccdCYAPageLabelFilter',
+  standalone: false
 })
 export class CcdCYAPageLabelFilterPipe implements PipeTransform {
 

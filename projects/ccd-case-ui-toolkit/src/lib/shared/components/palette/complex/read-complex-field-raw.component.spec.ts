@@ -22,14 +22,14 @@ const initTests = (caseField, mocks) => {
     .configureTestingModule({
       imports: [
         PaletteUtilsModule,
-        ConditionalShowModule
+        ConditionalShowModule,
+        ...mocks
       ],
       declarations: [
         ReadComplexFieldRawComponent,
         FieldsFilterPipe,
         ReadFieldsFilterPipe,
-        MockRpxTranslatePipe,
-        ...mocks
+        MockRpxTranslatePipe
       ],
       providers: []
     })
