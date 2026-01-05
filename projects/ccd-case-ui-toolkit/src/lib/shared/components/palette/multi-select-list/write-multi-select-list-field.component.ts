@@ -5,7 +5,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-multi-select-list-field',
-  templateUrl: './write-multi-select-list-field.html'
+  templateUrl: './write-multi-select-list-field.html',
+  standalone: false
 })
 export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

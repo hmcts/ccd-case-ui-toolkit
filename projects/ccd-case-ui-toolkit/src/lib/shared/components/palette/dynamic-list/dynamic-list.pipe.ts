@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { FixedListItem } from '../../../domain/definition/fixed-list-item.model';
 
 @Pipe({
-  name: 'ccdDynamicList'
+  name: 'ccdDynamicList',
+  standalone: false
 })
 export class DynamicListPipe implements PipeTransform {
 

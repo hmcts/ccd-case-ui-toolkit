@@ -3,6 +3,7 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 
 @Component({
   selector: 'ccd-write-date-container-field',
-  templateUrl: './write-date-container-field.html'
+  templateUrl: './write-date-container-field.html',
+  standalone: false
 })
 export class WriteDateContainerFieldComponent extends AbstractFormFieldComponent {}

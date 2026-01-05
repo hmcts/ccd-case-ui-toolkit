@@ -14,11 +14,15 @@ import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
   selector: 'dummy-component',
-  template: ''
+  template: '',
+  standalone: false
 })
 class DummyComponent { }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class MockTranslatePipe implements PipeTransform {
   public transform(value: any, ...args: any[]): any {
     return value;
