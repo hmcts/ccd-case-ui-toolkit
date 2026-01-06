@@ -86,6 +86,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
+    # OIDC Trusted Publishing to npmjs
     if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
@@ -166,7 +167,6 @@ jobs:
           files: ${{ steps.pack.outputs.tarball }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
 
       - name: Publish to GitHub Packages
         run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
