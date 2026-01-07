@@ -133,6 +133,8 @@ describe('EventCompletionStateMachineService', () => {
     component: eventCompletionComponentEmitter
   };
 
+  let mockStateMachineConfig: any;
+
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -143,7 +145,8 @@ describe('EventCompletionStateMachineService', () => {
         { provide: CaseNotifier, useValue: mockCaseNotifier }
       ]
     });
-    service = new EventCompletionStateMachineService();
+    mockStateMachineConfig = { logMessage: jasmine.createSpy('logMessage') }; // added
+    service = new EventCompletionStateMachineService(mockStateMachineConfig);   // pass config
   });
 
   it('should initialise state machine', () => {
