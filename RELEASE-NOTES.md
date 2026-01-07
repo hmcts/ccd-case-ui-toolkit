@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.10-exui-3053-1
+### Version 7.3.11-exui-3053-2
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
+### Version 7.3.11
+**EXUI-3870** PayIt feature deployment
 
 ### Version 7.3.10
 **EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit
