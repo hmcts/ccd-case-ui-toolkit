@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 7.3.11
-**EXUI-3870** PayIt feature deployment
-
 ### Version 7.3.10
 **EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit
 **EXUI-3857** CVE Vulnerability - Critical - CVE-2025-7783 - CCD-Case-UI-Toolkit
