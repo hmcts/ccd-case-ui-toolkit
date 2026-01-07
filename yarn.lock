@@ -4731,11 +4731,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-<<<<<<< HEAD
   checksum: 10/7f0b38fb8484df65fa906d6e32d529c612133f6c7b180e57639e87f877f1972da4ba331f088da82c033c47031091daa029867226a385a76b9ad7d32c1c74aea8
-=======
-  checksum: 10/67c78fabb85d42e7b6c2133db5c2daaa7d9232ad81e968f63f6411920bf72c5ef84c02315672ae0518d08a1859099a6d01336c057f31f067dfe6b084b50b3d26
->>>>>>> fe43436d7f77f608e18ed001aaaa6da07e3b86c7
   languageName: node
   linkType: hard
 
