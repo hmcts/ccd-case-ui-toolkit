@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
 ### Version 7.3.13
 **EXUI-3892** Update CDAM logic within document-management.service
 
