@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.12-exui-3740
+**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
 ### Version 7.3.12
 **EXUI-2489** Index navigation 2 - media viewer
 

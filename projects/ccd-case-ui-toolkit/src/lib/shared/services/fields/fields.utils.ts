@@ -22,7 +22,7 @@ export class FieldsUtils {
   // Handling of Dynamic Lists in Complex Types
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
-  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList', 'DynamicMultiSelectList'];
   public static readonly defaultTabList = {
     "PRLAPPS": "Summary"
   }
@@ -304,9 +304,15 @@ export class FieldsUtils {
             if (dynamicListValue) {
               const list_items = dynamicListValue[0].list_items;
               const complexValue = dynamicListValue.map(data => data.value);
+              let selectedValue;
+              if (field.field_type.type === 'DynamicMultiSelectList') {
+                selectedValue = complexValue[0] || [];
+              } else if (complexValue.length > 0) {
+                selectedValue = complexValue;
+              }
               const value = {
                 list_items,
-                value: complexValue.length > 0 ? complexValue : undefined
+                value: selectedValue
               };
               field.value = {
                 ...value
