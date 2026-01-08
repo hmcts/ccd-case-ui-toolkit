@@ -5,6 +5,7 @@ import { delay } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
+import { SessionStorageService } from '../session';
 
 @Injectable()
 export class DocumentManagementService {
@@ -25,24 +26,17 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  private readonly caseTypeId: string = '';
+  private readonly caseTypeId: string;
+  private caseId?: string;
 
   constructor(
     private readonly http: HttpService,
-    private readonly appConfig: AbstractAppConfig
+    private readonly appConfig: AbstractAppConfig,
+    private readonly sessionStorageService: SessionStorageService
   ) {
-    const currUrl = window.location.pathname;
-    if (currUrl.includes('/case-details/')) {
-      this.caseTypeId = currUrl.split('/')[4];
-    }
-    console.log(this.caseTypeId);
-    //if the user refreshes on the case creation page the above logic will not work, we can get the caseTypeId from the URL
-    if (!this.caseTypeId) {
-      if (currUrl.indexOf('/case-create/') > -1) {
-        const parts = currUrl.split('/');
-        this.caseTypeId = parts[parts.indexOf('case-create') + 2];
-      }
-    }
+    const caseInfo = this.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
+    const currUrl = this.getCurrentPathname();
+    this.caseTypeId = this.resolveCaseTypeId(caseInfo, currUrl);
   }
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
@@ -50,10 +44,10 @@ export class DocumentManagementService {
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
-    this.appConfig.logMessage(`Uploading document for case type: ${this.caseTypeId}, with url: ${url}`);
+    this.appConfig.logMessage(`DMS:: Uploading document for case type: ${this.caseTypeId}, with url: ${url}, and case id: ${this.caseId}`);
     const headers = new HttpHeaders();
     return this.http
-      .post(url, formData, {headers, observe: 'body'})
+      .post(url, formData, { headers, observe: 'body' })
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
   }
 
@@ -112,6 +106,48 @@ export class DocumentManagementService {
 
   public isPowerpoint(powerpointType: string): boolean {
     return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
+  }
+
+  public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string } | null {
+    if (!caseInfo) {
+      return null;
+    }
+    try {
+      return JSON.parse(caseInfo);
+    } catch (error) {
+      this.appConfig.logMessage('Failed to parse caseInfo from session storage');
+      return null;
+    }
+  }
+
+  private getCurrentPathname(): string {
+    if (typeof window === 'undefined' || !window.location) {
+      return '';
+    }
+    return window.location.pathname || '';
+  }
+
+  private resolveCaseTypeId(
+    caseInfo: { caseType?: string, caseId?: string } | null,
+    currUrl: string
+  ): string {
+    const caseTypeIdFromSession = caseInfo?.caseType;
+    if (caseTypeIdFromSession) {
+      this.caseId = caseInfo?.caseId;
+      return caseTypeIdFromSession;
+    }
+
+    const parts = currUrl.split('/');
+    if (currUrl.includes('/case-details/') && parts.length > 4) {
+      return parts[4];
+    }
+
+    const caseCreateIndex = parts.indexOf('case-create');
+    if (currUrl.includes('/case-create/') && caseCreateIndex > -1 && parts.length > caseCreateIndex + 2) {
+      return parts[caseCreateIndex + 2];
+    }
+
+    return '';
   }
 
   private transformDocumentUrl(documentBinaryUrl: string): string {

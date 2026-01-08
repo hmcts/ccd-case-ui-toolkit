@@ -19,6 +19,11 @@ describe('CaseResolver', () => {
     const CASE_ID = '42';
     const CASE: CaseView = new CaseView();
     CASE.case_id = 'CASE_ID_1';
+    // Provide minimal structure used by resolver for session storage payload
+    CASE.case_type = {
+      id: 'CTID_1',
+      jurisdiction: { id: 'JID_1' }
+    } as any;
 
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
@@ -29,7 +34,7 @@ describe('CaseResolver', () => {
     let casesService: any;
     let caseNotifier: any;
     let navigationNotifierService: NavigationNotifierService;
-    let sessionStorageService: any;
+  let sessionStorageService: any;
     let route: any;
     let router: any;
     let mockAppConfig: any;
@@ -42,7 +47,7 @@ describe('CaseResolver', () => {
       caseNotifier = createSpyObj('caseNotifier', ['announceCase', 'fetchAndRefresh']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
-      sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'setItem']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
       caseNotifier.fetchAndRefresh.and.returnValue(of(CASE));
@@ -58,14 +63,21 @@ describe('CaseResolver', () => {
       route.paramMap.get.and.returnValue(CASE_ID);
     });
 
-    it('should resolve case and cache when the route is the one for case view', () => {
+    it('should resolve case and cache when the route is the one for case view', async () => {
       caseNotifier.cachedCaseView = CASE;
 
-      caseResolver
-        .resolve(route)
-        .then(caseData => {
-          expect(caseData).toEqual(CASE);
-        });
+      const caseData = await caseResolver.resolve(route);
+      expect(caseData).toEqual(CASE);
+      // ensure caseInfo is persisted to session storage
+      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
+      const [key, value] = sessionStorageService.setItem.calls.mostRecent().args;
+      expect(key).toBe('caseInfo');
+      const parsed = JSON.parse(value);
+      expect(parsed).toEqual({
+        caseId: CASE.case_id,
+        jurisdiction: CASE.case_type.jurisdiction.id,
+        caseType: CASE.case_type.id
+      });
 
       expect(caseNotifier.fetchAndRefresh).toHaveBeenCalledWith(CASE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
@@ -93,7 +105,7 @@ describe('CaseResolver', () => {
       expect(caseNotifier.cachedCaseView).toBe(CASE_CACHED);
     });
 
-    it('should return retrieve case view when the route is a case view tab but empty cache', () => {
+    it('should return retrieve case view when the route is a case view tab but empty cache', async () => {
       caseNotifier.cachedCaseView = null;
       caseNotifier.fetchAndRefresh.and.returnValue(CASE_OBS);
       route = {
@@ -105,11 +117,10 @@ describe('CaseResolver', () => {
       };
       route.paramMap.get.and.returnValue(CASE_ID);
 
-      caseResolver
-        .resolve(route)
-        .then(caseData => {
-          expect(caseData).toEqual(CASE);
-        });
+      const caseData = await caseResolver.resolve(route);
+      expect(caseData).toEqual(CASE);
+      // caseInfo should be written to session storage on successful resolve
+      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
 
       expect(caseNotifier.fetchAndRefresh).toHaveBeenCalledWith(CASE_ID);
     });
