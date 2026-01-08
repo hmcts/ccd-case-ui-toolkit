@@ -12,6 +12,10 @@ on:
       - refs/tags/*
     tags:
       - '*'
+  release:
+    types:
+      - created
+
 
 jobs:
   build:
@@ -101,7 +105,16 @@ jobs:
           npm --version
           npm i -g npm@11.5.1
           npm --version
-      
+
+      - name: Determine npm dist-tag from GitHub Release
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          if [[ "$TAG" == *"-"* ]]; then
+            echo "NPM_TAG=next" >> "$GITHUB_ENV"
+          else
+            echo "NPM_TAG=latest" >> "$GITHUB_ENV"
+          fi
+
       - name: Publish version (OIDC via npm)
         working-directory: dist/ccd-case-ui-toolkit
         run: |
@@ -116,13 +129,7 @@ jobs:
           npm config delete //registry.npmjs.org/:_authToken || true
           npm config delete _authToken || true
 
-          TAG="${GITHUB_REF_NAME#v}"
-          if [[ "$TAG" == *"-"* ]]; then
-            DIST_TAG="${TAG#*-}"
-            npm publish --access public --tag "$DIST_TAG" --ignore-scripts
-          else
-            npm publish --access public --ignore-scripts
-          fi
+          npm publish --access public --tag "$NPM_TAG" --ignore-scripts
 
   publish-gpr:
     if: startsWith(github.ref, 'refs/tags')
