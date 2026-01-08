@@ -9,17 +9,13 @@ on:
     branches:
       - master
       - Release
-      - refs/tags/*
-    tags:
-      - '*'
   release:
     types:
       - created
 
-
 jobs:
   build:
-    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
+    if: github.event_name != 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +38,7 @@ jobs:
           path: coverage
 
   release-build:
-    if: startsWith(github.ref, 'refs/tags')
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,7 +50,7 @@ jobs:
       - run: yarn build
 
   sonarcloud:
-    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
+    if: github.event_name != 'release'
     needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
@@ -84,7 +80,6 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
-    if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
     permissions:
@@ -108,8 +103,7 @@ jobs:
 
       - name: Determine npm dist-tag from GitHub Release
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          if [[ "$TAG" == *"-"* ]]; then
+          if [ "${{ github.event.release.prerelease }}" = "true" ]; then
             echo "NPM_TAG=next" >> "$GITHUB_ENV"
           else
             echo "NPM_TAG=latest" >> "$GITHUB_ENV"
@@ -132,7 +126,6 @@ jobs:
           npm publish --access public --tag "$NPM_TAG" --ignore-scripts
 
   publish-gpr:
-    if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
     permissions:
@@ -163,4 +156,3 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
-
