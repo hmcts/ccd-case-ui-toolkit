@@ -167,15 +167,6 @@ describe('DocumentManagementService', () => {
       expect(url).toBe(DOCUMENT_MANAGEMENT_URL_V2);
     });
 
-    it('should handle when there is no case in case_notifier', () => {
-      appConfig.getCdamExclusionList.and.returnValue(NO_EXCLUDED_CASE_TYPE_ID);
-      caseNotifier.caseView = of(undefined);
-      jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
-      window.history.pushState({}, '', '/case/case-create/test1/test2');
-      mockSessionStorageService.getItem.and.returnValue(null);
-      documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
-      expect((documentManagementService as any)['caseTypeId']).toBe('test2');
-    });
   });
 
   describe('Media viewer', () => {

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
+
 ### Version 7.3.12
 **EXUI-2489** Index navigation 2 - media viewer
 
