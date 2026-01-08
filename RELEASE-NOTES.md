@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.11
-**EXUI-3870** PayIt feature deployment
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
+
+### Version 7.3.12
+**EXUI-2489** Index navigation 2 - media viewer
 
 ### Version 7.3.10
 **EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit
