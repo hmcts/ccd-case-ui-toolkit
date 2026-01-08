@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.12-exui-3682-4
-**EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
 
 ### Version 7.3.12
 **EXUI-2489** Index navigation 2 - media viewer
