@@ -139,10 +139,11 @@ describe('QueryListComponent', () => {
       const firstRowItem = component.queryListData.queries[0];
 
       expect(tableCells[0].innerText).toEqual(firstRowItem.subject);
-      expect(tableCells[1].innerText).toEqual(firstRowItem.lastSubmittedBy);
-      expect(new Date(tableCells[2].innerText)).toEqual(firstRowItem.lastSubmittedDate);
-      expect(new Date(tableCells[3].innerText)).toEqual(firstRowItem.lastResponseDate);
-      expect(tableCells[4].innerText).toEqual(firstRowItem.responseStatus);
+      expect(tableCells[1].innerText).toEqual(firstRowItem.name);
+      expect(tableCells[2].innerText).toEqual(firstRowItem.lastSubmittedBy);
+      expect(new Date(tableCells[3].innerText)).toEqual(firstRowItem.lastSubmittedDate);
+      expect(new Date(tableCells[4].innerText)).toEqual(firstRowItem.lastResponseDate);
+      expect(tableCells[5].innerText).toEqual(firstRowItem.responseStatus);
     });
   });
 
