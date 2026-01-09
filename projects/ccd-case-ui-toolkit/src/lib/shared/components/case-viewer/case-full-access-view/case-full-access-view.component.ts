@@ -10,7 +10,7 @@ import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
@@ -103,7 +103,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly rpxTranslationPipe: RpxTranslatePipe,
     private readonly loadingService: LoadingService,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly caseFlagStateService: CaseFlagStateService
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private zone: NgZone
   ) {
   }
 
@@ -174,6 +175,26 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
+  private normalizeLabel(label: string): string {
+    return (label || '').toString().replace(/\s+/g, '').toLowerCase();
+  }
+
+  private getAbsoluteTabIndexByLabel(label: string): number {
+    const normalized = this.normalizeLabel(label);
+    const tabs = this.tabGroup?._tabs?.toArray?.() ?? [];
+    return tabs.findIndex(tab => this.normalizeLabel(tab?.textLabel) === normalized);
+  }
+
+  private selectTabByLabel(label: string): void {
+    const index = this.getAbsoluteTabIndexByLabel(label);
+    if (index > -1) {
+      this.selectedTabIndex = index;
+      if (this.tabGroup) {
+        this.tabGroup.selectedIndex = index;
+      }
+    }
+  }
+
   private checkRouteAndSetCaseViewTab(): void {
     this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -182,12 +203,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (url) {
           const tabUrl = url ? url.split('#') : null;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-          const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
-          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
-          if (matTab?.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
+          // Use absolute index rather than relative position
+          this.selectTabByLabel(tab);
         }
       }));
   }
@@ -283,9 +300,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     let matTab: MatTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks') && !url.includes('hearings')) {
+    if (!url.includes('#')) {
       const paths = url.split('/');
-      // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
       if (!this.prependedTabs) {
@@ -295,51 +311,42 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       if (additionalTabs && additionalTabs.length) {
         foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
-      // found tasks or hearing tab
       if (foundTab) {
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id, foundTab.id]).then(() => {
-          matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
-          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
-          if (matTab?.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
+        this.router.navigate([
+          'cases',
+          'case-details',
+          this.caseDetails.case_type.jurisdiction.id,
+          this.caseDetails.case_type.id,
+          this.caseDetails.case_id,
+          foundTab.id
+        ]).then(() => {
+          this.selectTabByLabel(foundTab.label);
         });
-        // last path is caseId
       } else {
-        // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
-
-        // Prefer tab from FieldsUtils.defaultTabList (e.g. PRLAPPS -> Summary) if present
         const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
         let preSelectTab: CaseTab = null;
-
         if (preferredLabel) {
           preSelectTab = this.caseDetails.tabs.find(tab => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
         }
 
-        // Fallback to first visible tab if no preferred label found
         if (!preSelectTab) {
           preSelectTab = this.findPreSelectedActiveTab();
         }
-
-        // If the preferred tab exists in caseDetails but is hidden (not rendered in tabGroup), fallback again
         const renderedTabs = this.tabGroup?._tabs?.toArray?.() ?? [];
-        const preferredRendered = preSelectTab &&
-          renderedTabs.some(tab => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
-
+        const renderedLabels = renderedTabs.map(tab => tab.textLabel);
+        const preferredRendered = preSelectTab && renderedTabs.some(tab => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
         if (!preferredRendered) {
-          // Default focus: keep natural first visible tab (do not change selectedIndex explicitly)
           preSelectTab = this.findPreSelectedActiveTab();
         }
-
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
-          matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
-          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
-          if (matTab?.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
+        this.router.navigate([
+          'cases',
+          'case-details',
+          this.caseDetails.case_type.jurisdiction.id,
+          this.caseDetails.case_type.id,
+          this.caseDetails.case_id
+        ], { fragment: preSelectTab.label }).then(() => {
+          this.selectTabByLabel(preSelectTab.label);
         });
       }
     } else {
@@ -347,20 +354,18 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
       if (hashValue.includes('hearings')) {
         hashValue = 'hearings';
-      } else {
-        if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
-          hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
-        }
+      } else if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
+        hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
       }
-      matTab = this.tabGroup._tabs.find((x) =>
-        x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
-      // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
-      // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
-      if (matTab?.position) {
-        this.tabGroup.selectedIndex = matTab.position;
-      }
+      const index = this.getAbsoluteTabIndexByLabel(hashValue);
+      this.selectTabByLabel(hashValue);
     }
+    // once the page has beeen stabilised, ensure the selected tab is scrolled into view
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      const header: any = (this.tabGroup as any)._tabHeader;
+      header?._scrollToLabel?.(this.selectedTabIndex);
+      this.tabGroup.realignInkBar();
+    });
   }
 
   public findPreSelectedActiveTab(): CaseTab {
@@ -372,30 +377,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
   public tabChanged(tabIndexChanged: number): void {
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
-    const tabLabel = matTab.textLabel;
-    // sortedTabs are fragments
-    // appended/prepepended tabs use router navigation
-    if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
-      (this.appendedTabs?.length && (tabLabel === this.HEARINGS_TAB_LABEL
-        || tabLabel === this.rpxTranslationPipe.transform(this.HEARINGS_TAB_LABEL)))) {
-      // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
-      const tab = matTab['_viewContainerRef'] as ViewContainerRef;
-      const id = (tab.element.nativeElement as HTMLElement).id;
-      // cases/case-details/:jurisdiction/:caseType/:caseId/hearings
-      // cases/case-details/:jurisdiction/:caseType/:caseId/roles-and-access
-      this.router.navigate([
-        'cases',
-        'case-details',
-        this.caseDetails.case_type.jurisdiction.id,
-        this.caseDetails.case_type.id,
-        this.caseDetails.case_id,
-        id
-      ], { relativeTo: this.route.root });
-    } else {
-      // Routing here is based on tab label, not ideal
-      // cases/case-details/:jurisdiction/:caseType/:caseId#tabLabel
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: tabLabel });
-    }
+    const tabLabel = matTab?.textLabel;
+    this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: tabLabel });
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
