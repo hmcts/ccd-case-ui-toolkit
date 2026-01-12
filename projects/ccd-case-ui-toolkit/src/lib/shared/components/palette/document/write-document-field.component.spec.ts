@@ -689,7 +689,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
       of(RESPONSE_SECOND_DOCUMENT_MANDATORY)
     );
-    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'sessionCaseType' });
+    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'sessionCaseType', jurisdiction: 'test-jurisdiction', caseId: '1234' });
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -743,27 +743,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     fixture.detectChanges();
   }));
 
-  it('should set jurisdiction and casetype from casenotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    caseNotifier.caseView = of({ case_type: { id: 'test1', jurisdiction: { id: 'test2' } } });
-    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
-    component.ngOnInit();
-    expect(component.jurisdictionId).toBe('test2');
-  });
-
-  it('should set jurisdiction and casetype from casenotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    caseNotifier.caseView = of(undefined);
-    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({
-      id: 'test1',
-      currentCaseType: {
-        id: 'test2'
-      }
-    }));
-    component.ngOnInit();
-    expect(component.jurisdictionId).toBe('test1');
-  });
-
   it('should be invalid if no document specified for upload for read only. Empty file.', () => {
     component.caseField = CASE_FIELD_MANDATORY;
     component.ngOnInit();
@@ -782,7 +761,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     const blobParts: BlobPart[] = ['some contents for blob'];
     const file: File = new File(blobParts, 'test.pdf');
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
-    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
     component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
     component.fileChangeEvent({
@@ -794,7 +772,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     });
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
     expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
-    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is enabled for case with case ref:: 12345, case type:: sessionCaseType, gotFromCaseInfo:: true');
+    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is enabled || existing case || case ref:: 1234 || jurisdiction:: test-jurisdiction || case type:: sessionCaseType || gotFromCaseInfo:: true');
   });
 
   it('should be logged as disabled if file is NOT securemode', () => {
@@ -810,22 +788,55 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
         ]
       }
     });
-    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is disabled for case with case ref:: 12345, case type:: sessionCaseType, gotFromCaseInfo:: true');
+    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is disabled || existing case || case ref:: 1234 || jurisdiction:: test-jurisdiction || case type:: sessionCaseType || gotFromCaseInfo:: true');
   });
 
-  it('should set caseId from caseNotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
-    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
-    component.ngOnInit();
-    expect(component.caseField.value).toBeTruthy();
+  it('should set ids from session caseInfo when present and not in create-case journey', () => {
+    // Arrange: simulate caseInfo present in session
+    window.history.pushState({}, '', '/cases/case-details/OTHER/IGNORED/999');
 
-    component.fileChangeEvent({
-      target: {
-        files: []
-      }
-    });
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeTruthy();
+    expect(component.caseTypeId).toBe('sessionCaseType');
+    expect(component.jurisdictionId).toBe('test-jurisdiction');
+    expect(component.caseId).toBe('1234');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-details/IA/Asylum/12345/test/event/random');
+
+    // Clear any prior state
+    component.gotFromCaseInfo = false;
+    component.caseTypeId = undefined;
+    component.jurisdictionId = undefined;
+    component.caseId = undefined as any;
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeFalsy();
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Asylum');
     expect(component.caseId).toBe('12345');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    // Arrange: no caseInfo available, derive from URL
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-create/IA/Bail/1234');
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Bail');
+    expect(component.caseId).toBe(null);
   });
 
   it('should cancel file upload', () => {
@@ -1013,6 +1024,6 @@ describe('WriteDocumentFieldComponent', () => {
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
     window.history.pushState({}, '', '/case/case-create/test1/test2');
     component.ngOnInit();
-    expect(component.caseTypeId).toBe('sessionCaseType');
+    expect(component.caseTypeId).toBe('test2');
   });
 });
