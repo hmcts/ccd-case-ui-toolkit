@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.16
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
 ### Version 7.3.15
 **EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
 
