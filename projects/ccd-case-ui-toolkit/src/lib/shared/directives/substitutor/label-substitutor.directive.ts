@@ -34,6 +34,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.initialHintText = this.caseField.hint_text;
     this.caseField.originalLabel = this.caseField.label;
+    this.noCacheProcessing();
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.pipe(
@@ -42,7 +43,18 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       this.onLanguageChange();
     });
 
-    this.applySubstitutions()
+    this.applySubstitutions();
+  }
+
+  private noCacheProcessing() {
+    if (this.caseField?.label?.includes('[NOCACHE]')) {
+      this.caseField.noCacheLabel = this.caseField.label.replace('[NOCACHE]', '');
+      this.caseField.label = this.caseField.noCacheLabel;
+    } else if (this.caseField?.noCacheLabel) {
+      if (this.formGroup !== undefined) {
+        this.caseField.label = this.caseField?.noCacheLabel;
+      }
+    }
   }
 
   private applySubstitutions(): void {
