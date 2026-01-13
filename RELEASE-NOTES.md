@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 7.3.15
-**EXUI-3682** Media viewer - Accessibility - Toolbar items are repeated when using Jaws
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
 
 ### Version 7.3.14
 **EXUI-3551** Add an additional field to show original Sender name
