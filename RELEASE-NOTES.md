@@ -1,10 +1,22 @@
 ## RELEASE NOTES
 
-### Version 7.3.11-exui-3053-2
+### Version 7.3.15-exui-3053-1
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
 
 ### Version 7.3.11
 **EXUI-3870** PayIt feature deployment
+
+### Version 7.3.15
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
+
+### Version 7.3.12
+**EXUI-2489** Index navigation 2 - media viewer
 
 ### Version 7.3.10
 **EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit

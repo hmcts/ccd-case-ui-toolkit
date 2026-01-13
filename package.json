@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.11-exui-3053-2",
+  "version": "7.3.15-exui-3053-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -61,13 +61,13 @@
     "@angular/router": "^20.3.15",
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.5.15",
+    "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2-exui-3053-2/hmcts-media-viewer-4.2.2-exui-3053-2.tgz",
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "braces": "^2.3.1",
+    "braces": "^3.0.3",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
@@ -192,7 +192,7 @@
     "yarn": "^1.22.15"
   },
   "resolutions": {
-    "braces": "^2.3.1",
+    "braces": "^3.0.3",
     "dot-prop": "^5.1.1",
     "elliptic": "6.5.4",
     "graceful-fs": "^4.2.3",
