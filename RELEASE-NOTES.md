@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.16-exui-3740
+**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
 ### Version 7.3.16
 **EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
 
