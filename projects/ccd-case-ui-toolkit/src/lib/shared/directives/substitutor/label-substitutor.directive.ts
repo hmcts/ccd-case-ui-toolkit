@@ -34,6 +34,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.initialHintText = this.caseField.hint_text;
     this.caseField.originalLabel = this.caseField.label;
+    this.noCacheProcessing();
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.pipe(
@@ -42,7 +43,24 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       this.onLanguageChange();
     });
 
-    this.applySubstitutions()
+    this.applySubstitutions();
+  }
+
+  private noCacheProcessing() {
+    // Pattern ensures [NOCACHE] is inside ${...} and has other content (field name)
+    // Must have at least one character before or after [NOCACHE] inside the placeholder
+    const placeholderPattern = /\$\{(?:[^}]*\[NOCACHE\][^}]+|[^}]+\[NOCACHE\][^}]*)\}/;
+
+    if (this.caseField?.label && placeholderPattern.test(this.caseField.label)) {
+      // Remove [NOCACHE] only when it appears inside ${...} placeholders
+      // This regex matches ${...} and removes [NOCACHE] only within those patterns
+      this.caseField.noCacheLabel = this.caseField.label.replace(/\$\{([^}]*)\[NOCACHE\]([^}]*)\}/g, '${$1$2}');
+      this.caseField.label = this.caseField.noCacheLabel;
+    } else if (this.caseField?.noCacheLabel) {
+      if (this.formGroup !== undefined) {
+        this.caseField.label = this.caseField?.noCacheLabel;
+      }
+    }
   }
 
   private applySubstitutions(): void {
