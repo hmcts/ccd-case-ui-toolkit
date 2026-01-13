@@ -1,7 +1,19 @@
 ## RELEASE NOTES
 
-### Version 7.3.12-exui-3740
+### Version 7.3.16-exui-3740
 **EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
+### Version 7.3.16
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.15
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
 
 ### Version 7.3.12
 **EXUI-2489** Index navigation 2 - media viewer
