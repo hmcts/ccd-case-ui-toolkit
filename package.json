@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.15-exui-3053-1",
+  "version": "7.3.16-exui-3053-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -63,7 +63,11 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
+<<<<<<< HEAD
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4-exui-3053-1/hmcts-media-viewer-4.2.4-exui-3053-1.tgz",
+=======
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz",
+>>>>>>> 73d58e6c817844cfa264969c65b147dae39adfb9
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
