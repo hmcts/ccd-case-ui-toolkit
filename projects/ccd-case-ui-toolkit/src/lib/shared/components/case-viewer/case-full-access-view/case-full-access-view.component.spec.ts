@@ -2881,7 +2881,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional
     componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
 
     (caseViewerComponent as any)['checkRouteAndSetCaseViewTab']();
-    console.log('123 ', componentFixture.componentInstance.tabGroup);
     routerEvents$.next(new NavigationEnd(1, '/cases/case-details/1234#Case%20notes', '/cases/case-details/1234#Case%20notes'));
 
     componentFixture.detectChanges();
