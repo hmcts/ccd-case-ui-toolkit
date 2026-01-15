@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.16-exui-3053-1
+### Version 7.3.17
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
 
 ### Version 7.3.11
