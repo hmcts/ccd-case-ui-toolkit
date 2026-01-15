@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.16-exui-1580-1
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
 ### Version 7.3.16
 **EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
 
