@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 export interface AccessManagementBasicViewMockModel {
   active?: boolean;
   basicFields?: {

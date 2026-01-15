@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { CaseFileViewCategory } from './case-file-view-category.model';
 import { CaseFileViewDocument } from './case-file-view-document.model';
 

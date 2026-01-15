@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Exclude, Expose, Type } from 'class-transformer';
 import * as _ from 'underscore';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';

@@ -13,7 +13,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -313,7 +312,6 @@ const PALETTE_COMPONENTS = [
     CdkTreeModule,
     OverlayModule,
     PaymentLibModule,
-    ScrollToModule.forRoot(),
     RpxTranslationModule.forChild(),
     CdkTreeModule,
     OverlayModule,
@@ -361,7 +359,7 @@ const PALETTE_COMPONENTS = [
     QualifyingQuestionService,
     QueryManagementUtils,
     QueryManagementService,
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -103,7 +103,7 @@ describe('EventTriggerResolver', () => {
     };
 
     route.paramMap.get.and.callFake(key => {
-      // tslint:disable-next-line:switch-default
+      // eslint:disable-next-line:switch-default
       switch (key) {
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
@@ -122,7 +122,7 @@ describe('EventTriggerResolver', () => {
     });
 
     route.queryParamMap.get.and.callFake(key => {
-      // tslint:disable-next-line:switch-default
+      // eslint:disable-next-line:switch-default
       switch (key) {
         case IGNORE_WARNING:
           return false;

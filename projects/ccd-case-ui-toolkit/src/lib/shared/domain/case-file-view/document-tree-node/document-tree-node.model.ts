@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Expose, Type } from 'class-transformer';
 import { SortOrder } from '../../sort-order.enum';
 import { CaseFileViewSortColumns } from '../case-file-view-sort-columns.enum';

@@ -226,7 +226,7 @@ describe('ReadComplexFieldComponent', () => {
       AddressLine1: '1 West',
       AddressLine2: 'South'
     };
-    /* tslint:disable-next-line */
+    /* eslint:disable-next-line */
     const CASE_FIELD = ({
       id: FIELD_ID,
       label: 'Complex Field',
@@ -340,7 +340,7 @@ describe('ReadComplexFieldComponent', () => {
       },
       DynamicListWithNoCaseFieldValue: null
     };
-    /* tslint:disable-next-line */
+    /* eslint:disable-next-line */
     const CASE_FIELD = ({
       id: FIELD_ID,
       label: 'Complex Field',

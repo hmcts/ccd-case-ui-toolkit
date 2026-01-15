@@ -77,7 +77,7 @@ describe('CaseHistoryComponent', () => {
   let orderService;
   let caseNotifier;
   let caseHistoryService;
-  // tslint:disable-next-line: prefer-const
+  // eslint:disable-next-line: prefer-const
   let alertService: any;
 
   const fieldReadComponentMock: any = MockComponent({

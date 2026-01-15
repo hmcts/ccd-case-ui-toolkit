@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Que
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -43,7 +42,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public readonly collItems: CollectionItem[] = [];
 
   constructor(private readonly dialog: MatDialog,
-    private readonly scrollToService: ScrollToService,
     private readonly profileNotifier: ProfileNotifier,
     private readonly cdRef: ChangeDetectorRef
   ) {
@@ -186,15 +184,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
     // Update DOM required after pushing a new item to do the next steps (i.e. scrolling and focusing)
     this.cdRef.detectChanges();
-
-    if (doScroll) {
-      this.scrollToService.scrollTo({
-        target: `${this.buildIdPrefix(index)}${index}`,
-        duration: 1000,
-        offset: -150,
-      })
-        .subscribe(() => { }, console.error);
-    }
 
     this.focusLastItem();
   }

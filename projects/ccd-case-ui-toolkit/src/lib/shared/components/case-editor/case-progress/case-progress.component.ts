@@ -38,7 +38,7 @@ export class CaseProgressComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    // tslint:disable-next-line: prefer-const
+    // eslint:disable-next-line: prefer-const
     let caseTypeId: string;
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)

@@ -97,7 +97,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   let cancelHandler: any;
   let submitHandler: any;
   let casesService: any;
-  // tslint:disable-next-line: prefer-const
+  // eslint:disable-next-line: prefer-const
   let alertService: any;
   let eventTriggerService: any;
 

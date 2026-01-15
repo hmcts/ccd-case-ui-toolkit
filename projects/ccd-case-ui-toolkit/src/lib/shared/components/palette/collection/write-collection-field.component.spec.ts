@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -77,7 +76,6 @@ describe('WriteCollectionFieldComponent', () => {
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -89,8 +87,6 @@ describe('WriteCollectionFieldComponent', () => {
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -133,7 +129,6 @@ describe('WriteCollectionFieldComponent', () => {
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
@@ -220,14 +215,6 @@ describe('WriteCollectionFieldComponent', () => {
     const lastIndex = writeFields.length - 1;
 
     fixture.detectChanges();
-
-    fixture.whenStable().then(() => {
-      expect(scrollToService.scrollTo).toHaveBeenCalledWith({
-        target: `${FIELD_ID}_${lastIndex}`,
-        duration: 1000,
-        offset: -150,
-      });
-    });
   }));
 
   it('should NOT scroll when item added with bottom button', waitForAsync(() => {
@@ -236,7 +223,6 @@ describe('WriteCollectionFieldComponent', () => {
     addButton.nativeElement.click();
     fixture.detectChanges();
 
-    expect(scrollToService.scrollTo).not.toHaveBeenCalled();
   }));
 
   it('should have 1 Remove button per item', () => {
@@ -328,7 +314,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -340,8 +325,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -383,7 +366,6 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
@@ -445,7 +427,6 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -457,8 +438,6 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -500,7 +479,6 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
@@ -534,7 +512,6 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -546,8 +523,6 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -590,7 +565,6 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
@@ -641,7 +615,6 @@ describe('WriteCollectionFieldComponent', () => {
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -653,8 +626,6 @@ describe('WriteCollectionFieldComponent', () => {
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -697,7 +668,6 @@ describe('WriteCollectionFieldComponent', () => {
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent
@@ -744,7 +714,6 @@ describe('WriteCollectionFieldComponent', () => {
   let formValidatorService: any;
   let dialog: any;
   let dialogRef: any;
-  let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
   let formGroup: FormGroup;
@@ -756,8 +725,6 @@ describe('WriteCollectionFieldComponent', () => {
     dialogRef.afterClosed.and.returnValue(of());
     dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
     caseField = (({
       id: FIELD_ID,
       label: 'X',
@@ -800,7 +767,6 @@ describe('WriteCollectionFieldComponent', () => {
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
           { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
           RemoveDialogComponent

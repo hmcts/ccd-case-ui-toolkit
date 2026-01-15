@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 export class HRef {
   public href: string;
 }

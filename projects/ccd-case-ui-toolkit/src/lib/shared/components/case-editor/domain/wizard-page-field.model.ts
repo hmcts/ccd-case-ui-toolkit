@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Orderable } from '../../../domain/order/orderable.model';
 import { ComplexFieldOverride } from './wizard-page-field-complex-override.model';
 

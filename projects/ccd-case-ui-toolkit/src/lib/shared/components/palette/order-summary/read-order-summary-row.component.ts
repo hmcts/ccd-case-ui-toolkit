@@ -3,7 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { FeeValue } from './fee-value.model';
 
 @Component({
-    // tslint:disable-next-line
+    // eslint:disable-next-line
   selector: '[ccdReadOrderSummaryRow]',
   templateUrl: './read-order-summary-row.html',
   styleUrls: [

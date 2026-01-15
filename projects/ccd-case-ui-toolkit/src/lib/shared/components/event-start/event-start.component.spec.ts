@@ -16,7 +16,7 @@ describe('EventStartComponent', () => {
   let de: DebugElement;
   let mockRouter: any;
   let mockRoute: any;
-  // tslint:disable-next-line: prefer-const
+  // eslint:disable-next-line: prefer-const
   let eventStartStateMachineService: EventStartStateMachineService;
 
   mockRouter = {

@@ -15,19 +15,19 @@ describe('FormatTranslatorService', () => {
       expect(formatTranslator.translate('AnN')).toBe('A***n******N***');
     });
     it ('should ignore the contents of quoted strings', () => {
-      // tslint:disable-next-line:quotemark
+      // eslint:disable-next-line:quotemark
       expect(formatTranslator.translate("dd MMM yyyy' cool date format bro dd MMM yyyy'")).toBe('DD MMM YYYY');
     });
     it ('should ignore quoted strings in the middle', () => {
-      // tslint:disable-next-line:quotemark
+      // eslint:disable-next-line:quotemark
       expect(formatTranslator.translate("dd MMM ' cool date format bro dd MMM yyyy'yyyy")).toBe('DD MMM YYYY');
     });
     it ('should ignore multiple quoted strings', () => {
-      // tslint:disable-next-line:quotemark
+      // eslint:disable-next-line:quotemark
       expect(formatTranslator.translate("dd MMM yyyy' cool' 'date' 'format bro dd MMM yyyy'")).toBe('DD MMM YYYY  ');
     });
     it ('should ignore escaped single quotes', () => {
-      // tslint:disable-next-line:quotemark
+      // eslint:disable-next-line:quotemark
       expect(formatTranslator.translate("dd MMM ''yyyy''")).toBe('DD MMM YYYY');
     });
 

@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Orderable } from '../order/orderable.model';
 import { Field } from '../search/field.model';
 

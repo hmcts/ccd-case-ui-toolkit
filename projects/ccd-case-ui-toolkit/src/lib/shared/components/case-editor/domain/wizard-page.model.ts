@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { CaseField } from '../../../domain/definition/case-field.model';

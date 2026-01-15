@@ -63,7 +63,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 
 @Component({
-  // tslint:disable-next-line
+  // eslint:disable-next-line
   selector: 'mat-tab-group',
   template: '<ng-content></ng-content>',
   standalone: false
@@ -72,7 +72,7 @@ class TabsComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
+  // eslint:disable-next-line
   selector: 'mat-tab',
   template: '<ng-content></ng-content>',
   standalone: false
@@ -83,7 +83,7 @@ class TabComponent {
 }
 
 @Component({
-  // tslint:disable-next-line
+  // eslint:disable-next-line
   selector: 'exui-tasks-container',
   template: '<p>Tasks Container</p>',
   standalone: false

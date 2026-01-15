@@ -12,7 +12,7 @@ import { getMockCaseNotifier } from '../../case-editor/services/case.notifier.sp
 import { CaseView } from '../../../domain';
 
 describe('EventTaskResolverService', () => {
-  // tslint:disable-next-line: prefer-const
+  // eslint:disable-next-line: prefer-const
   let appConfig: any;
   let httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
   let errorService: any;
@@ -94,7 +94,7 @@ describe('EventTaskResolverService', () => {
 });
 
 describe('EventTaskResolverService - error', () => {
-  // tslint:disable-next-line: prefer-const
+  // eslint:disable-next-line: prefer-const
   let appConfig: any;
   let httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
   let errorService: any;

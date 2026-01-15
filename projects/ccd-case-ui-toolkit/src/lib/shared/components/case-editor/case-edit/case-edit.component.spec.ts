@@ -1135,9 +1135,9 @@ describe('CaseEditComponent', () => {
     describe('getStatus', () => {
       it('should get callback_response_status as callback has failed', () => {
         const response = {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
         };
         const actual = component.getStatus(response);
@@ -1146,9 +1146,9 @@ describe('CaseEditComponent', () => {
 
       it('should get callback_response_status', () => {
         const response = {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_COMPLETED'
         };
         const actual = component.getStatus(response);
@@ -1159,9 +1159,9 @@ describe('CaseEditComponent', () => {
     describe('emitSubmitted', () => {
       it('should emit submitted', () => {
         const response = {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
         };
         spyOn(component.submitted, 'emit');
@@ -1183,7 +1183,7 @@ describe('CaseEditComponent', () => {
     describe('getCaseId', () => {
       it('should return case id', () => {
         const actual = component.getCaseId({
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'case_id': 'case_id'
         } as unknown as CaseView);
 
@@ -1201,13 +1201,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           userInfo: {id: 'id'},
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-            /* tslint:disable:object-literal-key-quotes */
+            /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-            /* tslint:disable:object-literal-key-quotes */
+            /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1234,13 +1234,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-            /* tslint:disable:object-literal-key-quotes */
+            /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-            /* tslint:disable:object-literal-key-quotes */
+            /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1277,13 +1277,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1320,13 +1320,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1356,13 +1356,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1393,13 +1393,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1427,13 +1427,13 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1543,7 +1543,7 @@ describe('CaseEditComponent', () => {
         };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
+          /* eslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
         }));
 

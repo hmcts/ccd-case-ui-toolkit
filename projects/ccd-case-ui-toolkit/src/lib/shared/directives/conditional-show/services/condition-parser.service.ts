@@ -54,7 +54,7 @@ export class ConditionParser {
   }
 
   private static evaluateJoin(leftResult: boolean, comparator, rightResult: boolean): boolean {
-    // tslint:disable-next-line:switch-default
+    // eslint:disable-next-line:switch-default
     switch (comparator) {
       case 'OR': return leftResult || rightResult;
       case 'AND': return leftResult && rightResult;
@@ -110,7 +110,7 @@ export class ConditionParser {
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
         return this.checkValueNotEquals(expectedValue, currentValue);
       } else {
-        return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
+        return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // eslint:disable-line
       }
     }
   }
@@ -121,7 +121,7 @@ export class ConditionParser {
       return false;
     }
     const formatExpectedValue = expectedValue ? expectedValue.toString().trim() : '';
-    return formatCurrentValue != formatExpectedValue; // tslint:disable-line
+    return formatCurrentValue != formatExpectedValue; // eslint:disable-line
   }
 
   private static checkMultiSelectListEquals(expectedValue: string, currentValue: any, conditionSeparator: string): boolean {

@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 /**
  * DTO to provide typing of the response from the Reference Data Location API for HMCTS service details.
  */

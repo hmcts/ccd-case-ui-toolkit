@@ -31,7 +31,7 @@ export class FieldTypeSanitiser {
     }
     caseFields = this.ensureDynamicMultiSelectListPopulated(caseFields);
     caseFields.forEach((caseField) => {
-      // tslint:disable-next-line:switch-default
+      // eslint:disable-next-line:switch-default
       switch (caseField.field_type.type) {
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST:
           this.convertArrayToDynamicListOutput(caseField, data);

@@ -86,7 +86,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
 
   private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
     const cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
-    // tslint:disable-next-line: prefer-const
+    // eslint:disable-next-line: prefer-const
     let caseTypeId: string;
     const jurisdiction = route.parent.paramMap.get('jurisdiction');
     const caseType = route.parent.paramMap.get('caseType');

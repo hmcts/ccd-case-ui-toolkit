@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 export class CaseViewEvent {
   public id: number;
   public timestamp: string;

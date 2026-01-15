@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { FieldType } from '../definition';
 
 export class SearchResultViewColumn {

@@ -322,7 +322,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public setFlagsCaseFieldValue(): void {
-    // tslint:disable-next-line: switch-default
+    // eslint:disable-next-line: switch-default
     switch (this.fieldState) {
       case CaseFlagFieldState.FLAG_STATUS:
         this.addFlagToCollection();

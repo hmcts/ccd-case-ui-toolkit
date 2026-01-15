@@ -129,7 +129,7 @@ export class FieldsUtils {
     const objectRefs = [];
     // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
     // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
-    // tslint:disable-next-line: triple-equals
+    // eslint:disable-next-line: triple-equals
     const hasNonNullPrimitive = values.some(x => (x != null &&
       ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
         ? !objectRefs.push(x)
@@ -186,7 +186,7 @@ export class FieldsUtils {
       result[field.id] = field.value;
     }
 
-    // tslint:disable-next-line: switch-default
+    // eslint:disable-next-line: switch-default
     switch (field.field_type.type) {
       case 'FixedList':
       case 'FixedRadioList': {
@@ -229,7 +229,7 @@ export class FieldsUtils {
         const elements = (result[field.id] || field.value);
         if (elements) {
           elements.forEach((elem: any) => {
-            // tslint:disable-next-line:switch-default
+            // eslint:disable-next-line:switch-default
             switch (field.field_type.collection_field_type.type) {
               case 'MoneyGBP': {
                 elem.value = FieldsUtils.getMoneyGBP(elem.value);

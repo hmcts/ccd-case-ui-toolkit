@@ -273,7 +273,7 @@ export class FieldsPurger {
           }
         // Omitted "break" is intentional because a collection should be handled as per MultiSelectList if it is
         // not a collection of Complex types
-        // tslint:disable-next-line: no-switch-case-fall-through
+        // eslint:disable-next-line: no-switch-case-fall-through
         case 'MultiSelectList':
           // Field control should be a FormArray, so map each of its values to null
           // NOTE: The FormArray cannot just be set to an empty array because Angular checks that all existing values

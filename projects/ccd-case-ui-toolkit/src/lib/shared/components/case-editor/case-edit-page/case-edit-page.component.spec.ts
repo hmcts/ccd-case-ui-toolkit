@@ -666,7 +666,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       snapshot.queryParamMap.get.and.callFake((key) => {
-        // tslint:disable-next-line: switch-default
+        // eslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -700,7 +700,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       snapshot.queryParamMap.get.and.callFake((key) => {
-        // tslint:disable-next-line: switch-default
+        // eslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -737,7 +737,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       snapshot.queryParamMap.get.and.callFake((key) => {
-        // tslint:disable-next-line: switch-default
+        // eslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';

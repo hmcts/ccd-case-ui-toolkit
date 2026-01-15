@@ -1108,7 +1108,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit RESUMED_FORM_DISCARD on create event if cancel triggered and originated from view case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
-      // tslint:disable-next-line: switch-default
+      // eslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -1123,7 +1123,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
-      // tslint:disable-next-line: switch-default
+      // eslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return '';

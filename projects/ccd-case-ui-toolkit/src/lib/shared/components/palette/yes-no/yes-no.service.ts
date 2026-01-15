@@ -26,7 +26,7 @@ export class YesNoService {
   }
 
   private isYes(value: any): boolean {
-    // tslint:disable-next-line:switch-default
+    // eslint:disable-next-line:switch-default
     switch (typeof(value)) {
       case 'boolean':
         return value;
@@ -38,7 +38,7 @@ export class YesNoService {
   }
 
   private isNo(value: any): boolean {
-    // tslint:disable-next-line:switch-default
+    // eslint:disable-next-line:switch-default
     switch (typeof(value)) {
       case 'boolean':
         return !value;

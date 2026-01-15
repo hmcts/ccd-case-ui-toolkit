@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { FeeValue } from './fee-value.model';
 
 export class OrderSummary {

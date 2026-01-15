@@ -137,7 +137,7 @@ export class ShowCondition {
 
               // Consider what type of field this is.
               const ft = caseField.field_type;
-              // tslint:disable-next-line:switch-default
+              // eslint:disable-next-line:switch-default
               switch (ft.type) {
                 case 'Collection':
                   if (ft.collection_field_type.type === 'Complex' && ft.collection_field_type.complex_fields) {
@@ -175,7 +175,7 @@ export class ShowCondition {
 
   private updatePathName(path: string): string {
     if (path && path.split(/[_]+/g).length > 0) {
-       /* tslint:disable-next-line */
+       /* eslint:disable-next-line */
       let [pathName, ...pathTail] = path.split(/[_]+/g);
       const pathFinalIndex = pathTail.pop();
       const pathTailString = pathTail.toString();

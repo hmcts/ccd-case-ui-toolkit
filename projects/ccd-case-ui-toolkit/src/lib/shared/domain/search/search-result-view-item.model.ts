@@ -1,4 +1,4 @@
-// tslint:disable:variable-name
+// eslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { CaseField } from '../definition';
 

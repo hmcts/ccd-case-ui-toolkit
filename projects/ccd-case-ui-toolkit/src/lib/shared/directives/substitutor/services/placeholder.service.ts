@@ -184,7 +184,7 @@ ___
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let numberCollectionItemsAsPlaceholder = 1;
 
-            // tslint:disable-next-line
+            // eslint:disable-next-line
             for (let index = 0; index < fieldIds.length; index++) {
                 if (FieldsUtils.isCollection(pageFormFieldsClone)) {
                     numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
