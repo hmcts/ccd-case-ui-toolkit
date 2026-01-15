@@ -3260,7 +3260,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5-exui-3053-1/hmcts-media-viewer-4.2.5-exui-3053-1.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -3397,9 +3397,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5-exui-3053-1/hmcts-media-viewer-4.2.5-exui-3053-1.tgz":
-  version: 4.2.5-exui-3053-1
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5-exui-3053-1/hmcts-media-viewer-4.2.5-exui-3053-1.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz":
+  version: 4.2.6
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3418,7 +3418,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/d90c028067be45510a33bc69ea9010d9c1b045e857380dcc39e53f4b604d1fe4a229756048a224c55d8eefde6825509f293abe21e75ef184d4350245aef68dad
+  checksum: 10/91cbcf21709fafe25e0d417d80bd96015c677857813c04d8d90ae3e49c9bdb265e4d5e4a3ef98250c51838162e218e63337a8a9652df62fe1376dee85d87abb4
   languageName: node
   linkType: hard
 
