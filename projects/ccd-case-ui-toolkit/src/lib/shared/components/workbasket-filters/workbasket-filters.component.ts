@@ -227,9 +227,7 @@ export class WorkbasketFiltersComponent implements OnInit {
           const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
           workbasketInputs.forEach(item => {
-            if (item.field.elementPath) {
-              item.field.id = `${item.field.id}.${item.field.elementPath}`;
-            }
+            item.field.id = this.buildFieldId(item.field.id, item.field.elementPath, item.dataType);
             item.field.label = item.label;
             if (formValue) {
               const searchFormValueObject = JSON.parse(formValue);
@@ -394,5 +392,16 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.workbasketInputs) {
       this.caseFields = this.workbasketInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }
+  }
+
+  private buildFieldId(fieldId: string, elementPath?: string, dataType?: string): string {
+    if (!fieldId || !elementPath) {
+      return fieldId;
+    }
+    const normalizedType = typeof dataType === 'string' ? dataType.toLowerCase() : '';
+    if (normalizedType === 'collection') {
+      return `${fieldId}.value.${elementPath}`;
+    }
+    return `${fieldId}.${elementPath}`;
   }
 }

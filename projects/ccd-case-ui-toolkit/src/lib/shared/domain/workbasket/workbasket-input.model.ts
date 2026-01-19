@@ -6,6 +6,7 @@ export class WorkbasketInputModel implements Orderable {
   public label: string;
   public order: number;
   public field: Field;
+  public dataType?: string;
   public metadata?: boolean;
   public display_context_parameter?: string;
 }
