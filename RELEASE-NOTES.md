@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.17-exui-2600-1
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
 ### Version 7.3.17
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
 
