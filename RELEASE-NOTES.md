@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.18
+### Version 7.3.19
 **EXUI-3870** PayIt feature 
 
 ### Version 7.3.17
