@@ -357,13 +357,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       } else if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
         hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
       }
-      const index = this.getAbsoluteTabIndexByLabel(hashValue);
       this.selectTabByLabel(hashValue);
     }
     // once the page has beeen stabilised, ensure the selected tab is scrolled into view
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       const header: any = (this.tabGroup as any)._tabHeader;
-      header?._scrollToLabel?.(this.selectedTabIndex);
+      if (this.selectedTabIndex < 5){
+        header?._scrollToLabel?.(0);
+      } else {
+        header?._scrollToLabel?.(this.selectedTabIndex);
+      }
       this.tabGroup.realignInkBar();
     });
   }
