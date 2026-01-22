@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.3.20
+**EXUI-3053** Improve keyboard movement within media viewer screen
+
 ### Version 7.3.19
-**EXUI-3870** PayIt feature 
+**EXUI-3870** PayIt feature
 
 ### Version 7.3.17
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
