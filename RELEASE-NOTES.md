@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.21
+**EXUI-4068** ccpay-web-component 6.5.17
+
 ### Version 7.3.20
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
 
