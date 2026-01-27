@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.21
+### Version 7.3.23
 **EXUI-3854** CVE Vulnerability
+
+### Version 7.3.22
+**EXUI-3875** CVE Vulnerability - High - CVE-2025-66035 - em-media-viewer
+
+### Version 7.3.21
+**EXUI-4068** ccpay-web-component 6.5.17
 
 ### Version 7.3.20
 **EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
