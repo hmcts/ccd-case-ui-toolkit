@@ -250,7 +250,7 @@ describe('CaseResolver', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
     });
 
-    it('should redirect to default page when case cannot be found and previousUrl is not matching event submission', () => {
+    it('should redirect to no results page when case cannot be found and previousUrl is not matching event submission', () => {
       const error = {
         status: 404
       };
@@ -281,7 +281,7 @@ describe('CaseResolver', () => {
           expect(err).toBeTruthy();
         });
 
-      expect(router.navigate).toHaveBeenCalledWith(['/work/my-work/list']);
+      expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
     });
 
     it('should redirect to case list page when case id is empty', () => {
