@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 7.3.23
-**EXUI-3854** CVE Vulnerability
+**EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
 
 ### Version 7.3.22
 **EXUI-3875** CVE Vulnerability - High - CVE-2025-66035 - em-media-viewer
