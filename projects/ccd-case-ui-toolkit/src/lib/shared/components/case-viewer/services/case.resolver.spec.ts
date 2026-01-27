@@ -250,9 +250,43 @@ describe('CaseResolver', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
     });
 
-    it('should redirect to default page when case cannot be found and previousUrl is not matching event submission', () => {
+    it('should redirect to no results page when case cannot be found and previousUrl is not matching event submission', () => {
       const error = {
         status: 404
+      };
+      caseNotifier.fetchAndRefresh.and.returnValue(throwError(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+      };
+
+      const userInfo = {
+        id: '2',
+        forename: 'G',
+        surname: 'Testing',
+        email: 'testing2@mail.com',
+        active: true,
+        roles: ['caseworker-ia-caseofficer']
+      };
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
+    });
+
+    it('should redirect to default page when case cannot be found and previousUrl is not matching event submission', () => {
+      const error = {
+        status: 408
       };
       caseNotifier.fetchAndRefresh.and.returnValue(throwError(error));
 
