@@ -9267,16 +9267,16 @@ __metadata:
   linkType: hard
 
 "@types/jasmine@npm:*":
-  version: 2.8.23
-  resolution: "@types/jasmine@npm:2.8.23"
-  checksum: 10/01d2c2ed4d651147ebc6ff690a5795f6a33d007f5965cfb7f76bda104f9cc900ecebbd26046cf59a994a1e6ba32feafe5625777504e600616f99ffb2ec12f48c
+  version: 6.0.0
+  resolution: "@types/jasmine@npm:6.0.0"
+  checksum: 10/22a838ab8d3221da78629819744b7a0065ce6381d198d745258c3ec29974470240160d47fb06b629c1653f285ed23c15c101f0f6939d2817abc02f253ff491b7
   languageName: node
   linkType: hard
 
 "@types/jasmine@npm:~2.8.0":
-  version: 2.8.19
-  resolution: "@types/jasmine@npm:2.8.19"
-  checksum: 10/88f9c4d367cace7c064bd530274418a0bf1e56448dd8330fabbdc3c3435f663dd107edcf82430f7a77ff798866601427d2975d668f81505f95130318eadf8a9f
+  version: 2.8.24
+  resolution: "@types/jasmine@npm:2.8.24"
+  checksum: 10/db7b5cacf0ddeaa0e061cbd665c2f7064bb75ae10ba7766acedf56e572c34ebe59f67dc802b5a23fb80c8f8ad2339885bff7b1fae2e48fa60dbeacce74bd3f50
   languageName: node
   linkType: hard
 
