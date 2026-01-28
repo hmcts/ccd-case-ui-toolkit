@@ -2016,6 +2016,22 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(caseViewerComponent.tabGroup.selectedIndex).toBe(1);
   }));
 
+  it('should rewrite tasks path to a fragment URL', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(router.navigate).toHaveBeenCalledWith([
+      'cases',
+      'case-details',
+      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
+      WORK_ALLOCATION_CASE_VIEW.case_type.id,
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ], { fragment: 'Tasks' });
+  }));
+
   it('should not set tabGroup selected index if a non-roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
     caseViewerComponent.prependedTabs = [
       {
@@ -3086,4 +3102,4 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     expect(eventTriggerElement).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
-})
+});

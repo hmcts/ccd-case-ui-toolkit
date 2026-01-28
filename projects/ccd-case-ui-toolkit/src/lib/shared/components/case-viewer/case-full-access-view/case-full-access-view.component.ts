@@ -1,11 +1,11 @@
 import { Location } from '@angular/common';
 import {
   ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef
+  SimpleChanges, ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
-import { MatLegacyTab as MatTab, MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
+import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
@@ -82,7 +82,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public eventId: string;
   public isEventButtonClicked: boolean = false;
 
-  public callbackErrorsSubject:   Observable<any>;
+  public callbackErrorsSubject: Observable<any>;
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
   constructor(
@@ -166,7 +166,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
-    this.subs.forEach(s => s.unsubscribe());
+    this.subs.forEach((s) => s.unsubscribe());
   }
 
   public unsubscribe(subscription: any) {
@@ -182,7 +182,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private getAbsoluteTabIndexByLabel(label: string): number {
     const normalized = this.normalizeLabel(label);
     const tabs = this.tabGroup?._tabs?.toArray?.() ?? [];
-    return tabs.findIndex(tab => this.normalizeLabel(tab?.textLabel) === normalized);
+    return tabs.findIndex((tab) => this.normalizeLabel(tab?.textLabel) === normalized);
   }
 
   private selectTabByLabel(label: string): void {
@@ -231,7 +231,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const theQueryParams: Params = {};
 
     if (this.ignoreWarning) {
-      theQueryParams['ignoreWarning'] = this.ignoreWarning;
+      theQueryParams.ignoreWarning = this.ignoreWarning;
     }
 
     // we may need to take care of different triggers in the future
@@ -240,12 +240,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.loadingService.unregister(spinner);
     } else if (trigger.id === CaseViewEventIds.DELETE) {
       const dialogRef = this.dialog.open(DeleteOrCancelDialogComponent, this.dialogConfig);
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result) => {
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
-            .subscribe(_ => {
+            .subscribe(() => {
               this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
-            }, _ => {
+            }, () => {
               this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
@@ -297,10 +297,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public organiseTabPosition(): void {
-    let matTab: MatTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#')) {
+    const hasHash = url.includes('#');
+    const isSpecialTabPath = url.includes('roles-and-access') || url.includes('tasks') || url.includes('hearings');
+    if (!hasHash && !isSpecialTabPath) {
       const paths = url.split('/');
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
@@ -327,15 +328,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
         let preSelectTab: CaseTab = null;
         if (preferredLabel) {
-          preSelectTab = this.caseDetails.tabs.find(tab => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
+          preSelectTab = this.caseDetails.tabs.find((tab) => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
         }
 
         if (!preSelectTab) {
           preSelectTab = this.findPreSelectedActiveTab();
         }
         const renderedTabs = this.tabGroup?._tabs?.toArray?.() ?? [];
-        const renderedLabels = renderedTabs.map(tab => tab.textLabel);
-        const preferredRendered = preSelectTab && renderedTabs.some(tab => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
+        const preferredRendered = preSelectTab && renderedTabs.some((tab) => tab.textLabel === preSelectTab.label || tab.textLabel?.toLowerCase() === preSelectTab.label?.toLowerCase());
         if (!preferredRendered) {
           preSelectTab = this.findPreSelectedActiveTab();
         }
@@ -358,6 +358,19 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
       }
       this.selectTabByLabel(hashValue);
+      if (!hasHash && isSpecialTabPath) {
+        const tabIndex = this.getAbsoluteTabIndexByLabel(hashValue);
+        const tabLabel = tabIndex > -1 ? this.tabGroup?._tabs?.toArray?.()[tabIndex]?.textLabel : null;
+        if (tabLabel) {
+          this.router.navigate([
+            'cases',
+            'case-details',
+            this.caseDetails.case_type.jurisdiction.id,
+            this.caseDetails.case_type.id,
+            this.caseDetails.case_id
+          ], { fragment: tabLabel });
+        }
+      }
     }
     // once the page has beeen stabilised, ensure the selected tab is scrolled into view
     this.zone.onStable.pipe(take(1)).subscribe(() => {
@@ -379,7 +392,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
   public tabChanged(tabIndexChanged: number): void {
-    const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
+    void tabIndexChanged;
+    const matTab = this.tabGroup._tabs.find((tab) => tab.isActive);
     const tabLabel = matTab?.textLabel;
     this.router.navigate(['cases', 'case-details', this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id], { fragment: tabLabel });
   }
@@ -387,7 +401,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public onLinkClicked(triggerOutputEventText: string): void {
     // Get the *absolute* (not relative) index of the target tab and set as the active tab, using the selectedIndex input
     // of mat-tab-group (bound to selectedTabIndex)
-    const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
+    const targetTabIndex = this.tabGroup._tabs.toArray().findIndex((tab) => tab.textLabel === triggerOutputEventText);
     if (targetTabIndex > -1) {
       this.selectedTabIndex = targetTabIndex;
       this.tabGroup.selectedIndex = targetTabIndex;
@@ -398,21 +412,21 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
     const caseFlagsTab = this.caseDetails?.tabs
       ? (this.caseDetails.tabs).filter(
-        tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
+        (tab) => tab.fields && tab.fields.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
       : null;
 
     if (caseFlagsTab) {
       // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
       // displayed for external users
       this.caseFlagsExternalUser = caseFlagsTab.fields.find(
-        caseField => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
+        (caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
 
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
       // (or sub-fields of Complex fields in a collection)
       const activeCaseFlags = caseFlagsTab.fields
-        .filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
+        .filter((caseField) => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
         .reduce((active, caseFlag) => {
           return FieldsUtils.countActiveFlagsInCaseField(active, caseFlag);
         }, 0);
@@ -462,8 +476,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
-      .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
+    return tabs?.map((tab) => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+      .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   private getTabFields(): CaseField[] {
@@ -483,7 +497,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private buildFormGroup(caseFields: CaseField[]): FormGroup {
     let value: object = {};
     if (caseFields) {
-      caseFields.forEach(caseField => {
+      caseFields.forEach((caseField) => {
         value = {
           ...value,
           [caseField.id]: caseField.value
