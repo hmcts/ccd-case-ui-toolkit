@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.25
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
+
 ### Version 7.3.24
 **EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
 
