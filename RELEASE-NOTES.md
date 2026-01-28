@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.24
+**EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
+
 ### Version 7.3.23
 **EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
 
