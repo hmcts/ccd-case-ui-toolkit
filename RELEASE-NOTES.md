@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.26
+**EXUI-4061** Halo IN-0099681 Navigation issue
+
 ### Version 7.3.25
 **EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
 
