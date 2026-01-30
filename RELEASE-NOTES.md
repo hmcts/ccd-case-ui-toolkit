@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 7.3.22
-**EXUI-3851** EXUI-3851
+### Version 7.3.27
+**EXUI-3851** revert-EXUI-3851
 
 ### Version 7.3.26
 **EXUI-4061** Halo IN-0099681 Navigation issue
