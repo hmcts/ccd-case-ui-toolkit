@@ -53,8 +53,7 @@ export class MarkdownComponent implements OnInit {
   private renderUrlToText(): void {
     const renderer = new marked.Renderer();
 
-    renderer.link = ({ href, title, tokens }) => {
-      const text = tokens && tokens.length > 0 ? tokens[0].raw : href;
+    renderer.link = (href, title, text) => {
       if (!text || text === href) {
         return this.isAllowedUrl(href) ? `<a href="${href}">${href}</a>` : href;
       }
