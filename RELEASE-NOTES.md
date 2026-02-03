@@ -1,5 +1,41 @@
 ## RELEASE NOTES
 
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
+### Version 7.3.27
+**EXUI-3851** revert-EXUI-3851
+
+### Version 7.3.26
+**EXUI-4061** Halo IN-0099681 Navigation issue
+
+### Version 7.3.25
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
+
+### Version 7.3.24
+**EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
+
+### Version 7.3.23
+**EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
+
+### Version 7.3.22
+**EXUI-3875** CVE Vulnerability - High - CVE-2025-66035 - em-media-viewer
+
+### Version 7.3.21
+**EXUI-4068** ccpay-web-component 6.5.17
+
+### Version 7.3.20
+**EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
+### Version 7.3.19
+**EXUI-3870** PayIt feature
+
+### Version 7.3.16
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.15
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
 ### Version 7.3.14
 **EXUI-3551** Add an additional field to show original Sender name
 
