@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
 ### Version 7.3.27
 **EXUI-3851** revert-EXUI-3851
 
