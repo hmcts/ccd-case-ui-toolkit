@@ -33,6 +33,13 @@ export class FieldsUtils {
       || ctx === 'COMPLEX');
   }
 
+  public static createToken(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
   public static isTranslatable(fieldType: FieldType): boolean {
     if (fieldType.type === 'Label' || fieldType.type === 'FixedList') {
       return true;
