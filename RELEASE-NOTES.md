@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.28-exui-4101
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
 ### Version 7.3.28
 **EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
 
