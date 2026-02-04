@@ -35,11 +35,23 @@ describe('FieldsUtils', () => {
       expect((window as any).crypto.randomUUID).toHaveBeenCalled();
     });
 
-    it('should fall back when randomUUID is not available', () => {
+    it('should use crypto.getRandomValues when randomUUID is not available', () => {
+      setWindowCrypto({
+        getRandomValues: (arr: Uint8Array) => {
+          arr.set([0, 1, 2, 3]);
+          return arr;
+        }
+      } as Crypto);
+
+      const token = FieldsUtils.createToken();
+      expect(token).toBe('00010203' + '000000000000000000000000');
+    });
+
+    it('should fall back to a timestamp-based token when crypto is not available', () => {
       setWindowCrypto(undefined);
 
       const token = FieldsUtils.createToken();
-      expect(token).toMatch(/^\d+-[0-9a-f]+$/);
+      expect(token).toMatch(/^\d+$/);
     });
   });
 
