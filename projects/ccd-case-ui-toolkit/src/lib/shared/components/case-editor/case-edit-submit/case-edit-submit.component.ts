@@ -20,6 +20,7 @@ import { Wizard, WizardPage } from '../domain';
 import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import { PlaceholderService } from '../../../directives';
 
 // @dynamic
 @Component({
@@ -46,6 +47,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public description: AbstractControl;
   public eventSummaryLabel: string = 'Event summary';
   public eventDescriptionLabel: string = 'Event description';
+  public PLACEHOLDER_PATTERN = /\$\{[a-zA-Z0-9_.\][]+\}/;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -80,13 +82,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly formValidatorsService: FormValidatorsService,
     private readonly caseFlagStateService: CaseFlagStateService,
     private readonly linkedCasesService: LinkedCasesService,
+    private readonly placeholderService: PlaceholderService,
   ) {
   }
 
   public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe((_) => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
-    this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
@@ -95,6 +97,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.metadataFieldsObject = this.caseEdit?.caseDetails?.metadataFields?.
       reduce((o, key) => Object.assign(o, { [key.id]: key.value }), {});
     this.allFieldsValues = Object.assign(this.metadataFieldsObject ? this.metadataFieldsObject : {}, this.editForm.getRawValue().data);
+    this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+    if (this.hasUnresolvedPlaceholder(this.triggerText)){
+      this.triggerText = this.interpolateButtonText(this.triggerText);
+    }
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
     this.caseEdit.isCaseFlagSubmission =
@@ -357,6 +363,21 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       return 'Return to case list';
     }
     return 'Cancel';
+  }
+
+  private hasUnresolvedPlaceholder(buttonText: string): boolean {
+    return buttonText
+      && typeof buttonText === 'string'
+      && !!buttonText.match(this.PLACEHOLDER_PATTERN);
+  }
+
+  private interpolateButtonText(text: string): string {
+    const fields: object = this.allFieldsValues;
+    return this.resolvePlaceholders(fields, text);
+  }
+
+  private resolvePlaceholders(fields: object, stringToResolve: string): string {
+    return this.placeholderService.resolvePlaceholders(fields, stringToResolve);
   }
 }
 
