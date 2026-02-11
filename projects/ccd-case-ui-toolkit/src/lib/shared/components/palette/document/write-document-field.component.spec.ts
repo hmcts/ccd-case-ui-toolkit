@@ -8,7 +8,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, DocumentData, FieldType, HttpError, Jurisdiction } from '../../../domain';
-import { DocumentManagementService, JurisdictionService } from '../../../services';
+import { DocumentManagementService, JurisdictionService, SessionStorageService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
@@ -96,7 +96,6 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 describe('WriteDocumentFieldComponent', () => {
-
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -125,12 +124,15 @@ describe('WriteDocumentFieldComponent', () => {
   const eventTriggerService: any = {};
   let caseNotifier: any;
 
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+
   beforeEach(waitForAsync(() => {
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled', 'parseCaseInfo']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
     );
+    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'sessionCaseType' });
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
     mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed', 'close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -145,6 +147,8 @@ describe('WriteDocumentFieldComponent', () => {
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+    mockSessionStorageService.getItem.and.returnValue('{"caseType":"sessionCaseType"}');
     TestBed
       .configureTestingModule({
         imports: [readDocumentComponentMock],
@@ -167,6 +171,7 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           DocumentDialogComponent
         ]
       })
@@ -668,6 +673,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
   let appConfig;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
@@ -678,11 +684,12 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   beforeEach(waitForAsync(() => {
 
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled', 'parseCaseInfo']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
       of(RESPONSE_SECOND_DOCUMENT_MANDATORY)
     );
+    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'sessionCaseType', jurisdiction: 'test-jurisdiction', caseId: '1234' });
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -697,6 +704,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     caseNotifier.caseView = of({ case_type: { id: 'test' } });
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of({ id: 'test-jurisdiction' }));
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+    mockSessionStorageService.getItem.and.returnValue('{"caseType":"sessionCaseType"}');
     TestBed
       .configureTestingModule({
         imports: [readDocumentComponentMock],
@@ -719,6 +728,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           DocumentDialogComponent
         ]
       })
@@ -732,27 +742,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
-
-  it('should set jurisdiction and casetype from casenotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    caseNotifier.caseView = of({ case_type: { id: 'test1', jurisdiction: { id: 'test2' } } });
-    jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
-    component.ngOnInit();
-    expect(component.jurisdictionId).toBe('test2');
-  });
-
-  it('should set jurisdiction and casetype from casenotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    caseNotifier.caseView = of(undefined);
-    jurisdictionService.getSelectedJurisdiction.and.returnValue(of({
-      id: 'test1',
-      currentCaseType: {
-        id: 'test2'
-      }
-    }));
-    component.ngOnInit();
-    expect(component.jurisdictionId).toBe('test1');
-  });
 
   it('should be invalid if no document specified for upload for read only. Empty file.', () => {
     component.caseField = CASE_FIELD_MANDATORY;
@@ -772,7 +761,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     const blobParts: BlobPart[] = ['some contents for blob'];
     const file: File = new File(blobParts, 'test.pdf');
     mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(true);
-    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
     component.ngOnInit();
     expect(component.caseField.value).toBeTruthy();
     component.fileChangeEvent({
@@ -784,7 +772,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     });
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
     expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
-    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is enabled for case with case ref:: 12345');
+    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is enabled || existing case || case ref:: 1234 || jurisdiction:: test-jurisdiction || case type:: sessionCaseType || gotFromCaseInfo:: true');
   });
 
   it('should be logged as disabled if file is NOT securemode', () => {
@@ -800,22 +788,55 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
         ]
       }
     });
-    expect(appConfig.logMessage).toHaveBeenCalledWith('CDAM is disabled for case with case ref:: 12345');
+    expect(appConfig.logMessage).toHaveBeenCalledWith('WDF:: CDAM is disabled || existing case || case ref:: 1234 || jurisdiction:: test-jurisdiction || case type:: sessionCaseType || gotFromCaseInfo:: true');
   });
 
-  it('should set caseId from caseNotifier', () => {
-    component.caseField = CASE_FIELD_MANDATORY;
-    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
-    caseNotifier.caseView = of({ case_id: '12345', case_type: { id: 'test', jurisdiction: { id: 'test-jurisdiction' } } });
-    component.ngOnInit();
-    expect(component.caseField.value).toBeTruthy();
+  it('should set ids from session caseInfo when present and not in create-case journey', () => {
+    // Arrange: simulate caseInfo present in session
+    window.history.pushState({}, '', '/cases/case-details/OTHER/IGNORED/999');
 
-    component.fileChangeEvent({
-      target: {
-        files: []
-      }
-    });
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeTruthy();
+    expect(component.caseTypeId).toBe('sessionCaseType');
+    expect(component.jurisdictionId).toBe('test-jurisdiction');
+    expect(component.caseId).toBe('1234');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-details/IA/Asylum/12345/test/event/random');
+
+    // Clear any prior state
+    component.gotFromCaseInfo = false;
+    component.caseTypeId = undefined;
+    component.jurisdictionId = undefined;
+    component.caseId = undefined as any;
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.gotFromCaseInfo).toBeFalsy();
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Asylum');
     expect(component.caseId).toBe('12345');
+  });
+
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
+    // Arrange: no caseInfo available, derive from URL
+    mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
+    window.history.pushState({}, '', '/cases/case-create/IA/Bail/1234');
+
+    // Act
+    component.ngOnInit();
+
+    // Assert
+    expect(component.jurisdictionId).toBe('IA');
+    expect(component.caseTypeId).toBe('Bail');
+    expect(component.caseId).toBe(null);
   });
 
   it('should cancel file upload', () => {
@@ -933,13 +954,15 @@ describe('WriteDocumentFieldComponent', () => {
   let jurisdictionService: any;
   const eventTriggerService: any = {};
   let caseNotifier: any;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   beforeEach(waitForAsync(() => {
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled']);
+    mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile', 'isDocumentSecureModeEnabled', 'parseCaseInfo']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
       of(RESPONSE_SECOND_DOCUMENT)
     );
+    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'sessionCaseType' });
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
     mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed', 'close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -954,6 +977,8 @@ describe('WriteDocumentFieldComponent', () => {
     caseNotifier.caseView = of(undefined);
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+    mockSessionStorageService.getItem.and.returnValue('{"caseType":"sessionCaseType"}');
     TestBed
       .configureTestingModule({
         imports: [readDocumentComponentMock],
@@ -976,6 +1001,7 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           DocumentDialogComponent
         ]
       })
