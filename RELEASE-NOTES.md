@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.3.29
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
+### Version 7.3.27
+**EXUI-3851** revert-EXUI-3851
+
+### Version 7.3.26
+**EXUI-4061** Halo IN-0099681 Navigation issue
+
+### Version 7.3.25
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
+
+### Version 7.3.24
+**EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
+
 ### Version 7.3.23
 **EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
 
