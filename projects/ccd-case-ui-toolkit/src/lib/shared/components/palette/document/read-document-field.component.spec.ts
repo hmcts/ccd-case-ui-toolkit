@@ -8,6 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { WindowService } from '../../../services/window';
 import { attr, text } from '../../../test/helpers';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -58,7 +59,7 @@ describe('ReadDocumentFieldComponent', () => {
       mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService',
         ['uploadFile', 'getMediaViewerInfo']);
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'openOnNewTab']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
@@ -122,6 +123,22 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(de.nativeElement.textContent).toEqual('');
+    });
+
+    it('should store media viewer payload and open media viewer with token', () => {
+      const token = 'test-token';
+      const mediaViewerUrl = '/media-viewer?mvToken=test-token';
+      const payload = { foo: 'bar' };
+
+      spyOn(FieldsUtils, 'createToken').and.returnValue(token);
+      mockDocumentManagementService.getMediaViewerInfo.and.returnValue(payload);
+      router.createUrlTree.and.returnValue({ toString: () => mediaViewerUrl });
+
+      component.openMediaViewer(VALUE);
+
+      expect(mockDocumentManagementService.getMediaViewerInfo).toHaveBeenCalledWith(VALUE);
+      expect(windowService.setLocalStorage).toHaveBeenCalledWith(`media-viewer-info:${token}`, payload);
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith(mediaViewerUrl);
     });
   });
 
