@@ -239,7 +239,7 @@ describe('EventLogTableComponent', () => {
     }));
 
     it('should default to internal user and not throw', () => {
-      expect(component.isUserExternal).toBeFalse();
+      expect(component.isUserExternal).toBeFalsy();
     });
   });
 
