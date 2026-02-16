@@ -88,6 +88,19 @@ describe('FormValueService', () => {
       .toEqual(actual);
   });
 
+  it('should filter current page fields without mutating the original form', () => {
+    const editForm = {
+      data: { field1: 'value1', field2: 'value2' },
+      extra: () => 'noop'
+    };
+    const caseField = new CaseField();
+    caseField.id = 'field1';
+    const result = formValueService.filterCurrentPageFields([caseField], editForm);
+
+    expect(result.data).toEqual({ field1: 'value1' });
+    expect(editForm.data).toEqual({ field1: 'value1', field2: 'value2' });
+  });
+
   it('should sanitise case reference', () => {
     expect(formValueService.sanitiseCaseReference('1111-2222-3333-4444')).toEqual('1111222233334444');
     expect(formValueService.sanitiseCaseReference('Invalid CaseReference')).toEqual('');
