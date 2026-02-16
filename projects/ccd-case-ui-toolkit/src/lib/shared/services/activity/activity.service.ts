@@ -8,7 +8,7 @@ import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
-import { USER_DETAILS } from '../../utils';
+import { safeJsonParse, USER_DETAILS } from '../../utils';
 
 // @dynamic
 @Injectable()
@@ -38,8 +38,11 @@ export class ActivityService {
   }
 
   public getOptions(): OptionsType {
-    const userDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
-    const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
+    const userDetails = safeJsonParse<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
+    let headers = new HttpHeaders().set('Content-Type', 'application/json');
+    if (userDetails?.token) {
+      headers = headers.set('Authorization', userDetails.token);
+    }
     return {
       headers,
       withCredentials: true,

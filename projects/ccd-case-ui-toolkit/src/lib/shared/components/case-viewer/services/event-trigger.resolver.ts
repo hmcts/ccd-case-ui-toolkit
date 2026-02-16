@@ -11,6 +11,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
 import { LoadingService, SessionStorageService } from '../../../services';
+import { safeJsonParse } from '../../../utils';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -41,7 +42,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
 
     // If jurisdiction or caseType are missing, redirect to correct URL
     if (!jurisdiction || !caseType) {
-      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
+      const caseInfo = safeJsonParse<any>(this.sessionStorageService.getItem('caseInfo'), {});
       const jurisdictionId = caseInfo?.jurisdiction;
       const caseTypeId = caseInfo?.caseType;
       const caseId = caseInfo?.caseId;

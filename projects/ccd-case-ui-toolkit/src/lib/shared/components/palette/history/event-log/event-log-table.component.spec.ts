@@ -210,6 +210,39 @@ describe('EventLogTableComponent', () => {
     });
   });
 
+  describe('When session storage contains invalid JSON', () => {
+    beforeEach(waitForAsync(() => {
+      TestBed
+        .configureTestingModule({
+          imports: [RouterTestingModule],
+          declarations: [
+            EventLogTableComponent,
+            DatePipe,
+            MockRpxTranslatePipe
+          ],
+          providers: [FormatTranslatorService,
+            { provide: SessionStorageService, useValue: mockSessionStorageService }
+          ]
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(EventLogTableComponent);
+      component = fixture.componentInstance;
+      mockSessionStorageService.getItem.and.returnValue('{invalid-json');
+
+      component.events = EVENTS;
+      component.selected = SELECTED_EVENT;
+      component.isPartOfCaseTimeline = false;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should default to internal user and not throw', () => {
+      expect(component.isUserExternal).toBeFalse();
+    });
+  });
+
   describe('Case timeline use', () => {
     let caseHistoryHandler;
     beforeEach(waitForAsync(() => {

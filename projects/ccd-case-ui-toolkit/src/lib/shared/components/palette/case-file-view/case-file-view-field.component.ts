@@ -8,6 +8,7 @@ import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
+import { safeJsonParse } from '../../../utils';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -50,9 +51,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     });
 
     // EXUI-8000
-    const userInfo: UserInfo = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const userInfo = safeJsonParse<UserInfo>(this.sessionStorageService.getItem('userDetails'), null);
+    const userRoles = userInfo?.roles || [];
     // Get acls that intersects from acl roles and user roles
-    const acls = this.caseField.acls.filter(acl => userInfo.roles.includes(acl.role));
+    const acls = this.caseField.acls.filter(acl => userRoles.includes(acl.role));
     // As there can be more than one intersecting role, if any acls are update: true
     this.allowMoving = acls.some(acl => acl.update);
     this.icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
