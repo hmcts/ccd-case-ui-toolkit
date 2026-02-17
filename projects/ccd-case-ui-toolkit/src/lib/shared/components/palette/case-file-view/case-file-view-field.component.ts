@@ -8,7 +8,7 @@ import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
-import { safeJsonParse } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 
 @Component({
   selector: 'ccd-case-file-view-field',

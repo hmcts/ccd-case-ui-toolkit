@@ -8,7 +8,8 @@ import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
-import { safeJsonParse, USER_DETAILS } from '../../utils';
+import { USER_DETAILS } from '../../utils';
+import { safeJsonParse } from '../../json-utils';
 
 // @dynamic
 @Injectable()

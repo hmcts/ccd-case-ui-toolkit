@@ -7,7 +7,8 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { PUI_CASE_MANAGER, safeJsonParse, USER_DETAILS } from '../../../utils';
+import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 import { CaseNotifier } from '../../case-editor';
 
 @Injectable()

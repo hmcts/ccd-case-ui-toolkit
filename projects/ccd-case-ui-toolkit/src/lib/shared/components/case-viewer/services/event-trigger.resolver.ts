@@ -11,7 +11,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
 import { LoadingService, SessionStorageService } from '../../../services';
-import { safeJsonParse } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {

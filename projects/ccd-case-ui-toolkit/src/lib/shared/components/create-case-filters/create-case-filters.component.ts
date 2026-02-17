@@ -8,7 +8,8 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
-import { safeJsonParse, USER_DETAILS } from '../../utils';
+import { USER_DETAILS } from '../../utils';
+import { safeJsonParse } from '../../json-utils';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({

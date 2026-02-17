@@ -1,7 +1,7 @@
 import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
-import { safeJsonParse } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 
 export abstract class PaymentField extends AbstractFieldReadComponent {
     constructor(

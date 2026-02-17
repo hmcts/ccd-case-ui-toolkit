@@ -1,4 +1,4 @@
-import { safeJsonParse } from './utils';
+import { safeJsonParse } from './json-utils';
 
 describe('safeJsonParse', () => {
   it('returns fallback when value is null', () => {

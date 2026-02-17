@@ -2,7 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
 import { SessionStorageService } from '../../../../services';
-import { safeJsonParse } from '../../../../utils';
+import { safeJsonParse } from '../../../../json-utils';
 
 @Component({
   selector: 'ccd-event-log-table',

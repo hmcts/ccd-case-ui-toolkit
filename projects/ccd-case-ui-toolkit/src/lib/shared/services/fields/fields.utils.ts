@@ -10,7 +10,7 @@ import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
-import { safeJsonParse } from '../../utils';
+import { safeJsonParse } from '../../json-utils';
 
 // @dynamic
 @Injectable()

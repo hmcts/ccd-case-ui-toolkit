@@ -1,20 +1,10 @@
 import { SessionStorageService } from './services';
+import { safeJsonParse } from './json-utils';
 
 export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
 export const JUDGE = 'judge';
 
-export function safeJsonParse<T>(value: string | null, fallback: T | null = null): T | null {
-  if (!value) {
-    return fallback;
-  }
-
-  try {
-    return JSON.parse(value) as T;
-  } catch {
-    return fallback;
-  }
-}
 
 function getUserDetails(sessionStorageService: SessionStorageService): any {
   const item = sessionStorageService?.getItem(USER_DETAILS);

@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/shared/domain';
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService } from '../../../../services';
-import { safeJsonParse, USER_DETAILS } from '../../../../utils';
+import { USER_DETAILS } from '../../../../utils';
+import { safeJsonParse } from '../../../../json-utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,

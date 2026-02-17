@@ -27,7 +27,7 @@ import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
-import { safeJsonParse } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 
 @Component({
   selector: 'ccd-case-edit',
