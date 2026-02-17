@@ -27,7 +27,7 @@ import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
-import { safeJsonParse } from '../../../json-utils';
+import { safeJsonParseFallback } from '../../../json-utils';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -121,7 +121,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
-    this.isPageRefreshed = safeJsonParse<boolean>(this.sessionStorageService.getItem('isPageRefreshed'), false);
+    this.isPageRefreshed = safeJsonParseFallback<boolean>(this.sessionStorageService.getItem('isPageRefreshed'), false);
 
     this.checkPageRefresh();
 
@@ -270,8 +270,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const taskEventCompletionStr = this.sessionStorageService.getItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded');
-    taskEventCompletionInfo = safeJsonParse<TaskEventCompletionInfo>(taskEventCompletionStr, null);
-    userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    taskEventCompletionInfo = safeJsonParseFallback<TaskEventCompletionInfo>(taskEventCompletionStr, null);
+    userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
     const userId = userInfo?.id ? userInfo.id : userInfo?.uid;

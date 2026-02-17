@@ -9,7 +9,7 @@ import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
 import { USER_DETAILS } from '../../utils';
-import { safeJsonParse } from '../../json-utils';
+import { safeJsonParseFallback } from '../../json-utils';
 
 // @dynamic
 @Injectable()
@@ -39,7 +39,7 @@ export class ActivityService {
   }
 
   public getOptions(): OptionsType {
-    const userDetails = safeJsonParse<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
+    const userDetails = safeJsonParseFallback<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
     if (userDetails?.token) {
       headers = headers.set('Authorization', userDetails.token);

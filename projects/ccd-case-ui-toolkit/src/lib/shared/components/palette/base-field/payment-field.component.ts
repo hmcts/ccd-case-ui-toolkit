@@ -1,7 +1,7 @@
 import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
-import { safeJsonParse } from '../../../json-utils';
+import { safeJsonParseFallback } from '../../../json-utils';
 
 export abstract class PaymentField extends AbstractFieldReadComponent {
     constructor(
@@ -28,7 +28,7 @@ export abstract class PaymentField extends AbstractFieldReadComponent {
     }
 
     public getUserRoles() {
-        const userDetails = safeJsonParse<any>(this.sessionStorage.getItem('userDetails'), null);
+        const userDetails = safeJsonParseFallback<any>(this.sessionStorage.getItem('userDetails'), null);
         if (!userDetails || !userDetails.hasOwnProperty('roles')) {
             return [];
         }
@@ -36,7 +36,7 @@ export abstract class PaymentField extends AbstractFieldReadComponent {
     }
 
     public getUserEmail() {
-        const userDetails = safeJsonParse<any>(this.sessionStorage.getItem('userDetails'), null);
+        const userDetails = safeJsonParseFallback<any>(this.sessionStorage.getItem('userDetails'), null);
         if (!userDetails || !userDetails.hasOwnProperty('sub')) {
             return '';
         }

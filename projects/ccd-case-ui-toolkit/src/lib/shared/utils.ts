@@ -1,5 +1,5 @@
 import { SessionStorageService } from './services';
-import { safeJsonParse } from './json-utils';
+import { safeJsonParseFallback } from './json-utils';
 
 export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
@@ -8,7 +8,7 @@ export const JUDGE = 'judge';
 
 function getUserDetails(sessionStorageService: SessionStorageService): any {
   const item = sessionStorageService?.getItem(USER_DETAILS);
-  return safeJsonParse(item, null);
+  return safeJsonParseFallback(item, null);
 }
 
 

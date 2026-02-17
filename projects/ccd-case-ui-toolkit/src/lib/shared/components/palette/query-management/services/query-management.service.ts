@@ -4,7 +4,7 @@ import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/sha
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService } from '../../../../services';
 import { USER_DETAILS } from '../../../../utils';
-import { safeJsonParse } from '../../../../json-utils';
+import { safeJsonParseFallback } from '../../../../json-utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,
@@ -33,7 +33,7 @@ export class QueryManagementService {
     queryItem: QueryListItem,
     messageId?: string // Get the message ID from route params (if present)
   ): QmCaseQueriesCollection {
-    const currentUserDetails = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
+    const currentUserDetails = safeJsonParseFallback<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
     const caseMessage = queryCreateContext === QueryCreateContext.NEW_QUERY
       ? QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails)
       : QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, queryCreateContext);
