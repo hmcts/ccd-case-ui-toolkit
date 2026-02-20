@@ -2,8 +2,8 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
-    selector: 'ccd-money-gbp-input',
-    template: `<input class="form-control form-control-1-8"
+  selector: 'ccd-money-gbp-input',
+  template: `<input class="form-control form-control-1-8"
                     type="text"
                     [id]="id"
                     [name]="name"
@@ -76,15 +76,19 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   public writeValue(obj: any): void {
     if (obj) {
       this.rawValue = obj;
+      // If already contains decimal, use it directly
+      if (obj.includes('.')) {
+        this.displayValue = obj;
+      } else {
+        const integerPart = obj.slice(0, -2) || '0';
+        let decimalPart = obj.slice(-2);
 
-      const integerPart = obj.slice(0, -2) || '0';
-      let decimalPart = obj.slice(-2);
+        while (2 > decimalPart.length) {
+          decimalPart += '0';
+        }
 
-      while (2 > decimalPart.length) {
-        decimalPart += '0';
+        this.displayValue = [integerPart, decimalPart].join('.');
       }
-
-      this.displayValue = [integerPart, decimalPart].join('.');
     }
   }
 
