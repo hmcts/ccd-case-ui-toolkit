@@ -19,13 +19,15 @@ describe('MoneyGbpInputComponent', () => {
 
   beforeEach(waitForAsync(() => {
     // Input is mocked so that one-way bound inputs can be tested
-    inputMockComponent = MockComponent({ selector: 'input', inputs: [
-      'type',
-      'value',
-      'change',
-      'keyup',
-      'disabled'
-    ]});
+    inputMockComponent = MockComponent({
+      selector: 'input', inputs: [
+        'type',
+        'value',
+        'change',
+        'keyup',
+        'disabled'
+      ]
+    });
 
     TestBed
       .configureTestingModule({
@@ -106,13 +108,13 @@ describe('MoneyGbpInputComponent', () => {
     expect(input.value).toEqual('123.45');
   });
 
-  it('should add decimal value for display when writeValue doesnot contain a decimal point', () => {
+  it('should convert pence value for display when writeValue does not contain a decimal point', () => {
     component.writeValue('123');
     fixture.detectChanges();
 
     const input = de.query($INPUT).componentInstance;
 
-    expect(input.value).toEqual('123.00');
+    expect(input.value).toEqual('1.23');
   });
 
   it('should pad decimal value for display when writeValue has one decimal place', () => {
@@ -121,7 +123,7 @@ describe('MoneyGbpInputComponent', () => {
 
     const input = de.query($INPUT).componentInstance;
 
-    expect(input.value).toEqual('123.40');
+    expect(input.value).toEqual('123.4');
   });
 
   it('should keep negative decimal value for display when writeValue contains a decimal point', () => {
@@ -134,118 +136,118 @@ describe('MoneyGbpInputComponent', () => {
   });
 
   it('should convert pounds to pences', () => {
-    component.onChange({ target: { value: '123'}});
+    component.onChange({ target: { value: '123' } });
 
     expect(onChange).toHaveBeenCalledWith('12300');
   });
 
   it('should convert pounds to pences with negative value', () => {
-    component.onChange({ target: { value: '-123'}});
+    component.onChange({ target: { value: '-123' } });
 
     expect(onChange).toHaveBeenCalledWith('-12300');
   });
 
   it('should convert pounds and pences to pences', () => {
-    component.onChange({ target: { value: '123.45'}});
+    component.onChange({ target: { value: '123.45' } });
 
     expect(onChange).toHaveBeenCalledWith('12345');
   });
 
   it('should convert pounds and pences to pences with negative value', () => {
-    component.onChange({ target: { value: '-123.45'}});
+    component.onChange({ target: { value: '-123.45' } });
 
     expect(onChange).toHaveBeenCalledWith('-12345');
   });
 
   it('should convert partial pences to pences', () => {
-    component.onChange({ target: { value: '123.1'}});
+    component.onChange({ target: { value: '123.1' } });
 
     expect(onChange).toHaveBeenCalledWith('12310');
   });
 
   it('should convert partial pences to pences with negative value', () => {
-    component.onChange({ target: { value: '-123.1'}});
+    component.onChange({ target: { value: '-123.1' } });
 
     expect(onChange).toHaveBeenCalledWith('-12310');
   });
 
   it('should convert pences only to pences', () => {
-    component.onChange({ target: { value: '.1'}});
+    component.onChange({ target: { value: '.1' } });
 
     expect(onChange).toHaveBeenCalledWith('10');
   });
 
   it('should convert pences only to pences with negative value', () => {
-    component.onChange({ target: { value: '-.1'}});
+    component.onChange({ target: { value: '-.1' } });
 
     expect(onChange).toHaveBeenCalledWith('-10');
   });
 
   it('should keep empty ', () => {
-    component.onChange({ target: { value: ''}});
+    component.onChange({ target: { value: '' } });
 
     expect(onChange).toHaveBeenCalledWith('');
   });
 
   it('should keep null', () => {
-    component.onChange({ target: { value: null}});
+    component.onChange({ target: { value: null } });
 
     expect(onChange).toHaveBeenCalledWith(null);
   });
 
   it('should be invalid when contains letters', () => {
-    const results = component.validate({ value: 'x'} as FormControl);
+    const results = component.validate({ value: 'x' } as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be valid when digits', () => {
-    const results = component.validate({ value: '12.34'} as FormControl);
+    const results = component.validate({ value: '12.34' } as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should be valid when digits with negative value', () => {
-    const results = component.validate({ value: '-12.34'} as FormControl);
+    const results = component.validate({ value: '-12.34' } as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should be invalid when too many decimal places', () => {
-    const results = component.validate({ value: '12.345'} as FormControl);
+    const results = component.validate({ value: '12.345' } as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be invalid when too many decimal places with negative value', () => {
-    const results = component.validate({ value: '-12.345'} as FormControl);
+    const results = component.validate({ value: '-12.345' } as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be valid when empty string', () => {
-    const results = component.validate({ value: ''} as FormControl);
+    const results = component.validate({ value: '' } as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should not be valid when empty string and mandatory', () => {
     component.mandatory = true;
-    const results = component.validate({ value: ''} as FormControl);
+    const results = component.validate({ value: '' } as FormControl);
 
-    expect(results).toEqual({pattern: 'This field is required'});
+    expect(results).toEqual({ pattern: 'This field is required' });
   });
 
   it('should be valid when null', () => {
-    const results = component.validate({ value: null} as FormControl);
+    const results = component.validate({ value: null } as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should not be valid when null and mandatory', () => {
     component.mandatory = true;
-    const results = component.validate({ value: null} as FormControl);
+    const results = component.validate({ value: null } as FormControl);
 
-    expect(results).toEqual({pattern: 'This field is required'});
+    expect(results).toEqual({ pattern: 'This field is required' });
   });
 });
