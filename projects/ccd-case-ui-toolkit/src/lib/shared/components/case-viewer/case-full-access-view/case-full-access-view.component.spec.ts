@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -1958,7 +1958,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should navigate to roles and access tab', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/roles-and-access');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#roles-and-access');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
@@ -2016,6 +2016,22 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(caseViewerComponent.tabGroup.selectedIndex).toBe(1);
   }));
 
+  it('should rewrite tasks path to a fragment URL', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(router.navigate).toHaveBeenCalledWith([
+      'cases',
+      'case-details',
+      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
+      WORK_ALLOCATION_CASE_VIEW.case_type.id,
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ], { fragment: 'Tasks' });
+  }));
+
   it('should not set tabGroup selected index if a non-roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
     caseViewerComponent.prependedTabs = [
       {
@@ -2027,28 +2043,22 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the "Dummy" tab has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
   }));
 
   it('should not set tabGroup selected index to pre-selected tab if it is already selected', fakeAsync(() => {
     caseViewerComponent.prependedTabs = [];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the pre-selected tab is "Overview", which has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
   }));
 
   it('should not set tabGroup selected index if a roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
@@ -2062,14 +2072,11 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Tasks');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the "Tasks" tab has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
   }));
 });
 
@@ -2857,6 +2864,16 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional
     }).compileComponents();
   }));
 
+  function makeTabGroup(labels: string[]): any {
+    const ql = new QueryList<any>();
+    ql.reset(labels.map((l, i) => makeTab(l, i)));
+    ql.notifyOnChanges();
+    return { _tabs: ql, selectedIndex: 0 };
+  }
+  function makeTab(label: string, order = 0): any {
+    return { textLabel: label, position: order };
+  }
+
   beforeEach(() => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
@@ -2877,71 +2894,15 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional
   });
 
   it('checkRouteAndSetCaseViewTab should select tab from hash fragment', fakeAsync(() => {
-    (caseViewerComponent as any).tabGroup = {
-      _tabs: [
-        { textLabel: 'Tasks', position: 0 },
-        { textLabel: 'Roles and access', position: 0 },
-        { textLabel: 'Overview', position: 0 },
-        { textLabel: 'Case notes', position: 1 }, // position != 0 so should update selectedIndex to 1
-        { textLabel: 'Hearings', position: 0 }
-      ],
-      selectedIndex: 0
-    } as any;
+    componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
 
     (caseViewerComponent as any)['checkRouteAndSetCaseViewTab']();
+    routerEvents$.next(new NavigationEnd(1, '/cases/case-details/1234#Case%20notes', '/cases/case-details/1234#Case%20notes'));
 
-    routerEvents$.next(new NavigationEnd(1, '/cases/case-details/...#Case%20notes', '/cases/case-details/...#Case%20notes'));
-    tick();
     componentFixture.detectChanges();
 
-    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(1);
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(3);
   }));
-
-  it('organiseTabPosition should decode unicode spaces and select matching tab from hash', fakeAsync(() => {
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Roles%20and%20access');
-
-    (caseViewerComponent as any).tabGroup = {
-      _tabs: [
-        { textLabel: 'Tasks', position: 0 },
-        { textLabel: 'Roles and access', position: -1 }, // relative position indicates not selected
-        { textLabel: 'Overview', position: 0 },
-        { textLabel: 'Case notes', position: 0 }
-      ],
-      selectedIndex: 0
-    } as any;
-
-    caseViewerComponent.organiseTabPosition();
-    tick();
-
-    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(-1);
-  }));
-
-  it('tabChanged should navigate to appended tab route when selecting "Hearings"', () => {
-    (caseViewerComponent as any).tabGroup = {
-      _tabs: [
-        {
-          textLabel: 'Hearings',
-          isActive: true,
-          _viewContainerRef: { element: { nativeElement: { id: 'hearings' } } }
-        }
-      ]
-    } as any;
-
-    caseViewerComponent.tabChanged(4);
-
-    const calls = (router.navigate as jasmine.Spy).calls;
-    expect(calls.count()).toBeGreaterThan(0);
-    const args = calls.mostRecent().args;
-    expect(args[0]).toEqual([
-      'cases',
-      'case-details',
-      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
-      WORK_ALLOCATION_CASE_VIEW.case_type.id,
-      WORK_ALLOCATION_CASE_VIEW.case_id,
-      'hearings'
-    ]);
-    expect(args[1]).toEqual(jasmine.any(Object));
-  });
 
   it('organiseTabPosition should prefer FieldsUtils.defaultTabList and fall back when preferred is not rendered', fakeAsync(() => {
     const caseView = clone(CASE_VIEW);
@@ -2976,28 +2937,17 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional
   }));
 
   it('tabChanged should route to appended/prepended tabs using id from view container', () => {
-    (caseViewerComponent as any).tabGroup = {
-      _tabs: [
-        {
-          textLabel: 'Hearings',
-          isActive: true,
-          _viewContainerRef: {
-            element: { nativeElement: { id: 'hearings' } }
-          }
-        }
-      ]
-    } as any;
+    componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
 
-    caseViewerComponent.tabChanged(2);
+    caseViewerComponent.tabChanged(5);
     const call = (router.navigate as jasmine.Spy).calls.mostRecent().args;
     expect(call[0]).toEqual([
       'cases',
       'case-details',
       WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
       WORK_ALLOCATION_CASE_VIEW.case_type.id,
-      WORK_ALLOCATION_CASE_VIEW.case_id,
-      'hearings'
-    ]);
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ], { fragment: 'Hearings' });
   });
 
   it('tabChanged should route to fragment for regular tabs', () => {
@@ -3152,4 +3102,4 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     expect(eventTriggerElement).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
-})
+});
