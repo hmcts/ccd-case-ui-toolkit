@@ -136,7 +136,7 @@ describe('MoneyGbpInputComponent', () => {
   });
 
   it('should convert pounds to pences', () => {
-    component.onChange({ target: { value: '123' } });
+    component.onChange({ target: { value: '123'}});
 
     expect(onChange).toHaveBeenCalledWith('12300');
   });
