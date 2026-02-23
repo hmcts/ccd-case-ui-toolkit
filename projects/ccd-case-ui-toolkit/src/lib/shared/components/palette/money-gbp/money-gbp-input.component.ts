@@ -2,8 +2,8 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
-  selector: 'ccd-money-gbp-input',
-  template: `<input class="form-control form-control-1-8"
+    selector: 'ccd-money-gbp-input',
+    template: `<input class="form-control form-control-1-8"
                     type="text"
                     [id]="id"
                     [name]="name"
