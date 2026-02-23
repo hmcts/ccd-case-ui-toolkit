@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.32
+**EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
+
 ### Version 7.3.31
 **EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
 **EXUI-3696** Revise responses to ensure uniqueness
