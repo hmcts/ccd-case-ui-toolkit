@@ -8,6 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { WindowService } from '../../../services/window';
 import { attr, text } from '../../../test/helpers';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -142,11 +143,20 @@ describe('ReadDocumentFieldComponent', () => {
       expect(windowService.setLocalStorage).not.toHaveBeenCalled();
     });
 
-    it('should continue to use media viewer for non-HTML documents', () => {
+    it('should store media viewer payload and open media viewer with token', () => {
+      const token = 'test-token';
+      const mediaViewerUrl = '/media-viewer?mvToken=test-token';
+      const payload = { foo: 'bar' };
+
+      spyOn(FieldsUtils, 'createToken').and.returnValue(token);
+      mockDocumentManagementService.getMediaViewerInfo.and.returnValue(payload);
+      router.createUrlTree.and.returnValue({ toString: () => mediaViewerUrl });
+
       component.openMediaViewer(VALUE);
 
-      expect(windowService.setLocalStorage).toHaveBeenCalledWith('media-viewer-info', '{"document_filename":"evidence_document.evd"}');
-      expect(windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
+      expect(mockDocumentManagementService.getMediaViewerInfo).toHaveBeenCalledWith(VALUE);
+      expect(windowService.setLocalStorage).toHaveBeenCalledWith(`media-viewer-info:${token}`, payload);
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith(mediaViewerUrl);
     });
   });
 

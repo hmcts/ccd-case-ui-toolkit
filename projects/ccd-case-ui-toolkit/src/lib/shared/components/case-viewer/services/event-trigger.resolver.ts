@@ -116,7 +116,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.errorNotifier.announceError(error);
           if (!this.router.url?.includes('/cases/case-details/')) {
             caseTypeId = route.parent.paramMap.get('caseType');
-            this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}/tasks`]);
+            this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}`], { fragment: 'Tasks' });
           }
           return throwError(error);
         })
