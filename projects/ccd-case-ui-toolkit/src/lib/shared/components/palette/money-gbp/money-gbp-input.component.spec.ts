@@ -233,7 +233,7 @@ describe('MoneyGbpInputComponent', () => {
     component.mandatory = true;
     const results = component.validate({ value: ''} as FormControl);
 
-    expect(results).toEqual({pattern: 'This field is required' });
+    expect(results).toEqual({pattern: 'This field is required'});
   });
 
   it('should be valid when null', () => {
