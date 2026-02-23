@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.17-add-suffix-rc1",
+  "version": "7.3.30",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -61,9 +61,9 @@
     "@angular/router": "^20.3.15",
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.5.14",
+    "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz",
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.10/hmcts-media-viewer-4.2.10.tgz",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -81,7 +81,6 @@
     "ngx-chips": "^3.0.0",
     "ngx-markdown": "^20",
     "ngx-pagination": "6.0.3",
-    "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
     "prism": "^4.1.2",
     "prismjs": "^1.29.0",
@@ -205,7 +204,6 @@
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
     "node-forge": "^0.10.0",
-    "npm-registry-fetch": "^4.0.5",
     "serialize-javascript": "^3.1.0",
     "socks": "^2.8.7",
     "tree-kill": "^1.2.2",
