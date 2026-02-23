@@ -5,7 +5,7 @@ import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators'
 import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
 
@@ -35,6 +35,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     private documentManagementService: DocumentManagementService,
     private readonly loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService,
+    private readonly windowService: WindowService,
     private readonly caseNotifier: CaseNotifier,
     private readonly abstractConfig: AbstractAppConfig,
   ) { }
@@ -90,10 +91,21 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public setMediaViewerFile(document: DocumentTreeNode): void {
-    const mediaViewerInfo = this.documentManagementService.getMediaViewerInfo({
+    const documentDetails = {
       document_binary_url: document.document_binary_url,
-      document_filename: document.document_filename
-    });
+      document_filename: document.document_filename,
+      content_type: document.content_type
+    };
+    if (this.documentManagementService.isHtmlDocument(documentDetails)) {
+      const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
+      if (documentBinaryUrl) {
+        this.currentDocument = undefined;
+        this.windowService.openOnNewTab(documentBinaryUrl);
+        return;
+      }
+    }
+
+    const mediaViewerInfo = this.documentManagementService.getMediaViewerInfo(documentDetails);
     this.currentDocument = JSON.parse(mediaViewerInfo);
   }
 

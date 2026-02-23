@@ -138,6 +138,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      if (document.content_type) {
+        documentTreeNode.content_type = document.content_type;
+      }
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
@@ -155,6 +158,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      if (document.content_type) {
+        documentTreeNode.content_type = document.content_type;
+      }
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
@@ -200,11 +206,21 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         this.openMoveDialog(documentTreeNode);
         break;
       case ('openInANewTab'):
+        const documentDetails = {
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename,
+          content_type: documentTreeNode.content_type
+        };
+        if (this.documentManagementService.isHtmlDocument(documentDetails)) {
+          const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
+          if (documentBinaryUrl) {
+            this.windowService.openOnNewTab(documentBinaryUrl);
+            return;
+          }
+        }
+
         this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
-          this.documentManagementService.getMediaViewerInfo({
-            document_binary_url: documentTreeNode.document_binary_url,
-            document_filename: documentTreeNode.document_filename
-          }));
+          this.documentManagementService.getMediaViewerInfo(documentDetails));
 
         this.windowService.openOnNewTab(
           this.router.createUrlTree(['/media-viewer'])?.toString()

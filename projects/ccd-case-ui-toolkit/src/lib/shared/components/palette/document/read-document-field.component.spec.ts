@@ -57,10 +57,14 @@ describe('ReadDocumentFieldComponent', () => {
       mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
       mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService',
-        ['uploadFile', 'getMediaViewerInfo']);
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+        ['uploadFile', 'getMediaViewerInfo', 'isHtmlDocument', 'getDocumentBinaryUrl']);
+      mockDocumentManagementService.getMediaViewerInfo.and.returnValue('{"document_filename":"evidence_document.evd"}');
+      mockDocumentManagementService.getDocumentBinaryUrl.and.returnValue(VALUE.document_binary_url);
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(false);
+      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'openOnNewTab', 'removeLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
+      router.createUrlTree.and.returnValue({ toString: () => '/media-viewer' } as any);
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
@@ -122,6 +126,27 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(de.nativeElement.textContent).toEqual('');
+    });
+
+    it('should open HTML document directly in a new tab', () => {
+      const htmlDocument = {
+        ...VALUE,
+        content_type: 'text/html'
+      };
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(true);
+
+      component.openMediaViewer(htmlDocument);
+
+      expect(mockDocumentManagementService.isHtmlDocument).toHaveBeenCalledWith(htmlDocument);
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith(VALUE.document_binary_url);
+      expect(windowService.setLocalStorage).not.toHaveBeenCalled();
+    });
+
+    it('should continue to use media viewer for non-HTML documents', () => {
+      component.openMediaViewer(VALUE);
+
+      expect(windowService.setLocalStorage).toHaveBeenCalledWith('media-viewer-info', '{"document_filename":"evidence_document.evd"}');
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
     });
   });
 

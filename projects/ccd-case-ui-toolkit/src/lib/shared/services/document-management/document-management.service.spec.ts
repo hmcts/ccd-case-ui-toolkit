@@ -374,5 +374,21 @@ describe('DocumentManagementService', () => {
       MEDIA_VIEWER_UNKNOWN.content_type = 'TIFF';
       expect(documentManagementService.getMediaViewerInfo(CASE_FIELD.value)).toBe(JSON.stringify(MEDIA_VIEWER_UNKNOWN));
     });
+
+    it('should identify text/html as HTML', () => {
+      expect(documentManagementService.isHtmlDocument({ content_type: 'text/html' })).toBeTruthy();
+    });
+
+    it('should identify text/html with charset as HTML', () => {
+      expect(documentManagementService.isHtmlDocument({ content_type: 'text/html; charset=UTF-8' })).toBeTruthy();
+    });
+
+    it('should not identify application/xhtml+xml as HTML', () => {
+      expect(documentManagementService.isHtmlDocument({ content_type: 'application/xhtml+xml' })).toBeFalsy();
+    });
+
+    it('should not identify disallowed MIME types as HTML', () => {
+      expect(documentManagementService.isHtmlDocument({ content_type: 'application/xml' })).toBeFalsy();
+    });
   });
 });

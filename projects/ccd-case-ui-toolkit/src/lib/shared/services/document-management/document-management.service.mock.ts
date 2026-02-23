@@ -3,7 +3,16 @@ import { AppMockConfig } from '../../../app-config.mock';
 const appConfigMock = new AppMockConfig();
 
 export const mockDocumentManagementService = {
-   getMediaViewerInfo(documentFieldValue: any): string {
+  getDocumentBinaryUrl(documentFieldValue: any): string {
+    return documentFieldValue.document_binary_url;
+  },
+  isHtmlDocument(documentFieldValue: any): boolean {
+    if (!documentFieldValue?.content_type) {
+      return false;
+    }
+    return documentFieldValue.content_type.split(';')[0].trim().toLowerCase() === 'text/html';
+  },
+  getMediaViewerInfo(documentFieldValue: any): string {
     const mediaViewerInfo = {
       document_binary_url: documentFieldValue.document_binary_url,
       document_filename: documentFieldValue.document_filename,

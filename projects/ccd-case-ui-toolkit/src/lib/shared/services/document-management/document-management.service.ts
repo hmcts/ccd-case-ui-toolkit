@@ -16,6 +16,7 @@ export class DocumentManagementService {
   private static readonly POWERPOINT = 'powerpoint';
   private static readonly TXT = 'txt';
   private static readonly RTF = 'rtf';
+  private static readonly HTML_MIME_ALLOWLIST: string[] = ['text/html'];
 
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
@@ -56,7 +57,7 @@ export class DocumentManagementService {
 
   public getMediaViewerInfo(documentFieldValue: any): string {
     const mediaViewerInfo = {
-      document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+      document_binary_url: this.getDocumentBinaryUrl(documentFieldValue),
       document_filename: documentFieldValue.document_filename,
       content_type: this.getContentType(documentFieldValue),
       annotation_api_url: this.appConfig.getAnnotationApiUrl(),
@@ -64,6 +65,19 @@ export class DocumentManagementService {
       case_jurisdiction: documentFieldValue.jurisdiction
     };
     return JSON.stringify(mediaViewerInfo);
+  }
+
+  public getDocumentBinaryUrl(documentFieldValue: any): string {
+    if (!documentFieldValue?.document_binary_url) {
+      return '';
+    }
+    return this.transformDocumentUrl(documentFieldValue.document_binary_url);
+  }
+
+  // keep HTML support explicit to avoid opening arbitrary MIME types directly in a browser tab
+  public isHtmlDocument(documentFieldValue: any): boolean {
+    const mimeType = this.normaliseMimeType(documentFieldValue?.content_type);
+    return DocumentManagementService.HTML_MIME_ALLOWLIST.includes(mimeType);
   }
 
   public getContentType(documentFieldValue: any): string {
@@ -157,6 +171,13 @@ export class DocumentManagementService {
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
     const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
+  }
+
+  private normaliseMimeType(contentType: string): string {
+    if (!contentType) {
+      return '';
+    }
+    return contentType.split(';')[0].trim().toLowerCase();
   }
 
   private getDocStoreUrl(): string {
