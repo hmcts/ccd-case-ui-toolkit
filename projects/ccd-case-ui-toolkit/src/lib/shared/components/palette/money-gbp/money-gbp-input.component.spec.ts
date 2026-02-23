@@ -19,15 +19,13 @@ describe('MoneyGbpInputComponent', () => {
 
   beforeEach(waitForAsync(() => {
     // Input is mocked so that one-way bound inputs can be tested
-    inputMockComponent = MockComponent({
-      selector: 'input', inputs: [
-        'type',
-        'value',
-        'change',
-        'keyup',
-        'disabled'
-      ]
-    });
+    inputMockComponent = MockComponent({ selector: 'input', inputs: [
+      'type',
+      'value',
+      'change',
+      'keyup',
+      'disabled'
+    ]});
 
     TestBed
       .configureTestingModule({
@@ -248,6 +246,6 @@ describe('MoneyGbpInputComponent', () => {
     component.mandatory = true;
     const results = component.validate({ value: null} as FormControl);
 
-    expect(results).toEqual({ pattern: 'This field is required'});
+    expect(results).toEqual({pattern: 'This field is required'});
   });
 });
