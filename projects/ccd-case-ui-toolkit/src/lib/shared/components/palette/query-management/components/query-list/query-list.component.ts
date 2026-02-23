@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
-import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } from '../../models';
+import { CaseQueriesCollection, QueryCreateContext, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-list',
@@ -20,6 +20,8 @@ export class QueryListComponent implements OnChanges {
     { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED },
     { name: 'responseStatus', displayName: 'Response status', sortOrder: SortOrder.UNSORTED }
   ];
+
+  public hmctsStaff: string = QueryCreateContext.HMCTSSTAFF;
 
   public ngOnChanges(simpleChanges: SimpleChanges) {
     const currentCaseQueriesCollection = simpleChanges.caseQueriesCollection?.currentValue as CaseQueriesCollection;
