@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.31
+**EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
+**EXUI-3696** Revise responses to ensure uniqueness
+**EXUI-3697** Update Query Sub headers and query information
+**EXUI-3698** Enable Closing of Queries by HMCTS Staff
+
 ### Version 7.3.30
 **EXUI-4155** SRT Release
 
