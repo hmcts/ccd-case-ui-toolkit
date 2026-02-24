@@ -324,7 +324,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
           this.replaceHiddenFormValuesWithOriginalCaseData(
-            form.get('data') as FormGroup, eventTrigger.case_fields))),
+            form.get('data') as FormGroup, eventTrigger.case_fields),
+          this.isCaseFlagSubmission)),
       event: form.value.event
     } as CaseEventData;
     this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
