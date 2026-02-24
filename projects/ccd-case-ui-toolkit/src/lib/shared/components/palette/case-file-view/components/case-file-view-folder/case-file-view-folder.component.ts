@@ -5,7 +5,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -64,8 +63,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly dialog: MatDialog,
-    private readonly appConfig: AbstractAppConfig
+    private readonly dialog: MatDialog
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -212,7 +210,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
           document_filename: documentTreeNode.document_filename,
           content_type: documentTreeNode.content_type
         };
-        if (this.documentManagementService.isHtmlDocument(documentDetails)) {
+        const isHtmlDocument = this.documentManagementService.isHtmlDocument(documentDetails);
+        if (isHtmlDocument) {
           const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
           if (documentBinaryUrl) {
             this.windowService.openOnNewTab(documentBinaryUrl);
@@ -225,7 +224,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
         const payload = this.documentManagementService.getMediaViewerInfo({
           document_binary_url: documentTreeNode.document_binary_url,
-          document_filename: documentTreeNode.document_filename
+          document_filename: documentTreeNode.document_filename,
+          content_type: documentTreeNode.content_type
         });
         this.windowService.setLocalStorage(storageKey, payload);
 

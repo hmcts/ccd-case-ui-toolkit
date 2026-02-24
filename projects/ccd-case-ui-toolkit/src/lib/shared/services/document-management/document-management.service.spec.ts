@@ -383,6 +383,17 @@ describe('DocumentManagementService', () => {
       expect(documentManagementService.isHtmlDocument({ content_type: 'text/html; charset=UTF-8' })).toBeTruthy();
     });
 
+    it('should identify html extension as HTML when mime type is missing', () => {
+      expect(documentManagementService.isHtmlDocument({ document_filename: 'legacy-history.html' })).toBeTruthy();
+    });
+
+    it('should not identify html extension as HTML when disallowed mime type is present', () => {
+      expect(documentManagementService.isHtmlDocument({
+        document_filename: 'legacy-history.html',
+        content_type: 'application/xml'
+      })).toBeFalsy();
+    });
+
     it('should not identify application/xhtml+xml as HTML', () => {
       expect(documentManagementService.isHtmlDocument({ content_type: 'application/xhtml+xml' })).toBeFalsy();
     });

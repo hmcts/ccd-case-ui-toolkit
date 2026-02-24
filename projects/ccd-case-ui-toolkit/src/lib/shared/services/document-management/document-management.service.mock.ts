@@ -7,10 +7,15 @@ export const mockDocumentManagementService = {
     return documentFieldValue.document_binary_url;
   },
   isHtmlDocument(documentFieldValue: any): boolean {
-    if (!documentFieldValue?.content_type) {
+    if (documentFieldValue?.content_type) {
+      return documentFieldValue.content_type.split(';')[0].trim().toLowerCase() === 'text/html';
+    }
+    const fileName = documentFieldValue?.document_filename || '';
+    const dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex < 0 || dotIndex === fileName.length - 1) {
       return false;
     }
-    return documentFieldValue.content_type.split(';')[0].trim().toLowerCase() === 'text/html';
+    return fileName.slice(dotIndex + 1).trim().toLowerCase() === 'html';
   },
   getMediaViewerInfo(documentFieldValue: any): string {
     const mediaViewerInfo = {
