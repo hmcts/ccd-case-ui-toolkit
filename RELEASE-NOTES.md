@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.32-exui-3345
+**EXUI-3345** Open HTML case files for viewing
+
 ### Version 7.3.32
 **EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
 
