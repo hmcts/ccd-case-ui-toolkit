@@ -16,6 +16,7 @@ import {
 } from '../../../../../domain/case-file-view';
 import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
+import { FieldsUtils } from '../../../../../services/fields/fields.utils';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
@@ -200,15 +201,23 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         this.openMoveDialog(documentTreeNode);
         break;
       case ('openInANewTab'):
-        this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
-          this.documentManagementService.getMediaViewerInfo({
-            document_binary_url: documentTreeNode.document_binary_url,
-            document_filename: documentTreeNode.document_filename
-          }));
+        const token = FieldsUtils.createToken();
+        const storageKey = `${MEDIA_VIEWER_LOCALSTORAGE_KEY}:${token}`;
 
-        this.windowService.openOnNewTab(
-          this.router.createUrlTree(['/media-viewer'])?.toString()
-        );
+        const payload = this.documentManagementService.getMediaViewerInfo({
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename
+        });
+        this.windowService.setLocalStorage(storageKey, payload);
+
+        const mediaViewerUrl = this.router.createUrlTree(
+          ['/media-viewer'],
+          { queryParams: { mvToken: token } }
+        )?.toString();
+
+        if (mediaViewerUrl) {
+          this.windowService.openOnNewTab(mediaViewerUrl);
+        }
         break;
       case ('download'):
         // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).

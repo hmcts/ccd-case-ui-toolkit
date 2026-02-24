@@ -1,5 +1,114 @@
 ## RELEASE NOTES
 
+### Version 7.3.33
+**EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.32
+**EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
+
+### Version 7.3.31
+**EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
+**EXUI-3696** Revise responses to ensure uniqueness
+**EXUI-3697** Update Query Sub headers and query information
+**EXUI-3698** Enable Closing of Queries by HMCTS Staff
+
+### Version 7.3.30
+**EXUI-4155** SRT Release
+
+### Version 7.3.29
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
+### Version 7.3.27
+**EXUI-3851** revert-EXUI-3851
+
+### Version 7.3.26
+**EXUI-4061** Halo IN-0099681 Navigation issue
+
+### Version 7.3.25
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
+
+### Version 7.3.24
+**EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
+
+### Version 7.3.23
+**EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
+
+### Version 7.3.22
+**EXUI-3875** CVE Vulnerability - High - CVE-2025-66035 - em-media-viewer
+
+### Version 7.3.21
+**EXUI-4068** ccpay-web-component 6.5.17
+
+### Version 7.3.20
+**EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
+### Version 7.3.19
+**EXUI-3870** PayIt feature
+
+### Version 7.3.16
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.15
+**EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
+
+### Version 7.3.14
+**EXUI-3551** Add an additional field to show original Sender name
+
+### Version 7.3.13
+**EXUI-3892** Update CDAM logic within document-management.service
+
+### Version 7.3.12
+**EXUI-2489** Index navigation 2 - media viewer
+
+### Version 7.3.10
+**EXUI-3856** CVE Vulnerability - High - CVE-2025-66035 - CCD-Case-UI-Toolkit
+**EXUI-3857** CVE Vulnerability - Critical - CVE-2025-7783 - CCD-Case-UI-Toolkit
+**EXUI-3853** CVE Vulnerability - High - CVE-2024-29415 - CCD-Case-UI-Toolkit
+**EXUI-3855** CVE Vulnerability - High - CVE-2024-21538 - CCD-Case-UI-Toolkit
+
+### Version 7.3.9
+**EXUI-3866** CVE Vulnerability - High - CVE-2025-65945 - em-media-viewer
+
+### Version 7.3.8
+**EXUI-3504** Postcode API duplication / spam request
+
+### Version 7.3.7
+**EXUI-3859** Update CDAM logs and casetype retrieval
+
+### Version 7.3.6
+**EXUI-3798** CVE Vulnerability High - MC - 1111000 - CVE-2025-66035
+
+### Version 7.3.5
+**EXUI-3759** Summary tab default - Tactical
+
+### Version 7.3.4
+**EXUI-2451** Gov Notify can get a Markdown link by using 2 sets of square brackets
+**EXUI-2730** Callback data validation errors displaying incorrect data on Overview page
+**EXUI-3303** The blue information box remains in Welsh when the user clicks the English translation toggle in the page footer
+**EXUI-3335** Page refresh pop up box bypassed: Lost mandatory data can be submitted
+**EXUI-3365** Ability for manage case HMCTS users to search/filter for "active" users only
+**EXUI-3455** Access any page of 'Create Case' journey through URL
+**EXUI-3481** FieldShowCondtions in nested complex type preventing render on CYA
+**EXUI-3545** IN-53327 Add more logs to provide evidence of root cause
+
+### Version 7.3.3
+**EXUI-3807** Nightly pipeline failure - Media viewer
+**EXUI-3726** Vulnerabilities - CVE - High - Media viewer
+**EXUI-3739** Fix additional CVE in media-viewer
+
+### Version 7.3.2
+**EXUI-3334** fixed failing accessibility for minute field
+
+### Version 7.3.1
+**EXUI-3552** CDAM Exclusion using wrong case type
+
+### Version 7.3.0
+**COT-775** Angular 20 upgrade
+
 ### Version 7.2.59
 **EXUI-3661** Performance issues on screens to return data
 **EXUI-3681** Users unable to upload documents

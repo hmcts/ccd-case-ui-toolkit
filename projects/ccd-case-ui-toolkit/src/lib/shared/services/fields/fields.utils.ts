@@ -23,11 +23,26 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+  public static readonly defaultTabList = {
+    "PRLAPPS": "Summary"
+  }
 
   public static isValidDisplayContext(ctx: string): boolean {
     return (ctx === 'MANDATORY' || ctx === 'READONLY'
       || ctx === 'OPTIONAL' || ctx === 'HIDDEN'
       || ctx === 'COMPLEX');
+  }
+
+  public static createToken(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+    return `${Date.now()}`;
   }
 
   public static isTranslatable(fieldType: FieldType): boolean {
