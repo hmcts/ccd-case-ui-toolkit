@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.3.33
+**EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
 ### Version 7.3.32
 **EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
 
