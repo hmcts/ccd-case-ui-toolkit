@@ -5,6 +5,7 @@ import { DocumentManagementService } from '../../../services/document-management
 import { WindowService } from '../../../services/window';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
@@ -29,7 +30,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
 
   public showMediaViewer(): void {
     const caseId = this.route.snapshot.params['cid'];
-    this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
+
     if (caseId) {
       this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
         if (this.caseField && this.caseField.value) {
@@ -49,15 +50,21 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public openMediaViewer(documentFieldValue): void {
-    this.windowService.setLocalStorage(MEDIA_VIEWER_INFO, this.documentManagement.getMediaViewerInfo(documentFieldValue));
-    this.windowService.openOnNewTab(this.getMediaViewerUrl());
+    const token = FieldsUtils.createToken();
+    const storageKey = `${MEDIA_VIEWER_INFO}:${token}`;
+
+    const payload = this.documentManagement.getMediaViewerInfo(documentFieldValue);
+    this.windowService.setLocalStorage(storageKey, payload);
+
+    this.windowService.openOnNewTab(this.getMediaViewerUrl(token));
   }
 
-  public getMediaViewerUrl(): string {
-    const routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
-    if (routerMediaViewer) {
-      return routerMediaViewer.toString();
-    }
+  public getMediaViewerUrl(token: string): string {
+    const routerMediaViewer = this.router.createUrlTree(
+      ['/media-viewer'],
+      { queryParams: { mvToken: token } }
+    );
+    return routerMediaViewer.toString();
   }
 
   public ngOnDestroy(): void {

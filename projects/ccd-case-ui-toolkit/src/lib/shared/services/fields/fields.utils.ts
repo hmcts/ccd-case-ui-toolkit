@@ -34,6 +34,18 @@ export class FieldsUtils {
       || ctx === 'COMPLEX');
   }
 
+  public static createToken(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+    return `${Date.now()}`;
+  }
+
   public static isTranslatable(fieldType: FieldType): boolean {
     if (fieldType.type === 'Label' || fieldType.type === 'FixedList') {
       return true;
