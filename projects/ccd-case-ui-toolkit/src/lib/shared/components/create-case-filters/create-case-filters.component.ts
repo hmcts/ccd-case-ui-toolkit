@@ -9,7 +9,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { USER_DETAILS } from '../../utils';
-import { safeJsonParseFallback } from '../../json-utils';
+import { safeJsonParse } from '../../json-utils';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 
 @Component({
@@ -139,7 +139,7 @@ export class CreateCaseFiltersComponent implements OnInit {
   }
 
   private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
-    const userProfile = safeJsonParseFallback<any>(this.sessionStorageService.getItem(USER_DETAILS), null);
+    const userProfile = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), null);
     return events.filter(event => userProfile && userProfile.roles &&
       !!userProfile.roles.find(role => this.hasCreateAccess(event, role)));
   }

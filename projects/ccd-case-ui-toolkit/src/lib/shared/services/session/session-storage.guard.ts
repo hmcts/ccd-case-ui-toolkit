@@ -25,18 +25,19 @@ export class SessionStorageGuard implements CanActivate {
       return true;
     }
 
-    try {
-      safeJsonParse(userInfoStr, null);
+    const parsed = safeJsonParse(userInfoStr, null);
+    if (parsed !== null) {
       return true;
-    } catch (error) {
-      if (this.errorLogger) {
-        this.errorLogger(error);
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('Invalid userDetails in session storage', error);
-      }
-      this.router.navigate([this.errorRoute || '/session-error']);
-      return false;
     }
+
+    const error = new Error('Invalid userDetails in session storage');
+    if (this.errorLogger) {
+      this.errorLogger(error);
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('Invalid userDetails in session storage', error);
+    }
+    this.router.navigate([this.errorRoute || '/session-error']);
+    return false;
   }
 }

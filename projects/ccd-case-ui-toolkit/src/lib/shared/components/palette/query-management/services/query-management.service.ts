@@ -4,7 +4,7 @@ import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/sha
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService } from '../../../../services';
 import { isInternalUser, isJudiciaryUser, USER_DETAILS } from '../../../../utils';
-import { safeJsonParseFallback } from '../../../../json-utils';
+import { safeJsonParse } from '../../../../json-utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,
@@ -44,7 +44,7 @@ export class QueryManagementService {
     let currentUserDetails;
 
     try {
-      currentUserDetails = safeJsonParseFallback<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
+      currentUserDetails = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
     } catch (e) {
       console.error('Could not parse USER_DETAILS from session storage:', e);
       currentUserDetails = {};

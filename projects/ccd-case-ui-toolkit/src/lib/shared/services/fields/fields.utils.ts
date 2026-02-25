@@ -10,7 +10,7 @@ import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
-import { safeJsonParseFallback } from '../../json-utils';
+import { safeJsonParse } from '../../json-utils';
 
 // @dynamic
 @Injectable()
@@ -658,7 +658,7 @@ export class FieldsUtils {
   }
 
   public static getUserTaskFromClientContext(clientContextStr: string): UserTask {
-    const clientContext = safeJsonParseFallback<any>(clientContextStr, null);
+    const clientContext = safeJsonParse<any>(clientContextStr, null);
     return clientContext?.client_context?.user_task || null;
   }
 

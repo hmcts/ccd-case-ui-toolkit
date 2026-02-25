@@ -8,7 +8,7 @@ import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
-import { safeJsonParseFallback } from '../../../json-utils';
+import { safeJsonParse } from '../../../json-utils';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -51,7 +51,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     });
 
     // EXUI-8000
-    const userInfo = safeJsonParseFallback<UserInfo>(this.sessionStorageService.getItem('userDetails'), null);
+    const userInfo = safeJsonParse<UserInfo>(this.sessionStorageService.getItem('userDetails'), null);
     const userRoles = userInfo?.roles || [];
     // Get acls that intersects from acl roles and user roles
     const acls = this.caseField.acls.filter(acl => userRoles.includes(acl.role));
