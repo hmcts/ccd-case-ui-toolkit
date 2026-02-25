@@ -1,5 +1,27 @@
 ## RELEASE NOTES
 
+### Version 7.3.33
+**EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.32
+**EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
+
+### Version 7.3.31
+**EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
+**EXUI-3696** Revise responses to ensure uniqueness
+**EXUI-3697** Update Query Sub headers and query information
+**EXUI-3698** Enable Closing of Queries by HMCTS Staff
+
+### Version 7.3.30
+**EXUI-4155** SRT Release
+
+### Version 7.3.29
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
 ### Version 7.3.27
 **EXUI-3851** revert-EXUI-3851
 
