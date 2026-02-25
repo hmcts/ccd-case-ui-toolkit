@@ -12,14 +12,13 @@ export class FormValueService {
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
       return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
-      return currentForm.map(fieldValue => fieldValue['value']).join(', ');
+      return currentForm.map((fieldValue) => fieldValue.value).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
-      return this.getFieldValue(currentForm[colIndex]['value'], fieldIds.slice(1).join('.'), colIndex);
+      return this.getFieldValue(currentForm[colIndex].value, fieldIds.slice(1).join('.'), colIndex);
     } else if (FieldsUtils.isNonEmptyObject(currentForm)) {
       return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), colIndex);
-    } else {
-      return currentForm;
     }
+    return currentForm;
   }
 
   /**
@@ -58,9 +57,8 @@ export class FormValueService {
   private static isLabel(field: CaseField): boolean {
     if (field.field_type) {
       return field.field_type.type === 'Label';
-    } else {
-      return false;
     }
+    return false;
   }
 
   private static isEmptyData(data: object): boolean {
@@ -111,10 +109,13 @@ export class FormValueService {
   }
 
   public filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
-    const cloneForm = JSON.parse(JSON.stringify(editForm));
-    Object.keys(cloneForm['data']).forEach((key) => {
+    const cloneForm = {
+      ...(editForm || {}),
+      data: { ...((editForm && editForm.data) || {}) }
+    };
+    Object.keys(cloneForm.data).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
-        delete cloneForm['data'][key];
+        delete cloneForm.data[key];
       }
     });
     return cloneForm;
@@ -158,7 +159,7 @@ export class FormValueService {
       return rawArray;
     }
 
-    rawArray.forEach(item => {
+    rawArray.forEach((item) => {
       if (item && item.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value);
       }
@@ -168,8 +169,8 @@ export class FormValueService {
     // association of a value. In addition, if the array contains items with a "value" object property, return only
     // those whose value object contains non-empty values, including for any descendant objects
     return rawArray
-      .filter(item => !!item)
-      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
+      .filter((item) => !!item)
+      .filter((item) => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -191,7 +192,7 @@ export class FormValueService {
 
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
     for (const dataKey in data) {
-      if (!caseFields.find(cf => cf.id === dataKey)) {
+      if (!caseFields.find((cf) => cf.id === dataKey)) {
         delete data[dataKey];
       }
     }
@@ -237,6 +238,7 @@ export class FormValueService {
       }
     }
   }
+
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
   public removeEmptyDocuments(data: object, caseFields: CaseField[]) {
     if (data && caseFields && caseFields.length > 0) {
@@ -278,6 +280,7 @@ export class FormValueService {
       }
     }
   }
+
   /**
    * Clear out unnecessary fields from a data object, based on an array of CaseFields.
    * This method is recursive and will call itself if it encounters particular field types.
@@ -394,7 +397,7 @@ export class FormValueService {
    */
   public removeCaseFieldsOfType(data: object, caseFields: CaseField[], types: FieldTypeEnum[]): void {
     if (data && caseFields && caseFields.length > 0 && types.length > 0) {
-      const caseFieldsToRemove = caseFields.filter(caseField => FieldsUtils.isCaseFieldOfType(caseField, types));
+      const caseFieldsToRemove = caseFields.filter((caseField) => FieldsUtils.isCaseFieldOfType(caseField, types));
       for (const caseField of caseFieldsToRemove) {
         delete data[caseField.id];
       }
@@ -414,10 +417,10 @@ export class FormValueService {
    */
   public repopulateFormDataFromCaseFieldValues(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0 &&
-      caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
+      caseFields.findIndex((caseField) => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
       // Ignore the FlagLauncher CaseField because it does not hold any values
-      caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
-        .forEach(caseField => {
+      caseFields.filter((caseField) => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
+        .forEach((caseField) => {
           // Ensure that the data object is populated for all CaseField keys it contains, even if for a given
           // CaseField key, the data object has a falsy value (hence the use of hasOwnProperty() for the check below)
           // See https://tools.hmcts.net/jira/browse/EUI-7377
@@ -449,8 +452,8 @@ export class FormValueService {
    */
   public populateLinkedCasesDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
-      caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']))
-        .forEach(caseField => {
+      caseFields.filter((caseField) => !FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']))
+        .forEach((caseField) => {
           if (data.hasOwnProperty('caseLinks') && caseField.value) {
             data[caseField.id] = caseField.value;
           }

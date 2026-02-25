@@ -123,6 +123,14 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewElement).toBeTruthy();
   });
 
+  it('should default to no permissions when userDetails is invalid', () => {
+    mockSessionStorageService.getItem.and.returnValue('{invalid-json');
+
+    fixture.detectChanges();
+
+    expect(component.allowMoving).toBe(false);
+  });
+
   xit('should display an error message if the service is unavilable to get categories and documents', () => {
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(throwError(new Error('Unable to retrieve data')));
     component.ngOnInit();

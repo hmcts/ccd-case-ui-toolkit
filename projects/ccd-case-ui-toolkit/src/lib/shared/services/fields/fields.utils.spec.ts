@@ -913,4 +913,20 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.isValidDisplayContext('HIDDEN')).toBe(true);
     });
   });
+
+  describe('getUserTaskFromClientContext', () => {
+    it('should return null when clientContextStr is null', () => {
+      expect(FieldsUtils.getUserTaskFromClientContext(null)).toBeNull();
+    });
+
+    it('should return null when clientContextStr is invalid JSON', () => {
+      expect(FieldsUtils.getUserTaskFromClientContext('{not-json')).toBeNull();
+    });
+
+    it('should return user task when clientContextStr is valid', () => {
+      const task = { id: 'task-1' };
+      const context = JSON.stringify({ client_context: { user_task: task } });
+      expect(FieldsUtils.getUserTaskFromClientContext(context)).toEqual(task as any);
+    });
+  });
 });
