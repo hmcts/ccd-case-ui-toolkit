@@ -353,6 +353,48 @@ describe('FormValueService', () => {
 
   });
 
+  describe('removeEmptyDocuments', () => {
+    it('should remove empty document fields when not hidden', () => {
+      const data = {
+        document1: {
+          document_url: null,
+          document_binary_url: null,
+          document_filename: null
+        }
+      };
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.type = 'Document';
+      caseField.id = 'document1';
+      caseField.hidden = false;
+      caseField.field_type = fieldType;
+
+      formValueService.removeEmptyDocuments(data, [caseField]);
+
+      expect(data.hasOwnProperty('document1')).toBe(false);
+    });
+
+    it('should keep empty document fields when hidden', () => {
+      const data = {
+        document1: {
+          document_url: null,
+          document_binary_url: null,
+          document_filename: null
+        }
+      };
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.type = 'Document';
+      caseField.id = 'document1';
+      caseField.hidden = true;
+      caseField.field_type = fieldType;
+
+      formValueService.removeEmptyDocuments(data, [caseField]);
+
+      expect(data.document1).toBeDefined();
+    });
+  });
+
   describe('get field value', () => {
     describe('simple types', () => {
       it('should return value if form is a simple object', () => {
@@ -743,6 +785,42 @@ describe('FormValueService', () => {
   });
 
   describe('removeUnnecessaryFields', () => {
+    it('should remove optional complex field when empty and clearEmpty is true', () => {
+      const data = { complexField: { child: null } };
+      const childField = new CaseField();
+      childField.id = 'child';
+      childField.field_type = { id: 'Text', type: 'Text' } as FieldType;
+      const fieldType = new FieldType();
+      fieldType.type = 'Complex';
+      fieldType.complex_fields = [childField];
+      const caseField = new CaseField();
+      caseField.id = 'complexField';
+      caseField.display_context = 'OPTIONAL';
+      caseField.field_type = fieldType;
+
+      formValueService.removeUnnecessaryFields(data, [caseField], true);
+
+      expect(data.hasOwnProperty('complexField')).toBe(false);
+    });
+
+    it('should remove empty complex field from previous page when not on current page', () => {
+      const data = { complexField: { child: null } };
+      const childField = new CaseField();
+      childField.id = 'child';
+      childField.field_type = { id: 'Text', type: 'Text' } as FieldType;
+      const fieldType = new FieldType();
+      fieldType.type = 'Complex';
+      fieldType.complex_fields = [childField];
+      const caseField = new CaseField();
+      caseField.id = 'complexField';
+      caseField.field_type = fieldType;
+      caseField.display_context = 'MANDATORY';
+
+      formValueService.removeUnnecessaryFields(data, [caseField], false, false, true, []);
+
+      expect(data.hasOwnProperty('complexField')).toBe(false);
+    });
+
     it('should empty the collection field if it contains only id', () => {
       const data = {collection1: [{id: '123'}]};
       const caseField = new CaseField();
