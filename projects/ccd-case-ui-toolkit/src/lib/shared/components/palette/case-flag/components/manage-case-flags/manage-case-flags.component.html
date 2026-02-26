@@ -16,7 +16,7 @@
             type="radio"
             [checked]="isSelected(flagDisplay)"
             (change)="onFlagSelectionChange(flagDisplay)"/>
-          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay | manageCaseFlagsLabelDisplay"></label>
+          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}">{{ flagDisplay | manageCaseFlagsLabelDisplay }}</label>
         </div>
       </div>
     </fieldset>
