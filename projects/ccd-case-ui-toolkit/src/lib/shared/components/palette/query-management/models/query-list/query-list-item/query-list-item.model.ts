@@ -15,6 +15,7 @@ export class QueryListItem implements CaseMessage {
   public parentId?: string;
   public isClosed?: string;
   public messageType?: string;
+  public isHmctsStaff?: string;
   public children: QueryListItem[] = [];
 
   public messageIndexInParent?: number | null = null;
