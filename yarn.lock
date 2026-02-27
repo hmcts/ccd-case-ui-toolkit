@@ -3510,7 +3510,7 @@ __metadata:
     nyc: "npm:^13.0.1"
     pegjs: "npm:^0.10.0"
     prism: "npm:^4.1.2"
-    prismjs: "npm:^1.29.0"
+    prismjs: "npm:^1.30.0"
     raw-loader: "npm:^0.5.1"
     reflect-metadata: "npm:^0.1.12"
     rimraf: "npm:2.6.2"
@@ -23131,10 +23131,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:1.24.1":
-  version: 1.24.1
-  resolution: "prismjs@npm:1.24.1"
-  checksum: 10/8a3f174e891f69e61dcdbecf18fabf62c42497e2f89012a6d02e16e8f739d0b7beca269c13f1be6ffcdbbc1a4fa4361aac54d983b16a0c1a11b8396cac28eda7
+"prismjs@npm:^1.30.0":
+  version: 1.30.0
+  resolution: "prismjs@npm:1.30.0"
+  checksum: 10/6b48a2439a82e5c6882f48ebc1564c3890e16463ba17ac10c3ad4f62d98dea5b5c915b172b63b83023a70ad4f5d7be3e8a60304420db34a161fae69dd4e3e2da
   languageName: node
   linkType: hard
 
