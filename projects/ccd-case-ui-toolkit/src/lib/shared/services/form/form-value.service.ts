@@ -97,8 +97,8 @@ export class FormValueService {
   constructor(private readonly fieldTypeSanitiser: FieldTypeSanitiser) {
   }
 
-  public sanitise(rawValue: object): object {
-    return this.sanitiseObject(rawValue);
+  public sanitise(rawValue: object, isCaseFlagJourney: boolean = false): object {
+    return this.sanitiseObject(rawValue, isCaseFlagJourney);
   }
 
   public sanitiseCaseReference(reference: string): string {
@@ -124,7 +124,7 @@ export class FormValueService {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
   }
 
-  private sanitiseObject(rawObject: object): object {
+  private sanitiseObject(rawObject: object, isCaseFlagJourney: boolean = false): object {
     if (!rawObject) {
       return rawObject;
     }
@@ -138,13 +138,16 @@ export class FormValueService {
         sanitisedObject = null;
         break;
       } else if ('CaseReference' === key) {
-        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])), isCaseFlagJourney);
       } else {
-        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        sanitisedObject[key] = this.sanitiseValue(rawObject[key], isCaseFlagJourney);
         if (Array.isArray(sanitisedObject[key])) {
           // If the 'sanitised' array is empty, whereas the original array had 1 or more items
           // delete the property from the sanatised object
-          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+          const shouldDeleteField = sanitisedObject[key].length === 0
+            && rawObject[key].length > 0
+            && !isCaseFlagJourney;
+          if (shouldDeleteField) {
             delete sanitisedObject[key];
           }
         }
@@ -153,14 +156,14 @@ export class FormValueService {
     return sanitisedObject;
   }
 
-  private sanitiseArray(rawArray: any[]): any[] {
+  private sanitiseArray(rawArray: any[], isCaseFlagJourney: boolean = false): any[] {
     if (!rawArray) {
       return rawArray;
     }
 
     rawArray.forEach(item => {
       if (item && item.hasOwnProperty('value')) {
-        item.value = this.sanitiseValue(item.value);
+        item.value = this.sanitiseValue(item.value, isCaseFlagJourney);
       }
     });
 
@@ -172,14 +175,14 @@ export class FormValueService {
       .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
   }
 
-  private sanitiseValue(rawValue: any): any {
+  private sanitiseValue(rawValue: any, isCaseFlagJourney: boolean = false): any {
     if (Array.isArray(rawValue)) {
-      return this.sanitiseArray(rawValue);
+      return this.sanitiseArray(rawValue, isCaseFlagJourney);
     }
 
     switch (typeof rawValue) {
       case 'object':
-        return this.sanitiseObject(rawValue);
+        return this.sanitiseObject(rawValue, isCaseFlagJourney);
       case 'string':
         return rawValue.trim();
       case 'number':
