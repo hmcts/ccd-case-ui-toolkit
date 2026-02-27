@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.34",
+  "version": "7.3.34-exui-4177-tar-cve-fix",
   "engines": {
     "node": ">=20.19.0"
   },
