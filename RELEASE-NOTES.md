@@ -3,6 +3,10 @@
 ### Version 7.3.33-exui-3345
 **EXUI-3345** Open HTML case files for viewing
 
+### Version 7.3.34
+**EXUI-3849** CVE Vulnerability - High - CVE-2022-23647
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681
+
 ### Version 7.3.33
 **EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
 **EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer

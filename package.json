@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.33-exui-3345",
+  "version": "7.3.34",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -73,7 +73,7 @@
     "govuk-elements-sass": "^3.1.2",
     "govuk-frontend": "^4.9.0",
     "lz-string": "^1.5.0",
-    "marked": "^12.0.1",
+    "marked": "^12.0.2",
     "mem": "^6.0.0",
     "minimist": "1.2.3",
     "moment": "^2.30.1",
@@ -83,7 +83,7 @@
     "ngx-pagination": "6.0.3",
     "pegjs": "^0.10.0",
     "prism": "^4.1.2",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "rpx-xui-translation": "1.2.0",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
@@ -199,7 +199,6 @@
     "https-proxy-agent": "^2.2.3",
     "ip": "^1.1.5",
     "lodash": "^4.17.21",
-    "marked": "^0.7.0",
     "minimatch": "^8.0.4",
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
@@ -213,7 +212,6 @@
     "url-parse": "^1.5.0",
     "xmlhttprequest-ssl": "1.6.3",
     "y18n": "^4.0.1",
-    "prismjs": "1.24.1",
     "websocket-extensions": "0.1.4",
     "ini": "^2.0.0",
     "browserslist": "^4.21.0",
