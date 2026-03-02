@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
-import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService, WindowService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
@@ -21,6 +21,7 @@ describe('CaseFileViewFieldComponent', () => {
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
+  let mockWindowService: jasmine.SpyObj<WindowService>;
   let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   const cidParam = '1234123412341234';
@@ -65,6 +66,7 @@ describe('CaseFileViewFieldComponent', () => {
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+    mockWindowService = createSpyObj<WindowService>('WindowService', ['openOnNewTab']);
     mockabstractConfig = createSpyObj<AbstractAppConfig>('LoadingService', ['getIcpJurisdictions', 'getIcpEnable']);
     mockabstractConfig.getIcpJurisdictions.and.returnValue('["ST_CIC", "IA"]');
     mockabstractConfig.getIcpEnable.and.returnValue(true);
@@ -90,6 +92,7 @@ describe('CaseFileViewFieldComponent', () => {
         { provide: CaseFileViewService, useValue: mockCaseFileViewService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
         { provide: LoadingService, useValue: mockLoadingService },
+        { provide: WindowService, useValue: mockWindowService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseNotifier, useValue: ['ST-CIC'] },
         { provide: AbstractAppConfig, useValue: mockabstractConfig },
@@ -151,6 +154,22 @@ describe('CaseFileViewFieldComponent', () => {
 
     expect(component.currentDocument.document_filename).toEqual(dummyNodeTreeDocument.document_filename);
     expect(component.currentDocument.document_binary_url).toEqual(dummyNodeTreeDocument.document_binary_url);
+    expect(mockWindowService.openOnNewTab).not.toHaveBeenCalled();
+  });
+
+  it('should open HTML document in a new tab when calling setMediaViewerFile', () => {
+    const dummyNodeTreeDocument = new DocumentTreeNode();
+    dummyNodeTreeDocument.name = 'dummy_document.html';
+    dummyNodeTreeDocument.type = DocumentTreeNodeType.DOCUMENT;
+    dummyNodeTreeDocument.document_filename = 'dummy_document.html';
+    dummyNodeTreeDocument.document_binary_url = '/test/html-binary';
+    dummyNodeTreeDocument.content_type = 'text/html';
+
+    component.setMediaViewerFile(dummyNodeTreeDocument);
+    fixture.detectChanges();
+
+    expect(mockWindowService.openOnNewTab).toHaveBeenCalledWith('/test/html-binary');
+    expect(component.currentDocument).toBeUndefined();
   });
 
   it('should set allowMoving to true based on acl update being true', () => {
