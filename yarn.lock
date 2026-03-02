@@ -3493,7 +3493,7 @@ __metadata:
     karma-spec-reporter: "npm:0.0.34"
     local-storage: "npm:^2.0.0"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^12.0.2"
+    marked: "npm:^17.0.3"
     mem: "npm:^6.0.0"
     merge-stream: "npm:^1.0.0"
     minimist: "npm:1.2.3"
@@ -20135,21 +20135,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^12.0.2":
-  version: 12.0.2
-  resolution: "marked@npm:12.0.2"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/24d4fc58d37c1779197fa7f93c504d8c71d4df54eb69cbbc14a55ba2a8e2ad83d723801fc25452c21ce74b38a483c5863c53449f130253a597be9e9c1d3e7e2b
-  languageName: node
-  linkType: hard
-
 "marked@npm:^16.2.1":
   version: 16.4.2
   resolution: "marked@npm:16.4.2"
   bin:
     marked: bin/marked.js
   checksum: 10/6e40e40661dce97e271198daa2054fc31e6445892a735e416c248fba046bdfa4573cafa08dc254529f105e7178a34485eb7f82573979cfb377a4530f66e79187
+  languageName: node
+  linkType: hard
+
+"marked@npm:^17.0.3":
+  version: 17.0.3
+  resolution: "marked@npm:17.0.3"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/2e3bce6bb012b0d39fba75689b4dea672156d372ae8f089de99e73932bf71f0bb3a5bffa43e58474d6476950b462b7580cb181d68134df3d222b12d190bfa4b2
   languageName: node
   linkType: hard
 
