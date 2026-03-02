@@ -169,7 +169,7 @@
     "rimraf": "2.6.2",
     "rollup": "^0.66.2",
     "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-node-resolve": "^3.0.0",
+    "@rollup/plugin-node-resolve": "^6.0.0",
     "rollup-plugin-typescript": "^1.0.0",
     "sass": "^1.54.0",
     "sass-loader": "^13.0.2",
