@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.33-exui-3345
+### Version 7.3.35
 **EXUI-3345** Open HTML case files for viewing
 
 ### Version 7.3.34
