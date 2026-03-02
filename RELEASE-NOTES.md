@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.35
+**EXUI-3345** Open HTML case files for viewing
+
 ### Version 7.3.34
 **EXUI-3849** CVE Vulnerability - High - CVE-2022-23647
 **EXUI-3851** CVE Vulnerability - High - CVE-2022-21681
