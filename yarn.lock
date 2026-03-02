@@ -599,9 +599,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:17.3.5":
-  version: 17.3.5
-  resolution: "@angular/cdk@npm:17.3.5"
+"@angular/cdk@npm:17.3.10":
+  version: 17.3.10
+  resolution: "@angular/cdk@npm:17.3.10"
   dependencies:
     parse5: "npm:^7.1.2"
     tslib: "npm:^2.3.0"
@@ -612,7 +612,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 10/e73748787a1566c9d336033e5d15d48612c85307eceecf4f8aa024b1477637671d99cd7475eb2c9729b4da27f853ea47a6239390573a04fb35b6cb852ac58a21
+  checksum: 10/2e83fc75783750ffa025d1dc31da303e6a5f7da617c33dd190e8294c7fba6c633f6e410f19b6f41382cd0c5c918a59f27fbb9af01a651d753c7e2429c6a2ab65
   languageName: node
   linkType: hard
 
@@ -3412,7 +3412,7 @@ __metadata:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:^20.3.15"
-    "@angular/cdk": "npm:17.3.5"
+    "@angular/cdk": "npm:17.3.10"
     "@angular/cli": "npm:^20.3.9"
     "@angular/common": "npm:^20.3.15"
     "@angular/compiler": "npm:^20.3.15"
