@@ -114,8 +114,10 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
-          caseTypeId = route.parent.paramMap.get('caseType');
-          this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}/tasks`]);
+          if (!this.router.url?.includes('/cases/case-details/')) {
+            caseTypeId = route.parent.paramMap.get('caseType');
+            this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}`], { fragment: 'Tasks' });
+          }
           return throwError(error);
         })
       ).toPromise();

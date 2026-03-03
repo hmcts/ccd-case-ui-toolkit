@@ -29,7 +29,6 @@ script:
   - yarn test
   - yarn build
 after_success:
-  - yarn test:codacy-upload
   - yarn coverage
   - '[ "$TRAVIS_BRANCH" = "master" -o "$TRAVIS_PULL_REQUEST" = "true" ] && ./scripts/create-release-tag.sh'
 before_deploy:

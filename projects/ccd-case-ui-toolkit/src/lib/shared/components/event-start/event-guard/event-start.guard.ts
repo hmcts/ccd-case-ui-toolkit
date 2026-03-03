@@ -134,6 +134,7 @@ export class EventStartGuard implements CanActivate {
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
+    this.abstractConfig.logMessage(`checkForTasks: for caseId ${caseId} and eventId ${eventId} and taskId ${taskId} and userId ${userId}`);
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
@@ -181,5 +182,6 @@ export class EventStartGuard implements CanActivate {
     };
     this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
     this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+    this.abstractConfig.logMessage(`EventStartGuard:setClientContextStorage: set task ${task?.id} in client context for caseId ${caseId} and eventId ${eventId}`); 
   }
 }

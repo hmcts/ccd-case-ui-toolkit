@@ -125,14 +125,21 @@ describe('EventStartStateMachineService', () => {
     cookieService: mockReadCookieService
   };
 
+  let mockStateMachineConfig: any;
+
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        {
+          provide: EventStartStateMachineService,
+          useFactory: () => new EventStartStateMachineService(mockStateMachineConfig)
+        }
       ]
     });
-    service = new EventStartStateMachineService();
+    mockStateMachineConfig = { logMessage: jasmine.createSpy('logMessage') }; // minimal stub
+    service = TestBed.inject(EventStartStateMachineService);
   });
 
   it('should initialise state machine', () => {

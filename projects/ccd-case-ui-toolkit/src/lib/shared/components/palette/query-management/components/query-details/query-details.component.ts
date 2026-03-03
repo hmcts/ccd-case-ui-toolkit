@@ -31,6 +31,7 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
 
   public followUpQuery: string = QueryCreateContext.FOLLOWUP;
   public respondToQuery: string = QueryCreateContext.RESPOND;
+  public hmctsStaff: string = QueryCreateContext.HMCTSSTAFF;
   public enableServiceSpecificMultiFollowups: string[];
   public currentJurisdictionId: string;
   public isMultipleFollowUpEnabled: boolean = false;

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { CaseField, FieldTypeEnum } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';

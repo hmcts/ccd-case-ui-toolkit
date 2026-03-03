@@ -1,12 +1,11 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { delay, map, switchMap, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
-import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
-import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { SessionStorageService } from '../session';
 
 @Injectable()
 export class DocumentManagementService {
@@ -17,6 +16,8 @@ export class DocumentManagementService {
   private static readonly POWERPOINT = 'powerpoint';
   private static readonly TXT = 'txt';
   private static readonly RTF = 'rtf';
+  private static readonly HTML_MIME_ALLOWLIST: string[] = ['text/html'];
+  private static readonly HTML_EXTENSION_ALLOWLIST: string[] = ['html'];
 
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
@@ -27,59 +28,66 @@ export class DocumentManagementService {
   private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
   private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
 
-  private caseTypeId: string = '';
+  private caseTypeId: string;
+  private caseId?: string;
 
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
-    private readonly caseNotifierService: CaseNotifier,
-    private readonly jurisdictionService: JurisdictionService
-  ) {
-    combineLatest([
-      this.caseNotifierService.caseView.pipe(take(1)),
-      this.jurisdictionService.getSelectedJurisdiction()
-    ]).subscribe(([caseDetails, jurisdiction]) => {
-      if (caseDetails) {
-        this.caseTypeId = caseDetails?.case_type?.id;
-      }
-      if (jurisdiction) {
-        if (jurisdiction.currentCaseType) {
-          this.caseTypeId = jurisdiction.currentCaseType.id;
-        }
-      }
-      //if the user refreshes on the case creation page the above logic will not work, we can get the caseTypeId from the URL
-      if (!this.caseTypeId) {
-        const url = window.location.pathname;
-        if (url.indexOf('/case-create/') > -1) {
-          const parts = url.split('/');
-          this.caseTypeId = parts[parts.indexOf('case-create') + 2];
-        }
-      }
-    });
-  }
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
+    this.setCaseInfo();
     const url = this.getDocStoreUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
-    this.appConfig.logMessage(`Uploading document for case type: ${this.caseTypeId}, with url: ${url}`);
+    this.appConfig.logMessage(`DMS:: Uploading document || case type: ${this.caseTypeId} || url: ${url} || case id: ${this.caseId}`);
     const headers = new HttpHeaders();
     return this.http
-      .post(url, formData, {headers, observe: 'body'})
+      .post(url, formData, { headers, observe: 'body' })
       .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
   }
 
+  public setCaseInfo(): void {
+    const caseInfo = this.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
+    const currUrl = this.getCurrentPathname();
+    this.caseTypeId = this.resolveCaseTypeId(caseInfo, currUrl);
+  }
+
   public getMediaViewerInfo(documentFieldValue: any): string {
+    const resolvedBinaryUrl = this.getDocumentBinaryUrl(documentFieldValue);
+    const resolvedContentType = this.getContentType(documentFieldValue);
     const mediaViewerInfo = {
-      document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+      document_binary_url: resolvedBinaryUrl,
       document_filename: documentFieldValue.document_filename,
-      content_type: this.getContentType(documentFieldValue),
+      content_type: resolvedContentType,
       annotation_api_url: this.appConfig.getAnnotationApiUrl(),
       case_id: documentFieldValue.id,
       case_jurisdiction: documentFieldValue.jurisdiction
     };
     return JSON.stringify(mediaViewerInfo);
+  }
+
+  public getDocumentBinaryUrl(documentFieldValue: any): string {
+    if (!documentFieldValue?.document_binary_url) {
+      return '';
+    }
+    return this.transformDocumentUrl(documentFieldValue.document_binary_url);
+  }
+
+  // keep HTML support explicit to avoid opening arbitrary MIME types directly in a browser tab
+  public isHtmlDocument(documentFieldValue: any): boolean {
+    const rawMimeType = documentFieldValue?.content_type;
+    const mimeType = this.normaliseMimeType(rawMimeType);
+    const isAllowedHtmlMime = DocumentManagementService.HTML_MIME_ALLOWLIST.includes(mimeType);
+
+    // Some read paths (e.g. documents rendered via complex table fields) do not provide content_type.
+    // For those, allow a narrow extension-based fallback so known .html legacy files can still open in a new tab.
+    const fileExtension = this.getFileExtension(documentFieldValue?.document_filename);
+    const isAllowedHtmlExtension = !mimeType && DocumentManagementService.HTML_EXTENSION_ALLOWLIST.includes(fileExtension);
+    return isAllowedHtmlMime || isAllowedHtmlExtension;
   }
 
   public getContentType(documentFieldValue: any): string {
@@ -127,6 +135,47 @@ export class DocumentManagementService {
     return DocumentManagementService.powerpointList.find(e => e === powerpointType) !== undefined;
   }
 
+  public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string, jurisdiction?: string } | null {
+    if (!caseInfo) {
+      return null;
+    }
+    try {
+      return JSON.parse(caseInfo);
+    } catch (error) {
+      this.appConfig.logMessage('Failed to parse caseInfo from session storage');
+      return null;
+    }
+  }
+
+  private getCurrentPathname(): string {
+    if (typeof window === 'undefined' || !window.location) {
+      return '';
+    }
+    return window.location.pathname || '';
+  }
+
+  private resolveCaseTypeId(
+    caseInfo: { caseType?: string, caseId?: string } | null,
+    currUrl: string
+  ): string {
+    const caseTypeIdFromSession = caseInfo?.caseType;
+    let caseType = '';
+    if (caseTypeIdFromSession) {
+      this.caseId = caseInfo?.caseId;
+      caseType = caseTypeIdFromSession;
+    }
+    const parts = currUrl.split('/');
+    if ((currUrl.includes('/case-details/') && parts.length > 4) && caseType === '') {
+      caseType = parts[4];
+    }
+    const caseCreateIndex = parts.indexOf('case-create');
+    if (currUrl.includes('/case-create/') && caseCreateIndex > -1 && parts.length > caseCreateIndex + 2) {
+      caseType = parts[caseCreateIndex + 2];
+    }
+
+    return caseType;
+  }
+
   private transformDocumentUrl(documentBinaryUrl: string): string {
     const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
@@ -134,7 +183,26 @@ export class DocumentManagementService {
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
   }
 
+  private normaliseMimeType(contentType: string): string {
+    if (!contentType) {
+      return '';
+    }
+    return contentType.split(';')[0].trim().toLowerCase();
+  }
+
+  private getFileExtension(fileName: string): string {
+    if (!fileName) {
+      return '';
+    }
+    const dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex < 0 || dotIndex === fileName.length - 1) {
+      return '';
+    }
+    return fileName.slice(dotIndex + 1).trim().toLowerCase();
+  }
+
   private getDocStoreUrl(): string {
+    this.setCaseInfo();
     if (this.isDocumentSecureModeEnabled()) {
       return this.appConfig.getDocumentManagementUrlV2();
     }
@@ -144,6 +212,7 @@ export class DocumentManagementService {
   // return false == document should not use CDAM
   // return true == document should use CDAM
   public isDocumentSecureModeEnabled(): boolean {
+    this.setCaseInfo();
     const documentSecureModeCaseTypeExclusions = this.appConfig.getCdamExclusionList()?.split(',');
     const isDocumentOnExclusionList = documentSecureModeCaseTypeExclusions?.includes(this.caseTypeId);
     if (!isDocumentOnExclusionList){

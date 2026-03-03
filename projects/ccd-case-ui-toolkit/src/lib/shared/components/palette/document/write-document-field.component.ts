@@ -16,6 +16,7 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { SessionStorageService } from '../../../services/session';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -57,7 +58,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public caseId: string;
   // Should the file upload use CDAM
   public fileSecureModeOn: boolean = false;
-
+  public gotFromCaseInfo: boolean = false;
   constructor(
     private readonly appConfig: AbstractAppConfig,
     private readonly caseNotifier: CaseNotifier,
@@ -65,49 +66,50 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly jurisdictionService: JurisdictionService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     // Wait for both observables to emit at least once
-    this.caseNotifierSubscription = combineLatest([
-      this.caseNotifier.caseView.pipe(take(1)),
-      this.jurisdictionService.getSelectedJurisdiction()
-    ]).subscribe(([caseDetails, jurisdiction]) => {
-      if (caseDetails) {
-        this.caseTypeId = caseDetails?.case_type?.id;
-        this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
-        this.caseId = caseDetails?.case_id;
-      }
-      if (jurisdiction) {
-        this.jurisdictionId = jurisdiction.id;
-        if (jurisdiction.currentCaseType) {
-          this.caseTypeId = jurisdiction.currentCaseType.id;
-        }
-      }
-      //if we havent set the value of caseTypeId yet, we can check if its in the url. e.g. case-creation
-      if (!this.caseTypeId) {
-        const url = window.location.pathname;
-        if (url.indexOf('/case-create/') > -1) {
-          const parts = url.split('/');
-          this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
-          this.caseTypeId = parts[parts.indexOf('case-create') + 2];
-        }
-      }
-      // use the documentManagement service to check if the document upload should use CDAM
-      if (this.documentManagement.isDocumentSecureModeEnabled()) {
-        this.fileSecureModeOn = true;
-      }
-      this.dialogConfig = initDialog();
-      let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
-      document = this.fileSecureModeOn && !document.document_hash ? { ...document, document_hash: null } : document;
-      if (this.isAMandatoryComponent()) {
-        this.createDocumentFormWithValidator(document);
+    const caseInfo = this.documentManagement.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
+    const currUrl = window.location.pathname;
+    // if the user is not creating a case we can use the caseInfo session storage
+    if (!currUrl.includes('/case-create/')) {
+      if (caseInfo) {
+        this.gotFromCaseInfo = true;
+        this.caseTypeId = caseInfo.caseType;
+        this.jurisdictionId = caseInfo.jurisdiction;
+        this.caseId = caseInfo.caseId;
       } else {
-        this.createDocumentForm(document);
+        if (currUrl.includes('/case-details/')) {
+          this.jurisdictionId = currUrl.split('/')[3];
+          this.caseTypeId = currUrl.split('/')[4];
+          this.caseId = currUrl.split('/')[5];
+        }
       }
-    });
+    } else {
+      // the user is in the create case journey so we should get data from the url
+      const parts = currUrl.split('/');
+      this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
+      this.caseTypeId = parts[parts.indexOf('case-create') + 2];
+      this.caseId = null;
+      console.log(this.jurisdictionId); console.log(this.caseTypeId);
+    }
+
+    // use the documentManagement service to check if the document upload should use CDAM
+    if (this.documentManagement.isDocumentSecureModeEnabled()) {
+      this.fileSecureModeOn = true;
+    }
+    this.dialogConfig = initDialog();
+    let document = this.caseField.value || { document_url: null, document_binary_url: null, document_filename: null };
+    document = this.fileSecureModeOn && !document.document_hash ? { ...document, document_hash: null } : document;
+    if (this.isAMandatoryComponent()) {
+      this.createDocumentFormWithValidator(document);
+    } else {
+      this.createDocumentForm(document);
+    }
   }
 
   public ngOnDestroy(): void {
@@ -363,12 +365,21 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     return documentUpload;
   }
 
+  generateLogMessage(cdamEnabled: boolean): void {
+    const currUrl = window.location.pathname;
+    if (!currUrl.includes('/create-case/')) {
+      this.appConfig.logMessage(`WDF:: CDAM is ${cdamEnabled ? 'enabled' : 'disabled'} || existing case || case ref:: ${this.caseId} || jurisdiction:: ${this.jurisdictionId} || case type:: ${this.caseTypeId} || gotFromCaseInfo:: ${this.gotFromCaseInfo}`);
+    } else {
+      this.appConfig.logMessage(`WDF:: CDAM is ${cdamEnabled ? 'enabled' : 'disabled'} || create case journey || jurisdiction:: ${this.jurisdictionId} || case type:: ${this.caseTypeId}`);
+    }
+  }
+
   private handleDocumentUploadResult(result: DocumentData): void {
     // use the documentManagement service to check if the document upload should use CDAM
     if (this.documentManagement.isDocumentSecureModeEnabled()) {
-      this.appConfig.logMessage(`CDAM is enabled for case with case ref:: ${this.caseId}`);
+      this.generateLogMessage(true);
     } else {
-      this.appConfig.logMessage(`CDAM is disabled for case with case ref:: ${this.caseId}`);
+      this.generateLogMessage(false);
     }
     if (!this.uploadedDocument) {
       if (this.fileSecureModeOn) {

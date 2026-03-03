@@ -9,13 +9,13 @@ on:
     branches:
       - master
       - Release
-      - refs/tags/*
-    tags:
-      - '*'
+  release:
+    types:
+      - created
 
 jobs:
   build:
-    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
+    if: github.event_name != 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
           path: coverage
 
   release-build:
-    if: startsWith(github.ref, 'refs/tags')
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
       - run: yarn build
 
   sonarcloud:
-    if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags')
+    if: github.event_name != 'release'
     needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
@@ -80,9 +80,11 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
-    if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -92,15 +94,42 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
-          NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
+
+      - name: Ensure npm version (Trusted Publishing)
+        run: |
+          npm --version
+          npm i -g npm@11.5.1
+          npm --version
+
+      - name: Determine npm dist-tag from GitHub Release
+        run: |
+          if [ "${{ github.event.release.prerelease }}" = "true" ]; then
+            echo "NPM_TAG=next" >> "$GITHUB_ENV"
+          else
+            echo "NPM_TAG=latest" >> "$GITHUB_ENV"
+          fi
+
+      - name: Publish version (OIDC via npm)
+        working-directory: dist/ccd-case-ui-toolkit
+        run: |
+          # Ensure we do NOT publish using token-based auth (classic/granular).
+          unset NODE_AUTH_TOKEN
+
+          # Use a fresh npm user config with no auth token to force OIDC Trusted Publishing.
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npmrc-noauth"
+          printf "registry=https://registry.npmjs.org/\n" > "$NPM_CONFIG_USERCONFIG"
+
+          # Defensive: remove any auth token entries if something tries to inject them.
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config delete _authToken || true
+
+          npm publish --access public --tag "$NPM_TAG" --ignore-scripts
 
   publish-gpr:
-    if: startsWith(github.ref, 'refs/tags')
     needs: release-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -111,7 +140,15 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
+      - name: Pack dist as npm tarball
+        id: pack
+        run: |
+          cd dist/ccd-case-ui-toolkit
+          TAR=$(npm pack)
+          echo "tarball=dist/ccd-case-ui-toolkit/$TAR" >> $GITHUB_OUTPUT
+      - name: Attach tarball to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.pack.outputs.tarball }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
