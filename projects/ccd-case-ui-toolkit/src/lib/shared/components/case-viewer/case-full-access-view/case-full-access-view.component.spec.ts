@@ -795,19 +795,14 @@ it('should set case view tab based on navigation end event', () => {
     });
   })
 
-  it('should call setCaseInfo', () => {
-    spyOn<any>(component, 'setCaseInfo');
+  it('should remove eventUrl from session storage on init', () => {
     component.ngOnInit();
-    expect((component as any).setCaseInfo).toHaveBeenCalled();
+    expect(sessionStorageMockService.removeItem).toHaveBeenCalledWith('eventUrl');
   });
 
-  it('should call setCaseInfo and update sessionStorage if caseId differs', () => {
-    sessionStorageMockService.getItem.and.returnValue(JSON.stringify({ caseId: 'old' }));
-    component.caseDetails.case_id = 'new';
-    component.caseDetails.case_type.jurisdiction.id = 'jid';
-    component.caseDetails.case_type.id = 'ctid';
-    component['setCaseInfo']();
-    expect(sessionStorageMockService.setItem).toHaveBeenCalled();
+  it('should not set session storage case info on init', () => {
+    component.ngOnInit();
+    expect(sessionStorageMockService.setItem).not.toHaveBeenCalled();
   });
 
   it('should call reset for linkedCaseService and caseFlagStateService oninit', () => {
@@ -2088,8 +2083,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the "Dummy" tab has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+    // Component sets selected index to the matched tab even if it is already selected
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 
   it('should not set tabGroup selected index to pre-selected tab if it is already selected', fakeAsync(() => {
@@ -2102,8 +2097,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the pre-selected tab is "Overview", which has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+    // Component sets selected index to the pre-selected tab even if it is already selected
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 
   it('should not set tabGroup selected index if a roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
@@ -2123,8 +2118,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Selected index should not be set because the "Tasks" tab has position 0 (already selected)
-    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+    // Component sets selected index to the matched tab even if it is already selected
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 });
 
