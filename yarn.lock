@@ -3462,7 +3462,6 @@ __metadata:
     core-js: "npm:^2.4.1"
     css-loader: "npm:^6.7.1"
     del: "npm:^3.0.0"
-    enhanced-resolve: "npm:3.3.0"
     eslint: "npm:^8.57.0"
     exceljs: "npm:^4.4.0"
     expect: "npm:^23.0.0"
@@ -3496,7 +3495,6 @@ __metadata:
     marked: "npm:^12.0.2"
     mem: "npm:^6.0.0"
     merge-stream: "npm:^1.0.0"
-    minimist: "npm:1.2.3"
     mocha: "npm:^8.1.1"
     moment: "npm:^2.30.1"
     moment-timezone: "npm:^0.5.31"
@@ -3510,7 +3508,6 @@ __metadata:
     nyc: "npm:^13.0.1"
     pegjs: "npm:^0.10.0"
     prism: "npm:^4.1.2"
-    prismjs: "npm:^1.30.0"
     raw-loader: "npm:^0.5.1"
     reflect-metadata: "npm:^0.1.12"
     rimraf: "npm:2.6.2"
@@ -3540,8 +3537,6 @@ __metadata:
     webpack-dev-middleware: "npm:^4.0.2"
     webpack-rxjs-externals: "npm:^2.0.0"
     webpack-source-map-support: "npm:^2.0.1"
-    yargs: "npm:17.7.2"
-    yargs-parser: "npm:^21.1.1"
     yarn: "npm:^1.22.15"
     zone.js: "npm:^0.15.1"
   languageName: unknown
@@ -11465,17 +11460,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cliui@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "cliui@npm:8.0.1"
-  dependencies:
-    string-width: "npm:^4.2.0"
-    strip-ansi: "npm:^6.0.1"
-    wrap-ansi: "npm:^7.0.0"
-  checksum: 10/eaa5561aeb3135c2cddf7a3b3f562fc4238ff3b3fc666869ef2adf264be0f372136702f16add9299087fb1907c2e4ec5dbfe83bd24bce815c70a80c6c1a2e950
-  languageName: node
-  linkType: hard
-
 "cliui@npm:^9.0.1":
   version: 9.0.1
   resolution: "cliui@npm:9.0.1"
@@ -13788,18 +13772,6 @@ __metadata:
     engine.io-parser: "npm:~5.2.1"
     ws: "npm:~8.17.1"
   checksum: 10/005b43b392d5b4b9bb196d1ae2a8cc1334a7dc70af3cfb50627d257de407ca1afae725fcd8571f9621cd12ed437abaac819c64cf22f09d5ae02b954a7e7bf4f8
-  languageName: node
-  linkType: hard
-
-"enhanced-resolve@npm:3.3.0":
-  version: 3.3.0
-  resolution: "enhanced-resolve@npm:3.3.0"
-  dependencies:
-    graceful-fs: "npm:^4.1.2"
-    memory-fs: "npm:^0.4.0"
-    object-assign: "npm:^4.0.1"
-    tapable: "npm:^0.2.5"
-  checksum: 10/04fda242bb0577eec2d016f68d32486ce2bf75a30b785fc5ee89e7300351363c0cb290224272353c05e640a3bf4ab25869bc35fd5fbd93d1b469893424606f89
   languageName: node
   linkType: hard
 
@@ -20296,7 +20268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memory-fs@npm:^0.4.0, memory-fs@npm:^0.4.1":
+"memory-fs@npm:^0.4.1":
   version: 0.4.1
   resolution: "memory-fs@npm:0.4.1"
   dependencies:
@@ -26261,13 +26233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tapable@npm:^0.2.5":
-  version: 0.2.9
-  resolution: "tapable@npm:0.2.9"
-  checksum: 10/48a0240f736a7ec0722c6ec7e7d08fa11a29fcc14f1daf983c800cbb2d5702874f8bc9ca4355278602307bc027042d64ed0a270d8e427f2d3982c82060ec56b2
-  languageName: node
-  linkType: hard
-
 "tapable@npm:^1.0.0, tapable@npm:^1.1.3":
   version: 1.1.3
   resolution: "tapable@npm:1.1.3"
@@ -29062,21 +29027,6 @@ __metadata:
     y18n: "npm:^5.0.5"
     yargs-parser: "npm:^20.2.2"
   checksum: 10/807fa21211d2117135d557f95fcd3c3d390530cda2eca0c840f1d95f0f40209dcfeb5ec18c785a1f3425896e623e3b2681e8bb7b6600060eda1c3f4804e7957e
-  languageName: node
-  linkType: hard
-
-"yargs@npm:17.7.2":
-  version: 17.7.2
-  resolution: "yargs@npm:17.7.2"
-  dependencies:
-    cliui: "npm:^8.0.1"
-    escalade: "npm:^3.1.1"
-    get-caller-file: "npm:^2.0.5"
-    require-directory: "npm:^2.1.1"
-    string-width: "npm:^4.2.3"
-    y18n: "npm:^5.0.5"
-    yargs-parser: "npm:^21.1.1"
-  checksum: 10/abb3e37678d6e38ea85485ed86ebe0d1e3464c640d7d9069805ea0da12f69d5a32df8e5625e370f9c96dd1c2dc088ab2d0a4dd32af18222ef3c4224a19471576
   languageName: node
   linkType: hard
 
