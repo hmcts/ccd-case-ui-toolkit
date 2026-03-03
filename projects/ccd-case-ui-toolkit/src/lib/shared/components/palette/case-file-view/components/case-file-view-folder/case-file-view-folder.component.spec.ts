@@ -213,6 +213,23 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer?mvToken=test-token');
   });
 
+  it('should open HTML document binary URL directly in a new tab', () => {
+    const htmlNode = plainToClass(DocumentTreeNode, {
+      name: 'legacy-history.html',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'legacy-history.html',
+      document_binary_url: '/documents/html-file/binary',
+      content_type: 'text/html'
+    });
+
+    component.triggerDocumentAction('openInANewTab', htmlNode);
+
+    // @ts-expect-error -- private method
+    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/documents/html-file/binary');
+    // @ts-expect-error -- private method
+    expect(component.windowService.setLocalStorage).not.toHaveBeenCalled();
+  });
+
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
