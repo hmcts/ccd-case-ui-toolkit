@@ -7,7 +7,8 @@ import { Journey } from '../../../../../domain';
 
 @Component({
   selector: 'ccd-no-linked-cases',
-  templateUrl: './no-linked-cases.component.html'
+  templateUrl: './no-linked-cases.component.html',
+  standalone: false
 })
 export class NoLinkedCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
 
@@ -24,6 +25,6 @@ export class NoLinkedCasesComponent extends AbstractJourneyComponent implements 
   }
 
   public onBack(): void {
-    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseId], { fragment: 'Linked cases' });
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseJurisdictionID, this.linkedCasesService.caseDetails.case_type, this.linkedCasesService.caseId], { fragment: 'Linked cases' });
   }
 }

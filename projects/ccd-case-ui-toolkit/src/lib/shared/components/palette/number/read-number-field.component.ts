@@ -3,6 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-number-field',
-  template: `<span class="text-16">{{caseField.value | ccdCaseReference}}</span>`
+  template: `<span class="text-16">{{caseField.value | ccdCaseReference}}</span>`,
+  standalone: false
 })
 export class ReadNumberFieldComponent extends AbstractFieldReadComponent {}

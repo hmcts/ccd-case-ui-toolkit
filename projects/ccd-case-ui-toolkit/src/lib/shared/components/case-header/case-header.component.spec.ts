@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, provideNgReflectAttributes } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -29,13 +29,12 @@ describe('CaseHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
+        imports: [markdownComponentMock],
         declarations: [
           CaseHeaderComponent,
           CaseReferencePipe,
           LabelSubstitutorDirective,
-          LabelFieldComponent,
-          // Mocks
-          markdownComponentMock
+          LabelFieldComponent
         ],
         providers: [
           FieldsUtils,
@@ -45,7 +44,8 @@ describe('CaseHeaderComponent', () => {
           RpxTranslationService,
           RpxTranslationConfig,
           HttpClient,
-          HttpHandler
+          HttpHandler,
+          provideNgReflectAttributes()
         ]
       }).compileComponents();
 

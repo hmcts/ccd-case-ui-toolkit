@@ -9,7 +9,8 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
   templateUrl: './field-read-label.html',
   styleUrls: [
     './field-read-label.scss'
-  ]
+  ],
+  standalone: false
 })
 export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {
 

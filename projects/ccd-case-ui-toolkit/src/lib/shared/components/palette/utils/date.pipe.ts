@@ -4,7 +4,8 @@ import moment from 'moment';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 
 @Pipe({
-  name: 'ccdDate'
+  name: 'ccdDate',
+  standalone: false
 })
 export class DatePipe implements PipeTransform {
   private static readonly DATE_FORMAT_REGEXP =

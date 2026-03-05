@@ -7,7 +7,8 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 
 @Pipe({
-  name: 'ccdReadFieldsFilter'
+  name: 'ccdReadFieldsFilter',
+  standalone: false
 })
 export class ReadFieldsFilterPipe implements PipeTransform {
 
@@ -117,7 +118,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     } else if (field.show_condition) {
       let cond: ShowCondition;
       if (fieldId && field.show_condition.indexOf(`${fieldId}.`) > -1 && !formGroupAvailable && !!Object.keys(formValue).length) {
-        const search = `${fieldId}.`;
+        const search = `/.*${fieldId}./`;
         const searchRegExp = new RegExp(search, 'g');
         const replaceWith = '';
         cond = ShowCondition.getInstance(field.show_condition.replace(searchRegExp, replaceWith));

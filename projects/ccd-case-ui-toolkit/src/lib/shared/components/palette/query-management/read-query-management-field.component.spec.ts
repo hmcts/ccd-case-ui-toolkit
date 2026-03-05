@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 import { CaseField } from '../../../domain';
-import { PUI_CASE_MANAGER } from '../../../utils';
+import { JUDGE, PUI_CASE_MANAGER } from '../../../utils';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
 import { BehaviorSubject, of } from 'rxjs';
@@ -14,11 +14,15 @@ import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
   selector: 'dummy-component',
-  template: ''
+  template: '',
+  standalone: false
 })
 class DummyComponent { }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class MockTranslatePipe implements PipeTransform {
   public transform(value: any, ...args: any[]): any {
     return value;
@@ -267,6 +271,23 @@ describe('ReadQueryManagementFieldComponent', () => {
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isInternalUser()).toBeFalsy();
+    });
+  });
+
+  describe('isJudiciaryUser', () => {
+    it('should return true if the user has a judge role', () => {
+      USER.roles.push(JUDGE);
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isJudiciaryUser()).toBeTruthy();
+      USER.roles.pop();
+    });
+
+    it('should return false if the user does not have a judge role', () => {
+      USER.roles = [];
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isJudiciaryUser()).toBeFalsy();
     });
   });
 

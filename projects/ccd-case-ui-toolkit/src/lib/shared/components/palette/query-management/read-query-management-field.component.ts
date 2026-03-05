@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
-import { isInternalUser } from '../../../utils';
+import { isInternalUser, isJudiciaryUser } from '../../../utils';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from './models';
@@ -12,8 +12,9 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'ccd-read-query-management-field',
-  templateUrl: './read-query-management-field.component.html'
+    selector: 'ccd-read-query-management-field',
+  templateUrl: './read-query-management-field.component.html',
+  standalone: false
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
   public caseQueriesCollections: CaseQueriesCollection[];
@@ -102,6 +103,10 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
 
   public isInternalUser(): boolean {
     return isInternalUser(this.sessionStorageService);
+  }
+
+  public isJudiciaryUser(): boolean {
+    return isJudiciaryUser(this.sessionStorageService);
   }
 
   public getMessageType(query: any): string | undefined {

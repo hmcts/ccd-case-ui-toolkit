@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
+import { AbstractAppConfig } from '../../../../app.config';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { UserInfo } from '../../../domain/user/user-info.model';
@@ -19,6 +20,8 @@ export class EventStartStateMachineService {
   public stateMultipleTasksAssignedToUser: State;
   public stateTaskUnassigned: State;
   public stateFinal: State;
+
+  constructor(private readonly abstractConfig: AbstractAppConfig) {}
 
   public initialiseStateMachine(context: EventStartStateMachineContext): StateMachine {
     return new StateMachine(EVENT_STATE_MACHINE, context);
@@ -112,7 +115,7 @@ export class EventStartStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
     // Navigate to no tasks available error page
-    context.router.navigate([`/cases/case-details/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
   public entryActionForStateOneOrMoreTasks(state: State, context: EventStartStateMachineContext): void {
@@ -159,14 +162,13 @@ export class EventStartStateMachineService {
   public entryActionForStateTaskUnAssigned(state: State, context: EventStartStateMachineContext): void {
     let navigationURL = '';
     let theQueryParams: Params = {};
-  
     if (context.tasks[0].assignee) {
       // Task is assigned to some other user, navigate to task assigned error page
-      navigationURL = `/cases/case-details/${context.caseId}/task-assigned`;
+      navigationURL = `/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/task-assigned`;
       theQueryParams = context.tasks[0];
     } else {
       // Task is unassigned, navigate to task unassigned error page
-      navigationURL = `/cases/case-details/${context.caseId}/task-unassigned`;
+      navigationURL = `/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/task-unassigned`;
     }
 
     // Trigger final state to complete processing of state machine
@@ -175,7 +177,7 @@ export class EventStartStateMachineService {
     context.router.navigate([`${navigationURL}`], { queryParams: theQueryParams, relativeTo: context.route });
   }
 
-  public entryActionForStateOneTaskAssignedToUser(state: State, context: EventStartStateMachineContext): void {
+  public entryActionForStateOneTaskAssignedToUser = (state: State, context: EventStartStateMachineContext): void => {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
 
@@ -186,6 +188,7 @@ export class EventStartStateMachineService {
     }
 
     const taskStr = JSON.stringify(task);
+    this.abstractConfig?.logMessage?.(`entryActionForStateOneTaskAssignedToUser: task_state ${task?.task_state} for task id ${task?.id}`);
     console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
     const currentLanguage = context.cookieService.getCookie('exui-preferred-language');
@@ -216,7 +219,7 @@ export class EventStartStateMachineService {
     // EXUI-2668 - Only add client context when taskEventCompletionInfo is set - stops auto completing incorrect tasks
     context.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(clientContext));
     // Allow user to perform the event
-    context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
+    context.router.navigate([`/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });
   }
 
@@ -224,7 +227,7 @@ export class EventStartStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
     // Navigate to multiple tasks exist error page
-    context.router.navigate([`/cases/case-details/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/multiple-tasks-exist`], { relativeTo: context.route });
   }
 
   public finalAction(state: State): void {

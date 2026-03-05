@@ -10,7 +10,8 @@ import { EventTriggerResolver } from '../services';
 
 @Component({
   selector: 'ccd-case-event-trigger',
-  templateUrl: './case-event-trigger.html'
+  templateUrl: './case-event-trigger.html',
+  standalone: false
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public static readonly EVENT_COMPLETION_MESSAGE = `Case #%CASEREFERENCE% has been updated with event: %NAME%`;
@@ -123,9 +124,25 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       });
   }
 
+  // replace the old link with the new one with jurisdiction and case type id
+  private getNavigationUrl(url: string): string {
+    const urlRegex = /\/case-details\/(\d+)/;
+    const match = url.match(urlRegex);
+    if (match && /^\d+$/.test(match[1]) && this.caseDetails?.case_type) {
+      const jurisdiction = this.caseDetails.case_type.jurisdiction.id;
+      const id = this.caseDetails.case_type.id;
+      return url.replace(
+        urlRegex,
+        `/case-details/${jurisdiction}/${id}/${match[1]}`
+      );
+    }
+    return url;
+  }
+
   public cancel(): Promise<boolean> {
-    const previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
+    let previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
     if (previousUrl) {
+      previousUrl = this.getNavigationUrl(previousUrl);
       if (previousUrl.indexOf('#') > -1) {
         const url = previousUrl.split('#')[0];
         const fragment = previousUrl.split('#')[1].replace(/%20/g, ' ');
@@ -134,7 +151,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         return this.router.navigate([previousUrl]);
       }
     } else {
-      return this.router.navigate([this.parentUrl]);
+      const updatedUrl = this.getNavigationUrl(this.parentUrl);
+      return this.router.navigate([updatedUrl]);
     }
   }
 

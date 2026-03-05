@@ -20,7 +20,8 @@ const CLASS = 'person-first-name-cls';
 @Component({
   template: `
     <div class="${CLASS}"></div>
-  `
+  `,
+  standalone: false
 })
 class FieldTestComponent { }
 

@@ -7,7 +7,8 @@ import { FocusElementDirective } from './focus-element.directive';
   template: `
     <input type='text' id='firstName' name='firstName'>
     <input type='text' id='lastName' name='lastName' focusElement>
-    <input type='text' id='postcode' name='postcode'>`
+    <input type='text' id='postcode' name='postcode'>`,
+  standalone: false
 })
 class TestFocusComponent {
 }

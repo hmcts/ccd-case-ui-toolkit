@@ -46,14 +46,14 @@ describe('WriteTextFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           WriteTextFieldComponent,
           // Mocks
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          inputComponentMock
+          MockFieldLabelPipe
         ],
         providers: []
       })
@@ -77,10 +77,35 @@ describe('WriteTextFieldComponent', () => {
     expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
   });
 
-  it('should render text input element linked to formControl', () => {
-    const input = de.query($INPUT);
+  it('should render label when caseField is not hidden', () => {
+    component.caseField.hidden = false;
+    fixture.detectChanges();
 
-    expect(input.nativeElement.getAttribute('type')).toBe('text');
-    expect(input.componentInstance.formControl).toEqual(component.textControl);
+    const label = de.query(By.css('label'));
+    expect(label).toBeTruthy();
+  });
+
+  it('should not render label when caseField is hidden', () => {
+    component.caseField.hidden = true;
+    fixture.detectChanges();
+
+    const label = de.query(By.css('label'));
+    expect(label).toBeFalsy();
+  });
+
+  it('should render input with type "text" when caseField is not hidden', () => {
+    component.caseField.hidden = false;
+    fixture.detectChanges();
+
+    const input = de.query($INPUT);
+    expect(input.componentInstance.type).toBe('text');
+  });
+
+  it('should render input with type "hidden" when caseField is hidden', () => {
+    component.caseField.hidden = true;
+    fixture.detectChanges();
+
+    const input = de.query($INPUT);
+    expect(input.componentInstance.type).toBe('hidden');
   });
 });

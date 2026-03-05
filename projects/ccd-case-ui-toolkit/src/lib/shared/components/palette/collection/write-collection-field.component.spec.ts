@@ -121,14 +121,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -371,14 +371,14 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -488,14 +488,14 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -578,14 +578,14 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -685,14 +685,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -788,14 +788,14 @@ describe('WriteCollectionFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          fieldWriteComponent,
-          fieldReadComponent
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -825,13 +825,17 @@ describe('WriteCollectionFieldComponent', () => {
 
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
-    component.caseField = ({ ...component.caseField, field_type: { id: 'TextField', type: 'Text' } as FieldType } as CaseField);
-    component.caseFields = [{...component.caseField } as CaseField];
+    component.caseField = ({ ...component.caseField, field_type: {
+        id: 'Text',
+        type: 'Collection',
+        collection_field_type: { id: 'Text', type: 'Text' }
+      } as FieldType } as CaseField);
+    component.caseFields = [{ ...component.caseField } as CaseField];
     addButton.nativeElement.click();
     fixture.detectChanges();
 
     const writeFields = de.queryAll($WRITE_FIELDS);
 
-    expect(writeFields.length).toEqual(2);
+    expect(writeFields.length).toEqual(3);
   });
 });

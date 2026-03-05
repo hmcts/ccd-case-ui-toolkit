@@ -4,7 +4,8 @@ import { CaseEditComponent } from '../../../case-edit';
 
 @Component({
   selector: 'app-case-event-completion-task-cancelled',
-  templateUrl: './case-event-completion-task-cancelled.html'
+  templateUrl: './case-event-completion-task-cancelled.html',
+  standalone: false
 })
 export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   @Input()
@@ -13,9 +14,13 @@ export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   public notifyEventCompletionCancelled: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public caseId: string;
+  public jurisdiction: string;
+  public caseType: string;
 
   public ngOnInit(): void {
     this.caseId = this.context.caseId;
+    this.jurisdiction = this.context.task.jurisdiction;
+    this.caseType = this.context.task.case_type_id;
   }
 
   public onContinue(): void {

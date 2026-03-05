@@ -46,7 +46,8 @@ describe('WriteNumberFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputComponentMock
         ],
         declarations: [
           WriteNumberFieldComponent,
@@ -54,8 +55,7 @@ describe('WriteNumberFieldComponent', () => {
 
           // Mocks
           MockRpxTranslatePipe,
-          MockFieldLabelPipe,
-          inputComponentMock
+          MockFieldLabelPipe
         ],
         providers: []
       })

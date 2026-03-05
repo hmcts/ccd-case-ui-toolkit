@@ -8,6 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { WindowService } from '../../../services/window';
 import { attr, text } from '../../../test/helpers';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -42,7 +43,6 @@ describe('ReadDocumentFieldComponent', () => {
     }) as CaseField;
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
     const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
-    const DOCUMENT_CLICKABLE_HREF = 'javascript:void(0)';
 
     let fixture: ComponentFixture<ReadDocumentFieldComponent>;
     let component: ReadDocumentFieldComponent;
@@ -58,10 +58,14 @@ describe('ReadDocumentFieldComponent', () => {
       mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
       mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService',
-        ['uploadFile', 'getMediaViewerInfo']);
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+        ['uploadFile', 'getMediaViewerInfo', 'isHtmlDocument', 'getDocumentBinaryUrl']);
+      mockDocumentManagementService.getMediaViewerInfo.and.returnValue('{"document_filename":"evidence_document.evd"}');
+      mockDocumentManagementService.getDocumentBinaryUrl.and.returnValue(VALUE.document_binary_url);
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(false);
+      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'openOnNewTab', 'removeLocalStorage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
+      router.createUrlTree.and.returnValue({ toString: () => '/media-viewer' } as any);
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);
 
       TestBed
@@ -96,16 +100,15 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(text(de)).toEqual(VALUE.document_filename.toString());
-      const linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('button'));
       expect(linkElement).toBeTruthy();
-      expect(attr(linkElement, 'href')).toEqual(DOCUMENT_CLICKABLE_HREF);
     });
 
     it('should call Media Viewer when the document link is clicked', () => {
       component.caseField.value = VALUE;
       fixture.detectChanges();
       spyOn(component, 'showMediaViewer');
-      const linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('button'));
       expect(linkElement).toBeTruthy();
       linkElement.triggerEventHandler('click', null);
       fixture.detectChanges();
@@ -124,6 +127,36 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(de.nativeElement.textContent).toEqual('');
+    });
+
+    it('should open HTML document directly in a new tab', () => {
+      const htmlDocument = {
+        ...VALUE,
+        content_type: 'text/html'
+      };
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(true);
+
+      component.openMediaViewer(htmlDocument);
+
+      expect(mockDocumentManagementService.isHtmlDocument).toHaveBeenCalledWith(htmlDocument);
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith(VALUE.document_binary_url);
+      expect(windowService.setLocalStorage).not.toHaveBeenCalled();
+    });
+
+    it('should store media viewer payload and open media viewer with token', () => {
+      const token = 'test-token';
+      const mediaViewerUrl = '/media-viewer?mvToken=test-token';
+      const payload = { foo: 'bar' };
+
+      spyOn(FieldsUtils, 'createToken').and.returnValue(token);
+      mockDocumentManagementService.getMediaViewerInfo.and.returnValue(payload);
+      router.createUrlTree.and.returnValue({ toString: () => mediaViewerUrl });
+
+      component.openMediaViewer(VALUE);
+
+      expect(mockDocumentManagementService.getMediaViewerInfo).toHaveBeenCalledWith(VALUE);
+      expect(windowService.setLocalStorage).toHaveBeenCalledWith(`media-viewer-info:${token}`, payload);
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith(mediaViewerUrl);
     });
   });
 

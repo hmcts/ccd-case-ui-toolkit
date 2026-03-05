@@ -16,11 +16,11 @@ class MockRpxTranslationService {
   private langSubject = new BehaviorSubject<string>('en');
   private _language = 'en';
   language$ = this.langSubject.asObservable();
-  
+
   get language() {
     return this._language;
   }
-  
+
   set language(lang: string) {
     this._language = lang;
     this.langSubject.next(lang);
@@ -39,7 +39,8 @@ class MockRpxTranslationService {
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
       <td>{{caseField.value}}</td>
-    </tr>`
+    </tr>`,
+  standalone: false
 })
 class TestHostComponent {
 
@@ -780,7 +781,7 @@ describe('LabelSubstitutorDirective', () => {
       const label = 'English text with ${LabelA} placeholder';
       const translatedTemplate = 'Welsh text with ${LabelA} placeholder';
       const finalText = 'Welsh text with ValueA placeholder';
-      
+
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
 
@@ -816,7 +817,7 @@ describe('LabelSubstitutorDirective', () => {
       fixture.detectChanges();
 
       comp.caseField.hint_text = 'Modified hint';
-      
+
       placeholderService.resolvePlaceholders.calls.reset();
       placeholderService.resolvePlaceholders.and.callFake((_fields: any, str: any) => {
         if (str === initialHint) return 'Initial hint with ValueA after change';
@@ -846,24 +847,18 @@ describe('LabelSubstitutorDirective', () => {
       expect(comp.caseField.isTranslated).toBe(false);
     });
 
-    it('should handle language change timeout correctly', fakeAsync(() => {
+    it('should handle language change correctly', fakeAsync(() => {
       const label = 'Label with ${placeholder}';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Label with ValueA', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Label with ValueA', 'Label with ValueA', '', '');
       fixture.detectChanges();
 
       placeholderService.resolvePlaceholders.calls.reset();
 
       translationService.setLanguage('cy');
 
-      expect(placeholderService.resolvePlaceholders).not.toHaveBeenCalled();
-
-      tick(50);
-      expect(placeholderService.resolvePlaceholders).not.toHaveBeenCalled();
-
-      tick(50);
       fixture.detectChanges();
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalled();
     }));

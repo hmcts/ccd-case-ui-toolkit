@@ -5,7 +5,8 @@ import { NotificationBannerType } from './enums';
 @Component({
   selector: 'ccd-notification-banner',
   templateUrl: './notification-banner.component.html',
-  styleUrls: ['./notification-banner.component.scss']
+  styleUrls: ['./notification-banner.component.scss'],
+  standalone: false
 })
 export class NotificationBannerComponent {
   @Input()

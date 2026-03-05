@@ -8,7 +8,7 @@
 </div>
 <div class="govuk-button-group">
     <button class="button button-primary" type="button" (click)="save()">Save</button>
-    <a (click)="cancel()" class="cancel" href="javascript:void(0)">Cancel</a>
+    <a (click)="cancel(); $event.preventDefault()" class="cancel" href="#">Cancel</a>
 </div>
 
 <ng-template #folder let-cat="cat" let-level="level">

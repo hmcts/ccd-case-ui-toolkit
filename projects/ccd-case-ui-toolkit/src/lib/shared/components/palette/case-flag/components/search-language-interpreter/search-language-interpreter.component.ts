@@ -15,7 +15,8 @@ import { MultipageComponentStateService } from "../../../../../services";
 @Component({
   selector: 'ccd-search-language-interpreter',
   templateUrl: './search-language-interpreter.component.html',
-  styleUrls: ['./search-language-interpreter.component.scss']
+  styleUrls: ['./search-language-interpreter.component.scss'],
+  standalone: false
 })
 export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent implements OnInit, Journey {
   public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
@@ -46,8 +47,8 @@ export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
 
-  constructor(private readonly rpxTranslationService: RpxTranslationService, 
-    multipageComponentStateService: MultipageComponentStateService) { 
+  constructor(private readonly rpxTranslationService: RpxTranslationService,
+    multipageComponentStateService: MultipageComponentStateService) {
     super(multipageComponentStateService);
   }
 

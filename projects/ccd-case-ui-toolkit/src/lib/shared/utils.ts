@@ -4,9 +4,26 @@ export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
 export const JUDGE = 'judge';
 
+function getUserDetails(sessionStorageService: SessionStorageService): any {
+  try {
+    const item = sessionStorageService?.getItem(USER_DETAILS);
+    return item ? JSON.parse(item) : null;
+  } catch {
+    return null;
+  }
+}
+
+
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
-  const userDetails = JSON.parse(sessionStorageService?.getItem(USER_DETAILS));
-  return userDetails && userDetails.roles
+  const userDetails = getUserDetails(sessionStorageService);
+  return userDetails && userDetails?.roles
     && !(userDetails.roles.includes(PUI_CASE_MANAGER)
       || userDetails.roles.some((role) => role.toLowerCase().includes(JUDGE)));
 }
+
+export function isJudiciaryUser(sessionStorageService: SessionStorageService): boolean {
+  const userDetails = getUserDetails(sessionStorageService);
+  return userDetails && userDetails?.roles
+    && (userDetails.roles.some((role) => role.toLowerCase().includes(JUDGE)));
+}
+

@@ -12,8 +12,8 @@ import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/c
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  private jurisdiction: string;
-  private caseType: string;
+  public jurisdiction: string;
+  public caseType: string;
   private caseId: string;
 
   constructor(private readonly workAllocationService: WorkAllocationService,
@@ -119,7 +119,7 @@ export class EventStartGuard implements CanActivate {
       return true;
     } else if (tasksAssignedToUser.length > 1 && !taskId) {
       // if more than one task assigned to the user then give multiple tasks error
-      this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+      this.router.navigate([`/cases/case-details/${this.jurisdiction}/${this.caseType}/${caseId}/multiple-tasks-exist`]);
       return false;
     } else {
       let task: any;
@@ -134,6 +134,7 @@ export class EventStartGuard implements CanActivate {
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string, userId: string): Observable<boolean> {
+    this.abstractConfig.logMessage(`checkForTasks: for caseId ${caseId} and eventId ${eventId} and taskId ${taskId} and userId ${userId}`);
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
@@ -150,7 +151,7 @@ export class EventStartGuard implements CanActivate {
       if (this.router && this.router.url && this.router.url.includes('event-start')) {
         return of(true);
       }
-      this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
+      this.router.navigate([`/cases/case-details/${this.jurisdiction}/${this.caseType}/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId, eventId, userId));
@@ -181,5 +182,6 @@ export class EventStartGuard implements CanActivate {
     };
     this.sessionStorageService.setItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO, JSON.stringify(taskEventCompletionInfo));
     this.sessionStorageService.setItem(CaseEditComponent.CLIENT_CONTEXT, JSON.stringify(storeClientContext));
+    this.abstractConfig.logMessage(`EventStartGuard:setClientContextStorage: set task ${task?.id} in client context for caseId ${caseId} and eventId ${eventId}`); 
   }
 }

@@ -6,6 +6,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -41,7 +42,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
-    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
+    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', standalone: false, inputs: [
         'API_ROOT',
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
@@ -62,12 +63,12 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [paymentWebComponent],
         declarations: [
           CasePaymentHistoryViewerFieldComponent,
 
           // Mocks
-          paymentWebComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },

@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
-import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } from '../../models';
+import { CaseQueriesCollection, QueryCreateContext, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-list',
   templateUrl: './query-list.component.html',
-  styleUrls: ['./query-list.component.scss']
+  styleUrls: ['./query-list.component.scss'],
+  standalone: false
 })
 export class QueryListComponent implements OnChanges {
   @Input() public caseQueriesCollection: CaseQueriesCollection;
@@ -13,11 +14,14 @@ export class QueryListComponent implements OnChanges {
   public queryListData: QueryListData | undefined;
   public displayedColumns: QueryListColumn[] = [
     { name: 'subject', displayName: 'Query subject', sortOrder: SortOrder.UNSORTED },
+    { name: 'name', displayName: 'Sender Name', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.UNSORTED },
     { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED },
     { name: 'responseStatus', displayName: 'Response status', sortOrder: SortOrder.UNSORTED }
   ];
+
+  public hmctsStaff: string = QueryCreateContext.HMCTSSTAFF;
 
   public ngOnChanges(simpleChanges: SimpleChanges) {
     const currentCaseQueriesCollection = simpleChanges.caseQueriesCollection?.currentValue as CaseQueriesCollection;
