@@ -143,6 +143,11 @@ export class CaseResolver implements Resolve<CaseView> {
   private goToDefaultPage(): void {
     console.info('Going to default page!');
     const userDetails = JSON.parse(this.sessionStorage.getItem(USER_DETAILS));
+    // TODO(EXUI-2073): Decision needed for <NEW_CATEGORY> navigation defaults.
+    // QUESTION: If <NEW_CATEGORY> is introduced, should its role patterns route to Work Allocation default page or /cases?
+    // CONTEXT: Navigation to `/work/my-work/list` happens only when roles match this hard-coded WA allow-list and user is not `pui-case-manager`.
+    // CONTEXT: All other users are sent to `/cases`, so new role patterns are not recognised unless explicitly added here.
+    // CONTEXT: This logic does not read `roleCategory`, so introducing <NEW_CATEGORY> alone will not change routing behavior.
     userDetails && userDetails.roles
         && !userDetails.roles.includes(PUI_CASE_MANAGER)
         &&

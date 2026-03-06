@@ -24,6 +24,11 @@ export class CaseAccessUtils {
     public static readonly CTSC_ROLE_NAME = 'ctsc';
 
     public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
+        // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+        // QUESTION: Should <NEW_CATEGORY> have explicit mapping precedence in this chain?
+        // CONTEXT: This method checks categories in order: JUDICIAL -> PROFESSIONAL -> CITIZEN -> ADMIN -> CTSC.
+        // CONTEXT: Each step matches either an explicit `roleCategories` value or a role keyword from `roles`.
+        // CONTEXT: If nothing matches, it returns LEGAL_OPERATIONS, so unknown categories are silently remapped.
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
 
@@ -42,6 +47,7 @@ export class CaseAccessUtils {
             CaseAccessUtils.CTSC_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.CTSC_ROLE_CATEGORY;
         } else {
+            // TODO(EXUI-2073): Default currently remaps unknown categories/roles to LEGAL_OPERATIONS.
             return CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY;
         }
 
@@ -74,6 +80,7 @@ export class CaseAccessUtils {
                 roleName = `${accessType}-access-${CaseAccessUtils.CTSC_ROLE_NAME}`;
                 break;
             default:
+                // TODO(EXUI-2073): Unknown categories currently map to legal-ops role names.
                 roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;
                 break;
         }

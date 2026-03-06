@@ -314,6 +314,12 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: In Case Details -> Request Challenged Access, what business rules should apply to users in <NEW_CATEGORY>?
+    // CONTEXT: UI journey affected: Case Details -> Request Challenged Access.
+    // CONTEXT: `roleCategory` comes from `userInfo.roleCategory`, or is inferred from user roles/categories when absent.
+    // CONTEXT: `roleName` is derived from `roleCategory` via `getAMRoleName('challenged', ...)`; unknown categories default to `challenged-access-legal-ops`.
+    // CONTEXT: Both values are submitted in the payload (`requestedRoles[0].roleCategory` and `requestedRoles[0].roleName`), so fallback mapping can change business meaning.
     const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
     const beginTime = new Date();
@@ -346,6 +352,12 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: In Case Details -> Request Specific Access, what business rules should apply to users in <NEW_CATEGORY>, and what requested role should be recorded?
+    // CONTEXT: UI journey affected: Case Details -> Request Specific Access.
+    // CONTEXT: `roleName` is first derived from category (`getAMRoleName('specific', roleCategory)`), then `requestedRoles[0].roleName` is overwritten to `specific-access-requested`.
+    // CONTEXT: The original derived role is still kept in `requestedRoles[0].attributes.requestedRole`, and that value is category-dependent.
+    // CONTEXT: For unknown categories, the derived role falls back to `specific-access-legal-ops`, which can mask <NEW_CATEGORY> intent in downstream processing.
     const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;

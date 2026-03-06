@@ -32,6 +32,12 @@ export interface RequestedRoleNote {
   comment: string;
 }
 
+// TODO(EXUI-2073): Decision needed before adding <NEW_CATEGORY>.
+// QUESTION: If <NEW_CATEGORY> is added, should access requests reuse an existing category's rules (and if so, which one) or need new rules?
+// CONTEXT: This union is the type contract for `RequestedRole.roleCategory` in assignment payload models.
+// CONTEXT: Values outside this list are not type-valid in typed frontend payload construction until explicitly added.
+// CONTEXT: UI journeys affected: Case Details -> "Request Challenged Access" and "Request Specific Access".
+// CONTEXT: Current allowed values are JUDICIAL, LEGAL_OPERATIONS, ADMIN, PROFESSIONAL, CITIZEN and CTSC only.
 export type RoleCategory = 'JUDICIAL' | 'LEGAL_OPERATIONS' | 'ADMIN' | 'PROFESSIONAL' | 'CITIZEN' | 'CTSC';
 
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
