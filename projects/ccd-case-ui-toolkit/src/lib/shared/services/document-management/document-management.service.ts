@@ -16,6 +16,8 @@ export class DocumentManagementService {
   private static readonly POWERPOINT = 'powerpoint';
   private static readonly TXT = 'txt';
   private static readonly RTF = 'rtf';
+  private static readonly HTML_MIME_ALLOWLIST: string[] = ['text/html'];
+  private static readonly HTML_EXTENSION_ALLOWLIST: string[] = ['html'];
 
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
@@ -55,15 +57,37 @@ export class DocumentManagementService {
   }
 
   public getMediaViewerInfo(documentFieldValue: any): string {
+    const resolvedBinaryUrl = this.getDocumentBinaryUrl(documentFieldValue);
+    const resolvedContentType = this.getContentType(documentFieldValue);
     const mediaViewerInfo = {
-      document_binary_url: this.transformDocumentUrl(documentFieldValue.document_binary_url),
+      document_binary_url: resolvedBinaryUrl,
       document_filename: documentFieldValue.document_filename,
-      content_type: this.getContentType(documentFieldValue),
+      content_type: resolvedContentType,
       annotation_api_url: this.appConfig.getAnnotationApiUrl(),
       case_id: documentFieldValue.id,
       case_jurisdiction: documentFieldValue.jurisdiction
     };
     return JSON.stringify(mediaViewerInfo);
+  }
+
+  public getDocumentBinaryUrl(documentFieldValue: any): string {
+    if (!documentFieldValue?.document_binary_url) {
+      return '';
+    }
+    return this.transformDocumentUrl(documentFieldValue.document_binary_url);
+  }
+
+  // keep HTML support explicit to avoid opening arbitrary MIME types directly in a browser tab
+  public isHtmlDocument(documentFieldValue: any): boolean {
+    const rawMimeType = documentFieldValue?.content_type;
+    const mimeType = this.normaliseMimeType(rawMimeType);
+    const isAllowedHtmlMime = DocumentManagementService.HTML_MIME_ALLOWLIST.includes(mimeType);
+
+    // Some read paths (e.g. documents rendered via complex table fields) do not provide content_type.
+    // For those, allow a narrow extension-based fallback so known .html legacy files can still open in a new tab.
+    const fileExtension = this.getFileExtension(documentFieldValue?.document_filename);
+    const isAllowedHtmlExtension = !mimeType && DocumentManagementService.HTML_EXTENSION_ALLOWLIST.includes(fileExtension);
+    return isAllowedHtmlMime || isAllowedHtmlExtension;
   }
 
   public getContentType(documentFieldValue: any): string {
@@ -157,6 +181,24 @@ export class DocumentManagementService {
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
     const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
+  }
+
+  private normaliseMimeType(contentType: string): string {
+    if (!contentType) {
+      return '';
+    }
+    return contentType.split(';')[0].trim().toLowerCase();
+  }
+
+  private getFileExtension(fileName: string): string {
+    if (!fileName) {
+      return '';
+    }
+    const dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex < 0 || dotIndex === fileName.length - 1) {
+      return '';
+    }
+    return fileName.slice(dotIndex + 1).trim().toLowerCase();
   }
 
   private getDocStoreUrl(): string {

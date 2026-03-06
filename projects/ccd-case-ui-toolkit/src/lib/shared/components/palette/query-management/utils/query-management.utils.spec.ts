@@ -46,6 +46,8 @@ describe('QueryManagementUtils', () => {
         attachments: new FormControl([]),
         closeQuery: new FormControl(false)
       });
+      const isHmctsStaff = 'No';
+
       const caseMessage = {
         id: 'test',
         subject: 'Review attached document',
@@ -57,11 +59,41 @@ describe('QueryManagementUtils', () => {
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444'
       };
-      const caseMessageResult = QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails);
+      const caseMessageResult = QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails, isHmctsStaff);
       expect(caseMessageResult.subject).toEqual(caseMessage.subject);
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+    });
+
+    it('should return case message data for new query for HMCTS staff', () => {
+      const formGroup = new FormGroup({
+        subject: new FormControl('Review attached document', Validators.required),
+        body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
+        isHearingRelated: new FormControl('true', Validators.required),
+        hearingDate: new FormControl('2023-10-23'),
+        attachments: new FormControl([]),
+        closeQuery: new FormControl(false)
+      });
+      const isHmctsStaff = 'Yes';
+
+      const caseMessage = {
+        id: 'test',
+        subject: 'Review attached document',
+        name: 'Stuart Smith',
+        body: 'Please review attached document and advise if hearing should proceed?',
+        attachments: [],
+        isHearingRelated: 'Yes',
+        hearingDate: '2023-10-23',
+        createdOn: new Date(),
+        createdBy: '1111-2222-3333-4444'
+      };
+      const caseMessageResult = QueryManagementUtils.getNewQueryData(formGroup, currentUserDetails, isHmctsStaff);
+      expect(caseMessageResult.subject).toEqual(caseMessage.subject);
+      expect(caseMessageResult.body).toEqual(caseMessage.body);
+      expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
+      expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+      expect(caseMessageResult.isHmctsStaff).toEqual('Yes');
     });
 
     it('should return case message data for respond or followup query', () => {
@@ -99,7 +131,7 @@ describe('QueryManagementUtils', () => {
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444'
       };
-      const caseMessageResult = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, undefined);
+      const caseMessageResult = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, undefined, 'No');
       expect(caseMessageResult.subject).toEqual(caseMessage.subject);
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
@@ -132,7 +164,7 @@ describe('QueryManagementUtils', () => {
         closeQuery: new FormControl(true)
       });
 
-      const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND);
+      const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND, 'Yes');
       expect(result.isClosed).toBe('Yes');
     });
 
@@ -147,8 +179,9 @@ describe('QueryManagementUtils', () => {
         attachments: new FormControl([]),
         closeQuery: new FormControl(false)
       });
+      const isHmctsStaff = 'No';
 
-      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithIdOnly);
+      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithIdOnly, isHmctsStaff);
       expect(result.createdBy).toBe('fallback-user-id');
       expect(result.name).toBe('Alt Name');
     });
@@ -168,8 +201,8 @@ describe('QueryManagementUtils', () => {
         attachments: new FormControl([]),
         closeQuery: new FormControl(false)
       });
-
-      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithNames);
+      const isHmctsStaff = 'No';
+      const result = QueryManagementUtils.getNewQueryData(formGroup, userWithNames, isHmctsStaff);
       expect(result.name).toBe('Lisa Brown');
       expect(result.createdBy).toBe('uid-xyz');
     });
@@ -274,14 +307,16 @@ describe('QueryManagementUtils', () => {
     describe('getNewQueryData', () => {
       it('should use uid and name if available', () => {
         const user = { uid: 'user-123', name: 'Alice Smith' };
-        const result = QueryManagementUtils.getNewQueryData(formGroup, user);
+        const isHmctsStaff = 'No';
+        const result = QueryManagementUtils.getNewQueryData(formGroup, user, isHmctsStaff);
         expect(result.createdBy).toBe('user-123');
         expect(result.name).toBe('Alice Smith');
       });
 
       it('should fallback to id and forename + surname', () => {
         const user = { id: 'user-456', forename: 'Bob', surname: 'Jones' };
-        const result = QueryManagementUtils.getNewQueryData(formGroup, user);
+        const isHmctsStaff = 'No';
+        const result = QueryManagementUtils.getNewQueryData(formGroup, user, isHmctsStaff);
         expect(result.createdBy).toBe('user-456');
         expect(result.name).toBe('Bob Jones');
       });
@@ -294,23 +329,26 @@ describe('QueryManagementUtils', () => {
       queryItem.isHearingRelated = 'Yes';
       queryItem.hearingDate = '2025-07-01';
 
+      const hmctsStaff = 'Yes';
+      const nonHmctsStaff = 'No';
+
       it('should set isClosed to Yes when closeQuery is true', () => {
         formGroup.get('closeQuery').setValue(true);
         const user = { uid: 'x', name: 'Y' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND, hmctsStaff);
         expect(result.isClosed).toBe('Yes');
       });
 
       it('should set isClosed to No when closeQuery is false', () => {
         formGroup.get('closeQuery').setValue(false);
         const user = { uid: 'x', name: 'Y' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND, hmctsStaff);
         expect(result.isClosed).toBe('No');
       });
 
       it('should fallback to forename + surname when name is missing', () => {
         const user = { uid: 'u9', forename: 'Charlie', surname: 'Doe' };
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND, hmctsStaff);
         expect(result.name).toBe('Charlie Doe');
       });
       it('should set messageType as RESPOND if passed as RESPOND', () => {
@@ -327,7 +365,7 @@ describe('QueryManagementUtils', () => {
           closeQuery: new FormControl(false)
         });
 
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.RESPOND, hmctsStaff);
         expect(result.messageType).toBe(QueryCreateContext.RESPOND);
       });
 
@@ -345,7 +383,7 @@ describe('QueryManagementUtils', () => {
           closeQuery: new FormControl(false)
         });
 
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP);
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP, nonHmctsStaff);
         expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
       });
 
@@ -363,7 +401,7 @@ describe('QueryManagementUtils', () => {
           closeQuery: new FormControl(false)
         });
 
-        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, 'INVALID_TYPE');
+        const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, 'INVALID_TYPE', nonHmctsStaff);
         expect(result.messageType).toBeUndefined();
       });
     });

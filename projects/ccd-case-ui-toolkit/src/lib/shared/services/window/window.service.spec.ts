@@ -43,9 +43,11 @@ describe('WindowService', () => {
   });
 
   it('should open on new tab', () => {
-    spyOn(window, 'open');
+    const openedWindow = { opener: 'unsafe-reference' } as unknown as Window;
+    spyOn(window, 'open').and.returnValue(openedWindow);
     windowService.openOnNewTab('organisationDetails');
-    expect(window.open).toHaveBeenCalled();
+    expect(window.open).toHaveBeenCalledWith('organisationDetails', '_blank', 'noopener,noreferrer');
+    expect(openedWindow.opener).toBeNull();
   });
 
   xit('should open on confirm message', () => {
