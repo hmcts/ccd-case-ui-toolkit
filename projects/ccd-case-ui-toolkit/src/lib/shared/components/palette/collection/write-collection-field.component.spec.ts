@@ -309,6 +309,57 @@ describe('WriteCollectionFieldComponent', () => {
     const fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
   });
+
+  it('should focus first non-radio control in last collection item', () => {
+    const root = (component as any).items.last?.nativeElement as HTMLElement;
+    expect(root).toBeTruthy();
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.className = 'form-control';
+    const text = document.createElement('input');
+    text.type = 'text';
+    text.className = 'form-control';
+    root.appendChild(radio);
+    root.appendChild(text);
+
+    spyOn(radio, 'focus');
+    spyOn(text, 'focus');
+
+    (component as any).focusLastItem();
+
+    expect(radio.focus).not.toHaveBeenCalled();
+    expect(text.focus).toHaveBeenCalled();
+  });
+
+  it('should focus a non-input form control if it appears first', () => {
+    const root = (component as any).items.last?.nativeElement as HTMLElement;
+    expect(root).toBeTruthy();
+
+    const select = document.createElement('select');
+    select.className = 'form-control';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'form-control';
+    root.appendChild(select);
+    root.appendChild(input);
+
+    spyOn(select, 'focus');
+    spyOn(input, 'focus');
+
+    (component as any).focusLastItem();
+
+    expect(select.focus).toHaveBeenCalled();
+    expect(input.focus).not.toHaveBeenCalled();
+  });
+
+  it('should not throw when no collection items exist', () => {
+    caseField.value = [];
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(() => (component as any).focusLastItem()).not.toThrow();
+  });
 });
 
 describe('WriteCollectionFieldComponent CRUD impact', () => {
