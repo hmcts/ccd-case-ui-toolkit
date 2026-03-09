@@ -238,9 +238,22 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private focusLastItem() {
-    const item: any = this.items.last.nativeElement.querySelector('.form-control');
-    if (item) {
-      item.focus();
+    const root = this.items.last?.nativeElement as HTMLElement | undefined;
+    if (!root) {
+      return;
+    }
+
+    const controls = Array.from(root.querySelectorAll<HTMLElement>('.form-control'));
+    const focusTarget = controls.find(control => {
+      if (!(control instanceof HTMLInputElement)) {
+        return true;
+      }
+      const type = (control.type || '').toLowerCase();
+      return type !== 'radio';
+    });
+
+    if (focusTarget) {
+      focusTarget.focus();
     }
   }
 
