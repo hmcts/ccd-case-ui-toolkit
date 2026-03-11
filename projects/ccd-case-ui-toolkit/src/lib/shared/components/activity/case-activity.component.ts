@@ -98,7 +98,9 @@ export class CaseActivityComponent implements OnInit, OnDestroy {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
       this.socketSubscription = undefined;
-      this.socket.stopCase(this.caseId, true);
+      if (!this.iconOnly) {
+        this.socket.stopCase(this.caseId, true);
+      }
     }
   }
 

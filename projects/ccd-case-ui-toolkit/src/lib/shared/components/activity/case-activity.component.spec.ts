@@ -175,6 +175,23 @@ describe('CaseActivityComponent', () => {
         checkHidden();
       });
     });
+
+    describe('when destroyed', () => {
+      it('should call stopCase for non-icon usage', () => {
+        component.iconOnly = false;
+        component.ngOnDestroy();
+
+        expect(activitySocketService.stopCase).toHaveBeenCalledWith(CASE_ID, true);
+      });
+
+      it('should not call stopCase for icon-only usage', () => {
+        activitySocketService.stopCase.calls.reset();
+        component.iconOnly = true;
+        component.ngOnDestroy();
+
+        expect(activitySocketService.stopCase).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when the activity mode is set to "polling"', () => {
