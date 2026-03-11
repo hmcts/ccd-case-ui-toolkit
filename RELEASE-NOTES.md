@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.36
+**EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
+
 ### Version 7.3.35
 **EXUI-3345** Open HTML case files for viewing
 
