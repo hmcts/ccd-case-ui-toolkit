@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.38
+**EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
+
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
 **EXUI-3952** Removing deprecated functions - Toolkit
