@@ -467,42 +467,54 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private hasActivePotentiallyViolentPersonFlagInCaseField(caseField: CaseField, currentValue?: any): boolean {
-    console.log('hasActivePotentiallyViolentPersonFlagInCaseField', caseField);
     const fieldType = caseField.field_type;
-    switch (fieldType.type) {
-      case 'Complex':
-        if (FieldsUtils.isFlagsCaseField(caseField)) {
-          const value = caseField.value ? caseField.value : currentValue;
-          return this.hasActivePotentiallyViolentPersonFlagInFlagsValue(value);
-        } else if (fieldType.complex_fields) {
-          const value = caseField.value ? caseField.value : currentValue;
-          if (value && FieldsUtils.isNonEmptyObject(value)) {
-            return fieldType.complex_fields.some((subField) =>
-              this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, value[subField.id])
-            );
-          }
-        }
-        break;
-      case 'Collection':
-        if (FieldsUtils.isFlagsFieldType(fieldType.collection_field_type)) {
-          const value = caseField.value ? caseField.value : currentValue;
-          if (value && Array.isArray(value)) {
-            return value.some((item: any) => this.hasActivePotentiallyViolentPersonFlagInFlagsValue(item.value));
-          }
-        } else if (fieldType.collection_field_type.type === 'Complex' && fieldType.collection_field_type.complex_fields) {
-          const value = caseField.value ? caseField.value : currentValue;
-          if (value && Array.isArray(value)) {
-            return value.some((item: any) =>
-              fieldType.collection_field_type.complex_fields.some((subField) =>
-                this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, item.value?.[subField.id])
-              )
-            );
-          }
-        }
-        break;
-      default:
+    const value = caseField.value ? caseField.value : currentValue;
+
+    if (fieldType.type === 'Complex') {
+      return this.hasActivePotentiallyViolentPersonFlagInComplexField(caseField, value);
     }
+
+    if (fieldType.type === 'Collection') {
+      return this.hasActivePotentiallyViolentPersonFlagInCollectionField(caseField, value);
+    }
+
     return false;
+  }
+
+  private hasActivePotentiallyViolentPersonFlagInComplexField(caseField: CaseField, value: any): boolean {
+    if (FieldsUtils.isFlagsCaseField(caseField)) {
+      return this.hasActivePotentiallyViolentPersonFlagInFlagsValue(value);
+    }
+
+    const complexFields = caseField.field_type.complex_fields;
+    if (!complexFields || !value || !FieldsUtils.isNonEmptyObject(value)) {
+      return false;
+    }
+
+    return complexFields.some((subField) =>
+      this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, value[subField.id])
+    );
+  }
+
+  private hasActivePotentiallyViolentPersonFlagInCollectionField(caseField: CaseField, value: any): boolean {
+    if (!value || !Array.isArray(value)) {
+      return false;
+    }
+
+    const collectionFieldType = caseField.field_type.collection_field_type;
+    if (FieldsUtils.isFlagsFieldType(collectionFieldType)) {
+      return value.some((item: any) => this.hasActivePotentiallyViolentPersonFlagInFlagsValue(item.value));
+    }
+
+    if (collectionFieldType.type !== 'Complex' || !collectionFieldType.complex_fields) {
+      return false;
+    }
+
+    return value.some((item: any) =>
+      collectionFieldType.complex_fields.some((subField) =>
+        this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, item.value?.[subField.id])
+      )
+    );
   }
 
   private hasActivePotentiallyViolentPersonFlagInFlagsValue(value: any): boolean {
