@@ -1550,6 +1550,103 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect(comp.activeCaseFlags).toBe(true);
   });
 
+  it('should prefix active Case Flags banner message when an active Potentially Violent Person party flag exists', () => {
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = 'PF0021';
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('POTENTIALLY VIOLENT PERSON. There is 1 active flag on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
+  });
+
+  it('should prefix active Case Flags banner message when an active Potentially Violent Person party flag exists in a collection', () => {
+    const collectionCaseFlagField = Object.assign(new CaseField(), {
+      id: 'CaseFlagCollection',
+      label: 'Case Flag Collection',
+      display_context: null,
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'Flags',
+          type: 'Complex',
+          complex_fields: []
+        }
+      },
+      value: [
+        {
+          id: 'collection-item-1',
+          value: {
+            partyName: 'Jane Smith',
+            roleOnCase: '',
+            details: [
+              {
+                id: 'detail-1',
+                value: {
+                  name: 'Potentially Violent Person',
+                  subTypeValue: '',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2025-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2025-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: 'PF0021',
+                  status: CaseFlagStatus.ACTIVE
+                }
+              }
+            ]
+          }
+        }
+      ]
+    });
+    CASE_VIEW.tabs[3].fields.push(collectionCaseFlagField);
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain('POTENTIALLY VIOLENT PERSON');
+    expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields.pop();
+  });
+
+  it('should not prefix active Case Flags banner message when the active party flag code is not PF0021', () => {
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = 'PF0003';
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).not.toContain('POTENTIALLY VIOLENT PERSON');
+    expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
+  });
+
   it('should not display active Case Flags banner message if none of the Case Flags are active', () => {
     // Set first Case Flag status to "Inactive"
     CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.INACTIVE;

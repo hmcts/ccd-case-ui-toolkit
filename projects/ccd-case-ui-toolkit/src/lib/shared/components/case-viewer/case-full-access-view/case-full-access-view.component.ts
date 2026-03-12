@@ -37,6 +37,7 @@ import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -78,6 +79,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public activeCaseFlags = false;
   public caseFlagsExternalUser = false;
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
+  private readonly potentiallyViolentPersonFlagCode = 'PF0021';
+  private readonly potentiallyViolentPersonFlagPrefix = 'POTENTIALLY VIOLENT PERSON.';
   private subs: Subscription[] = [];
   public eventId: string;
   public isEventButtonClicked: boolean = false;
@@ -432,8 +435,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         }, 0);
 
       if (activeCaseFlags > 0) {
-        const description = activeCaseFlags > 1
+        const hasActivePotentiallyViolentPersonFlag = this.hasActivePotentiallyViolentPersonFlag(caseFlagsTab.fields);
+        const baseDescription = activeCaseFlags > 1
           ? `There are ${activeCaseFlags} active flags on this case.` : 'There is 1 active flag on this case.';
+        const description = hasActivePotentiallyViolentPersonFlag
+          ? `${this.potentiallyViolentPersonFlagPrefix} ${baseDescription}`
+          : baseDescription;
         // Initialise and display notification banner
         this.notificationBannerConfig = {
           bannerType: NotificationBannerType.INFORMATION,
@@ -451,6 +458,64 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     return false;
+  }
+
+  private hasActivePotentiallyViolentPersonFlag(caseFields: CaseField[]): boolean {
+    return caseFields
+      .filter((caseField) => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
+      .some((caseField) => this.hasActivePotentiallyViolentPersonFlagInCaseField(caseField));
+  }
+
+  private hasActivePotentiallyViolentPersonFlagInCaseField(caseField: CaseField, currentValue?: any): boolean {
+    console.log('hasActivePotentiallyViolentPersonFlagInCaseField', caseField);
+    const fieldType = caseField.field_type;
+    switch (fieldType.type) {
+      case 'Complex':
+        if (FieldsUtils.isFlagsCaseField(caseField)) {
+          const value = caseField.value ? caseField.value : currentValue;
+          return this.hasActivePotentiallyViolentPersonFlagInFlagsValue(value);
+        } else if (fieldType.complex_fields) {
+          const value = caseField.value ? caseField.value : currentValue;
+          if (value && FieldsUtils.isNonEmptyObject(value)) {
+            return fieldType.complex_fields.some((subField) =>
+              this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, value[subField.id])
+            );
+          }
+        }
+        break;
+      case 'Collection':
+        if (FieldsUtils.isFlagsFieldType(fieldType.collection_field_type)) {
+          const value = caseField.value ? caseField.value : currentValue;
+          if (value && Array.isArray(value)) {
+            return value.some((item: any) => this.hasActivePotentiallyViolentPersonFlagInFlagsValue(item.value));
+          }
+        } else if (fieldType.collection_field_type.type === 'Complex' && fieldType.collection_field_type.complex_fields) {
+          const value = caseField.value ? caseField.value : currentValue;
+          if (value && Array.isArray(value)) {
+            return value.some((item: any) =>
+              fieldType.collection_field_type.complex_fields.some((subField) =>
+                this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, item.value?.[subField.id])
+              )
+            );
+          }
+        }
+        break;
+      default:
+    }
+    return false;
+  }
+
+  private hasActivePotentiallyViolentPersonFlagInFlagsValue(value: any): boolean {
+    if (!value || !FieldsUtils.isNonEmptyObject(value) || !value.details || !Array.isArray(value.details)) {
+      return false;
+    }
+
+    return value.details.some((detail) => {
+      const detailValue = detail && detail.value ? detail.value : detail;
+      return detailValue
+        && detailValue.flagCode === this.potentiallyViolentPersonFlagCode
+        && detailValue.status === CaseFlagStatus.ACTIVE;
+    });
   }
 
   /**
