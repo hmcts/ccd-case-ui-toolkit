@@ -113,98 +113,6 @@ mark.comment {
   width: 100%;
 }
 
-
-
-// RESPONSIVE table
-//
-// body {
-//   line-height: 1.25;
-// }
-//
-// table {
-//   border-bottom: 1px solid #fff;
-//   border-collapse: collapse;
-//   margin: 0;
-//   padding: 0;
-//   width: 100%;
-//
-//   table-layout: auto;
-// }
-//
-// table caption {
-//   font-size: 1.5em;
-//   margin: .5em 0 .75em;
-// }
-//
-// table tr {
-//   background-color: #fff;
-//   border-bottom: 1px solid #ddd;
-//   padding: .35em;
-// }
-//
-// table th,
-// table td {
-//   padding: .625em 0;
-//   text-align: left;
-//
-// }
-//
-// table th {
-//
-// }
-//
-// @media screen and (max-width: 650px) {
-//   table {
-//     border: 0;
-//   }
-//
-//   table caption {
-//     font-size: 1.3em;
-//   }
-//
-//   table thead {
-//     border: none;
-//     clip: rect(0 0 0 0);
-//     height: 1px;
-//     margin: -1px;
-//     overflow: hidden;
-//     padding: 0;
-//     position: absolute;
-//     width: 1px;
-//
-//   }
-//
-//   table tr {
-//     border-bottom: 5px solid #ddd;
-//     display: block;
-//     margin-bottom: .625em;
-//
-//   }
-//
-//   table td {
-//     border-bottom: 1px solid #ddd;
-//     display: block;
-//     font-size: .8em;
-//     text-align: right;
-//   }
-//
-//   table td::before {
-//     /*
-//     * aria-label has no advantage, it won't be read inside a table
-//     content: attr(aria-label);
-//     */
-//     content: attr(data-label);
-//     float: left;
-//     font-weight: bold;
-//   }
-//
-//   table td:last-child {
-//     border-bottom: 0;
-//
-//   }
-// }
-
-
 .no-border-bottom {
   border-bottom: 0;
 }
@@ -257,13 +165,13 @@ mark.comment {
 
   @include govuk-font($size: 19);
 
-  @include mq($from: desktop) {
+  @media screen and (min-width: 769px) {
     display: table;
   }
 }
 
 .govuk-check-your-answers--pba-overview {
-  @include mq($from: desktop) {
+  @media screen and (min-width: 769px) {
     // to make focusOn of q&a line up horizontally (unless there is just one focusOn)
     width: 100%;
     // recommended for mostly short questions
