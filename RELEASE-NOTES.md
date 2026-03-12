@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.38-exui-4185
+**EXUI-4185** Secrets/tokens logged in plaintext
+
 ### Version 7.3.38
 **EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
 
