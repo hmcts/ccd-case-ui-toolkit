@@ -1,5 +1,16 @@
 ## RELEASE NOTES
 
+### Version 7.3.37
+**EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
+**EXUI-3952** Removing deprecated functions - Toolkit
+
+
+### Version 7.3.36
+**EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
+
+### Version 7.3.35
+**EXUI-3345** Open HTML case files for viewing
+
 ### Version 7.3.34
 **EXUI-3849** CVE Vulnerability - High - CVE-2022-23647
 **EXUI-3851** CVE Vulnerability - High - CVE-2022-21681

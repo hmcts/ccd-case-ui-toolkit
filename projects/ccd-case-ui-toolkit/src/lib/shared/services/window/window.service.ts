@@ -31,7 +31,10 @@ export class WindowService {
   }
 
   public openOnNewTab(url: string): void {
-    window.open(url, '_blank');
+    const openedWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    if (openedWindow) {
+      openedWindow.opener = null;
+    }
   }
 
   public confirm(message: string): boolean {
