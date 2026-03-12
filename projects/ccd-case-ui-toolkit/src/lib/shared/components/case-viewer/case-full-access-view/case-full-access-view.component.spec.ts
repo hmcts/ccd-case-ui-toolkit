@@ -1647,6 +1647,137 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
   });
 
+  it('should return false for unsupported field types in hasActivePotentiallyViolentPersonFlagInCaseField', () => {
+    const unsupportedCaseField = Object.assign(new CaseField(), {
+      id: 'PlainText',
+      field_type: {
+        id: 'Text',
+        type: 'Text'
+      },
+      value: 'Some text value'
+    });
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCaseField(unsupportedCaseField)).toBe(false);
+  });
+
+  it('should return false in hasActivePotentiallyViolentPersonFlagInComplexField when no complex fields or value exists', () => {
+    const nonFlagsComplexCaseField = Object.assign(new CaseField(), {
+      id: 'NonFlagsComplex',
+      field_type: {
+        id: 'ComplexType',
+        type: 'Complex',
+        complex_fields: null
+      }
+    });
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInComplexField(nonFlagsComplexCaseField, null)).toBe(false);
+  });
+
+  it('should find an active PF0021 flag in nested complex fields', () => {
+    const nestedFlagsCaseField = Object.assign(new CaseField(), {
+      id: 'NestedFlags',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      }
+    });
+    const parentComplexCaseField = Object.assign(new CaseField(), {
+      id: 'ParentComplex',
+      field_type: {
+        id: 'ParentComplexType',
+        type: 'Complex',
+        complex_fields: [nestedFlagsCaseField]
+      }
+    });
+    const parentComplexValue = {
+      NestedFlags: {
+        details: [
+          {
+            value: {
+              flagCode: 'PF0021',
+              status: CaseFlagStatus.ACTIVE
+            }
+          }
+        ]
+      }
+    };
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInComplexField(parentComplexCaseField, parentComplexValue)).toBe(true);
+  });
+
+  it('should evaluate nested complex collection fields in hasActivePotentiallyViolentPersonFlagInCollectionField', () => {
+    const nestedFlagsCaseField = Object.assign(new CaseField(), {
+      id: 'NestedFlags',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      }
+    });
+    const complexCollectionCaseField = Object.assign(new CaseField(), {
+      id: 'ComplexCollection',
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'SomeComplexType',
+          type: 'Complex',
+          complex_fields: [nestedFlagsCaseField]
+        }
+      }
+    });
+    const complexCollectionValue = [
+      {
+        id: 'item-1',
+        value: {
+          NestedFlags: {
+            details: [
+              {
+                value: {
+                  flagCode: 'PF0021',
+                  status: CaseFlagStatus.ACTIVE
+                }
+              }
+            ]
+          }
+        }
+      }
+    ];
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCollectionField(complexCollectionCaseField, complexCollectionValue)).toBe(true);
+  });
+
+  it('should return false in hasActivePotentiallyViolentPersonFlagInCollectionField for non-complex non-flags collections', () => {
+    const plainCollectionCaseField = Object.assign(new CaseField(), {
+      id: 'PlainCollection',
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'Text',
+          type: 'Text'
+        }
+      }
+    });
+    const plainCollectionValue = [{ id: 'item-1', value: 'text value' }];
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCollectionField(plainCollectionCaseField, plainCollectionValue)).toBe(false);
+  });
+
+  it('should detect active PF0021 in hasActivePotentiallyViolentPersonFlagInFlagsValue when details are not wrapped in value objects', () => {
+    const flagsValue = {
+      details: [
+        {
+          flagCode: 'PF0021',
+          status: CaseFlagStatus.ACTIVE
+        }
+      ]
+    };
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlagInFlagsValue(flagsValue)).toBe(true);
+  });
+
   it('should not display active Case Flags banner message if none of the Case Flags are active', () => {
     // Set first Case Flag status to "Inactive"
     CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.INACTIVE;
