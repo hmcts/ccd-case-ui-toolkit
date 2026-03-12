@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.36-exui-4089
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on case
+
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
 
