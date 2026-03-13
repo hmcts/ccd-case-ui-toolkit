@@ -523,10 +523,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     return value.details.some((detail) => {
-      const detailValue = detail && detail.value ? detail.value : detail;
-      return detailValue
-        && detailValue.flagCode === this.potentiallyViolentPersonFlagCode
-        && detailValue.status === CaseFlagStatus.ACTIVE;
+      const detailValue = detail?.value ?? detail;
+      return detailValue?.flagCode === this.potentiallyViolentPersonFlagCode
+        && detailValue?.status === CaseFlagStatus.ACTIVE;
     });
   }
 
