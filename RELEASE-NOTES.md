@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.37-exui-4089-1
+### Version 7.3.38-exui-4089
 **EXUI-4089** Case Flags: Show banner when PVP flag is present on case
+
+### Version 7.3.38
+**EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
 
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
