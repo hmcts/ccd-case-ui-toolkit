@@ -5,6 +5,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { prioritisePvpParties } from './utils/case-flag-priority.utils';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagDisplayContextParameter, CaseFlagStatus } from './enums';
 
@@ -89,6 +90,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         this.partyLevelCaseFlagData.filter((f) => !f.flags.groupId).forEach((f) => uniquePartyData.push(f));
         this.partyLevelCaseFlagData = uniquePartyData;
       }
+
+      // Prioritise PVP flags (PF0021) for display, keeping existing non-PVP ordering stable.
+      this.partyLevelCaseFlagData = prioritisePvpParties(this.partyLevelCaseFlagData);
 
       // There will be only one case-level flags instance containing all case-level flag details
       this.caseLevelCaseFlagData = this.flagsData.find(
