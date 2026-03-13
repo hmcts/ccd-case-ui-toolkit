@@ -748,6 +748,47 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.caseLevelCaseFlagData).toEqual(component.flagsData[2]);
   });
 
+  it('should order parties by active PVP first, and not prioritise inactive PVP-only parties', () => {
+    const originalCaseFlag1Value1 = { flagCode: caseFlag1DetailsValue1.flagCode, status: caseFlag1DetailsValue1.status };
+    const originalCaseFlag1Value2 = { flagCode: caseFlag1DetailsValue2.flagCode, status: caseFlag1DetailsValue2.status };
+    const originalCaseFlag2Value1 = { flagCode: caseFlag2DetailsValue1.flagCode, status: caseFlag2DetailsValue1.status };
+    const originalCaseFlag2Value2 = { flagCode: caseFlag2DetailsValue2.flagCode, status: caseFlag2DetailsValue2.status };
+
+    // applicant: inactive PVP + active non-PVP (should not be prioritised)
+    caseFlag1DetailsValue1.flagCode = 'VU1';
+    caseFlag1DetailsValue1.status = CaseFlagStatus.ACTIVE;
+    caseFlag1DetailsValue2.flagCode = 'PF0021';
+    caseFlag1DetailsValue2.status = CaseFlagStatus.INACTIVE;
+    // respondent: active PVP present (should be prioritised)
+    caseFlag2DetailsValue1.flagCode = 'PF0021';
+    caseFlag2DetailsValue1.status = CaseFlagStatus.ACTIVE;
+    caseFlag2DetailsValue2.flagCode = 'WCA';
+    caseFlag2DetailsValue2.status = CaseFlagStatus.INACTIVE;
+
+    formGroup.get(flagLauncher1CaseField.id)['component'].caseField = {
+      display_context_parameter: null
+    };
+    component.ngOnInit();
+
+    const caseFlag1Index = component.partyLevelCaseFlagData.findIndex((item) => item.flags.flagsCaseFieldId === caseFlag1FieldId);
+    const caseFlag2Index = component.partyLevelCaseFlagData.findIndex((item) => item.flags.flagsCaseFieldId === caseFlag2FieldId);
+    expect(caseFlag2Index).toBeLessThan(caseFlag1Index);
+
+    const prioritisedParty = component.partyLevelCaseFlagData[0];
+    expect(prioritisedParty.flags.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    expect(prioritisedParty.flags.details[0].flagCode).toEqual('PF0021');
+    expect(prioritisedParty.flags.details[0].status).toEqual(CaseFlagStatus.ACTIVE);
+
+    caseFlag1DetailsValue1.flagCode = originalCaseFlag1Value1.flagCode;
+    caseFlag1DetailsValue1.status = originalCaseFlag1Value1.status;
+    caseFlag1DetailsValue2.flagCode = originalCaseFlag1Value2.flagCode;
+    caseFlag1DetailsValue2.status = originalCaseFlag1Value2.status;
+    caseFlag2DetailsValue1.flagCode = originalCaseFlag2Value1.flagCode;
+    caseFlag2DetailsValue1.status = originalCaseFlag2Value1.status;
+    caseFlag2DetailsValue2.flagCode = originalCaseFlag2Value2.flagCode;
+    caseFlag2DetailsValue2.status = originalCaseFlag2Value2.status;
+  });
+
   it('should extract all flags-related data from the CaseView object, grouping flags by groupId, where flags.details is null', () => {
     // Flags data is grouped by groupId where present, if the user is not external (the default)
     formGroup.get(flagLauncher1CaseField.id)['component'].caseField = {
