@@ -62,7 +62,6 @@
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.12-exui-4267-rc-1",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
