@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.37-remove-flag-icp-enabled",
+  "version": "7.3.38",
   "engines": {
     "node": ">=20.19.0"
   },
