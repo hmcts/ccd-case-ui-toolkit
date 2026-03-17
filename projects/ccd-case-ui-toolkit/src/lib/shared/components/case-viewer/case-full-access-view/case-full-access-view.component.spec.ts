@@ -1648,7 +1648,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
   });
 
-  it('should return false for unsupported field types in hasActivePotentiallyViolentPersonFlagInCaseField', () => {
+  it('should return false for unsupported field types in hasActivePotentiallyViolentPersonFlag', () => {
     const unsupportedCaseField = Object.assign(new CaseField(), {
       id: 'PlainText',
       field_type: {
@@ -1658,10 +1658,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
       value: 'Some text value'
     });
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCaseField(unsupportedCaseField)).toBe(false);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([unsupportedCaseField])).toBe(false);
   });
 
-  it('should return false in hasActivePotentiallyViolentPersonFlagInComplexField when no complex fields or value exists', () => {
+  it('should return false in hasActivePotentiallyViolentPersonFlag when no complex fields or value exists', () => {
     const nonFlagsComplexCaseField = Object.assign(new CaseField(), {
       id: 'NonFlagsComplex',
       field_type: {
@@ -1671,10 +1671,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
       }
     });
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInComplexField(nonFlagsComplexCaseField, null)).toBe(false);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([nonFlagsComplexCaseField])).toBe(false);
   });
 
-  it('should find an active PF0021 flag in nested complex fields', () => {
+  it('should find an active PF0021 flag in nested complex fields via hasActivePotentiallyViolentPersonFlag', () => {
     const nestedFlagsCaseField = Object.assign(new CaseField(), {
       id: 'NestedFlags',
       field_type: {
@@ -1703,11 +1703,12 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         ]
       }
     };
+    parentComplexCaseField.value = parentComplexValue;
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInComplexField(parentComplexCaseField, parentComplexValue)).toBe(true);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([parentComplexCaseField])).toBe(true);
   });
 
-  it('should evaluate nested complex collection fields in hasActivePotentiallyViolentPersonFlagInCollectionField', () => {
+  it('should evaluate nested complex collection fields in hasActivePotentiallyViolentPersonFlag', () => {
     const nestedFlagsCaseField = Object.assign(new CaseField(), {
       id: 'NestedFlags',
       field_type: {
@@ -1745,11 +1746,12 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         }
       }
     ];
+    complexCollectionCaseField.value = complexCollectionValue;
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCollectionField(complexCollectionCaseField, complexCollectionValue)).toBe(true);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([complexCollectionCaseField])).toBe(true);
   });
 
-  it('should return false in hasActivePotentiallyViolentPersonFlagInCollectionField for non-complex non-flags collections', () => {
+  it('should return false in hasActivePotentiallyViolentPersonFlag for non-complex non-flags collections', () => {
     const plainCollectionCaseField = Object.assign(new CaseField(), {
       id: 'PlainCollection',
       field_type: {
@@ -1761,22 +1763,30 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         }
       }
     });
-    const plainCollectionValue = [{ id: 'item-1', value: 'text value' }];
+    plainCollectionCaseField.value = [{ id: 'item-1', value: 'text value' }];
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInCollectionField(plainCollectionCaseField, plainCollectionValue)).toBe(false);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([plainCollectionCaseField])).toBe(false);
   });
 
-  it('should detect active PF0021 in hasActivePotentiallyViolentPersonFlagInFlagsValue when details are not wrapped in value objects', () => {
-    const flagsValue = {
-      details: [
-        {
-          flagCode: PVP_FLAG_CODE,
-          status: CaseFlagStatus.ACTIVE
-        }
-      ]
-    };
+  it('should detect active PF0021 when details are not wrapped in value objects', () => {
+    const flagsCaseField = Object.assign(new CaseField(), {
+      id: 'FlagsField',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      },
+      value: {
+        details: [
+          {
+            flagCode: PVP_FLAG_CODE,
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
+      }
+    });
 
-    expect((comp as any).hasActivePotentiallyViolentPersonFlagInFlagsValue(flagsValue)).toBe(true);
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([flagsCaseField])).toBe(true);
   });
 
   it('should not display active Case Flags banner message if none of the Case Flags are active', () => {

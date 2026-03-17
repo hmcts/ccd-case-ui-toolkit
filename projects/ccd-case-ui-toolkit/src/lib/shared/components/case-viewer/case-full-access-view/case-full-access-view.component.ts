@@ -37,7 +37,7 @@ import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
-import { PVP_DISPLAY_TEXT, isActivePvpFlag } from '../../palette/case-flag/utils/case-flag-priority.utils';
+import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -460,68 +460,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private hasActivePotentiallyViolentPersonFlag(caseFields: CaseField[]): boolean {
-    return caseFields
-      .filter((caseField) => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
-      .some((caseField) => this.hasActivePotentiallyViolentPersonFlagInCaseField(caseField));
-  }
-
-  private hasActivePotentiallyViolentPersonFlagInCaseField(caseField: CaseField, currentValue?: any): boolean {
-    const fieldType = caseField.field_type;
-    const value = caseField.value ? caseField.value : currentValue;
-
-    if (fieldType.type === 'Complex') {
-      return this.hasActivePotentiallyViolentPersonFlagInComplexField(caseField, value);
-    }
-
-    if (fieldType.type === 'Collection') {
-      return this.hasActivePotentiallyViolentPersonFlagInCollectionField(caseField, value);
-    }
-
-    return false;
-  }
-
-  private hasActivePotentiallyViolentPersonFlagInComplexField(caseField: CaseField, value: any): boolean {
-    if (FieldsUtils.isFlagsCaseField(caseField)) {
-      return this.hasActivePotentiallyViolentPersonFlagInFlagsValue(value);
-    }
-
-    const complexFields = caseField.field_type.complex_fields;
-    if (!complexFields || !value || !FieldsUtils.isNonEmptyObject(value)) {
-      return false;
-    }
-
-    return complexFields.some((subField) =>
-      this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, value[subField.id])
-    );
-  }
-
-  private hasActivePotentiallyViolentPersonFlagInCollectionField(caseField: CaseField, value: any): boolean {
-    if (!value || !Array.isArray(value)) {
-      return false;
-    }
-
-    const collectionFieldType = caseField.field_type.collection_field_type;
-    if (FieldsUtils.isFlagsFieldType(collectionFieldType)) {
-      return value.some((item: any) => this.hasActivePotentiallyViolentPersonFlagInFlagsValue(item.value));
-    }
-
-    if (collectionFieldType.type !== 'Complex' || !collectionFieldType.complex_fields) {
-      return false;
-    }
-
-    return value.some((item: any) =>
-      collectionFieldType.complex_fields.some((subField) =>
-        this.hasActivePotentiallyViolentPersonFlagInCaseField(subField, item.value?.[subField.id])
-      )
-    );
-  }
-
-  private hasActivePotentiallyViolentPersonFlagInFlagsValue(value: any): boolean {
-    if (!value || !FieldsUtils.isNonEmptyObject(value) || !value.details || !Array.isArray(value.details)) {
-      return false;
-    }
-
-    return value.details.some((detail) => isActivePvpFlag(detail?.value ?? detail));
+    return hasActivePvpFlagInCaseFields(caseFields);
   }
 
   /**

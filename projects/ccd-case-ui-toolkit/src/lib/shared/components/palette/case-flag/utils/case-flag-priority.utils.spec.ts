@@ -7,6 +7,7 @@ import {
   hasPvpFlag,
   isActivePvpFlag,
   isPvpFlag,
+  hasActivePvpFlagInCaseFields,
   prioritisePvpFlags,
   prioritisePvpParties
 } from './case-flag-priority.utils';
@@ -164,5 +165,72 @@ describe('CaseFlagPriorityUtils', () => {
     expect(isActivePvpFlag(createFlag('P2', PVP_FLAG_CODE, CaseFlagStatus.INACTIVE))).toBe(false);
     expect(hasActivePvpFlag(createPartyFlags('PartyA', [createFlag('P1', PVP_FLAG_CODE, CaseFlagStatus.ACTIVE)]))).toBe(true);
     expect(hasActivePvpFlag(createPartyFlags('PartyB', [createFlag('P2', PVP_FLAG_CODE, CaseFlagStatus.INACTIVE)]))).toBe(false);
+  });
+
+  it('should return false for unsupported field types in hasActivePvpFlagInCaseFields', () => {
+    const unsupportedCaseField = Object.assign(new CaseField(), {
+      id: 'PlainText',
+      field_type: {
+        id: 'Text',
+        type: 'Text'
+      },
+      value: 'Some text value'
+    });
+
+    expect(hasActivePvpFlagInCaseFields([unsupportedCaseField])).toBe(false);
+  });
+
+  it('should find an active PF0021 flag in nested complex fields in hasActivePvpFlagInCaseFields', () => {
+    const nestedFlagsCaseField = Object.assign(new CaseField(), {
+      id: 'NestedFlags',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      }
+    });
+    const parentComplexCaseField = Object.assign(new CaseField(), {
+      id: 'ParentComplex',
+      field_type: {
+        id: 'ParentComplexType',
+        type: 'Complex',
+        complex_fields: [nestedFlagsCaseField]
+      },
+      value: {
+        NestedFlags: {
+          details: [
+            {
+              value: {
+                flagCode: PVP_FLAG_CODE,
+                status: CaseFlagStatus.ACTIVE
+              }
+            }
+          ]
+        }
+      }
+    });
+
+    expect(hasActivePvpFlagInCaseFields([parentComplexCaseField])).toBe(true);
+  });
+
+  it('should detect active PF0021 in details not wrapped in value objects in hasActivePvpFlagInCaseFields', () => {
+    const flagsCaseField = Object.assign(new CaseField(), {
+      id: 'FlagsField',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      },
+      value: {
+        details: [
+          {
+            flagCode: PVP_FLAG_CODE,
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
+      }
+    });
+
+    expect(hasActivePvpFlagInCaseFields([flagsCaseField])).toBe(true);
   });
 });
