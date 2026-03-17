@@ -485,7 +485,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map((tab) => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+    return tabs?.map((tab) => ({ 
+        ...tab,
+        fields: this.orderService.sort(tab.fields) 
+      }))
       .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
