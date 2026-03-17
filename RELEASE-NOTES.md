@@ -1,3 +1,7 @@
+### Version 7.3.39
+
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
+
 ## RELEASE NOTES
 
 ### Version 7.3.38
