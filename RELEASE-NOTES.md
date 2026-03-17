@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.39-exui-4089
+### Version 7.3.39-exui-4089-1
 **EXUI-4089** Case Flags: Show banner when PVP flag is present on case
 
 ### Version 7.3.39
