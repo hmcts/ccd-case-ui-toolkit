@@ -412,9 +412,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public hasActiveCaseFlags(): boolean {
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
-    const caseFlagsTab = this.caseDetails?.tabs?.filter(
-        (tab) => tab.fields && tab.fields.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
-      ?? null;
+    const caseFlagsTab = this.caseDetails?.tabs?.find(
+      (tab) => tab.fields?.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField))
+    ) ?? null;
 
     if (caseFlagsTab) {
       // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
