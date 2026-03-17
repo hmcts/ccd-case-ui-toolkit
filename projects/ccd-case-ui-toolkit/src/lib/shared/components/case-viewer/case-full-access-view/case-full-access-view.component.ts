@@ -37,7 +37,7 @@ import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
-import { CaseFlagStatus } from '../../palette/case-flag/enums';
+import { PVP_DISPLAY_TEXT, isActivePvpFlag } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -79,8 +79,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public activeCaseFlags = false;
   public caseFlagsExternalUser = false;
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
-  private readonly potentiallyViolentPersonFlagCode = 'PF0021';
-  private readonly potentiallyViolentPersonFlagPrefix = 'POTENTIALLY VIOLENT PERSON.';
+  private readonly potentiallyViolentPersonFlagPrefix = `${PVP_DISPLAY_TEXT}.`;
   private subs: Subscription[] = [];
   public eventId: string;
   public isEventButtonClicked: boolean = false;
@@ -522,11 +521,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       return false;
     }
 
-    return value.details.some((detail) => {
-      const detailValue = detail?.value ?? detail;
-      return detailValue?.flagCode === this.potentiallyViolentPersonFlagCode
-        && detailValue?.status === CaseFlagStatus.ACTIVE;
-    });
+    return value.details.some((detail) => isActivePvpFlag(detail?.value ?? detail));
   }
 
   /**

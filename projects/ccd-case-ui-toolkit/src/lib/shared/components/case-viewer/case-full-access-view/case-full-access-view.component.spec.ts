@@ -57,6 +57,7 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
+import { PVP_DISPLAY_TEXT, PVP_FLAG_CODE } from '../../palette/case-flag/utils/case-flag-priority.utils';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
@@ -1551,7 +1552,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   });
 
   it('should prefix active Case Flags banner message when an active Potentially Violent Person party flag exists', () => {
-    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = 'PF0021';
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = PVP_FLAG_CODE;
 
     // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
     spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
@@ -1562,7 +1563,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
     expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('POTENTIALLY VIOLENT PERSON. There is 1 active flag on this case');
+    expect(bannerElement.textContent).toContain(`${PVP_DISPLAY_TEXT}. There is 1 active flag on this case`);
     expect(comp.activeCaseFlags).toBe(true);
 
     CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
@@ -1601,7 +1602,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
                   dateTimeCreated: new Date('2025-09-09 00:00:00'),
                   path: [],
                   hearingRelevant: false,
-                  flagCode: 'PF0021',
+                  flagCode: PVP_FLAG_CODE,
                   status: CaseFlagStatus.ACTIVE
                 }
               }
@@ -1621,7 +1622,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
     expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('POTENTIALLY VIOLENT PERSON');
+    expect(bannerElement.textContent).toContain(PVP_DISPLAY_TEXT);
     expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
     expect(comp.activeCaseFlags).toBe(true);
 
@@ -1640,7 +1641,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
     expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).not.toContain('POTENTIALLY VIOLENT PERSON');
+    expect(bannerElement.textContent).not.toContain(PVP_DISPLAY_TEXT);
     expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
     expect(comp.activeCaseFlags).toBe(true);
 
@@ -1695,7 +1696,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         details: [
           {
             value: {
-              flagCode: 'PF0021',
+              flagCode: PVP_FLAG_CODE,
               status: CaseFlagStatus.ACTIVE
             }
           }
@@ -1735,7 +1736,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             details: [
               {
                 value: {
-                  flagCode: 'PF0021',
+                  flagCode: PVP_FLAG_CODE,
                   status: CaseFlagStatus.ACTIVE
                 }
               }
@@ -1769,7 +1770,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     const flagsValue = {
       details: [
         {
-          flagCode: 'PF0021',
+          flagCode: PVP_FLAG_CODE,
           status: CaseFlagStatus.ACTIVE
         }
       ]
