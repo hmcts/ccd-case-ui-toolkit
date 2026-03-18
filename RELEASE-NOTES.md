@@ -1,8 +1,10 @@
-### Version 7.3.39
-
-**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
-
 ## RELEASE NOTES
+
+### Version 7.3.40
+**POFCC-77** Template variables in .label() HTML content are cached
+
+### Version 7.3.39
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
 
 ### Version 7.3.38
 **EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
