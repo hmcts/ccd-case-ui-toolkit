@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.38-EXUI-4227-CVE-fixes",
+  "version": "7.3.41-EXUI-4227-CVE-fixes",
   "engines": {
     "node": ">=20.19.0"
   },
