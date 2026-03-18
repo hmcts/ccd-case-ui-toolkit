@@ -1,8 +1,10 @@
-### Version 7.3.39
-
-**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
-
 ## RELEASE NOTES
+
+### Version 7.3.39-exui-4089-1
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on case
+
+### Version 7.3.39
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
 
 ### Version 7.3.38
 **EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
@@ -10,7 +12,6 @@
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
 **EXUI-3952** Removing deprecated functions - Toolkit
-
 
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event

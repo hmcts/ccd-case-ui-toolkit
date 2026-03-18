@@ -57,6 +57,7 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
+import { PVP_DISPLAY_TEXT, PVP_FLAG_CODE } from '../../palette/case-flag/utils/case-flag-priority.utils';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
@@ -1548,6 +1549,244 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
     expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
     expect(comp.activeCaseFlags).toBe(true);
+  });
+
+  it('should prefix active Case Flags banner message when an active Potentially Violent Person party flag exists', () => {
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = PVP_FLAG_CODE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain(`${PVP_DISPLAY_TEXT}. There is 1 active flag on this case`);
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
+  });
+
+  it('should prefix active Case Flags banner message when an active Potentially Violent Person party flag exists in a collection', () => {
+    const collectionCaseFlagField = Object.assign(new CaseField(), {
+      id: 'CaseFlagCollection',
+      label: 'Case Flag Collection',
+      display_context: null,
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'Flags',
+          type: 'Complex',
+          complex_fields: []
+        }
+      },
+      value: [
+        {
+          id: 'collection-item-1',
+          value: {
+            partyName: 'Jane Smith',
+            roleOnCase: '',
+            details: [
+              {
+                id: 'detail-1',
+                value: {
+                  name: 'Potentially Violent Person',
+                  subTypeValue: '',
+                  subTypeKey: '',
+                  otherDescription: '',
+                  flagComment: '',
+                  dateTimeModified: new Date('2025-09-09 00:00:00'),
+                  dateTimeCreated: new Date('2025-09-09 00:00:00'),
+                  path: [],
+                  hearingRelevant: false,
+                  flagCode: PVP_FLAG_CODE,
+                  status: CaseFlagStatus.ACTIVE
+                }
+              }
+            ]
+          }
+        }
+      ]
+    });
+    CASE_VIEW.tabs[3].fields.push(collectionCaseFlagField);
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).toContain(PVP_DISPLAY_TEXT);
+    expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields.pop();
+  });
+
+  it('should not prefix active Case Flags banner message when the active party flag code is not PF0021', () => {
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = 'PF0003';
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() to ensure activeCaseFlags boolean is set correctly
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement.textContent).not.toContain(PVP_DISPLAY_TEXT);
+    expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
+    expect(comp.activeCaseFlags).toBe(true);
+
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.flagCode = '';
+  });
+
+  it('should return false for unsupported field types in hasActivePotentiallyViolentPersonFlag', () => {
+    const unsupportedCaseField = Object.assign(new CaseField(), {
+      id: 'PlainText',
+      field_type: {
+        id: 'Text',
+        type: 'Text'
+      },
+      value: 'Some text value'
+    });
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([unsupportedCaseField])).toBe(false);
+  });
+
+  it('should return false in hasActivePotentiallyViolentPersonFlag when no complex fields or value exists', () => {
+    const nonFlagsComplexCaseField = Object.assign(new CaseField(), {
+      id: 'NonFlagsComplex',
+      field_type: {
+        id: 'ComplexType',
+        type: 'Complex',
+        complex_fields: null
+      }
+    });
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([nonFlagsComplexCaseField])).toBe(false);
+  });
+
+  it('should find an active PF0021 flag in nested complex fields via hasActivePotentiallyViolentPersonFlag', () => {
+    const nestedFlagsCaseField = Object.assign(new CaseField(), {
+      id: 'NestedFlags',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      }
+    });
+    const parentComplexCaseField = Object.assign(new CaseField(), {
+      id: 'ParentComplex',
+      field_type: {
+        id: 'ParentComplexType',
+        type: 'Complex',
+        complex_fields: [nestedFlagsCaseField]
+      }
+    });
+    const parentComplexValue = {
+      NestedFlags: {
+        details: [
+          {
+            value: {
+              flagCode: PVP_FLAG_CODE,
+              status: CaseFlagStatus.ACTIVE
+            }
+          }
+        ]
+      }
+    };
+    parentComplexCaseField.value = parentComplexValue;
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([parentComplexCaseField])).toBe(true);
+  });
+
+  it('should evaluate nested complex collection fields in hasActivePotentiallyViolentPersonFlag', () => {
+    const nestedFlagsCaseField = Object.assign(new CaseField(), {
+      id: 'NestedFlags',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      }
+    });
+    const complexCollectionCaseField = Object.assign(new CaseField(), {
+      id: 'ComplexCollection',
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'SomeComplexType',
+          type: 'Complex',
+          complex_fields: [nestedFlagsCaseField]
+        }
+      }
+    });
+    const complexCollectionValue = [
+      {
+        id: 'item-1',
+        value: {
+          NestedFlags: {
+            details: [
+              {
+                value: {
+                  flagCode: PVP_FLAG_CODE,
+                  status: CaseFlagStatus.ACTIVE
+                }
+              }
+            ]
+          }
+        }
+      }
+    ];
+    complexCollectionCaseField.value = complexCollectionValue;
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([complexCollectionCaseField])).toBe(true);
+  });
+
+  it('should return false in hasActivePotentiallyViolentPersonFlag for non-complex non-flags collections', () => {
+    const plainCollectionCaseField = Object.assign(new CaseField(), {
+      id: 'PlainCollection',
+      field_type: {
+        id: 'Collection',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'Text',
+          type: 'Text'
+        }
+      }
+    });
+    plainCollectionCaseField.value = [{ id: 'item-1', value: 'text value' }];
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([plainCollectionCaseField])).toBe(false);
+  });
+
+  it('should detect active PF0021 when details are not wrapped in value objects', () => {
+    const flagsCaseField = Object.assign(new CaseField(), {
+      id: 'FlagsField',
+      field_type: {
+        id: 'Flags',
+        type: 'Complex',
+        complex_fields: []
+      },
+      value: {
+        details: [
+          {
+            flagCode: PVP_FLAG_CODE,
+            status: CaseFlagStatus.ACTIVE
+          }
+        ]
+      }
+    });
+
+    expect((comp as any).hasActivePotentiallyViolentPersonFlag([flagsCaseField])).toBe(true);
   });
 
   it('should not display active Case Flags banner message if none of the Case Flags are active', () => {
