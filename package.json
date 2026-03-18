@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.38",
+  "version": "7.3.38-EXUI-4227-CVE-fixes",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -62,7 +62,7 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.13",
+    "@hmcts/media-viewer": "4.2.13-EXUI-4227-cve-test-2",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -81,7 +81,6 @@
     "ngx-markdown": "^20",
     "ngx-pagination": "6.0.3",
     "pegjs": "^0.10.0",
-    "prism": "^4.1.2",
     "prismjs": "^1.30.0",
     "rpx-xui-translation": "1.2.0",
     "rx-polling-hmcts": "1.1.1",
@@ -127,7 +126,6 @@
     "codecov": "^3.0.0",
     "codelyzer": "^6.0.0",
     "concurrently": "^4.0.1",
-    "core-js": "^2.4.1",
     "css-loader": "^6.7.1",
     "del": "^3.0.0",
     "eslint": "^8.57.0",
@@ -197,7 +195,8 @@
     "handlebars": "^4.7.7",
     "https-proxy-agent": "^2.2.3",
     "ip": "^1.1.5",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.22",
+    "lodash-es": "^4.17.22",
     "minimatch": "^8.0.4",
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
