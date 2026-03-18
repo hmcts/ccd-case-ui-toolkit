@@ -22,7 +22,7 @@ describe('CaseFlagTableComponent', () => {
         subTypeValue: '',
         subTypeKey: '',
         otherDescription: '',
-        flagComment: '',
+        flagComment: 'PVP comment',
         flagUpdateComment: 'Flag update comment for first flag',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
@@ -211,15 +211,24 @@ describe('CaseFlagTableComponent', () => {
     expect(tableCellElements[6].textContent).toContain(flagData.flags.details[1].flagComment_cy);
   });
 
-  it('should render active PF0021 with icon and uppercase PVP prefix label', () => {
+  it('should render active PF0021 with icon and uppercase & bold PVP prefix label', () => {
     component.flagData = flagData;
     fixture.detectChanges();
 
     const firstNameCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[0];
+    const firstCommentCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[1];
     const pvpIconElement = firstNameCell.querySelector('svg.hmcts-banner__icon');
+    const pvpLabelElement = firstNameCell.querySelector('[class~="govuk-!-font-weight-bold"]');
+    const pvpCommentElement = firstCommentCell.firstElementChild as HTMLElement;
 
     expect(pvpIconElement).toBeTruthy();
     expect(pvpIconElement.getAttribute('role')).toBe('presentation');
+    expect(pvpLabelElement).toBeTruthy();
+    expect(pvpLabelElement.tagName.toLowerCase()).toBe('span');
+    expect(pvpLabelElement.textContent).toContain(PVP_DISPLAY_TEXT);
+    expect(pvpCommentElement).toBeTruthy();
+    expect(pvpCommentElement.classList.contains('govuk-!-font-weight-bold')).toBe(true);
+    expect(pvpCommentElement.textContent).toContain(flagData.flags.details[0].flagComment);
     expect(firstNameCell.textContent).toContain(PVP_DISPLAY_TEXT);
     expect(firstNameCell.textContent).not.toContain('Original PVP label');
   });
@@ -230,9 +239,15 @@ describe('CaseFlagTableComponent', () => {
     fixture.detectChanges();
 
     const firstNameCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[0];
+    const firstCommentCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[1];
     const pvpIconElement = firstNameCell.querySelector('svg.hmcts-banner__icon');
+    const pvpLabelElement = firstNameCell.querySelector('[class~="govuk-!-font-weight-bold"]');
+    const pvpCommentElement = firstCommentCell.firstElementChild as HTMLElement;
 
     expect(pvpIconElement).toBeNull();
+    expect(pvpLabelElement).toBeNull();
+    expect(pvpCommentElement).toBeTruthy();
+    expect(pvpCommentElement.classList.contains('govuk-!-font-weight-bold')).toBe(false);
     expect(firstNameCell.textContent).not.toContain(PVP_DISPLAY_TEXT);
     expect(firstNameCell.textContent).toContain('Original PVP label');
   });

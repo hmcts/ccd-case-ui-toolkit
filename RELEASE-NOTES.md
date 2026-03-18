@@ -1,11 +1,10 @@
-### Version 7.3.39
-
-**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
-
 ## RELEASE NOTES
 
-### Version 7.3.38-exui-4090
+### Version 7.3.39-exui-4090
 **EXUI-4090** Case Flags: Ordering logic changes
+
+### Version 7.3.39
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
 
 ### Version 7.3.38
 **EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
