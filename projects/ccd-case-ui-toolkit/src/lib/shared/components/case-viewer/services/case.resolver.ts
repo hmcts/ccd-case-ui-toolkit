@@ -122,6 +122,11 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/list/case']);
       return of(null);
     }
+    // EXUI-4061 - navigate to no results page for 404 errors
+    if (error.status === 404) {
+      this.router.navigate(['/search/noresults']);
+      return of(null);
+    }
     // Error 403, navigate to restricted case access page
     if (error.status === 403) {
       this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);

@@ -1,4 +1,75 @@
+### Version 7.3.39
+
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
+
 ## RELEASE NOTES
+
+### Version 7.3.38
+**EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.37
+**EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
+**EXUI-3952** Removing deprecated functions - Toolkit
+
+
+### Version 7.3.36
+**EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
+
+### Version 7.3.35
+**EXUI-3345** Open HTML case files for viewing
+
+### Version 7.3.34
+**EXUI-3849** CVE Vulnerability - High - CVE-2022-23647
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681
+
+### Version 7.3.33
+**EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.32
+**EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
+
+### Version 7.3.31
+**EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
+**EXUI-3696** Revise responses to ensure uniqueness
+**EXUI-3697** Update Query Sub headers and query information
+**EXUI-3698** Enable Closing of Queries by HMCTS Staff
+
+### Version 7.3.30
+**EXUI-4155** SRT Release
+
+### Version 7.3.29
+**EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09
+
+### Version 7.3.28
+**EXUI-2600** MC - (Level-A) : DAC_Mouse_Dependency-new
+
+### Version 7.3.27
+**EXUI-3851** revert-EXUI-3851
+
+### Version 7.3.26
+**EXUI-4061** Halo IN-0099681 Navigation issue
+
+### Version 7.3.25
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681 - CCD-Case_UI-Toolkit
+
+### Version 7.3.24
+**EXUI-3984** CVE Vulnerability - High - CVE-2025-15284 - media-viewer - qs
+
+### Version 7.3.23
+**EXUI-3854** CVE Vulnerability - High -CVE- 2022-25881
+
+### Version 7.3.22
+**EXUI-3875** CVE Vulnerability - High - CVE-2025-66035 - em-media-viewer
+
+### Version 7.3.21
+**EXUI-4068** ccpay-web-component 6.5.17
+
+### Version 7.3.20
+**EXUI-3053** Media Viewer - Improve keyboard movement within media viewer screen
+
+### Version 7.3.19
+**EXUI-3870** PayIt feature
 
 ### Version 7.3.16
 **EXUI-3852** CVE Vulnerability - High - CVE-2024-4068 - CCD-Case-UI-Toolkit
