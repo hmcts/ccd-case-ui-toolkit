@@ -749,21 +749,41 @@ describe('ReadCaseFlagFieldComponent', () => {
   });
 
   it('should order parties by active PVP first, and not prioritise inactive PVP-only parties', () => {
-    const originalCaseFlag1Value1 = { flagCode: caseFlag1DetailsValue1.flagCode, status: caseFlag1DetailsValue1.status };
-    const originalCaseFlag1Value2 = { flagCode: caseFlag1DetailsValue2.flagCode, status: caseFlag1DetailsValue2.status };
-    const originalCaseFlag2Value1 = { flagCode: caseFlag2DetailsValue1.flagCode, status: caseFlag2DetailsValue1.status };
-    const originalCaseFlag2Value2 = { flagCode: caseFlag2DetailsValue2.flagCode, status: caseFlag2DetailsValue2.status };
+    const originalCaseFlag1Value1 = {
+      flagCode: caseFlag1DetailsValue1.flagCode,
+      status: caseFlag1DetailsValue1.status,
+      dateTimeCreated: caseFlag1DetailsValue1.dateTimeCreated
+    };
+    const originalCaseFlag1Value2 = {
+      flagCode: caseFlag1DetailsValue2.flagCode,
+      status: caseFlag1DetailsValue2.status,
+      dateTimeCreated: caseFlag1DetailsValue2.dateTimeCreated
+    };
+    const originalCaseFlag2Value1 = {
+      flagCode: caseFlag2DetailsValue1.flagCode,
+      status: caseFlag2DetailsValue1.status,
+      dateTimeCreated: caseFlag2DetailsValue1.dateTimeCreated
+    };
+    const originalCaseFlag2Value2 = {
+      flagCode: caseFlag2DetailsValue2.flagCode,
+      status: caseFlag2DetailsValue2.status,
+      dateTimeCreated: caseFlag2DetailsValue2.dateTimeCreated
+    };
 
     // applicant: inactive PVP + active non-PVP (should not be prioritised)
     caseFlag1DetailsValue1.flagCode = 'VU1';
     caseFlag1DetailsValue1.status = CaseFlagStatus.ACTIVE;
+    caseFlag1DetailsValue1.dateTimeCreated = '2023-01-01T00:00:00.000';
     caseFlag1DetailsValue2.flagCode = 'PF0021';
     caseFlag1DetailsValue2.status = CaseFlagStatus.INACTIVE;
+    caseFlag1DetailsValue2.dateTimeCreated = '2024-01-01T00:00:00.000';
     // respondent: active PVP present (should be prioritised)
     caseFlag2DetailsValue1.flagCode = 'PF0021';
     caseFlag2DetailsValue1.status = CaseFlagStatus.ACTIVE;
+    caseFlag2DetailsValue1.dateTimeCreated = '2022-01-01T00:00:00.000';
     caseFlag2DetailsValue2.flagCode = 'WCA';
     caseFlag2DetailsValue2.status = CaseFlagStatus.INACTIVE;
+    caseFlag2DetailsValue2.dateTimeCreated = '2021-01-01T00:00:00.000';
 
     formGroup.get(flagLauncher1CaseField.id)['component'].caseField = {
       display_context_parameter: null
@@ -779,14 +799,25 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(prioritisedParty.flags.details[0].flagCode).toEqual('PF0021');
     expect(prioritisedParty.flags.details[0].status).toEqual(CaseFlagStatus.ACTIVE);
 
+    const nonPrioritisedParty = component.partyLevelCaseFlagData.find((item) => item.flags.flagsCaseFieldId === caseFlag1FieldId);
+    expect(nonPrioritisedParty).toBeDefined();
+    expect(nonPrioritisedParty?.flags?.details?.map((flag) => flag.dateTimeCreated)).toEqual([
+      new Date(caseFlag1DetailsValue2.dateTimeCreated),
+      new Date(caseFlag1DetailsValue1.dateTimeCreated)
+    ]);
+
     caseFlag1DetailsValue1.flagCode = originalCaseFlag1Value1.flagCode;
     caseFlag1DetailsValue1.status = originalCaseFlag1Value1.status;
+    caseFlag1DetailsValue1.dateTimeCreated = originalCaseFlag1Value1.dateTimeCreated;
     caseFlag1DetailsValue2.flagCode = originalCaseFlag1Value2.flagCode;
     caseFlag1DetailsValue2.status = originalCaseFlag1Value2.status;
+    caseFlag1DetailsValue2.dateTimeCreated = originalCaseFlag1Value2.dateTimeCreated;
     caseFlag2DetailsValue1.flagCode = originalCaseFlag2Value1.flagCode;
     caseFlag2DetailsValue1.status = originalCaseFlag2Value1.status;
+    caseFlag2DetailsValue1.dateTimeCreated = originalCaseFlag2Value1.dateTimeCreated;
     caseFlag2DetailsValue2.flagCode = originalCaseFlag2Value2.flagCode;
     caseFlag2DetailsValue2.status = originalCaseFlag2Value2.status;
+    caseFlag2DetailsValue2.dateTimeCreated = originalCaseFlag2Value2.dateTimeCreated;
   });
 
   it('should extract all flags-related data from the CaseView object, grouping flags by groupId, where flags.details is null', () => {

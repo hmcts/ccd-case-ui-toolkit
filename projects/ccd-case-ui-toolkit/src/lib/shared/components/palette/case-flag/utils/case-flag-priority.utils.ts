@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { FlagDetail, FlagsWithFormGroupPath } from '../domain';
 import { CaseFlagStatus } from '../enums';
 
@@ -20,6 +21,20 @@ export function hasActivePvpFlag(flagsWithFormGroupPath: FlagsWithFormGroupPath)
   return !!flagsWithFormGroupPath?.flags?.details?.some(isActivePvpFlag);
 }
 
+function getFlagCreationTime(flagDetail: FlagDetail): number {
+  const createdDateValue = flagDetail?.dateTimeCreated;
+
+  const createdMoment = createdDateValue instanceof Date
+    ? moment(createdDateValue)
+    : moment(createdDateValue, moment.ISO_8601, true);
+
+  return createdMoment.valueOf();
+}
+
+function compareByCreationDateDesc(flagA: FlagDetail, flagB: FlagDetail): number {
+  return getFlagCreationTime(flagB) - getFlagCreationTime(flagA);
+}
+
 export function prioritisePvpFlags(flagDetails: FlagDetail[] = []): FlagDetail[] {
   const activePvpFlags: FlagDetail[] = [];
   const remainingFlags: FlagDetail[] = [];
@@ -31,6 +46,8 @@ export function prioritisePvpFlags(flagDetails: FlagDetail[] = []): FlagDetail[]
       remainingFlags.push(flagDetail);
     }
   });
+
+  remainingFlags.sort(compareByCreationDateDesc);
 
   return [...activePvpFlags, ...remainingFlags];
 }

@@ -91,7 +91,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         this.partyLevelCaseFlagData = uniquePartyData;
       }
 
-      // Prioritise PVP flags (PF0021) for display, keeping existing non-PVP ordering stable.
+      // Prioritise active PVP flags (PF0021), then order the remaining flags by creation date (most recent first).
       this.partyLevelCaseFlagData = prioritisePvpParties(this.partyLevelCaseFlagData);
 
       // There will be only one case-level flags instance containing all case-level flag details

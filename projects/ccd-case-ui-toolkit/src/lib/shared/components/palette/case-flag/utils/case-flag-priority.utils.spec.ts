@@ -12,10 +12,17 @@ import {
 } from './case-flag-priority.utils';
 
 describe('CaseFlagPriorityUtils', () => {
-  const createFlag = (id: string, flagCode: string, status: string = CaseFlagStatus.ACTIVE): FlagDetail => ({
+  const defaultCreatedAt = '2024-01-01T00:00:00.000Z';
+
+  const createFlag = (
+    id: string,
+    flagCode: string,
+    status: string = CaseFlagStatus.ACTIVE,
+    dateTimeCreated: Date | string = defaultCreatedAt
+  ): FlagDetail => ({
     id,
     name: id,
-    dateTimeCreated: new Date(),
+    dateTimeCreated,
     path: [],
     hearingRelevant: false,
     flagCode,
@@ -117,42 +124,48 @@ describe('CaseFlagPriorityUtils', () => {
     expect(result[2].flags.details).toEqual([]);
   });
 
-  it('should keep single-party non-PVP flag ordering unchanged', () => {
+  it('should order non-active-PVP flags by creation date descending within a party', () => {
     const party = createPartyFlags('PartyA', [
-      createFlag('A1', 'FL1'),
-      createFlag('A2', 'FL2'),
-      createFlag('A3', 'FL3')
+      createFlag('A1', 'FL1', CaseFlagStatus.ACTIVE, '2022-01-01T00:00:00.000Z'),
+      createFlag('A2', 'FL2', CaseFlagStatus.ACTIVE, '2024-01-01T00:00:00.000Z'),
+      createFlag('A3', 'FL3', CaseFlagStatus.ACTIVE, '2023-01-01T00:00:00.000Z')
     ]);
 
     const result = prioritisePvpParties([party]);
 
-    expect(result[0].flags.details.map((flag) => flag.id)).toEqual(['A1', 'A2', 'A3']);
+    expect(result[0].flags.details.map((flag) => flag.id)).toEqual(['A2', 'A3', 'A1']);
   });
 
-  it('should keep multi-party non-PVP ordering unchanged', () => {
+  it('should keep party ordering unchanged while sorting each party by creation date', () => {
     const result = prioritisePvpParties([
-      createPartyFlags('PartyA', [createFlag('A1', 'FL1'), createFlag('A2', 'FL2')]),
+      createPartyFlags('PartyA', [
+        createFlag('A1', 'FL1', CaseFlagStatus.ACTIVE, '2022-01-01T00:00:00.000Z'),
+        createFlag('A2', 'FL2', CaseFlagStatus.ACTIVE, '2024-01-01T00:00:00.000Z')
+      ]),
       createPartyFlags('PartyB', [createFlag('B1', 'FL3')]),
-      createPartyFlags('PartyC', [createFlag('C1', 'FL4'), createFlag('C2', 'FL5')])
+      createPartyFlags('PartyC', [
+        createFlag('C1', 'FL4', CaseFlagStatus.ACTIVE, '2021-01-01T00:00:00.000Z'),
+        createFlag('C2', 'FL5', CaseFlagStatus.ACTIVE, '2023-01-01T00:00:00.000Z')
+      ])
     ]);
 
     expect(result.map((party) => party.flags.partyName)).toEqual(['PartyA', 'PartyB', 'PartyC']);
-    expect(result[0].flags.details.map((flag) => flag.id)).toEqual(['A1', 'A2']);
-    expect(result[2].flags.details.map((flag) => flag.id)).toEqual(['C1', 'C2']);
+    expect(result[0].flags.details.map((flag) => flag.id)).toEqual(['A2', 'A1']);
+    expect(result[2].flags.details.map((flag) => flag.id)).toEqual(['C2', 'C1']);
   });
 
-  it('should preserve non-priority order stability when moving active PVP flags to the front', () => {
+  it('should place active PVP first and then sort remaining flags by creation date descending', () => {
     const details = [
-      createFlag('N1', 'FL1'),
-      createFlag('P1', PVP_FLAG_CODE),
-      createFlag('N2', 'FL2'),
-      createFlag('P2_INACTIVE', PVP_FLAG_CODE, CaseFlagStatus.INACTIVE),
-      createFlag('N3', 'FL3')
+      createFlag('N1', 'FL1', CaseFlagStatus.ACTIVE, '2022-01-01T00:00:00.000Z'),
+      createFlag('P1', PVP_FLAG_CODE, CaseFlagStatus.ACTIVE, '2020-01-01T00:00:00.000Z'),
+      createFlag('N2', 'FL2', CaseFlagStatus.ACTIVE, '2024-01-01T00:00:00.000Z'),
+      createFlag('P2_INACTIVE', PVP_FLAG_CODE, CaseFlagStatus.INACTIVE, '2023-01-01T00:00:00.000Z'),
+      createFlag('N3', 'FL3', CaseFlagStatus.ACTIVE, 'not-a-date')
     ];
 
     const result = prioritisePvpFlags(details);
 
-    expect(result.map((flag) => flag.id)).toEqual(['P1', 'N1', 'N2', 'P2_INACTIVE', 'N3']);
+    expect(result.map((flag) => flag.id)).toEqual(['P1', 'N2', 'P2_INACTIVE', 'N1', 'N3']);
   });
 
   it('should treat PF0021 as the only PVP source-of-truth flagCode and active status as the priority condition', () => {
