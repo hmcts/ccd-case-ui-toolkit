@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.41
+**EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
+
 ### Version 7.3.40
 **POFCC-77** Template variables in .label() HTML content are cached
 
