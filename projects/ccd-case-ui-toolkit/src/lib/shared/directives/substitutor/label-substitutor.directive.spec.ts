@@ -900,4 +900,284 @@ describe('LabelSubstitutorDirective', () => {
       expect(comp.caseField.isTranslated).toBe(false);
     });
   });
+
+  describe('noCacheProcessing functionality', () => {
+    it('should NOT extract [NOCACHE] tag when outside placeholder pattern', () => {
+      const label = '[NOCACHE]This is a label that should not be cached';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]This is a label that should not be cached', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]This is a label that should not be cached');
+    });
+
+    it('should NOT remove [NOCACHE] tag when outside placeholder pattern', () => {
+      const label = 'Some text [NOCACHE]more text';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Some text [NOCACHE]more text', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('Some text [NOCACHE]more text');
+    });
+
+    it('should handle label without [NOCACHE] tag', () => {
+      const label = 'Normal label without nocache';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(label, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe(label);
+    });
+
+    it('should restore label from noCacheLabel when noCacheLabel is already set', () => {
+      const originalLabel = 'Original label';
+      const noCacheLabel = 'Cached label value';
+      comp.caseField = textField('TestField', '', originalLabel);
+      comp.caseField.noCacheLabel = noCacheLabel;
+      comp.caseFields = [comp.caseField];
+      comp.formGroup = new FormGroup({});
+
+      placeholderService.resolvePlaceholders.and.returnValues(noCacheLabel, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.label).toBe(noCacheLabel);
+    });
+
+    it('should handle null label gracefully', () => {
+      const label = null;
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(null, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBeNull();
+    });
+
+    it('should handle undefined label gracefully', () => {
+      comp.caseField = textField('TestField', '', undefined);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(undefined, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+    });
+
+    it('should handle empty string label', () => {
+      const label = '';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('');
+    });
+
+    it('should NOT process label with only [NOCACHE] tag when outside placeholder', () => {
+      const label = '[NOCACHE]';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]');
+    });
+
+    it('should NOT process multiple [NOCACHE] tags when outside placeholder pattern', () => {
+      const label = '[NOCACHE]Text with [NOCACHE] multiple tags';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Text with [NOCACHE] multiple tags', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Text with [NOCACHE] multiple tags');
+    });
+
+    it('should NOT process [NOCACHE] when outside placeholder pattern even with ${} present', () => {
+      const label = '[NOCACHE]Value is ${fieldValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
+
+      // First call is for label substitution, second is for translation check, third and fourth are hint_text and value
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Value is 123', '[NOCACHE]Value is 123', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Value is 123');
+    });
+
+    it('should NOT create noCacheLabel when [NOCACHE] is outside placeholder', () => {
+      const label = '[NOCACHE]Persistent label';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Persistent label', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Persistent label');
+
+      // Simulate some changes
+      comp.caseField.label = 'Changed label';
+      fixture.detectChanges();
+
+      // noCacheLabel should still be undefined
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+    });
+
+    // New tests for [NOCACHE] inside ${...} patterns
+    it('should extract [NOCACHE] tag when inside placeholder with field name', () => {
+      const label = 'Value is ${[NOCACHE]fieldValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value is 123', 'Value is 123', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Value is ${fieldValue}');
+      expect(comp.caseField.label).toBe('Value is 123');
+    });
+
+    it('should process [NOCACHE] at start of placeholder with additional text', () => {
+      const label = 'Result: ${[NOCACHE]calculatedValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('calculatedValue', '42', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Result: 42', 'Result: 42', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Result: ${calculatedValue}');
+      expect(comp.caseField.label).toBe('Result: 42');
+    });
+
+    it('should process [NOCACHE] in middle of placeholder content', () => {
+      const label = 'Data: ${prefix[NOCACHE]fieldName}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('prefixfieldName', 'value123', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Data: value123', 'Data: value123', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Data: ${prefixfieldName}');
+      expect(comp.caseField.label).toBe('Data: value123');
+    });
+
+    it('should process [NOCACHE] at end of placeholder content', () => {
+      const label = 'Info: ${fieldName[NOCACHE]}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldName', 'info', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Info: info', 'Info: info', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Info: ${fieldName}');
+      expect(comp.caseField.label).toBe('Info: info');
+    });
+
+    it('should process multiple placeholders with [NOCACHE] in each', () => {
+      const label = '${[NOCACHE]field1} and ${[NOCACHE]field2}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('field1', 'value1', ''),
+        textField('field2', 'value2', '')
+      ];
+
+      placeholderService.resolvePlaceholders.and.returnValues('value1 and value2', 'value1 and value2', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('${field1} and ${field2}');
+      expect(comp.caseField.label).toBe('value1 and value2');
+    });
+
+    it('should NOT process [NOCACHE] in placeholder with only [NOCACHE] tag', () => {
+      const label = 'Value: ${[NOCACHE]}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value: ${[NOCACHE]}', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] with no other text should not be processed (no field name)
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('Value: ${[NOCACHE]}');
+    });
+
+    it('should process [NOCACHE] with complex placeholder expression', () => {
+      const label = 'Amount: ${[NOCACHE]formattedCalculatedDailyRentChargeAmount}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('formattedCalculatedDailyRentChargeAmount', '£9.86', '')
+      ];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Amount: £9.86', 'Amount: £9.86', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Amount: ${formattedCalculatedDailyRentChargeAmount}');
+      expect(comp.caseField.label).toBe('Amount: £9.86');
+    });
+
+    it('should preserve noCacheLabel across directive lifecycle when set from placeholder', () => {
+      const label = 'Value: ${[NOCACHE]dynamicField}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('dynamicField', 'initial', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value: initial', 'Value: initial', '', '');
+      fixture.detectChanges();
+
+      const noCacheLabelValue = comp.caseField.noCacheLabel;
+      expect(noCacheLabelValue).toBe('Value: ${dynamicField}');
+      expect(comp.caseField.label).toBe('Value: initial');
+
+      // Verify noCacheLabel is preserved even after substitution
+      expect(comp.caseField.noCacheLabel).toBe(noCacheLabelValue);
+    });
+
+    it('should handle mixed scenario - [NOCACHE] inside and outside placeholders', () => {
+      const label = '[NOCACHE] prefix ${[NOCACHE]field1} middle ${field2} suffix';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('field1', 'A', ''),
+        textField('field2', 'B', '')
+      ];
+
+      // First call for label, second for translation check, third and fourth for hint_text and value
+      placeholderService.resolvePlaceholders.and.returnValues(
+        '[NOCACHE] prefix A middle B suffix',
+        '[NOCACHE] prefix A middle B suffix',
+        '',
+        ''
+      );
+      fixture.detectChanges();
+
+      // Only the [NOCACHE] inside ${...} should be processed
+      expect(comp.caseField.noCacheLabel).toBe('[NOCACHE] prefix ${field1} middle ${field2} suffix');
+      expect(comp.caseField.label).toBe('[NOCACHE] prefix A middle B suffix');
+    });
+  });
 });
