@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.43
+**EXUI-4185** Secrets/tokens logged in plaintext
+
 ### Version 7.3.42
 **POFCC-107** Add Field Interpolation based on event outcome
 
