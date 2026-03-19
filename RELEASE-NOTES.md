@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.42
+**POFCC-107** Add Field Interpolation based on event outcome
+
 ### Version 7.3.41
 **EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
 
