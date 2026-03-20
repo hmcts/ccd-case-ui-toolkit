@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.43-exui-4278
+### Version 7.3.43-exui-4278-1
 **EXUI-4278** Suppressions - lodash - minor
 
 ### Version 7.3.43
