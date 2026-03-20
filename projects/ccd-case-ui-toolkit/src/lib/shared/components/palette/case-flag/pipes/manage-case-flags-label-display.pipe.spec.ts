@@ -299,7 +299,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       caseField: flagsData[3].caseField
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Case level - <span class="flag-name-and-description">Flag 5, Dummy subtype value</span> (Fifth flag)');
+      'Case level - Flag 5, Dummy subtype value (Fifth flag)');
   });
 
   it('should return the English formatted string for the party-level flag details', () => {
@@ -313,7 +313,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       caseField: flagsData[3].caseField
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Brent Ford - <span class="flag-name-and-description">Flag 5, Dummy subtype value</span> (Fifth flag)');
+      'Brent Ford - Flag 5, Dummy subtype value (Fifth flag)');
   });
 
   it('should return the English formatted string for the party-level flag details with child flags', () => {
@@ -327,7 +327,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       caseField: flagsData[2].caseField
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
-      ' - <span class="flag-name-and-description">Level 2, Flag 4</span> (Fourth flag)');
+      ' - Level 2, Flag 4 (Fourth flag)');
   });
 
   it('should return the English formatted string for the flag details of flag type "Other" with party role on case', () => {
@@ -342,7 +342,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       roleOnCase: flagsData[4].flags.roleOnCase
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Brent Ford (Applicant 1) - <span class="flag-name-and-description">Other, Flag description</span> (Sixth flag)');
+      'Brent Ford (Applicant 1) - Other, Flag description (Sixth flag)');
   });
 
   it('should return the Welsh formatted string for the case-level flag details', fakeAsync(() => {
@@ -364,7 +364,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
     tick(500);
     // Second call to pipe.transform() will returned the cached Observable
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Dummy Welsh translation - <span class="flag-name-and-description">Fflag 5, Dummy subtype value - Welsh</span> (Fifth flag - Welsh)');
+      'Dummy Welsh translation - Fflag 5, Dummy subtype value - Welsh (Fifth flag - Welsh)');
   }));
 
   it('should return the Welsh formatted string for the party-level flag details', () => {
@@ -379,7 +379,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       caseField: flagsData[3].caseField
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Brent Ford - <span class="flag-name-and-description">Fflag 5, Dummy subtype value - Welsh</span> (Fifth flag - Welsh)');
+      'Brent Ford - Fflag 5, Dummy subtype value - Welsh (Fifth flag - Welsh)');
   });
 
   it('should return the Welsh formatted string for the party-level flag details with child flags', () => {
@@ -396,7 +396,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
     // The resulting string is expected to be the same as the English version because this case flag has no Welsh
     // name (name_cy) nor Welsh comments (flagComment_cy), so it falls back on the English name and comments
     expect(pipe.transform(flagDisplay)).toEqual(
-      ' - <span class="flag-name-and-description">Level 2, Flag 4</span> (Fourth flag)');
+      ' - Level 2, Flag 4 (Fourth flag)');
   });
 
   it('should return the Welsh formatted string for the flag details of flag type "Other" with party role on case', () => {
@@ -413,6 +413,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
     } as FlagDetailDisplayWithFormGroupPath;
     // The roleOnCase value is not stored in Welsh anywhere in the Flags object, so it can only be displayed in English
     expect(pipe.transform(flagDisplay)).toEqual(
-      'Brent Ford (Applicant 1) - <span class="flag-name-and-description">Arall, Flag description - Welsh</span> (Sixth flag - Welsh)');
+      'Brent Ford (Applicant 1) - Arall, Flag description - Welsh (Sixth flag - Welsh)');
   });
 });
