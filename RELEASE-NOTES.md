@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.41-exui-4278
+### Version 7.3.43-exui-4278
 **EXUI-4278** Suppressions - lodash - minor
+
+### Version 7.3.43
+**EXUI-4185** Secrets/tokens logged in plaintext
+
+### Version 7.3.42
+**POFCC-107** Add Field Interpolation based on event outcome
 
 ### Version 7.3.41
 **EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
