@@ -37,6 +37,7 @@ import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -78,6 +79,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public activeCaseFlags = false;
   public caseFlagsExternalUser = false;
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
+  private readonly potentiallyViolentPersonFlagPrefix = `${PVP_DISPLAY_TEXT}.`;
   private subs: Subscription[] = [];
   public eventId: string;
   public isEventButtonClicked: boolean = false;
@@ -410,10 +412,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public hasActiveCaseFlags(): boolean {
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
-    const caseFlagsTab = this.caseDetails?.tabs
-      ? (this.caseDetails.tabs).filter(
-        (tab) => tab.fields && tab.fields.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
-      : null;
+    const caseFlagsTab = this.caseDetails?.tabs?.find(
+      (tab) => tab.fields?.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField))
+    ) ?? null;
 
     if (caseFlagsTab) {
       // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
@@ -432,8 +433,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         }, 0);
 
       if (activeCaseFlags > 0) {
-        const description = activeCaseFlags > 1
+        const hasActivePotentiallyViolentPersonFlag = this.hasActivePotentiallyViolentPersonFlag(caseFlagsTab.fields);
+        const baseDescription = activeCaseFlags > 1
           ? `There are ${activeCaseFlags} active flags on this case.` : 'There is 1 active flag on this case.';
+        const description = hasActivePotentiallyViolentPersonFlag
+          ? `${this.potentiallyViolentPersonFlagPrefix} ${baseDescription}`
+          : baseDescription;
         // Initialise and display notification banner
         this.notificationBannerConfig = {
           bannerType: NotificationBannerType.INFORMATION,
@@ -451,6 +456,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     return false;
+  }
+
+  private hasActivePotentiallyViolentPersonFlag(caseFields: CaseField[]): boolean {
+    return hasActivePvpFlagInCaseFields(caseFields);
   }
 
   /**
@@ -476,7 +485,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map((tab) => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+    return tabs?.map((tab) => ({ 
+        ...tab,
+        fields: this.orderService.sort(tab.fields) 
+      }))
       .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
