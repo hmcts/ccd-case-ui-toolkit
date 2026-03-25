@@ -309,6 +309,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     }
   }
 
+  // Ensure there is no dangerous HTML in the flag name or description that could lead to XSS vulnerabilities
   public sanitizeHtml(content: string | null | undefined): string {
     return this.sanitizer.sanitize(SecurityContext.HTML, content ?? '') ?? '';
   }
