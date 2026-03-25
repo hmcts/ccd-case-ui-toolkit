@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.43-exui-4277
+### Version 7.3.43-exui-4277-1
 **EXUI-4277** Suppressions to packages to update - easier
 
 ### Version 7.3.43
