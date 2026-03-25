@@ -895,7 +895,7 @@ describe('LabelSubstitutorDirective', () => {
 
       fixture.destroy();
 
-      expect(comp.caseField.label).toBe('Modified label');
+      expect(comp.caseField.label).toBe('Initial label');
       expect(comp.caseField.hint_text).toBe(initialHint);
       expect(comp.caseField.isTranslated).toBe(false);
     });

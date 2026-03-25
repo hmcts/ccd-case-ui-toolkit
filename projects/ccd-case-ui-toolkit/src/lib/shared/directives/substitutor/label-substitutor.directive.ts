@@ -21,6 +21,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
+  private initialLabel: string;
   private initialHintText: string;
   private languageSubscription: Subscription
 
@@ -32,6 +33,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
     this.caseField.originalLabel = this.caseField.label;
     this.noCacheProcessing();
@@ -95,8 +97,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private resetToInitialValues(): void {
-    if (this.caseField?.originalLabel) {
-      this.caseField.label = this.caseField.originalLabel;
+    if (this.initialLabel) {
+      this.caseField.label = this.initialLabel;
     }
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
