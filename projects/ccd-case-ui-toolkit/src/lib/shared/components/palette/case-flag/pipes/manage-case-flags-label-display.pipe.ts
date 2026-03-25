@@ -39,8 +39,8 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
             const flagDescription = this.getFlagDescription(flagDetail);
             const flagComment = this.getFlagComments(flagDetail);
             return flagName === flagDescription
-              ? `${flagDescription}${flagComment}`
-              : `${flagName}, ${flagDescription}${flagComment}`;
+              ? `<span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
+              : `<span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
           })
         );
         const combined = combineLatest([partyName$, o$]).pipe(
