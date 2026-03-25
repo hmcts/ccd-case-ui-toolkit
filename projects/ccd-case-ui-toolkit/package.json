@@ -1,10 +1,10 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.43-exui-4277-test",
+  "version": "7.3.43-exui-4277-test-1",
   "engines": {
     "node": ">=20.19.0"
   },
-  "description": "Case UI Toolkit 2",
+  "description": "Case UI Toolkit",
   "license": "MIT",
   "repository": {
     "type": "git",
