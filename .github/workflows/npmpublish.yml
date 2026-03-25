@@ -94,6 +94,30 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
+      - name: Sync dist package dependencies from root package.json
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const rootPackagePath = path.join(process.cwd(), 'package.json');
+          const distPackagePath = path.join(process.cwd(), 'dist/ccd-case-ui-toolkit/package.json');
+
+          const rootPackage = JSON.parse(fs.readFileSync(rootPackagePath, 'utf8'));
+          const distPackage = JSON.parse(fs.readFileSync(distPackagePath, 'utf8'));
+
+          const mergedDependencies = {
+            ...(rootPackage.dependencies || {}),
+            ...(distPackage.dependencies || {})
+          };
+
+          distPackage.dependencies = Object.fromEntries(
+            Object.entries(mergedDependencies).sort(([a], [b]) => a.localeCompare(b))
+          );
+
+          fs.writeFileSync(distPackagePath, `${JSON.stringify(distPackage, null, 2)}\n`);
+          console.log('Synced dist package dependencies from root package.json');
+          EOF
 
       - name: Ensure npm version (Trusted Publishing)
         run: |
@@ -140,6 +164,30 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
+      - name: Sync dist package dependencies from root package.json
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const rootPackagePath = path.join(process.cwd(), 'package.json');
+          const distPackagePath = path.join(process.cwd(), 'dist/ccd-case-ui-toolkit/package.json');
+
+          const rootPackage = JSON.parse(fs.readFileSync(rootPackagePath, 'utf8'));
+          const distPackage = JSON.parse(fs.readFileSync(distPackagePath, 'utf8'));
+
+          const mergedDependencies = {
+            ...(rootPackage.dependencies || {}),
+            ...(distPackage.dependencies || {})
+          };
+
+          distPackage.dependencies = Object.fromEntries(
+            Object.entries(mergedDependencies).sort(([a], [b]) => a.localeCompare(b))
+          );
+
+          fs.writeFileSync(distPackagePath, `${JSON.stringify(distPackage, null, 2)}\n`);
+          console.log('Synced dist package dependencies from root package.json');
+          EOF
       - name: Pack dist as npm tarball
         id: pack
         run: |
