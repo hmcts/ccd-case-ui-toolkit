@@ -15,7 +15,7 @@ import { skip, Subscription } from 'rxjs';
  * Checks all labels and substitutes any placholders that reference other fields values.
  */
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
-
+  
   @Input() public caseField: CaseField;
   @Input() public contextFields: CaseField[] = [];
   @Input() public formGroup: FormGroup;
@@ -35,8 +35,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
-    this.caseField.originalLabel = this.caseField.label;
     this.noCacheProcessing();
+    this.caseField.originalLabel = this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.pipe(
@@ -65,7 +65,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private applySubstitutions(): void {
+  private applySubstitutions(isLanguageChange = false): void {
     const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
@@ -73,8 +73,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
       const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
       if (oldLabel && oldLabel !== substitutedLabel) {
         // we need to translate the uninterpolated data then substitute the values in translated string
-        this.caseField.originalLabel = substitutedLabel;
-        const translated = this.rpxTranslationPipe.transform(oldLabel)
+        this.caseField.originalLabel = oldLabel;
+        const translated = isLanguageChange && this.rpxTranslationService.language === 'en'
+          ? oldLabel
+          : this.rpxTranslationPipe.transform(oldLabel);
         const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
         this.caseField.label = transSubstitutedLabel;
         this.caseField.isTranslated = this.rpxTranslationService.language === 'cy' && translated !== oldLabel;
@@ -92,12 +94,15 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private onLanguageChange(): void {
-    this.resetToInitialValues();
-    this.applySubstitutions();
+    this.resetToInitialValues(true);
+    this.applySubstitutions(true);
   }
 
-  private resetToInitialValues(): void {
-    if (this.initialLabel) {
+  private resetToInitialValues(isLanguageChange = false): void {
+    if (isLanguageChange && this.caseField?.originalLabel) {
+      this.caseField.label = this.caseField.originalLabel;
+    }
+    if (!isLanguageChange && this.initialLabel) {
       this.caseField.label = this.initialLabel;
     }
     if (this.initialHintText) {
