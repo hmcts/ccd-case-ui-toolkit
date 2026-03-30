@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.43-exui-3229
+**EXUI-3229** Event triggers cause duplicate requests
+
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
 

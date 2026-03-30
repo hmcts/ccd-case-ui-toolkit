@@ -8,7 +8,7 @@ import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/T
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { ReadCookieService, SessionStorageService } from '../../../services';
 import { CaseEditComponent, CaseNotifier, WorkAllocationService } from '../../case-editor';
-import { removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
+import { EVENT_START_FIRST_PAGE_REDIRECT, removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
@@ -83,6 +83,10 @@ export class EventStartGuard implements CanActivate {
     }
     return caseDataObservable.pipe(
       switchMap(() => {
+        if (this.shouldSkipDuplicateWorkAllocationCall()) {
+          this.abstractConfig.logMessage(`EventStartGuard: skipping duplicate work allocation call for caseId ${caseId} and eventId ${eventId}`);
+          return of(true);
+        }
         if (this.jurisdiction && this.caseType) {
           if (this.caseId === caseId) {
             return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, this.caseType, this.jurisdiction)
@@ -97,6 +101,10 @@ export class EventStartGuard implements CanActivate {
         return of(false);
       })
     );
+  }
+
+  private shouldSkipDuplicateWorkAllocationCall(): boolean {
+    return this.router.getCurrentNavigation()?.extras?.state?.[EVENT_START_FIRST_PAGE_REDIRECT] === true;
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string, eventId: string, userId: string): boolean {
