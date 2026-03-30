@@ -3485,7 +3485,7 @@ __metadata:
     ng-packagr: "npm:^20.3.0"
     ng2-mock-component: "npm:^0.1.1"
     ngx-chips: "npm:^3.0.0"
-    ngx-markdown: "npm:^20.1.0"
+    ngx-markdown: "npm:^21.1.0"
     ngx-pagination: "npm:6.0.3"
     nyc: "npm:^13.0.1"
     pegjs: "npm:^0.10.0"
@@ -13480,14 +13480,14 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.2.5":
-  version: 3.3.1
-  resolution: "dompurify@npm:3.3.1"
+  version: 3.3.3
+  resolution: "dompurify@npm:3.3.3"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/f71cca489e628591165d16e8cf4fa4f0d3e2ee48db4d73e9d2c5bedc6f915c92f9e9f101f8c4ba790bec0cdffe7f4e1747f5e31c69dc53ce7ae20a81ff6b0022
+  checksum: 10/4cc9c539ed7136d46c6577613b8e20871c2b6165db01dfbd2a3c11c75f9e339c496ac6519a1c3190115def8cadae3720bef0417fc43fa28802c7407bab174da9
   languageName: node
   linkType: hard
 
@@ -13664,10 +13664,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-toolkit@npm:>= 8.0.0 < 10.0.0":
-  version: 9.0.1
-  resolution: "emoji-toolkit@npm:9.0.1"
-  checksum: 10/e2dd3edda04f3b6c0850512438cca8952a2750f04d884b9939850e08a77c296c36b824a298eca42cdce6cd6027df52684e4753cf3d1856a0e5a24560f084d5ee
+"emoji-toolkit@npm:>= 8.0.0 < 11.0.0":
+  version: 10.0.0
+  resolution: "emoji-toolkit@npm:10.0.0"
+  checksum: 10/836b7b9f071e59092ffcd0916aeba88b041096c81c58d4677bf28bd0a23ad0d5ddf3feff98867fb479a10768693a9751db00ef4fea9837548395f6b89ed56bcb
   languageName: node
   linkType: hard
 
@@ -21141,23 +21141,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^20.1.0":
-  version: 20.1.0
-  resolution: "ngx-markdown@npm:20.1.0"
+"ngx-markdown@npm:^21.1.0":
+  version: 21.1.0
+  resolution: "ngx-markdown@npm:21.1.0"
   dependencies:
     clipboard: "npm:^2.0.11"
-    emoji-toolkit: "npm:>= 8.0.0 < 10.0.0"
+    emoji-toolkit: "npm:>= 8.0.0 < 11.0.0"
     katex: "npm:^0.16.0"
     mermaid: "npm:>= 10.6.0 < 12.0.0"
     prismjs: "npm:^1.30.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    marked: ^15.0.0 || ^16.0.0
+    "@angular/common": ^21.0.0
+    "@angular/core": ^21.0.0
+    "@angular/platform-browser": ^21.0.0
+    marked: ^17.0.0
     rxjs: ^6.5.3 || ^7.4.0
-    zone.js: ~0.15.0
+    zone.js: ~0.15.0 || ~0.16.0
   dependenciesMeta:
     clipboard:
       optional: true
@@ -21169,7 +21169,7 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10/e63550b8b561ddcc29445de5edf034ea0fff6089fbaef5377bdffda3d5632cc829f0b55edbeb9235dfe30935e2a5ee4eb0e6dbd3b476a92f1313fa743cfc2f91
+  checksum: 10/31a11dde350db6275c88041a88933f05d7f815e62d623b532ce002c20af076f551bd96ba1605f61ad44b93fa95beaf6507ec6d682b02b16876c96e67b45d8566
   languageName: node
   linkType: hard
 
