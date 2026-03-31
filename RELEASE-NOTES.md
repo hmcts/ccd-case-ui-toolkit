@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.43-exui-4297
+**EXUI-4297** Suppressions - glob - major
+
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
 
