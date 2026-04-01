@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.3.39-exui-4090
-**EXUI-4090** Case Flags: Ordering logic changes
+### Version 7.3.43
+**EXUI-4185** Secrets/tokens logged in plaintext
+
+### Version 7.3.42
+**POFCC-107** Add Field Interpolation based on event outcome
+
+### Version 7.3.41
+**EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
+
+### Version 7.3.40
+**POFCC-77** Template variables in .label() HTML content are cached
 
 ### Version 7.3.39
 **EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
