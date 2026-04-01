@@ -1,7 +1,8 @@
 ## RELEASE NOTES
 
 ### Version 7.3.44
-**EXUI-4089** Case Flags: Show banner when PVP flag is present on case
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
 
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
