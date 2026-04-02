@@ -15,7 +15,7 @@ import { skip, Subscription } from 'rxjs';
  * Checks all labels and substitutes any placholders that reference other fields values.
  */
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
-  
+
   @Input() public caseField: CaseField;
   @Input() public contextFields: CaseField[] = [];
   @Input() public formGroup: FormGroup;
@@ -36,7 +36,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
     this.noCacheProcessing();
-    this.caseField.originalLabel = this.caseField.label;
+    this.caseField.originalLabel = this.caseField.originalLabel || this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.pipe(
@@ -69,20 +69,57 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
-      const oldLabel = this.caseField.label;
-      const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
-      if (oldLabel && oldLabel !== substitutedLabel) {
-        // we need to translate the uninterpolated data then substitute the values in translated string
-        this.caseField.originalLabel = oldLabel;
-        const translated = isLanguageChange && this.rpxTranslationService.language === 'en'
-          ? oldLabel
-          : this.rpxTranslationPipe.transform(oldLabel);
-        const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
-        this.caseField.label = transSubstitutedLabel;
-        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy' && translated !== oldLabel;
+      const currentLabel = this.caseField.label;
+      // `originalLabel` stores the label exactly as it came from the server, before any
+      // placeholder values were inserted. That gives us a clean starting point when the user
+      // changes language or returns to the page later.
+      const originalLabel = this.caseField.originalLabel || currentLabel;
+      const substitutedCurrentLabel = this.resolvePlaceholders(fields, currentLabel);
+      const substitutedOriginalLabel = originalLabel === currentLabel
+        ? substitutedCurrentLabel
+        : this.resolvePlaceholders(fields, originalLabel);
+      const substitutedLabel = substitutedCurrentLabel || substitutedOriginalLabel;
+      const languageIsWelsh = this.rpxTranslationService.language === 'cy';
+      const hasAnyLabelSubstitution = (currentLabel && currentLabel !== substitutedCurrentLabel)
+        || (originalLabel && originalLabel !== substitutedOriginalLabel);
+
+      if (hasAnyLabelSubstitution) {
+        // Preserve the original template the first time we successfully interpolate it.
+        this.caseField.originalLabel = this.caseField.originalLabel || originalLabel;
+
+        // Some labels only translate correctly if we translate the template first and then
+        // substitute the helper values into the translated sentence.
+        const translatedTemplateLabel = this.resolvePlaceholders(
+          fields,
+          this.translateLabel(originalLabel, isLanguageChange)
+        );
+
+        // Other labels only translate correctly if we first resolve the English phrase and let
+        // the render layer translate that final resolved string.
+        const translatedResolvedLabel = this.translateLabel(substitutedLabel, isLanguageChange);
+        const hasResolvedWelshTranslation = languageIsWelsh
+          && translatedResolvedLabel
+          && translatedResolvedLabel !== substitutedLabel;
+        const hasTemplateWelshTranslation = languageIsWelsh
+          && translatedTemplateLabel
+          && translatedTemplateLabel !== substitutedLabel;
+
+        if (hasResolvedWelshTranslation) {
+          // Keep the resolved English label and mark it as not yet translated so the field
+          // template can run `rpxTranslate` on the full phrase at render time.
+          this.setLabelState(substitutedLabel);
+        } else if (hasTemplateWelshTranslation) {
+          // Use the template-translated result when translating the fully resolved label does
+          // not improve the Welsh output.
+          this.setLabelState(translatedTemplateLabel, true);
+        } else {
+          // English, untranslated Welsh, or labels whose translation is handled elsewhere.
+          this.setLabelState(substitutedLabel);
+        }
       } else {
-        this.caseField.label = substitutedLabel;
-        this.caseField.isTranslated = false;
+        // No placeholders were resolved, so keep the current label and allow the render layer
+        // to translate it normally if needed.
+        this.setLabelState(substitutedLabel);
       }
     }
     if (this.shouldSubstitute('hint_text')) {
@@ -91,6 +128,17 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     if (this.shouldSubstitute('value')) {
       this.caseField.value = this.resolvePlaceholders(fields, this.caseField.value);
     }
+  }
+
+  private translateLabel(label: string, isLanguageChange: boolean): string {
+    return isLanguageChange && this.rpxTranslationService.language === 'en'
+      ? label
+      : this.rpxTranslationPipe.transform(label);
+  }
+
+  private setLabelState(label: string, isTranslated = false): void {
+    this.caseField.label = label;
+    this.caseField.isTranslated = isTranslated;
   }
 
   private onLanguageChange(): void {
