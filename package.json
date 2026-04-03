@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.44",
+  "version": "7.3.44-exui-4425-rc-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -19,6 +19,7 @@
   "scripts": {
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
+    "prebuild:library": "node ./scripts/sync-library-package.mjs",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
