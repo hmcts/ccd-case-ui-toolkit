@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.44",
+  "version": "7.3.44-4300",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -127,7 +127,7 @@
     "codecov": "^3.0.0",
     "codelyzer": "^6.0.0",
     "concurrently": "^4.0.1",
-    "core-js": "^2.4.1",
+    "core-js": "^3.49.0",
     "css-loader": "^6.7.1",
     "del": "^3.0.0",
     "eslint": "^8.57.0",
