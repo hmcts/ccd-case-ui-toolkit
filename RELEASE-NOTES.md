@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.43-exui-4368
+**EXUI-4368** Halo 131583 - ET - Users reporting the same data is being displayed when navigating between different applications through a dynamic list
+
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
 
