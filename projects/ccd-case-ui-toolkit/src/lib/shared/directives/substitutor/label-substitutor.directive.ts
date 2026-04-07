@@ -115,12 +115,14 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     // substitute the helper values into the translated sentence.
     const translatedTemplateLabel = this.resolvePlaceholders(
       fields,
-      this.translateLabel(originalLabel, isLanguageChange)
+      isLanguageChange ? this.translateLabelOnLanguageChange(originalLabel) : this.translateLabel(originalLabel)
     );
 
     // Other labels only translate correctly if we first resolve the English phrase and let
     // the render layer translate that final resolved string.
-    const translatedResolvedLabel = this.translateLabel(substitutedLabel, isLanguageChange);
+    const translatedResolvedLabel = isLanguageChange
+      ? this.translateLabelOnLanguageChange(substitutedLabel)
+      : this.translateLabel(substitutedLabel);
     const languageIsWelsh = this.rpxTranslationService.language === 'cy';
     const hasResolvedWelshTranslation = languageIsWelsh
       && translatedResolvedLabel
@@ -147,10 +149,14 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.setLabelState(substitutedLabel);
   }
 
-  private translateLabel(label: string, isLanguageChange: boolean): string {
-    return isLanguageChange && this.rpxTranslationService.language === 'en'
+  private translateLabel(label: string): string {
+    return this.rpxTranslationPipe.transform(label);
+  }
+
+  private translateLabelOnLanguageChange(label: string): string {
+    return this.rpxTranslationService.language === 'en'
       ? label
-      : this.rpxTranslationPipe.transform(label);
+      : this.translateLabel(label);
   }
 
   private setLabelState(label: string, isTranslated = false): void {
