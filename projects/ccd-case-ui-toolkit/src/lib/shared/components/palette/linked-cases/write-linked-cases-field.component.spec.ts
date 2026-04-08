@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgZone } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -125,7 +125,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
     multipageComponentStateService,
     new AddressesService(null, null),
     new LinkedCasesService(jurisdictionService as any, searchService),
-    new CaseFlagStateService());
+    new CaseFlagStateService(),
+    new NgZone({ enableLongStackTrace: false }));
   const caseInfo = {
     case_id: '1682374819203471',
     case_type: {

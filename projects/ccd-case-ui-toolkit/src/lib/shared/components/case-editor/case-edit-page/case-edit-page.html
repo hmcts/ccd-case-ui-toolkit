@@ -1,8 +1,8 @@
 <ng-container *ngIf="currentPage">
-  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
+  <h1 *ngIf="!currentPage.label" class="govuk-heading-l" id="page-heading" tabindex="-1">{{eventTrigger.name | rpxTranslate}}</h1>
   <ng-container *ngIf="currentPage.label">
     <span class="govuk-caption-l">{{ eventTrigger.name | rpxTranslate}}</span>
-    <h1 class="govuk-heading-l">{{currentPage.label | rpxTranslate}}</h1>
+    <h1 class="govuk-heading-l" id="page-heading" tabindex="-1">{{currentPage.label | rpxTranslate}}</h1>
   </ng-container>
 </ng-container>
 
