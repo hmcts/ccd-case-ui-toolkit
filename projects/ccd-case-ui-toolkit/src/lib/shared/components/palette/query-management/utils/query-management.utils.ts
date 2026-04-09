@@ -35,7 +35,7 @@ export class QueryManagementUtils {
     };
   }
 
-  public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
+  public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any, isHmctsStaff: string): CaseMessage {
     const attachments = formGroup.get('attachments').value;
     const formDocument = attachments.map((document) => this.documentToCollectionFormDocument(document));
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
@@ -46,7 +46,8 @@ export class QueryManagementUtils {
     const hearingDate = (isHearingRelated === 'Yes')
       ? this.formattedDate(formGroup.get('hearingDate').value)
       : null;
-    return {
+
+    const message: CaseMessage = {
       id: uuidv4(),
       subject,
       name: currentUserName,
@@ -58,9 +59,16 @@ export class QueryManagementUtils {
       createdBy: currentUserId,
       messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
     };
+
+    // Add isHmctsStaff only when the user is HMCTS staff and is permitted to create a new query
+    if (typeof isHmctsStaff === 'string' && isHmctsStaff.trim().toLowerCase() === 'yes') {
+      message.isHmctsStaff = isHmctsStaff;
+    }
+
+    return message;
   }
 
-  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string): CaseMessage {
+  public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any, messageTypeParam: string, isHmctsStaff: string): CaseMessage {
     const currentUserId = currentUserDetails?.uid || currentUserDetails?.id;
     const currentUserName = currentUserDetails?.name || `${currentUserDetails?.forename} ${currentUserDetails?.surname}`;
     const body = formGroup.get('body').value.trim();
@@ -75,7 +83,7 @@ export class QueryManagementUtils {
           ? QueryCreateContext.FOLLOWUP
           : undefined;
 
-    return {
+    const message: CaseMessage = {
       id: uuidv4(),
       subject: queryItem.subject.trim(),
       name: currentUserName,
@@ -89,6 +97,14 @@ export class QueryManagementUtils {
       isClosed,
       messageType
     };
+
+    // To be implemented later, once  service have don't their configuration
+    // Add isHmctsStaff when the user is HMCTS staff and responsding to a query
+    // if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
+    //   message.isHmctsStaff = isHmctsStaff;
+    // }
+
+    return message;
   }
 
   public static isObject(elem: any): boolean {

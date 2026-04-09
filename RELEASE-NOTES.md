@@ -1,7 +1,60 @@
 ## RELEASE NOTES
 
-### Version 7.3.29-exui-3740
-**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+### Version 7.3.45
+
+**EXUI-4302** Datepicker days showing incorrectly
+
+### Version 7.3.44
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
+
+### Version 7.3.43
+**EXUI-4185** Secrets/tokens logged in plaintext
+
+### Version 7.3.42
+**POFCC-107** Add Field Interpolation based on event outcome
+
+### Version 7.3.41
+**EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
+
+### Version 7.3.40
+**POFCC-77** Template variables in .label() HTML content are cached
+
+### Version 7.3.39
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
+
+### Version 7.3.38
+**EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.37
+**EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
+**EXUI-3952** Removing deprecated functions - Toolkit
+
+### Version 7.3.36
+**EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
+
+### Version 7.3.35
+**EXUI-3345** Open HTML case files for viewing
+
+### Version 7.3.34
+**EXUI-3849** CVE Vulnerability - High - CVE-2022-23647
+**EXUI-3851** CVE Vulnerability - High - CVE-2022-21681
+
+### Version 7.3.33
+**EXUI-3927** CVE Vulnerability - CVE-2025-64718 - Em-media-viewer
+**EXUI-4101** CVE Vulnerability - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.32
+**EXUI-3994** Transition 6 NPM Packages from Classic Tokens to Trusted Publishing
+
+### Version 7.3.31
+**EXUI-3695** Confirm new HMCTS user query created or responded to appears in the table on Case Detail Page
+**EXUI-3696** Revise responses to ensure uniqueness
+**EXUI-3697** Update Query Sub headers and query information
+**EXUI-3698** Enable Closing of Queries by HMCTS Staff
+
+### Version 7.3.30
+**EXUI-4155** SRT Release
 
 ### Version 7.3.29
 **EXUI-1580** MC - (Level-A) : DAC_Mouse_Dependency_09

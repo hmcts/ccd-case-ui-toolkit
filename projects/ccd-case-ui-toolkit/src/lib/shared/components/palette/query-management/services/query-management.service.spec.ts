@@ -8,6 +8,7 @@ import {
   FIELD_TYPE_COMPLEX
 } from '../constants/query-management.constants';
 import { FormControl, FormGroup } from '@angular/forms';
+import { QueryManagementUtils } from '../utils/query-management.utils';
 
 describe('QueryManagementService', () => {
   let service: QueryManagementService;
@@ -72,7 +73,10 @@ describe('QueryManagementService', () => {
       service.setCaseQueriesCollectionData(eventData as any, QueryCreateContext.NEW_QUERY, caseDetails as any);
 
       expect(service.fieldId).toBe('queryField1');
+      expect(Array.isArray(service.caseQueriesCollections)).toBe(true);
       expect(service.caseQueriesCollections.length).toBe(1);
+      // the extracted collection should contain the caseMessages array
+      expect(service.caseQueriesCollections[0].caseMessages?.length).toBe(1);
     });
 
     it('should handle multiple matching fields by picking the one with the lowest order', () => {
@@ -138,7 +142,9 @@ describe('QueryManagementService', () => {
       };
 
       service.setCaseQueriesCollectionData(eventData as any, QueryCreateContext.NEW_QUERY, caseDetails as any);
-      expect(console.error).toHaveBeenCalledWith(
+
+      // resolveFieldId logs the jurisdiction-specific error, and setCaseQueriesCollectionData logs a second message.
+      expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).toBe(
         'Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction'
       );
       expect(service.fieldId).toBeUndefined();
@@ -234,6 +240,9 @@ describe('QueryManagementService', () => {
       );
 
       expect(result.queryField.caseMessages.length).toBe(2);
+      // ensure original message preserved and new message appended
+      expect(result.queryField.caseMessages[0].value.id).toBe('abcd');
+      expect(result.queryField.caseMessages[1].value).toBeDefined();
     });
   });
 

@@ -6,6 +6,55 @@ import { FieldsUtils } from './fields.utils';
 describe('FieldsUtils', () => {
   const fieldUtils: FieldsUtils = new FieldsUtils();
 
+  describe('createToken', () => {
+    let originalCryptoDescriptor: PropertyDescriptor | undefined;
+
+    const setWindowCrypto = (value: Crypto | undefined) => {
+      Object.defineProperty(window, 'crypto', {
+        value,
+        configurable: true
+      });
+    };
+
+    beforeEach(() => {
+      originalCryptoDescriptor = Object.getOwnPropertyDescriptor(window, 'crypto');
+    });
+
+    afterEach(() => {
+      if (originalCryptoDescriptor) {
+        Object.defineProperty(window, 'crypto', originalCryptoDescriptor);
+      }
+    });
+
+    it('should use crypto.randomUUID when available', () => {
+      setWindowCrypto({
+        randomUUID: jasmine.createSpy('randomUUID').and.returnValue('test-uuid')
+      } as unknown as Crypto);
+
+      expect(FieldsUtils.createToken()).toBe('test-uuid');
+      expect((window as any).crypto.randomUUID).toHaveBeenCalled();
+    });
+
+    it('should use crypto.getRandomValues when randomUUID is not available', () => {
+      setWindowCrypto({
+        getRandomValues: (arr: Uint8Array) => {
+          arr.set([0, 1, 2, 3]);
+          return arr;
+        }
+      } as Crypto);
+
+      const token = FieldsUtils.createToken();
+      expect(token).toBe('00010203' + '000000000000000000000000');
+    });
+
+    it('should fall back to a timestamp-based token when crypto is not available', () => {
+      setWindowCrypto(undefined);
+
+      const token = FieldsUtils.createToken();
+      expect(token).toMatch(/^\d+$/);
+    });
+  });
+
   const textField: CaseField =
     aCaseField('textField', 'Some text', 'Text', 'OPTIONAL', null);
   const caseCreationDate: CaseField =
