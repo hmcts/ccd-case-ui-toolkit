@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.3.45
+
+**EXUI-4302** Datepicker days showing incorrectly
+
 ### Version 7.3.44
 **EXUI-4089** Case Flags: Show banner when PVP flag is present on 
 **EXUI-4090** Case Flags: Ordering logic changes 
