@@ -1,7 +1,9 @@
 ## RELEASE NOTES
 
-### Version 7.3.45
+### Version 7.3.45-3740
+**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
 
+### Version 7.3.45
 **EXUI-4302** Datepicker days showing incorrectly
 
 ### Version 7.3.44
