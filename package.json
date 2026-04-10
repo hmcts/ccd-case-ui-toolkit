@@ -60,7 +60,7 @@
     "@angular/router": "^20.3.15",
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.5.17",
+    "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/media-viewer": "4.2.15-exui-4277",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
