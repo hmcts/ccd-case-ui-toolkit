@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.0-exui-2906-activity-tracker-8",
+  "version": "7.3.45-exui-2906-activity-tracker-9",
   "engines": {
     "node": ">=20.19.0"
   },

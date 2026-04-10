@@ -1,5 +1,35 @@
 ## RELEASE NOTES
 
+### Version 7.3.45
+
+**EXUI-4302** Datepicker days showing incorrectly
+
+### Version 7.3.44
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
+
+### Version 7.3.43
+**EXUI-4185** Secrets/tokens logged in plaintext
+
+### Version 7.3.42
+**POFCC-107** Add Field Interpolation based on event outcome
+
+### Version 7.3.41
+**EXUI-4267** Halo 121428 Personal Device - Highlight function on Bundles
+
+### Version 7.3.40
+**POFCC-77** Template variables in .label() HTML content are cached
+
+### Version 7.3.39
+**EXUI-3521** Review we have moved all MC Launch Darkly flags to code where appropriate
+
+### Version 7.3.38
+**EXUI-4074** CVE Vulnerability - High - Multiple vulnerabilities - EM-Media Viewer
+
+### Version 7.3.37
+**EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
+**EXUI-3952** Removing deprecated functions - Toolkit
+
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
 
