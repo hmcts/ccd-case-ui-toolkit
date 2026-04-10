@@ -32,13 +32,13 @@ import {
 } from '../../../services';
 
 import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../../services/activity';
+import { MODES } from '../../../services/activity/utils';
 import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
-import { MODES } from '../../../services/activity/utils';
 import { isSolicitorUser } from '../../../utils';
 
 
@@ -432,7 +432,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
     const caseFlagsTab = this.caseDetails?.tabs
       ? (this.caseDetails.tabs).filter(
-        (tab) => tab.fields && tab.fields.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
+        (tab) => tab.fields?.some((caseField) => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
       : null;
 
     if (caseFlagsTab) {
@@ -497,7 +497,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map((tab) => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+    return tabs?.map((tab) => ({ ...tab, fields: this.orderService.sort(tab.fields) }))
       .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

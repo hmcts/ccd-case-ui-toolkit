@@ -49,6 +49,7 @@ import {
   SessionStorageService
 } from '../../../services/';
 import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { MODES } from '../../../services/activity/utils';
 import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
@@ -61,7 +62,6 @@ import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services';
-import { MODES } from '../../../services/activity/utils';
 
 @Component({
   // tslint:disable-next-line

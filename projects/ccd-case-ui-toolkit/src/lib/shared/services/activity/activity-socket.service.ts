@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
@@ -55,29 +55,6 @@ export class ActivitySocketService {
     this.socket.emit('watch', { caseIds });
   }
 
-  // public viewCase(caseId: string, isViewing?: boolean): void {
-  //   // only emit if viewing is true and socket is connected
-  //   if(isViewing && this.socket && this.connected.value) {
-  //     console.log('viewCase emit');
-  //     this.socket.emit('view', { caseId });
-  //   }
-  // }
-
-  // public stopCase(caseId: string, isStopping?: boolean): void {
-  //   // only emit if stopping is true
-  //   if(isStopping) {
-  //     this.socket.emit('stop', { caseId });
-  //   }
-  // }
-
-  // public editCase(caseId: string, isEditing?: boolean): void {
-  //   // only emit if editing is true and socket is connected
-  //   if(isEditing && this.socket && this.connected.value) {
-  //     console.log('editCase emit');
-  //     this.socket.emit('edit', { caseId });
-  //   }
-  // }
-
 
   // keep small wrappers to avoid breaking callers
   public viewCase(caseId: string, isViewing?: boolean): void {
@@ -104,7 +81,6 @@ export class ActivitySocketService {
       return; // duplicate within cooldown
     }
      
-    console.log('startViewing emit');
     try {
       this.socket.emit('view', { caseId });
       this.lastViewEmit = { caseId, time: now };
@@ -140,7 +116,7 @@ export class ActivitySocketService {
     if (this.lastEditEmit.caseId === caseId && (now - this.lastEditEmit.time) < this.emitCooldownMs) {
       return;
     }
-    console.log('startEditing emit', caseId);
+ 
     try {
       this.socket.emit('edit', { caseId });
       this.lastEditEmit = { caseId, time: now };
