@@ -136,7 +136,10 @@ describe('QueryCheckYourAnswersComponent', () => {
       },
       params: {
         qid: '1',
-        dataid: 'id-007'
+        dataid: 'ccd-case-message-id-002', // default collection item id
+        cid: '1234',
+        jurisdiction: 'TEST_JURIS',
+        caseType: 'TEST_CASE'
       },
       data: {
         case: {
@@ -458,19 +461,6 @@ describe('QueryCheckYourAnswersComponent', () => {
       ]
     });
 
-    // Specific test override when checking messageId behavior
-    snapshotActivatedRoute.snapshot.params.dataid = 'targetMessageId';
-    queryManagementService.setCaseQueriesCollectionData.and.returnValue({
-      fieldId: 'field1',
-      caseQueriesCollections: [
-        {
-          partyName: 'Y',
-          roleOnCase: '',
-          caseMessages: [{ value: { id: 'targetMessageId' } }]
-        }
-      ]
-    });
-
     component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -743,7 +733,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       wizard_pages: [{ wizard_page_fields: [{ case_field_id: 'someId', order: 1 }] }]
     } as any;
 
-    const result = queryManagementService['getCaseQueriesCollectionFieldOrderFromWizardPages'](eventData);
+    const result = queryManagementService.getCaseQueriesCollectionFieldOrderFromWizardPages(eventData);
     expect(result).toBeUndefined();
   });
 
@@ -759,7 +749,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       wizard_pages: [{}] // No `wizard_page_fields`
     } as any;
 
-    const result = queryManagementService['getCaseQueriesCollectionFieldOrderFromWizardPages'](component.eventData);
+    const result = queryManagementService.getCaseQueriesCollectionFieldOrderFromWizardPages(component.eventData);
     expect(result).toBeUndefined();
   });
 
@@ -852,5 +842,82 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.ngOnInit();
 
     expect(alertService.error).toHaveBeenCalledWith({ phrase: 'Internal server error' });
+  });
+  it('should filter tasks by tid when multiple tasks returned and tid is present', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    const multiTaskResponse = {
+      tasks: [
+        { id: 'Task_1' },
+        { id: 'Task_2' }, // this should be filtered by tid
+        { id: 'Task_3' }
+      ]
+    };
+    workAllocationService.getTasksByCaseIdAndEventId.and.returnValue(of(multiTaskResponse));
+
+    // ensure route query param tid exists (already in snapshotActivatedRoute but be explicit)
+    (TestBed.inject(ActivatedRoute) as any).snapshot.queryParams.tid = 'Task_2';
+
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+
+    component.ngOnInit();
+
+    expect(component.filteredTasks.length).toBe(1);
+    expect(component.filteredTasks[0].id).toBe('Task_2');
+    expect(component.readyToSubmit).toBe(true);
+  });
+
+  it('should log error, set errorMessages and stop submitting when no task to complete is found for RESPOND', () => {
+    component.queryCreateContext = QueryCreateContext.RESPOND;
+    // set filteredTasks empty so submit enters the "no task" branch
+    component.filteredTasks = [];
+    component.fieldId = 'anyField';
+    component.qmCaseQueriesCollectionData = { anyField: { partyName: '', roleOnCase: '', caseMessages: [] } };
+
+    spyOn(console, 'error');
+    spyOn(window, 'scrollTo');
+
+    component.submit();
+
+    expect(console.error).toHaveBeenCalledWith('Error: No task to complete was found');
+
+    // errorMessages should be set with fallback content
+    expect(component.errorMessages?.length).toBeGreaterThan(0);
+    expect(component.errorMessages[0].title).toBe('Error');
+    expect(component.errorMessages[0].description).toBe('No task to complete was found');
+
+    // isSubmitting should be false and it should attempt to scroll to top
+    expect(component.isSubmitting).toBeFalsy();
+    expect(window.scrollTo).toHaveBeenCalled();
+  });
+
+  it('should emit createEventResponse with data[fieldId] when createEvent returns data containing that field', () => {
+  // Arrange: non-RESPOND flow
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+    const fieldId = 'queryField123';
+    component.qmCaseQueriesCollectionData = { [fieldId]: { partyName: 'P', roleOnCase: '', caseMessages: [] } };
+
+    // casesService.createEvent should return an observable with after_submit_callback_response and data
+    const fakeCallbackResponse = {
+      after_submit_callback_response: {
+        confirmation_body: 'body',
+        confirmation_header: 'header'
+      },
+      data: {
+        [fieldId]: { partyName: 'P', caseMessages: [{ id: 'm1' }] }
+      }
+    };
+    casesService.createEvent.and.returnValue(of(fakeCallbackResponse));
+
+    spyOn(component.createEventResponse, 'emit');
+    spyOn(component.callbackConfirmationMessage, 'emit');
+
+    component.submit();
+
+    expect(casesService.createEvent).toHaveBeenCalled();
+    expect(component.createEventResponse.emit).toHaveBeenCalledWith(fakeCallbackResponse.data[fieldId]);
+    expect(component.callbackConfirmationMessage.emit).toHaveBeenCalledWith({ body: 'body', header: 'header' });
+
+    // isSubmitting reset
+    expect(component.isSubmitting).toBeFalsy();
   });
 });
