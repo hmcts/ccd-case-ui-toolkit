@@ -1,7 +1,14 @@
 ## RELEASE NOTES
 
-### Version 7.3.43-exui-4277-1
+### Version 7.3.45-exui-4277
 **EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.45
+**EXUI-4302** Datepicker days showing incorrectly
+
+### Version 7.3.44
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
 
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
@@ -24,7 +31,6 @@
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
 **EXUI-3952** Removing deprecated functions - Toolkit
-
 
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
