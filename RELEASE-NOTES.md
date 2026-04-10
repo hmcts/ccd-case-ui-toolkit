@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.44-exui-4368
+### Version 7.3.45-exui-4368
 **EXUI-4368** Halo 131583 - ET - Users reporting the same data is being displayed when navigating between different applications through a dynamic list
+
+### Version 7.3.45
+**EXUI-4302** Datepicker days showing incorrectly
 
 ### Version 7.3.44
 **EXUI-4089** Case Flags: Show banner when PVP flag is present on 
