@@ -3,6 +3,7 @@ import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter
 import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_LEGACY_DATE_LOCALE } from '@angular/material/legacy-core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { By } from '@angular/platform-browser';
@@ -62,6 +63,7 @@ describe('DatetimePickerComponent', () => {
       providers: [FormatTranslatorService,
         { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
         { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+        { provide: MAT_LEGACY_DATE_LOCALE, useValue: 'en-GB' },
         { provide: CaseFieldService, useValue: caseFieldService }
       ]
     })
@@ -241,6 +243,37 @@ describe('DatetimePickerComponent', () => {
     expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
     expect(setDay.getMonth()).toBe(firstDay.getMonth());
     expect(setDay.getDay()).toBe(firstDay.getDay());
+    flush();
+    discardPeriodicTasks();
+  }));
+
+  it('should render weekday headings from Monday to Sunday', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+
+    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
+    toggle.dispatchEvent(new MouseEvent('click'));
+    fixture.detectChanges();
+
+    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+
+    const weekdayHeaders = Array.from(
+      document.querySelectorAll('.mat-calendar-table-header th')
+    ) as HTMLTableCellElement[];
+
+    const weekdayLabels = weekdayHeaders
+      .map((header) => header.textContent?.trim().toUpperCase() || '')
+      .filter((label) => !!label);
+
+    expect(weekdayLabels.length).toBe(7);
+    expect(weekdayLabels[0]).toContain('MONDAY');
+    expect(weekdayLabels[1]).toContain('TUESDAY');
+    expect(weekdayLabels[2]).toContain('WEDNESDAY');
+    expect(weekdayLabels[3]).toContain('THURSDAY');
+    expect(weekdayLabels[4]).toContain('FRIDAY');
+    expect(weekdayLabels[5]).toContain('SATURDAY');
+    expect(weekdayLabels[6]).toContain('SUNDAY');
+
     flush();
     discardPeriodicTasks();
   }));
