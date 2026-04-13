@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { PVP_DISPLAY_TEXT, PVP_FLAG_CODE } from '../../utils/case-flag-priority.utils';
 import { FlagDetail } from '../../domain';
 import { CaseFlagStatus } from '../../enums';
 import { FlagFieldDisplayPipe } from '../../pipes';
@@ -17,17 +18,17 @@ describe('CaseFlagTableComponent', () => {
       partyName: 'John Smith',
       roleOnCase: '',
       details: [{
-        name: 'Wheel chair access',
+        name: 'Original PVP label',
         subTypeValue: '',
         subTypeKey: '',
         otherDescription: '',
-        flagComment: '',
+        flagComment: 'PVP comment',
         flagUpdateComment: 'Flag update comment for first flag',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
         path: [],
         hearingRelevant: false,
-        flagCode: '',
+        flagCode: PVP_FLAG_CODE,
         status: CaseFlagStatus.ACTIVE
       },
       {
@@ -208,5 +209,46 @@ describe('CaseFlagTableComponent', () => {
     expect(tableCellElements[5].textContent).toContain(flagData.flags.details[1].subTypeValue_cy);
     // Check that the second element of the second row of five (i.e. seventh element) contains comments in Welsh
     expect(tableCellElements[6].textContent).toContain(flagData.flags.details[1].flagComment_cy);
+  });
+
+  it('should render active PF0021 with icon and uppercase & bold PVP prefix label', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+
+    const firstNameCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[0];
+    const firstCommentCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[1];
+    const pvpIconElement = firstNameCell.querySelector('svg.hmcts-banner__icon');
+    const pvpLabelElement = firstNameCell.querySelector('[class~="govuk-!-font-weight-bold"]');
+    const pvpCommentElement = firstCommentCell.firstElementChild as HTMLElement;
+
+    expect(pvpIconElement).toBeTruthy();
+    expect(pvpIconElement.getAttribute('role')).toBe('presentation');
+    expect(pvpLabelElement).toBeTruthy();
+    expect(pvpLabelElement.tagName.toLowerCase()).toBe('span');
+    expect(pvpLabelElement.textContent).toContain(PVP_DISPLAY_TEXT);
+    expect(pvpCommentElement).toBeTruthy();
+    expect(pvpCommentElement.classList.contains('govuk-!-font-weight-bold')).toBe(true);
+    expect(pvpCommentElement.textContent).toContain(flagData.flags.details[0].flagComment);
+    expect(firstNameCell.textContent).toContain(PVP_DISPLAY_TEXT);
+    expect(firstNameCell.textContent).not.toContain('Original PVP label');
+  });
+
+  it('should not render PF0021 override label/icon when the PVP flag is inactive', () => {
+    flagData.flags.details[0].status = CaseFlagStatus.INACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+
+    const firstNameCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[0];
+    const firstCommentCell = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell')[1];
+    const pvpIconElement = firstNameCell.querySelector('svg.hmcts-banner__icon');
+    const pvpLabelElement = firstNameCell.querySelector('[class~="govuk-!-font-weight-bold"]');
+    const pvpCommentElement = firstCommentCell.firstElementChild as HTMLElement;
+
+    expect(pvpIconElement).toBeNull();
+    expect(pvpLabelElement).toBeNull();
+    expect(pvpCommentElement).toBeTruthy();
+    expect(pvpCommentElement.classList.contains('govuk-!-font-weight-bold')).toBe(false);
+    expect(firstNameCell.textContent).not.toContain(PVP_DISPLAY_TEXT);
+    expect(firstNameCell.textContent).toContain('Original PVP label');
   });
 });
