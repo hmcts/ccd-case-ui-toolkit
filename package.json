@@ -19,8 +19,7 @@
   "scripts": {
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
-    "prebuild:library": "node ./scripts/sync-library-package.mjs",
-    "build:library": "ng build ccd-case-ui-toolkit-lib",
+    "build:library": "node ./scripts/sync-library-package.mjs && ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
@@ -63,7 +62,6 @@
     "@angular/upgrade": "^20.2.4",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.15",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
