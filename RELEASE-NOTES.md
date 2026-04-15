@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.45-exui-4277-1
+### Version 7.3.46-exui-4277-1
 **EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.46
+**EXUI-4227** CVE Vulnerabilities Mar26
 
 ### Version 7.3.45
 **EXUI-4302** Datepicker days showing incorrectly
