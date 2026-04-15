@@ -2,6 +2,8 @@
 
 ### Version 7.3.45-exui-4368
 **EXUI-4368** Halo 131583 - ET - Users reporting the same data is being displayed when navigating between different applications through a dynamic list
+### Version 7.3.46
+**EXUI-4227** CVE Vulnerabilities Mar26
 
 ### Version 7.3.45
 **EXUI-4302** Datepicker days showing incorrectly
