@@ -1,7 +1,8 @@
 ## RELEASE NOTES
 
-### Version 7.3.45-exui-4368
-**EXUI-4368** Halo 131583 - ET - Users reporting the same data is being displayed when navigating between different applications through a dynamic list
+### Version 7.3.47
+**EXUI-4368** the same data is being displayed when navigating between dynamic list
+
 ### Version 7.3.46
 **EXUI-4227** CVE Vulnerabilities Mar26
 
