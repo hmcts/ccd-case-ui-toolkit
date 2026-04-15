@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.46-exui-4277-1
+### Version 7.3.47-exui-4277-1
 **EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.47
+**EXUI-4368** the same data is being displayed when navigating between dynamic list
 
 ### Version 7.3.46
 **EXUI-4227** CVE Vulnerabilities Mar26
