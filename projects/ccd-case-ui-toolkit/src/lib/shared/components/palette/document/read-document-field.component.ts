@@ -50,6 +50,14 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public openMediaViewer(documentFieldValue): void {
+    const documentBinaryUrl = this.documentManagement.getDocumentBinaryUrl(documentFieldValue);
+    const isHtmlDocument = this.documentManagement.isHtmlDocument(documentFieldValue);
+    if (isHtmlDocument && documentBinaryUrl) {
+      // HTML files are opened directly in a separate tab; all other types continue to use media viewer.
+      this.windowService.openOnNewTab(documentBinaryUrl);
+      return;
+    }
+
     const token = FieldsUtils.createToken();
     const storageKey = `${MEDIA_VIEWER_INFO}:${token}`;
 
