@@ -291,7 +291,7 @@ export class FormValueService {
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
-    fromPreviousPage = false, currentPageCaseFields = []): void {
+    fromPreviousPage = false, currentPageCaseFields = [], isNested = false): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -302,9 +302,9 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
+        if (this.shouldRemoveHiddenField(field, isNested)) {
           // Delete anything that is hidden (that is NOT readonly), and that
-          // hasn't had its display_context overridden to make it hidden.
+          // is not explicitly retained. Nested hidden fields should be dropped by default.
           delete data[field.id];
         } else if (field.field_type) {
           switch (field.field_type.type) {
@@ -318,7 +318,8 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty,
+                false, false, [], true);
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
               if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
@@ -341,8 +342,10 @@ export class FormValueService {
                 if (field.field_type.collection_field_type.type === 'Complex') {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
-                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
-                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false);
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty,
+                      false, false, [], true);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false,
+                      false, false, [], true);
                   }
                 }
               }
@@ -356,6 +359,13 @@ export class FormValueService {
 
     // Clear out any MultiSelect labels.
     FormValueService.removeMultiSelectLabels(data);
+  }
+
+  private shouldRemoveHiddenField(field: CaseField, isNested: boolean): boolean {
+    return field.hidden === true
+      && field.id !== 'caseLinks'
+      && !field.retain_hidden_value
+      && (isNested || (field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP'));
   }
 
   public removeInvalidCollectionData(data: object, field: CaseField) {
