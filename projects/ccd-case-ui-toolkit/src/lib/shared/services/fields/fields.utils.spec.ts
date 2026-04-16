@@ -559,6 +559,10 @@ describe('FieldsUtils', () => {
                     type: 'DynamicList'
                   },
                   id: 'complex_dl',
+                  list_items: [
+                    {code: '1', value: '1'},
+                    {code: '2', value: '2'}
+                  ],
                   value: {
                     list_items: [
                       {code: '1', value: '1'},
@@ -589,6 +593,54 @@ describe('FieldsUtils', () => {
       };
 
       expect(callbackResponse).toEqual(expected);
+    });
+
+    it('should hydrate list_items for collection dynamic multiselects without copying selected values', () => {
+      const listItems = [
+        {code: '1', value: '1'},
+        {code: '2', value: '2'}
+      ];
+      const callbackResponse = {
+        field_type: {
+          type: 'Collection',
+          collection_field_type: {
+            type: 'Complex',
+            complex_fields: [
+              {
+                field_type: {
+                  type: 'DynamicMultiSelectList'
+                },
+                id: 'orderList',
+                formatted_value: {}
+              }
+            ]
+          }
+        },
+        value: [
+          {
+            id: 'recipient-1',
+            value: {
+              orderList: {
+                list_items: listItems,
+                value: [
+                  {code: '2', value: '2'}
+                ]
+              }
+            }
+          }
+        ]
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      expect(callbackResponse.field_type.collection_field_type.complex_fields[0]).toEqual(jasmine.objectContaining({
+        id: 'orderList',
+        list_items: listItems,
+        formatted_value: {
+          list_items: listItems
+        }
+      }));
+      expect((callbackResponse.field_type.collection_field_type.complex_fields[0] as any).value).toBeUndefined();
     });
   });
 

@@ -137,6 +137,72 @@ describe('FieldTypeSanitiser', () => {
     expect(editForm.data.dynamicList).toEqual(EXPECTED_VALUE_DYNAMIC_LIST);
   });
 
+  it('should preserve collection recipient DynamicMultiSelectList selections for each row during sanitisation', () => {
+    const orderListItems = [
+      { code: 'order-1', label: 'Blank order or directions (C21) - 15 Apr 2026' },
+      { code: 'order-2', label: 'Parental responsibility order (C45A) - 15 Apr 2026' }
+    ];
+    const collectionCaseFields = [{
+      id: 'stmtOfServiceAddRecipient',
+      value: [
+        {
+          id: 'recipient-1',
+          value: {
+            orderList: {
+              list_items: orderListItems,
+              value: [orderListItems[0]]
+            }
+          }
+        }
+      ],
+      field_type: {
+        id: 'StmtOfServiceAddRecipient',
+        type: 'Collection',
+        collection_field_type: {
+          id: 'StmtOfServiceAddRecipient',
+          type: 'Complex',
+          complex_fields: [
+            {
+              id: 'orderList',
+              field_type: {
+                id: 'DynamicMultiSelectList',
+                type: 'DynamicMultiSelectList'
+              },
+              display_context: 'OPTIONAL'
+            }
+          ]
+        }
+      }
+    }] as unknown as CaseField[];
+    const formData = {
+      stmtOfServiceAddRecipient: [
+        {
+          id: 'recipient-1',
+          value: {
+            orderList: [orderListItems[0]]
+          }
+        },
+        {
+          id: 'recipient-2',
+          value: {
+            orderList: [orderListItems[1]]
+          }
+        }
+      ]
+    };
+
+    new FieldTypeSanitiser().sanitiseLists(collectionCaseFields, formData);
+
+    expect(formData.stmtOfServiceAddRecipient[0].value.orderList as any).toEqual({
+      value: [orderListItems[0]],
+      list_items: orderListItems
+    });
+    expect(formData.stmtOfServiceAddRecipient[1].value.orderList as any).toEqual({
+      value: [orderListItems[1]],
+      list_items: orderListItems
+    });
+  });
+
   describe('ensureDynamicMultiSelectListPopulated', () => {
     let fieldTypeSanitiser: FieldTypeSanitiser;
     let mockCaseFields: CaseField[];
@@ -326,6 +392,50 @@ describe('FieldTypeSanitiser', () => {
       mockCaseFields[2].field_type.complex_fields[0].field_type.complex_fields[0].field_type.type = 'FixedList';
       const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
       expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toBeUndefined();
+    });
+
+    it('should populate list_items for DynamicMultiSelectList within collection complex fields', () => {
+      mockCaseFields.push({
+        id: 'stmtOfServiceAddRecipient',
+        value: [
+          {
+            id: 'recipient-1',
+            value: {
+              orderList: {
+                list_items: [
+                  { code: 'order-1', label: 'Order 1' },
+                  { code: 'order-2', label: 'Order 2' }
+                ]
+              }
+            }
+          }
+        ],
+        field_type: {
+          id: 'StmtOfServiceAddRecipient',
+          type: 'Collection',
+          collection_field_type: {
+            id: 'StmtOfServiceAddRecipient',
+            type: 'Complex',
+            complex_fields: [{
+              id: 'orderList',
+              field_type: {
+                id: 'DynamicMultiSelectList',
+                type: 'DynamicMultiSelectList'
+              },
+              display_context: 'OPTIONAL'
+            }]
+          }
+        }
+      } as unknown as CaseField);
+
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      const collectionField = result.find((field) => field.id === 'stmtOfServiceAddRecipient');
+      const complexField = collectionField.field_type.collection_field_type.complex_fields.find((field) => field.id === 'orderList');
+
+      expect(complexField.list_items).toEqual([
+        { code: 'order-1', label: 'Order 1' },
+        { code: 'order-2', label: 'Order 2' }
+      ]);
     });
   });
 });
