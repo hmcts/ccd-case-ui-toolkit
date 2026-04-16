@@ -1,5 +1,21 @@
 ## RELEASE NOTES
 
+### Version 7.3.48
+**EXUI-4278** Suppressions-lodash-minor
+
+### Version 7.3.47
+**EXUI-4368** the same data is being displayed when navigating between dynamic list
+
+### Version 7.3.46
+**EXUI-4227** CVE Vulnerabilities Mar26
+
+### Version 7.3.45
+**EXUI-4302** Datepicker days showing incorrectly
+
+### Version 7.3.44
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
+
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
 
@@ -21,7 +37,6 @@
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
 **EXUI-3952** Removing deprecated functions - Toolkit
-
 
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
