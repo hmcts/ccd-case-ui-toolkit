@@ -14,6 +14,7 @@ export class CaseField implements Orderable {
   public hiddenCannotChange: boolean;
   public label: string;
   public originalLabel?: string;
+  public noCacheLabel?: string;
   public order?: number;
   @Exclude()
   public parent?: CaseField;
@@ -187,7 +188,7 @@ export class CaseField implements Orderable {
       return this.id;
     }
   }
-  
+
   public set isTranslated(val: boolean)
   {
     this.isTranslatedFlag = val;
