@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.49",
+  "version": "7.3.50",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -60,9 +60,9 @@
     "@angular/platform-browser-dynamic": "^20.3.18",
     "@angular/router": "^20.3.18",
     "@angular/upgrade": "^20.3.18",
-    "@edium/fsm": "^2.1.2",
+    "@edium/fsm": "^3.0.1",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.16",
+    "@hmcts/media-viewer": "4.2.17",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -78,7 +78,7 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.31",
     "ngx-chips": "^3.0.0",
-    "ngx-markdown": "^20",
+    "ngx-markdown": "20",
     "ngx-pagination": "6.0.3",
     "pegjs": "^0.10.0",
     "prismjs": "^1.30.0",
@@ -217,8 +217,7 @@
     "dns-packet": "^5.6.1",
     "hosted-git-info": "^3.0.8",
     "normalize-url": "^6.0.1",
-    "trim-newlines": "^3.0.1",
-    "typescript": "~5.9.2"
+    "trim-newlines": "^3.0.1"
   },
   "nyc": {
     "include": [
