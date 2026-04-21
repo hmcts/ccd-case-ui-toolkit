@@ -2,6 +2,7 @@
 
 ### Version 7.3.50
 **EXUI-4369*** CVE Fixes
+                Up translation version
 
 ### Version 7.3.49
 **EXUI-4188** Angular innerHTML injection
