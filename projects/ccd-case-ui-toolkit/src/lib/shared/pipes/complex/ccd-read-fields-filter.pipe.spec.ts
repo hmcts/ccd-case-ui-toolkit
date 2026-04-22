@@ -3,11 +3,11 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 function buildCaseField(id: string, properties: object, value?: any): CaseField {
-  return ({
+  return Object.assign(new CaseField(), {
     id,
     ...properties,
     value
-  }) as CaseField;
+  });
 }
 function getComplexField(id: string, complexFields: CaseField[], value?: any): CaseField {
   return buildCaseField(id, {
@@ -511,6 +511,120 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should use the collection item parent value when it is available', () => {
+    const childField: CaseField = buildCaseField('childField', {
+      field_type: {
+        complex_fields: [],
+        id: 'Text',
+        type: 'Text'
+      },
+      hidden: false,
+      label: 'Child field',
+      show_condition: 'parentField=\"Yes\"'
+    }, null);
+
+    const nestedComplexField: CaseField = buildCaseField('nestedComplex', {
+      field_type: {
+        complex_fields: [childField],
+        id: 'NestedComplex',
+        type: 'Complex'
+      },
+      hidden: false,
+      label: 'Nested complex'
+    }, {});
+
+    const collectionParent: CaseField = buildCaseField('collectionParent', {
+      field_type: {
+        collection_field_type: {
+          complex_fields: [],
+          id: 'NestedComplex',
+          type: 'Complex'
+        },
+        id: 'CollectionParent',
+        type: 'Collection'
+      },
+      hidden: false,
+      label: 'Collection parent'
+    }, []);
+
+    nestedComplexField.parent = buildCaseField('0', {
+      field_type: {
+        complex_fields: [],
+        id: 'NestedComplex',
+        type: 'Complex'
+      }
+    }, {
+      parentField: 'Yes'
+    });
+    nestedComplexField.parent.parent = collectionParent;
+    childField.parent = nestedComplexField;
+
+    const formGroup = {
+      value: {},
+      parent: { getRawValue: () => ({ data: {} }) }
+    } as any;
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
+  it('should fall back to the complex values when the collection item parent value is blank', () => {
+    const childField: CaseField = buildCaseField('childField', {
+      field_type: {
+        complex_fields: [],
+        id: 'Text',
+        type: 'Text'
+      },
+      hidden: false,
+      label: 'Child field',
+      show_condition: 'parentField=\"Yes\"'
+    }, null);
+
+    const nestedComplexField: CaseField = buildCaseField('nestedComplex', {
+      field_type: {
+        complex_fields: [childField],
+        id: 'NestedComplex',
+        type: 'Complex'
+      },
+      hidden: false,
+      label: 'Nested complex'
+    }, {
+      parentField: 'Yes'
+    });
+
+    const collectionParent: CaseField = buildCaseField('collectionParent', {
+      field_type: {
+        collection_field_type: {
+          complex_fields: [],
+          id: 'NestedComplex',
+          type: 'Complex'
+        },
+        id: 'CollectionParent',
+        type: 'Collection'
+      },
+      hidden: false,
+      label: 'Collection parent'
+    }, []);
+
+    nestedComplexField.parent = buildCaseField('0', {
+      field_type: {
+        complex_fields: [],
+        id: 'NestedComplex',
+        type: 'Complex'
+      }
+    }, {});
+    nestedComplexField.parent.parent = collectionParent;
+    childField.parent = nestedComplexField;
+
+    const formGroup = {
+      value: {},
+      parent: { getRawValue: () => ({ data: {} }) }
+    } as any;
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
     const formField = FORM_GROUP.controls['data'] as FormGroup;

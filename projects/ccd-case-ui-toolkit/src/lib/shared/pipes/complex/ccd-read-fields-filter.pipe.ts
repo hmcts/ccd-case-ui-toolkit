@@ -72,6 +72,28 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     return ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type];
   }
 
+  private static findAncestorOfType(field: CaseField | undefined, type: string): CaseField | undefined {
+    let current = field?.parent;
+    while (current) {
+      if (current?.field_type?.type === type) {
+        return current;
+      }
+      current = current.parent || undefined;
+    }
+    return undefined;
+  }
+
+  private static getCollectionItemValue(field: CaseField | undefined): object {
+    let current = field?.parent;
+    while (current) {
+      if (current?.field_type?.type === 'Complex' && current?.parent?.field_type?.type === 'Collection') {
+        return current.value || {};
+      }
+      current = current.parent || undefined;
+    }
+    return {};
+  }
+
   private static isValidCompound(field: CaseField, value?: object, checkConditionalShowAgainst?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
             && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value, checkConditionalShowAgainst);
@@ -162,6 +184,16 @@ export class ReadFieldsFilterPipe implements PipeTransform {
             checkConditionalShowAgainst = values;
             formGroupAvailable = false;
           }
+        } else if (
+          idPrefix === ''
+          && path === 'parent_value'
+          && ReadFieldsFilterPipe.findAncestorOfType(complexField, 'Collection')
+        ) {
+          const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
+          checkConditionalShowAgainst = Object.keys(collectionItemValue).length > 0
+            ? collectionItemValue
+            : Object.assign(checkConditionalShowAgainst, values);
+          formGroupAvailable = false;
         } else {
           checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, values);
           formGroupAvailable = false;
