@@ -1,9 +1,9 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { CaseEditDataService, CaseEditValidationError } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -71,19 +71,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   private static setFocusToTop() {
-    window.requestAnimationFrame(() => {
-      const pageHeading = document.getElementById('page-heading');
-      if (pageHeading) {
-        pageHeading.focus();
-        return;
-      }
-
-      const topContainer = document.getElementById('top');
-
-      if (topContainer) {
-        topContainer.focus();
-      }
-    });
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
   }
 
   constructor(
@@ -101,8 +92,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly multipageComponentStateService: MultipageComponentStateService,
     private readonly addressService: AddressesService,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly caseFlagStateService: CaseFlagStateService,
-    private readonly zone: NgZone
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
     this.multipageComponentStateService.setInstigator(this);
   }
@@ -176,9 +166,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         }
         this.triggerText = this.getTriggerText();
       });
-    this.zone.onStable.pipe(take(1)).subscribe(() => {
-      CaseEditPageComponent.setFocusToTop();
-    });
+    CaseEditPageComponent.setFocusToTop();
     this.caseEditFormSub = this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
