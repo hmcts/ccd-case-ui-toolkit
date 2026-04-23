@@ -21,7 +21,6 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
-  private initialLabel: string;
   private initialHintText: string;
   private languageSubscription: Subscription
 
@@ -33,10 +32,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
+    this.caseField.originalLabel = this.caseField.label;
     this.noCacheProcessing();
-    this.caseField.originalLabel = this.caseField.originalLabel || this.caseField.label;
     this.formGroup = this.formGroup || new FormGroup({});
 
     this.languageSubscription = this.rpxTranslationService.language$.pipe(
@@ -65,11 +63,23 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private applySubstitutions(isLanguageChange = false): void {
+  private applySubstitutions(): void {
     const fields: object = this.getReadOnlyAndFormFields();
 
     if (this.shouldSubstitute('label')) {
-      this.applyLabelSubstitution(fields, isLanguageChange);
+      const oldLabel = this.caseField.label;
+      const substitutedLabel = this.resolvePlaceholders(fields, this.caseField.label);
+      if (oldLabel && oldLabel !== substitutedLabel) {
+        // we need to translate the uninterpolated data then substitute the values in translated string
+        this.caseField.originalLabel = substitutedLabel;
+        const translated = this.rpxTranslationPipe.transform(oldLabel)
+        const transSubstitutedLabel = this.resolvePlaceholders(fields, translated);
+        this.caseField.label = transSubstitutedLabel;
+        this.caseField.isTranslated = this.rpxTranslationService.language === 'cy' && translated !== oldLabel;
+      } else {
+        this.caseField.label = substitutedLabel;
+        this.caseField.isTranslated = false;
+      }
     }
     if (this.shouldSubstitute('hint_text')) {
       this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
@@ -79,102 +89,14 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private applyLabelSubstitution(fields: object, isLanguageChange: boolean): void {
-    const currentLabel = this.caseField.label;
-    // `originalLabel` stores the label exactly as it came from the server, before any
-    // placeholder values were inserted. That gives us a clean starting point when the user
-    // changes language or returns to the page later.
-    const originalLabel = this.caseField.originalLabel || currentLabel;
-    const substitutedCurrentLabel = this.resolvePlaceholders(fields, currentLabel);
-    const substitutedOriginalLabel = originalLabel === currentLabel
-      ? substitutedCurrentLabel
-      : this.resolvePlaceholders(fields, originalLabel);
-    const substitutedLabel = substitutedCurrentLabel || substitutedOriginalLabel;
-    const hasAnyLabelSubstitution = (currentLabel && currentLabel !== substitutedCurrentLabel)
-      || (originalLabel && originalLabel !== substitutedOriginalLabel);
-
-    if (!hasAnyLabelSubstitution) {
-      // No placeholders were resolved, so keep the current label and allow the render layer
-      // to translate it normally if needed.
-      this.setLabelState(substitutedLabel);
-      return;
-    }
-
-    // Preserve the original template the first time we successfully interpolate it.
-    this.caseField.originalLabel = this.caseField.originalLabel || originalLabel;
-    this.applyTranslatedLabelState(fields, originalLabel, substitutedLabel, isLanguageChange);
-  }
-
-  private applyTranslatedLabelState(
-    fields: object,
-    originalLabel: string,
-    substitutedLabel: string,
-    isLanguageChange: boolean
-  ): void {
-    // Some labels only translate correctly if we translate the template first and then
-    // substitute the helper values into the translated sentence.
-    const translatedTemplateLabel = this.resolvePlaceholders(
-      fields,
-      isLanguageChange ? this.translateLabelOnLanguageChange(originalLabel) : this.translateLabel(originalLabel)
-    );
-
-    // Other labels only translate correctly if we first resolve the English phrase and let
-    // the render layer translate that final resolved string.
-    const translatedResolvedLabel = isLanguageChange
-      ? this.translateLabelOnLanguageChange(substitutedLabel)
-      : this.translateLabel(substitutedLabel);
-    const languageIsWelsh = this.rpxTranslationService.language === 'cy';
-    const hasResolvedWelshTranslation = languageIsWelsh
-      && translatedResolvedLabel
-      && translatedResolvedLabel !== substitutedLabel;
-    const hasTemplateWelshTranslation = languageIsWelsh
-      && translatedTemplateLabel
-      && translatedTemplateLabel !== substitutedLabel;
-
-    if (hasResolvedWelshTranslation) {
-      // Keep the resolved English label and mark it as not yet translated so the field
-      // template can run `rpxTranslate` on the full phrase at render time.
-      this.setLabelState(substitutedLabel);
-      return;
-    }
-
-    if (hasTemplateWelshTranslation) {
-      // Use the template-translated result when translating the fully resolved label does
-      // not improve the Welsh output.
-      this.setLabelState(translatedTemplateLabel, true);
-      return;
-    }
-
-    // English, untranslated Welsh, or labels whose translation is handled elsewhere.
-    this.setLabelState(substitutedLabel);
-  }
-
-  private translateLabel(label: string): string {
-    return this.rpxTranslationPipe.transform(label);
-  }
-
-  private translateLabelOnLanguageChange(label: string): string {
-    return this.rpxTranslationService.language === 'en'
-      ? label
-      : this.translateLabel(label);
-  }
-
-  private setLabelState(label: string, isTranslated = false): void {
-    this.caseField.label = label;
-    this.caseField.isTranslated = isTranslated;
-  }
-
   private onLanguageChange(): void {
-    this.resetToInitialValues(true);
-    this.applySubstitutions(true);
+    this.resetToInitialValues();
+    this.applySubstitutions();
   }
 
-  private resetToInitialValues(isLanguageChange = false): void {
-    if (isLanguageChange && this.caseField?.originalLabel) {
+  private resetToInitialValues(): void {
+    if (this.caseField?.originalLabel) {
       this.caseField.label = this.caseField.originalLabel;
-    }
-    if (!isLanguageChange && this.initialLabel) {
-      this.caseField.label = this.initialLabel;
     }
     if (this.initialHintText) {
       this.caseField.hint_text = this.initialHintText;
