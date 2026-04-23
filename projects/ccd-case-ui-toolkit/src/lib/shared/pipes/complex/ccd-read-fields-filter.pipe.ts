@@ -94,6 +94,69 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     return {};
   }
 
+  private static getBaseConditionalShowContext(
+    formGroup?: FormGroup | AbstractControl,
+    values?: object
+  ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
+    const currentValues = values || {};
+    if (!formGroup) {
+      return { checkConditionalShowAgainst: currentValues, formGroupAvailable: false };
+    }
+
+    return {
+      checkConditionalShowAgainst: formGroup.value ? formGroup.parent.getRawValue().data : formGroup,
+      formGroupAvailable: true
+    };
+  }
+
+  private static resolvePrefixedConditionalShowContext(
+    checkConditionalShowAgainst: any,
+    currentValues: object,
+    idPrefix: string
+  ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
+    const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
+    if (checkConditionalShowAgainst[fieldId]) {
+      return {
+        checkConditionalShowAgainst: currentValues,
+        formGroupAvailable: false
+      };
+    }
+
+    return {
+      checkConditionalShowAgainst,
+      formGroupAvailable: true
+    };
+  }
+
+  private static resolveCollectionConditionalShowContext(
+    complexField: CaseField,
+    checkConditionalShowAgainst: any,
+    currentValues: object
+  ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
+    const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
+    if (Object.keys(collectionItemValue).length > 0) {
+      return {
+        checkConditionalShowAgainst: collectionItemValue,
+        formGroupAvailable: false
+      };
+    }
+
+    return {
+      checkConditionalShowAgainst: Object.assign(checkConditionalShowAgainst, currentValues),
+      formGroupAvailable: false
+    };
+  }
+
+  private static resolveFallbackConditionalShowContext(
+    checkConditionalShowAgainst: any,
+    currentValues: object
+  ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
+    return {
+      checkConditionalShowAgainst: Object.assign(checkConditionalShowAgainst, currentValues),
+      formGroupAvailable: false
+    };
+  }
+
   private static getConditionalShowContext(
     complexField: CaseField,
     formGroup?: FormGroup | AbstractControl,
@@ -102,39 +165,27 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     values?: object
   ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
     const currentValues = values || {};
-    let checkConditionalShowAgainst: any = currentValues;
-    let formGroupAvailable = false;
+    const baseContext = ReadFieldsFilterPipe.getBaseConditionalShowContext(formGroup, currentValues);
+    let checkConditionalShowAgainst = baseContext.checkConditionalShowAgainst;
+    let formGroupAvailable = baseContext.formGroupAvailable;
 
-    if (formGroup) {
-      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
-      formGroupAvailable = true;
-
-      if (idPrefix !== undefined) {
-        if (idPrefix !== '') {
-          const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
-          if (checkConditionalShowAgainst[fieldId]) {
-            return {
-              checkConditionalShowAgainst: currentValues,
-              formGroupAvailable: false
-            };
-          }
-        } else if (
-          path === 'parent_value'
-          && ReadFieldsFilterPipe.findAncestorOfType(complexField, 'Collection')
-        ) {
-          const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
-          checkConditionalShowAgainst = Object.keys(collectionItemValue).length > 0
-            ? collectionItemValue
-            : Object.assign(checkConditionalShowAgainst, currentValues);
-          formGroupAvailable = false;
-        } else {
-          checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, currentValues);
-          formGroupAvailable = false;
-        }
-      }
+    if (!formGroup || idPrefix === undefined) {
+      return { checkConditionalShowAgainst, formGroupAvailable };
     }
 
-    return { checkConditionalShowAgainst, formGroupAvailable };
+    if (idPrefix !== '') {
+      return ReadFieldsFilterPipe.resolvePrefixedConditionalShowContext(checkConditionalShowAgainst, currentValues, idPrefix);
+    }
+
+    if (path === 'parent_value' && ReadFieldsFilterPipe.findAncestorOfType(complexField, 'Collection')) {
+      return ReadFieldsFilterPipe.resolveCollectionConditionalShowContext(
+        complexField,
+        checkConditionalShowAgainst,
+        currentValues
+      );
+    }
+
+    return ReadFieldsFilterPipe.resolveFallbackConditionalShowContext(checkConditionalShowAgainst, currentValues);
   }
 
   private static cloneFieldWithValue(field: CaseField, values: any, index?: number): CaseField {
