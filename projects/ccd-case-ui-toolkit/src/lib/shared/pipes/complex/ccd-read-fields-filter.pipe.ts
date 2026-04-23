@@ -94,6 +94,75 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     return {};
   }
 
+  private static getConditionalShowContext(
+    complexField: CaseField,
+    formGroup?: FormGroup | AbstractControl,
+    path?: string,
+    idPrefix?: string,
+    values?: object
+  ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
+    const currentValues = values || {};
+    let checkConditionalShowAgainst: any = currentValues;
+    let formGroupAvailable = false;
+
+    if (formGroup) {
+      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
+      formGroupAvailable = true;
+
+      if (idPrefix !== undefined) {
+        if (idPrefix !== '') {
+          const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
+          if (checkConditionalShowAgainst[fieldId]) {
+            return {
+              checkConditionalShowAgainst: currentValues,
+              formGroupAvailable: false
+            };
+          }
+        } else if (
+          path === 'parent_value'
+          && ReadFieldsFilterPipe.findAncestorOfType(complexField, 'Collection')
+        ) {
+          const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
+          checkConditionalShowAgainst = Object.keys(collectionItemValue).length > 0
+            ? collectionItemValue
+            : Object.assign(checkConditionalShowAgainst, currentValues);
+          formGroupAvailable = false;
+        } else {
+          checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, currentValues);
+          formGroupAvailable = false;
+        }
+      }
+    }
+
+    return { checkConditionalShowAgainst, formGroupAvailable };
+  }
+
+  private static cloneFieldWithValue(field: CaseField, values: any, index?: number): CaseField {
+    const clone = FieldsUtils.cloneObject(field);
+    const value = ReadFieldsFilterPipe.getValue(field, values, index);
+    if (!ReadFieldsFilterPipe.isEmpty(value)) {
+      clone.value = value;
+    }
+    return clone;
+  }
+
+  private static applyDisplayContextAndHidden(
+    field: CaseField,
+    complexField: CaseField,
+    setupHidden: boolean,
+    checkConditionalShowAgainst: any,
+    formGroupAvailable: boolean,
+    path?: string
+  ): CaseField {
+    if (!field.display_context && FieldsUtils.isValidDisplayContext(complexField.display_context)) {
+      field.display_context = complexField.display_context;
+    }
+    if (setupHidden) {
+      ReadFieldsFilterPipe.evaluateConditionalShow(field, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);
+    }
+    return field;
+  }
+
   private static isValidCompound(field: CaseField, value?: object, checkConditionalShowAgainst?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
             && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value, checkConditionalShowAgainst);
@@ -172,55 +241,29 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
     const fields = complexField.field_type.complex_fields || [];
     const values = complexField.value || {};
-    let checkConditionalShowAgainst: any = values;
-    let formGroupAvailable = false;
-    if (formGroup) {
-      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
-      formGroupAvailable = true;
-      if (idPrefix !== undefined) {
-        if (idPrefix !== '') {
-          const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
-          if (checkConditionalShowAgainst[fieldId]) {
-            checkConditionalShowAgainst = values;
-            formGroupAvailable = false;
-          }
-        } else if (
-          idPrefix === ''
-          && path === 'parent_value'
-          && ReadFieldsFilterPipe.findAncestorOfType(complexField, 'Collection')
-        ) {
-          const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
-          checkConditionalShowAgainst = Object.keys(collectionItemValue).length > 0
-            ? collectionItemValue
-            : Object.assign(checkConditionalShowAgainst, values);
-          formGroupAvailable = false;
-        } else {
-          checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, values);
-          formGroupAvailable = false;
-        }
-      }
-    }
+    const conditionalShowContext = ReadFieldsFilterPipe.getConditionalShowContext(
+      complexField,
+      formGroup,
+      path,
+      idPrefix,
+      values
+    );
 
     return fields
-      .map(f => {
-        const clone = FieldsUtils.cloneObject(f);
-        const value = ReadFieldsFilterPipe.getValue(f, values, index);
-        if (!ReadFieldsFilterPipe.isEmpty(value)) {
-          clone.value = value;
-        }
-        return clone;
-      })
-      .map(f => {
-        if (!f.display_context) {
-          if (FieldsUtils.isValidDisplayContext(complexField.display_context)) {
-            f.display_context = complexField.display_context;
-          }
-        }
-        if (setupHidden) {
-          ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);
-        }
-        return f;
-      })
-      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(f, undefined, false, checkConditionalShowAgainst));
+      .map(f => ReadFieldsFilterPipe.cloneFieldWithValue(f, values, index))
+      .map(f => ReadFieldsFilterPipe.applyDisplayContextAndHidden(
+        f,
+        complexField,
+        setupHidden,
+        conditionalShowContext.checkConditionalShowAgainst,
+        conditionalShowContext.formGroupAvailable,
+        path
+      ))
+      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(
+        f,
+        undefined,
+        false,
+        conditionalShowContext.checkConditionalShowAgainst
+      ));
   }
 }
