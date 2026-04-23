@@ -96,7 +96,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
-  
+
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -144,13 +144,13 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
       multipageComponentStateService.resetJourneyCollection();
       spyOn(multipageComponentStateService, 'previous');
-      
+
       multipageComponentStateService.setInstigator(component);
       component.previousStep();
-      
+
       expect(multipageComponentStateService.previous).toHaveBeenCalled();
     });
-  
+
     it('should trigger next step with the multi-page component state service', () => {
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const caseEditDataService: CaseEditDataService = new CaseEditDataService();
@@ -159,7 +159,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
       multipageComponentStateService.setInstigator(component);
       component.nextStep();
-     
+
       expect(multipageComponentStateService.next).toHaveBeenCalled();
     });
 
@@ -167,10 +167,10 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
       spyOn(multipageComponentStateService, 'reset');
-      
+
       multipageComponentStateService.setInstigator(component);
       component.ngOnDestroy();
-      
+
       expect(multipageComponentStateService.reset).toHaveBeenCalled();
     });
   });

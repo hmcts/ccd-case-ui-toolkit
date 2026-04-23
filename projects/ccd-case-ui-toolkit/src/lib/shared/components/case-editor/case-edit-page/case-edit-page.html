@@ -1,3 +1,4 @@
+<main id="content" role="main" class="govuk-main-wrapper">
 <ng-container *ngIf="currentPage">
   <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
   <ng-container *ngIf="currentPage.label">
@@ -76,3 +77,4 @@
   [eventCompletionParams]="caseEdit.eventCompletionParams"
   (eventCanBeCompleted)="onEventCanBeCompleted($event)">
 </ccd-case-event-completion>
+</main>
