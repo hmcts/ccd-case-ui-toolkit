@@ -26,8 +26,9 @@ export class CaseNotifier {
     }
 
     public announceCase(c: CaseView) {
-      this.caseViewSource.next(c);
+      this.resolveHmctsServiceId(c).subscribe(caseView => this.caseViewSource.next(caseView));
     }
+
     public fetchAndRefresh(cid: string) {
       return this.casesService
         .getCaseViewV2(cid)
@@ -78,8 +79,6 @@ export class CaseNotifier {
             this.hmctsServiceIdByCaseType.set(caseTypeId, hmctsServiceId);
             caseView.hmctsServiceId = hmctsServiceId;
           }
-
-          console.log('caseView: ', caseView);
 
           return caseView;
         }),

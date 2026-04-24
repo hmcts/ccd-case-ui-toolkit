@@ -81,6 +81,8 @@ describe('setBasicFields', () => {
 
   beforeEach(() => {
     casesService.getCaseViewV2.calls.reset();
+    delete CASE_VIEW.hmctsServiceId;
+    delete CASE_VIEW_2.hmctsServiceId;
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.cachedCaseView = CASE_VIEW;
 
@@ -164,6 +166,20 @@ describe('setBasicFields', () => {
       expect(caseView.hmctsServiceId).toBe('ABA2');
       expect(announcedCase.hmctsServiceId).toBe('ABA2');
     });
+  });
+
+  it('should resolve HMCTS service ID before announcing a raw case', () => {
+    const refdataService = jasmine.createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+    let announcedCase: CaseView;
+
+    refdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+    caseNotifier = new CaseNotifier(casesService, refdataService);
+    caseNotifier.caseView.subscribe((caseView) => announcedCase = caseView);
+
+    caseNotifier.announceCase(CASE_VIEW_2);
+
+    expect(refdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('TestAddressBookCase2');
+    expect(announcedCase.hmctsServiceId).toBe('ABA2');
   });
 
   it('should cache HMCTS service ID lookups by case type', () => {
