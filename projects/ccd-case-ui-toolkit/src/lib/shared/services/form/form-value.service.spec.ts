@@ -70,6 +70,33 @@ describe('FormValueService', () => {
     } as object);
   });
 
+  it('should remove empty sanitised array field when not in case flag journey', () => {
+    const value = formValueService.sanitise({
+      collection: [
+        {
+          id: '1',
+          value: {}
+        }
+      ]
+    }) as any;
+
+    expect(value.hasOwnProperty('collection')).toBe(false);
+  });
+
+  it('should keep empty sanitised array field in case flag journey', () => {
+    const value = formValueService.sanitise({
+      collection: [
+        {
+          id: '1',
+          value: {}
+        }
+      ]
+    }, true) as any;
+
+    expect(value.hasOwnProperty('collection')).toBe(true);
+    expect(value.collection).toEqual([]);
+  });
+
   it('should filter current page fields and process DynamicList values back to JSON', () => {
     const formFields = { data: { dynamicList: 'L2', thatTimeOfTheDay: {} } };
     const caseField = new CaseField();
