@@ -43,8 +43,7 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
   }
 
   private getHmctsServiceId(): string {
-    if (this.caseField && Object.prototype.hasOwnProperty.call(this.caseField, 'hmctsServiceId')) {
-      console.log('caseField.hmctsServiceId:', this.caseField.hmctsServiceId);
+    if (typeof this.caseField?.hmctsServiceId === 'string') {
       return this.caseField.hmctsServiceId;
     }
 

@@ -217,6 +217,14 @@ describe('ReadDateFieldComponent', () => {
       expect(component.timeZone).toBe('local');
     });
 
+    it('should not fall back to case service ID when a field service ID is explicitly unresolved', () => {
+      component.caseField.hmctsServiceId = '';
+      caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', 'ABA6'));
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('utc');
+    });
+
     it('should use local time zone for ABA6 HMCTS service cases', () => {
       caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', 'ABA6'));
       fixture.detectChanges();
