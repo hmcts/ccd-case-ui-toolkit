@@ -33,6 +33,7 @@ export class CaseField implements Orderable {
   public acls?: AccessControlList[];
   public metadata?: boolean;
   public formatted_value?: any;
+  public hmctsServiceId?: string;
   public retain_hidden_value: boolean;
 
   @Type(() => WizardPageField)

@@ -12,10 +12,8 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 export class ReadDateFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
   private static readonly SERVICES_RENDERED_IN_LOCAL_TIME = ['ABA2', 'ABA6'];
 
-  // Most services intend to display DateTime values verbatim as sent to the frontend; only the services listed above need converting to local time.
-  public timeZone = 'utc';
-
   private caseSubscription: Subscription;
+  private caseHmctsServiceId: string;
 
   constructor(@Optional() private readonly caseNotifier?: CaseNotifier) {
     super();
@@ -25,7 +23,7 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
     super.ngOnInit();
 
     this.caseSubscription = this.caseNotifier?.caseView.subscribe((caseDetails: CaseView) => {
-      this.timeZone = this.shouldRenderInLocalTime(caseDetails) ? 'local' : 'utc';
+      this.caseHmctsServiceId = caseDetails?.hmctsServiceId;
     });
   }
 
@@ -35,7 +33,21 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
     }
   }
 
-  private shouldRenderInLocalTime(caseDetails: CaseView): boolean {
-    return ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(caseDetails?.hmctsServiceId);
+  // Most services display DateTime values as received from CCD; only the services listed in SERVICES_RENDERED_IN_LOCAL_TIME need converting to local time.
+  public get timeZone(): string {
+    return this.shouldRenderInLocalTime() ? 'local' : 'utc';
+  }
+
+  private shouldRenderInLocalTime(): boolean {
+    return ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(this.getHmctsServiceId());
+  }
+
+  private getHmctsServiceId(): string {
+    if (this.caseField && Object.prototype.hasOwnProperty.call(this.caseField, 'hmctsServiceId')) {
+      console.log('caseField.hmctsServiceId:', this.caseField.hmctsServiceId);
+      return this.caseField.hmctsServiceId;
+    }
+
+    return this.caseHmctsServiceId;
   }
 }

@@ -154,6 +154,7 @@ describe('ReadDateFieldComponent', () => {
     let expectedLocalDateTime: string;
 
     beforeEach(waitForAsync(() => {
+      delete CASE_FIELD.hmctsServiceId;
       caseViewSubject = new BehaviorSubject<CaseView>(createCaseView('CIVIL', 'CIVIL'));
       expectedLocalDateTime = new DatePipe(new FormatTranslatorService()).transform(DATE_TIME_VALUE, 'local', null);
 
@@ -195,6 +196,22 @@ describe('ReadDateFieldComponent', () => {
 
     it('should use local time zone for ABA2 HMCTS service cases', () => {
       caseViewSubject.next(createCaseView('DIVORCE', 'Divorce', 'ABA2'));
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('local');
+    });
+
+    it('should use local time zone for fields with an ABA2 HMCTS service ID', () => {
+      component.caseField.hmctsServiceId = 'ABA2';
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('local');
+      expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
+    });
+
+    it('should fall back to case service ID when a field service ID is unresolved', () => {
+      component.caseField.hmctsServiceId = undefined;
+      caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', 'ABA6'));
       fixture.detectChanges();
 
       expect(component.timeZone).toBe('local');
