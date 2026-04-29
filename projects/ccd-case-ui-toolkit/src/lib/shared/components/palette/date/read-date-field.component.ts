@@ -35,9 +35,7 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
 
   // Most services display DateTime values as received from CCD; only the services listed in SERVICES_RENDERED_IN_LOCAL_TIME need converting to local time.
   public get timeZone(): string {
-    console.log('timeZone:', this.shouldRenderInLocalTime() ? 'local' : 'utc');
     return this.shouldRenderInLocalTime() ? 'local' : 'utc';
-    // return 'utc';
   }
 
   private shouldRenderInLocalTime(): boolean {
@@ -46,7 +44,6 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
 
   private getHmctsServiceId(): string {
     if (typeof this.caseField?.hmctsServiceId === 'string') {
-      console.log('hmctsServiceId from caseField:', this.caseField.hmctsServiceId);
       return this.caseField.hmctsServiceId;
     }
 
