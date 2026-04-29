@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.3.49-exui-3003-3005
+**EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
+**EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
+
 ### Version 7.3.49
 **EXUI-4188** Angular innerHTML injection
 
