@@ -23,7 +23,9 @@ const CLASS = 'person-first-name-cls';
   `,
   standalone: false
 })
-class FieldTestComponent { }
+class FieldTestComponent {
+  public ignoreMandatory = false;
+}
 
 describe('FieldWriteComponent', () => {
   const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
@@ -184,6 +186,36 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.parent).toBe(component.parent);
     expect(fieldTest.isExpanded).toBe(true);
     expect(fieldTest.isInSearchBlock).toBe(true);
+  });
+
+  it('should set ignoreMandatory on AddressGlobal child components', () => {
+    const addressGlobalField = plainToClassFromExist(new CaseField(), {
+      id: 'RespondentAddress',
+      field_type: {
+        id: 'AddressGlobal',
+        type: 'Complex'
+      },
+      display_context: 'OPTIONAL',
+      label: 'Address'
+    });
+
+    const addressFixture = TestBed.createComponent(FieldWriteComponent);
+    const addressComponent = addressFixture.componentInstance;
+    addressComponent.caseField = addressGlobalField;
+    addressComponent.caseFields = [addressGlobalField];
+    addressComponent.formGroup = new FormGroup({});
+    addressFixture.detectChanges();
+
+    const childComponent = addressFixture.debugElement.children[0].children[0].children[0].componentInstance;
+    expect(childComponent.ignoreMandatory).toBe(true);
+  });
+
+  it('should ignore ngOnChanges before the child component is created', () => {
+    const freshComponent = TestBed.createComponent(FieldWriteComponent).componentInstance;
+
+    expect(() => freshComponent.ngOnChanges({
+      idPrefix: new SimpleChange('', 'prefix_', true)
+    })).not.toThrow();
   });
 
   function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
