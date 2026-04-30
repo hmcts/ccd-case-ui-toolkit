@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { cloneDeep } from 'lodash';
 import { CaseField, ErrorMessage, Journey } from '../../../../../domain';
+import { MultipageComponentStateService } from '../../../../../services';
 import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
@@ -32,6 +34,13 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   public cachedControls:{
     [key: string]: AbstractControl;
   };
+
+  constructor(
+    multipageComponentStateService: MultipageComponentStateService,
+    private readonly sanitizer: DomSanitizer
+  ) {
+    super(multipageComponentStateService);
+  }
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
@@ -298,5 +307,10 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
         }
       });
     }
+  }
+
+  // Ensure there is no dangerous HTML in the flag name or description that could lead to XSS vulnerabilities
+  public sanitizeHtml(content: string | null | undefined): string {
+    return this.sanitizer.sanitize(SecurityContext.HTML, content ?? '') ?? '';
   }
 }
