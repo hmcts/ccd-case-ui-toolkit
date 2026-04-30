@@ -12,10 +12,24 @@ const libraryPeerDependencies = libraryPackage.peerDependencies || {};
 const distDependencies = distPackage.dependencies || {};
 const rootDependencies = rootPackage.dependencies || {};
 
+const excludedDependencyNames = new Set([
+  'rxjs',
+  'zone.js',
+  'ngx-pagination'
+]);
+
+const excludedDependencyPrefixes = [
+  '@angular/',
+  '@ngrx/',
+  'ngx-',
+  '@angular-material-components/',
+  '@nicky-lenaers/ngx-'
+];
+
 const mergedDependencies = { ...distDependencies };
 
 for (const [dependencyName, version] of Object.entries(rootDependencies)) {
-  if (libraryPeerDependencies[dependencyName]) {
+  if (shouldExcludeDependency(dependencyName)) {
     continue;
   }
 
@@ -32,3 +46,15 @@ distPackage.dependencies = Object.keys(mergedDependencies)
   }, {});
 
 writeFileSync(distPackagePath, `${JSON.stringify(distPackage, null, 2)}\n`);
+
+function shouldExcludeDependency(dependencyName) {
+  if (libraryPeerDependencies[dependencyName]) {
+    return true;
+  }
+
+  if (excludedDependencyNames.has(dependencyName)) {
+    return true;
+  }
+
+  return excludedDependencyPrefixes.some((prefix) => dependencyName.startsWith(prefix));
+}
