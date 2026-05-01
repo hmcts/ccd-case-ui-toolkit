@@ -15,7 +15,13 @@ const rootDependencies = rootPackage.dependencies || {};
 const excludedDependencyNames = new Set([
   'rxjs',
   'zone.js',
-  'ngx-pagination'
+  'ngx-pagination',
+  'rpx-xui-translation',
+  'moment',
+  'moment-timezone',
+  'underscore',
+  'govuk-elements-sass',
+  'rxjs-compat'
 ]);
 
 const excludedDependencyPrefixes = [
@@ -26,7 +32,9 @@ const excludedDependencyPrefixes = [
   '@nicky-lenaers/ngx-'
 ];
 
-const mergedDependencies = { ...distDependencies };
+const mergedDependencies = Object.fromEntries(
+  Object.entries(distDependencies).filter(([dependencyName]) => !shouldExcludeDependency(dependencyName))
+);
 
 for (const [dependencyName, version] of Object.entries(rootDependencies)) {
   if (shouldExcludeDependency(dependencyName)) {
