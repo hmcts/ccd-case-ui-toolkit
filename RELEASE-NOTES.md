@@ -1,4 +1,7 @@
-## RELEASE NOTES
+## RELEASE NOTES-exui-4309
+
+### Version 7.3.52-exui-4309
+**EXUI-4309** Error messaging when changing from an event to create case
 
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
