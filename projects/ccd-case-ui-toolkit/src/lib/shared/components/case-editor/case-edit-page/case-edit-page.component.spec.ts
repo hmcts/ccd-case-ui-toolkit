@@ -651,6 +651,29 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.currentPage).toEqual(firstPage);
     });
 
+    it('should clear stale validation errors on init', () => {
+      const staleValidationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+      caseEditDataService.caseFormValidationErrors$.next(staleValidationErrors);
+      caseEditDataService.clearFormValidationErrors.and.callFake(() => {
+        caseEditDataService.caseFormValidationErrors$.next([]);
+      });
+
+      comp.validationErrors = staleValidationErrors;
+      comp.ngOnInit();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
+    });
+
+    it('should clear validation errors when destroyed', () => {
+      comp.validationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+
+      comp.ngOnDestroy();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
+    });
+
     it('should return true on hasPrevious check', () => {
       const errorContext = {
         ignoreWarning: true,
