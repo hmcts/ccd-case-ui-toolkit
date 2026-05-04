@@ -12,32 +12,22 @@ const libraryPeerDependencies = libraryPackage.peerDependencies || {};
 const distDependencies = distPackage.dependencies || {};
 const rootDependencies = rootPackage.dependencies || {};
 
-const excludedDependencyNames = new Set([
-  'rxjs',
-  'zone.js',
-  'ngx-pagination',
-  'rpx-xui-translation',
-  'moment',
-  'moment-timezone',
-  'underscore',
-  'govuk-elements-sass',
-  'rxjs-compat'
-]);
-
-const excludedDependencyPrefixes = [
-  '@angular/',
-  '@ngrx/',
-  'ngx-',
-  '@angular-material-components/',
-  '@nicky-lenaers/ngx-'
-];
+const mergedPeerDependencies = {
+  ...libraryPeerDependencies
+};
 
 const mergedDependencies = Object.fromEntries(
-  Object.entries(distDependencies).filter(([dependencyName]) => !shouldExcludeDependency(dependencyName))
+  Object.entries(distDependencies).filter(([dependencyName]) => {
+    if (shouldMoveToPeerDependency(dependencyName)) {
+      return false;
+    }
+
+    return true;
+  })
 );
 
 for (const [dependencyName, version] of Object.entries(rootDependencies)) {
-  if (shouldExcludeDependency(dependencyName)) {
+  if (shouldMoveToPeerDependency(dependencyName)) {
     continue;
   }
 
@@ -53,16 +43,15 @@ distPackage.dependencies = Object.keys(mergedDependencies)
     return dependencies;
   }, {});
 
+distPackage.peerDependencies = Object.keys(mergedPeerDependencies)
+  .sort()
+  .reduce((peerDependencies, dependencyName) => {
+    peerDependencies[dependencyName] = mergedPeerDependencies[dependencyName];
+    return peerDependencies;
+  }, {});
+
 writeFileSync(distPackagePath, `${JSON.stringify(distPackage, null, 2)}\n`);
 
-function shouldExcludeDependency(dependencyName) {
-  if (libraryPeerDependencies[dependencyName]) {
-    return true;
-  }
-
-  if (excludedDependencyNames.has(dependencyName)) {
-    return true;
-  }
-
-  return excludedDependencyPrefixes.some((prefix) => dependencyName.startsWith(prefix));
+function shouldMoveToPeerDependency(dependencyName) {
+  return Boolean(libraryPeerDependencies[dependencyName]);
 }
