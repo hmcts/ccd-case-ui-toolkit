@@ -1,7 +1,9 @@
 import { CaseField, CaseTab, CaseView } from '../../../domain';
+import { HmctsServiceDetail } from '../../../domain/case-flag';
+import { CaseFlagRefdataService } from '../../../services/case-flag';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 
 export function getMockCaseNotifier(caseView: CaseView = null): CaseNotifier {
   const cv: CaseView = {
@@ -32,6 +34,9 @@ describe('setBasicFields', () => {
   const caseField1 = new CaseField();
   const caseField2 = new CaseField();
   const caseField3 = new CaseField();
+  const SERVICE_DETAILS = [{
+    service_code: 'ABA2'
+  }] as HmctsServiceDetail[];
 
   const CASE_VIEW: CaseView = {
     case_id: '1',
@@ -75,6 +80,9 @@ describe('setBasicFields', () => {
 
 
   beforeEach(() => {
+    casesService.getCaseViewV2.calls.reset();
+    delete CASE_VIEW.hmctsServiceId;
+    delete CASE_VIEW_2.hmctsServiceId;
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.cachedCaseView = CASE_VIEW;
 
@@ -142,5 +150,65 @@ describe('setBasicFields', () => {
     caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);
     const basicFields = { caseNameHmctsInternal: null, caseManagementLocation: { baseLocation : 22}};
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
+  });
+
+  it('should resolve HMCTS service ID before announcing a refreshed case', () => {
+    const refdataService = jasmine.createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+    let announcedCase: CaseView;
+
+    casesService.getCaseViewV2.and.returnValue(of(CASE_VIEW_2));
+    refdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+    caseNotifier = new CaseNotifier(casesService, refdataService);
+    caseNotifier.caseView.subscribe((caseView) => announcedCase = caseView);
+
+    caseNotifier.fetchAndRefresh('2').subscribe((caseView) => {
+      expect(refdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('TestAddressBookCase2');
+      expect(caseView.hmctsServiceId).toBe('ABA2');
+      expect(announcedCase.hmctsServiceId).toBe('ABA2');
+    });
+  });
+
+  it('should resolve HMCTS service ID before announcing a raw case', () => {
+    const refdataService = jasmine.createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+    let announcedCase: CaseView;
+
+    refdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+    caseNotifier = new CaseNotifier(casesService, refdataService);
+    caseNotifier.caseView.subscribe((caseView) => announcedCase = caseView);
+
+    caseNotifier.announceCase(CASE_VIEW_2);
+
+    expect(refdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('TestAddressBookCase2');
+    expect(announcedCase.hmctsServiceId).toBe('ABA2');
+  });
+
+  it('should cache HMCTS service ID lookups by case type', () => {
+    const refdataService = jasmine.createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+
+    casesService.getCaseViewV2.and.returnValue(of(CASE_VIEW_2));
+    refdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+    caseNotifier = new CaseNotifier(casesService, refdataService);
+
+    caseNotifier.fetchAndRefresh('2').subscribe();
+    caseNotifier.fetchAndRefresh('2').subscribe((caseView) => {
+      expect(refdataService.getHmctsServiceDetailsByCaseType.calls.count()).toBe(1);
+      expect(caseView.hmctsServiceId).toBe('ABA2');
+    });
+  });
+
+  it('should still announce a refreshed case when HMCTS service ID lookup fails', () => {
+    const refdataService = jasmine.createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+    let announcedCase: CaseView;
+
+    casesService.getCaseViewV2.and.returnValue(of(CASE_VIEW_2));
+    refdataService.getHmctsServiceDetailsByCaseType.and.returnValue(throwError(new Error('Unknown case type ID')));
+    caseNotifier = new CaseNotifier(casesService, refdataService);
+    caseNotifier.caseView.subscribe((caseView) => announcedCase = caseView);
+
+    caseNotifier.fetchAndRefresh('2').subscribe((caseView) => {
+      expect(caseView.case_id).toBe('2');
+      expect(caseView.hmctsServiceId).toBeUndefined();
+      expect(announcedCase.case_id).toBe('2');
+    });
   });
 });
