@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.52-exui-4291
+### Version 7.3.52-exui-4291-1
 **EXUI-4291** Suppressions - @edium/fsm - major
 
 ### Version 7.3.52
