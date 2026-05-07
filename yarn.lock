@@ -2883,14 +2883,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@edium/fsm@npm:^2.1.2":
-  version: 2.1.5
-  resolution: "@edium/fsm@npm:2.1.5"
+"@edium/fsm@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@edium/fsm@npm:3.0.1"
   dependencies:
-    global: "npm:^4.4.0"
-    lodash: "npm:^4.17.21"
-    tslib: "npm:^2.6.3"
-  checksum: 10/3d8d66228dc2c2fd7f37ea0be4cf489302a018a6ab70b3d645d7d00cf422f9fef69b5b4ce2dd42f4bd8eb33a01d974d7904fb451ccc18681291bc17625318ecd
+    lodash-es: "npm:^4.17.21"
+  checksum: 10/21afd5081ae6db3b0de86494cc6884cd6268b914142cfe0229505bfec59a1bac36bf9ad058b91ddec4aafdfdd4ec279abf1e17a1f2bfaa4d7d0c2edccdd56318
   languageName: node
   linkType: hard
 
@@ -3410,9 +3408,9 @@ __metadata:
     "@angular/upgrade": "npm:^20.3.18"
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
-    "@edium/fsm": "npm:^2.1.2"
+    "@edium/fsm": "npm:^3.0.1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.16"
+    "@hmcts/media-viewer": "npm:4.2.17-exui-4369-cve-fix-03"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -3482,7 +3480,7 @@ __metadata:
     ng-packagr: "npm:^20.3.0"
     ng2-mock-component: "npm:^0.1.1"
     ngx-chips: "npm:^3.0.0"
-    ngx-markdown: "npm:^20"
+    ngx-markdown: "npm:20"
     ngx-pagination: "npm:6.0.3"
     nyc: "npm:^13.0.1"
     pegjs: "npm:^0.10.0"
@@ -3494,7 +3492,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.0"
+    rpx-xui-translation: "npm:1.2.3"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -3533,9 +3531,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.16":
-  version: 4.2.16
-  resolution: "@hmcts/media-viewer@npm:4.2.16"
+"@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix-03":
+  version: 4.2.17-exui-4369-cve-fix-03
+  resolution: "@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix-03"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3545,16 +3543,19 @@ __metadata:
     uuid: "npm:^11.0.3"
   peerDependencies:
     "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
     "@angular/material": ^17.3.8
     "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
     "@ngrx/effects": ^20
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/3f49d013cf857a4d07c5a59722855ac348f0eead29203575824595211ab9d4af5ef0bc77cc0366c170206ffe09e6be33b46b4d1f43392dc3ee40552695334acb
+    rpx-xui-translation: 1.2.3
+  checksum: 10/3a8866349560d9b756db377fc4ff4eb6c18fd3a1fa1340b58b6d97ea538162c75aff063301aa8a1d3075d8ec94881e0f874c87981fa3f34d15b496bbabc93643
   languageName: node
   linkType: hard
 
@@ -21105,7 +21106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^20":
+"ngx-markdown@npm:20":
   version: 20.1.0
   resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
@@ -24481,17 +24482,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.0":
-  version: 1.2.0
-  resolution: "rpx-xui-translation@npm:1.2.0"
+"rpx-xui-translation@npm:1.2.3":
+  version: 1.2.3
+  resolution: "rpx-xui-translation@npm:1.2.3"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ^20.3.1
-  checksum: 10/5eea929cc08f8d089adc64790201fbb24c248c29e8a9fcc5d35eac70c0e9f47bce211dec291eddfece69a8ba0ee5ffbcac3a3e1fb749a316a47f3b6fed48e7ec
+    "@angular/common": ^20.3.14
+    "@angular/core": ^20.3.14
+  checksum: 10/32388e2cbee3f2872c7e16541246606e131535d37c1a9869103efcbead0589a9c45d12a027e55e070e6913174041628cb5f1e6dc7e6310f39ba6f489a311bca8
   languageName: node
   linkType: hard
 
@@ -26876,7 +26877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.6.1, tslib@npm:^2.6.3":
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.6.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7
@@ -27110,7 +27111,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.9.2":
+"typescript@npm:2.9.1":
+  version: 2.9.1
+  resolution: "typescript@npm:2.9.1"
+  bin:
+    tsc: ./bin/tsc
+    tsserver: ./bin/tsserver
+  checksum: 10/94842c380d6fe60044542ec453ffa3b1f2580d1a19eebac9552079ad8f55cbdaa4e6d70f9c8d15ac456d28b45731d6d4e91d36250f3f230356457bc3a73aa236
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^5.0.4, typescript@npm:^5.9.2":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -27120,7 +27131,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.9.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A2.9.1#optional!builtin<compat/typescript>":
+  version: 2.9.1
+  resolution: "typescript@patch:typescript@npm%3A2.9.1#optional!builtin<compat/typescript>::version=2.9.1&hash=3bafbf"
+  bin:
+    tsc: ./bin/tsc
+    tsserver: ./bin/tsserver
+  checksum: 10/02b4220bb1c2346544b63782eedb1de8b9eb6f2c9f6b6f0bec80c95aaa3cd542a17665da8e46f4050f779487eb7599648d2be6734f50f7b5cbbe88fa6bec7b96
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.0.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.9.2#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=8c6c40"
   bin:
