@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
 import { SessionStorageService } from '../../../../services';
+import { safeJsonParse } from '../../../../json-utils';
 
 @Component({
   selector: 'ccd-event-log-table',
@@ -32,7 +33,9 @@ export class EventLogTableComponent implements OnInit {
 
   public ngOnInit(): void {
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
-    this.isUserExternal = JSON.parse(this.sessionStorage.getItem('userDetails')).roles.includes('pui-case-manager');
+    const userDetails = safeJsonParse<any>(this.sessionStorage.getItem('userDetails'), null);
+    const roles = userDetails?.roles || [];
+    this.isUserExternal = roles.includes('pui-case-manager');
   }
 
   public select(event: CaseViewEvent): void {
