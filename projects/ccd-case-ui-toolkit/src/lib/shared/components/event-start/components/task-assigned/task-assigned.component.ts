@@ -31,12 +31,9 @@ export class TaskAssignedComponent implements OnInit, OnDestroy {
     // Current user is a caseworker?
     this.jurisdiction = this.task.jurisdiction;
     this.caseType = this.task.case_type_id;
-    this.caseworkerSubscription = this.caseworkerService.getCaseworkers(this.task.jurisdiction).subscribe(result => {
-      if (result && result[0].service === this.task.jurisdiction && result[0].caseworkers) {
-        const caseworker = result[0].caseworkers.find(x => x.idamId === this.task.assignee);
-        if (caseworker) {
-          this.assignedUserName = `${caseworker.firstName} ${caseworker.lastName}`;
-        }
+    this.caseworkerSubscription = this.caseworkerService.getUserByIdamId(this.task.assignee).subscribe(caseworker => {
+      if (caseworker) {
+        this.assignedUserName = `${caseworker.firstName} ${caseworker.lastName}`;
       }
 
       if (!this.assignedUserName) {
