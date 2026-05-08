@@ -522,6 +522,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
+    if (this.caseDetails && (this.caseDetails.case_id !== task?.case_id)) {
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: task in session storage with taskId ${task?.id} has caseId: ${task?.case_id} which does not match case details case id ${this.caseDetails.case_id}, NOT completing task and clearing client context`);
+      this.sessionStorageService.removeItem(CaseEditComponent.CLIENT_CONTEXT);
+      return of(true);
+    }
     if (task && assignNeeded && taskToBeCompleted) {
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
