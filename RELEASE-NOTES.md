@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.3.47-exui-4277-1
+### Version 7.3.52-exui-4277
 **EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.52
+**EXUI-4311** Remove unused packages
+
+### Version 7.3.49
+**EXUI-4188** Angular innerHTML injection
+
+### Version 7.3.48
+**EXUI-4278** Suppressions-lodash-minor
 
 ### Version 7.3.47
 **EXUI-4368** the same data is being displayed when navigating between dynamic list
