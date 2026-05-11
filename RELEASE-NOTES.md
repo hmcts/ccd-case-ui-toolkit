@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.52-exui-4277
+**EXUI-4277** Suppressions to packages to update - easier
+
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
 
