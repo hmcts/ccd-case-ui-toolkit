@@ -102,6 +102,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   public selectedCases: SearchResultViewItem[] = [];
   private lastWatchedCaseIdsKey: string | null = null;
+  private readonly alphabeticalCompare = (left: string, right: string): number => left.localeCompare(right);
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
@@ -460,7 +461,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
     if (this.activitySocketService.isEnabled) {
       const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
-      const watchKey = [...caseIds].sort().join(',');
+      const watchKey = [...caseIds].sort(this.alphabeticalCompare).join(',');
       if (watchKey === this.lastWatchedCaseIdsKey) {
         return;
       }
