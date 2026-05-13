@@ -136,7 +136,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
     if (Object.keys(collectionItemValue).length > 0) {
       return {
-        checkConditionalShowAgainst: collectionItemValue,
+        checkConditionalShowAgainst: Object.assign(collectionItemValue, currentValues),
         formGroupAvailable: false
       };
     }

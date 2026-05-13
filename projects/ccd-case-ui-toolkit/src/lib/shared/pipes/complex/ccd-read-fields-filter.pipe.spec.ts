@@ -588,6 +588,16 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(1);
     expect(RESULT[0].hidden).toEqual(false);
   });
+  it('should merge collection item parent value with current complex values for show conditions', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+    nestedComplexField.value = { nestedField: 'Show' };
+    nestedComplexField.field_type.complex_fields[0].show_condition = 'nestedField=\"Show\"';
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
   it('should fall back to the complex values when the collection item parent value is blank', () => {
     const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
     nestedComplexField.parent!.value = {};
