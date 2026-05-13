@@ -91,6 +91,37 @@ describe('ActivityPollingService', () => {
     expect(actualError).toBe(expectedError);
   });
 
+  it('should ignore returned activities for cases outside the current batch', () => {
+    const handler = jasmine.createSpy('handler');
+    const subject = new Subject<any>();
+    const expectedActivity = { caseId: CASE_ID };
+    const activityOutsideBatch = { caseId: 'outside-batch' };
+    activityService.getActivities.and.returnValue(of([expectedActivity, activityOutsideBatch]));
+    subject.subscribe(handler);
+
+    expect(() => (activityPollingService as any).performBatchRequest(new Map([[CASE_ID, subject]]))).not.toThrow();
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith(expectedActivity);
+
+    activityPollingService.stopPolling();
+  });
+
+  it('should not remove a newer pending request when an old subject completes', () => {
+    const caseId = 'case-1';
+    const firstSubject = activityPollingService.subscribeToActivity(caseId, () => ({}));
+
+    activityPollingService.flushRequests();
+
+    const secondSubject = activityPollingService.subscribeToActivity(caseId, () => ({}));
+    firstSubject.complete();
+
+    expect((activityPollingService as any).pendingRequests.get(caseId)).toBe(secondSubject);
+
+    secondSubject.complete();
+    activityPollingService.stopPolling();
+  });
+
   it('should remove a pending completed subject before subscribing to the same case again', fakeAsync(() => {
     const firstHandler = jasmine.createSpy('firstHandler');
     const secondHandler = jasmine.createSpy('secondHandler');
