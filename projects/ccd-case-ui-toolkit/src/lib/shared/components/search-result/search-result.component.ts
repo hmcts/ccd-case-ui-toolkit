@@ -101,6 +101,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
 
   public selectedCases: SearchResultViewItem[] = [];
+  private lastWatchedCaseIdsKey: string | null = null;
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
@@ -148,7 +149,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
-      if(!isSolicitorUser(this.sessionStorageService)) {
+      if (!isSolicitorUser(this.sessionStorageService)) {
+        console.log('calling watch cases from ngOnChanges');
         this.watchResults();
       }
     }
@@ -373,6 +375,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public get activityEnabled(): boolean {
+    console.log('activity service enabled: ' + this.activityService.isEnabled);
     return this.activityService.isEnabled;
   }
 
@@ -452,8 +455,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   private watchResults(): void {
+    console.log('consumerSortingEnabled is ' + this.consumerSortingEnabled);
+    console.log('this.activitySocketService.isEnabled ' + this.activitySocketService.isEnabled);
+
     if (this.activitySocketService.isEnabled) {
       const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
+      const watchKey = [...caseIds].sort().join(',');
+      if (watchKey === this.lastWatchedCaseIdsKey) {
+        return;
+      }
+
+      this.lastWatchedCaseIdsKey = watchKey;
       this.activitySocketService.watchCases(caseIds);
     }
   }

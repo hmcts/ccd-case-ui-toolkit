@@ -762,6 +762,70 @@ describe('SearchResultComponent', () => {
       expect(activitySocketService.watchCases).toHaveBeenCalled();
     });
 
+    it('should only watch cases once for duplicate result view refreshes', () => {
+      activitySocketService.watchCases.calls.reset();
+      (component as any).lastWatchedCaseIdsKey = null;
+
+      const refreshedResultView: SearchResultView = {
+        ...RESULT_VIEW,
+        columns: RESULT_VIEW.columns.slice(0),
+        results: RESULT_VIEW.results.slice(0),
+        hasDrafts: RESULT_VIEW.hasDrafts
+      };
+
+      component.resultView = refreshedResultView;
+      component.ngOnChanges({ resultView: new SimpleChange(null, refreshedResultView, false) });
+      component.resultView = refreshedResultView;
+      component.ngOnChanges({ resultView: new SimpleChange(refreshedResultView, refreshedResultView, false) });
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+      expect(activitySocketService.watchCases).toHaveBeenCalledWith(
+        refreshedResultView.results.map(result => result.case_id)
+      );
+    });
+
+    it('should watch cases again when the result view case ids change', () => {
+      activitySocketService.watchCases.calls.reset();
+      (component as any).lastWatchedCaseIdsKey = null;
+
+      const initialResultView: SearchResultView = {
+        ...RESULT_VIEW,
+        columns: RESULT_VIEW.columns.slice(0),
+        results: RESULT_VIEW.results.slice(0),
+        hasDrafts: RESULT_VIEW.hasDrafts
+      };
+
+      const updatedResultView: SearchResultView = {
+        ...RESULT_VIEW,
+        columns: RESULT_VIEW.columns.slice(0),
+        results: [
+          ...RESULT_VIEW.results.slice(0, RESULT_VIEW.results.length - 1),
+          {
+            case_id: '0000000000009999',
+            case_fields: {
+              PersonFirstName: 'Ada',
+              PersonLastName: 'Lovelace',
+              PersonAddress: 'St James\'s Square, London, England, SW1Y 4LE'
+            },
+            supplementary_data: {
+              orgs_assigned_users: { '9QV1DT1': 3 }
+            }
+          }
+        ],
+        hasDrafts: RESULT_VIEW.hasDrafts
+      };
+
+      component.resultView = initialResultView;
+      component.ngOnChanges({ resultView: new SimpleChange(null, initialResultView, false) });
+      component.resultView = updatedResultView;
+      component.ngOnChanges({ resultView: new SimpleChange(initialResultView, updatedResultView, false) });
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(2);
+      expect(activitySocketService.watchCases.calls.argsFor(1)[0]).toEqual(
+        updatedResultView.results.map(result => result.case_id)
+      );
+    });
+
     it('should call clickCase emit when goToCase is triggered', () => {
       spyOn(component.clickCase, 'emit');
       component.goToCase('DRAFT190');

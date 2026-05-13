@@ -1,11 +1,10 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Socket } from 'socket.io-client';
 
+import { CaseActivityInfo } from '../../domain/activity';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
-import { Utils, MODES } from './utils';
-import { connect } from 'http2';
-import { connected } from 'process';
+import { MODES } from './utils';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
@@ -102,6 +101,19 @@ describe('ActivitySocketService', () => {
       const caseIds = ['case1', 'case2', 'case3'];
       service.watchCases(caseIds);
       expect(service.socket.emit).toHaveBeenCalledWith('watch', { caseIds });
+    });
+
+    it('should replay the latest activity payload to late subscribers', () => {
+      const activityPayload = [{ caseId: 'case1', viewers: [], editors: [] }] as CaseActivityInfo[];
+      let receivedActivity: CaseActivityInfo[];
+
+      (service as any).activitySubject.next(activityPayload);
+
+      service.activity.subscribe(activity => {
+        receivedActivity = activity;
+      });
+
+      expect(receivedActivity).toEqual(activityPayload);
     });
   });
 

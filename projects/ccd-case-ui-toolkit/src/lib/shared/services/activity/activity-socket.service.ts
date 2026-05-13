@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
@@ -22,9 +22,11 @@ export class ActivitySocketService {
   public disconnect: Observable<any>;
   public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private readonly activitySubject = new ReplaySubject<CaseActivityInfo[]>(1);
   private lastViewEmit = { caseId: '', time: 0 };
   private lastEditEmit = { caseId: '', time: 0 };
   private readonly emitCooldownMs = 250; // ignore duplicate emits within 250ms
+  private socketActivitySubscription?: Subscription;
 
   public socket: Socket;
   private pUser: UserInfo;
@@ -40,6 +42,7 @@ export class ActivitySocketService {
     private readonly sessionStorageService: SessionStorageService,
     private readonly activityService: ActivityService
   ) {
+    this.activity = this.activitySubject.asObservable();
     this.activityService.modeSubject
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
@@ -130,7 +133,9 @@ export class ActivitySocketService {
     this.connect = this.getObservableOnSocketEvent<any>('connect');
     this.connect_error = this.getObservableOnSocketEvent<any>('connect_error');
     this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
-    this.activity = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity');
+    this.socketActivitySubscription?.unsubscribe();
+    this.socketActivitySubscription = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity')
+      .subscribe(activity => this.activitySubject.next(activity));
 
     this.disconnect.subscribe(() => {
       this.connected.next(false);
@@ -146,6 +151,8 @@ export class ActivitySocketService {
   }
 
   private destroy(): void {
+    this.socketActivitySubscription?.unsubscribe();
+    this.socketActivitySubscription = undefined;
     if (this.socket) {
       this.socket.close();
       this.socket = undefined;
