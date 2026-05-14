@@ -40,10 +40,7 @@
     "test": "ng test ccd-case-ui-toolkit-lib --code-coverage",
     "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
-    "tslint": "tslint",
-    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
-    "storybook": "yarn docs:json && start-storybook -p 6006",
-    "build:storybook": "yarn docs:json && build-storybook"
+    "tslint": "tslint"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
@@ -95,15 +92,6 @@
     "@angular/compiler-cli": "^20.3.18",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.12",
-    "@storybook/addon-actions": "^6.5.10",
-    "@storybook/addon-essentials": "^6.5.10",
-    "@storybook/addon-interactions": "^6.5.10",
-    "@storybook/addon-links": "^6.5.10",
-    "@storybook/angular": "^8.6.11",
-    "@storybook/builder-webpack4": "^6.5.10",
-    "@storybook/manager-webpack4": "^6.5.10",
-    "@storybook/preset-scss": "^1.0.3",
-    "@storybook/testing-library": "^0.2.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^20.19.0",
