@@ -33,6 +33,7 @@ import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid
 import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
 import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
+import { FocusService } from '../../../services/window/focus.service';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -125,7 +126,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
     multipageComponentStateService,
     new AddressesService(null, null),
     new LinkedCasesService(jurisdictionService as any, searchService),
-    new CaseFlagStateService());
+    new CaseFlagStateService(),
+    createSpyObj<FocusService>('FocusService', ['focus']));
   const caseInfo = {
     case_id: '1682374819203471',
     case_type: {
