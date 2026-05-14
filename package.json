@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.52",
+  "version": "7.3.52-exui-4298-publish-test-baseline",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -19,8 +19,8 @@
   "scripts": {
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
-    "build:library": "ng build ccd-case-ui-toolkit-lib",
-    "build:library:watch": "npm run build:library -- --watch",
+    "build:library": "ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
+    "build:library:watch": "ng build ccd-case-ui-toolkit-lib --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
     "clean": "rimraf node_modules",
@@ -62,7 +62,7 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.16",
+    "@hmcts/media-viewer": "4.2.16-exui-4425-rc1",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
