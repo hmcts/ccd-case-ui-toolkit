@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.48-xui-3740
+### Version 7.3.52-exui-3740
 **EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+
+### Version 7.3.52
+**EXUI-4311** Remove unused packages
+
+### Version 7.3.49
+**EXUI-4188** Angular innerHTML injection
 
 ### Version 7.3.48
 **EXUI-4278** Suppressions-lodash-minor
