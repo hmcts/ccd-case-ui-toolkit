@@ -66,6 +66,7 @@ import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { FocusService } from '../../../services/window/focus.service'
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -96,7 +97,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
-  
+
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -112,7 +115,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {},
     linkedCasesService = {},
-    caseFlagStateService = new CaseFlagStateService()
+    caseFlagStateService = new CaseFlagStateService(),
+    fs = focusService
   }) =>
     new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -129,7 +133,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService as MultipageComponentStateService,
     addressesService as AddressesService,
     linkedCasesService as LinkedCasesService,
-    caseFlagStateService as CaseFlagStateService
+    caseFlagStateService as CaseFlagStateService,
+    fs as FocusService
     );
 
   it('should create', () => {
@@ -492,6 +497,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
   const caseFlagStateService = new CaseFlagStateService();
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
@@ -615,7 +621,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -1024,6 +1031,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1047,7 +1056,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1193,6 +1203,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1216,7 +1228,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1363,6 +1376,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         caseEditDataService.caseFormValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
         caseEditDataService.caseEditForm$ = of(caseEditComponentStub.form);
         caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
+        
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1391,7 +1406,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1789,6 +1805,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1812,7 +1830,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -2010,6 +2029,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -2033,7 +2054,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
