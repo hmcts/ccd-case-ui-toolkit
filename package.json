@@ -112,7 +112,6 @@
     "eslint": "^8.57.0",
     "exceljs": "^4.4.0",
     "expect": "^23.0.0",
-    "express": "^4.16.4",
     "font-awesome": "^4.6.1",
     "gh-pages": "^2.0.0",
     "git-message": "^2.0.2",

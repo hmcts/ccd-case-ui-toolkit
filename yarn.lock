@@ -2960,7 +2960,6 @@ __metadata:
     eslint: "npm:^8.57.0"
     exceljs: "npm:^4.4.0"
     expect: "npm:^23.0.0"
-    express: "npm:^4.16.4"
     file-saver: "npm:^2.0.2"
     font-awesome: "npm:^4.6.1"
     gh-pages: "npm:^2.0.0"
@@ -11597,7 +11596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.16.4, express@npm:^4.21.2":
+"express@npm:^4.21.2":
   version: 4.22.1
   resolution: "express@npm:4.22.1"
   dependencies:
