@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.52",
+  "version": "7.3.52-exui-4298-publish-test",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -19,8 +19,8 @@
   "scripts": {
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
-    "build:library": "ng build ccd-case-ui-toolkit-lib",
-    "build:library:watch": "npm run build:library -- --watch",
+    "build:library": "ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
+    "build:library:watch": "ng build ccd-case-ui-toolkit-lib --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
     "clean": "rimraf node_modules",
@@ -40,10 +40,7 @@
     "test": "ng test ccd-case-ui-toolkit-lib --code-coverage",
     "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
-    "tslint": "tslint",
-    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
-    "storybook": "yarn docs:json && start-storybook -p 6006",
-    "build:storybook": "yarn docs:json && build-storybook"
+    "tslint": "tslint"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
@@ -62,7 +59,7 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.16",
+    "@hmcts/media-viewer": "4.2.16-exui-4425-rc1",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
@@ -95,15 +92,6 @@
     "@angular/compiler-cli": "^20.3.18",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.12",
-    "@storybook/addon-actions": "^6.5.10",
-    "@storybook/addon-essentials": "^6.5.10",
-    "@storybook/addon-interactions": "^6.5.10",
-    "@storybook/addon-links": "^6.5.10",
-    "@storybook/angular": "^8.6.11",
-    "@storybook/builder-webpack4": "^6.5.10",
-    "@storybook/manager-webpack4": "^6.5.10",
-    "@storybook/preset-scss": "^1.0.3",
-    "@storybook/testing-library": "^0.2.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^20.19.0",
@@ -124,7 +112,6 @@
     "eslint": "^8.57.0",
     "exceljs": "^4.4.0",
     "expect": "^23.0.0",
-    "express": "^4.16.4",
     "font-awesome": "^4.6.1",
     "gh-pages": "^2.0.0",
     "git-message": "^2.0.2",
