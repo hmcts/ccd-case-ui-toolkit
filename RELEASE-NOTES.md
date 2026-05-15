@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.3.52
+**EXUI-4311** Remove unused packages
+
+### Version 7.3.49
+**EXUI-4188** Angular innerHTML injection
+
+### Version 7.3.48
+**EXUI-4278** Suppressions-lodash-minor
+
+### Version 7.3.47
+**EXUI-4368** the same data is being displayed when navigating between dynamic list
+
+### Version 7.3.46
+**EXUI-4227** CVE Vulnerabilities Mar26
+
+### Version 7.3.45
+**EXUI-4302** Datepicker days showing incorrectly
+
 ### Version 7.3.44
 **EXUI-4089** Case Flags: Show banner when PVP flag is present on 
 **EXUI-4090** Case Flags: Ordering logic changes 
