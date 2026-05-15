@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.52-exui-4297
+**EXUI-4297** Suppressions - glob - major
+
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
 
