@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.53-exui-4298
+**EXUI-4298** Suppressions - express - major
+
 ### Version 7.3.53
 **EXUI-4563** SRT Release
 
