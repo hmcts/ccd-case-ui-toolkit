@@ -3413,8 +3413,8 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.16"
-    "@ngrx/effects": "npm:17.2.0"
-    "@ngrx/store": "npm:^17.2.0"
+    "@ngrx/effects": "npm:^20.1.0"
+    "@ngrx/store": "npm:^20.1.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@storybook/addon-actions": "npm:^6.5.10"
     "@storybook/addon-essentials": "npm:^6.5.10"
@@ -5429,40 +5429,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/effects@npm:17.2.0"
-  dependencies:
-    "@ngrx/operators": "npm:17.0.0-beta.0"
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/core": ^17.0.0
-    "@ngrx/store": 17.2.0
-    rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/ec0d7ca12ae39d49b257b15431269ea90e90261f87d3e4458dd0ee2f84ebcd66a7f79a8c0c129d9ab394918d9c2b5d60865e25e6fa352d61317ea0f2babf4eba
-  languageName: node
-  linkType: hard
-
-"@ngrx/operators@npm:17.0.0-beta.0":
-  version: 17.0.0-beta.0
-  resolution: "@ngrx/operators@npm:17.0.0-beta.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/ca9ce33f827a1ceeb3569061cd54933763c497aee09c03ac84f92be84a3a8f3b9d2ea0c42518843288c557586e15af1d7bf442c3eca624ddae44f60907423930
-  languageName: node
-  linkType: hard
-
-"@ngrx/store@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/store@npm:17.2.0"
+"@ngrx/effects@npm:^20.1.0":
+  version: 20.1.0
+  resolution: "@ngrx/effects@npm:20.1.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/core": ^17.0.0
+    "@angular/core": ^20.0.0
+    "@ngrx/store": 20.1.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/3eff90e71679b12be8c57a17816f624ad3d06f845815346566ba47f642ec7ca30797c45b2732b086e461765f6ff16975e757bcf6a6f0af397baef25e8ab08079
+  checksum: 10/5930275f8389ba04a2a7d34f1e07ae1c4202b43d661851b04d2d6b5c90ee8cc5bbf10a76d8940d1aea12da2da6b5f61c7e2a2e1b38db83f5f27f5ef9ccf0488a
+  languageName: node
+  linkType: hard
+
+"@ngrx/store@npm:^20.1.0":
+  version: 20.1.0
+  resolution: "@ngrx/store@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 10/00089152b5828ae21a8c5d12b386e06fb0efe5d7d9af37d0a8a381198558efc0ea1c08abb0ffc26727fac515c2d2fda141b25d6968633ac45721fd52a243c602
   languageName: node
   linkType: hard
 
