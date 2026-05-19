@@ -314,28 +314,7 @@ export class FieldsUtils {
           const isDynamicMultiSelectField = field.field_type.type === 'DynamicMultiSelectList';
 
           if (isDynamicMultiSelectField) {
-            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
-            if (dynamicListValue) {
-              const list_items = dynamicListValue.find(data => data?.list_items !== undefined)?.list_items;
-              if (list_items !== undefined) {
-                field.list_items = list_items;
-                field.formatted_value = {
-                  ...field.formatted_value,
-                  list_items
-                };
-              }
-
-              if (rootCaseField.field_type.type !== FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
-                const value = dynamicListValue[0]?.value;
-                if (value !== undefined) {
-                  field.value = value;
-                  field.formatted_value = {
-                    ...field.formatted_value,
-                    value
-                  };
-                }
-              }
-            }
+            this.setDynamicMultiSelectListDefinition(field, rootCaseField);
           } else if (isDynamicField) {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
             if (dynamicListValue) {
@@ -363,6 +342,31 @@ export class FieldsUtils {
     } else if (caseFieldType.type === FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
       if (caseFieldType.collection_field_type) {
         this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+      }
+    }
+  }
+
+  private static setDynamicMultiSelectListDefinition(field: CaseField, rootCaseField: CaseField) {
+    const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
+    if (dynamicListValue) {
+      const list_items = dynamicListValue.find(data => data?.list_items !== undefined)?.list_items;
+      if (list_items !== undefined) {
+        field.list_items = list_items;
+        field.formatted_value = {
+          ...field.formatted_value,
+          list_items
+        };
+      }
+
+      if (rootCaseField.field_type.type !== FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
+        const value = dynamicListValue[0]?.value;
+        if (value !== undefined) {
+          field.value = value;
+          field.formatted_value = {
+            ...field.formatted_value,
+            value
+          };
+        }
       }
     }
   }
