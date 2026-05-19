@@ -625,6 +625,144 @@ describe('FieldsUtils', () => {
       expect(orderListField.formatted_value).toEqual({ list_items: listItems });
       expect(orderListField.value).toBeUndefined();
     });
+
+    it('should hydrate list_items and selected values for complex dynamic multiselects', () => {
+      const listItems = [
+        {code: '1', value: '1'},
+        {code: '2', value: '2'}
+      ];
+      const selectedValue = [{code: '2', value: '2'}];
+      const callbackResponse = {
+        field_type: {
+          type: 'Complex',
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            formatted_value: {
+              label: 'Order list'
+            }
+          }]
+        },
+        value: {
+          orderList: {
+            list_items: listItems,
+            value: selectedValue
+          }
+        }
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      const orderListField = callbackResponse.field_type.complex_fields[0] as any;
+      expect(orderListField.list_items).toEqual(listItems);
+      expect(orderListField.value).toEqual(selectedValue);
+      expect(orderListField.formatted_value).toEqual({
+        label: 'Order list',
+        list_items: listItems,
+        value: selectedValue
+      });
+    });
+
+    it('should persist multiple selected values for complex dynamic multiselects', () => {
+      const listItems = [
+        {code: '1', value: '1'},
+        {code: '2', value: '2'},
+        {code: '3', value: '3'}
+      ];
+      const selectedValue = [
+        {code: '1', value: '1'},
+        {code: '3', value: '3'}
+      ];
+      const callbackResponse = {
+        field_type: {
+          type: 'Complex',
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            formatted_value: {}
+          }]
+        },
+        value: {
+          orderList: {
+            list_items: listItems,
+            value: selectedValue
+          }
+        }
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      const orderListField = callbackResponse.field_type.complex_fields[0] as any;
+      expect(orderListField.value).toEqual(selectedValue);
+      expect(orderListField.formatted_value.value).toEqual(selectedValue);
+    });
+
+    it('should hydrate list_items from a later nested dynamic multiselect while using the first selected value', () => {
+      const listItems = [
+        {code: '1', value: '1'},
+        {code: '2', value: '2'}
+      ];
+      const selectedValue = [{code: '1', value: '1'}];
+      const callbackResponse = {
+        field_type: {
+          type: 'Complex',
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            formatted_value: {}
+          }]
+        },
+        value: {
+          recipients: [{
+            orderList: {
+              value: selectedValue
+            }
+          }, {
+            orderList: {
+              list_items: listItems,
+              value: [{code: '2', value: '2'}]
+            }
+          }]
+        }
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      const orderListField = callbackResponse.field_type.complex_fields[0] as any;
+      expect(orderListField.list_items).toEqual(listItems);
+      expect(orderListField.value).toEqual(selectedValue);
+      expect(orderListField.formatted_value).toEqual({
+        list_items: listItems,
+        value: selectedValue
+      });
+    });
+
+    it('should leave dynamic multiselects unchanged when matching data has no list_items or selected value', () => {
+      const callbackResponse = {
+        field_type: {
+          type: 'Complex',
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            formatted_value: {
+              label: 'Order list'
+            }
+          }]
+        },
+        value: {
+          orderList: {}
+        }
+      };
+
+      (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
+
+      const orderListField = callbackResponse.field_type.complex_fields[0] as any;
+      expect(orderListField.list_items).toBeUndefined();
+      expect(orderListField.value).toBeUndefined();
+      expect(orderListField.formatted_value).toEqual({
+        label: 'Order list'
+      });
+    });
   });
 
   describe('isFlagsCaseField() function test', () => {
