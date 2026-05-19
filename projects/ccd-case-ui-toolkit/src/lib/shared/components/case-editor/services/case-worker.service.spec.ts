@@ -9,7 +9,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseworkerService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
-  const CASE_WORKER_URL = `${API_URL}/caseworker/getUserByIdamId`;
+  const CASE_WORKER_URL = `${API_URL}/caseworker/getUsersByServiceName`;
   const CASE_WORKER_1: Caseworker = {
     idamId: '4321-4321-4321-4321',
     firstName: 'Test',
@@ -36,18 +36,19 @@ describe('CaseworkerService', () => {
   });
 
   it('should call post with correct parameters', waitForAsync(() => {
+    const serviceId = 'IA';
     httpService.post.and.returnValue(of([CASE_WORKER_1]));
-    caseworkerService.getUserByIdamId(CASE_WORKER_1.idamId)
+    caseworkerService.getCaseworkers(serviceId)
       .subscribe()
       .add(() => {
-        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, CASE_WORKER_1.idamId);
+        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, {services: [serviceId]});
       });
   }));
 
   it('should set error service error when the call fails', waitForAsync(() => {
-    const userId = '1234-1234-1234-1234';
+    const userIds = ['1234-1234-1234-1234'];
     httpService.post.and.returnValue(throwError(ERROR));
-    caseworkerService.getUserByIdamId(userId)
+    caseworkerService.getCaseworkers(userIds)
       .subscribe(() => {
       }, err => {
         expect(err).toEqual(ERROR);
