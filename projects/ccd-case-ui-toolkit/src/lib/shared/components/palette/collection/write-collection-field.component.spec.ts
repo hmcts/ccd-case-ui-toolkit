@@ -191,6 +191,14 @@ describe('WriteCollectionFieldComponent', () => {
     expect(field2.idPrefix).toEqual(`${caseField.id}_${1}_`);
   });
 
+  it('should assign stable unique uid values to collection items', () => {
+    expect(component.collItems[0].uid).toBeDefined();
+    expect(component.collItems[1].uid).toBeDefined();
+    expect(component.collItems[0].uid).not.toEqual(component.collItems[1].uid);
+    expect(component.trackByCollectionItem(0, component.collItems[0] as any)).toEqual(component.collItems[0].uid);
+    expect(component.trackByCollectionItem(1, component.collItems[1] as any)).toEqual(component.collItems[1].uid);
+  });
+
   it('should add empty item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
 
@@ -285,6 +293,26 @@ describe('WriteCollectionFieldComponent', () => {
 
     expect(component.formArray.controls.length).toBe(1);
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
+  });
+
+  it('should keep the surviving item uid stable after a removal', () => {
+    const initialUids = component.collItems.map(item => item.uid);
+    const tempCaseField = ({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    }) as CaseField;
+    component.caseField = tempCaseField;
+    component.caseFields = [tempCaseField];
+    fixture.detectChanges();
+    dialogRef.afterClosed.and.returnValue(of('Remove'));
+
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
+    removeButtons[0].nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.collItems.length).toBe(1);
+    expect(component.collItems[0].uid).toEqual(initialUids[1]);
+    expect(component.trackByCollectionItem(0, component.collItems[0] as any)).toEqual(initialUids[1]);
   });
 
   it('should NOT remove item from collection when remove button is clicked and declined', () => {

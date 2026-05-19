@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, NgZone, OnInit, Renderer2 } from '@angular/core';
 import * as marked from 'marked';
+import { Tokens } from 'marked';
 import { Router } from '@angular/router';
 
 @Component({
@@ -53,11 +54,14 @@ export class MarkdownComponent implements OnInit {
   private renderUrlToText(): void {
     const renderer = new marked.Renderer();
 
-    renderer.link = (href, title, text) => {
-      if (!text || text === href) {
-        return this.isAllowedUrl(href) ? `<a href="${href}">${href}</a>` : href;
+    renderer.link = ({ href, tokens }: Tokens.Link): string => {
+      const linkHref = href || '';
+      const text = tokens?.map((token) => token.raw).join('') || linkHref;
+
+      if (!text || text === linkHref) {
+        return this.isAllowedUrl(linkHref) ? `<a href="${linkHref}">${linkHref}</a>` : linkHref;
       }
-      return this.detectMarkdownLinks(this.content) ? `<a href="${href}">${text}</a>` : text;
+      return this.detectMarkdownLinks(this.content) ? `<a href="${linkHref}">${text}</a>` : text;
     };
 
     marked.setOptions({

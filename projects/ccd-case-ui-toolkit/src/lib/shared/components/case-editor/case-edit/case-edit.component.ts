@@ -27,6 +27,7 @@ import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
+import { safeJsonParse } from '../../../json-utils';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -120,7 +121,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
-    this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
+    this.isPageRefreshed = safeJsonParse<boolean>(this.sessionStorageService.getItem('isPageRefreshed'), false);
 
     this.checkPageRefresh();
 
@@ -269,15 +270,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const taskEventCompletionStr = this.sessionStorageService.getItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded');
-    if (taskEventCompletionStr) {
-      taskEventCompletionInfo = JSON.parse(taskEventCompletionStr);
-    }
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
-    }
+    taskEventCompletionInfo = safeJsonParse<TaskEventCompletionInfo>(taskEventCompletionStr, null);
+    userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
-    const userId = userInfo.id ? userInfo.id : userInfo.uid;
+    const userId = userInfo?.id ? userInfo.id : userInfo?.uid;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       this.abstractConfig.logMessage(`task ${taskInSessionStorage?.id} exist for this event for caseId and eventId as ${caseId} ${eventId}`);
@@ -526,6 +523,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
     const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
+    if (this.caseDetails && (this.caseDetails.case_id !== task?.case_id)) {
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: task in session storage with taskId ${task?.id} has caseId: ${task?.case_id} which does not match case details case id ${this.caseDetails.case_id}, NOT completing task and clearing client context`);
+      this.sessionStorageService.removeItem(CaseEditComponent.CLIENT_CONTEXT);
+      return of(true);
+    }
     if (task && assignNeeded && taskToBeCompleted) {
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger?.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
