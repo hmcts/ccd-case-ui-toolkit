@@ -3,16 +3,84 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 function buildCaseField(id: string, properties: object, value?: any): CaseField {
-  return ({
+  return Object.assign(new CaseField(), {
     id,
     ...properties,
     value
-  }) as CaseField;
+  });
 }
 function getComplexField(id: string, complexFields: CaseField[], value?: any): CaseField {
   return buildCaseField(id, {
     field_type: { id: 'Complex', type: 'Complex', complex_fields: complexFields }
   }, value);
+}
+
+function buildMockFormGroup(): any {
+  return {
+    value: {},
+    parent: { getRawValue: () => ({ data: {} }) }
+  } as any;
+}
+
+function buildNestedCollectionFixture(parentFieldValue: any, hasCollectionAncestor: boolean): { nestedComplexField: CaseField } {
+  const childField: CaseField = buildCaseField('childField', {
+    field_type: {
+      complex_fields: [],
+      id: 'Text',
+      type: 'Text'
+    },
+    hidden: false,
+    label: 'Child field',
+    show_condition: 'parentField=\"Yes\"'
+  }, null);
+
+  const nestedComplexField: CaseField = buildCaseField('nestedComplex', {
+    field_type: {
+      complex_fields: [childField],
+      id: 'NestedComplex',
+      type: 'Complex'
+    },
+    hidden: false,
+    label: 'Nested complex'
+  }, parentFieldValue);
+
+  const ancestor: CaseField = buildCaseField('0', {
+    field_type: {
+      complex_fields: [],
+      id: 'NestedComplex',
+      type: 'Complex'
+    }
+  }, parentFieldValue || {});
+
+  const collectionParent: CaseField = buildCaseField('collectionParent', {
+    field_type: {
+      collection_field_type: {
+        complex_fields: [],
+        id: 'NestedComplex',
+        type: 'Complex'
+      },
+      id: 'CollectionParent',
+      type: 'Collection'
+    },
+    hidden: false,
+    label: 'Collection parent'
+  }, []);
+
+  const nonCollectionParent: CaseField = buildCaseField('parent', {
+    field_type: {
+      complex_fields: [],
+      id: 'ParentComplex',
+      type: 'Complex'
+    },
+    hidden: false,
+    label: 'Parent complex'
+  }, {});
+
+  nestedComplexField.parent = ancestor;
+  ancestor.parent = hasCollectionAncestor ? collectionParent : nonCollectionParent;
+  childField.parent = nestedComplexField;
+
+  return { nestedComplexField };
 }
 
 describe('ReadFieldsFilterPipe', () => {
@@ -511,6 +579,50 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should use the collection item parent value when it is available', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
+  it('should merge collection item parent value with current complex values for show conditions', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+    nestedComplexField.value = { nestedField: 'Show' };
+    nestedComplexField.field_type.complex_fields[0].show_condition = 'nestedField=\"Show\"';
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
+  it('should fall back to the complex values when the collection item parent value is blank', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+    nestedComplexField.parent!.value = {};
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
+  it('should walk ancestors and return undefined when there is no collection ancestor', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, false);
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
+  });
+  it('should fall back to the complex values when the collection item lookup returns empty object', () => {
+    const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+    nestedComplexField.parent = nestedComplexField.parent?.parent;
+    const formGroup = buildMockFormGroup();
+
+    const RESULT: CaseField[] = pipe.transform(nestedComplexField, true, undefined, true, formGroup, 'parent_value', '');
+    expect(RESULT.length).toEqual(1);
+    expect(RESULT[0].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
     const formField = FORM_GROUP.controls['data'] as FormGroup;
