@@ -47,8 +47,16 @@ export class FieldTypeSanitiser {
 
         case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
           if (Array.isArray(data[caseField.id])) {
-            data[caseField.id].forEach((formElement: any) => {
-              this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
+            data[caseField.id].forEach((formElement: any, index: number) => {
+              const matchingItem = Array.isArray(caseField.value) && formElement?.id !== undefined
+                ? caseField.value.find((item) => item?.id === formElement.id)
+                : null;
+              const collectionItem = matchingItem || (Array.isArray(caseField.value) ? caseField.value[index] : null);
+              this.sanitiseLists(
+                this.copyCaseFieldsWithCollectionData(caseField.field_type.collection_field_type.complex_fields,
+                  collectionItem?.value || collectionItem),
+                formElement.value
+              );
             });
           }
           break;
@@ -58,60 +66,58 @@ export class FieldTypeSanitiser {
 
   public ensureDynamicMultiSelectListPopulated(caseFields: CaseField[]): CaseField[] {
     return caseFields.map((field) => {
-      const fieldData = field._value || field.value;
-
-      if (field.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
-        this.checkNestedDynamicList(field, fieldData);
-      } else if (field.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COLLECTION &&
-        field.field_type.collection_field_type?.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX
-      ) {
-        this.checkNestedDynamicList(field, fieldData, true);
-      } else {
+      if (field.field_type.type !== 'Complex') {
         return field;
       }
+      const caseFieldData = field._value;
+      // Process each complex field
+      field.field_type.complex_fields.forEach((complexField) => {
+        if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
+          this.checkNestedDynamicList(complexField, caseFieldData?.[complexField.id]);
+        } else if (this.isDynamicList(complexField.field_type.type) &&
+          complexField.display_context !== 'HIDDEN' &&
+          field._value?.[complexField.id]
+        ) {
+          complexField.list_items = field._value[complexField.id]?.list_items;
+        }
+      });
       // Final transformation: construct updated field object
       return { ...field, field_type: { ...field?.field_type } } as CaseField;
     });
   }
 
-  private checkNestedDynamicList(caseField: CaseField, fieldData: any = null, isCollection = false): void {
-    const complexFields = isCollection
-      ? caseField.field_type.collection_field_type?.complex_fields || []
-      : caseField.field_type.complex_fields;
-
-    complexFields.forEach((complexField) => {
-      const childData = isCollection
-        ? this.getFirstCollectionFieldData(fieldData, complexField.id)
-        : fieldData?.[complexField.id];
-
+  private checkNestedDynamicList(caseField: CaseField, fieldData: any = null): void {
+    caseField.field_type.complex_fields.forEach((complexField) => {
       if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
-        this.checkNestedDynamicList(complexField, childData);
-      } else if (complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COLLECTION &&
-        complexField.field_type.collection_field_type?.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX
-      ) {
-        this.checkNestedDynamicList(complexField, childData, true);
+        this.checkNestedDynamicList(complexField, fieldData?.[complexField.id]);
       } else if (this.isDynamicList(complexField.field_type.type) &&
         complexField.display_context !== 'HIDDEN' &&
-        childData
+        fieldData?.[complexField.id]
       ) {
-        complexField.list_items = childData.list_items;
+        complexField.list_items = fieldData?.[complexField.id]?.list_items;
       }
     });
   }
 
-  private getFirstCollectionFieldData(collectionData: any[], fieldId: string): any {
-    if (!Array.isArray(collectionData)) {
-      return null;
-    }
-
-    for (const item of collectionData) {
-      const value = item?.value || item;
-      if (value?.[fieldId] !== undefined) {
-        return value[fieldId];
+  private copyCaseFieldsWithCollectionData(caseFields: CaseField[], collectionItemData: any): CaseField[] {
+    return caseFields.map((field) => {
+      const fieldData = collectionItemData?.[field.id];
+      if (field.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
+        return {
+          ...field,
+          field_type: {
+            ...field.field_type,
+            complex_fields: this.copyCaseFieldsWithCollectionData(field.field_type.complex_fields, fieldData)
+          }
+        } as CaseField;
       }
-    }
 
-    return null;
+      return this.isDynamicList(field.field_type.type) &&
+        field.display_context !== 'HIDDEN' &&
+        fieldData?.list_items !== undefined
+        ? { ...field, list_items: fieldData.list_items } as CaseField
+        : field;
+    });
   }
 
   private isDynamicList(fieldType: FieldTypeEnum): boolean {

@@ -895,6 +895,37 @@ describe('FormValueService', () => {
       };
       expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
     });
+
+    it('should retain nested fields hidden with HIDDEN_TEMP display context', () => {
+      const data = {
+        complexField: { hiddenChild: 'keep me' },
+        collectionField: [{ id: 'row-1', value: { hiddenChild: 'keep me' } }]
+      };
+      const childField = {
+        id: 'hiddenChild',
+        hidden: true,
+        display_context: 'HIDDEN_TEMP',
+        retain_hidden_value: false,
+        field_type: { type: 'Text' }
+      };
+      const caseFields = [{
+        id: 'complexField',
+        field_type: { type: 'Complex', complex_fields: [childField] }
+      }, {
+        id: 'collectionField',
+        field_type: {
+          type: 'Collection',
+          collection_field_type: { type: 'Complex', complex_fields: [childField] }
+        }
+      }] as unknown as CaseField[];
+
+      formValueService.removeUnnecessaryFields(data, caseFields);
+
+      expect(data).toEqual({
+        complexField: { hiddenChild: 'keep me' },
+        collectionField: [{ id: 'row-1', value: { hiddenChild: 'keep me' } }]
+      });
+    });
   });
   describe('removeInvalidCollectionData', () => {
     it('should empty the collection field if it contains only id', () => {

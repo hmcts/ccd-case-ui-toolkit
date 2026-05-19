@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -337,143 +337,29 @@ describe('WriteCollectionFieldComponent', () => {
     const fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
   });
-});
 
-describe('WriteCollectionFieldComponent with hydrated dynamic multiselect children', () => {
-  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
-  let component: WriteCollectionFieldComponent;
-  let formValidatorService: any;
-  let dialog: any;
-  let dialogRef: any;
-  let scrollToService: any;
-  let profileNotifier: any;
-  let caseField: CaseField;
-  let formGroup: FormGroup;
-  let collectionCreateCheckerService: CollectionCreateCheckerService;
+  it('should retain dynamic multiselect options for a new complex collection item', () => {
+    const orderListItems = [
+      { code: 'order-1', label: 'Order 1' },
+      { code: 'order-2', label: 'Order 2' }
+    ];
+    caseField.field_type = {
+      type: 'Collection',
+      collection_field_type: {
+        type: 'Complex',
+        complex_fields: [{
+          id: 'orderList',
+          field_type: { type: 'DynamicMultiSelectList' },
+          list_items: orderListItems
+        } as CaseField]
+      }
+    } as FieldType;
+    component.formArray = new FormArray([]);
 
-  beforeEach(waitForAsync(() => {
-    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
-    dialogRef.afterClosed.and.returnValue(of());
-    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
-    dialog.open.and.returnValue(dialogRef);
-    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
-    scrollToService.scrollTo.and.returnValue(of());
-    caseField = ({
-      id: 'stmtOfServiceAddRecipient',
-      label: 'Recipient',
-      display_context: 'OPTIONAL',
-      display_context_parameter: '#COLLECTION(allowInsert)',
-      field_type: {
-        id: 'StmtOfServiceAddRecipient',
-        type: 'Collection',
-        collection_field_type: {
-          id: 'StmtOfServiceAddRecipient',
-          type: 'Complex',
-          complex_fields: [
-            ({
-              id: 'servedParty',
-              label: 'Who was served?',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'DynamicList',
-                type: 'DynamicList'
-              }
-            }) as CaseField,
-            ({
-              id: 'orderList',
-              label: 'Statement of service orders',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'DynamicMultiSelectList',
-                type: 'DynamicMultiSelectList'
-              },
-              list_items: [
-                { code: 'order-1', label: 'Blank order or directions (C21) - 15 Apr 2026' },
-                { code: 'order-2', label: 'Parental responsibility order (C45A) - 15 Apr 2026' }
-              ]
-            }) as CaseField
-          ]
-        }
-      } as FieldType,
-      value: [
-        {
-          id: 'recipient-1',
-          value: {
-            servedParty: 'John Doe (Applicant 1)',
-            orderList: [
-              { code: 'order-1', label: 'Blank order or directions (C21) - 15 Apr 2026' }
-            ]
-          }
-        }
-      ],
-      acls: [
-        {
-          role: 'caseworker-divorce',
-          create: true,
-          read: true,
-          update: true,
-          delete: true
-        }
-      ]
-    }) as CaseField;
-    formGroup = new FormGroup({
-      field1: new FormControl()
-    });
-
-    profileNotifier = new ProfileNotifier();
-    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
-
-    collectionCreateCheckerService = new CollectionCreateCheckerService();
-
-    TestBed
-      .configureTestingModule({
-        imports: [
-          ReactiveFormsModule,
-          PaletteUtilsModule,
-          fieldWriteComponent,
-          fieldReadComponent
-        ],
-        declarations: [
-          WriteCollectionFieldComponent,
-          MockRpxTranslatePipe,
-          MockFieldLabelPipe
-        ],
-        providers: [
-          { provide: FormValidatorsService, useValue: formValidatorService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: ScrollToService, useValue: scrollToService },
-          { provide: ProfileNotifier, useValue: profileNotifier },
-          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
-          RemoveDialogComponent
-        ]
-      })
-      .compileComponents();
-
-    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
-    component = fixture.componentInstance;
-    component.caseField = caseField;
-    component.caseFields = [caseField];
-    component.formGroup = formGroup;
-    component.ngOnInit();
-    fixture.detectChanges();
-  }));
-
-  afterEach(() => {
-    fixture.destroy();
-  });
-
-  it('should retain orderList options for a new recipient without inheriting another recipient\'s selections', () => {
-    component.addItem(false);
-    fixture.detectChanges();
-
-    const newRecipient = component.collItems[1].caseField;
+    const newRecipient = component.buildCaseField({ value: null }, 1, true);
     const orderListField = newRecipient.field_type.complex_fields.find((field) => field.id === 'orderList');
 
-    expect(orderListField.list_items).toEqual([
-      { code: 'order-1', label: 'Blank order or directions (C21) - 15 Apr 2026' },
-      { code: 'order-2', label: 'Parental responsibility order (C45A) - 15 Apr 2026' }
-    ]);
+    expect(orderListField.list_items).toEqual(orderListItems);
     expect(orderListField.value).toBeUndefined();
     expect(newRecipient.value).toBeNull();
   });

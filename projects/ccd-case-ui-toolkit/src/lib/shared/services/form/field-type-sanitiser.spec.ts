@@ -137,69 +137,50 @@ describe('FieldTypeSanitiser', () => {
     expect(editForm.data.dynamicList).toEqual(EXPECTED_VALUE_DYNAMIC_LIST);
   });
 
-  it('should preserve collection recipient DynamicMultiSelectList selections for each row during sanitisation', () => {
-    const orderListItems = [
-      { code: 'order-1', label: 'Blank order or directions (C21) - 15 Apr 2026' },
-      { code: 'order-2', label: 'Parental responsibility order (C45A) - 15 Apr 2026' }
-    ];
+  it('should use collection row DynamicMultiSelectList options without leaking selections to new rows', () => {
+    const defaultItems = [{ code: 'default-1', label: 'Default 1' }, { code: 'default-2', label: 'Default 2' }];
+    const recipientOneItems = [{ code: 'recipient-1-order-1', label: 'Recipient 1 order 1' }];
+    const recipientTwoItems = [{ code: 'recipient-2-order-1', label: 'Recipient 2 order 1' }];
     const collectionCaseFields = [{
       id: 'stmtOfServiceAddRecipient',
       value: [
-        {
-          id: 'recipient-1',
-          value: {
-            orderList: {
-              list_items: orderListItems,
-              value: [orderListItems[0]]
-            }
-          }
-        }
+        { id: 'recipient-1', value: { orderList: { list_items: recipientOneItems, value: [recipientOneItems[0]] } } },
+        { id: 'recipient-2', value: { orderList: { list_items: recipientTwoItems, value: [recipientTwoItems[0]] } } }
       ],
       field_type: {
-        id: 'StmtOfServiceAddRecipient',
         type: 'Collection',
         collection_field_type: {
-          id: 'StmtOfServiceAddRecipient',
           type: 'Complex',
-          complex_fields: [
-            {
-              id: 'orderList',
-              field_type: {
-                id: 'DynamicMultiSelectList',
-                type: 'DynamicMultiSelectList'
-              },
-              display_context: 'OPTIONAL'
-            }
-          ]
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            display_context: 'OPTIONAL',
+            list_items: defaultItems
+          }]
         }
       }
     }] as unknown as CaseField[];
     const formData = {
       stmtOfServiceAddRecipient: [
-        {
-          id: 'recipient-1',
-          value: {
-            orderList: [orderListItems[0]]
-          }
-        },
-        {
-          id: 'recipient-2',
-          value: {
-            orderList: [orderListItems[1]]
-          }
-        }
+        { id: 'recipient-1', value: { orderList: [recipientOneItems[0]] } },
+        { id: 'recipient-2', value: { orderList: [recipientTwoItems[0]] } },
+        { id: 'recipient-3', value: { orderList: [defaultItems[1]] } }
       ]
     };
 
     new FieldTypeSanitiser().sanitiseLists(collectionCaseFields, formData);
 
     expect(formData.stmtOfServiceAddRecipient[0].value.orderList as any).toEqual({
-      value: [orderListItems[0]],
-      list_items: orderListItems
+      value: [recipientOneItems[0]],
+      list_items: recipientOneItems
     });
     expect(formData.stmtOfServiceAddRecipient[1].value.orderList as any).toEqual({
-      value: [orderListItems[1]],
-      list_items: orderListItems
+      value: [recipientTwoItems[0]],
+      list_items: recipientTwoItems
+    });
+    expect(formData.stmtOfServiceAddRecipient[2].value.orderList as any).toEqual({
+      value: [defaultItems[1]],
+      list_items: defaultItems
     });
   });
 
@@ -392,50 +373,6 @@ describe('FieldTypeSanitiser', () => {
       mockCaseFields[2].field_type.complex_fields[0].field_type.complex_fields[0].field_type.type = 'FixedList';
       const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
       expect(result[2].field_type.complex_fields[0].field_type.complex_fields[0].list_items).toBeUndefined();
-    });
-
-    it('should populate list_items for DynamicMultiSelectList within collection complex fields', () => {
-      mockCaseFields.push({
-        id: 'stmtOfServiceAddRecipient',
-        value: [
-          {
-            id: 'recipient-1',
-            value: {
-              orderList: {
-                list_items: [
-                  { code: 'order-1', label: 'Order 1' },
-                  { code: 'order-2', label: 'Order 2' }
-                ]
-              }
-            }
-          }
-        ],
-        field_type: {
-          id: 'StmtOfServiceAddRecipient',
-          type: 'Collection',
-          collection_field_type: {
-            id: 'StmtOfServiceAddRecipient',
-            type: 'Complex',
-            complex_fields: [{
-              id: 'orderList',
-              field_type: {
-                id: 'DynamicMultiSelectList',
-                type: 'DynamicMultiSelectList'
-              },
-              display_context: 'OPTIONAL'
-            }]
-          }
-        }
-      } as unknown as CaseField);
-
-      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
-      const collectionField = result.find((field) => field.id === 'stmtOfServiceAddRecipient');
-      const complexField = collectionField.field_type.collection_field_type.complex_fields.find((field) => field.id === 'orderList');
-
-      expect(complexField.list_items).toEqual([
-        { code: 'order-1', label: 'Order 1' },
-        { code: 'order-2', label: 'Order 2' }
-      ]);
     });
   });
 });

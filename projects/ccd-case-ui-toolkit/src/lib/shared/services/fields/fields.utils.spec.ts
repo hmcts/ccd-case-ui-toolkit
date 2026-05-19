@@ -559,10 +559,6 @@ describe('FieldsUtils', () => {
                     type: 'DynamicList'
                   },
                   id: 'complex_dl',
-                  list_items: [
-                    {code: '1', value: '1'},
-                    {code: '2', value: '2'}
-                  ],
                   value: {
                     list_items: [
                       {code: '1', value: '1'},
@@ -605,42 +601,29 @@ describe('FieldsUtils', () => {
           type: 'Collection',
           collection_field_type: {
             type: 'Complex',
-            complex_fields: [
-              {
-                field_type: {
-                  type: 'DynamicMultiSelectList'
-                },
-                id: 'orderList',
-                formatted_value: {}
-              }
-            ]
+            complex_fields: [{
+              id: 'orderList',
+              field_type: { type: 'DynamicMultiSelectList' },
+              formatted_value: {}
+            }]
           }
         },
-        value: [
-          {
-            id: 'recipient-1',
-            value: {
-              orderList: {
-                list_items: listItems,
-                value: [
-                  {code: '2', value: '2'}
-                ]
-              }
+        value: [{
+          value: {
+            orderList: {
+              list_items: listItems,
+              value: [{code: '2', value: '2'}]
             }
           }
-        ]
+        }]
       };
 
       (FieldsUtils as any).setDynamicListDefinition(callbackResponse, callbackResponse.field_type, callbackResponse);
 
-      expect(callbackResponse.field_type.collection_field_type.complex_fields[0]).toEqual(jasmine.objectContaining({
-        id: 'orderList',
-        list_items: listItems,
-        formatted_value: {
-          list_items: listItems
-        }
-      }));
-      expect((callbackResponse.field_type.collection_field_type.complex_fields[0] as any).value).toBeUndefined();
+      const orderListField = callbackResponse.field_type.collection_field_type.complex_fields[0] as any;
+      expect(orderListField.list_items).toEqual(listItems);
+      expect(orderListField.formatted_value).toEqual({ list_items: listItems });
+      expect(orderListField.value).toBeUndefined();
     });
   });
 
