@@ -153,15 +153,22 @@ describe('LabelSubstitutorDirective', () => {
       const transLabel = 'Welsh text with a REPLACEMENT in it';
       const hintText = '';
       const value = '';
+      const translationService = TestBed.inject(RpxTranslationService) as any;
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
+      translationService.setLanguage('cy');
 
       placeholderService.resolvePlaceholders.and.returnValues(
         'REPLACEMENT',
         transLabel,
         hintText,
         value);
-      mockTranslationPipe.transform.and.returnValue('Welsh text with a ${placeholder} in it');
+      mockTranslationPipe.transform.and.callFake((text: string) => {
+        if (text === label) {
+          return 'Welsh text with a ${placeholder} in it';
+        }
+        return text;
+      });
       fixture.detectChanges();
       expect(mockTranslationPipe.transform).toHaveBeenCalledWith(label);
       expect(labelEl.innerText).toBe(transLabel);
@@ -784,6 +791,7 @@ describe('LabelSubstitutorDirective', () => {
 
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+      translationService.setLanguage('cy');
 
       placeholderService.resolvePlaceholders.and.returnValues(
         'English text with ValueA placeholder',
@@ -791,7 +799,12 @@ describe('LabelSubstitutorDirective', () => {
         '',
         ''
       );
-      mockTranslationPipe.transform.and.returnValue(translatedTemplate);
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value === label) {
+          return translatedTemplate;
+        }
+        return value;
+      });
 
       fixture.detectChanges();
 
@@ -863,6 +876,286 @@ describe('LabelSubstitutorDirective', () => {
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalled();
     }));
 
+    it('should preserve original label template across language switches', fakeAsync(() => {
+      const englishTemplate = 'English text with ${LabelA} placeholder';
+      const englishResolved = 'English text with ValueA placeholder';
+      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
+      const welshResolved = 'Welsh text with ValueA placeholder';
+
+      comp.caseField = textField('LabelB', '', englishTemplate);
+      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
+        if (stringToResolve === englishTemplate) {
+          return englishResolved;
+        }
+        if (stringToResolve === welshTemplate) {
+          return welshResolved;
+        }
+        return stringToResolve;
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value !== englishTemplate) {
+          return value;
+        }
+        return translationService.language === 'cy' ? welshTemplate : englishTemplate;
+      });
+
+      fixture.detectChanges();
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(comp.caseField.label).toBe(englishResolved);
+
+      translationService.setLanguage('cy');
+      tick(100);
+      fixture.detectChanges();
+
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(comp.caseField.label).toBe(welshResolved);
+
+      translationService.setLanguage('en');
+      tick(100);
+      fixture.detectChanges();
+
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(comp.caseField.label).toBe(englishResolved);
+    }));
+
+    it('should restore originalLabel during language changes when it has been cleared after initialisation', fakeAsync(() => {
+      const englishTemplate = 'English text with ${LabelA} placeholder';
+      const englishResolved = 'English text with ValueA placeholder';
+      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
+      const welshResolved = 'Welsh text with ValueA placeholder';
+
+      comp.caseField = textField('LabelB', '', englishTemplate);
+      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
+        if (stringToResolve === englishTemplate) {
+          return englishResolved;
+        }
+        if (stringToResolve === welshTemplate) {
+          return welshResolved;
+        }
+        return stringToResolve;
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value !== englishTemplate) {
+          return value;
+        }
+        return translationService.language === 'cy' ? welshTemplate : englishTemplate;
+      });
+
+      fixture.detectChanges();
+
+      comp.caseField.label = englishTemplate;
+      comp.caseField.originalLabel = undefined;
+
+      translationService.setLanguage('cy');
+      tick(100);
+      fixture.detectChanges();
+
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(comp.caseField.label).toBe(welshResolved);
+      expect(comp.caseField.isTranslated).toBe(true);
+    }));
+
+    it('should prefer translating the resolved english label for label fields when that translation exists', fakeAsync(() => {
+      const englishTemplate = '**Enter the details of ${ApplicantLabel} solicitor**.';
+      const englishResolved = '**Enter the details of the applicant’s solicitor**.';
+      const brokenWelshTemplate = '**Rhowch fanylion cyfreithiwr y ${ApplicantLabel}';
+      const welshResolved = '**Nodwch fanylion cyfreithiwr yr ymgeisydd**.';
+      const helperField = textField('ApplicantLabel', null, 'The applicant\'s or applicant 1’s');
+      const recreatedFormGroup = new FormGroup({
+        ApplicantLabel: new FormControl('the applicant’s')
+      });
+
+      comp.caseField = field('SolicitorLabel', '', {
+        id: 'SolicitorLabel',
+        type: 'Label'
+      }, englishTemplate);
+      comp.caseFields = [comp.caseField, helperField];
+      comp.formGroup = recreatedFormGroup;
+
+      placeholderService.resolvePlaceholders.and.callFake((fields: any, stringToResolve: string) => {
+        if (stringToResolve === englishTemplate) {
+          return `**Enter the details of ${fields.ApplicantLabel} solicitor**.`;
+        }
+        if (stringToResolve === brokenWelshTemplate) {
+          return `**Rhowch fanylion cyfreithiwr y ${fields.ApplicantLabel}`;
+        }
+        return stringToResolve || '';
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value === englishTemplate && translationService.language === 'cy') {
+          return brokenWelshTemplate;
+        }
+        if (value === englishResolved && translationService.language === 'cy') {
+          return welshResolved;
+        }
+        return value;
+      });
+
+      fixture.detectChanges();
+      fixture.destroy();
+
+      comp.caseField.label = englishResolved;
+      comp.caseField.originalLabel = englishTemplate;
+      translationService.setLanguage('cy');
+
+      const recreatedFixture = TestBed.createComponent(TestHostComponent);
+      const recreatedComp = recreatedFixture.componentInstance;
+      recreatedComp.caseField = comp.caseField;
+      recreatedComp.caseFields = comp.caseFields;
+      recreatedComp.formGroup = recreatedFormGroup;
+      recreatedFixture.detectChanges();
+
+      expect(recreatedComp.caseField.label).toBe(englishResolved);
+      expect(recreatedComp.caseField.originalLabel).toBe(englishTemplate);
+      expect(recreatedComp.caseField.isTranslated).toBe(false);
+    }));
+
+    it('should keep an existing english label when the original template can no longer be resolved', () => {
+      const originalTemplate = '${tseAdmReplyTableMarkUp}';
+      const resolvedTable = '|Application|Change personal details|';
+
+      comp.caseField = field('tseAdmReplyTableLabel', '', {
+        id: 'tseAdmReplyTableLabel',
+        type: 'Label'
+      }, resolvedTable);
+      comp.caseField.originalLabel = originalTemplate;
+      comp.caseFields = [
+        comp.caseField,
+        textField('tseAdmReplyTableMarkUp', null, '')
+      ];
+
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
+        if (stringToResolve === resolvedTable) {
+          return resolvedTable;
+        }
+        if (stringToResolve === originalTemplate) {
+          return '';
+        }
+        return stringToResolve || '';
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => value);
+
+      fixture.detectChanges();
+
+      expect(comp.caseField.label).toBe(resolvedTable);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
+        jasmine.any(Object),
+        resolvedTable
+      );
+    });
+
+    it('should fall back to template translation when the resolved english label has no welsh translation', fakeAsync(() => {
+      const englishTemplate = 'Has the applicant’s ${MarriageLabel} broken down irretrievably?';
+      const englishResolved = 'Has the applicant’s marriage broken down irretrievably?';
+      const welshTemplate = 'A yw ${MarriageLabel} y ceisydd wedi chwalu’n gyfan gwbl?';
+      const welshResolved = 'A yw priodas y ceisydd wedi chwalu’n gyfan gwbl?';
+      const helperField = textField('MarriageLabel', 'marriage', 'Marriage or civil partnership');
+      const recreatedFormGroup = new FormGroup({
+        MarriageLabel: new FormControl('marriage')
+      });
+
+      comp.caseField = field('MarriageBreakdown', '', {
+        id: 'YesOrNo',
+        type: 'YesOrNo'
+      }, englishTemplate);
+      comp.caseFields = [comp.caseField, helperField];
+      comp.formGroup = recreatedFormGroup;
+
+      placeholderService.resolvePlaceholders.and.callFake((fields: any, stringToResolve: string) => {
+        if (stringToResolve === englishTemplate) {
+          return `Has the applicant’s ${fields.MarriageLabel} broken down irretrievably?`;
+        }
+        if (stringToResolve === welshTemplate) {
+          return welshResolved;
+        }
+        return stringToResolve || '';
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value === englishTemplate && translationService.language === 'cy') {
+          return welshTemplate;
+        }
+        if (value === englishResolved && translationService.language === 'cy') {
+          return englishResolved;
+        }
+        return value;
+      });
+
+      fixture.detectChanges();
+      fixture.destroy();
+
+      comp.caseField.label = englishResolved;
+      comp.caseField.originalLabel = englishTemplate;
+      translationService.setLanguage('cy');
+
+      const recreatedFixture = TestBed.createComponent(TestHostComponent);
+      const recreatedComp = recreatedFixture.componentInstance;
+      recreatedComp.caseField = comp.caseField;
+      recreatedComp.caseFields = comp.caseFields;
+      recreatedComp.formGroup = recreatedFormGroup;
+      recreatedFixture.detectChanges();
+
+      expect(recreatedComp.caseField.label).toBe(welshResolved);
+      expect(recreatedComp.caseField.originalLabel).toBe(englishTemplate);
+      expect(recreatedComp.caseField.isTranslated).toBe(true);
+    }));
+
+    it('should switch back to english label from welsh when language changes to en', fakeAsync(() => {
+      const englishTemplate = 'English text with ${LabelA} placeholder';
+      const englishResolved = 'English text with ValueA placeholder';
+      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
+      const welshResolved = 'Welsh text with ValueA placeholder';
+      let returnStaleWelshForEnglish = false;
+
+      comp.caseField = textField('LabelB', '', englishTemplate);
+      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
+        if (stringToResolve === englishTemplate) {
+          return englishResolved;
+        }
+        if (stringToResolve === welshTemplate) {
+          return welshResolved;
+        }
+        if (stringToResolve === '') {
+          return '';
+        }
+        return stringToResolve;
+      });
+      mockTranslationPipe.transform.and.callFake((value: string) => {
+        if (value === englishTemplate && translationService.language === 'cy') {
+          return welshTemplate;
+        }
+        if (value === englishTemplate && translationService.language === 'en' && returnStaleWelshForEnglish) {
+          returnStaleWelshForEnglish = false;
+          return welshTemplate;
+        }
+        return value;
+      });
+
+      fixture.detectChanges();
+      expect(comp.caseField.label).toBe(englishResolved);
+      mockTranslationPipe.transform.calls.reset();
+
+      translationService.setLanguage('cy');
+      tick(100);
+      fixture.detectChanges();
+      expect(comp.caseField.label).toBe(welshResolved);
+      expect(mockTranslationPipe.transform.calls.count()).toBe(2);
+
+      returnStaleWelshForEnglish = true;
+      mockTranslationPipe.transform.calls.reset();
+      translationService.setLanguage('en');
+      tick(100);
+      fixture.detectChanges();
+      expect(comp.caseField.label).toBe(englishResolved);
+      expect(mockTranslationPipe.transform.calls.count()).toBe(0);
+    }));
+
     it('should clean up language subscription on destroy', () => {
       const label = 'Test label';
       comp.caseField = textField('LabelB', '', label);
@@ -895,9 +1188,289 @@ describe('LabelSubstitutorDirective', () => {
 
       fixture.destroy();
 
-      expect(comp.caseField.label).toBe('Modified label');
+      expect(comp.caseField.label).toBe('Initial label');
       expect(comp.caseField.hint_text).toBe(initialHint);
       expect(comp.caseField.isTranslated).toBe(false);
+    });
+  });
+
+  describe('noCacheProcessing functionality', () => {
+    it('should NOT extract [NOCACHE] tag when outside placeholder pattern', () => {
+      const label = '[NOCACHE]This is a label that should not be cached';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]This is a label that should not be cached', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]This is a label that should not be cached');
+    });
+
+    it('should NOT remove [NOCACHE] tag when outside placeholder pattern', () => {
+      const label = 'Some text [NOCACHE]more text';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Some text [NOCACHE]more text', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('Some text [NOCACHE]more text');
+    });
+
+    it('should handle label without [NOCACHE] tag', () => {
+      const label = 'Normal label without nocache';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(label, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe(label);
+    });
+
+    it('should restore label from noCacheLabel when noCacheLabel is already set', () => {
+      const originalLabel = 'Original label';
+      const noCacheLabel = 'Cached label value';
+      comp.caseField = textField('TestField', '', originalLabel);
+      comp.caseField.noCacheLabel = noCacheLabel;
+      comp.caseFields = [comp.caseField];
+      comp.formGroup = new FormGroup({});
+
+      placeholderService.resolvePlaceholders.and.returnValues(noCacheLabel, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.label).toBe(noCacheLabel);
+    });
+
+    it('should handle null label gracefully', () => {
+      const label = null;
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(null, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBeNull();
+    });
+
+    it('should handle undefined label gracefully', () => {
+      comp.caseField = textField('TestField', '', undefined);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues(undefined, '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+    });
+
+    it('should handle empty string label', () => {
+      const label = '';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('');
+    });
+
+    it('should NOT process label with only [NOCACHE] tag when outside placeholder', () => {
+      const label = '[NOCACHE]';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]');
+    });
+
+    it('should NOT process multiple [NOCACHE] tags when outside placeholder pattern', () => {
+      const label = '[NOCACHE]Text with [NOCACHE] multiple tags';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Text with [NOCACHE] multiple tags', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Text with [NOCACHE] multiple tags');
+    });
+
+    it('should NOT process [NOCACHE] when outside placeholder pattern even with ${} present', () => {
+      const label = '[NOCACHE]Value is ${fieldValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
+
+      // First call is for label substitution, second is for translation check, third and fourth are hint_text and value
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Value is 123', '[NOCACHE]Value is 123', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Value is 123');
+    });
+
+    it('should NOT create noCacheLabel when [NOCACHE] is outside placeholder', () => {
+      const label = '[NOCACHE]Persistent label';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Persistent label', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] should not be processed when outside ${...}
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('[NOCACHE]Persistent label');
+
+      // Simulate some changes
+      comp.caseField.label = 'Changed label';
+      fixture.detectChanges();
+
+      // noCacheLabel should still be undefined
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+    });
+
+    // New tests for [NOCACHE] inside ${...} patterns
+    it('should extract [NOCACHE] tag when inside placeholder with field name', () => {
+      const label = 'Value is ${[NOCACHE]fieldValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value is 123', 'Value is 123', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Value is ${fieldValue}');
+      expect(comp.caseField.label).toBe('Value is 123');
+    });
+
+    it('should process [NOCACHE] at start of placeholder with additional text', () => {
+      const label = 'Result: ${[NOCACHE]calculatedValue}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('calculatedValue', '42', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Result: 42', 'Result: 42', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Result: ${calculatedValue}');
+      expect(comp.caseField.label).toBe('Result: 42');
+    });
+
+    it('should process [NOCACHE] in middle of placeholder content', () => {
+      const label = 'Data: ${prefix[NOCACHE]fieldName}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('prefixfieldName', 'value123', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Data: value123', 'Data: value123', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Data: ${prefixfieldName}');
+      expect(comp.caseField.label).toBe('Data: value123');
+    });
+
+    it('should process [NOCACHE] at end of placeholder content', () => {
+      const label = 'Info: ${fieldName[NOCACHE]}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('fieldName', 'info', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Info: info', 'Info: info', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Info: ${fieldName}');
+      expect(comp.caseField.label).toBe('Info: info');
+    });
+
+    it('should process multiple placeholders with [NOCACHE] in each', () => {
+      const label = '${[NOCACHE]field1} and ${[NOCACHE]field2}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('field1', 'value1', ''),
+        textField('field2', 'value2', '')
+      ];
+
+      placeholderService.resolvePlaceholders.and.returnValues('value1 and value2', 'value1 and value2', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('${field1} and ${field2}');
+      expect(comp.caseField.label).toBe('value1 and value2');
+    });
+
+    it('should NOT process [NOCACHE] in placeholder with only [NOCACHE] tag', () => {
+      const label = 'Value: ${[NOCACHE]}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value: ${[NOCACHE]}', '', '');
+      fixture.detectChanges();
+
+      // [NOCACHE] with no other text should not be processed (no field name)
+      expect(comp.caseField.noCacheLabel).toBeUndefined();
+      expect(comp.caseField.label).toBe('Value: ${[NOCACHE]}');
+    });
+
+    it('should process [NOCACHE] with complex placeholder expression', () => {
+      const label = 'Amount: ${[NOCACHE]formattedCalculatedDailyRentChargeAmount}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('formattedCalculatedDailyRentChargeAmount', '£9.86', '')
+      ];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Amount: £9.86', 'Amount: £9.86', '', '');
+      fixture.detectChanges();
+
+      expect(comp.caseField.noCacheLabel).toBe('Amount: ${formattedCalculatedDailyRentChargeAmount}');
+      expect(comp.caseField.label).toBe('Amount: £9.86');
+    });
+
+    it('should preserve noCacheLabel across directive lifecycle when set from placeholder', () => {
+      const label = 'Value: ${[NOCACHE]dynamicField}';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [comp.caseField, textField('dynamicField', 'initial', '')];
+
+      placeholderService.resolvePlaceholders.and.returnValues('Value: initial', 'Value: initial', '', '');
+      fixture.detectChanges();
+
+      const noCacheLabelValue = comp.caseField.noCacheLabel;
+      expect(noCacheLabelValue).toBe('Value: ${dynamicField}');
+      expect(comp.caseField.label).toBe('Value: initial');
+
+      // Verify noCacheLabel is preserved even after substitution
+      expect(comp.caseField.noCacheLabel).toBe(noCacheLabelValue);
+    });
+
+    it('should handle mixed scenario - [NOCACHE] inside and outside placeholders', () => {
+      const label = '[NOCACHE] prefix ${[NOCACHE]field1} middle ${field2} suffix';
+      comp.caseField = textField('TestField', '', label);
+      comp.caseFields = [
+        comp.caseField,
+        textField('field1', 'A', ''),
+        textField('field2', 'B', '')
+      ];
+
+      // First call for label, second for translation check, third and fourth for hint_text and value
+      placeholderService.resolvePlaceholders.and.returnValues(
+        '[NOCACHE] prefix A middle B suffix',
+        '[NOCACHE] prefix A middle B suffix',
+        '',
+        ''
+      );
+      fixture.detectChanges();
+
+      // Only the [NOCACHE] inside ${...} should be processed
+      expect(comp.caseField.noCacheLabel).toBe('[NOCACHE] prefix ${field1} middle ${field2} suffix');
+      expect(comp.caseField.label).toBe('[NOCACHE] prefix A middle B suffix');
     });
   });
 });

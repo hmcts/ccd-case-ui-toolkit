@@ -3,5 +3,6 @@ export enum QueryCreateContext {
   NEW_QUERY_QUALIFYING_QUESTION_DETAIL = 'NewQueryQualifyingQuestionDetail',
   NEW_QUERY = 'NewQuery',
   RESPOND = 'Respond',
-  FOLLOWUP = 'Followup'
+  FOLLOWUP = 'Followup',
+  HMCTSSTAFF = 'HMCTS'
 }

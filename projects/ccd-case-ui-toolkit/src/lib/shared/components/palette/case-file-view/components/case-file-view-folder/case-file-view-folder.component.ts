@@ -5,7 +5,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -16,6 +15,7 @@ import {
 } from '../../../../../domain/case-file-view';
 import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
+import { FieldsUtils } from '../../../../../services/fields/fields.utils';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
@@ -63,8 +63,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly dialog: MatDialog,
-    private readonly appConfig: AbstractAppConfig
+    private readonly dialog: MatDialog
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -138,6 +137,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      if (document.content_type) {
+        documentTreeNode.content_type = document.content_type;
+      }
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
@@ -155,6 +157,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      if (document.content_type) {
+        documentTreeNode.content_type = document.content_type;
+      }
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = document.upload_timestamp ? document.upload_timestamp.toString() : '';
 
@@ -200,15 +205,38 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         this.openMoveDialog(documentTreeNode);
         break;
       case ('openInANewTab'):
-        this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
-          this.documentManagementService.getMediaViewerInfo({
-            document_binary_url: documentTreeNode.document_binary_url,
-            document_filename: documentTreeNode.document_filename
-          }));
+        const documentDetails = {
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename,
+          content_type: documentTreeNode.content_type
+        };
+        const isHtmlDocument = this.documentManagementService.isHtmlDocument(documentDetails);
+        if (isHtmlDocument) {
+          const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
+          if (documentBinaryUrl) {
+            this.windowService.openOnNewTab(documentBinaryUrl);
+            return;
+          }
+        }
 
-        this.windowService.openOnNewTab(
-          this.router.createUrlTree(['/media-viewer'])?.toString()
-        );
+        const token = FieldsUtils.createToken();
+        const storageKey = `${MEDIA_VIEWER_LOCALSTORAGE_KEY}:${token}`;
+
+        const payload = this.documentManagementService.getMediaViewerInfo({
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename,
+          content_type: documentTreeNode.content_type
+        });
+        this.windowService.setLocalStorage(storageKey, payload);
+
+        const mediaViewerUrl = this.router.createUrlTree(
+          ['/media-viewer'],
+          { queryParams: { mvToken: token } }
+        )?.toString();
+
+        if (mediaViewerUrl) {
+          this.windowService.openOnNewTab(mediaViewerUrl);
+        }
         break;
       case ('download'):
         // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).

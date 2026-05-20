@@ -10,6 +10,7 @@ import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
+import { safeJsonParse } from '../../json-utils';
 
 // @dynamic
 @Injectable()
@@ -31,6 +32,18 @@ export class FieldsUtils {
     return (ctx === 'MANDATORY' || ctx === 'READONLY'
       || ctx === 'OPTIONAL' || ctx === 'HIDDEN'
       || ctx === 'COMPLEX');
+  }
+
+  public static createToken(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+    return `${Date.now()}`;
   }
 
   public static isTranslatable(fieldType: FieldType): boolean {
@@ -645,11 +658,8 @@ export class FieldsUtils {
   }
 
   public static getUserTaskFromClientContext(clientContextStr: string): UserTask {
-    if (clientContextStr) {
-      let clientContext = JSON.parse(clientContextStr);
-      return clientContext.client_context.user_task;
-    }
-    return null;
+    const clientContext = safeJsonParse<any>(clientContextStr, null);
+    return clientContext?.client_context?.user_task || null;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
