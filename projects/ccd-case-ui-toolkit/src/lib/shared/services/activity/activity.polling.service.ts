@@ -113,7 +113,6 @@ export class ActivityPollingService {
         // process activity inside zone so it triggers change detection for activity.component.ts
         next: (activities: Activity[]) => this.ngZone.run(() => {
           activities.forEach((activity) => {
-            // console.log('pushing activity: ' + activity.caseId);
             // Ignore activities returned for cases outside this local batch.
             requests.get(activity.caseId)?.next(activity);
           });
