@@ -69,7 +69,6 @@ describe('CaseFileViewFieldComponent', () => {
     mockWindowService = createSpyObj<WindowService>('WindowService', ['openOnNewTab']);
     mockabstractConfig = createSpyObj<AbstractAppConfig>('LoadingService', ['getIcpJurisdictions', 'getIcpEnable']);
     mockabstractConfig.getIcpJurisdictions.and.returnValue('["ST_CIC", "IA"]');
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
 
@@ -95,7 +94,7 @@ describe('CaseFileViewFieldComponent', () => {
         { provide: WindowService, useValue: mockWindowService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseNotifier, useValue: ['ST-CIC'] },
-        { provide: AbstractAppConfig, useValue: mockabstractConfig },
+        { provide: AbstractAppConfig, useValue: mockabstractConfig }
 
       ]
     })
@@ -124,6 +123,14 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewHeadingElement).toBeTruthy();
     const caseFileViewElement = nativeElement.querySelector('#case-file-view');
     expect(caseFileViewElement).toBeTruthy();
+  });
+
+  it('should default to no permissions when userDetails is invalid', () => {
+    mockSessionStorageService.getItem.and.returnValue('{invalid-json');
+
+    fixture.detectChanges();
+
+    expect(component.allowMoving).toBe(false);
   });
 
   xit('should display an error message if the service is unavilable to get categories and documents', () => {
@@ -265,14 +272,7 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.errorMessages).toEqual(errorMessagesFromElements);
   });
 
-  it('should disable icp when config contains false', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(false);
-    fixture.detectChanges();
-    expect(component.icpEnabled).toBeFalsy();
-  });
-
   it('should enable icp when config contains true', () => {
-    mockabstractConfig.getIcpEnable.and.returnValue(true);
     fixture.detectChanges();
     expect(component.icpEnabled).toBeTruthy();
   });

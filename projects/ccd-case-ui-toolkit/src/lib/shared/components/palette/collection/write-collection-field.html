@@ -17,7 +17,7 @@
 
     <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
       <fieldset class="govuk-fieldset">
-        <div *ngFor="let item of collItems; let i = index" #collectionItem
+        <div *ngFor="let item of collItems; let i = index; trackBy: trackByCollectionItem" #collectionItem
             [id]="this.buildIdPrefix(i) + i" class="form-group">
           <div class="collection-title">
             <div class="float-left">
