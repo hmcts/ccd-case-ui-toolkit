@@ -53,7 +53,6 @@ export class ActivityPollingService {
         this.ngZone.runOutsideAngular(() => {
           this.currentTimeoutHandle = setTimeout(
             () => this.ngZone.run(() => {
-              // console.log('timeout: flushing requests')
               this.flushRequests();
             }),
             this.batchCollectionDelayMs);
