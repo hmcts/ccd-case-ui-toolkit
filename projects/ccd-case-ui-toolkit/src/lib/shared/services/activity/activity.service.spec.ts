@@ -121,6 +121,7 @@ describe('ActivityService', () => {
   });
 
   it('should verify user authorization once', () => {
+    activityService.mode = MODES.polling;
     activityService.verifyUserIsAuthorized();
     activityService.verifyUserIsAuthorized();
 
@@ -131,6 +132,7 @@ describe('ActivityService', () => {
   it('should return enabled when activity url is not emty', () => {
     appConfig.getActivityUrl.and.returnValue('www');
     activityService['userAuthorised'] = true;
+    activityService.mode = MODES.polling;
 
     expect(activityService.isEnabled).toBeTruthy();
   });
@@ -141,8 +143,10 @@ describe('ActivityService', () => {
     };
     httpService.get.and.returnValue(throwError(error));
 
+    activityService.mode = MODES.polling;
     activityService.verifyUserIsAuthorized();
 
     expect(activityService.isEnabled).toBeTruthy();
   });
 
+});
