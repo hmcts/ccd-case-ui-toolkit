@@ -16,7 +16,7 @@ import {
 } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { EventTriggerResolver } from '../services';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter, take } from 'rxjs/operators';
 import { MODES } from '../../../services/activity/utils';
 import { isSolicitorUser } from '../../../utils';
 
@@ -34,6 +34,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   public activitySubscription: Subscription;
   public caseSubscription: Subscription;
+  public modeSubscription: Subscription;
+  public socketConnectSub: Subscription;
   public parentUrl: string;
   public routerCurrentNavigation: Navigation;
 
@@ -67,17 +69,16 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    this.activityService.modeSubject
+    this.modeSubscription = this.activityService.modeSubject
         .pipe(filter(mode => !!mode))
         .pipe(distinctUntilChanged())
         .subscribe(mode => {
+          this.unsubscribe(this.socketConnectSub);
+          this.socketConnectSub = undefined;
           if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
-              this.activitySocketService.connected
-                .subscribe(connected => {
-                if (connected) {
-                  this.activitySocketService.editCase(this.caseDetails.case_id, true);
-                }
-              });
+              this.socketConnectSub = this.activitySocketService.connected
+                .pipe(filter(connected => connected), take(1))
+                .subscribe(() => this.activitySocketService.editCase(this.caseDetails.case_id, true));
           } else if (mode === MODES.polling) {
               this.ngZone.runOutsideAngular(() => {
                   this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
@@ -96,7 +97,15 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
+    this.unsubscribe(this.modeSubscription);
+    this.unsubscribe(this.socketConnectSub);
     this.eventTriggerResolver.resetCachedEventTrigger();
+  }
+
+  public unsubscribe(subscription: Subscription): void {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 
   public postEditActivity(): Observable<Activity[]> {

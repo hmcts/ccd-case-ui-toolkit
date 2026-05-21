@@ -636,9 +636,13 @@ describe('CaseFullAccessViewComponent', () => {
 
     activitySocketService = {
           editCalls: [],
+          viewCalls: [],
           connected: new BehaviorSubject<boolean>(false),
           editCase: (caseId: string) => {
             activitySocketService.editCalls.push(caseId);
+          },
+          viewCase: (caseId: string) => {
+            activitySocketService.viewCalls.push(caseId);
           }
     };
 
@@ -812,6 +816,17 @@ it('should set case view tab based on navigation end event', () => {
     component.ngOnInit();
     expect(linkedCasesService.resetLinkedCaseData).toHaveBeenCalled();
     expect(caseFlagStateService.resetInitialCaseFlags).toHaveBeenCalled();
+  });
+
+  it('should emit view only once when socket reconnects while staying on the page', () => {
+    activitySocketService.viewCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
+    activitySocketService.connected.next(false);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.viewCalls).toEqual([CID]);
   });
 
   it('should unsubscribe from all subscriptions on destroy', () => {

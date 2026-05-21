@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
@@ -17,7 +17,7 @@ import { isSolicitorUser } from '../../utils';
   styleUrls: ['./search-result.component.scss'],
   standalone: false
 })
-export class SearchResultComponent implements OnChanges, OnInit {
+export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -101,6 +101,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
 
   public selectedCases: SearchResultViewItem[] = [];
+  private lastWatchedCaseIds: string[] = [];
   private lastWatchedCaseIdsKey: string | null = null;
   private readonly alphabeticalCompare = (left: string, right: string): number => left.localeCompare(right);
 
@@ -129,6 +130,12 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
     this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.activitySocketService.isEnabled && this.lastWatchedCaseIdsKey !== null) {
+      this.activitySocketService.stopAllCase(this.lastWatchedCaseIds, true);
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -376,7 +383,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public get activityEnabled(): boolean {
-    console.log('activity service enabled: ' + this.activityService.isEnabled);
     return this.activityService.isEnabled;
   }
 
@@ -467,6 +473,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       }
 
       this.lastWatchedCaseIdsKey = watchKey;
+      this.lastWatchedCaseIds = caseIds.slice(0);
       this.activitySocketService.watchCases(caseIds);
     }
   }

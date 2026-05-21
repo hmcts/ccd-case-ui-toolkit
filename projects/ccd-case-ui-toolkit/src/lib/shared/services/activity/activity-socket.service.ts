@@ -17,9 +17,9 @@ export class ActivitySocketService {
   public static readonly SOCKET_MODES: MODES[] = [ MODES.socket, MODES.socketLongPoll ];
 
   public activity: Observable<CaseActivityInfo[]>;
-  public connect: Observable<any>;
-  public connect_error: Observable<any>;
-  public disconnect: Observable<any>;
+  public connect: Observable<any> = new Observable();
+  public connect_error: Observable<any> = new Observable();
+  public disconnect: Observable<any> = new Observable();
   public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private readonly activitySubject = new ReplaySubject<CaseActivityInfo[]>(1);
@@ -28,8 +28,8 @@ export class ActivitySocketService {
   private readonly emitCooldownMs = 250; // ignore duplicate emits within 250ms
   private socketActivitySubscription?: Subscription;
 
-  public socket: Socket;
-  private pUser: UserInfo;
+  public socket!: Socket;
+  private pUser!: UserInfo;
   public get user(): UserInfo {
     return this.pUser || this.setupUser();
   }
@@ -72,6 +72,10 @@ export class ActivitySocketService {
     if (isStopping) { this.stopViewing(caseId); }
   }
 
+  public stopAllCase(caseIds: string[], isStopping?: boolean): void {
+    if (isStopping) { this.stopViewingCases(caseIds); }
+  }
+
   /**
    * Start viewing a case (explicit).
    * Only emits when socket exists and is connected.
@@ -106,6 +110,23 @@ export class ActivitySocketService {
       }
     } catch (e) {
       console.warn('stopViewing emit failed', e);
+    }
+  }
+
+  /**
+   * Stop viewing multiple cases (explicit).
+   * Safe no-op if socket not connected.
+   */
+  public stopViewingCases(caseIds: string[]): void {
+    if (!caseIds || !caseIds.length) { return; }
+    if (!this.socket || !this.connected.value) { return; }
+    try {
+      this.socket.emit('stopAll', { caseIds });
+      if (caseIds.includes(this.lastViewEmit.caseId)) {
+        this.lastViewEmit = { caseId: '', time: 0 };
+      }
+    } catch (e) {
+      console.warn('stopViewingCases emit failed', e);
     }
   }
 
@@ -155,7 +176,7 @@ export class ActivitySocketService {
     this.socketActivitySubscription = undefined;
     if (this.socket) {
       this.socket.close();
-      this.socket = undefined;
+      this.socket = undefined as any;
     }
   }
 

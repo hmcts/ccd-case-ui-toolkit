@@ -139,23 +139,22 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
     });
 
-    this.activityService.modeSubject
+    this.subs.push(this.activityService.modeSubject
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
+        this.unsubscribe(this.socketConnectSub);
+        this.socketConnectSub = undefined;
         if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
-          this.activitySocketService.connected
-            .subscribe(connected => {
-              if (connected) {
-                this.activitySocketService.viewCase(this.caseDetails.case_id, true);
-              }
-            });
+          this.socketConnectSub = this.activitySocketService.connected
+            .pipe(filter(connected => connected), take(1))
+            .subscribe(() => this.activitySocketService.viewCase(this.caseDetails.case_id, true));
         } else if (mode === MODES.polling) {
           this.ngZone.runOutsideAngular(() => {
             this.activitySubscription = this.postViewActivity().subscribe((_resolved) => { });
           });
         }
-      });
+      }));
 
     this.checkRouteAndSetCaseViewTab();
 

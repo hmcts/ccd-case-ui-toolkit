@@ -195,7 +195,8 @@ describe('SearchResultComponent', () => {
       activitySocketService = {
         watching: [],
         isEnabled: true,
-        watchCases: jasmine.createSpy('watchCases')
+        watchCases: jasmine.createSpy('watchCases'),
+        stopAllCase: jasmine.createSpy('stopAllCase')
       };
 
       TestBed
@@ -826,6 +827,14 @@ describe('SearchResultComponent', () => {
       );
     });
 
+    it('should stop watching the last watched cases when destroyed', () => {
+      const caseIds = RESULT_VIEW.results.map(result => result.case_id);
+
+      component.ngOnDestroy();
+
+      expect(activitySocketService.stopAllCase).toHaveBeenCalledWith(caseIds, true);
+    });
+
     it('should call clickCase emit when goToCase is triggered', () => {
       spyOn(component.clickCase, 'emit');
       component.goToCase('DRAFT190');
@@ -906,7 +915,8 @@ describe('SearchResultComponent', () => {
         activitySocketService = {
           watching: [],
           isEnabled: true,
-          watchCases: jasmine.createSpy('watchCases')
+          watchCases: jasmine.createSpy('watchCases'),
+          stopAllCase: jasmine.createSpy('stopAllCase')
         };
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);

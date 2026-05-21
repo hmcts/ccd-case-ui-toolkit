@@ -410,6 +410,17 @@ describe('CaseEventTriggerComponent', () => {
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   })
 
+  it('should emit edit only once when socket reconnects while staying on the page', () => {
+    activitySocketService.editCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
+    activitySocketService.connected.next(false);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id]);
+  });
+
   it('cancel should navigate to url with fragment if previousUrl contains #', () => {
     finalUrl = '/cases/case-details/1707912713167104#Claim%20details'
     spyOn(component as any, 'getNavigationUrl').and.callThrough();

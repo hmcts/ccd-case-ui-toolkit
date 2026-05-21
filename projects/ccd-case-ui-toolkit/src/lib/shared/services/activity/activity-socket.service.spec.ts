@@ -197,6 +197,25 @@ describe('ActivitySocketService', () => {
       expect((service as any).lastViewEmit.caseId).toBe('');
     });
 
+    it('stopAllCase should emit "stopAll" with the case IDs when connected', () => {
+      spyOn(service.socket, 'emit');
+      const caseIds = ['case-stop-1', 'case-stop-2'];
+
+      service.stopAllCase(caseIds, true);
+
+      expect(service.socket.emit).toHaveBeenCalledWith('stopAll', { caseIds });
+    });
+
+    it('stopAllCase should NOT emit when not connected', () => {
+      spyOn(service.socket, 'emit');
+      const caseIds = ['case-stop-1', 'case-stop-2'];
+      service.connected.next(false);
+
+      service.stopAllCase(caseIds, true);
+
+      expect(service.socket.emit).not.toHaveBeenCalled();
+    });
+
     it('startEditing should emit "edit" when connected', () => {
       spyOn(service.socket, 'emit');
       const caseId = 'case-edit-1';
