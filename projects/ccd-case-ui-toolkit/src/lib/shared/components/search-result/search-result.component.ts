@@ -158,7 +158,6 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
       if (!isSolicitorUser(this.sessionStorageService)) {
-        console.log('calling watch cases from ngOnChanges');
         this.watchResults();
       }
     }
@@ -462,9 +461,6 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   private watchResults(): void {
-    console.log('consumerSortingEnabled is ' + this.consumerSortingEnabled);
-    console.log('this.activitySocketService.isEnabled ' + this.activitySocketService.isEnabled);
-
     if (this.activitySocketService.isEnabled) {
       const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
       const watchKey = [...caseIds].sort(this.alphabeticalCompare).join(',');
