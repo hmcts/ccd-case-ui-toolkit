@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.53
+**EXUI-4563** SRT Release
+
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
 

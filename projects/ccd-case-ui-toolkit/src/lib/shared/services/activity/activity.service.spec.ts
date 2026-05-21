@@ -22,7 +22,7 @@ describe('ActivityService', () => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     httpService.get.and.returnValue(of(response));
     httpService.post.and.returnValue(of(response));
-    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
+    sessionStorageService.getItem.and.returnValue('{"token":"any"}');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   }));
@@ -31,6 +31,7 @@ describe('ActivityService', () => {
     expect(activityService.mode).toEqual(MODES.off);
   });
 
+<<<<<<< HEAD
    describe('when activity tracking is turned off', () => {
     // It should default to "off" so no need for a beforeEach() here...
     it('should indicate the service is disabled', () => {
@@ -40,6 +41,22 @@ describe('ActivityService', () => {
       activityService.verifyUserIsAuthorized();
       expect(httpService.get).toHaveBeenCalledTimes(0);
     });
+=======
+  it('should not throw when session storage contains invalid JSON', () => {
+    sessionStorageService.getItem.and.returnValue('{not-json');
+
+    expect(() => activityService.getActivities('1111')).not.toThrow();
+    expect(httpService.get).toHaveBeenCalled();
+  });
+
+  it('should access AppConfig and HttpService for getActivities', () => {
+    httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
+    httpService.get.and.throwError('Error');
+
+    activityService.getActivities('1111');
+    expect(httpService.get).not.toHaveBeenCalled();
+    expect(appConfig.getActivityUrl).toHaveBeenCalled();
+>>>>>>> origin/master
   });
 
   describe('when activity tracking is set to "polling"', () => {
