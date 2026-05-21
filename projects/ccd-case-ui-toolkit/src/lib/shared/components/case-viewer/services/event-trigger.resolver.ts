@@ -11,6 +11,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
 import { LoadingService, SessionStorageService } from '../../../services';
+import { safeJsonParse } from '../../../json-utils';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -41,7 +42,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
 
     // If jurisdiction or caseType are missing, redirect to correct URL
     if (!jurisdiction || !caseType) {
-      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo') || '{}');
+      const caseInfo = safeJsonParse<any>(this.sessionStorageService.getItem('caseInfo'), {});
       const jurisdictionId = caseInfo?.jurisdiction;
       const caseTypeId = caseInfo?.caseType;
       const caseId = caseInfo?.caseId;
@@ -116,7 +117,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
           this.errorNotifier.announceError(error);
           if (!this.router.url?.includes('/cases/case-details/')) {
             caseTypeId = route.parent.paramMap.get('caseType');
-            this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}/tasks`]);
+            this.router.navigate([`/cases/case-details/${jurisdiction}/${caseType}/${cid}`], { fragment: 'Tasks' });
           }
           return throwError(error);
         })
