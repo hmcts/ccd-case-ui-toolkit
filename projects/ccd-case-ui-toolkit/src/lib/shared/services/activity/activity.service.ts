@@ -38,6 +38,10 @@ export class ActivityService {
     return error;
   }
 
+  private static logUserMayNotBeAuthenticated(): void {
+    console.warn('User may not be authenticated. Activity request was not sent.');
+  }
+
   public getOptions(): OptionsType {
     const userDetails = safeJsonParse<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -60,8 +64,8 @@ export class ActivityService {
         .pipe(
           map(response => response)
         );
-    } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+    } catch {
+      ActivityService.logUserMayNotBeAuthenticated();
     }
   }
 
@@ -75,8 +79,8 @@ export class ActivityService {
         .pipe(
           map(response => response)
         );
-    } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+    } catch {
+      ActivityService.logUserMayNotBeAuthenticated();
     }
   }
 

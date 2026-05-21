@@ -14,6 +14,8 @@ const response = {
   map: () => ({})
 };
 
+const unauthenticatedWarning = 'User may not be authenticated. Activity request was not sent.';
+
 describe('ActivityService', () => {
   beforeEach(waitForAsync(() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
@@ -49,10 +51,34 @@ describe('ActivityService', () => {
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
   });
 
+  it('should not log caught error details for getActivities', () => {
+    const logSpy = spyOn(console, 'log');
+    const warnSpy = spyOn(console, 'warn');
+    appConfig.getActivityUrl.and.throwError('Authorization: Bearer secret-token');
+
+    activityService.getActivities('1111');
+
+    expect(logSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(unauthenticatedWarning);
+    expect(warnSpy.calls.allArgs().join(' ')).not.toContain('secret-token');
+  });
+
   it('should access AppConfig and HttpService for postActivity', () => {
     activityService.postActivity('1111', 'edit');
     expect(httpService.post).toHaveBeenCalled();
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
+  });
+
+  it('should not log caught error details for postActivity', () => {
+    const logSpy = spyOn(console, 'log');
+    const warnSpy = spyOn(console, 'warn');
+    appConfig.getActivityUrl.and.throwError('Authorization: Bearer secret-token');
+
+    activityService.postActivity('1111', 'edit');
+
+    expect(logSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(unauthenticatedWarning);
+    expect(warnSpy.calls.allArgs().join(' ')).not.toContain('secret-token');
   });
 
   it('should verify user authorization once', () => {
