@@ -7,11 +7,8 @@ import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
 import { USER_DETAILS } from '../../utils';
-<<<<<<< HEAD
 import { MODES } from '../activity/utils';
-=======
 import { safeJsonParse } from '../../json-utils';
->>>>>>> origin/master
 
 // @dynamic
 @Injectable()

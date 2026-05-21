@@ -25,11 +25,8 @@ export function isJudiciaryUser(sessionStorageService: SessionStorageService): b
   return userDetails && userDetails?.roles
     && (userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
 }
-<<<<<<< HEAD
 
 export function isSolicitorUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
   return userDetails?.roleCategory === SOLICITOR;
 }
-=======
->>>>>>> origin/master

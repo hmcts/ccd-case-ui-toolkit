@@ -31,7 +31,6 @@ describe('ActivityService', () => {
     expect(activityService.mode).toEqual(MODES.off);
   });
 
-<<<<<<< HEAD
    describe('when activity tracking is turned off', () => {
     // It should default to "off" so no need for a beforeEach() here...
     it('should indicate the service is disabled', () => {
@@ -41,7 +40,6 @@ describe('ActivityService', () => {
       activityService.verifyUserIsAuthorized();
       expect(httpService.get).toHaveBeenCalledTimes(0);
     });
-=======
   it('should not throw when session storage contains invalid JSON', () => {
     sessionStorageService.getItem.and.returnValue('{not-json');
 
@@ -56,7 +54,6 @@ describe('ActivityService', () => {
     activityService.getActivities('1111');
     expect(httpService.get).not.toHaveBeenCalled();
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
->>>>>>> origin/master
   });
 
   describe('when activity tracking is set to "polling"', () => {
