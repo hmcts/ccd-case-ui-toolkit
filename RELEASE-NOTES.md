@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.52-exui-4291-1
+### Version 7.3.53-exui-4291
 **EXUI-4291** Suppressions - @edium/fsm - major
+
+### Version 7.3.53
+**EXUI-4563** SRT Release
 
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
