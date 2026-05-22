@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.53-body-parser-update",
+  "version": "7.3.54-body-parser-update",
   "engines": {
     "node": ">=20.19.0"
   },
