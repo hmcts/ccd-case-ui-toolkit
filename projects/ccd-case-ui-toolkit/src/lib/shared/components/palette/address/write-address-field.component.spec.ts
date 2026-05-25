@@ -382,13 +382,19 @@ describe('WriteAddressFieldComponent', () => {
       const errorMessage = 'Service error';
       const errorSubject = new Subject();
       addressesService.getAddressesForPostcode.and.returnValue(errorSubject.asObservable());
-      spyOn(console, 'log');
+      const logSpy = spyOn(console, 'log');
+      const errorSpy = spyOn(console, 'error');
       writeAddressFieldComponent.postcode.setValue(POSTCODE);
       writeAddressFieldComponent.findAddress();
       expect(writeAddressFieldComponent.loadingAddresses).toBeTruthy();
       errorSubject.error(errorMessage);
       expect(writeAddressFieldComponent.loadingAddresses).toBeFalsy();
-      expect(console.log).toHaveBeenCalledWith(`An error occurred retrieving addresses for postcode ${POSTCODE}. ${errorMessage}`);
+      expect(logSpy).not.toHaveBeenCalled();
+      expect(errorSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+        level: 'error',
+        message: 'An error occurred retrieving addresses for postcode.'
+      }));
+      expect(JSON.stringify(errorSpy.calls.mostRecent().args[0])).not.toContain(POSTCODE);
     });
 
     it('should not set loadingAddresses to true when postcode is missing', () => {

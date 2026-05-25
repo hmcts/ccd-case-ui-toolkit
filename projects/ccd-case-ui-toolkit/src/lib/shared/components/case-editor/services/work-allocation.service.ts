@@ -52,7 +52,6 @@ export class WorkAllocationService {
           // explicitly eat away 401 error and 400 error
           if (error && error.status && (error.status === 401 || error.status === 400)) {
             // do nothing
-            console.log('error status 401 or 400', error);
           } else {
             return throwError(error);
           }

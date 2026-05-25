@@ -6,6 +6,7 @@ import { CaseView } from '../../../domain/case-view/case-view.model';
 import { Draft } from '../../../domain/draft.model';
 import { AlertService } from '../../../services/alert/alert.service';
 import { DraftService } from '../../../services/draft/draft.service';
+import { StructuredLoggerService } from '../../../services/logging';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -17,6 +18,8 @@ import { CasesService } from '../../case-editor/services/cases.service';
   standalone: false
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
 
   @Input()
   public case: string;
@@ -79,8 +82,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   private checkErrorGettingCaseView(error: any) {
     // TODO Should be logged to remote logging infrastructure
-    console.error('Called checkErrorGettingCaseView.');
-    console.error(error);
+    this.logger.error('Error while getting case view.', { error });
     if (error.status !== 401 && error.status !== 403) {
       this.alertService.error(error.message);
     }

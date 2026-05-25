@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseTab, CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';
-import { OrderService } from '../../services';
+import { OrderService, StructuredLoggerService } from '../../services';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -16,6 +16,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
   public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
   public static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
+  private readonly logger = new StructuredLoggerService();
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -52,7 +53,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
-        console.info('Setting the case into case viewer component as retrieved from XHR request.');
+        this.logger.info('Setting the case into case viewer component as retrieved from XHR request.');
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });

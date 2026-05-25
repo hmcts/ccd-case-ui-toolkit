@@ -56,7 +56,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular( () => {
         this.activitySubscription = this.postEditActivity().subscribe(() => {
-          // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
         });
       });
     }

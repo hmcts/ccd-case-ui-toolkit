@@ -7,6 +7,7 @@ import { CaseTab } from '../../domain/case-view/case-tab.model';
 import { CaseView } from '../../domain/case-view/case-view.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AlertService } from '../../services/alert/alert.service';
+import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { CaseNotifier } from '../case-editor/services/case.notifier';
 import { CaseHistory } from './domain/case-history.model';
@@ -19,6 +20,8 @@ import { CaseHistoryService } from './services/case-history.service';
   standalone: false
 })
 export class CaseHistoryComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
   public static readonly PARAM_EVENT_ID = 'eid';
 
   private static readonly ERROR_MESSAGE = 'No case history to show';
@@ -59,7 +62,7 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
             this.tabs = this.sortTabFieldsAndFilterTabs(this.tabs);
           }),
           catchError(error => {
-            console.error(error);
+            this.logger.error('Error while getting case history.', { error });
             if (error.status !== 401 && error.status !== 403) {
               this.alertService.error(error.message);
             }

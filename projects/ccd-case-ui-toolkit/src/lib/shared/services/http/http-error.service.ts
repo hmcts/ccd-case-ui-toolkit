@@ -4,10 +4,12 @@ import { Observable, throwError } from 'rxjs';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth/auth.service';
 import { LoadingService } from '../loading';
+import { StructuredLoggerService } from '../logging';
 
 
 @Injectable()
 export class HttpErrorService {
+  private static readonly logger = new StructuredLoggerService();
 
   constructor(private readonly authService: AuthService,
         private readonly loadingService: LoadingService
@@ -27,7 +29,7 @@ export class HttpErrorService {
         try {
           httpError = HttpError.from(error);
         } catch (e) {
-          console.error(e, e.message);
+          HttpErrorService.logger.error('Unable to convert HTTP error response.', { error: e });
         }
       }
       if (!httpError.status) {
@@ -55,8 +57,7 @@ export class HttpErrorService {
   }
 
   public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
-    console.error('Handling error in http error service.');
-    console.error(error);
+    HttpErrorService.logger.error('Handling error in http error service.', { error });
     if (this.loadingService.hasSharedSpinner()){
       this.loadingService.unregisterSharedSpinner();
     }

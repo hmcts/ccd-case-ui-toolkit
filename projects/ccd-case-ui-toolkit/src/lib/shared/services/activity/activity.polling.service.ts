@@ -2,12 +2,15 @@ import { Injectable, NgZone } from '@angular/core';
 import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
+import { StructuredLoggerService } from '../logging';
 import { ActivityService } from './activity.service';
 import { polling, IOptions } from 'rx-polling-hmcts';
 
 // @dynamic
 @Injectable()
 export class ActivityPollingService {
+  private readonly logger = new StructuredLoggerService();
+
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
@@ -46,7 +49,6 @@ export class ActivityPollingService {
       this.ngZone.runOutsideAngular(() => {
         this.currentTimeoutHandle = setTimeout(
           () => this.ngZone.run(() => {
-            // console.log('timeout: flushing requests')
             this.flushRequests();
           }),
           this.batchCollectionDelayMs);
@@ -54,7 +56,6 @@ export class ActivityPollingService {
     }
 
     if (this.pendingRequests.size >= this.maxRequestsPerBatch) {
-      // console.log('max pending hit: flushing requests');
       this.flushRequests();
     }
     return subject;
@@ -95,19 +96,17 @@ export class ActivityPollingService {
 
   protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
-    // console.log('issuing batch request for cases: ' + caseIds);
     this.ngZone.runOutsideAngular( () => {
       // run polling outside angular zone so it does not trigger change detection
       this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe(
               // process activity inside zone so it triggers change detection for activity.component.ts
         (activities: Activity[]) => this.ngZone.run( () => {
             activities.forEach((activity) => {
-              // console.log('pushing activity: ' + activity.caseId);
               requests.get(activity.caseId).next(activity);
             });
           },
           (err) => {
-            console.log(`error: ${err}`);
+            this.logger.error('Error while polling activities.', { error: err });
             Array.from(requests.values()).forEach((subject) => subject.error(err));
           }
         )

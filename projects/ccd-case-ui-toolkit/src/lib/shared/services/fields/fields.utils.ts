@@ -11,10 +11,13 @@ import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnu
 import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
 import { safeJsonParse } from '../../json-utils';
+import { StructuredLoggerService } from '../logging';
 
 // @dynamic
 @Injectable()
 export class FieldsUtils {
+  private static readonly logger = new StructuredLoggerService();
+
   private static readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
@@ -333,7 +336,7 @@ export class FieldsUtils {
             this.setDynamicListDefinition(field, field.field_type, rootCaseField);
           }
         } catch (error) {
-          console.log(error);
+          FieldsUtils.logger.error('Error setting dynamic list definition.', { error });
         }
       });
     } else if (caseFieldType.type === FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {

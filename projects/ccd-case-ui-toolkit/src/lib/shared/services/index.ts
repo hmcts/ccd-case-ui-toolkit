@@ -16,6 +16,7 @@ export * from './http';
 export * from './journey';
 export * from './jurisdiction';
 export * from './banners';
+export * from './logging';
 export * from './navigation';
 export * from './order';
 export * from './profile';

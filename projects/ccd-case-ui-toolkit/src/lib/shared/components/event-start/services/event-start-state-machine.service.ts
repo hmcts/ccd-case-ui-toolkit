@@ -187,9 +187,7 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr = JSON.stringify(task);
     this.abstractConfig?.logMessage?.(`entryActionForStateOneTaskAssignedToUser: task_state ${task?.task_state} for task id ${task?.id}`);
-    console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
     const currentLanguage = context.cookieService.getCookie('exui-preferred-language');
     const clientContext = {
@@ -232,7 +230,6 @@ export class EventStartStateMachineService {
 
   public finalAction(state: State): void {
     // Final actions can be performed here, the state machine finished running
-    // console.log('FINAL', state);
     return;
   }
 

@@ -1,6 +1,7 @@
 import { Inject, Injectable, Optional, InjectionToken } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { safeJsonParse } from '../../json-utils';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from './session-storage.service';
 
 export type SessionJsonErrorLogger = (error: unknown) => void;
@@ -12,6 +13,8 @@ export const SessionJsonErrorLogger = new InjectionToken<SessionJsonErrorLogger>
   providedIn: 'root',
 })
 export class SessionStorageGuard implements CanActivate {
+  private readonly logger = new StructuredLoggerService();
+
   constructor(
     private readonly sessionStorageService: SessionStorageService,
     private readonly router: Router,
@@ -34,8 +37,7 @@ export class SessionStorageGuard implements CanActivate {
     if (this.errorLogger) {
       this.errorLogger(error);
     } else {
-      // eslint-disable-next-line no-console
-      console.error('Invalid userDetails in session storage', error);
+      this.logger.error('Invalid userDetails in session storage.', { error });
     }
     this.router.navigate([this.errorRoute || '/session-error']);
     return false;

@@ -9,7 +9,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { AddressesService, LoadingService, MultipageComponentStateService } from '../../../services';
+import { AddressesService, LoadingService, MultipageComponentStateService, StructuredLoggerService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -65,6 +65,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public dialogRefAfterClosedSub: Subscription;
   public saveDraftSub: Subscription;
   public caseFormValidationErrorsSub: Subscription;
+  private readonly logger = new StructuredLoggerService();
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -409,7 +410,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
       this.addressService.setMandatoryError(false);
-      console.log('Case Edit Error', this.caseEdit.error);
       if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
         this.caseEdit.validPageList.push(this.currentPage);
       }
@@ -648,7 +648,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.formErrorService
         .mapFieldErrors(this.caseEdit.error.details.field_errors, this.editForm?.controls?.['data'] as FormGroup, 'validation');
     }
-    console.log('handleError ', error);
+    this.logger.error('Case edit page handled an error.', { error });
   }
 
   private resetErrors(): void {

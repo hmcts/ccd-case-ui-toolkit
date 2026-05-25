@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError, timer } from 'rxjs';
 import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/operators';
+import { StructuredLoggerService } from '../../logging';
 
 class ArtificialDelayContext {
     private artificialDelayOn = true;
@@ -35,14 +36,19 @@ class ArtificialDelayContext {
 
 @Injectable()
 export class RetryUtil {
+    private readonly logger = new StructuredLoggerService();
+
     public pipeTimeoutMechanismOn<T>(in$: Observable<T>, preferredArtificialDelay: number, timeoutPeriods: number[]): Observable<T> {
         const artificialDelayContext = new ArtificialDelayContext(preferredArtificialDelay);
-        console.info(`Piping a retry mechanism with timeouts {${timeoutPeriods}}.`);
-        console.info(`Artificial delay will be applied: ${artificialDelayContext.shouldApplyArtificialDelay()}.`);
+        this.logger.info('Piping a retry mechanism with timeouts.', { timeoutPeriods });
+        this.logger.info('Artificial delay setting resolved.', { artificialDelayApplied: artificialDelayContext.shouldApplyArtificialDelay() });
 
         let out$ = in$;
         if (artificialDelayContext.shouldApplyArtificialDelay()) {
-            console.info(`Preferred artificial delay: ${preferredArtificialDelay} seconds. Actual delay selected: ${artificialDelayContext.getActualDelay()}`);
+            this.logger.info('Preferred artificial delay selected.', {
+                actualDelaySeconds: artificialDelayContext.getActualDelay(),
+                preferredDelaySeconds: preferredArtificialDelay
+            });
             out$ = this.pipeArtificialDelayOn(out$, artificialDelayContext);
         }
         out$ = this.pipeTimeOutControlOn(out$, timeoutPeriods);
@@ -52,7 +58,7 @@ export class RetryUtil {
 
     private pipeTimeOutControlOn<T>(in$: Observable<T>, timeoutPeriods: number[]): Observable<T> {
         const timeOutAfterSeconds = timeoutPeriods[0];
-        console.info(`Piping timeout control with ${timeOutAfterSeconds} seconds.`);
+        this.logger.info('Piping timeout control.', { timeoutSeconds: timeOutAfterSeconds });
         const out$ = in$.pipe(timeout(timeOutAfterSeconds * 1000));
         return out$;
     }
@@ -61,19 +67,18 @@ export class RetryUtil {
         const retryStrategy = (errors) => {
             return errors.pipe(
                 mergeMap((error: Error, i) => {
-                    console.error(`Mapping error ${error?.name}, ${i}`);
-                    console.error(error);
+                    this.logger.error('Mapping retry error.', { error, errorName: error?.name, attempt: i });
                     if (error?.name === 'TimeoutError' && i === 0) {
                         artificialDelayContext.turnOffArtificialDelays();
-                        console.info('Will retry, after a timeout error.');
+                        this.logger.info('Will retry after a timeout error.');
                     }
                     else {
-                        console.error('Will NOT retry.');
+                        this.logger.error('Will not retry request after error.', { error, errorName: error?.name, attempt: i });
                         throw error;
                     }
                     return timer(0);
                 }),
-                finalize(() => console.log('We are done!')));
+                finalize(() => undefined));
         };
         const out$ = in$.pipe(retryWhen(retryStrategy));
         return out$;
@@ -81,11 +86,11 @@ export class RetryUtil {
 
     private pipeArtificialDelayOn<T>(in$: Observable<T>, artificialDelayContext: ArtificialDelayContext): Observable<T> {
         let out$ = in$.pipe(tap(() => {
-            console.log(`Artificially delaying for ${artificialDelayContext.getActualDelay()} seconds..`);
+            this.logger.info('Artificial delay started.', { delaySeconds: artificialDelayContext.getActualDelay() });
         }));
         out$ = out$.pipe(delayWhen(() => timer(artificialDelayContext.getActualDelay() * 1000)));
         out$ = out$.pipe(tap(() => {
-            console.log(`Artificially delayed for ${artificialDelayContext.getActualDelay()} seconds..`);
+            this.logger.info('Artificial delay completed.', { delaySeconds: artificialDelayContext.getActualDelay() });
         }));
         return out$;
     }

@@ -1,9 +1,12 @@
 import * as _score from 'underscore';
+import { StructuredLoggerService } from '../../../services/logging';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ShowCondition } from '../../conditional-show/domain/conditional-show.model';
 import peg from './condition.peg';
 
 export class ConditionParser {
+  private static readonly logger = new StructuredLoggerService();
+
   /**
    * Parse the raw formula and output structured condition data
    * that can be used in evaluating show/hide logic
@@ -186,13 +189,13 @@ export class ConditionParser {
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
             fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
         } catch (e) {
-          console.error('Error while parsing number', pathTail[0], e);
+          this.logger.error('Error while parsing form array path index.', { error: e, pathIndex: pathTail[0] });
         }
       }
     } else {
       // EXUI-2460 - if path present then show error, otherwise log message to stop unnecessary console errors
-      path ? console.error('Path in formArray should start with ', head, ', full path: ', path) :
-        console.log('Path not present in formArray');
+      path ? this.logger.error('Path in formArray should start with the expected field.', { expectedHead: head, path }) :
+        this.logger.info('Path not present in formArray.');
     }
   }
 
