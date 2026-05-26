@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
 ### Version 7.3.54
-**EXUI-4636** Revert CME-220 and EXUI-2111
+**EXUI-4636** Revert CME-220  and EXUI-2111
 **EXUI-4637** Revert EXUI-2645
 
 ### Version 7.3.53
