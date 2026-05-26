@@ -61,6 +61,39 @@ describe('StructuredLoggerService', () => {
     expect(JSON.stringify(entry)).not.toContain('secret-token');
   });
 
+  it('should redact sensitive key value pairs inside strings', () => {
+    const warnSpy = spyOn(console, 'warn');
+
+    logger.warn('Request failed', {
+      safeField: 'caseId=123 password=secret-password auth context: secret-auth api key=secret-api-key'
+    });
+
+    const entry = warnSpy.calls.mostRecent().args[0] as StructuredLogEntry;
+    const context = entry.context as any;
+
+    expect(context.safeField).toContain('caseId=123');
+    expect(context.safeField).toContain('password=[REDACTED]');
+    expect(context.safeField).toContain('auth context: [REDACTED]');
+    expect(context.safeField).toContain('api key=[REDACTED]');
+    expect(JSON.stringify(entry)).not.toContain('secret-password');
+    expect(JSON.stringify(entry)).not.toContain('secret-auth');
+    expect(JSON.stringify(entry)).not.toContain('secret-api-key');
+  });
+
+  it('should redact standalone bearer tokens in string values', () => {
+    const warnSpy = spyOn(console, 'warn');
+
+    logger.warn('Request failed', {
+      safeField: 'Bearer abc.DEF_123-456~+/='
+    });
+
+    const entry = warnSpy.calls.mostRecent().args[0] as StructuredLogEntry;
+    const context = entry.context as any;
+
+    expect(context.safeField).toBe('Bearer [REDACTED]');
+    expect(JSON.stringify(entry)).not.toContain('abc.DEF_123-456');
+  });
+
   it('should handle circular context safely', () => {
     const warnSpy = spyOn(console, 'warn');
     const context: any = { safeField: 'visible' };

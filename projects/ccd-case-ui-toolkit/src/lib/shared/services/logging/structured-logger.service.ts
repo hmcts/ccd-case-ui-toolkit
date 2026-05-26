@@ -17,9 +17,9 @@ export class StructuredLoggerService {
   private static readonly MAX_DEPTH_VALUE = '[MaxDepth]';
   private static readonly MAX_REDACTION_DEPTH = 10;
   private static readonly REDACTED_VALUE = '[REDACTED]';
-  private static readonly SENSITIVE_KEY_PATTERN = /(password|passcode|pwd|secret|token|authori[sz]ation|authentication|auth[-_]?context|^auth$|api[-_]?key|cookie|session|credential)/i;
-  private static readonly SENSITIVE_STRING_PATTERN = /((?:password|passcode|pwd|secret|token|authori[sz]ation|auth(?:entication|[-_ ]?context)?|api[-_]?key|cookie|session|credential)\s*[:=]\s*)((?:Bearer\s+)?)([^,;&\s]+)/gi;
-  private static readonly BEARER_TOKEN_PATTERN = /\bBearer\s+([A-Za-z0-9\-._~+/]+=*)/gi;
+  private static readonly SENSITIVE_KEY_PATTERN = /(password|passcode|pwd|secret|token|authori[sz]ation|authentication|auth[-_ ]?context|^auth$|api[-_ ]?key|cookie|session|credential)/i;
+  private static readonly SENSITIVE_STRING_PATTERN = /([\w -]+\s*[:=]\s*)((?:Bearer\s+)?)([^,;&\s]+)/gi;
+  private static readonly BEARER_TOKEN_PATTERN = /\bBearer\s+([\w.~+/-]+=*)/gi;
 
   public debug(message: string, context?: unknown): void {
     this.write('debug', message, context);
@@ -142,17 +142,23 @@ export class StructuredLoggerService {
 
   private redactSensitiveString(value: string): string {
     return value
-      .replace(StructuredLoggerService.SENSITIVE_STRING_PATTERN, '$1$2[REDACTED]')
+      .replace(StructuredLoggerService.SENSITIVE_STRING_PATTERN, (match: string, prefix: string, bearerPrefix: string) => {
+        const key = prefix.replace(/\s*[:=]\s*$/u, '').trim();
+        return this.isSensitiveKey(key) ? `${prefix}${bearerPrefix}[REDACTED]` : match;
+      })
       .replace(StructuredLoggerService.BEARER_TOKEN_PATTERN, 'Bearer [REDACTED]');
   }
 
   private hasSensitiveNamedValue(value: Record<string, unknown>): boolean {
     return Object.keys(value)
-      .some(key => this.isNameKey(key) && typeof value[key] === 'string' && this.isSensitiveKey(value[key] as string));
+      .some(key => {
+        const namedValue = value[key];
+        return this.isNameKey(key) && typeof namedValue === 'string' && this.isSensitiveKey(namedValue);
+      });
   }
 
   private isNameKey(key: string): boolean {
-    return ['key', 'name'].indexOf(key.toLowerCase()) > -1;
+    return ['key', 'name'].includes(key.toLowerCase());
   }
 
   private isSensitiveKey(key: string): boolean {
@@ -160,6 +166,6 @@ export class StructuredLoggerService {
   }
 
   private isValueKey(key: string): boolean {
-    return ['value', 'values'].indexOf(key.toLowerCase()) > -1;
+    return ['value', 'values'].includes(key.toLowerCase());
   }
 }
