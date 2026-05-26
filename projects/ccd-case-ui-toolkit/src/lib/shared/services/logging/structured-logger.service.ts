@@ -17,8 +17,8 @@ export class StructuredLoggerService {
   private static readonly MAX_DEPTH_VALUE = '[MaxDepth]';
   private static readonly MAX_REDACTION_DEPTH = 10;
   private static readonly REDACTED_VALUE = '[REDACTED]';
+  private static readonly KEY_VALUE_PATTERN = /\b([A-Za-z][\w-]*(?:[ _-][A-Za-z][\w-]*)?)([ \t]*[:=][ \t]*)((?:Bearer[ \t]+)?)([^,;&\s]+)/gi;
   private static readonly SENSITIVE_KEY_PATTERN = /(password|passcode|pwd|secret|token|authori[sz]ation|authentication|auth[-_ ]?context|^auth$|api[-_ ]?key|cookie|session|credential)/i;
-  private static readonly SENSITIVE_STRING_PATTERN = /([\w -]+\s*[:=]\s*)((?:Bearer\s+)?)([^,;&\s]+)/gi;
   private static readonly BEARER_TOKEN_PATTERN = /\bBearer\s+([\w.~+/-]+=*)/gi;
 
   public debug(message: string, context?: unknown): void {
@@ -142,9 +142,8 @@ export class StructuredLoggerService {
 
   private redactSensitiveString(value: string): string {
     return value
-      .replace(StructuredLoggerService.SENSITIVE_STRING_PATTERN, (match: string, prefix: string, bearerPrefix: string) => {
-        const key = prefix.replace(/\s*[:=]\s*$/u, '').trim();
-        return this.isSensitiveKey(key) ? `${prefix}${bearerPrefix}[REDACTED]` : match;
+      .replace(StructuredLoggerService.KEY_VALUE_PATTERN, (match: string, key: string, separator: string, bearerPrefix: string) => {
+        return this.isSensitiveKey(key) ? `${key}${separator}${bearerPrefix}${StructuredLoggerService.REDACTED_VALUE}` : match;
       })
       .replace(StructuredLoggerService.BEARER_TOKEN_PATTERN, 'Bearer [REDACTED]');
   }
