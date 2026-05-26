@@ -17,7 +17,7 @@ export class StructuredLoggerService {
   private static readonly MAX_DEPTH_VALUE = '[MaxDepth]';
   private static readonly MAX_REDACTION_DEPTH = 10;
   private static readonly REDACTED_VALUE = '[REDACTED]';
-  private static readonly KEY_VALUE_PATTERN = /\b([A-Za-z][\w-]*(?:[ _-][A-Za-z][\w-]*)?)([ \t]*[:=][ \t]*)((?:Bearer[ \t]+)?)([^,;&\s]+)/gi;
+  private static readonly KEY_VALUE_PATTERN = /\b([a-z][\w-]*(?:[ _-][a-z][\w-]*)?)([ \t]*[:=][ \t]*)((?:Bearer[ \t]+)?)([^,;&\s]+)/gi;
   private static readonly SENSITIVE_KEY_PATTERN = /(password|passcode|pwd|secret|token|authori[sz]ation|authentication|auth[-_ ]?context|^auth$|api[-_ ]?key|cookie|session|credential)/i;
   private static readonly BEARER_TOKEN_PATTERN = /\bBearer\s+([\w.~+/-]+=*)/gi;
 
