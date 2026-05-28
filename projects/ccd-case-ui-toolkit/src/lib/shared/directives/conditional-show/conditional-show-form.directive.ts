@@ -152,6 +152,10 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   private buildPath(c: AbstractFormFieldComponent, field: CaseField): string {
     if (c && c instanceof AbstractFieldWriteComponent) {
+      const parentPrefix = c.parent?.['component']?.idPrefix;
+      if (parentPrefix) {
+        return parentPrefix + field.id;
+      }
       if (c.idPrefix) {
         return c.idPrefix + field.id;
       }

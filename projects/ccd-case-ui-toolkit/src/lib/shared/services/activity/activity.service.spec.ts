@@ -22,7 +22,7 @@ describe('ActivityService', () => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     httpService.get.and.returnValue(of(response));
     httpService.post.and.returnValue(of(response));
-    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
+    sessionStorageService.getItem.and.returnValue('{"token":"any"}');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   }));
@@ -31,6 +31,13 @@ describe('ActivityService', () => {
     activityService.getActivities('1111');
     expect(httpService.get).toHaveBeenCalled();
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
+  });
+
+  it('should not throw when session storage contains invalid JSON', () => {
+    sessionStorageService.getItem.and.returnValue('{not-json');
+
+    expect(() => activityService.getActivities('1111')).not.toThrow();
+    expect(httpService.get).toHaveBeenCalled();
   });
 
   it('should access AppConfig and HttpService for getActivities', () => {

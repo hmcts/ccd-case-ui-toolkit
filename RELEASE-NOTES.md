@@ -3,6 +3,13 @@
 ### Version 7.3.52-exui-4309
 **EXUI-4309** Error messaging when changing from an event to create case
 
+### Version 7.3.54
+**EXUI-4636** Revert CME-220  and EXUI-2111
+**EXUI-4637** Revert EXUI-2645
+
+### Version 7.3.53
+**EXUI-4563** SRT Release
+
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
 
