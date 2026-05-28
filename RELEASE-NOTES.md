@@ -1,7 +1,36 @@
 ## RELEASE NOTES
 
-### Version 7.3.43-exui-3229
+### Version 7.3.54-exui-3229
 **EXUI-3229** Event triggers cause duplicate requests
+
+### Version 7.3.54
+**EXUI-4636** Revert CME-220  and EXUI-2111
+**EXUI-4637** Revert EXUI-2645
+
+### Version 7.3.53
+**EXUI-4563** SRT Release
+
+### Version 7.3.52
+**EXUI-4311** Remove unused packages
+
+### Version 7.3.49
+**EXUI-4188** Angular innerHTML injection
+
+### Version 7.3.48
+**EXUI-4278** Suppressions-lodash-minor
+
+### Version 7.3.47
+**EXUI-4368** the same data is being displayed when navigating between dynamic list
+
+### Version 7.3.46
+**EXUI-4227** CVE Vulnerabilities Mar26
+
+### Version 7.3.45
+**EXUI-4302** Datepicker days showing incorrectly
+
+### Version 7.3.44
+**EXUI-4089** Case Flags: Show banner when PVP flag is present on 
+**EXUI-4090** Case Flags: Ordering logic changes 
 
 ### Version 7.3.43
 **EXUI-4185** Secrets/tokens logged in plaintext
@@ -24,7 +53,6 @@
 ### Version 7.3.37
 **EXUI-3951** Removing the dependency on @hmcts/frontend - Toolkit
 **EXUI-3952** Removing deprecated functions - Toolkit
-
 
 ### Version 7.3.36
 **EXUI-3995** Data loss in Civil cases for CREATE_CASE_FLAGS event
