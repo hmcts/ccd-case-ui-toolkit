@@ -201,7 +201,7 @@ export class SearchFiltersComponent implements OnInit {
         formValueObject = JSON.parse(formValue);
       }
       searchInputs.forEach(item => {
-        item.field.id = this.buildFieldId(item.field.id, item.field.elementPath, item.dataType);
+        item.field.id = FieldsUtils.buildFieldId(item.field.id, item.field.elementPath, item.dataType);
         item.field.label = item.label;
         if (formValueObject) {
           item.field.value = formValueObject[item.field.id];
@@ -266,16 +266,5 @@ export class SearchFiltersComponent implements OnInit {
     if (this.searchInputs) {
       this.caseFields = this.searchInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }
-  }
-
-  private buildFieldId(fieldId: string, elementPath?: string, dataType?: string): string {
-    if (!fieldId || !elementPath) {
-      return fieldId;
-    }
-    const normalizedType = typeof dataType === 'string' ? dataType.toLowerCase() : '';
-    if (normalizedType === 'collection') {
-      return `${fieldId}.value.${elementPath}`;
-    }
-    return `${fieldId}.${elementPath}`;
   }
 }
