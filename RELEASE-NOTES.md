@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.54-exui-2837
+### Version 7.3.54-exui-2837-1
 **EXUI-2837** Support searching nested fields within Collections
 
 ### Version 7.3.54
