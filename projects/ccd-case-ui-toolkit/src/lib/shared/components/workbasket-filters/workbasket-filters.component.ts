@@ -227,9 +227,7 @@ export class WorkbasketFiltersComponent implements OnInit {
           const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
           workbasketInputs.forEach(item => {
-            if (item.field.elementPath) {
-              item.field.id = `${item.field.id}.${item.field.elementPath}`;
-            }
+            item.field.id = FieldsUtils.buildFieldId(item.field.id, item.field.elementPath, item.dataType);
             item.field.label = item.label;
             if (formValue) {
               const searchFormValueObject = JSON.parse(formValue);

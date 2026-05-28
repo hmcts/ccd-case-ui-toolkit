@@ -59,6 +59,17 @@ export class FieldsUtils {
     return obj;
   }
 
+  public static buildFieldId(fieldId: string, elementPath?: string, dataType?: string): string {
+    if (!fieldId || !elementPath) {
+      return fieldId;
+    }
+    const normalizedType = typeof dataType === 'string' ? dataType.toLowerCase() : '';
+    if (normalizedType === 'collection') {
+      return `${fieldId}.value.${elementPath}`;
+    }
+    return `${fieldId}.${elementPath}`;
+  }
+
   public static toValuesMap(caseFields: CaseField[]): any {
     const valueMap = {};
     caseFields.forEach(field => {

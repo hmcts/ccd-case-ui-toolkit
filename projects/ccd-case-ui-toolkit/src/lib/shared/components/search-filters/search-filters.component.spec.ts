@@ -512,6 +512,30 @@ describe('SearchFiltersComponent', () => {
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
+  it('should render a valid search input collection field component with a path defined', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[2];
+    const baseInput = TEST_SEARCH_INPUTS[2];
+    const collectionInput = {
+      ...baseInput,
+      dataType: 'collection',
+      field: { ...baseInput.field }
+    };
+    mockSearchService.getSearchInputs.and.returnValue(createObservableFrom([collectionInput]));
+
+    const expectedFieldId = `${collectionInput.field.id}.value.${collectionInput.field.elementPath}`;
+
+    component.onCaseTypeIdChange();
+    fixture.detectChanges();
+
+    const dynamicFilters = de.query(By.css('#dynamicFilters'));
+    const writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    const writeFieldInstance = writeField.componentInstance;
+
+    expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
+    expect(writeFieldInstance.formGroup).toBeTruthy();
+  });
+
   it('should submit filters when apply button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyFilters.calls.reset();

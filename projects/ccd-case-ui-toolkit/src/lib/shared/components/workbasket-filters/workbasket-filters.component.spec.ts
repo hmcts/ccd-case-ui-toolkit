@@ -164,7 +164,10 @@ const createWorkbasketInputs = () => {
   ];
 };
 
-const TEST_WORKBASKET_INPUTS: WorkbasketInputModel[] = createWorkbasketInputs();
+let TEST_WORKBASKET_INPUTS: WorkbasketInputModel[];
+const resetTestWorkbasketInputs = () => {
+  TEST_WORKBASKET_INPUTS = createWorkbasketInputs();
+};
 
 const METADATA_FIELDS = ['PersonLastName'];
 
@@ -188,6 +191,7 @@ const TEST_FORM_GROUP = new FormGroup({});
 describe('Clear localStorage for workbasket filters', () => {
   let windowMockService: WindowService;
   beforeEach(waitForAsync(() => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -258,6 +262,7 @@ describe('Clear localStorage for workbasket filters', () => {
 
 describe('with defaults', () => {
   beforeEach(waitForAsync(() => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -601,10 +606,40 @@ describe('with defaults', () => {
     component.selected.caseType = CASE_TYPES_2[1];
     component.selected.caseState = CASE_TYPES_2[1].states[0];
 
-    const complexFieldSearchInput = TEST_WORKBASKET_INPUTS[2];
+    const baseInput = TEST_WORKBASKET_INPUTS[2];
+    const baseFieldId = baseInput.field.id.split('.')[0];
+    const complexFieldSearchInput = {
+      ...baseInput,
+      field: { ...baseInput.field, id: baseFieldId }
+    };
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([complexFieldSearchInput]));
 
-    const expectedFieldId = complexFieldSearchInput.field.id;
+    const expectedFieldId = `${baseFieldId}.${complexFieldSearchInput.field.elementPath}`;
+    component.onCaseTypeIdChange();
+    fixture.detectChanges();
+
+    const dynamicFilters = de.query(By.css('#dynamicFilters'));
+    const writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    const writeFieldInstance = writeField.componentInstance;
+
+    expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
+    expect(writeFieldInstance.formGroup).toBeTruthy();
+  });
+
+  it('should render a valid search input collection field component when path is defined', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[1];
+    component.selected.caseState = CASE_TYPES_2[1].states[0];
+
+    const baseInput = TEST_WORKBASKET_INPUTS[2];
+    const collectionInput = {
+      ...baseInput,
+      dataType: 'collection',
+      field: { ...baseInput.field }
+    };
+    workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([collectionInput]));
+
+    const expectedFieldId = `${collectionInput.field.id}.value.${collectionInput.field.elementPath}`;
     component.onCaseTypeIdChange();
     fixture.detectChanges();
 
@@ -709,6 +744,7 @@ describe('with defaults', () => {
 
 describe('with defaults and CRUD', () => {
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -810,6 +846,7 @@ describe('with defaults and CRUD', () => {
 
 describe('with defaults and CRUD and empty case types', () => {
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -888,6 +925,7 @@ describe('with defaults and CRUD and empty case types', () => {
 
 describe('with defaults and CRUD and type with empty case states', () => {
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -973,6 +1011,7 @@ describe('with query parameters', () => {
   };
 
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -1059,6 +1098,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
   };
 
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -1143,6 +1183,7 @@ describe('with no defaults', () => {
   };
 
   beforeEach(async () => {
+    resetTestWorkbasketInputs();
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(Promise.resolve('someResult'));
