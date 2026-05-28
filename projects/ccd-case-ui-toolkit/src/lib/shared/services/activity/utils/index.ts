@@ -39,6 +39,7 @@ const UTILS = {
     return {
       ...BASE_CONFIGURATION,
       ...UTILS.getTransports(allowWebSockets),
+      reconnection: !allowWebSockets,
       query: { user: JSON.stringify(user) }
     };
   },

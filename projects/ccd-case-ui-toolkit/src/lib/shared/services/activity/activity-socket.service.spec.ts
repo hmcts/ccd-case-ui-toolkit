@@ -1,10 +1,11 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Socket } from 'socket.io-client';
 
 import { CaseActivityInfo } from '../../domain/activity';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
-import { MODES } from './utils';
+import { MODES, Utils } from './utils';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
@@ -13,6 +14,61 @@ describe('ActivitySocketService', () => {
   let mockModeSubject: BehaviorSubject<MODES>;
   let sessionStorageService: any;
   let activityService: any;
+
+  function resetSharedSocket(): void {
+    const sharedState = (ActivitySocketService as any).sharedState;
+    if (sharedState.socket) {
+      sharedState.socket.close();
+    }
+    sharedState.socket = undefined;
+    sharedState.allowWebSockets = undefined;
+    sharedState.userKey = undefined;
+    if (sharedState.reconnectTimer) {
+      clearTimeout(sharedState.reconnectTimer);
+      sharedState.reconnectTimer = undefined;
+    }
+    sharedState.owners.clear();
+  }
+
+  function createMockSocket(): any {
+    const handlers: { [event: string]: Array<(payload?: any) => void> } = {};
+    const socket: any = {
+      active: false,
+      connected: false,
+      io: { _readyState: 'closed', opts: {} },
+      emit: jasmine.createSpy('emit'),
+      on: jasmine.createSpy('on').and.callFake((event: string, handler: (payload?: any) => void) => {
+        handlers[event] = handlers[event] || [];
+        handlers[event].push(handler);
+        return socket;
+      }),
+      off: jasmine.createSpy('off').and.callFake((event: string, handler: (payload?: any) => void) => {
+        handlers[event] = (handlers[event] || []).filter(item => item !== handler);
+        return socket;
+      }),
+      close: jasmine.createSpy('close').and.callFake(() => {
+        socket.active = false;
+        socket.connected = false;
+        socket.io._readyState = 'closed';
+        return socket;
+      }),
+      connect: jasmine.createSpy('connect').and.callFake(() => {
+        socket.active = true;
+        socket.io._readyState = 'opening';
+        return socket;
+      }),
+      disconnect: jasmine.createSpy('disconnect').and.callFake(() => {
+        socket.active = false;
+        socket.connected = false;
+        socket.io._readyState = 'closed';
+        return socket;
+      }),
+      trigger: (event: string, payload?: any) => {
+        (handlers[event] || []).slice().forEach(handler => handler(payload));
+      }
+    };
+    return socket;
+  }
 
   beforeEach(() => {
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
@@ -32,6 +88,11 @@ describe('ActivitySocketService', () => {
       }
     };
     service = new ActivitySocketService(sessionStorageService, activityService);
+  });
+
+  afterEach(() => {
+    (service as any).destroy();
+    resetSharedSocket();
   });
 
   it('should be created', () => {
@@ -90,6 +151,109 @@ describe('ActivitySocketService', () => {
       activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
+  });
+
+  describe('socket connection lifecycle', () => {
+    let getSocketSpy: jasmine.Spy;
+    let mockSocket: any;
+
+    beforeEach(() => {
+      (service as any).destroy();
+      resetSharedSocket();
+      mockSocket = createMockSocket();
+      getSocketSpy = spyOn(Utils, 'getSocket').and.returnValue(mockSocket as Socket);
+    });
+
+    it('should reuse an active shared socket instead of opening another connection', () => {
+      activityService.mode = MODES.socket;
+      const firstSocket = service.socket;
+
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+
+      expect(secondService.socket).toBe(firstSocket);
+      expect(getSocketSpy).toHaveBeenCalledTimes(1);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+
+      (secondService as any).destroy();
+    });
+
+    it('should keep the active shared socket open until the last owner is destroyed', () => {
+      activityService.mode = MODES.socket;
+      const firstSocket = service.socket;
+
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+      (secondService as any).destroy();
+
+      expect(service.socket).toBe(firstSocket);
+      expect(mockSocket.close).not.toHaveBeenCalled();
+
+      (service as any).destroy();
+
+      expect(mockSocket.close).toHaveBeenCalledTimes(1);
+    });
+
+    it('should create a new socket when the shared socket is no longer active', () => {
+      activityService.mode = MODES.socket;
+      mockSocket.active = false;
+      mockSocket.connected = false;
+      mockSocket.io._readyState = 'closed';
+
+      const nextSocket = createMockSocket();
+      getSocketSpy.and.returnValue(nextSocket as Socket);
+
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+
+      expect(secondService.socket).toBe(nextSocket);
+      expect(getSocketSpy).toHaveBeenCalledTimes(2);
+      expect(nextSocket.connect).toHaveBeenCalledTimes(1);
+
+      (secondService as any).destroy();
+    });
+
+    it('should reconnect the shared websocket once after disconnect', fakeAsync(() => {
+      activityService.mode = MODES.socket;
+      mockSocket.connected = true;
+      mockSocket.active = true;
+      mockSocket.io._readyState = 'open';
+
+      mockSocket.trigger('disconnect');
+
+      expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+
+      tick(1999);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+
+      tick(1);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should not schedule duplicate reconnects for repeated websocket failure events', fakeAsync(() => {
+      activityService.mode = MODES.socket;
+      mockSocket.connected = true;
+      mockSocket.active = true;
+      mockSocket.io._readyState = 'open';
+
+      mockSocket.trigger('disconnect');
+      mockSocket.trigger('connect_error');
+      mockSocket.trigger('disconnect');
+
+      tick(2000);
+
+      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should leave socket-long-poll reconnects to Socket.IO', fakeAsync(() => {
+      activityService.mode = MODES.socketLongPoll;
+      mockSocket.connected = true;
+      mockSocket.active = true;
+      mockSocket.io._readyState = 'open';
+
+      mockSocket.trigger('disconnect');
+      tick(2000);
+
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe('watchCases', () => {
