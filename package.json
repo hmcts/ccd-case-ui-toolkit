@@ -105,7 +105,6 @@
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/testing-library": "^0.2.0",
     "@types/jasmine": "~2.8.0",
-    "@types/jasminewd2": "^2.0.3",
     "@types/node": "^20.19.0",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",
