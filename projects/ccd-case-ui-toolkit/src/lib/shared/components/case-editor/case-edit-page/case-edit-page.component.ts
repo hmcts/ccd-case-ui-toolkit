@@ -25,6 +25,7 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 import { JourneyInstigator } from '../../../domain/journey';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { PlaceholderService } from '../../../directives';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -65,6 +66,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public dialogRefAfterClosedSub: Subscription;
   public saveDraftSub: Subscription;
   public caseFormValidationErrorsSub: Subscription;
+
+  private readonly fieldsUtils = new FieldsUtils();
+  private readonly placeholderService = new PlaceholderService();
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -252,7 +256,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           ? group.get(`${casefield.id}_judicialUserControl`)
           : group.get(casefield.id);
         if (fieldElement) {
-          const label = casefield.label || 'Field';
+          const label = this.getInterpolatedFieldLabel(casefield);
           let id = casefield.id;
           if (fieldElement['component'] && fieldElement['component'].parent) {
             if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
@@ -303,7 +307,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(casefield)
               });
             } else {
-              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
+              this.validationErrors.push({ id, message: `Select or fill the required ${label} field` });
               fieldElement.markAsDirty();
             }
           }
@@ -758,6 +762,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public getRpxTranslatePipeArgs(fieldLabel: string): { FIELDLABEL: string } | null {
     return fieldLabel ? ({ FIELDLABEL: fieldLabel }) : null;
+  }
+
+  private getInterpolatedFieldLabel(caseField: CaseField): string {
+    const label = caseField.label || 'Field';
+    const dataControl = this.editForm?.controls?.['data'];
+    const formFields = dataControl && typeof dataControl.getRawValue === 'function'
+      ? dataControl.getRawValue()
+      : {};
+    const contextFields = this.caseFields?.length ? this.caseFields : this.eventTrigger?.case_fields || [];
+    const fields = this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(contextFields, formFields);
+
+    return this.placeholderService.resolvePlaceholders(fields, label);
   }
 
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {

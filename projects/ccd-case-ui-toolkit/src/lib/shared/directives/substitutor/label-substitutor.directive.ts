@@ -1,5 +1,5 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
@@ -18,7 +18,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() public caseField: CaseField;
   @Input() public contextFields: CaseField[] = [];
-  @Input() public formGroup: FormGroup;
+  @Input() public formGroup: FormGroup | AbstractControl;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
   private initialLabel: string;

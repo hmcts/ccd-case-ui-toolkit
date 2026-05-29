@@ -2249,6 +2249,63 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should interpolate placeholders in mandatory complex type validation labels', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.isComplex = () => true;
+      complexField.isCollection = () => false;
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            inlineDocType: new FormControl('order'),
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+      caseEditDataService.caseFormValidationErrors$.subscribe(
+        validationErrors => comp.validationErrors = validationErrors
+      );
+
+      comp.generateErrorMessage([complexField]);
+
+      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors[0]).toEqual({
+        id: 'isReady',
+        message: '%FIELDLABEL% is required',
+        label: 'Is this order ready to be sealed and issued'
+      });
+    });
+
     it('should validate complex type fields and log error message when no error messages given', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',
