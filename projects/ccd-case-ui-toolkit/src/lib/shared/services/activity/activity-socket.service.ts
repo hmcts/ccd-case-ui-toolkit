@@ -19,7 +19,8 @@ interface ActivitySocketSharedState {
 }
 
 const ACTIVITY_SOCKET_SHARED_STATE_KEY = '__ccdActivitySocketSharedState__';
-const ACTIVITY_SOCKET_RECONNECT_DELAY_MS = 1000 * 2;
+const ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS = 1000;
+const ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS = 20000;
 
 @Injectable({
   providedIn: 'root'
@@ -321,11 +322,16 @@ export class ActivitySocketService {
       if (socket === state.socket && state.owners.size > 0 && !ActivitySocketService.isSocketActive(socket)) {
         socket.connect();
       }
-    }, ACTIVITY_SOCKET_RECONNECT_DELAY_MS);
+    }, ActivitySocketService.getReconnectDelayMs());
 
     if (ActivitySocketService.isSocketActive(socket)) {
       socket.disconnect();
     }
+  }
+
+  private static getReconnectDelayMs(): number {
+    const delayRange = ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS - ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS + 1;
+    return Math.floor(Math.random() * delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
   }
 
   // Treats connected, connecting, opening, and open sockets as active.

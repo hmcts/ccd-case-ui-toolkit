@@ -162,6 +162,7 @@ describe('ActivitySocketService', () => {
       resetSharedSocket();
       mockSocket = createMockSocket();
       getSocketSpy = spyOn(Utils, 'getSocket').and.returnValue(mockSocket as Socket);
+      spyOn(Math, 'random').and.returnValue(0);
     });
 
     it('should reuse an active shared socket instead of opening another connection', () => {
@@ -221,7 +222,7 @@ describe('ActivitySocketService', () => {
       expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
       expect(mockSocket.connect).toHaveBeenCalledTimes(1);
 
-      tick(1999);
+      tick(999);
       expect(mockSocket.connect).toHaveBeenCalledTimes(1);
 
       tick(1);
@@ -238,7 +239,7 @@ describe('ActivitySocketService', () => {
       mockSocket.trigger('connect_error');
       mockSocket.trigger('disconnect');
 
-      tick(2000);
+      tick(1000);
 
       expect(mockSocket.connect).toHaveBeenCalledTimes(2);
     }));
@@ -254,6 +255,19 @@ describe('ActivitySocketService', () => {
 
       expect(mockSocket.connect).toHaveBeenCalledTimes(1);
     }));
+
+    it('should randomize websocket reconnect delay between one and twenty seconds', () => {
+      (Math.random as jasmine.Spy).and.returnValues(0, 0.5, 0.999999999);
+
+      const minimumDelay = (ActivitySocketService as any).getReconnectDelayMs();
+      const middleDelay = (ActivitySocketService as any).getReconnectDelayMs();
+      const maximumDelay = (ActivitySocketService as any).getReconnectDelayMs();
+
+      expect(minimumDelay).toBe(1000);
+      expect(middleDelay).toBeGreaterThanOrEqual(1000);
+      expect(middleDelay).toBeLessThanOrEqual(20000);
+      expect(maximumDelay).toBe(20000);
+    });
   });
 
   describe('watchCases', () => {
