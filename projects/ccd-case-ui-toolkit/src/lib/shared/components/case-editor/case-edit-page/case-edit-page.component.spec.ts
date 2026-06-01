@@ -2306,6 +2306,57 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should interpolate placeholders in validation error translation args', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'READONLY',
+        1,
+        null,
+        true,
+        true
+      );
+      inlineDocTypeField.value = 'order';
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.value = {
+        inlineDocType: 'order',
+        isReady: null
+      };
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+
+      expect(comp.getRpxTranslatePipeArgs(approvalField.label)).toEqual({
+        FIELDLABEL: 'Is this order ready to be sealed and issued'
+      });
+    });
+
     it('should validate complex type fields and log error message when no error messages given', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',

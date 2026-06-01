@@ -761,11 +761,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public getRpxTranslatePipeArgs(fieldLabel: string): { FIELDLABEL: string } | null {
-    return fieldLabel ? ({ FIELDLABEL: fieldLabel }) : null;
+    return fieldLabel ? ({ FIELDLABEL: this.resolveLabelPlaceholders(fieldLabel) }) : null;
   }
 
   private getInterpolatedFieldLabel(caseField: CaseField): string {
     const label = caseField.label || 'Field';
+    return this.resolveLabelPlaceholders(label);
+  }
+
+  private resolveLabelPlaceholders(label: string): string {
     const dataControl = this.editForm?.controls?.['data'];
     const formFields = dataControl && typeof dataControl.getRawValue === 'function'
       ? dataControl.getRawValue()
