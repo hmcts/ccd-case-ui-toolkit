@@ -410,12 +410,22 @@ describe('CaseEventTriggerComponent', () => {
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   })
 
-  it('should emit edit only once when socket reconnects while staying on the page', () => {
+  it('should emit edit again when socket reconnects while staying on the page', () => {
     activitySocketService.editCalls = [];
 
     activityService.modeSubject.next(MODES.socket);
     activitySocketService.connected.next(true);
     activitySocketService.connected.next(false);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id, CASE_DETAILS.case_id]);
+  });
+
+  it('should not emit duplicate edit events for repeated connected notifications on the same socket', () => {
+    activitySocketService.editCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
     activitySocketService.connected.next(true);
 
     expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id]);

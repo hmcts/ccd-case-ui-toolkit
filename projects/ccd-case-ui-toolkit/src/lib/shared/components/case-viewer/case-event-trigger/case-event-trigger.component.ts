@@ -16,7 +16,7 @@ import {
 } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { EventTriggerResolver } from '../services';
-import { distinctUntilChanged, filter, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { MODES } from '../../../services/activity/utils';
 import { isSolicitorUser } from '../../../utils';
 
@@ -77,7 +77,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
           this.socketConnectSub = undefined;
           if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
               this.socketConnectSub = this.activitySocketService.connected
-                .pipe(filter(connected => connected), take(1))
+                .pipe(distinctUntilChanged(), filter(connected => connected))
                 .subscribe(() => this.activitySocketService.editCase(this.caseDetails.case_id, true));
           } else if (mode === MODES.polling) {
               this.ngZone.runOutsideAngular(() => {

@@ -818,12 +818,22 @@ it('should set case view tab based on navigation end event', () => {
     expect(caseFlagStateService.resetInitialCaseFlags).toHaveBeenCalled();
   });
 
-  it('should emit view only once when socket reconnects while staying on the page', () => {
+  it('should emit view again when socket reconnects while staying on the page', () => {
     activitySocketService.viewCalls = [];
 
     activityService.modeSubject.next(MODES.socket);
     activitySocketService.connected.next(true);
     activitySocketService.connected.next(false);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.viewCalls).toEqual([CID, CID]);
+  });
+
+  it('should not emit duplicate view events for repeated connected notifications on the same socket', () => {
+    activitySocketService.viewCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
     activitySocketService.connected.next(true);
 
     expect(activitySocketService.viewCalls).toEqual([CID]);
