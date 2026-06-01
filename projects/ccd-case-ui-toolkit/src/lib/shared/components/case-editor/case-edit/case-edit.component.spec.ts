@@ -1335,6 +1335,8 @@ describe('CaseEditComponent', () => {
 
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: '1234567890' } as CaseView;
+        mockWorkAllocationService.assignAndCompleteTask.and.returnValue(of({}));
 
         formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
@@ -1371,6 +1373,8 @@ describe('CaseEditComponent', () => {
 
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: '1234567890' } as CaseView;
+        mockWorkAllocationService.completeTask.and.returnValue(of({}));
 
         formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
@@ -1382,6 +1386,48 @@ describe('CaseEditComponent', () => {
         });
 
         expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
+      });
+
+      it('should submit the case and clear client context without completing task when case ids do not match', () => {
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), 'false');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: 'different-case-id' } as CaseView;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit
+        });
+
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith(
+          'postCompleteTaskIfRequired: task in session storage with taskId 1 has caseId: 1234567890 which does not match case details case id different-case-id, NOT completing task and clearing client context'
+        );
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT);
+        expect(mockWorkAllocationService.assignAndCompleteTask).not.toHaveBeenCalled();
+        expect(mockWorkAllocationService.completeTask).not.toHaveBeenCalled();
       });
 
       it('should submit the case and not complete task for an event submission when service makes this clear', () => {
