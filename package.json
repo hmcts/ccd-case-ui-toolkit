@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.53",
+  "version": "7.3.54-exui-1855-rc-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -104,7 +104,7 @@
     "@storybook/manager-webpack4": "^6.5.10",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/testing-library": "^0.2.0",
-    "@types/jasmine": "~2.8.0",
+    "@types/jasmine": "^6.0.0",
     "@types/node": "^20.19.0",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",
