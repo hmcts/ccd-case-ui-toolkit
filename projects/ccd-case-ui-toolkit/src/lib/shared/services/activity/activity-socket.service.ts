@@ -131,7 +131,7 @@ export class ActivitySocketService {
 
   // Emits a stopAll event for multiple cases and clears any matching view marker.
   public stopViewingCases(caseIds: string[]): void {
-    if (!caseIds || !caseIds.length) { return; }
+    if (!caseIds?.length) { return; }
     if (!this.socket || !this.connected.value) { return; }
     try {
       this.socket.emit('stopAll', { caseIds });
