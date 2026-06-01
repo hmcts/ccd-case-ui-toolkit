@@ -67,6 +67,14 @@ export class AppMockConfig implements AbstractAppConfig {
     return 'prod';
   }
 
+  public getWASupportedRoleCategories(): string[] {
+    return [];
+  }
+
+  public getWASupportedRoleTypes(): string[] {
+    return [];
+  }
+
   public getCaseHistoryUrl(caseId: string, eventId: string): string {
     return '';
   }
