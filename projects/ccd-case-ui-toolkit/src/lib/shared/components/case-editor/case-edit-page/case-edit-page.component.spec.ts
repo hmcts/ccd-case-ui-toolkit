@@ -1098,6 +1098,25 @@ describe('CaseEditPageComponent - all other tests', () => {
         status: CaseEditPageText.NEW_FORM_SAVE,
       });
     });
+
+    it('should use the end button label on the final page when summary page is hidden', () => {
+      caseEditComponentStub.eventTrigger.show_summary = false;
+      caseEditComponentStub.eventTrigger.end_button_label = CaseEditPageText.TRIGGER_TEXT_SAVE;
+
+      fixture.detectChanges();
+
+      const button = fixture.debugElement.query($SELECT_SUBMIT_BUTTON);
+      expect(button.nativeElement.textContent.trim()).toEqual(CaseEditPageText.TRIGGER_TEXT_SAVE);
+    });
+
+    it('should use Submit on the final page when summary page is hidden and end button label is not set', () => {
+      caseEditComponentStub.eventTrigger.show_summary = false;
+
+      fixture.detectChanges();
+
+      const button = fixture.debugElement.query($SELECT_SUBMIT_BUTTON);
+      expect(button.nativeElement.textContent.trim()).toEqual('Submit');
+    });
   });
 
   describe('updateFormData - should set data', () => {
