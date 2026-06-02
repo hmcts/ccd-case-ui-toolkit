@@ -331,7 +331,19 @@ export class ActivitySocketService {
 
   private static getReconnectDelayMs(): number {
     const delayRange = ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS - ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS + 1;
-    return Math.floor(Math.random() * delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
+    return ActivitySocketService.getCryptoRandomInt(delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
+  }
+
+  // Returns an unbiased crypto-random integer from 0 inclusive to exclusiveMax exclusive.
+  private static getCryptoRandomInt(exclusiveMax: number): number {
+    const randomValue = new Uint32Array(1);
+    const maxUnbiasedValue = Math.floor(0x100000000 / exclusiveMax) * exclusiveMax;
+
+    do {
+      globalThis.crypto.getRandomValues(randomValue);
+    } while (randomValue[0] >= maxUnbiasedValue);
+
+    return randomValue[0] % exclusiveMax;
   }
 
   // Treats connected, connecting, opening, and open sockets as active.

@@ -162,7 +162,10 @@ describe('ActivitySocketService', () => {
       resetSharedSocket();
       mockSocket = createMockSocket();
       getSocketSpy = spyOn(Utils, 'getSocket').and.returnValue(mockSocket as Socket);
-      spyOn(Math, 'random').and.returnValue(0);
+      spyOn(globalThis.crypto, 'getRandomValues').and.callFake((array: Uint32Array) => {
+        array[0] = 0;
+        return array;
+      });
     });
 
     it('should reuse an active shared socket instead of opening another connection', () => {
@@ -257,7 +260,11 @@ describe('ActivitySocketService', () => {
     }));
 
     it('should randomize websocket reconnect delay between one and twenty seconds', () => {
-      (Math.random as jasmine.Spy).and.returnValues(0, 0.5, 0.999999999);
+      const randomValues = [0, 9500, 19000];
+      (globalThis.crypto.getRandomValues as jasmine.Spy).and.callFake((array: Uint32Array) => {
+        array[0] = randomValues.shift();
+        return array;
+      });
 
       const minimumDelay = (ActivitySocketService as any).getReconnectDelayMs();
       const middleDelay = (ActivitySocketService as any).getReconnectDelayMs();
