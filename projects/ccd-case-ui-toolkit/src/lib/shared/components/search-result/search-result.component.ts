@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, skip } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -103,6 +105,7 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
   public selectedCases: SearchResultViewItem[] = [];
   private lastWatchedCaseIds: string[] = [];
   private lastWatchedCaseIdsKey: string | null = null;
+  private socketConnectSubscription: Subscription;
   private readonly alphabeticalCompare = (left: string, right: string): number => left.localeCompare(right);
 
   constructor(
@@ -130,9 +133,15 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
     }
     this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
+    if (!isSolicitorUser(this.sessionStorageService)) {
+      this.socketConnectSubscription = this.activitySocketService.connected
+        .pipe(skip(1), distinctUntilChanged(), filter(connected => connected))
+        .subscribe(() => this.watchResults(true));
+    }
   }
 
   public ngOnDestroy(): void {
+    this.socketConnectSubscription?.unsubscribe();
     if (this.activitySocketService.isEnabled && this.lastWatchedCaseIdsKey !== null) {
       this.activitySocketService.stopAllCase(this.lastWatchedCaseIds, true);
     }
@@ -460,11 +469,11 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
     }
   }
 
-  private watchResults(): void {
+  private watchResults(force = false): void {
     if (this.activitySocketService.isEnabled) {
       const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
       const watchKey = [...caseIds].sort(this.alphabeticalCompare).join(',');
-      if (watchKey === this.lastWatchedCaseIdsKey) {
+      if (!force && watchKey === this.lastWatchedCaseIdsKey) {
         return;
       }
 

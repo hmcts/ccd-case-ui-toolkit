@@ -195,6 +195,7 @@ describe('SearchResultComponent', () => {
       activitySocketService = {
         watching: [],
         isEnabled: true,
+        connected: new BehaviorSubject<boolean>(false),
         watchCases: jasmine.createSpy('watchCases'),
         stopAllCase: jasmine.createSpy('stopAllCase')
       };
@@ -827,6 +828,25 @@ describe('SearchResultComponent', () => {
       );
     });
 
+    it('should watch the same cases again when a new socket connects', () => {
+      const caseIds = RESULT_VIEW.results.map(result => result.case_id);
+      activitySocketService.watchCases.calls.reset();
+
+      activitySocketService.connected.next(true);
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+      expect(activitySocketService.watchCases).toHaveBeenCalledWith(caseIds);
+    });
+
+    it('should not duplicate watch calls for repeated connected notifications on the same socket', () => {
+      activitySocketService.watchCases.calls.reset();
+
+      activitySocketService.connected.next(true);
+      activitySocketService.connected.next(true);
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+    });
+
     it('should stop watching the last watched cases when destroyed', () => {
       const caseIds = RESULT_VIEW.results.map(result => result.case_id);
 
@@ -915,6 +935,7 @@ describe('SearchResultComponent', () => {
         activitySocketService = {
           watching: [],
           isEnabled: true,
+          connected: new BehaviorSubject<boolean>(false),
           watchCases: jasmine.createSpy('watchCases'),
           stopAllCase: jasmine.createSpy('stopAllCase')
         };
