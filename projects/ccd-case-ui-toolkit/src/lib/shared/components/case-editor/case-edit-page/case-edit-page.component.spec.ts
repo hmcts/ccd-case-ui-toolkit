@@ -537,7 +537,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          validPageList: pageList
+          validPageList: pageList,
+          caseNotifier: createSpyObj('caseNotifier', ['removeCachedCase'])
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -957,6 +958,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       linkedCasesService.initialCaseLinkRefs = ['REF1', 'REF2'];
       comp.cancel();
       expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
+      expect(caseEditComponentStub.caseNotifier.removeCachedCase).toHaveBeenCalled();
     });
   });
 
@@ -995,7 +997,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          validPageList: pageList
+          validPageList: pageList,
+          caseNotifier: createSpyObj('caseNotifier', ['removeCachedCase'])
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1130,6 +1133,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(cancelled.emit).not.toHaveBeenCalledWith({
         status: CaseEditPageText.NEW_FORM_SAVE,
       });
+      expect(caseEditComponentStub.caseNotifier.removeCachedCase).toHaveBeenCalled();
     });
   });
 
