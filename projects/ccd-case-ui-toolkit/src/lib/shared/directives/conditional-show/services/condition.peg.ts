@@ -25,7 +25,7 @@ const conditionSource =
     / OpenFormula
 
   EnclosedFormula
-    = bracket formula:OpenFormula bracket join:(JoinComparator)*
+    = openBracket formula:OpenFormula closeBracket join:(JoinComparator)*
       { return flat([ [formula], join[0] ], 1) }
 
   OpenFormula
@@ -38,7 +38,7 @@ const conditionSource =
       / CompoundJoinComparator
 
   CompoundJoinComparator
-    = comp:Comparator bracket f:OpenFormula bracket
+    = comp:Comparator openBracket f:OpenFormula closeBracket
       { return [comp, f ] }
 
   OpenEqualityCheck
@@ -87,8 +87,11 @@ const conditionSource =
    = '"'val:[A-Za-z0-9.,* _&()/-]*'"'
    { return val.join(""); }
 
-  bracket
-   = (_? "("+ _? / _? ")"+ _? )
+  openBracket
+   = _? "("+ _?
+
+  closeBracket
+   = _? ")" _?
 
   operator
    = "=" / "!=" / "CONTAINS"

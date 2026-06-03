@@ -342,6 +342,22 @@ describe('ConditionParser', () => {
               { fieldReference: 'x', comparator: '=', value: 'x' }
             ]
           ]
+        },
+        {
+          input: 'Field1="XXXX" AND (Field2="YYYY" OR (Field1="XXXX" AND Field2="ZZZZ"))',
+          expected: [
+            { fieldReference: 'Field1', comparator: '=', value: 'XXXX' },
+            'AND',
+            [
+              { fieldReference: 'Field2', comparator: '=', value: 'YYYY' },
+              'OR',
+              [
+                { fieldReference: 'Field1', comparator: '=', value: 'XXXX' },
+                'AND',
+                { fieldReference: 'Field2', comparator: '=', value: 'ZZZZ' }
+              ]
+            ]
+          ]
         }
       ];
 
