@@ -564,6 +564,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.cancelled.emit();
     }
 
+    // clear CaseView cache to allow any incidental changes to get picked up once the edit has cancelled
+    this.caseEdit.caseNotifier.removeCachedCase();
+
     this.clearValidationErrors();
     this.multipageComponentStateService.reset();
   }
