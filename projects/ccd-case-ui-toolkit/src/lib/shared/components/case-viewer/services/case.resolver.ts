@@ -114,7 +114,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private processErrorInCaseFetch(error: any, caseReference: string) {
-    this.logger.error('Error while fetching case view.', { caseReference, error });
     // TODO Should be logged to remote logging infrastructure
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);

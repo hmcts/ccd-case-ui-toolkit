@@ -57,7 +57,6 @@ export class HttpErrorService {
   }
 
   public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
-    HttpErrorService.logger.error('Handling error in http error service.', { error });
     if (this.loadingService.hasSharedSpinner()){
       this.loadingService.unregisterSharedSpinner();
     }
