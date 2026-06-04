@@ -8,9 +8,6 @@ export interface AccessManagementBasicViewMockModel {
   };
   accessProcess?: string;
 }
-
-const toolkitPrepushLintFailure = "lint-test";
-
 export interface AccessManagementRequestReviewMockModel {
   active?: boolean;
   details?: {
