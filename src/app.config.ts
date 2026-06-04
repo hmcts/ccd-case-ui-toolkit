@@ -8,6 +8,7 @@ export interface AccessManagementBasicViewMockModel {
   };
   accessProcess?: string;
 }
+
 export interface AccessManagementRequestReviewMockModel {
   active?: boolean;
   details?: {
