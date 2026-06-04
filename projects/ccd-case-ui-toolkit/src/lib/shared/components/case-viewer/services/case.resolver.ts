@@ -5,7 +5,7 @@ import { of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
-import { DraftService, NavigationOrigin, SessionStorageService, StructuredLoggerService } from '../../../services';
+import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
 import { safeJsonParse } from '../../../json-utils';
@@ -21,7 +21,6 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
-  private readonly logger = new StructuredLoggerService();
 
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
@@ -44,12 +43,10 @@ export class CaseResolver implements Resolve<CaseView> {
 
     // Prevent resolving if eventId=queryManagementRespondQuery is in the URL
     if (currentUrl.includes(CaseResolver.EVENT_ID_QM_RESPOND_TO_QUERY)) {
-      this.logger.info('Skipping resolve for event queryManagementRespondQuery.');
       this.goToDefaultPage();
     }
 
     if (!cid) {
-      this.logger.info('No case ID available in the route. Will navigate to case list.');
       // when redirected to case view after a case created, and the user has no READ access,
       // the post returns no id
       this.navigateToCaseList();
@@ -142,7 +139,6 @@ export class CaseResolver implements Resolve<CaseView> {
 
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
-    this.logger.info('Going to default page.');
     const userDetails = safeJsonParse<any>(this.sessionStorage.getItem(USER_DETAILS));
     userDetails && userDetails.roles
         && !userDetails.roles.includes(PUI_CASE_MANAGER)
