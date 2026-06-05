@@ -104,7 +104,7 @@
     "@storybook/manager-webpack4": "^6.5.10",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/testing-library": "^0.2.0",
-    "@types/jasmine": "^6.0.0",
+    "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",

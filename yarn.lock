@@ -3425,7 +3425,7 @@ __metadata:
     "@storybook/manager-webpack4": "npm:^6.5.10"
     "@storybook/preset-scss": "npm:^1.0.3"
     "@storybook/testing-library": "npm:^0.2.0"
-    "@types/jasmine": "npm:^6.0.0"
+    "@types/jasmine": "npm:~5.1.0"
     "@types/node": "npm:^20.19.0"
     "@types/pegjs": "npm:^0.10.0"
     "@types/underscore": "npm:^1.11.4"
@@ -8035,10 +8035,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@types/jasmine@npm:6.0.0"
-  checksum: 10/22a838ab8d3221da78629819744b7a0065ce6381d198d745258c3ec29974470240160d47fb06b629c1653f285ed23c15c101f0f6939d2817abc02f253ff491b7
+"@types/jasmine@npm:~5.1.0":
+  version: 5.1.15
+  resolution: "@types/jasmine@npm:5.1.15"
+  checksum: 10/e86a962c153ff91ffe3c65a633578a5e3f6e065e58268c00e839b03dac6792b1e0a2afca216ccfa1e31647e49ef1a935332242350dca91a2940ad883643abd04
   languageName: node
   linkType: hard
 
