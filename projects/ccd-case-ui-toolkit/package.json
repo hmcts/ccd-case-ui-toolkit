@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.53-polling",
+  "version": "7.3.54-polling",
   "engines": {
     "node": ">=20.19.0"
   },
