@@ -133,6 +133,7 @@
     "gulp": "^4.0.2",
     "gulp-inline-ng2-template": "^5.0.1",
     "gulp-sass": "^5.1.0",
+    "husky": "^9.1.7",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jasmine-core": "~5.1.0",
     "jasmine-spec-reporter": "~7.0.0",
