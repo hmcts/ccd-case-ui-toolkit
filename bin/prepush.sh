@@ -5,8 +5,8 @@ lint_status=$?
 
 if [ "$lint_status" -ne 0 ]; then
   printf "=============================================================\n" >&2
-  printf "The following command failed: lint\n" >&2
-  printf "Fix the lint errors, then push again.\n" >&2
+  printf "The following command failed: yarn lint\n" >&2
+  printf "run yarn lint command to find the lint errors and fix them, then push again.\n" >&2
   printf "=============================================================\n" >&2
   exit "$lint_status"
 fi
