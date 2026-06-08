@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dial
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { CaseEditFormComponent } from '../case-edit-form/case-edit-form.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
@@ -65,6 +66,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public dialogRefAfterClosedSub: Subscription;
   public saveDraftSub: Subscription;
   public caseFormValidationErrorsSub: Subscription;
+
+  @ViewChildren(CaseEditFormComponent)
+  private caseEditFormComponents: QueryList<CaseEditFormComponent>;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -395,6 +399,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.caseEditDataService.clearFormValidationErrors();
     this.checkForStagesCompleted();
+    this.caseEditFormComponents?.forEach(component => component.syncConditionalShowStates());
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
