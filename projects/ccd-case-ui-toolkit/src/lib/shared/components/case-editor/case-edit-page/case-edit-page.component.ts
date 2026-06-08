@@ -68,7 +68,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public caseFormValidationErrorsSub: Subscription;
 
   @ViewChildren(CaseEditFormComponent)
-  private caseEditFormComponents: QueryList<CaseEditFormComponent>;
+  private readonly caseEditFormComponents: QueryList<CaseEditFormComponent>;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);

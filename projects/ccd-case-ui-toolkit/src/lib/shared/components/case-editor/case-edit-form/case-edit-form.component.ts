@@ -14,7 +14,7 @@ import { FormValueService } from '../../../services/form/form-value.service';
 export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
 
   @ViewChildren(ConditionalShowFormDirective)
-  private conditionalShowFormDirectives: QueryList<ConditionalShowFormDirective>;
+  private readonly conditionalShowFormDirectives: QueryList<ConditionalShowFormDirective>;
 
   @Input()
   public fields: CaseField[] = [];
