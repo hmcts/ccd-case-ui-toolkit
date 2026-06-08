@@ -317,6 +317,8 @@ export class ActivitySocketService {
       return;
     }
 
+    console.warn('Activity socket connection lost, scheduling reconnect...'); 
+
     state.reconnectTimer = setTimeout(() => {
       state.reconnectTimer = undefined;
       if (socket === state.socket && state.owners.size > 0 && !ActivitySocketService.isSocketActive(socket)) {
@@ -331,7 +333,9 @@ export class ActivitySocketService {
 
   private static getReconnectDelayMs(): number {
     const delayRange = ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS - ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS + 1;
-    return ActivitySocketService.getCryptoRandomInt(delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
+    const randomDelay = ActivitySocketService.getCryptoRandomInt(delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
+    console.log(`Activity socket reconnect scheduled in ${randomDelay}ms`);  
+    return randomDelay;
   }
 
   // Returns an unbiased crypto-random integer from 0 inclusive to exclusiveMax exclusive.
