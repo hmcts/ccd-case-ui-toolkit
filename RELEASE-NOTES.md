@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.54-exui-4675
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111
 **EXUI-4637** Revert EXUI-2645
