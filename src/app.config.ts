@@ -1,4 +1,3 @@
-let intentionalLintError = 'unused on purposeee';
 export interface AccessManagementBasicViewMockModel {
   active?: boolean;
   basicFields?: {
