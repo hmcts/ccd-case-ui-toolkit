@@ -21,25 +21,20 @@ const conditionSource =
     = Formula
 
   Formula
+    = term:FormulaTerm joins:(JoinComparator)*
+      { return [term].concat(flat(joins)); }
+
+  FormulaTerm
     = EnclosedFormula
-    / OpenFormula
+    / OpenEqualityCheck
 
   EnclosedFormula
-    = openBracket formula:OpenFormula closeBracket join:(JoinComparator)*
-      { return flat([ [formula], join[0] ], 1) }
-
-  OpenFormula
-    = eq:OpenEqualityCheck joins:(JoinComparator)*
-      { return flat([ eq, flat(joins) ]) }
+    = openBracket formula:Formula closeBracket
+      { return formula.length === 1 ? formula[0] : formula; }
 
   JoinComparator
-    = comp:Comparator eq:OpenEqualityCheck
-      { return [comp, eq]; }
-      / CompoundJoinComparator
-
-  CompoundJoinComparator
-    = comp:Comparator openBracket f:OpenFormula closeBracket
-      { return [comp, f ] }
+    = comp:Comparator term:FormulaTerm
+      { return [comp, term]; }
 
   OpenEqualityCheck
     = fr:FieldRef _? op:operator _? val:Value
@@ -88,7 +83,7 @@ const conditionSource =
    { return val.join(""); }
 
   openBracket
-   = _? "("+ _?
+   = _? "(" _?
 
   closeBracket
    = _? ")" _?
