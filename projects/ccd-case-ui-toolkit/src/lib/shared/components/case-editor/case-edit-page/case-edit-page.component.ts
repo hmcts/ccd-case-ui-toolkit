@@ -461,6 +461,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
     /* istanbul ignore else */
     if (eventTrigger?.case_fields) {
+      const isCaseFlagJourney = eventTrigger.case_fields.some((caseField) => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
+      if (isCaseFlagJourney) {
+        return;
+      }
       eventTrigger.case_fields
         .filter(element => element.id === caseFieldId)
         .forEach(element => {
