@@ -341,6 +341,39 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
+
+    it('should NOT update event trigger case fields when the journey contains a FlagLauncher field', () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const originalValue = {
+        people: {
+          value: false
+        }
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: {
+            people: {
+              value: true
+            }
+          }
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null),
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: originalValue
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][1].value).toEqual(originalValue);
+    });
   });
 });
 
