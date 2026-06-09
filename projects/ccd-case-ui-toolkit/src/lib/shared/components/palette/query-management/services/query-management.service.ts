@@ -4,6 +4,7 @@ import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/sha
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService } from '../../../../services';
 import { isInternalUser, isJudiciaryUser, USER_DETAILS } from '../../../../utils';
+import { safeJsonParse } from '../../../../json-utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,
@@ -43,7 +44,7 @@ export class QueryManagementService {
     let currentUserDetails;
 
     try {
-      currentUserDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
+      currentUserDetails = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
     } catch (e) {
       console.error('Could not parse USER_DETAILS from session storage:', e);
       currentUserDetails = {};
@@ -238,4 +239,3 @@ export class QueryManagementService {
     return jurisdiction.toUpperCase() === CIVIL_JURISDICTION ? QM_SELECT_FIRST_COLLECTION : QM_COLLECTION_PROMPT;
   }
 }
-

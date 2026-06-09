@@ -16,6 +16,7 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 type CollectionItem = {
+  uid: string;
   caseField: CaseField;
   item: any;
   prefix: string;
@@ -41,6 +42,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   @ViewChildren('collectionItem')
   private readonly items: QueryList<ElementRef>;
   public readonly collItems: CollectionItem[] = [];
+  private collectionItemUidCounter = 0;
 
   constructor(private readonly dialog: MatDialog,
     private readonly scrollToService: ScrollToService,
@@ -65,7 +67,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       if (this.collItems.length <= index) {
         this.collItems.length = index + 1;
       }
-      this.collItems[index] = { caseField, item, prefix, index, container };
+      this.collItems[index] = { uid: this.createCollectionItemUid(), caseField, item, prefix, index, container };
     });
   }
 
@@ -182,7 +184,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     const caseField: CaseField = this.buildCaseField(item, index, true);
     const prefix = this.buildIdPrefix(index);
     const container = this.getContainer(index);
-    this.collItems.push({ caseField, item, index, prefix, container });
+    this.collItems.push({ uid: this.createCollectionItemUid(), caseField, item, index, prefix, container });
 
     // Update DOM required after pushing a new item to do the next steps (i.e. scrolling and focusing)
     this.cdRef.detectChanges();
@@ -249,6 +251,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.resetIds(index);
     this.caseField.value.splice(index, 1);
     this.formArray.removeAt(index);
+  }
+
+  public trackByCollectionItem(_: number, item: CollectionItem): string {
+    return item.uid;
+  }
+
+  private createCollectionItemUid(): string {
+    return `collection-item-${this.collectionItemUidCounter++}`;
   }
 
   private resetIds(index: number): void {
