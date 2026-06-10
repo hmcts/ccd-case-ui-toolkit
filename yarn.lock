@@ -3610,7 +3610,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.18-4435"
+    "@hmcts/media-viewer": "npm:4.2.18-exui-4295-cve-fix"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -3734,9 +3734,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.18-4435":
-  version: 4.2.18-4435
-  resolution: "@hmcts/media-viewer@npm:4.2.18-4435"
+"@hmcts/media-viewer@npm:4.2.18-exui-4295-cve-fix":
+  version: 4.2.18-exui-4295-cve-fix
+  resolution: "@hmcts/media-viewer@npm:4.2.18-exui-4295-cve-fix"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
