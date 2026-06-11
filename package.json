@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.55",
+  "version": "7.3.56",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -77,7 +77,7 @@
     "ngx-markdown": "^20",
     "ngx-pagination": "6.0.3",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "1.2.3-unused-package-1",
+    "rpx-xui-translation": "1.2.4",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
