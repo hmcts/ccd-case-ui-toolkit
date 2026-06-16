@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+### Version 7.3.59
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.58
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
 ### Version 7.3.57
 **EXUI-4298** Suppressions - express - major
 
