@@ -1,8 +1,24 @@
 ## RELEASE NOTES
 
-### Version 7.3.52-exui-3003-3005
+### Version 7.3.57-exui-3003-3005
 **EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
 **EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
+
+### Version 7.3.57
+**EXUI-4298** Suppressions - express - major
+
+### Version 7.3.56
+**EXUI-4341** Remove unused packages
+
+### Version 7.3.55
+**EXUI-4442** Datepicker component 'Confirm' button
+
+### Version 7.3.54
+**EXUI-4636** Revert CME-220  and EXUI-2111
+**EXUI-4637** Revert EXUI-2645
+
+### Version 7.3.53
+**EXUI-4563** SRT Release
 
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
