@@ -188,6 +188,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public onJurisdictionIdChange() {
+    this.clearStoredWorkbasketFilterValues();
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0
@@ -203,7 +204,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.clearWorkbasketInputs();
 
       if (!this.isApplyButtonDisabled()) {
-        this.onCaseTypeIdChange();
+        this.onCaseTypeIdChange(false);
       }
     } else {
       this.resetCaseType();
@@ -211,7 +212,10 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
   }
 
-  public onCaseTypeIdChange(): void {
+  public onCaseTypeIdChange(clearStoredValues = true): void {
+    if (clearStoredValues) {
+      this.clearStoredWorkbasketFilterValues();
+    }
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
@@ -317,7 +321,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
         if (this.selected.caseType) {
-          this.onCaseTypeIdChange();
+          this.onCaseTypeIdChange(false);
           this.selected.caseState = this.selectCaseState(this.selected.caseType, routeSnapshot);
         }
         this.workbasketDefaults = true;
@@ -368,6 +372,10 @@ export class WorkbasketFiltersComponent implements OnInit {
   private clearWorkbasketInputs() {
     this.workbasketInputsReady = false;
     this.workbasketInputs = [];
+  }
+
+  private clearStoredWorkbasketFilterValues() {
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
   }
 
   private resetCaseState() {
