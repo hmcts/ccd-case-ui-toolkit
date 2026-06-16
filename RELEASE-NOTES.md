@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.57
+**EXUI-4298** Suppressions - express - major
+
+### Version 7.3.56
+**EXUI-4341** Remove unused packages
+
 ### Version 7.3.55
 **EXUI-4442** Datepicker component 'Confirm' button
 
