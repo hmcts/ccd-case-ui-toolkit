@@ -144,6 +144,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public ngOnInit(): void {
     initDialog();
+    this.clearValidationErrors();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
@@ -201,6 +202,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.dialogRefAfterClosedSub?.unsubscribe();
     this.saveDraftSub?.unsubscribe();
     this.caseFormValidationErrorsSub?.unsubscribe();
+    this.clearValidationErrors();
     this.multipageComponentStateService.reset();
   }
 
@@ -229,7 +231,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
   public toPreviousPage(): void {
-    this.caseEditDataService.clearFormValidationErrors();
+    this.clearValidationErrors();
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
@@ -397,7 +399,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       }
     }
 
-    this.caseEditDataService.clearFormValidationErrors();
+    this.clearValidationErrors();
     this.checkForStagesCompleted();
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
@@ -571,7 +573,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.cancelled.emit();
     }
 
-    this.caseEditDataService.clearFormValidationErrors();
+    this.clearValidationErrors();
     this.multipageComponentStateService.reset();
   }
 
@@ -656,12 +658,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   private resetErrors(): void {
+    this.clearValidationErrors();
     this.caseEdit.error = null;
     this.caseEdit.ignoreWarning = false;
     this.triggerText = this.getTriggerText();
     if (this.caseEdit.callbackErrorsSubject) {
       this.caseEdit.callbackErrorsSubject.next(null);
     }
+  }
+
+  private clearValidationErrors(): void {
+    this.validationErrors = [];
+    this.caseEditDataService?.clearFormValidationErrors?.();
   }
 
   private saveDraft() {
