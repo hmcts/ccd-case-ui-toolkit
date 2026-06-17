@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.57-message-interpolation-01",
+  "version": "7.3.59-message-interpolation-01",
   "engines": {
     "node": ">=20.19.0"
   },
