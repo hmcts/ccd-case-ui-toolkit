@@ -3,6 +3,27 @@
 ### Version 7.3.52-exui-4309
 **EXUI-4309** Error messaging when changing from an event to create case
 
+### Version 7.3.59
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.58
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.57
+**EXUI-4298** Suppressions - express - major
+
+### Version 7.3.56
+**EXUI-4341** Remove unused packages
+
+### Version 7.3.55
+**EXUI-4442** Datepicker component 'Confirm' button
+
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111
 **EXUI-4637** Revert EXUI-2645
