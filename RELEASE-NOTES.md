@@ -1,5 +1,8 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.64
+**EXUI-4297** Suppressions - glob - major
+
 ### Version 7.3.63
 **EXUI-3229** Event triggers cause duplicate requests
 
