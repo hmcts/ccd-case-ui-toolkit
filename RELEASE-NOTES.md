@@ -1,5 +1,10 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.62
+**POFCC-105** Monetary field adds a decimal point to invalid value
+**POFCC-78** First click not detected for radio options in an ExUI collection
+**POFCC-10** Defendant type - nested fields - error message
+
 ### Version 7.3.61
 **EXUI-4108** Remove deprecated rx-polling-hmcts
 
