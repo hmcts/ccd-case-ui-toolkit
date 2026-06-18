@@ -1,5 +1,8 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.64
+**EXUI-4297** Suppressions - glob - major
+
 ### Version 7.3.63
 **EXUI-3229** Event triggers cause duplicate requests
 
@@ -41,9 +44,6 @@
 
 ### Version 7.3.53
 **EXUI-4563** SRT Release
-
-### Version 7.3.52-exui-4297
-**EXUI-4297** Suppressions - glob - major
 
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
