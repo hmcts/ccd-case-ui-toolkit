@@ -1,5 +1,8 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.63
+**EXUI-3229** Event triggers cause duplicate requests
+
 ### Version 7.3.62
 **POFCC-105** Monetary field adds a decimal point to invalid value
 **POFCC-78** First click not detected for radio options in an ExUI collection
@@ -31,9 +34,6 @@
 
 ### Version 7.3.55
 **EXUI-4442** Datepicker component 'Confirm' button
-
-### Version 7.3.54-exui-3229
-**EXUI-3229** Event triggers cause duplicate requests
 
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111
