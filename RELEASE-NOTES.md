@@ -1,5 +1,9 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.63-exui-3003-3005
+**EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
+**EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
+
 ### Version 7.3.63
 **EXUI-3229** Event triggers cause duplicate requests
 
@@ -25,10 +29,6 @@
 **EXUI-4300** Suppressions - core-js - major
 **EXUI-4295** Suppressions - axios - major
 **EXUI-4369** CVE Vulnerabilites
-
-### Version 7.3.57-exui-3003-3005
-**EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
-**EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
 
 ### Version 7.3.57
 **EXUI-4298** Suppressions - express - major
