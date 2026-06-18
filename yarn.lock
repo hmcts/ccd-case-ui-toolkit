@@ -2414,7 +2414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@edium/fsm@npm:^3.0.1":
+"@edium/fsm@npm:^3.0.2":
   version: 3.0.2
   resolution: "@edium/fsm@npm:3.0.2"
   dependencies:
@@ -3121,7 +3121,7 @@ __metadata:
     "@angular/upgrade": "npm:^20.3.18"
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
-    "@edium/fsm": "npm:^3.0.1"
+    "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.20"
     "@ngrx/effects": "npm:17.2.0"

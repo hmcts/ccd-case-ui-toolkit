@@ -57,15 +57,9 @@
     "@angular/platform-browser-dynamic": "^20.3.18",
     "@angular/router": "^20.3.18",
     "@angular/upgrade": "^20.3.18",
-<<<<<<< HEAD
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.16-exui-4425-rc1",
-=======
-    "@edium/fsm": "^3.0.1",
-    "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/media-viewer": "4.2.20",
->>>>>>> f9daa062866898a7d9315ac6ab10149f840cec19
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
