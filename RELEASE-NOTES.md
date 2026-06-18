@@ -1,4 +1,7 @@
-## RELEASE NOTES-exui-4309
+## RELEASE NOTES
+
+### Version 7.3.65
+**EXUI-4648** Redact Sensitive Information Logged In through Console
 
 ### Version 7.3.64
 **EXUI-4297** Suppressions - glob - major
