@@ -1,4 +1,36 @@
-## RELEASE NOTES
+## RELEASE NOTES-exui-4309
+
+### Version 7.3.62
+**POFCC-105** Monetary field adds a decimal point to invalid value
+**POFCC-78** First click not detected for radio options in an ExUI collection
+**POFCC-10** Defendant type - nested fields - error message
+
+### Version 7.3.61
+**EXUI-4108** Remove deprecated rx-polling-hmcts
+
+### Version 7.3.60
+**EXUI-4309** Error messaging when changing from an event to create case
+
+### Version 7.3.59
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.58
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.57
+**EXUI-4298** Suppressions - express - major
+
+### Version 7.3.56
+**EXUI-4341** Remove unused packages
+
+### Version 7.3.55
+**EXUI-4442** Datepicker component 'Confirm' button
 
 ### Version 7.3.54-exui-3229
 **EXUI-3229** Event triggers cause duplicate requests
