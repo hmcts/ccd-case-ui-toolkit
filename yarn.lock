@@ -3258,7 +3258,7 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     rpx-xui-translation: 1.2.3
-  checksum: 10/d503cae67871679f5071b97233d6d756eeb95f0da81cc92d81ef9b959cc4ab7dec9e0cefbe1034ea453b1d03b4f6b5a8b18fd11e82f5676e80650c5ce8a43313
+  checksum: 10/8a72c803513df01364dced44148a8c5f75359a41b07261f4ce0eb2087fd9d9b409fa0a6ff77dba83bb9b9da6b46d0198a7839e97f68fd1c22bf950bfb6bffd7f
   languageName: node
   linkType: hard
 
