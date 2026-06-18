@@ -341,6 +341,39 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
+
+    it('should NOT update event trigger case fields when the journey contains a FlagLauncher field', () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const originalValue = {
+        people: {
+          value: false
+        }
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: {
+            people: {
+              value: true
+            }
+          }
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null),
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: originalValue
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][1].value).toEqual(originalValue);
+    });
   });
 });
 
@@ -649,6 +682,29 @@ describe('CaseEditPageComponent - all other tests', () => {
     it('should init to the provided first page in event trigger', () => {
       comp.ngOnInit();
       expect(comp.currentPage).toEqual(firstPage);
+    });
+
+    it('should clear stale validation errors on init', () => {
+      const staleValidationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+      caseEditDataService.caseFormValidationErrors$.next(staleValidationErrors);
+      caseEditDataService.clearFormValidationErrors.and.callFake(() => {
+        caseEditDataService.caseFormValidationErrors$.next([]);
+      });
+
+      comp.validationErrors = staleValidationErrors;
+      comp.ngOnInit();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
+    });
+
+    it('should clear validation errors when destroyed', () => {
+      comp.validationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+
+      comp.ngOnDestroy();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
     });
 
     it('should return true on hasPrevious check', () => {
