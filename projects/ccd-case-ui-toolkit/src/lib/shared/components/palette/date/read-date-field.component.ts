@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { CaseView } from '../../../domain/case-view/case-view.model';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
+import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
 
 @Component({
   selector: 'ccd-read-date-field',
@@ -39,7 +40,12 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
   }
 
   private shouldRenderInLocalTime(): boolean {
-    return ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(this.getHmctsServiceId());
+    return !this.isFormOriginField() &&
+      ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(this.getHmctsServiceId());
+  }
+
+  private isFormOriginField(): boolean {
+    return this.valueOrigin === PaletteValueOrigin.FORM;
   }
 
   private getHmctsServiceId(): string {

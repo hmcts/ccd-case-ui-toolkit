@@ -7,6 +7,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { CaseNotifier } from '../../case-editor';
+import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
 import { DatePipe } from '../utils/date.pipe';
 import { ReadDateFieldComponent } from './read-date-field.component';
 
@@ -136,27 +137,18 @@ describe('ReadDateFieldComponent', () => {
 
   describe('Service-specific readonly date field time zone', () => {
     const DATE_TIME_VALUE = '2025-07-26T20:10:05Z';
-    const CASE_FIELD: CaseField = ({
-      id: FIELD_ID,
-      label: 'X',
-      display_context: 'OPTIONAL',
-      field_type: {
-        id: 'DateTime',
-        type: 'DateTime'
-      },
-      value: DATE_TIME_VALUE
-    }) as CaseField;
 
     let fixture: ComponentFixture<ReadDateFieldComponent>;
     let component: ReadDateFieldComponent;
     let de: DebugElement;
     let caseViewSubject: BehaviorSubject<CaseView>;
     let expectedLocalDateTime: string;
+    let expectedUtcDateTime: string;
 
     beforeEach(waitForAsync(() => {
-      delete CASE_FIELD.hmctsServiceId;
       caseViewSubject = new BehaviorSubject<CaseView>(createCaseView('CIVIL', 'CIVIL'));
       expectedLocalDateTime = new DatePipe(new FormatTranslatorService()).transform(DATE_TIME_VALUE, 'local', null);
+      expectedUtcDateTime = new DatePipe(new FormatTranslatorService()).transform(DATE_TIME_VALUE, 'utc', null);
 
       TestBed
         .configureTestingModule({
@@ -178,7 +170,7 @@ describe('ReadDateFieldComponent', () => {
 
       fixture = TestBed.createComponent(ReadDateFieldComponent);
       component = fixture.componentInstance;
-      component.caseField = CASE_FIELD;
+      component.caseField = createDateTimeCaseField(FIELD_ID, DATE_TIME_VALUE);
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -233,6 +225,28 @@ describe('ReadDateFieldComponent', () => {
       expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
     });
 
+    ['ABA1', 'ABA2', 'ABA6'].forEach((hmctsServiceId) => {
+      it(`should use local time zone for backend-origin fields in ${hmctsServiceId}`, () => {
+        caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', hmctsServiceId));
+        fixture.detectChanges();
+
+        expect(component.timeZone).toBe('local');
+        expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
+      });
+    });
+
+    ['ABA1', 'ABA2'].forEach((hmctsServiceId) => {
+      it(`should keep utc time zone for form-origin fields in ${hmctsServiceId}`, () => {
+        component.valueOrigin = PaletteValueOrigin.FORM;
+        component.caseField.display_context = null;
+        caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', hmctsServiceId));
+        fixture.detectChanges();
+
+        expect(component.timeZone).toBe('utc');
+        expect(de.nativeElement.textContent).toEqual(expectedUtcDateTime);
+      });
+    });
+
     it('should keep utc time zone for Financial Remedy case types without a resolved HMCTS service ID', () => {
       caseViewSubject.next(createCaseView('DIVORCE', 'FinancialRemedyMVP2'));
       fixture.detectChanges();
@@ -268,4 +282,16 @@ function createCaseView(jurisdictionId: string, caseTypeId: string, hmctsService
   }
 
   return caseView;
+}
+
+function createDateTimeCaseField(id: string, value: string): CaseField {
+  return ({
+    id,
+    label: 'X',
+    field_type: {
+      id: 'DateTime',
+      type: 'DateTime'
+    },
+    value
+  }) as CaseField;
 }
