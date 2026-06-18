@@ -3241,7 +3241,7 @@ __metadata:
   resolution: "@hmcts/media-viewer@npm:4.2.20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
-    moment-timezone: "npm:^0.5.28"
+    moment-timezone: "npm:^0.5.31"
     mutable-div: "npm:^2.0.0"
     pdfjs-dist: "npm:^4.10.38"
     socket.io-client: "npm:^4.8.0"
@@ -16665,7 +16665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.28, moment-timezone@npm:^0.5.31":
+"moment-timezone@npm:^0.5.31":
   version: 0.5.48
   resolution: "moment-timezone@npm:0.5.48"
   dependencies:
