@@ -1,5 +1,8 @@
 ## RELEASE NOTES-exui-4309
 
+### Version 7.3.64-exui-4291
+**EXUI-4291** Suppressions - @edium/fsm - major
+
 ### Version 7.3.64
 **EXUI-4297** Suppressions - glob - major
 
@@ -41,9 +44,6 @@
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111
 **EXUI-4637** Revert EXUI-2645
-
-### Version 7.3.53-exui-4291
-**EXUI-4291** Suppressions - @edium/fsm - major
 
 ### Version 7.3.53
 **EXUI-4563** SRT Release
