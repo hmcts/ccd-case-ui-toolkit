@@ -1,4 +1,10 @@
-## RELEASE NOTES
+## RELEASE NOTES-exui-4309
+
+### Version 7.3.61
+**EXUI-4108** Remove deprecated rx-polling-hmcts
+
+### Version 7.3.60
+**EXUI-4309** Error messaging when changing from an event to create case
 
 ### Version 7.3.59
 **EXUI-4435** CVE Vulnerabilities Apr 26

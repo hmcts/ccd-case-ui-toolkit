@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.60-fix-case-filter-issue",
+  "version": "7.3.62-fix-case-filter-issue",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -75,7 +75,6 @@
     "ngx-pagination": "6.0.3",
     "pegjs": "^0.10.0",
     "rpx-xui-translation": "1.2.4",
-    "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.13.8",

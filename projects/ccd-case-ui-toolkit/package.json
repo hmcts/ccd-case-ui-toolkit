@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.60-fix-case-filter-issue",
+  "version": "7.3.62-fix-case-filter-issue",
   "engines": {
     "node": ">=20.19.0"
   },
