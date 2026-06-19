@@ -5,6 +5,7 @@ import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session';
 import { USER_DETAILS } from '../../utils';
 import { MODES } from '../activity/utils';
@@ -80,7 +81,7 @@ export class ActivityService {
       const url = `${this.activityUrl}/cases/${caseId.join(',')}/activity`;
       return this.http.get(url, options, false, ActivityService.handleHttpError);
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -91,7 +92,7 @@ export class ActivityService {
       const body = { activity };
       return this.http.post(url, body, options, false);
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -116,5 +117,9 @@ export class ActivityService {
  private setupActivityUrl(): void {
     this.pActivityUrl = this.appConfig.getActivityUrl();
     this.pActivityUrlSet = true;
+  }
+
+  private logUserMayNotBeAuthenticated(error: unknown): void {
+    this.logger.error('User may not be authenticated. Activity request was not sent.', { error });
   }
 }

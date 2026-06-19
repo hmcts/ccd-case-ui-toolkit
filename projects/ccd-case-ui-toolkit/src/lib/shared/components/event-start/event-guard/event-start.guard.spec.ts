@@ -5,6 +5,7 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { ReadCookieService, SessionStorageService } from '../../../services';
 import { CaseEditComponent, CaseNotifier, WorkAllocationService } from '../../case-editor';
+import { EVENT_START_FIRST_PAGE_REDIRECT } from '../../case-editor/case-edit-utils/case-edit.utils';
 import { EventStartGuard } from './event-start.guard';
 import { AbstractAppConfig } from '../../../../app.config';
 import { getMockCaseNotifier } from '../../case-editor/services/case.notifier.spec';
@@ -40,11 +41,12 @@ describe('EventStartGuard', () => {
 
   beforeEach(() => {
     service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', ['navigate', 'getCurrentNavigation']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
     mockCookieService = jasmine.createSpyObj('readCookieService', ['getCookie']);
     mockAbstractConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
     mockCaseNotifier = getMockCaseNotifier();
+    router.getCurrentNavigation.and.returnValue(null);
     TestBed.configureTestingModule({
       providers: [
         EventStartGuard,
@@ -120,6 +122,25 @@ describe('EventStartGuard', () => {
     const result$ = guard.canActivate(route);
     result$.subscribe(result => {
       expect(result).toEqual(true);
+    });
+  });
+
+  it('canActivate should skip duplicate work allocation call when first-page redirect navigation state is set', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1620409659381330' }));
+    router.getCurrentNavigation.and.returnValue({
+      extras: {
+        state: {
+          [EVENT_START_FIRST_PAGE_REDIRECT]: true
+        }
+      }
+    } as any);
+    const route = createActivatedRouteSnapshot('1620409659381330', 'eventId');
+    guard.jurisdiction = 'jid';
+    guard.caseType = 'ctid';
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(true);
+      expect(service.getTasksByCaseIdAndEventId).not.toHaveBeenCalled();
     });
   });
 
@@ -267,7 +288,7 @@ describe('EventStartGuard - error', () => {
 
   beforeEach(() => {
     service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', ['navigate', 'getCurrentNavigation']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
     mockCookieService = jasmine.createSpyObj('readCookieService', ['getCookie']);
     mockAbstractConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
@@ -295,6 +316,7 @@ describe('EventStartGuard - error', () => {
       ]
     });
 
+    router.getCurrentNavigation.and.returnValue(null);
     guard = TestBed.inject(EventStartGuard);
   });
 
