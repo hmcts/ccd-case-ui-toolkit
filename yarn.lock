@@ -3130,7 +3130,6 @@ __metadata:
     "@types/jasmine": "npm:~2.8.0"
     "@types/jasminewd2": "npm:^2.0.3"
     "@types/node": "npm:^20.19.0"
-    "@types/pegjs": "npm:^0.10.0"
     "@types/underscore": "npm:^1.11.4"
     "@types/webpack": "npm:^4.41.25"
     "@types/webpack-env": "npm:^1.16.0"
@@ -3187,7 +3186,7 @@ __metadata:
     ngx-markdown: "npm:20"
     ngx-pagination: "npm:6.0.3"
     nyc: "npm:^13.0.1"
-    pegjs: "npm:^0.10.0"
+    peggy: "npm:^1.2.0"
     prism: "npm:^4.1.2"
     raw-loader: "npm:^0.5.1"
     reflect-metadata: "npm:^0.1.12"
@@ -6535,13 +6534,6 @@ __metadata:
   version: 4.0.2
   resolution: "@types/parse-json@npm:4.0.2"
   checksum: 10/5bf62eec37c332ad10059252fc0dab7e7da730764869c980b0714777ad3d065e490627be9f40fc52f238ffa3ac4199b19de4127196910576c2fe34dd47c7a470
-  languageName: node
-  linkType: hard
-
-"@types/pegjs@npm:^0.10.0":
-  version: 0.10.6
-  resolution: "@types/pegjs@npm:0.10.6"
-  checksum: 10/be219504714e219b37daee7ef3214b6876d98405cc56b2d084763134032fd46394c5d0e387216ee3e52bd519fe7341e25bdec855f2a911c49a593b21fd8ea4a6
   languageName: node
   linkType: hard
 
@@ -18187,12 +18179,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pegjs@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "pegjs@npm:0.10.0"
+"peggy@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "peggy@npm:1.2.0"
   bin:
-    pegjs: bin/pegjs
-  checksum: 10/edc12c9da9afa68ea1274350c3843026355ef3678de0e24213ba0598ee660d40f6752548ba5ddfbcdefee1904545c8a23bb59f331a5e8b3543bee29c21051f67
+    peggy: bin/peggy
+  checksum: 10/91d59ffd53f0d0cd0a8e880f9fddc09c413035e2fef96534b52ddda0b08acc1d70f7c081c76a7b2bb8478552bc1092df685735b319f2c84ae84edc762a9d9147
   languageName: node
   linkType: hard
 

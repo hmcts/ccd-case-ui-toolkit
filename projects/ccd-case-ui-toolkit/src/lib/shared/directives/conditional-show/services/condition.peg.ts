@@ -1,4 +1,4 @@
-import { generate } from 'pegjs';
+import { generate } from 'peggy';
 
 const conditionSource =
   `{
