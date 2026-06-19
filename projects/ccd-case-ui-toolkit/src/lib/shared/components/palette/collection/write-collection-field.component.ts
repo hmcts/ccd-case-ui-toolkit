@@ -11,11 +11,13 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile/profile.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { StructuredLoggerService } from '../../../services/logging';
 import { ProfileNotifier } from '../../../services/profile/profile.notifier';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 type CollectionItem = {
+  uid: string;
   caseField: CaseField;
   item: any;
   prefix: string;
@@ -30,6 +32,8 @@ type CollectionItem = {
   standalone: false
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
   @Input()
   public caseFields: CaseField[] = [];
 
@@ -41,6 +45,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   @ViewChildren('collectionItem')
   private readonly items: QueryList<ElementRef>;
   public readonly collItems: CollectionItem[] = [];
+  private collectionItemUidCounter = 0;
 
   constructor(private readonly dialog: MatDialog,
     private readonly scrollToService: ScrollToService,
@@ -65,7 +70,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       if (this.collItems.length <= index) {
         this.collItems.length = index + 1;
       }
-      this.collItems[index] = { caseField, item, prefix, index, container };
+      this.collItems[index] = { uid: this.createCollectionItemUid(), caseField, item, prefix, index, container };
     });
   }
 
@@ -182,7 +187,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     const caseField: CaseField = this.buildCaseField(item, index, true);
     const prefix = this.buildIdPrefix(index);
     const container = this.getContainer(index);
-    this.collItems.push({ caseField, item, index, prefix, container });
+    this.collItems.push({ uid: this.createCollectionItemUid(), caseField, item, index, prefix, container });
 
     // Update DOM required after pushing a new item to do the next steps (i.e. scrolling and focusing)
     this.cdRef.detectChanges();
@@ -193,7 +198,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         duration: 1000,
         offset: -150,
       })
-        .subscribe(() => { }, console.error);
+        .subscribe(() => { }, error => this.logger.error('Error while scrolling collection item into view.', { error }));
     }
 
     this.focusLastItem();
@@ -238,9 +243,22 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private focusLastItem() {
-    const item: any = this.items.last.nativeElement.querySelector('.form-control');
-    if (item) {
-      item.focus();
+    const root = this.items.last?.nativeElement as HTMLElement | undefined;
+    if (!root) {
+      return;
+    }
+
+    const controls = Array.from(root.querySelectorAll<HTMLElement>('.form-control'));
+    const focusTarget = controls.find(control => {
+      if (!(control instanceof HTMLInputElement)) {
+        return true;
+      }
+      const type = (control.type || '').toLowerCase();
+      return type !== 'radio';
+    });
+
+    if (focusTarget) {
+      focusTarget.focus();
     }
   }
 
@@ -249,6 +267,14 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.resetIds(index);
     this.caseField.value.splice(index, 1);
     this.formArray.removeAt(index);
+  }
+
+  public trackByCollectionItem(_: number, item: CollectionItem): string {
+    return item.uid;
+  }
+
+  private createCollectionItemUid(): string {
+    return `collection-item-${this.collectionItemUidCounter++}`;
   }
 
   private resetIds(index: number): void {

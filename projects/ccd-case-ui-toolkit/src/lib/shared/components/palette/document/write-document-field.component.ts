@@ -95,7 +95,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.jurisdictionId = parts[parts.indexOf('case-create') + 1];
       this.caseTypeId = parts[parts.indexOf('case-create') + 2];
       this.caseId = null;
-      console.log(this.jurisdictionId); console.log(this.caseTypeId);
     }
 
     // use the documentManagement service to check if the document upload should use CDAM

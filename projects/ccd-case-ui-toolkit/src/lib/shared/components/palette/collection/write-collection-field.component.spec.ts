@@ -191,6 +191,14 @@ describe('WriteCollectionFieldComponent', () => {
     expect(field2.idPrefix).toEqual(`${caseField.id}_${1}_`);
   });
 
+  it('should assign stable unique uid values to collection items', () => {
+    expect(component.collItems[0].uid).toBeDefined();
+    expect(component.collItems[1].uid).toBeDefined();
+    expect(component.collItems[0].uid).not.toEqual(component.collItems[1].uid);
+    expect(component.trackByCollectionItem(0, component.collItems[0] as any)).toEqual(component.collItems[0].uid);
+    expect(component.trackByCollectionItem(1, component.collItems[1] as any)).toEqual(component.collItems[1].uid);
+  });
+
   it('should add empty item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
 
@@ -287,6 +295,26 @@ describe('WriteCollectionFieldComponent', () => {
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
   });
 
+  it('should keep the surviving item uid stable after a removal', () => {
+    const initialUids = component.collItems.map(item => item.uid);
+    const tempCaseField = ({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    }) as CaseField;
+    component.caseField = tempCaseField;
+    component.caseFields = [tempCaseField];
+    fixture.detectChanges();
+    dialogRef.afterClosed.and.returnValue(of('Remove'));
+
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
+    removeButtons[0].nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.collItems.length).toBe(1);
+    expect(component.collItems[0].uid).toEqual(initialUids[1]);
+    expect(component.trackByCollectionItem(0, component.collItems[0] as any)).toEqual(initialUids[1]);
+  });
+
   it('should NOT remove item from collection when remove button is clicked and declined', () => {
     // Declined removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Cancel'));
@@ -308,6 +336,57 @@ describe('WriteCollectionFieldComponent', () => {
 
     const fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
+  });
+
+  it('should focus first non-radio control in last collection item', () => {
+    const root = (component as any).items.last?.nativeElement as HTMLElement;
+    expect(root).toBeTruthy();
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.className = 'form-control';
+    const text = document.createElement('input');
+    text.type = 'text';
+    text.className = 'form-control';
+    root.appendChild(radio);
+    root.appendChild(text);
+
+    spyOn(radio, 'focus');
+    spyOn(text, 'focus');
+
+    (component as any).focusLastItem();
+
+    expect(radio.focus).not.toHaveBeenCalled();
+    expect(text.focus).toHaveBeenCalled();
+  });
+
+  it('should focus a non-input form control if it appears first', () => {
+    const root = (component as any).items.last?.nativeElement as HTMLElement;
+    expect(root).toBeTruthy();
+
+    const select = document.createElement('select');
+    select.className = 'form-control';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'form-control';
+    root.appendChild(select);
+    root.appendChild(input);
+
+    spyOn(select, 'focus');
+    spyOn(input, 'focus');
+
+    (component as any).focusLastItem();
+
+    expect(select.focus).toHaveBeenCalled();
+    expect(input.focus).not.toHaveBeenCalled();
+  });
+
+  it('should not throw when no collection items exist', () => {
+    caseField.value = [];
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(() => (component as any).focusLastItem()).not.toThrow();
   });
 });
 

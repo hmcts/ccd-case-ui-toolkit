@@ -7,14 +7,18 @@ import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session';
 import { USER_DETAILS } from '../../utils';
+import { safeJsonParse } from '../../json-utils';
 
 // @dynamic
 @Injectable()
 export class ActivityService {
   public static get ACTIVITY_VIEW() { return 'view'; }
   public static get ACTIVITY_EDIT() { return 'edit'; }
+
+  private readonly logger = new StructuredLoggerService();
 
   constructor(
     private readonly http: HttpService,
@@ -38,8 +42,11 @@ export class ActivityService {
   }
 
   public getOptions(): OptionsType {
-    const userDetails = JSON.parse(this.sessionStorageService.getItem(USER_DETAILS));
-    const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
+    const userDetails = safeJsonParse<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
+    let headers = new HttpHeaders().set('Content-Type', 'application/json');
+    if (userDetails?.token) {
+      headers = headers.set('Authorization', userDetails.token);
+    }
     return {
       headers,
       withCredentials: true,
@@ -57,7 +64,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -72,7 +79,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -89,5 +96,9 @@ export class ActivityService {
 
   private activityUrl(): string {
     return this.appConfig.getActivityUrl();
+  }
+
+  private logUserMayNotBeAuthenticated(error: unknown): void {
+    this.logger.error('User may not be authenticated. Activity request was not sent.', { error });
   }
 }
