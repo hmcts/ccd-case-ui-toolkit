@@ -1,10 +1,9 @@
 import { Injectable, NgZone } from '@angular/core';
 import { concat, defer, EMPTY, Observable, Subject, Subscription, timer } from 'rxjs';
-import { repeat, retry, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, repeat, retry, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { MODES } from './utils';
 
 interface PollingOptions {
@@ -54,8 +53,6 @@ export class ActivityPollingService {
     if (subject) {
       subject.subscribe(done);
     } else {
-      // Only the first pending request should start the batch collection timer.
-      const wasEmpty = this.pendingRequests.size === 0;
       subject = new Subject<Activity>();
       subject.subscribe(done);
       this.addPendingRequest(caseId, subject);
