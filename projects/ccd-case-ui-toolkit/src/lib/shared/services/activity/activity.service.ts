@@ -14,6 +14,8 @@ import { safeJsonParse } from '../../json-utils';
 // @dynamic
 @Injectable()
 export class ActivityService {
+  private readonly logger = new StructuredLoggerService();
+
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,

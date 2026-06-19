@@ -3,21 +3,24 @@ import { concat, defer, EMPTY, Observable, Subject, Subscription, timer } from '
 import { repeat, retry, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
-import { StructuredLoggerService } from '../logging';
 import { ActivityService } from './activity.service';
-import { polling, IOptions } from 'rx-polling-hmcts';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { MODES } from './utils';
+
+interface PollingOptions {
+  interval: number;
+  attempts?: number;
+  exponentialUnit?: number;
+  backgroundPolling?: boolean;
+}
 
 // @dynamic
 @Injectable()
 export class ActivityPollingService {
-  private readonly logger = new StructuredLoggerService();
-
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
-  private pollConfig: IOptions;
+  private pollConfig: PollingOptions;
   private batchCollectionDelayMs: number;
   private maxRequestsPerBatch: number;
 
