@@ -168,11 +168,14 @@ describe('QueryConfirmationComponent', () => {
     component.eventResponseData = undefined as any;
     component.queryCreateContext = QueryCreateContext.RESPOND;
 
-    spyOn(console, 'warn');
+    const warnSpy = spyOn(console, 'warn');
 
     expect(() => component.resolveHmctsStaffRaisedQuery()).not.toThrow();
 
-    expect(console.warn).toHaveBeenCalledWith('No event response data available.');
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'No event response data available.'
+    }));
   });
 
   it('should call sessionStorageService.getItem when computing HMCTS staff flags on ngOnInit', () => {
@@ -249,14 +252,17 @@ describe('QueryConfirmationComponent', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
     component.eventResponseData = dummyCaseQueriesCollection;
 
-    spyOn(console, 'warn');
+    const warnSpy = spyOn(console, 'warn');
 
     component.resolveHmctsStaffRaisedQuery();
 
-    expect(console.warn).toHaveBeenCalledWith(
-      'No matching child found for messageId:',
-      'nonexistent-id'
-    );
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'No matching child found for messageId.',
+      context: jasmine.objectContaining({
+        messageId: 'nonexistent-id'
+      })
+    }));
 
     // Component should exit early and not set isHmctsStaffRaisedQuery
     expect(component.isHmctsStaffRaisedQuery).toBeUndefined();

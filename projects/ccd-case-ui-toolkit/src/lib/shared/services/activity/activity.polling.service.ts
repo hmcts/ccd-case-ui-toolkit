@@ -3,6 +3,7 @@ import { concat, defer, EMPTY, Observable, Subject, Subscription, timer } from '
 import { repeat, retry, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
+import { StructuredLoggerService } from '../logging';
 import { ActivityService } from './activity.service';
 
 interface PollingOptions {
@@ -14,6 +15,8 @@ interface PollingOptions {
 // @dynamic
 @Injectable()
 export class ActivityPollingService {
+  private readonly logger = new StructuredLoggerService();
+
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: ReturnType<typeof setTimeout> | undefined;
   private pollActivitiesSubscription: Subscription | undefined;
@@ -61,7 +64,6 @@ export class ActivityPollingService {
     }
 
     if (this.pendingRequests.size >= this.maxRequestsPerBatch) {
-      // console.log('max pending hit: flushing requests');
       this.flushRequests();
     }
     return subject;
@@ -106,7 +108,6 @@ export class ActivityPollingService {
 
   protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
-    // console.log('issuing batch request for cases: ' + caseIds);
     this.ngZone.runOutsideAngular( () => {
       // run polling outside angular zone so it does not trigger change detection
       this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe({
@@ -118,7 +119,7 @@ export class ActivityPollingService {
           });
         }),
         error: (err) => this.ngZone.run(() => {
-          console.log(`error: ${err}`);
+          this.logger.error('Error while polling activities.', { error: err });
           Array.from(requests.values()).forEach((subject) => subject.error(err));
         })
       });
