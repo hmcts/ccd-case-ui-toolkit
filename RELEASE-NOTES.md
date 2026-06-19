@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.65-4216
+**EXUI-4216** cgi_ISSUE-035-rpx-xui-manage-organisations-unsafe-eval-csp
+
 ### Version 7.3.65
 **EXUI-4648** Redact Sensitive Information Logged In through Console
 
