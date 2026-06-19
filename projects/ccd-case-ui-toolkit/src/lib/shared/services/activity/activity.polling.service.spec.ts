@@ -1,7 +1,7 @@
 import { NgZone } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { MODES } from './utils';
-import { of } from 'rxjs';
 import { ActivityPollingService } from './activity.polling.service';
 import { ActivityService } from './activity.service';
 

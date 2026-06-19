@@ -58,7 +58,7 @@ export class ActivityPollingService {
       const wasEmpty = this.pendingRequests.size === 0;
       subject = new Subject<Activity>();
       subject.subscribe(done);
-      this.pendingRequests.set(caseId, subject);
+      this.addPendingRequest(caseId, subject);
     }
     if (this.pendingRequests.size === 1) {
       this.ngZone.runOutsideAngular(() => {
