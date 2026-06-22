@@ -47,16 +47,8 @@ export class FieldTypeSanitiser {
 
         case FieldTypeSanitiser.FIELD_TYPE_COLLECTION:
           if (Array.isArray(data[caseField.id])) {
-            data[caseField.id].forEach((formElement: any, index: number) => {
-              const matchingItem = Array.isArray(caseField.value) && formElement?.id !== undefined
-                ? caseField.value.find((item) => item?.id === formElement.id)
-                : null;
-              const collectionItem = matchingItem || (Array.isArray(caseField.value) ? caseField.value[index] : null);
-              this.sanitiseLists(
-                this.copyCaseFieldsWithCollectionData(caseField.field_type.collection_field_type.complex_fields,
-                  collectionItem?.value || collectionItem),
-                formElement.value
-              );
+            data[caseField.id].forEach((formElement: any) => {
+              this.sanitiseLists(caseField.field_type.collection_field_type.complex_fields, formElement.value);
             });
           }
           break;
@@ -96,27 +88,6 @@ export class FieldTypeSanitiser {
       ) {
         complexField.list_items = fieldData?.[complexField.id]?.list_items;
       }
-    });
-  }
-
-  private copyCaseFieldsWithCollectionData(caseFields: CaseField[], collectionItemData: any): CaseField[] {
-    return caseFields.map((field) => {
-      const fieldData = collectionItemData?.[field.id];
-      if (field.field_type.type === FieldTypeSanitiser.FIELD_TYPE_COMPLEX) {
-        return {
-          ...field,
-          field_type: {
-            ...field.field_type,
-            complex_fields: this.copyCaseFieldsWithCollectionData(field.field_type.complex_fields, fieldData)
-          }
-        } as CaseField;
-      }
-
-      return this.isDynamicList(field.field_type.type) &&
-        field.display_context !== 'HIDDEN' &&
-        fieldData?.list_items !== undefined
-        ? { ...field, list_items: fieldData.list_items } as CaseField
-        : field;
     });
   }
 
