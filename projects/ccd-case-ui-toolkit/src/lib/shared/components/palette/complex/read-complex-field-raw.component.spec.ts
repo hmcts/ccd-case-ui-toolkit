@@ -14,6 +14,7 @@ import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
 
@@ -53,6 +54,7 @@ const initTests = (caseField, mocks, topLevelFormGroup?: FormGroup, caseFields: 
     component.topLevelFormGroup = topLevelFormGroup;
   }
   component.caseFields = caseFields;
+  component.valueOrigin = PaletteValueOrigin.FORM;
 
   de = fixture.debugElement;
   fixture.detectChanges();
@@ -80,6 +82,10 @@ const expectContext = (de, expectedContext) => {
   expect(de.componentInstance.context).toEqual(expectedContext);
 };
 
+const expectValueOrigin = (de, expectedValueOrigin) => {
+  expect(de.componentInstance.valueOrigin).toEqual(expectedValueOrigin);
+};
+
 describe('ReadComplexFieldRawComponent', () => {
   const $COMPLEX_LIST = By.css('dl.complex-raw');
   const $COMPLEX_LIST_ITEMS = By.css('dl.complex-raw>dd');
@@ -95,7 +101,7 @@ describe('ReadComplexFieldRawComponent', () => {
   beforeEach(() => {
     fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
-      inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+      inputs: ['caseField', 'caseFields', 'context', 'valueOrigin', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
   });
 
@@ -246,6 +252,14 @@ describe('ReadComplexFieldRawComponent', () => {
 
       expectLabel(complexListLabels[1], 'Is this order ready to be sealed and issued');
     }));
+    
+    it('should pass value origin to each child field read component', () => {
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+
+      expectValueOrigin(complexListValues[0], PaletteValueOrigin.FORM);
+      expectValueOrigin(complexListValues[1], PaletteValueOrigin.FORM);
+      expectValueOrigin(complexListValues[2], PaletteValueOrigin.FORM);
+    });
   });
 
   describe('when empty values split across children fields', () => {
