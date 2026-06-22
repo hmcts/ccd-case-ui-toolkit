@@ -1,5 +1,8 @@
 ## RELEASE NOTES 
 
+### Version 7.3.66
+**EXUI-4590** Package update - ngrx
+
 ### Version 7.3.65
 **EXUI-4648** Redact Sensitive Information Logged In through Console
 
