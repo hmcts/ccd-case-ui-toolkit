@@ -10,6 +10,7 @@ import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.m
 import { AlertService } from '../../services/alert/alert.service';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
@@ -28,6 +29,8 @@ export class WorkbasketFiltersComponent implements OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+  private readonly logger = new StructuredLoggerService();
+
   public caseFields: CaseField[];
 
   @Input()
@@ -237,9 +240,7 @@ export class WorkbasketFiltersComponent implements OnInit {
             }
           });
           this.getCaseFields();
-        }, error => {
-          console.log('Workbasket input fields request will be discarded reason: ', error.message);
-        });
+        }, error => this.logger.error('Workbasket input fields request will be discarded.', { error }));
       }
     } else {
       this.resetCaseState();
