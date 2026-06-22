@@ -53,6 +53,7 @@ import { CaseworkerService } from './services/case-worker.service';
 import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseFields.service';
 import { MultipageComponentStateService } from '../../services';
 import { CaseEventCompletionTaskReassignedComponent } from './case-event-completion';
+import { FocusService } from '../../services/window/focus.service';
 
 @NgModule({
   imports: [
@@ -120,7 +121,8 @@ import { CaseEventCompletionTaskReassignedComponent } from './case-event-complet
     EventCompletionStateMachineService,
     CaseFlagStateService,
     ValidPageListCaseFieldsService,
-    MultipageComponentStateService
+    MultipageComponentStateService,
+    FocusService
   ]
 })
 export class CaseEditorModule { }
