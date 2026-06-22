@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/shared/domain';
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
-import { SessionStorageService } from '../../../../services';
+import { SessionStorageService, StructuredLoggerService } from '../../../../services';
 import { isInternalUser, isJudiciaryUser, USER_DETAILS } from '../../../../utils';
 import { safeJsonParse } from '../../../../json-utils';
 import { QueryManagementUtils } from '../utils/query-management.utils';
@@ -19,6 +19,8 @@ import { FormGroup } from '@angular/forms';
 @Injectable({ providedIn: 'root' })
 
 export class QueryManagementService {
+  private readonly logger = new StructuredLoggerService();
+
   public caseQueriesCollections: CaseQueriesCollection[];
   public fieldId: string;
 
@@ -46,7 +48,7 @@ export class QueryManagementService {
     try {
       currentUserDetails = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
     } catch (e) {
-      console.error('Could not parse USER_DETAILS from session storage:', e);
+      this.logger.error('Could not parse USER_DETAILS from session storage.', { error: e });
       currentUserDetails = {};
     }
 
@@ -59,7 +61,7 @@ export class QueryManagementService {
 
     // Check if the field ID has been set dynamically
     if (!this.fieldId) {
-      console.error('Error: Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
+      this.logger.error('Field ID for CaseQueriesCollection not found. Cannot proceed with data generation.');
       this.router.navigate(['/', 'service-down']);
       throw new Error('Field ID for CaseQueriesCollection not found. Aborting query data generation.');
     }
@@ -135,7 +137,7 @@ export class QueryManagementService {
     const resolvedFieldId = this.resolveFieldId(eventData, queryCreateContext, caseDetails, messageId);
 
     if (!resolvedFieldId) {
-      console.error('Failed to resolve fieldId for CaseQueriesCollection. Cannot proceed.');
+      this.logger.error('Failed to resolve fieldId for CaseQueriesCollection. Cannot proceed.');
       return;
     }
 
@@ -167,7 +169,7 @@ export class QueryManagementService {
     );
 
     if (!candidateFields?.length) {
-      console.warn('No editable CaseQueriesCollection fields found.');
+      this.logger.warn('No editable CaseQueriesCollection fields found.');
       return null;
     }
 
@@ -199,13 +201,13 @@ export class QueryManagementService {
           return firstOrdered.id;
         }
       } else {
-        console.error(`Error: Multiple CaseQueriesCollections are not supported yet for the ${jurisdictionId} jurisdiction`);
+        this.logger.error('Multiple CaseQueriesCollections are not supported yet for this jurisdiction.', { jurisdictionId });
         return null;
       }
     }
 
     // Step 4: Fallback — if none of the above succeeded
-    console.warn('Could not determine fieldId for context:', queryCreateContext);
+    this.logger.warn('Could not determine fieldId for context.', { queryCreateContext });
     return null;
   }
 

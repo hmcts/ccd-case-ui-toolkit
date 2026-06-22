@@ -186,7 +186,6 @@ export class EventCompletionStateMachineService {
 
   public entryActionForStateFinal(state: State, context: EventCompletionStateMachineContext): void {
     // Final actions can be performed here, the state machine finished running
-    console.log('FINAL');
   }
 
   public addTransitionsForStateCheckTasksCanBeCompleted(): void {
