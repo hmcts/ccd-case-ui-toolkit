@@ -1,4 +1,10 @@
-## RELEASE NOTES-exui-4309
+## RELEASE NOTES
+
+### Version 7.3.66
+**EXUI-4590** Package update - ngrx
+
+### Version 7.3.65
+**EXUI-4648** Redact Sensitive Information Logged In through Console
 
 ### Version 7.3.64-exui-3003-3005
 **EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
@@ -41,6 +47,9 @@
 
 ### Version 7.3.55
 **EXUI-4442** Datepicker component 'Confirm' button
+
+### Version 7.3.54-exui-4648-rc-1
+**EXUI-4648** Redact Sensitive Information Logged In through Console
 
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111
