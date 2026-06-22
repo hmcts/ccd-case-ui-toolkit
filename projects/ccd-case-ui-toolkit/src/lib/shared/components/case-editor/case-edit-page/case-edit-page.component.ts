@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
@@ -698,15 +698,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public buildCaseEventData(fromPreviousPage?: boolean): CaseEventData {
-    const formValue: object = this.editForm.value;
+    // EXUI-3839 - we need to get the raw value of the form because otherwise disabled fields
+    // (e.g. read only fields or fields disabled due to show condition) will not be included
+    const formRawValue: object = this.editForm.getRawValue();
 
     // Get the CaseEventData for the current page.
     const pageFields: CaseField[] = this.currentPage.case_fields;
-    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
+    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formRawValue, true);
 
     // Get the CaseEventData for the entire form (all pages).
     const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
-    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true, fromPreviousPage);
+    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formRawValue, false, true, fromPreviousPage);
 
     // Now here's the key thing - the pageEventData has a property called `event_data` and
     // we need THAT to be the value of the entire form: `formEventData.data`.

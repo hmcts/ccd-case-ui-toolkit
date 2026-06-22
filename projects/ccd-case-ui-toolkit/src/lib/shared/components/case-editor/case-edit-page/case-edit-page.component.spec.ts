@@ -493,6 +493,118 @@ describe('CaseEditPageComponent - all other tests', () => {
   const caseFlagStateService = new CaseFlagStateService();
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
 
+  // EXUI-3839 - test added to verify that disabled hidden fields with retain_hidden_value true are included in the case event data
+  describe('buildCaseEventData', () => {
+    let data: any;
+    let eventData: any;
+
+    const setUpBuildCaseEventData = (retainedHiddenValue: boolean) => {
+      const retainedHiddenField = aCaseField(
+        'retainedHiddenField',
+        'Retained hidden field',
+        'Text',
+        'OPTIONAL',
+        null,
+        [],
+        retainedHiddenValue,
+        true
+      );
+      const visibleField = aCaseField(
+        'visibleField',
+        'Visible field',
+        'Text',
+        'OPTIONAL',
+        null
+      );
+      const editForm = new FormGroup({
+        data: new FormGroup({
+          retainedHiddenField: new FormControl('retained hidden value'),
+          visibleField: new FormControl('visible value')
+        }),
+        event: new FormGroup({
+          id: new FormControl('event-id'),
+          summary: new FormControl(''),
+          description: new FormControl('')
+        })
+      });
+      // Important - this replicates the scenario where the user has a hidden field which is disabled on the form
+      editForm.get('data.retainedHiddenField').disable();
+
+      const eventTrigger = {
+        case_fields: [retainedHiddenField, visibleField],
+        event_token: 'event-token',
+        name: 'Test event trigger name',
+        can_save_draft: false
+      } as CaseEventTrigger;
+      const page = createWizardPage([retainedHiddenField, visibleField]);
+      page.parsedShowCondition = ShowCondition.getInstance(null);
+      const wizard = new Wizard([page]);
+      const localFormValueService = new FormValueService(new FieldTypeSanitiser());
+      const localFieldsUtils = new FieldsUtils();
+      const localValidPageListCaseFieldsService = new ValidPageListCaseFieldsService(localFieldsUtils);
+      const caseEdit = {
+        form: editForm,
+        wizard,
+        eventTrigger,
+        ignoreWarning: false,
+        caseDetails: {
+          case_id: '1234567812345678'
+        },
+        validPageList: [page]
+      } as CaseEditComponent;
+      const component = new CaseEditPageComponent(
+        caseEdit,
+        {} as ActivatedRoute,
+        localFormValueService,
+        new FormErrorService(),
+        {} as ChangeDetectorRef,
+        new PageValidationService(new CaseFieldService()),
+        {} as MatDialog,
+        new CaseFieldService(),
+        {} as CaseEditDataService,
+        {} as LoadingService,
+        localValidPageListCaseFieldsService,
+        new MultipageComponentStateService(),
+        {} as AddressesService,
+        linkedCasesService,
+        new CaseFlagStateService()
+      );
+      component.editForm = editForm;
+      component.eventTrigger = eventTrigger;
+      component.wizard = wizard;
+      component.currentPage = page;
+
+      const caseEventData = component.buildCaseEventData();
+      data = caseEventData.data as any;
+      eventData = caseEventData.event_data as any;
+    };
+
+    describe('when retain_hidden_value is true', () => {
+      beforeEach(() => {
+        setUpBuildCaseEventData(true);
+      });
+
+      it('should include disabled hidden fields in data and event data', () => {
+        // Expected that the disabled field is still present in the data (because of retain_hidden_value = true)
+        expect(data.retainedHiddenField).toEqual('retained hidden value');
+        expect(eventData.retainedHiddenField).toEqual('retained hidden value');
+        expect(data.visibleField).toEqual('visible value');
+      });
+    });
+
+    describe('when retain_hidden_value is false', () => {
+      beforeEach(() => {
+        setUpBuildCaseEventData(false);
+      });
+
+      it('should exclude disabled hidden fields in data and event data', () => {
+        expect(data.retainedHiddenField).toBeUndefined();
+        expect(eventData.retainedHiddenField).toBeUndefined();
+        expect(data.visibleField).toEqual('visible value');
+      });
+    });
+  });
+
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
       case_fields: [caseField1],
