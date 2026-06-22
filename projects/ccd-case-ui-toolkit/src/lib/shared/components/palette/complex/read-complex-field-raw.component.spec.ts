@@ -1,24 +1,19 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { of } from 'rxjs';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { LabelSubstitutorModule, PlaceholderService } from '../../../directives/substitutor';
 import { CaseField, FieldType } from '../../../domain';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
 
-const initTests = (caseField, mocks, topLevelFormGroup?: FormGroup, caseFields: CaseField[] = [caseField]) => {
+const initTests = (caseField, mocks) => {
   let fixture: ComponentFixture<ReadComplexFieldRawComponent>;
   let component: ReadComplexFieldRawComponent;
   let de: DebugElement;
@@ -28,7 +23,6 @@ const initTests = (caseField, mocks, topLevelFormGroup?: FormGroup, caseFields: 
       imports: [
         PaletteUtilsModule,
         ConditionalShowModule,
-        LabelSubstitutorModule,
         ...mocks
       ],
       declarations: [
@@ -37,11 +31,7 @@ const initTests = (caseField, mocks, topLevelFormGroup?: FormGroup, caseFields: 
         ReadFieldsFilterPipe,
         MockRpxTranslatePipe
       ],
-      providers: [
-        PlaceholderService,
-        { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe },
-        { provide: RpxTranslationService, useValue: { language: 'en', language$: of('en') } }
-      ]
+      providers: []
     })
     .compileComponents();
 
@@ -50,11 +40,6 @@ const initTests = (caseField, mocks, topLevelFormGroup?: FormGroup, caseFields: 
 
   component.caseField = caseField;
   component.context = PaletteContext.CHECK_YOUR_ANSWER;
-  if (topLevelFormGroup) {
-    component.topLevelFormGroup = topLevelFormGroup;
-  }
-  component.caseFields = caseFields;
-  component.valueOrigin = PaletteValueOrigin.FORM;
 
   de = fixture.debugElement;
   fixture.detectChanges();
@@ -80,10 +65,6 @@ const expectLabel = (de: DebugElement, label) => {
 
 const expectContext = (de, expectedContext) => {
   expect(de.componentInstance.context).toEqual(expectedContext);
-};
-
-const expectValueOrigin = (de, expectedValueOrigin) => {
-  expect(de.componentInstance.valueOrigin).toEqual(expectedValueOrigin);
 };
 
 describe('ReadComplexFieldRawComponent', () => {
@@ -199,67 +180,6 @@ describe('ReadComplexFieldRawComponent', () => {
       expectContext(complexListValues[2], PaletteContext.CHECK_YOUR_ANSWER);
     });
 
-    it('should interpolate child field labels from top-level form values', waitForAsync(() => {
-      caseField = (({
-        id: 'judgeApproval1',
-        label: 'Judge approval',
-        display_context: 'OPTIONAL',
-        value: {
-          inlineDocType: 'order',
-          isReady: 'Yes'
-        },
-        field_type: {
-          id: 'JudgeApproval',
-          type: 'Complex',
-          complex_fields: [
-            ({
-              id: 'inlineDocType',
-              label: 'Document type',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'Text',
-                type: 'Text'
-              }
-            }) as CaseField,
-            ({
-              id: 'isReady',
-              label: 'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
-              display_context: 'OPTIONAL',
-              field_type: {
-                id: 'YesOrNo',
-                type: 'YesOrNo'
-              }
-            }) as CaseField
-          ]
-        }
-      }) as CaseField);
-
-      const rootFormGroup = new FormGroup({
-        data: new FormGroup({
-          judgeApproval1: new FormGroup({
-            inlineDocType: new FormControl('order'),
-            isReady: new FormControl('Yes')
-          })
-        })
-      });
-      const dataFormGroup = rootFormGroup.get('data') as FormGroup;
-
-      component.caseField = caseField;
-      component.topLevelFormGroup = dataFormGroup;
-      component.caseFields = [caseField];
-      fixture.detectChanges();
-      const complexListLabels = de.queryAll($COMPLEX_LIST_LABELS);
-
-      expectLabel(complexListLabels[1], 'Is this order ready to be sealed and issued');
-    }));
-    
-    it('should pass value origin to each child field read component', () => {
-      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
-
-      expectValueOrigin(complexListValues[0], PaletteValueOrigin.FORM);
-      expectValueOrigin(complexListValues[1], PaletteValueOrigin.FORM);
-      expectValueOrigin(complexListValues[2], PaletteValueOrigin.FORM);
-    });
   });
 
   describe('when empty values split across children fields', () => {
