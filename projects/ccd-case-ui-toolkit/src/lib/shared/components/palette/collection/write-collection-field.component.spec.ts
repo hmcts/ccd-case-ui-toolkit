@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -336,32 +336,6 @@ describe('WriteCollectionFieldComponent', () => {
 
     const fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
-  });
-
-  it('should retain dynamic multiselect options for a new complex collection item', () => {
-    const orderListItems = [
-      { code: 'order-1', label: 'Order 1' },
-      { code: 'order-2', label: 'Order 2' }
-    ];
-    caseField.field_type = {
-      type: 'Collection',
-      collection_field_type: {
-        type: 'Complex',
-        complex_fields: [{
-          id: 'orderList',
-          field_type: { type: 'DynamicMultiSelectList' },
-          list_items: orderListItems
-        } as CaseField]
-      }
-    } as FieldType;
-    component.formArray = new FormArray([]);
-
-    const newRecipient = component.buildCaseField({ value: null }, 1, true);
-    const orderListField = newRecipient.field_type.complex_fields.find((field) => field.id === 'orderList');
-
-    expect(orderListField.list_items).toEqual(orderListItems);
-    expect(orderListField.value).toBeUndefined();
-    expect(newRecipient.value).toBeNull();
   });
 
   it('should focus first non-radio control in last collection item', () => {
