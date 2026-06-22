@@ -38,7 +38,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+    "url": "git+https://github.com/hmcts/ccd-case-ui-toolkit.git"
   },
   "publishConfig": {
     "access": "public"
