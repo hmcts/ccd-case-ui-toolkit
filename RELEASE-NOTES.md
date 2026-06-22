@@ -6,6 +6,10 @@
 ### Version 7.3.65
 **EXUI-4648** Redact Sensitive Information Logged In through Console
 
+### Version 7.3.64-exui-3003-3005
+**EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
+**EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
+
 ### Version 7.3.64
 **EXUI-4297** Suppressions - glob - major
 
