@@ -5,8 +5,11 @@ import {
   AccessManagementBasicViewMockModel,
   AccessManagementRequestReviewMockModel
 } from './app.config';
+import { StructuredLoggerService } from './shared/services/logging';
 
 export class AppMockConfig implements AbstractAppConfig {
+  private readonly logger = new StructuredLoggerService();
+
   public getActivityBatchCollectionDelayMs(): number {
     return 0;
   }
@@ -65,6 +68,14 @@ export class AppMockConfig implements AbstractAppConfig {
     else if (this.getActivityUrl()?.includes('.ithc.'))
       return 'ithc';
     return 'prod';
+  }
+
+  public getWASupportedRoleCategories(): string[] {
+    return [];
+  }
+
+  public getWASupportedRoleTypes(): string[] {
+    return [];
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string): string {
@@ -220,7 +231,7 @@ export class AppMockConfig implements AbstractAppConfig {
   }
 
   public logMessage(msg: string): void {
-    console.log(msg);
+    this.logger.info('Application log message.', { message: msg });
   }
 
   public getEnableServiceSpecificMultiFollowups(): string[] {

@@ -20,7 +20,8 @@ import { Task } from '../../../../../domain/work-allocation/Task';
 import { QueryManagementService } from '../../services/query-management.service';
 import {
   AlertService,
-  ErrorNotifierService
+  ErrorNotifierService,
+  StructuredLoggerService
 } from '../../../../../services';
 
 @Component({
@@ -30,6 +31,8 @@ import {
   standalone: false
 })
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
   private readonly RESPOND_TO_QUERY_EVENT_TRIGGER_ID = 'queryManagementRespondQuery';
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -134,7 +137,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             if (error.status !== 401 && error.status !== 403) {
               this.errorNotifierService.announceError(error);
               this.alertService.error({ phrase: error.message });
-              console.error('Error occurred while fetching event data:', error);
+              this.logger.error('Error occurred while fetching event data.', { error });
               this.callbackErrorsSubject.next(error);
             } else {
               this.errorMessages = [
@@ -199,7 +202,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           error: (error) => this.handleError(error)
         });
       } else {
-        console.error('Error: No task to complete was found');
+        this.logger.error('No task to complete was found.');
         this.errorMessages = [
           {
             title: 'Error',
@@ -245,7 +248,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private handleError(error: any): void {
-    console.error('Error in API calls:', error);
+    this.logger.error('Error in query management API calls.', { error });
     this.isSubmitting = false;
 
     if (this.isServiceErrorFound(error)){
@@ -276,7 +279,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public setCaseQueriesCollectionData(): void {
     if (!this.eventData) {
-      console.warn('Event data not available; skipping collection setup.');
+      this.logger.warn('Event data not available; skipping collection setup.');
     }
 
     this.queryManagementService.setCaseQueriesCollectionData(

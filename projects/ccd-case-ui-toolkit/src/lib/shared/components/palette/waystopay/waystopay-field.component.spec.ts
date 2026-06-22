@@ -78,7 +78,9 @@ const APP_CONFIG: AbstractAppConfig = {
   getIcpJurisdictions: () => ['IA'],
   getIcpEnable: () => true,
   logMessage: () => {},
-  getEnableServiceSpecificMultiFollowups: () => ['IA']
+  getEnableServiceSpecificMultiFollowups: () => ['IA'],
+  getWASupportedRoleCategories: () => ['LEGAL_OPERATIONS,ADMIN,CTSC,JUDICIAL'],
+  getWASupportedRoleTypes: () => ['ORGANISATION']
 };
 
 let paymentWebComponentMock;
