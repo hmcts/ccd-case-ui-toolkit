@@ -59,15 +59,9 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-<<<<<<< HEAD
-    "@hmcts/media-viewer": "4.2.16",
-    "@ngrx/effects": "^20.1.0",
-    "@ngrx/store": "^20.1.0",
-=======
     "@hmcts/media-viewer": "4.2.20",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
->>>>>>> f5ef7f0613973c080398c2af7eca7c297287d907
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
