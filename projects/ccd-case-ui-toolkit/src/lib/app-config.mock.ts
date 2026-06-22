@@ -5,8 +5,11 @@ import {
   AccessManagementBasicViewMockModel,
   AccessManagementRequestReviewMockModel
 } from './app.config';
+import { StructuredLoggerService } from './shared/services/logging';
 
 export class AppMockConfig implements AbstractAppConfig {
+  private readonly logger = new StructuredLoggerService();
+
   public getActivityBatchCollectionDelayMs(): number {
     return 0;
   }
@@ -220,7 +223,7 @@ export class AppMockConfig implements AbstractAppConfig {
   }
 
   public logMessage(msg: string): void {
-    console.log(msg);
+    this.logger.info('Application log message.', { message: msg });
   }
 
   public getEnableServiceSpecificMultiFollowups(): string[] {
