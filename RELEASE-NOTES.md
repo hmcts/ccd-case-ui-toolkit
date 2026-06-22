@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.65-exui-3740
-**EXUI-3740** Dynamic MultiSelect Box doesn't retain it's original data in Collection on Add new button click
+### Version 7.3.67
+**EXUI-4590** Package update - ngrx & npmpublish update
+
+### Version 7.3.66
+**EXUI-4590** Package update - ngrx
 
 ### Version 7.3.65
 **EXUI-4648** Redact Sensitive Information Logged In through Console
