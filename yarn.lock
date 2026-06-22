@@ -3122,7 +3122,7 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.17"
+    "@hmcts/ccpay-web-component": "npm:6.5.24"
     "@hmcts/media-viewer": "npm:4.2.21"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
@@ -3224,15 +3224,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.17":
-  version: 6.5.17
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.17"
+"@hmcts/ccpay-web-component@npm:6.5.24":
+  version: 6.5.24
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.24"
   dependencies:
+    exceljs: "npm:^4.4.0"
+    file-saver: "npm:^2.0.2"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/7be62fd80d676934e2217985ab414f107aeaf8c6e44a9a128d41a856a4417b8ab0b5ba5be57af529a207ac2599c0e47fa52b204b461dc7002dd9d9585a5667df
+  checksum: 10/3b3771ad87c88888c185cb22272bd855b809ee859dd7c6c26af88178f24bdbc5f8b9b690be412016d7691147f754777fed7110cf6450a51a58a592ac610a3593
   languageName: node
   linkType: hard
 
