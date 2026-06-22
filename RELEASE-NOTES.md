@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.67
+**EXUI-4590** Package update - ngrx & npmpublish update
+
 ### Version 7.3.66
 **EXUI-4590** Package update - ngrx
 
