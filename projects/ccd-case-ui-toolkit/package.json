@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.66",
+  "version": "7.3.67",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",
@@ -38,7 +38,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+    "url": "git+https://github.com/hmcts/ccd-case-ui-toolkit.git"
   },
   "publishConfig": {
     "access": "public"
