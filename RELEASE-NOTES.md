@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.68
+**EXUI-4589** Package update - config
+
 ### Version 7.3.67
 **EXUI-4590** Package update - ngrx & npmpublish update
 
