@@ -66,6 +66,7 @@ import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { FocusService } from '../../../services/window/focus.service'
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -96,7 +97,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
-  
+
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -112,7 +115,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {},
     linkedCasesService = {},
-    caseFlagStateService = new CaseFlagStateService()
+    caseFlagStateService = new CaseFlagStateService(),
+    fs = focusService
   }) =>
     new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -129,7 +133,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService as MultipageComponentStateService,
     addressesService as AddressesService,
     linkedCasesService as LinkedCasesService,
-    caseFlagStateService as CaseFlagStateService
+    caseFlagStateService as CaseFlagStateService,
+    fs as FocusService
     );
 
   it('should create', () => {
@@ -144,13 +149,13 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
       multipageComponentStateService.resetJourneyCollection();
       spyOn(multipageComponentStateService, 'previous');
-      
+
       multipageComponentStateService.setInstigator(component);
       component.previousStep();
-      
+
       expect(multipageComponentStateService.previous).toHaveBeenCalled();
     });
-  
+
     it('should trigger next step with the multi-page component state service', () => {
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const caseEditDataService: CaseEditDataService = new CaseEditDataService();
@@ -159,7 +164,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
       multipageComponentStateService.setInstigator(component);
       component.nextStep();
-     
+
       expect(multipageComponentStateService.next).toHaveBeenCalled();
     });
 
@@ -167,10 +172,10 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
       spyOn(multipageComponentStateService, 'reset');
-      
+
       multipageComponentStateService.setInstigator(component);
       component.ngOnDestroy();
-      
+
       expect(multipageComponentStateService.reset).toHaveBeenCalled();
     });
   });
@@ -492,6 +497,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
   const caseFlagStateService = new CaseFlagStateService();
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
@@ -615,7 +621,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -682,6 +689,29 @@ describe('CaseEditPageComponent - all other tests', () => {
     it('should init to the provided first page in event trigger', () => {
       comp.ngOnInit();
       expect(comp.currentPage).toEqual(firstPage);
+    });
+
+    it('should clear stale validation errors on init', () => {
+      const staleValidationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+      caseEditDataService.caseFormValidationErrors$.next(staleValidationErrors);
+      caseEditDataService.clearFormValidationErrors.and.callFake(() => {
+        caseEditDataService.caseFormValidationErrors$.next([]);
+      });
+
+      comp.validationErrors = staleValidationErrors;
+      comp.ngOnInit();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
+    });
+
+    it('should clear validation errors when destroyed', () => {
+      comp.validationErrors = [{ id: 'field1', message: 'Stale validation error' }];
+
+      comp.ngOnDestroy();
+
+      expect(comp.validationErrors).toEqual([]);
+      expect(caseEditDataService.clearFormValidationErrors).toHaveBeenCalled();
     });
 
     it('should return true on hasPrevious check', () => {
@@ -1024,6 +1054,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1047,7 +1079,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1193,6 +1226,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1216,7 +1251,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1363,6 +1399,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         caseEditDataService.caseFormValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
         caseEditDataService.caseEditForm$ = of(caseEditComponentStub.form);
         caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
+        
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1391,7 +1429,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1789,6 +1828,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1812,7 +1853,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -2010,6 +2052,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -2033,7 +2077,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -2247,6 +2292,44 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual('%FIELDLABEL% is required');
       });
+    });
+
+    it('should prefix complex child field id when generateErrorMessage recurses', () => {
+      const childField: CaseField = aCaseField(
+        'AddressLine1',
+        'Address Line 1',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      const parentField: CaseField = aCaseField(
+        'propertyAddress',
+        'Property Address',
+        'Complex',
+        'OPTIONAL',
+        null,
+        [childField],
+        true,
+        true
+      );
+      parentField.isComplex = () => true;
+
+      const childControl = new FormControl(null, Validators.required);
+      childControl['component'] = { idPrefix: 'propertyAddress__detail' };
+      const addressGroup = new FormGroup({ AddressLine1: childControl });
+      const editForm = new FormGroup({
+        data: new FormGroup({ propertyAddress: addressGroup })
+      });
+
+      wizardPage.case_fields = [parentField];
+      fixture.detectChanges();
+      comp.editForm = editForm;
+      comp.currentPage = wizardPage;
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+
+      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors[0].id).toBe('propertyAddress__detailAddressLine1');
     });
 
     it('should validate complex type fields and log error message when no error messages given', () => {
