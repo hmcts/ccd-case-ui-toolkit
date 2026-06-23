@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.68-exui-4216",
+  "version": "7.3.68-exui-4216-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -19,7 +19,7 @@
   "scripts": {
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
-    "build:library": "ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
+    "build:library": "npm run generate:condition-parser && ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
     "build:library:watch": "ng build ccd-case-ui-toolkit-lib --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
@@ -40,7 +40,8 @@
     "test": "ng test ccd-case-ui-toolkit-lib --code-coverage",
     "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
-    "tslint": "tslint"
+    "tslint": "tslint",
+    "generate:condition-parser": "node ./scripts/generate-condition-parser.mjs"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
@@ -73,7 +74,6 @@
     "ngx-chips": "^3.0.0",
     "ngx-markdown": "20",
     "ngx-pagination": "6.0.3",
-    "peggy": "^5.1.0",
     "rpx-xui-translation": "1.2.4",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
@@ -142,6 +142,7 @@
     "ng-packagr": "^20.3.0",
     "ng2-mock-component": "^0.1.1",
     "nyc": "^13.0.1",
+    "peggy": "^5.1.0",
     "prism": "^4.1.2",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "^0.1.12",
