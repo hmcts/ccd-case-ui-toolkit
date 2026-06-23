@@ -310,12 +310,15 @@ export class CasesService {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const camUtils = new CaseAccessUtils();
     let userInfo: UserInfo;
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
+    userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
+    if (!userInfo) {
+      return throwError(() => new Error('User info not found in session storage'));
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
-    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    // EXUI-4758 - getMappedRoleCategories no longer returns a single string, checks all roles to get the most likely roleCategory
+    // Unsure whether we should be using mapped role categories any more - should trust the roleCategories from userInfo if they exist
+    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    const roleName = camUtils.getAMRoleName('challenged', roleCategories[0] as RoleCategory);
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -324,7 +327,8 @@ export class CasesService {
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
       id,
       roleName,
-      roleCategory,
+      // EXUI-4758 - Return first roleCategory as the roleCategory
+      roleCategories[0] as RoleCategory,
       'CHALLENGED',
       caseId,
       request,
@@ -342,11 +346,15 @@ export class CasesService {
 
     const camUtils = new CaseAccessUtils();
     let userInfo: UserInfo;
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
+    userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
+    if (!userInfo) {
+      return throwError(() => new Error('User info not found in session storage'));
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    // EXUI-4758 - See above comment
+    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    // EXUI-4758 - Return first roleCategory as the roleCategory for now
+    const roleCategory = roleCategories[0] as RoleCategory;
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,

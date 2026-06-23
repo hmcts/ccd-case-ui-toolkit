@@ -16,7 +16,7 @@ export class CaseworkerService {
   ) {
   }
 
-  public getCaseworkers(serviceId): Observable<CaseworkersByService[]> {
+  public getCaseworkers(serviceId: string): Observable<CaseworkersByService[]> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUsersByServiceName`;
     return this.http
       .post(url, { services: [serviceId]})
