@@ -3,7 +3,7 @@ import { CaseAccessUtils } from '.';
 describe('CaseAccessUtils', () => {
     const camUtils: CaseAccessUtils = new CaseAccessUtils();
 
-    describe('getMappedRoleCategory', () => {
+    describe('getMappedRoleCategories', () => {
 
         it('should return a role category when role category is present', () => {
             const roles = [
@@ -57,6 +57,16 @@ describe('CaseAccessUtils', () => {
             ];
             const response = camUtils.getMappedRoleCategories(roles);
             expect(response).toEqual(['CTSC']);
+        });
+
+        it('should return multiple categories as response', () => {
+            const roles = [
+                'ctsc',
+                'citizen',
+                'judge'
+            ];
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['JUDICIAL', 'CITIZEN', 'CTSC']);
         });
     });
 
