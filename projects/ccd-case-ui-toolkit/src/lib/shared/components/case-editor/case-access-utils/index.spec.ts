@@ -3,26 +3,24 @@ import { CaseAccessUtils } from '.';
 describe('CaseAccessUtils', () => {
     const camUtils: CaseAccessUtils = new CaseAccessUtils();
 
-    describe('getMappedRoleCategory', () => {
+    describe('getMappedRoleCategories', () => {
 
         it('should return a role category when role category is present', () => {
             const roles = [
                 'caseworker-something',
                 'role22'
             ];
-            const roleCategories = ['JUDICIAL'];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('JUDICIAL');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['LEGAL_OPERATIONS']);
         });
 
         it('should return a role category when role category is not present', () => {
             const roles = [
-                'caseworker-solicitor',
+                'solicitor',
                 'role22'
             ];
-            const roleCategories = [];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('PROFESSIONAL');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['PROFESSIONAL']);
         });
 
         it('should return LEGAL_OPERATIONS as default', () => {
@@ -30,9 +28,8 @@ describe('CaseAccessUtils', () => {
                 'caseworker-something',
                 'role22'
             ];
-            const roleCategories = [];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('LEGAL_OPERATIONS');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['LEGAL_OPERATIONS']);
         });
 
         it('should return ADMIN as response', () => {
@@ -40,19 +37,17 @@ describe('CaseAccessUtils', () => {
                 'caseworker-admin',
                 'role22'
             ];
-            const roleCategories = [];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('ADMIN');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['ADMIN', 'LEGAL_OPERATIONS']);
         });
 
         it('should return CITIZEN as response', () => {
             const roles = [
-                'caseworker-citizen',
+                'citizen',
                 'role22'
             ];
-            const roleCategories = [];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('CITIZEN');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['CITIZEN']);
         });
 
         it('should return CTSC as response', () => {
@@ -60,26 +55,30 @@ describe('CaseAccessUtils', () => {
                 'ctsc',
                 'role22'
             ];
-            const roleCategories = [];
-            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
-            expect(response).toEqual('CTSC');
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['CTSC']);
+        });
+
+        it('should return multiple categories as response', () => {
+            const roles = [
+                'ctsc',
+                'citizen',
+                'judge'
+            ];
+            const response = camUtils.getMappedRoleCategories(roles);
+            expect(response).toEqual(['JUDICIAL', 'CITIZEN', 'CTSC']);
         });
     });
 
     describe('roleOrCategoryExists', () => {
 
-        it('should return true when category exists', () => {
-            const response = camUtils.roleOrCategoryExists('dummy', 'JUDICIAL', [], ['JUDICIAL']);
-            expect(response).toBeTruthy();
-        });
-
         it('should return true when role exists', () => {
-            const response = camUtils.roleOrCategoryExists('solicitor', 'dummy', ['solicitor'], ['JUDICIAL']);
+            const response = camUtils.roleOrCategoryExists('solicitor', ['solicitor']);
             expect(response).toBeTruthy();
         });
 
         it('should return false', () => {
-            const response = camUtils.roleOrCategoryExists('dummy', 'JUDICIAL', [], []);
+            const response = camUtils.roleOrCategoryExists('dummy', []);
             expect(response).toBeFalsy();
         });
     });

@@ -4,7 +4,7 @@ export interface Caseworker {
   idamId: string;
   email: string;
   location: Location;
-  roleCategory: string;
+  roleCategories: string[];
   service?: string;
 }
 

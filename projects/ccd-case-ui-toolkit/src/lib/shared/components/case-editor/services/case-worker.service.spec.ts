@@ -16,7 +16,7 @@ describe('CaseworkerService', () => {
     lastName: 'Caseworker',
     email: 'testuser@demoenv.com',
     location: null,
-    roleCategory: null
+    roleCategories: []
   };
 
   const ERROR: HttpError = new HttpError();
@@ -48,7 +48,7 @@ describe('CaseworkerService', () => {
   it('should set error service error when the call fails', waitForAsync(() => {
     const userIds = ['1234-1234-1234-1234'];
     httpService.post.and.returnValue(throwError(ERROR));
-    caseworkerService.getCaseworkers(userIds)
+    caseworkerService.getCaseworkers(userIds as any)
       .subscribe(() => {
       }, err => {
         expect(err).toEqual(ERROR);
