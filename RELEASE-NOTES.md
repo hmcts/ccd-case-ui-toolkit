@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.68-exui-4675
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
 ### Version 7.3.68
 **EXUI-4589** Package update - config
 
