@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session';
 import { USER_DETAILS } from '../../utils';
 import { safeJsonParse } from '../../json-utils';
@@ -16,6 +17,8 @@ import { safeJsonParse } from '../../json-utils';
 export class ActivityService {
   public static get ACTIVITY_VIEW() { return 'view'; }
   public static get ACTIVITY_EDIT() { return 'edit'; }
+
+  private readonly logger = new StructuredLoggerService();
 
   constructor(
     private readonly http: HttpService,
@@ -61,7 +64,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -76,7 +79,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log(`user may not be authenticated.${error}`);
+      this.logUserMayNotBeAuthenticated(error);
     }
   }
 
@@ -93,5 +96,9 @@ export class ActivityService {
 
   private activityUrl(): string {
     return this.appConfig.getActivityUrl();
+  }
+
+  private logUserMayNotBeAuthenticated(error: unknown): void {
+    this.logger.error('User may not be authenticated. Activity request was not sent.', { error });
   }
 }

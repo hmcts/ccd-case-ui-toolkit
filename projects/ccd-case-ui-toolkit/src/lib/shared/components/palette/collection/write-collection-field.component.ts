@@ -11,6 +11,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile/profile.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { StructuredLoggerService } from '../../../services/logging';
 import { ProfileNotifier } from '../../../services/profile/profile.notifier';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -31,6 +32,8 @@ type CollectionItem = {
   standalone: false
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
   @Input()
   public caseFields: CaseField[] = [];
 
@@ -195,7 +198,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         duration: 1000,
         offset: -150,
       })
-        .subscribe(() => { }, console.error);
+        .subscribe(() => { }, error => this.logger.error('Error while scrolling collection item into view.', { error }));
     }
 
     this.focusLastItem();
