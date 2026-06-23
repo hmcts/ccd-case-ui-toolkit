@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.68-exui-4826
+**EXUI-4826** Wrapper ticket 4 for package upgrades for em-media-viewer
+
 ### Version 7.3.68
 **EXUI-4589** Package update - config
 
