@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.68-exui-4216-2
+### Version 7.3.68-4216
 **EXUI-4216** cgi_ISSUE-035-rpx-xui-manage-organisations-unsafe-eval-csp
 
 ### Version 7.3.68

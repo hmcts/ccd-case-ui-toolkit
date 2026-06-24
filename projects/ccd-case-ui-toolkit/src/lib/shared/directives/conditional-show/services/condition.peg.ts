@@ -1,3 +1,3 @@
-import parser from './condition-parser.generated';
+import * as parser from './condition-parser.generated';
 
 export default parser;
