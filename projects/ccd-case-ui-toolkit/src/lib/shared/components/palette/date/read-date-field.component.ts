@@ -11,7 +11,7 @@ import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
   standalone: false
 })
 export class ReadDateFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
-  private static readonly SERVICES_RENDERED_IN_LOCAL_TIME = ['ABA1', 'ABA2', 'ABA6']; // [DIVORCE, FR, PROBATE]
+  private static readonly SERVICES_RENDERED_IN_LOCAL_TIME = ['ABA2', 'ABA6']; // [FR, PROBATE]
 
   private caseSubscription: Subscription;
   private caseHmctsServiceId: string;
