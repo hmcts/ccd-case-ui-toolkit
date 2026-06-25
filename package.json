@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.54-exui-4666-rc-4",
+  "version": "7.3.68-exui-4666-rc-4",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -59,9 +59,9 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/media-viewer": "4.2.20",
-    "@ngrx/effects": "17.2.0",
-    "@ngrx/store": "^17.2.0",
+    "@hmcts/media-viewer": "4.2.21",
+    "@ngrx/effects": "^20.1.0",
+    "@ngrx/store": "^20.1.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
