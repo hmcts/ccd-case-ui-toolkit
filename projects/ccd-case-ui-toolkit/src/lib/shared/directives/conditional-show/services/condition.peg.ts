@@ -21,25 +21,20 @@ const conditionSource =
     = Formula
 
   Formula
+    = term:FormulaTerm joins:(JoinComparator)*
+      { return [term].concat(flat(joins)); }
+
+  FormulaTerm
     = EnclosedFormula
-    / OpenFormula
+    / OpenEqualityCheck
 
   EnclosedFormula
-    = bracket formula:OpenFormula bracket join:(JoinComparator)*
-      { return flat([ [formula], join[0] ], 1) }
-
-  OpenFormula
-    = eq:OpenEqualityCheck joins:(JoinComparator)*
-      { return flat([ eq, flat(joins) ]) }
+    = openBracket formula:Formula closeBracket
+      { return formula.length === 1 ? formula[0] : formula; }
 
   JoinComparator
-    = comp:Comparator eq:OpenEqualityCheck
-      { return [comp, eq]; }
-      / CompoundJoinComparator
-
-  CompoundJoinComparator
-    = comp:Comparator bracket f:OpenFormula bracket
-      { return [comp, f ] }
+    = comp:Comparator term:FormulaTerm
+      { return [comp, term]; }
 
   OpenEqualityCheck
     = fr:FieldRef _? op:operator _? val:Value
@@ -87,8 +82,11 @@ const conditionSource =
    = '"'val:[A-Za-z0-9.,* _&()/-]*'"'
    { return val.join(""); }
 
-  bracket
-   = (_? "("+ _? / _? ")"+ _? )
+  openBracket
+   = _? "(" _?
+
+  closeBracket
+   = _? ")" _?
 
   operator
    = "=" / "!=" / "CONTAINS"
