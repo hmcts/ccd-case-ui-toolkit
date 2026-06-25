@@ -135,7 +135,7 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
     this.selection.emit(this.selectedCases);
     if (!isSolicitorUser(this.sessionStorageService)) {
       this.socketConnectSubscription = this.activitySocketService.connected
-        .pipe(skip(1), distinctUntilChanged(), filter(connected => connected))
+        .pipe(distinctUntilChanged(), skip(1), filter(connected => connected))
         .subscribe(() => this.watchResults(true));
     }
   }
@@ -470,7 +470,7 @@ export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   private watchResults(force = false): void {
-    if (this.activitySocketService.isEnabled) {
+    if (this.activitySocketService.isEnabled && this.activitySocketService.connected.value) {
       const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
       const watchKey = [...caseIds].sort(this.alphabeticalCompare).join(',');
       if (!force && watchKey === this.lastWatchedCaseIdsKey) {

@@ -195,7 +195,7 @@ describe('SearchResultComponent', () => {
       activitySocketService = {
         watching: [],
         isEnabled: true,
-        connected: new BehaviorSubject<boolean>(false),
+        connected: new BehaviorSubject<boolean>(true),
         watchCases: jasmine.createSpy('watchCases'),
         stopAllCase: jasmine.createSpy('stopAllCase')
       };
@@ -828,10 +828,37 @@ describe('SearchResultComponent', () => {
       );
     });
 
+    it('should defer the initial watch until the socket connects', () => {
+      const caseIds = RESULT_VIEW.results.map(result => result.case_id);
+      activitySocketService.connected.next(false);
+      activitySocketService.watchCases.calls.reset();
+      (component as any).lastWatchedCaseIdsKey = null;
+
+      component.resultView = RESULT_VIEW;
+      component.ngOnChanges({ resultView: new SimpleChange(null, RESULT_VIEW, true) });
+
+      expect(activitySocketService.watchCases).not.toHaveBeenCalled();
+
+      activitySocketService.connected.next(true);
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+      expect(activitySocketService.watchCases).toHaveBeenCalledWith(caseIds);
+    });
+
+    it('should not watch cases twice on initial load when the socket is already connected', () => {
+      activitySocketService.connected.next(true);
+
+      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+      expect(activitySocketService.watchCases).toHaveBeenCalledWith(
+        RESULT_VIEW.results.map(result => result.case_id)
+      );
+    });
+
     it('should watch the same cases again when a new socket connects', () => {
       const caseIds = RESULT_VIEW.results.map(result => result.case_id);
       activitySocketService.watchCases.calls.reset();
 
+      activitySocketService.connected.next(false);
       activitySocketService.connected.next(true);
 
       expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
@@ -844,7 +871,7 @@ describe('SearchResultComponent', () => {
       activitySocketService.connected.next(true);
       activitySocketService.connected.next(true);
 
-      expect(activitySocketService.watchCases).toHaveBeenCalledTimes(1);
+      expect(activitySocketService.watchCases).not.toHaveBeenCalled();
     });
 
     it('should stop watching the last watched cases when destroyed', () => {
@@ -935,7 +962,7 @@ describe('SearchResultComponent', () => {
         activitySocketService = {
           watching: [],
           isEnabled: true,
-          connected: new BehaviorSubject<boolean>(false),
+          connected: new BehaviorSubject<boolean>(true),
           watchCases: jasmine.createSpy('watchCases'),
           stopAllCase: jasmine.createSpy('stopAllCase')
         };
