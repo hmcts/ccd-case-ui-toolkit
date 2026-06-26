@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QueryCreateContext } from '../../models/query-create-context.enum';
-import { SessionStorageService } from '../../../../../services';
+import { SessionStorageService, StructuredLoggerService } from '../../../../../services';
 import { isInternalUser, isJudiciaryUser } from '../../../../../utils';
 import { CaseQueriesCollection, QueryListData } from '../../models';
 
@@ -11,6 +11,8 @@ import { CaseQueriesCollection, QueryListData } from '../../models';
   standalone: false
 })
 export class QueryConfirmationComponent implements OnInit {
+  private readonly logger = new StructuredLoggerService();
+
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public callbackConfirmationMessageText: { [key: string]: string } = {};
   @Input() public eventResponseData: CaseQueriesCollection;
@@ -49,7 +51,7 @@ export class QueryConfirmationComponent implements OnInit {
   public resolveHmctsStaffRaisedQuery(): void {
     const messageId = this.route.snapshot.params.dataid;
     if (!this.eventResponseData) {
-      console.warn('No event response data available.');
+      this.logger.warn('No event response data available.');
       return;
     }
 
@@ -68,7 +70,7 @@ export class QueryConfirmationComponent implements OnInit {
         .find((c) => c.parentId === messageId);
 
       if (!child) {
-        console.warn('No matching child found for messageId:', messageId);
+        this.logger.warn('No matching child found for messageId.', { messageId });
         return;
       }
 

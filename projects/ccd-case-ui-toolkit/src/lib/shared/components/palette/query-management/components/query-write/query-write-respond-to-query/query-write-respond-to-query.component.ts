@@ -9,6 +9,7 @@ import { CaseNotifier } from '../../../../../case-editor/services';
 import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
 import { QueryManagementService } from '../../../services';
+import { StructuredLoggerService } from '../../../../../../services';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
@@ -17,6 +18,8 @@ import { QueryManagementService } from '../../../services';
 })
 
 export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
+  private readonly logger = new StructuredLoggerService();
+
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
   @Input() public queryCreateContext: QueryCreateContext;
@@ -55,7 +58,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
         this.caseDetails = caseDetails;
       },
       error: (err) => {
-        console.error('Error retrieving case details:', err);
+        this.logger.error('Error retrieving case details.', { error: err });
       }
     });
   }
@@ -67,13 +70,13 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
     }
 
     if (!this.caseQueriesCollections[0]) {
-      console.error('caseQueriesCollections[0] is undefined!', this.caseQueriesCollections);
+      this.logger.error('Case queries collection is undefined.');
       return;
     }
 
     this.messageId = this.route.snapshot.params?.dataid;
     if (!this.messageId) {
-      console.warn('No messageId found in route params:', this.route.snapshot.params);
+      this.logger.warn('No messageId found in route params.', { routeParams: this.route.snapshot.params });
       return;
     }
 
@@ -85,7 +88,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
     )?.value;
 
     if (!matchingMessage) {
-      console.warn('No matching message found for ID:', this.messageId);
+      this.logger.warn('No matching message found for ID.', { messageId: this.messageId });
       return;
     }
 
@@ -116,7 +119,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
   public setCaseQueriesCollectionData(): boolean {
     if (!this.eventData) {
-      console.warn('Event data not available; skipping collection setup.');
+      this.logger.warn('Event data not available; skipping collection setup.');
       return false;
     }
 

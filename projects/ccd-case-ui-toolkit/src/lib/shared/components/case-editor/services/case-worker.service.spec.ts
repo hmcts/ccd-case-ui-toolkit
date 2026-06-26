@@ -16,7 +16,7 @@ describe('CaseworkerService', () => {
     lastName: 'Caseworker',
     email: 'testuser@demoenv.com',
     location: null,
-    roleCategory: null
+    roleCategories: []
   };
 
   const ERROR: HttpError = new HttpError();

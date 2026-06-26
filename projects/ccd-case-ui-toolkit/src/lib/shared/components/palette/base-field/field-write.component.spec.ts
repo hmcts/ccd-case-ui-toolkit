@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -23,7 +23,9 @@ const CLASS = 'person-first-name-cls';
   `,
   standalone: false
 })
-class FieldTestComponent { }
+class FieldTestComponent {
+  public ignoreMandatory = false;
+}
 
 describe('FieldWriteComponent', () => {
   const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
@@ -144,6 +146,76 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
+  });
+
+  it('should refresh child inputs when host inputs change', () => {
+    const divWrapper = de.children[0];
+    const ngContent = divWrapper.children[0];
+    const fieldTestComponent = ngContent.children[0];
+    const fieldTest = fieldTestComponent.componentInstance;
+
+    const newFormGroup = new FormGroup({});
+    const newCaseFields = [plainToClassFromExist(new CaseField(), {
+      id: 'AnotherField',
+      field_type: {
+        id: 'Text',
+        type: 'Text'
+      },
+      display_context: 'OPTIONAL'
+    })];
+
+    component.formGroup = newFormGroup;
+    component.caseFields = newCaseFields;
+    component.idPrefix = 'prefix_';
+    component.parent = new FormGroup({});
+    component.isExpanded = true;
+    component.isInSearchBlock = true;
+    component.ngOnChanges({
+      formGroup: new SimpleChange(formGroup, newFormGroup, false),
+      caseFields: new SimpleChange(caseFields, newCaseFields, false),
+      idPrefix: new SimpleChange('', 'prefix_', false),
+      parent: new SimpleChange(undefined, component.parent, false),
+      isExpanded: new SimpleChange(false, true, false),
+      isInSearchBlock: new SimpleChange(false, true, false)
+    });
+    fixture.detectChanges();
+
+    expect(fieldTest.formGroup).toBe(newFormGroup);
+    expect(fieldTest.caseFields).toBe(newCaseFields);
+    expect(fieldTest.idPrefix).toBe('prefix_');
+    expect(fieldTest.parent).toBe(component.parent);
+    expect(fieldTest.isExpanded).toBe(true);
+    expect(fieldTest.isInSearchBlock).toBe(true);
+  });
+
+  it('should set ignoreMandatory on AddressGlobal child components', () => {
+    const addressGlobalField = plainToClassFromExist(new CaseField(), {
+      id: 'RespondentAddress',
+      field_type: {
+        id: 'AddressGlobal',
+        type: 'Complex'
+      },
+      display_context: 'OPTIONAL',
+      label: 'Address'
+    });
+
+    const addressFixture = TestBed.createComponent(FieldWriteComponent);
+    const addressComponent = addressFixture.componentInstance;
+    addressComponent.caseField = addressGlobalField;
+    addressComponent.caseFields = [addressGlobalField];
+    addressComponent.formGroup = new FormGroup({});
+    addressFixture.detectChanges();
+
+    const childComponent = addressFixture.debugElement.children[0].children[0].children[0].componentInstance;
+    expect(childComponent.ignoreMandatory).toBe(true);
+  });
+
+  it('should ignore ngOnChanges before the child component is created', () => {
+    const freshComponent = TestBed.createComponent(FieldWriteComponent).componentInstance;
+
+    expect(() => freshComponent.ngOnChanges({
+      idPrefix: new SimpleChange('', 'prefix_', true)
+    })).not.toThrow();
   });
 
   function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {

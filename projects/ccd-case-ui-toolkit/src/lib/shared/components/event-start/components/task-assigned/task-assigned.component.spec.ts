@@ -56,7 +56,7 @@ describe('TaskRequirementComponent', () => {
     lastName: 'Caseworker',
     email: 'testuser@demoenv.com',
     location: null,
-    roleCategory: null
+    roleCategories: []
   };
   const judicialworker: Judicialworker = {
     title: null,

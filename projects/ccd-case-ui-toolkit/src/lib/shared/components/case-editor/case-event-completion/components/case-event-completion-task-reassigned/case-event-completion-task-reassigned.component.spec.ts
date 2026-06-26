@@ -74,7 +74,7 @@ describe('TaskReassignedComponent', () => {
     lastName: 'Caseworker',
     email: 'testuser@demoenv.com',
     location: null,
-    roleCategory: null
+    roleCategories: []
   };
 
   const judicialworker: Judicialworker = {
