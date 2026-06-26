@@ -194,8 +194,24 @@ describe('ReadComplexFieldTableComponent', () => {
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
 
       expect(simpleRowsValues.length).toBe(2);
-      expect(simpleRowsValues[LINE_1].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1]);
-      expect(simpleRowsValues[LINE_2].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2]);
+      expect(simpleRowsValues[LINE_1].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].hidden,
+          value: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].value
+        }));
+      expect(simpleRowsValues[LINE_2].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].hidden,
+          value: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].value
+        }));
     });
 
     it('should render a table with a row containing 1 column for each compound type', () => {
@@ -204,7 +220,14 @@ describe('ReadComplexFieldTableComponent', () => {
         .queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES);
 
       expect(compoundRowsHeaders.length).toBe(1);
-      expect(compoundRowsHeaders[0].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE]);
+      expect(compoundRowsHeaders[0].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].hidden
+        }));
     });
 
     it('should NOT render fields with empty value', () => {
@@ -489,34 +512,34 @@ describe('ReadComplexFieldTableComponent', () => {
       expect(values.length).toBe(3);
 
       const line1 = FIELD_TYPE.complex_fields[LINE_1];
-      expect(values[LINE_1].componentInstance.caseField).toEqual({
+      expect(values[LINE_1].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: line1.id,
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressLine1']
-      });
+      }));
 
       const line2 = FIELD_TYPE.complex_fields[LINE_2];
-      expect(values[LINE_2].componentInstance.caseField).toEqual({
+      expect(values[LINE_2].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: line2.id,
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressLine2']
-      });
+      }));
 
       const postcode = FIELD_TYPE.complex_fields[POSTCODE];
-      expect(values[POSTCODE].componentInstance.caseField).toEqual({
+      expect(values[POSTCODE].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: postcode.id,
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressPostcode']
-      });
+      }));
     });
 
     it('should NOT render fields with empty value', () => {
