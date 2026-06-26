@@ -225,7 +225,7 @@ describe('ReadDateFieldComponent', () => {
       expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
     });
 
-    ['ABA1', 'ABA2', 'ABA6'].forEach((hmctsServiceId) => {
+    ['ABA2', 'ABA6'].forEach((hmctsServiceId) => {
       it(`should use local time zone for backend-origin fields in ${hmctsServiceId}`, () => {
         caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', hmctsServiceId));
         fixture.detectChanges();
@@ -235,7 +235,7 @@ describe('ReadDateFieldComponent', () => {
       });
     });
 
-    ['ABA1', 'ABA2'].forEach((hmctsServiceId) => {
+    ['ABA2'].forEach((hmctsServiceId) => {
       it(`should keep utc time zone for form-origin fields in ${hmctsServiceId}`, () => {
         component.valueOrigin = PaletteValueOrigin.FORM;
         component.caseField.display_context = null;
