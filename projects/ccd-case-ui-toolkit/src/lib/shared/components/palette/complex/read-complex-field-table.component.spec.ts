@@ -25,7 +25,7 @@ describe('ReadComplexFieldTableComponent', () => {
 
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'caseFields', 'context', 'valueOrigin', 'topLevelFormGroup']
+    inputs: ['caseField', 'context', 'topLevelFormGroup']
   });
 
   let fixture: ComponentFixture<ReadComplexFieldTableComponent>;

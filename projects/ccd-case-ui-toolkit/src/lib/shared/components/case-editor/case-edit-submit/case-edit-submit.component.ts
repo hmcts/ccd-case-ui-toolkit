@@ -13,7 +13,7 @@ import {
   ProfileNotifier
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
-import { PaletteContext, PaletteValueOrigin } from '../../palette';
+import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
@@ -37,7 +37,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public profile: Profile;
   public showSummaryFields: CaseField[];
   public paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
-  public paletteValueOrigin = PaletteValueOrigin;
   public profileSubscription: Subscription;
   public contextFields: CaseField[];
   public task: Task;
