@@ -42,7 +42,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     this.caseType = task.case_type_id;
 
     // Current user is a caseworker?
-    this.caseworkerSubscription = this.caseworkerService.getUserByIdamId(task.assignee).subscribe(caseworker => {
+    this.caseworkerSubscription = this.caseworkerService.getUserByIdamId(task.assignee as string).subscribe(caseworker => {
       if (caseworker) {
         this.assignedUserName = `${caseworker.firstName} ${caseworker.lastName}`;
       }
