@@ -306,7 +306,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(casefield)
               });
             } else {
-              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
+              this.validationErrors.push({ id, message: `Select or fill the required ${label} field` });
               fieldElement.markAsDirty();
             }
           }
