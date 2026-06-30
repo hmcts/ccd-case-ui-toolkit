@@ -32,7 +32,14 @@ export interface RequestedRoleNote {
   comment: string;
 }
 
-export type RoleCategory = 'JUDICIAL' | 'LEGAL_OPERATIONS' | 'ADMIN' | 'PROFESSIONAL' | 'CITIZEN' | 'CTSC';
+export enum RoleCategory {
+  JUDICIAL = 'JUDICIAL',
+  LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
+  ADMIN = 'ADMIN',
+  CTSC = 'CTSC',
+  PROFESSIONAL = 'PROFESSIONAL',
+  CITIZEN = 'CITIZEN'
+}
 
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
 

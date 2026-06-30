@@ -5,22 +5,16 @@ import { SpecificAccessRequest } from '../../../domain/case-view/specific-access
 export class CaseAccessUtils {
     // User role mapping
     public static readonly JUDGE_ROLE = 'judge';
-    public static readonly JUDGE_ROLE_CATEGORY = 'JUDICIAL';
     public static readonly JUDGE_ROLE_NAME = 'judiciary';
     public static readonly ADMIN_ROLE = 'admin';
-    public static readonly ADMIN_ROLE_CATEGORY = 'ADMIN';
     public static readonly ADMIN_ROLE_NAME = 'admin';
     public static readonly PROFESSIONAL_ROLE = 'solicitor';
-    public static readonly PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
     public static readonly PROFESSIONAL_ROLE_NAME = 'professional';
     public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
-    public static readonly LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
     public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-ops';
     public static readonly CITIZEN_ROLE = 'citizen';
-    public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
     public static readonly CTSC_ROLE = 'ctsc';
-    public static readonly CTSC_ROLE_CATEGORY = 'CTSC';
     public static readonly CTSC_ROLE_NAME = 'ctsc';
 
     // fallback purely if roleCategories is not available in 
@@ -30,22 +24,22 @@ export class CaseAccessUtils {
         const roleCategoryList: RoleCategory[] = [];
 
         if (this.roleHasKeyword(CaseAccessUtils.JUDGE_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.JUDGE_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.JUDICIAL);
         }
         if (this.roleHasKeyword(CaseAccessUtils.PROFESSIONAL_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.PROFESSIONAL);
         }
         if (this.roleHasKeyword(CaseAccessUtils.CITIZEN_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.CITIZEN_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.CITIZEN);
         }
         if (this.roleHasKeyword(CaseAccessUtils.ADMIN_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.ADMIN_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.ADMIN);
         }
         if (this.roleHasKeyword(CaseAccessUtils.CTSC_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.CTSC_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.CTSC);
         }
         if (this.roleHasKeyword(CaseAccessUtils.LEGAL_OPERATIONS_ROLE, roleKeywords)) {
-            roleCategoryList.push(CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY);
+            roleCategoryList.push(RoleCategory.LEGAL_OPERATIONS);
         }
 
         return roleCategoryList;
@@ -60,19 +54,19 @@ export class CaseAccessUtils {
         let roleName = '';
 
         switch (aMRole) {
-            case CaseAccessUtils.JUDGE_ROLE_CATEGORY:
+            case RoleCategory.JUDICIAL:
                 roleName = `${accessType}-access-${CaseAccessUtils.JUDGE_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY:
+            case RoleCategory.PROFESSIONAL:
                 roleName = `${accessType}-access-${CaseAccessUtils.PROFESSIONAL_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.CITIZEN_ROLE_CATEGORY:
+            case RoleCategory.CITIZEN:
                 roleName = `${accessType}-access-${CaseAccessUtils.CITIZEN_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.ADMIN_ROLE_CATEGORY:
+            case RoleCategory.ADMIN:
                 roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.CTSC_ROLE_CATEGORY:
+            case RoleCategory.CTSC:
                 roleName = `${accessType}-access-${CaseAccessUtils.CTSC_ROLE_NAME}`;
                 break;
             default:
