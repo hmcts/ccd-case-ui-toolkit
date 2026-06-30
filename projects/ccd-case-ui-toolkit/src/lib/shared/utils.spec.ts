@@ -1,6 +1,6 @@
 import { RoleCategory } from './domain';
 import { safeJsonParse } from './json-utils';
-import { getAMRoleName, getMappedRoleCategories, isWorkAllocationUser, PUI_CASE_MANAGER } from './utils';
+import { getAMRoleName, getMappedRoleCategories, isWorkAllocationUser } from './utils';
 import { SessionStorageService } from 'ccd-case-ui-toolkit';
 
 describe('safeJsonParse', () => {
@@ -126,6 +126,15 @@ describe('getMappedRoleCategories', () => {
         const response = getMappedRoleCategories(roles);
         expect(response).toEqual(['JUDICIAL' as RoleCategory, 'CITIZEN' as RoleCategory, 'CTSC' as RoleCategory]);
     });
+
+    it('should return ENFORCEMENT role category when role keyword is present', () => {
+        const roles = [
+            'enforcement',
+            'role22'
+        ];
+        const response = getMappedRoleCategories(roles);
+        expect(response).toEqual(['ENFORCEMENT' as RoleCategory]);
+    });
 });
 
 
@@ -159,5 +168,10 @@ describe('getAMRoleName', () => {
   it('should return ctsc role name', () => {
       const response = getAMRoleName('dummy', RoleCategory.CTSC);
       expect(response).toEqual('dummy-access-ctsc');
+  });
+  
+  it('should return enforcement role name', () => {
+      const response = getAMRoleName('dummy', RoleCategory.ENFORCEMENT);
+      expect(response).toEqual('dummy-access-enforcement');
   });
 });
