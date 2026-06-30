@@ -5,44 +5,38 @@ import { SpecificAccessRequest } from '../../../domain/case-view/specific-access
 export class CaseAccessUtils {
     // User role mapping
     public static readonly JUDGE_ROLE = 'judge';
-    public static readonly JUDGE_ROLE_CATEGORY = 'JUDICIAL';
     public static readonly JUDGE_ROLE_NAME = 'judiciary';
     public static readonly ADMIN_ROLE = 'admin';
-    public static readonly ADMIN_ROLE_CATEGORY = 'ADMIN';
     public static readonly ADMIN_ROLE_NAME = 'admin';
     public static readonly PROFESSIONAL_ROLE = 'solicitor';
-    public static readonly PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
     public static readonly PROFESSIONAL_ROLE_NAME = 'professional';
     public static readonly LEGAL_OPERATIONS_ROLE = 'caseworker';
-    public static readonly LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
     public static readonly LEGAL_OPERATIONS_ROLE_NAME = 'legal-ops';
     public static readonly CITIZEN_ROLE = 'citizen';
-    public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
     public static readonly CTSC_ROLE = 'ctsc';
-    public static readonly CTSC_ROLE_CATEGORY = 'CTSC';
     public static readonly CTSC_ROLE_NAME = 'ctsc';
 
     public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
 
-        if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, CaseAccessUtils.JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.JUDGE_ROLE_CATEGORY;
+        if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, RoleCategory.JUDICIAL, roleKeywords, roleCategories)) {
+            return RoleCategory.JUDICIAL;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE,
-            CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY;
+            RoleCategory.PROFESSIONAL, roleKeywords, roleCategories)) {
+            return RoleCategory.PROFESSIONAL;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE,
-            CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.CITIZEN_ROLE_CATEGORY;
+            RoleCategory.CITIZEN, roleKeywords, roleCategories)) {
+            return RoleCategory.CITIZEN;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE,
-            CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.ADMIN_ROLE_CATEGORY;
+            RoleCategory.ADMIN, roleKeywords, roleCategories)) {
+            return RoleCategory.ADMIN;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.CTSC_ROLE,
-            CaseAccessUtils.CTSC_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.CTSC_ROLE_CATEGORY;
+            RoleCategory.CTSC, roleKeywords, roleCategories)) {
+            return RoleCategory.CTSC;
         } else {
-            return CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY;
+            return RoleCategory.LEGAL_OPERATIONS;
         }
 
     }
@@ -58,19 +52,19 @@ export class CaseAccessUtils {
         let roleName = '';
 
         switch (aMRole) {
-            case CaseAccessUtils.JUDGE_ROLE_CATEGORY:
+            case RoleCategory.JUDICIAL:
                 roleName = `${accessType}-access-${CaseAccessUtils.JUDGE_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY:
+            case RoleCategory.PROFESSIONAL:
                 roleName = `${accessType}-access-${CaseAccessUtils.PROFESSIONAL_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.CITIZEN_ROLE_CATEGORY:
+            case RoleCategory.CITIZEN:
                 roleName = `${accessType}-access-${CaseAccessUtils.CITIZEN_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.ADMIN_ROLE_CATEGORY:
+            case RoleCategory.ADMIN:
                 roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
                 break;
-            case CaseAccessUtils.CTSC_ROLE_CATEGORY:
+            case RoleCategory.CTSC:
                 roleName = `${accessType}-access-${CaseAccessUtils.CTSC_ROLE_NAME}`;
                 break;
             default:
