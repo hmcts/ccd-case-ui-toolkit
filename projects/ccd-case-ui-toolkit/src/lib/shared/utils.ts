@@ -29,6 +29,19 @@ function roleHasKeyword(keyword: string, roleWords: string[]): boolean {
     return roleWords.includes(keyword);
 }
 
+export function isWorkAllocationUser(sessionStorageService: SessionStorageService): boolean {
+  const userDetails = getUserDetails(sessionStorageService);
+  
+  return userDetails && userDetails.roles
+      && !userDetails.roles.includes(PUI_CASE_MANAGER)
+      &&
+      (userDetails.roles.includes('caseworker-ia-iacjudge')
+        || userDetails.roles.includes('caseworker-ia-caseofficer')
+        || userDetails.roles.includes('caseworker-ia-admofficer')
+        || userDetails.roles.includes('caseworker-civil')
+        || userDetails.roles.includes('caseworker-privatelaw'));
+}
+
 // fallback purely if roleCategories is not available in 
 export function getMappedRoleCategories(roles: string[] = []): RoleCategory[] {
 
