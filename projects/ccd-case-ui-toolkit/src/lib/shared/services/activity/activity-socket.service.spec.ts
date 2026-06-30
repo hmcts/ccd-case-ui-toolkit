@@ -23,6 +23,11 @@ describe('ActivitySocketService', () => {
     sharedState.socket = undefined;
     sharedState.allowWebSockets = undefined;
     sharedState.userKey = undefined;
+    sharedState.connectRequested = undefined;
+    if (sharedState.closeTimer) {
+      clearTimeout(sharedState.closeTimer);
+      sharedState.closeTimer = undefined;
+    }
     if (sharedState.reconnectTimer) {
       clearTimeout(sharedState.reconnectTimer);
       sharedState.reconnectTimer = undefined;
@@ -181,7 +186,31 @@ describe('ActivitySocketService', () => {
       (secondService as any).destroy();
     });
 
-    it('should keep the active shared socket open until the last owner is destroyed', () => {
+    it('should not open another socket while the first connect request is pending', () => {
+      mockSocket.connect.and.callFake(() => mockSocket);
+
+      activityService.mode = MODES.socket;
+      const firstSocket = service.socket;
+
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+
+      expect(secondService.socket).toBe(firstSocket);
+      expect(getSocketSpy).toHaveBeenCalledTimes(1);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+
+      (secondService as any).destroy();
+    });
+
+    it('should treat an open engine connection as active if the manager state is stale', () => {
+      mockSocket.connected = false;
+      mockSocket.active = false;
+      mockSocket.io._readyState = 'closed';
+      mockSocket.io.engine = { readyState: 'open' };
+
+      expect((ActivitySocketService as any).isSocketActive(mockSocket)).toBe(true);
+    });
+
+    it('should close the shared socket after the last owner grace period', fakeAsync(() => {
       activityService.mode = MODES.socket;
       const firstSocket = service.socket;
 
@@ -193,14 +222,43 @@ describe('ActivitySocketService', () => {
 
       (service as any).destroy();
 
+      expect(mockSocket.close).not.toHaveBeenCalled();
+
+      tick(4999);
+      expect(mockSocket.close).not.toHaveBeenCalled();
+
+      tick(1);
       expect(mockSocket.close).toHaveBeenCalledTimes(1);
-    });
+    }));
+
+    it('should reuse the shared socket when a new owner appears during the close grace period', fakeAsync(() => {
+      activityService.mode = MODES.socket;
+      const firstSocket = service.socket;
+
+      (service as any).destroy();
+      tick(4999);
+
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+
+      expect(secondService.socket).toBe(firstSocket);
+      expect(getSocketSpy).toHaveBeenCalledTimes(1);
+      expect(mockSocket.close).not.toHaveBeenCalled();
+
+      tick(1);
+      expect(mockSocket.close).not.toHaveBeenCalled();
+
+      (secondService as any).destroy();
+      tick(5000);
+
+      expect(mockSocket.close).toHaveBeenCalledTimes(1);
+    }));
 
     it('should create a new socket when the shared socket is no longer active', () => {
       activityService.mode = MODES.socket;
       mockSocket.active = false;
       mockSocket.connected = false;
       mockSocket.io._readyState = 'closed';
+      (ActivitySocketService as any).clearSharedSocketConnectRequest(mockSocket);
 
       const nextSocket = createMockSocket();
       getSocketSpy.and.returnValue(nextSocket as Socket);
@@ -275,6 +333,26 @@ describe('ActivitySocketService', () => {
       expect(middleDelay).toBeLessThanOrEqual(20000);
       expect(maximumDelay).toBe(20000);
     });
+
+    it('should not refresh watch while the websocket is idle', fakeAsync(() => {
+      activityService.mode = MODES.socket;
+      mockSocket.connected = true;
+      mockSocket.active = true;
+      mockSocket.io._readyState = 'open';
+
+      const caseIds = ['case1', 'case2'];
+      service.watchCases(caseIds);
+
+      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
+      expect(mockSocket.emit).toHaveBeenCalledWith('watch', { caseIds });
+
+      tick(59999);
+      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
+
+      tick(1);
+      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
+      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe('watchCases', () => {

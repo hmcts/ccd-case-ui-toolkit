@@ -15,10 +15,13 @@ interface ActivitySocketSharedState {
   allowWebSockets?: boolean;
   userKey?: string;
   owners: Set<object>;
+  connectRequested?: boolean;
+  closeTimer?: ReturnType<typeof setTimeout>;
   reconnectTimer?: ReturnType<typeof setTimeout>;
 }
 
 const ACTIVITY_SOCKET_SHARED_STATE_KEY = '__ccdActivitySocketSharedState__';
+const ACTIVITY_SOCKET_CLOSE_GRACE_MS = 5000;
 const ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS = 1000;
 const ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS = 20000;
 
@@ -174,22 +177,23 @@ export class ActivitySocketService {
       .subscribe(activity => this.activitySubject.next(activity));
 
     this.socketDisconnectSubscription = this.disconnect.subscribe(() => {
+      ActivitySocketService.clearSharedSocketConnectRequest(socket);
       this.connected.next(false);
       ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
     });
     this.socketConnectErrorSubscription = this.connect_error.subscribe(() => {
+      ActivitySocketService.clearSharedSocketConnectRequest(socket);
       this.connected.next(false);
       ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
     });
     this.socketConnectSubscription = this.connect.subscribe(() => {
+      ActivitySocketService.clearSharedSocketConnectRequest(socket);
       ActivitySocketService.clearSharedSocketReconnect(socket);
       this.connected.next(true);
     });
 
     this.connected.next(socket.connected);
-    if (!ActivitySocketService.isSocketActive(socket) && !ActivitySocketService.isSharedSocketReconnectPending(socket)) {
-      socket.connect();
-    }
+    ActivitySocketService.connectSharedSocketIfNeeded(socket);
   }
 
   // Detaches this service instance and closes the shared socket if it is the last owner.
@@ -238,7 +242,8 @@ export class ActivitySocketService {
     if (
       state.socket &&
       state.userKey === userKey &&
-      (ActivitySocketService.isSocketActive(state.socket) || !!state.reconnectTimer)
+      state.allowWebSockets === allowWebSockets &&
+      (ActivitySocketService.isSocketActive(state.socket) || !!state.reconnectTimer || !!state.connectRequested)
     ) {
       return state.socket;
     }
@@ -266,6 +271,7 @@ export class ActivitySocketService {
 
   // Marks a service instance as an owner of the shared socket.
   private static attachSharedSocketOwner(owner: object): void {
+    ActivitySocketService.clearSharedSocketCloseTimer();
     ActivitySocketService.sharedState.owners.add(owner);
   }
 
@@ -274,7 +280,30 @@ export class ActivitySocketService {
     const state = ActivitySocketService.sharedState;
     state.owners.delete(owner);
     if (state.owners.size === 0 && socket === state.socket) {
-      ActivitySocketService.closeSharedSocket(socket);
+      ActivitySocketService.scheduleSharedSocketClose(socket);
+    }
+  }
+
+  // Gives Angular a short handover window so provider churn does not create a new 101.
+  private static scheduleSharedSocketClose(socket: Socket): void {
+    const state = ActivitySocketService.sharedState;
+    if (socket !== state.socket || state.closeTimer) {
+      return;
+    }
+
+    state.closeTimer = setTimeout(() => {
+      state.closeTimer = undefined;
+      if (socket === state.socket && state.owners.size === 0) {
+        ActivitySocketService.closeSharedSocket(socket);
+      }
+    }, ACTIVITY_SOCKET_CLOSE_GRACE_MS);
+  }
+
+  private static clearSharedSocketCloseTimer(socket?: Socket): void {
+    const state = ActivitySocketService.sharedState;
+    if ((!socket || socket === state.socket) && state.closeTimer) {
+      clearTimeout(state.closeTimer);
+      state.closeTimer = undefined;
     }
   }
 
@@ -286,7 +315,9 @@ export class ActivitySocketService {
     }
 
     if (socket === state.socket) {
+      ActivitySocketService.clearSharedSocketCloseTimer(socket);
       ActivitySocketService.clearSharedSocketReconnect(socket);
+      ActivitySocketService.clearSharedSocketConnectRequest(socket);
       state.socket = undefined;
       state.allowWebSockets = undefined;
       state.userKey = undefined;
@@ -304,10 +335,32 @@ export class ActivitySocketService {
     }
   }
 
-  // Checks whether the active shared socket already has a reconnect pending.
-  private static isSharedSocketReconnectPending(socket: Socket): boolean {
+  // Starts a shared socket connection only when one is not already active or pending.
+  private static connectSharedSocketIfNeeded(socket: Socket): void {
     const state = ActivitySocketService.sharedState;
-    return socket === state.socket && !!state.reconnectTimer;
+    if (
+      socket !== state.socket ||
+      ActivitySocketService.isSocketActive(socket) ||
+      state.reconnectTimer ||
+      state.connectRequested
+    ) {
+      return;
+    }
+
+    state.connectRequested = true;
+    try {
+      socket.connect();
+    } catch (error) {
+      ActivitySocketService.clearSharedSocketConnectRequest(socket);
+      throw error;
+    }
+  }
+
+  private static clearSharedSocketConnectRequest(socket?: Socket): void {
+    const state = ActivitySocketService.sharedState;
+    if (socket === state.socket) {
+      state.connectRequested = undefined;
+    }
   }
 
   // Schedules one controlled reconnect for websocket mode after a failure event.
@@ -322,7 +375,7 @@ export class ActivitySocketService {
     state.reconnectTimer = setTimeout(() => {
       state.reconnectTimer = undefined;
       if (socket === state.socket && state.owners.size > 0 && !ActivitySocketService.isSocketActive(socket)) {
-        socket.connect();
+        ActivitySocketService.connectSharedSocketIfNeeded(socket);
       }
     }, ActivitySocketService.getReconnectDelayMs());
 
@@ -357,8 +410,11 @@ export class ActivitySocketService {
     }
 
     const socketIo = socket.io as any;
-    const readyState = socketIo?._readyState || socketIo?.engine?.readyState;
-    return socket.connected || socket.active || readyState === 'opening' || readyState === 'open';
+    const activeReadyStates = ['connecting', 'opening', 'open'];
+    return socket.connected ||
+      socket.active ||
+      activeReadyStates.includes(socketIo?._readyState) ||
+      activeReadyStates.includes(socketIo?.engine?.readyState);
   }
 
   // Loads the current user from session storage and removes the token before socket use.
