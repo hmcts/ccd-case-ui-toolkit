@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
-import { CaseField } from '../../../domain';
-import { JUDGE, PUI_CASE_MANAGER } from '../../../utils';
+import { CaseField, RoleKeyword } from '../../../domain';
+import { PUI_CASE_MANAGER } from '../../../utils';
 import { SessionStorageService } from '../../../services';
 import { CaseNotifier } from '../..';
 import { BehaviorSubject, of } from 'rxjs';
@@ -276,7 +276,7 @@ describe('ReadQueryManagementFieldComponent', () => {
 
   describe('isJudiciaryUser', () => {
     it('should return true if the user has a judge role', () => {
-      USER.roles.push(JUDGE);
+      USER.roles.push(RoleKeyword.JUDGE);
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
       fixture.detectChanges();
       expect(component.isJudiciaryUser()).toBeTruthy();
