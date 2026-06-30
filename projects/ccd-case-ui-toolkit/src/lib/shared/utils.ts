@@ -25,6 +25,19 @@ export function isJudiciaryUser(sessionStorageService: SessionStorageService): b
     && (userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)));
 }
 
+export function isWorkAllocationUser(sessionStorageService: SessionStorageService): boolean {
+  const userDetails = getUserDetails(sessionStorageService);
+  
+  return userDetails && userDetails.roles
+      && !userDetails.roles.includes(PUI_CASE_MANAGER)
+      &&
+      (userDetails.roles.includes('caseworker-ia-iacjudge')
+        || userDetails.roles.includes('caseworker-ia-caseofficer')
+        || userDetails.roles.includes('caseworker-ia-admofficer')
+        || userDetails.roles.includes('caseworker-civil')
+        || userDetails.roles.includes('caseworker-privatelaw'));
+}
+
 function  roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
   const categoryExists = roleCategories.indexOf(roleCategory) > -1;
   const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
