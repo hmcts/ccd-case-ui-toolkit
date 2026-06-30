@@ -45,7 +45,8 @@ export function isWorkAllocationUser(sessionStorageService: SessionStorageServic
         || userDetails.roles.includes('caseworker-ia-caseofficer')
         || userDetails.roles.includes('caseworker-ia-admofficer')
         || userDetails.roles.includes('caseworker-civil')
-        || userDetails.roles.includes('caseworker-privatelaw'));
+        || userDetails.roles.includes('caseworker-privatelaw')
+        || userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT));
 }
 
 // fallback purely if roleCategories is not available in 
