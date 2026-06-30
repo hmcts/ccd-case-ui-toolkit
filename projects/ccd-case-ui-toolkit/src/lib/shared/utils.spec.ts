@@ -172,6 +172,26 @@ describe('getMappedRoleCategory', () => {
       const response = getMappedRoleCategory(roles, roleCategories);
       expect(response).toEqual(RoleCategory.CTSC);
   });
+
+  it('should return ENFORCEMENT role category when role category is present', () => {
+      const roles = [
+          'something',
+          'role22'
+      ];
+      const roleCategories = [RoleCategory.ENFORCEMENT];
+      const response = getMappedRoleCategory(roles, roleCategories);
+      expect(response).toEqual(RoleCategory.ENFORCEMENT);
+  });
+
+  it('should return ENFORCEMENT role category when role keyword is present', () => {
+      const roles = [
+          'enforcement',
+          'role22'
+      ];
+      const roleCategories = [];
+      const response = getMappedRoleCategory(roles, roleCategories);
+      expect(response).toEqual(RoleCategory.ENFORCEMENT);
+  });
 });
 
 describe('getAMRoleName', () => {
@@ -204,5 +224,10 @@ describe('getAMRoleName', () => {
   it('should return ctsc role name', () => {
       const response = getAMRoleName('dummy', RoleCategory.CTSC);
       expect(response).toEqual('dummy-access-ctsc');
+  });
+  
+  it('should return enforcement role name', () => {
+      const response = getAMRoleName('dummy', RoleCategory.ENFORCEMENT);
+      expect(response).toEqual('dummy-access-enforcement');
   });
 });

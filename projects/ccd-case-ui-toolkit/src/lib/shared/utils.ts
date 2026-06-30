@@ -63,6 +63,9 @@ export function getMappedRoleCategory(roles: string[] = [], roleCategories: stri
   } else if (roleOrCategoryExists(RoleKeyword.CTSC, RoleCategory.CTSC, roleKeywords, roleCategories)) {
       return RoleCategory.CTSC;
 
+  } else if (roleOrCategoryExists(RoleKeyword.ENFORCEMENT, RoleCategory.ENFORCEMENT, roleKeywords, roleCategories)) {
+      return RoleCategory.ENFORCEMENT;
+
   } else {
       return RoleCategory.LEGAL_OPERATIONS;
   }
@@ -87,6 +90,9 @@ export function getAMRoleName(accessType: string, aMRole: RoleCategory): string 
           break;
       case RoleCategory.CTSC:
           roleName = `${accessType}-access-${AMRoleSuffix.CTSC}`;
+          break;
+      case RoleCategory.ENFORCEMENT:
+          roleName = `${accessType}-access-${AMRoleSuffix.ENFORCEMENT}`;
           break;
       default:
           roleName = `${accessType}-access-${AMRoleSuffix.LEGAL_OPERATIONS}`;
