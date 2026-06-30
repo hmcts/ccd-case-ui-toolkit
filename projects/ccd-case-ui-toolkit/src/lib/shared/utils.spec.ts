@@ -103,6 +103,11 @@ describe('isWorkAllocationUser', () => {
         sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-privatelaw"]}');
         expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
     });
+
+    it('is true when user has an ENFORCEMENT role category', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker"], "roleCategories": ["ENFORCEMENT"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+    });
 });
 
 describe('getMappedRoleCategory', () => {

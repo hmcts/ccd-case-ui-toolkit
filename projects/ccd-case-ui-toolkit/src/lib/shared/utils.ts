@@ -41,7 +41,8 @@ export function isWorkAllocationUser(sessionStorageService: SessionStorageServic
         || userDetails.roles.includes('caseworker-ia-caseofficer')
         || userDetails.roles.includes('caseworker-ia-admofficer')
         || userDetails.roles.includes('caseworker-civil')
-        || userDetails.roles.includes('caseworker-privatelaw'));
+        || userDetails.roles.includes('caseworker-privatelaw')
+        || userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT));
 }
 
 function  roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
