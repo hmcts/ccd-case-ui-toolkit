@@ -14,9 +14,15 @@ function getUserDetails(sessionStorageService: SessionStorageService): any {
 
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
-  return userDetails && userDetails?.roles
-    && !(userDetails.roles.includes(PUI_CASE_MANAGER)
-      || userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)));
+
+  if (!userDetails || !userDetails?.roles) {
+    return false;
+  } else if (RoleCategory.ENFORCEMENT === getMappedRoleCategory(userDetails?.roles, userDetails?.roleCategories)) {
+    return true;
+  } else {
+    return !(userDetails.roles.includes(PUI_CASE_MANAGER) || 
+      userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)))
+  }
 }
 
 export function isJudiciaryUser(sessionStorageService: SessionStorageService): boolean {

@@ -1,7 +1,7 @@
 import { AriaDescriber } from '@angular/cdk/a11y';
 import { RoleCategory } from './domain';
 import { safeJsonParse } from './json-utils';
-import { getAMRoleName, getMappedRoleCategory, isWorkAllocationUser, PUI_CASE_MANAGER } from './utils';
+import { getAMRoleName, getMappedRoleCategory, isInternalUser, isWorkAllocationUser } from './utils';
 import { SessionStorageService } from 'ccd-case-ui-toolkit';
 
 describe('safeJsonParse', () => {
@@ -19,6 +19,45 @@ describe('safeJsonParse', () => {
     const result = safeJsonParse('{not-json', { ok: false });
     expect(result).toEqual({ ok: false });
   });
+});
+
+describe('isInternalUser', () => {
+    const sessionStorageService = {} as SessionStorageService;
+
+    it('is false when no user details', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue(null);
+        expect(isInternalUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is true when user has no roles', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": []}');
+        expect(isInternalUser(sessionStorageService)).toBeTruthy();
+    });
+
+    it('is false when user has case manager role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["pui-case-manager"]}');
+        expect(isInternalUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is false when user has judge role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["some-judge-role"]}');
+        expect(isInternalUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is true when user has some other role that is not a judge or case manager', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["some-other-role"]}');
+        expect(isInternalUser(sessionStorageService)).toBeTruthy();
+    });
+
+    it('is true when user has an enforcement role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["some-enforcement-role"]}');
+        expect(isInternalUser(sessionStorageService)).toBeTruthy();
+    });
+
+    it('is true when user has case manager role but has an enforcement role category', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["pui-case-manager"], "roleCategories": ["ENFORCEMENT"]}');
+        expect(isInternalUser(sessionStorageService)).toBeTruthy();
+    });
 });
 
 describe('isWorkAllocationUser', () => {
