@@ -1,6 +1,7 @@
 import { RoleCategory } from './domain';
 import { safeJsonParse } from './json-utils';
-import { getAMRoleName, getMappedRoleCategory } from './utils';
+import { getAMRoleName, getMappedRoleCategory, isWorkAllocationUser, PUI_CASE_MANAGER } from './utils';
+import { SessionStorageService } from 'ccd-case-ui-toolkit';
 
 describe('safeJsonParse', () => {
   it('returns fallback when value is null', () => {
@@ -17,6 +18,47 @@ describe('safeJsonParse', () => {
     const result = safeJsonParse('{not-json', { ok: false });
     expect(result).toEqual({ ok: false });
   });
+});
+
+describe('isWorkAllocationUser', () => {
+    const sessionStorageService = {} as SessionStorageService;
+
+    it('is false when no user details', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue(null);
+        expect(isWorkAllocationUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is false when user has no roles', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": []}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is false when user has case manager role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["pui-case-manager"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is false when user has no specified work allocation role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeFalsy();
+    });
+
+    it('is true when user has a specified work allocation role', () => {
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-ia-iacjudge"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-ia-caseofficer"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-ia-admofficer"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-civil"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+
+        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-privatelaw"]}');
+        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
+    });
 });
 
 describe('getMappedRoleCategory', () => {
