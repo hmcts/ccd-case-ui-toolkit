@@ -24,6 +24,7 @@ const ACTIVITY_SOCKET_SHARED_STATE_KEY = '__ccdActivitySocketSharedState__';
 const ACTIVITY_SOCKET_CLOSE_GRACE_MS = 5000;
 const ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS = 1000;
 const ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS = 20000;
+const ACTIVITY_SOCKET_ACTIVE_READY_STATES = new Set(['connecting', 'opening', 'open']);
 
 @Injectable({
   providedIn: 'root'
@@ -410,11 +411,10 @@ export class ActivitySocketService {
     }
 
     const socketIo = socket.io as any;
-    const activeReadyStates = ['connecting', 'opening', 'open'];
     return socket.connected ||
       socket.active ||
-      activeReadyStates.includes(socketIo?._readyState) ||
-      activeReadyStates.includes(socketIo?.engine?.readyState);
+      ACTIVITY_SOCKET_ACTIVE_READY_STATES.has(socketIo?._readyState) ||
+      ACTIVITY_SOCKET_ACTIVE_READY_STATES.has(socketIo?.engine?.readyState);
   }
 
   // Loads the current user from session storage and removes the token before socket use.
