@@ -23,6 +23,7 @@ import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
 import { CaseEditComponent } from '../case-edit';
+import { getAMRoleName, getMappedRoleCategory } from '../../../utils';
 
 @Injectable()
 export class CasesService {
@@ -318,8 +319,8 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
-    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    const roleCategory: RoleCategory = userInfo.roleCategory || getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = getAMRoleName('challenged', roleCategory);
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -350,8 +351,8 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
-    const roleName = camUtils.getAMRoleName('specific', roleCategory);
+    const roleCategory: RoleCategory = userInfo.roleCategory || getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleName = getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
       roleName, roleCategory, 'SPECIFIC', caseId, sar, null, null, true);

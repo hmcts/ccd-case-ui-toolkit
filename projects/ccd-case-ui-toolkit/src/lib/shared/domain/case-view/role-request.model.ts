@@ -41,6 +41,23 @@ export enum RoleCategory {
   CITIZEN = 'CITIZEN'
 }
 
+export enum AMRoleSuffix {
+  JUDICIARY = 'judiciary',
+  ADMIN = 'admin',
+  PROFESSIONAL = 'professional',
+  LEGAL_OPERATIONS = 'legal-ops',
+  CITIZEN = 'citizen',
+  CTSC = 'ctsc',
+}
+
+export enum RoleKeyword {
+  JUDGE = 'judge',
+  ADMIN = 'admin',
+  SOLICITOR = 'solicitor',
+  CITIZEN = 'citizen',
+  CTSC = 'ctsc',
+}
+
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
 
 export type RoleClassification = 'PUBLIC' | 'PRIVATE' | 'RESTRICTED';

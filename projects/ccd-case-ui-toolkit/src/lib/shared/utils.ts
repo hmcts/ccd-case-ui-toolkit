@@ -1,9 +1,9 @@
 import { SessionStorageService } from './services';
 import { safeJsonParse } from './json-utils';
+import { RoleCategory, AMRoleSuffix, RoleKeyword } from './domain'; 
 
 export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
-export const JUDGE = 'judge';
 
 
 function getUserDetails(sessionStorageService: SessionStorageService): any {
@@ -16,11 +16,69 @@ export function isInternalUser(sessionStorageService: SessionStorageService): bo
   const userDetails = getUserDetails(sessionStorageService);
   return userDetails && userDetails?.roles
     && !(userDetails.roles.includes(PUI_CASE_MANAGER)
-      || userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
+      || userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)));
 }
 
 export function isJudiciaryUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
   return userDetails && userDetails?.roles
-    && (userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
+    && (userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)));
+}
+
+function  roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
+  const categoryExists = roleCategories.indexOf(roleCategory) > -1;
+  const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
+  return categoryExists ? categoryExists : keywordExists;
+}
+
+export function getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
+
+  const roleKeywords: string[] = roles.join().split('-').join().split(',');
+
+  if (roleOrCategoryExists(RoleKeyword.JUDGE, RoleCategory.JUDICIAL, roleKeywords, roleCategories)) {
+      return RoleCategory.JUDICIAL;
+
+  } else if (roleOrCategoryExists(RoleKeyword.SOLICITOR, RoleCategory.PROFESSIONAL, roleKeywords, roleCategories)) {
+      return RoleCategory.PROFESSIONAL;
+
+  } else if (roleOrCategoryExists(RoleKeyword.CITIZEN, RoleCategory.CITIZEN, roleKeywords, roleCategories)) {
+      return RoleCategory.CITIZEN;
+
+  } else if (roleOrCategoryExists(RoleKeyword.ADMIN, RoleCategory.ADMIN, roleKeywords, roleCategories)) {
+      return RoleCategory.ADMIN;
+
+  } else if (roleOrCategoryExists(RoleKeyword.CTSC, RoleCategory.CTSC, roleKeywords, roleCategories)) {
+      return RoleCategory.CTSC;
+
+  } else {
+      return RoleCategory.LEGAL_OPERATIONS;
+  }
+}
+
+export function getAMRoleName(accessType: string, aMRole: RoleCategory): string {
+
+  let roleName = '';
+
+  switch (aMRole) {
+      case RoleCategory.JUDICIAL:
+          roleName = `${accessType}-access-${AMRoleSuffix.JUDICIARY}`;
+          break;
+      case RoleCategory.PROFESSIONAL:
+          roleName = `${accessType}-access-${AMRoleSuffix.PROFESSIONAL}`;
+          break;
+      case RoleCategory.CITIZEN:
+          roleName = `${accessType}-access-${AMRoleSuffix.CITIZEN}`;
+          break;
+      case RoleCategory.ADMIN:
+          roleName = `${accessType}-access-${AMRoleSuffix.ADMIN}`;
+          break;
+      case RoleCategory.CTSC:
+          roleName = `${accessType}-access-${AMRoleSuffix.CTSC}`;
+          break;
+      default:
+          roleName = `${accessType}-access-${AMRoleSuffix.LEGAL_OPERATIONS}`;
+          break;
+  }
+
+  return roleName;
 }
