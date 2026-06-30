@@ -38,7 +38,8 @@ export enum RoleCategory {
   ADMIN = 'ADMIN',
   CTSC = 'CTSC',
   PROFESSIONAL = 'PROFESSIONAL',
-  CITIZEN = 'CITIZEN'
+  CITIZEN = 'CITIZEN',
+  ENFORCEMENT = 'ENFORCEMENT'
 }
 
 export enum AMRoleSuffix {
@@ -48,6 +49,7 @@ export enum AMRoleSuffix {
   LEGAL_OPERATIONS = 'legal-ops',
   CITIZEN = 'citizen',
   CTSC = 'ctsc',
+  ENFORCEMENT = 'enforcement'
 }
 
 export enum RoleKeyword {
@@ -56,6 +58,7 @@ export enum RoleKeyword {
   SOLICITOR = 'solicitor',
   CITIZEN = 'citizen',
   CTSC = 'ctsc',
+  ENFORCEMENT = 'enforcement'
 }
 
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
