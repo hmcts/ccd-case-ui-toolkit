@@ -15,6 +15,9 @@ export class RequestOptionsBuilder {
      * @param value The value to be assessed.
      */
     private static includeParam(value: any): boolean {
+      if (Array.isArray(value)) {
+        return value.some(item => RequestOptionsBuilder.includeParam(item));
+      }
       /* istanbul ignore else */
       if (value) {
         /* istanbul ignore else */
@@ -24,6 +27,40 @@ export class RequestOptionsBuilder {
         return true;
       }
       return false;
+    }
+
+    private static sanitiseValue(value: any): any {
+      const trimmedValue = value.trim ? value.trim() : value;
+      return trimmedValue.replace ? trimmedValue.replace(/’/i, `'`) : trimmedValue;
+    }
+
+    private static getValueByPath(value: any, path: string): any {
+      return path.split('.').reduce((currentValue, pathPart) => {
+        if (currentValue === undefined || currentValue === null) {
+          return undefined;
+        }
+        return currentValue[pathPart];
+      }, value);
+    }
+
+    private static getCollectionValues(value: any, criterion: string): any[] {
+      if (!Array.isArray(value) ||
+        criterion.indexOf('.value.') < 0 ||
+        value.some(item => item === null || typeof item !== 'object' || !Object.prototype.hasOwnProperty.call(item, 'value'))) {
+        return value;
+      }
+      const valuePath = criterion.substring(criterion.indexOf('.value.') + 1);
+      return value.map(item => RequestOptionsBuilder.getValueByPath(item, valuePath));
+    }
+
+    private static appendParam(params: HttpParams, key: string, value: any): HttpParams {
+      if (Array.isArray(value)) {
+        const values = value
+          .filter(item => RequestOptionsBuilder.includeParam(item))
+          .map(item => RequestOptionsBuilder.sanitiseValue(item));
+        return params.set(key, `[${values.join(', ')}]`);
+      }
+      return params.set(key, RequestOptionsBuilder.sanitiseValue(value));
     }
 
     public buildOptions(metaCriteria: object, caseCriteria: object, view?: SearchView): OptionsType {
@@ -53,8 +90,11 @@ export class RequestOptionsBuilder {
           /* istanbul ignore else */
           if (RequestOptionsBuilder.includeParam(caseCriteria[criterion])) {
             const key = RequestOptionsBuilder.FIELD_PREFIX + criterion;
-            const value = caseCriteria[criterion].trim ? caseCriteria[criterion].trim() : caseCriteria[criterion];
-            params = params.set(key, value.replace(/’/i, `'`));
+            params = RequestOptionsBuilder.appendParam(
+              params,
+              key,
+              RequestOptionsBuilder.getCollectionValues(caseCriteria[criterion], criterion)
+            );
           }
         }
       }
