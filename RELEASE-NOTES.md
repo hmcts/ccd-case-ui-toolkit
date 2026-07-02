@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.69
+**EXUI-3956** Updating the .gov uk package to 5.13.0 - Toolkit
+
 ### Version 7.3.68
 **EXUI-4589** Package update - config
 
