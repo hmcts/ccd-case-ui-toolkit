@@ -62,7 +62,7 @@ describe('RequestOptionsBuilder', () => {
       };
       const result = requestOptionsBuilder.buildOptions({}, caseCriteria);
 
-      expect(result.params.get('case.boHandoffReasonList.value.caseHandoffReason'))
+      expect((result.params as HttpParams).get('case.boHandoffReasonList.value.caseHandoffReason'))
         .toEqual('[ColligendaBona, Caveat]');
     });
 
@@ -75,7 +75,7 @@ describe('RequestOptionsBuilder', () => {
       };
       const result = requestOptionsBuilder.buildOptions({}, caseCriteria);
 
-      expect(result.params.get('case.boHandoffReasonList.value.caseHandoffReason'))
+      expect((result.params as HttpParams).get('case.boHandoffReasonList.value.caseHandoffReason'))
         .toEqual('[ColligendaBona, Caveat]');
     });
 
