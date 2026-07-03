@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.69-library-update",
+  "version": "7.3.68",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -63,7 +63,7 @@
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "file-saver": "^2.0.5",
+    "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
     "govuk-frontend": "^4.9.0",
     "lz-string": "^1.5.0",
