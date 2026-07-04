@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 import { PaletteContext } from './palette-context.enum';
+import { PaletteValueOrigin } from './palette-value-origin.enum';
 
 @Directive()
 export abstract class AbstractFieldReadComponent extends AbstractFormFieldComponent implements OnInit {
@@ -18,6 +19,9 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
    */
   @Input()
   public context: PaletteContext = PaletteContext.DEFAULT;
+
+  @Input()
+  public valueOrigin: PaletteValueOrigin = PaletteValueOrigin.BACKEND;
 
   public ngOnInit(): void {
     if (!this.caseField.metadata) {

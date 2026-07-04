@@ -25,6 +25,7 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 import { JourneyInstigator } from '../../../domain/journey';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { FocusService } from '../../../services/window/focus.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -71,13 +72,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     window.scrollTo(0, 0);
   }
 
-  private static setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
-    }
-  }
-
   constructor(
     public caseEdit: CaseEditComponent,
     private readonly route: ActivatedRoute,
@@ -93,7 +87,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly multipageComponentStateService: MultipageComponentStateService,
     private readonly addressService: AddressesService,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly caseFlagStateService: CaseFlagStateService
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private readonly focusService: FocusService
   ) {
     this.multipageComponentStateService.setInstigator(this);
   }
@@ -168,7 +163,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         }
         this.triggerText = this.getTriggerText();
       });
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
     this.caseEditFormSub = this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
@@ -236,7 +231,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     if (this.getPageNumber() !== undefined){
       this.previousStep();
     }
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
   }
 
   // Adding validation message to show it as Error Summary
@@ -306,7 +301,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(casefield)
               });
             } else {
-              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
+              this.validationErrors.push({ id, message: `Select or fill the required ${label} field` });
               fieldElement.markAsDirty();
             }
           }
@@ -442,7 +437,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       // purposes)
       this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
     }
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
   }
 
   public updateFormData(jsonData: CaseEventData): void {
@@ -568,6 +563,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     } else {
       this.caseEdit.cancelled.emit();
     }
+
+    // clear CaseView cache to allow any incidental changes to get picked up once the edit has cancelled
+    this.caseEdit.caseNotifier.removeCachedCase();
 
     this.clearValidationErrors();
     this.multipageComponentStateService.reset();
