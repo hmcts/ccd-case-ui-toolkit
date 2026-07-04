@@ -1,3 +1,4 @@
+<main id="content" role="main" class="govuk-main-wrapper">
 <exui-error-message
   *ngIf="(formGroup.invalid && submitted) || getSpecificAccessError"
   [error]="errorMessage"></exui-error-message>
@@ -40,6 +41,9 @@
       </div>
       <div id="conditional-reason-3">
         <div class="govuk-form-group">
+          <label class="govuk-label" for="specific-reason" id="specific-reason-label">
+            {{ 'Reason' | rpxTranslate }}
+          </label>
           <div
             id="specific-reason-error-message"
             class="govuk-error-message"
@@ -55,6 +59,7 @@
             id="specific-reason"
             name="specific-reason"
             rows="8"
+            [attr.aria-describedby]="formGroup.get('specificReason').invalid && submitted ? 'reason-hint specific-reason-error-message' : 'reason-hint'"
             formControlName="specificReason">
           </textarea>
         </div>
@@ -75,3 +80,4 @@
     </div>
   </div>
 </form>
+</main>
