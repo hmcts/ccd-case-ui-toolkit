@@ -15,7 +15,7 @@ function getUserDetails(sessionStorageService: SessionStorageService): any {
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
 
-  if (!userDetails || !userDetails?.roles) {
+  if (!userDetails?.roles) {
     return false;
   } else if (userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT)) {
     return true;
@@ -34,7 +34,7 @@ export function isJudiciaryUser(sessionStorageService: SessionStorageService): b
 export function isWorkAllocationUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
   
-  return userDetails && userDetails.roles
+  return userDetails?.roles
       && !userDetails.roles.includes(PUI_CASE_MANAGER)
       &&
       (userDetails.roles.includes('caseworker-ia-iacjudge')
@@ -45,10 +45,8 @@ export function isWorkAllocationUser(sessionStorageService: SessionStorageServic
         || userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT));
 }
 
-function  roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
-  const categoryExists = roleCategories.indexOf(roleCategory) > -1;
-  const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
-  return categoryExists ? categoryExists : keywordExists;
+function roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
+  return roleCategories.includes(roleCategory) || roleKeywords.includes(roleKeyword);
 }
 
 export function getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
