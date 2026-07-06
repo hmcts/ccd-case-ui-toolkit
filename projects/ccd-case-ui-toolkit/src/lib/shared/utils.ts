@@ -15,7 +15,7 @@ export function getUserDetails(sessionStorageService: SessionStorageService): Us
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
 
-  if (!userDetails || !userDetails?.roles) {
+  if (!userDetails?.roles) {
     return false;
   } else if (userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT)) {
     return true;
@@ -38,7 +38,7 @@ function roleHasKeyword(keyword: string, roleWords: string[]): boolean {
 export function isWorkAllocationUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
   
-  return userDetails && userDetails.roles
+  return userDetails?.roles
       && !userDetails.roles.includes(PUI_CASE_MANAGER)
       &&
       (userDetails.roles.includes('caseworker-ia-iacjudge')
