@@ -32,7 +32,34 @@ export interface RequestedRoleNote {
   comment: string;
 }
 
-export type RoleCategory = 'JUDICIAL' | 'LEGAL_OPERATIONS' | 'ADMIN' | 'PROFESSIONAL' | 'CITIZEN' | 'CTSC';
+export enum RoleCategory {
+  JUDICIAL = 'JUDICIAL',
+  LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
+  ADMIN = 'ADMIN',
+  CTSC = 'CTSC',
+  PROFESSIONAL = 'PROFESSIONAL',
+  CITIZEN = 'CITIZEN',
+  ENFORCEMENT = 'ENFORCEMENT'
+}
+
+export enum AMRoleSuffix {
+  JUDICIARY = 'judiciary',
+  ADMIN = 'admin',
+  PROFESSIONAL = 'professional',
+  LEGAL_OPERATIONS = 'legal-ops',
+  CITIZEN = 'citizen',
+  CTSC = 'ctsc',
+  ENFORCEMENT = 'enforcement'
+}
+
+export enum RoleKeyword {
+  JUDGE = 'judge',
+  ADMIN = 'admin',
+  SOLICITOR = 'solicitor',
+  CITIZEN = 'citizen',
+  CTSC = 'ctsc',
+  ENFORCEMENT = 'enforcement'
+}
 
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
 
