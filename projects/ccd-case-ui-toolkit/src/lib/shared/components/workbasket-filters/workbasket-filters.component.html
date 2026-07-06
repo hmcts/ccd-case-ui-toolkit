@@ -1,6 +1,6 @@
 <form id="filters" class="global-display">
   <div class="form-group flex">
-    <h2 class="heading-h2">{{'Filters' | rpxTranslate }}</h2>
+    <fieldset class="heading-h2" aria-label="Filters">{{'Filters' | rpxTranslate }}</fieldset>
     <button type="button" class="button workbasket-filters-apply" (click)="apply(true)" [disabled]="isApplyButtonDisabled()"
         [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
       {{'Apply' | rpxTranslate}}
@@ -14,7 +14,7 @@
   <div class="form-group">
     <label class="form-label" for="wb-jurisdiction">{{'Jurisdiction' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-jurisdiction"
-            name="jurisdiction" [(ngModel)]="selected.jurisdiction"
+            name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
             (change)="onJurisdictionIdChange()">
       <option *ngIf="!workbasketDefaults" [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
       <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name | rpxTranslate}}</option>
@@ -25,7 +25,7 @@
     <label class="form-label" for="wb-case-type">{{'Case type' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-type"
             name="case-type" [(ngModel)]="selected.caseType" [disabled]="isCaseTypesDropdownDisabled()"
-            (change)="onCaseTypeIdChange()">
+            (change)="onCaseTypeIdChange()" aria-controls="search-result">
       <option *ngIf="!workbasketDefaults" [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
       <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name | rpxTranslate}}</option>
     </select>
@@ -35,7 +35,7 @@
     <label class="form-label" for="wb-case-state">{{'State' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
             name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
-            >
+            aria-controls="search-result">
       <option [ngValue]="null">{{'Any' | rpxTranslate}}</option>
       <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
     </select>

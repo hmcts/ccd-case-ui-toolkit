@@ -25,7 +25,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public $roleAssignmentResponseSubscription: Subscription;
 
   private readonly genericError = 'There is a problem';
-  private readonly errorPrefix = 'Error: ';
   private readonly radioSelectedControlName = 'radioSelected';
   private readonly caseReferenceControlName = 'caseReference';
   private readonly otherReasonControlName = 'otherReason';
@@ -74,8 +73,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
         updateOn: 'submit'
       })
     );
-
-    this.updateDocumentTitle();
   }
 
   public onChange(): void {
@@ -93,7 +90,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       this.errorMessage = {
         title: this.genericError,
         description: ChallengedAccessRequestErrors.NO_SELECTION,
-        fieldId: 'reason-0'
+        fieldId: 'error-message'
       };
     } else {
       if (this.formGroup.get(this.caseReferenceControlName).invalid) {
@@ -112,8 +109,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
         };
       }
     }
-
-    this.updateDocumentTitle();
 
     // Initiate Challenged Access Request
     if (this.formGroup.valid) {
@@ -156,16 +151,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
 
   private inputEmpty(input: AbstractControl): boolean {
     return input.value === null || input.value.trim().length === 0;
-  }
-
-  private updateDocumentTitle(): void {
-    if (!this.title) {
-      return;
-    }
-
-    document.title = this.formGroup?.invalid && this.submitted
-      ? `${this.errorPrefix}${this.title}`
-      : this.title;
   }
 }
 
