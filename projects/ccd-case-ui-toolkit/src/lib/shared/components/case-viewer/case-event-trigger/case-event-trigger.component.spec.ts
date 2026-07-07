@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService, AlertService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 import { EventTriggerResolver } from '../services';
+import { MODES } from '../../../services/activity/utils';
 
 describe('CaseEventTriggerComponent', () => {
   const PAGE_ID = 'pageId';
@@ -80,8 +82,8 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   const caseActivityComponentMock: any = MockComponent({
-    selector: 'ccd-activity',
-    inputs: ['caseId', 'displayMode']
+    selector: 'ccd-case-activity',
+    inputs: ['caseId', 'iconOnly']
   });
 
   const caseHeaderComponentMock: any = MockComponent({
@@ -136,6 +138,8 @@ describe('CaseEventTriggerComponent', () => {
   let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
+  let activityService: any;;
+  let activitySocketService: any;
   let finalUrl = '/cases/case-details/TEST/TEST_CASE_TYPE/1707912713167104#Claim%20details';
 
   beforeEach(waitForAsync(() => {
@@ -152,6 +156,13 @@ describe('CaseEventTriggerComponent', () => {
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
     activityPollingService.postEditActivity.and.returnValue(of(true));
+    activitySocketService = {
+      editCalls: [],
+      connected: new BehaviorSubject<boolean>(false),
+      editCase: (caseId: string) => {
+        activitySocketService.editCalls.push(caseId);
+      }
+    }
     router = {
       navigate: jasmine.createSpy('navigate'),
       getCurrentNavigation: jasmine.createSpy('getCurrentNavigation')
@@ -162,6 +173,14 @@ describe('CaseEventTriggerComponent', () => {
     });
     router.navigate.and.returnValue({ then: (f) => f() });
     router.getCurrentNavigation.and.returnValue({ previousNavigation: { finalUrl: finalUrl } });
+
+    activityService = {
+              mode: MODES.polling,
+              modeSubject: new BehaviorSubject<string>(MODES.polling),
+              isEnabled: true,
+              postViewActivity: jasmine.createSpy('postViewActivity').and.returnValue(of()),
+              errorSource: new Subject<any>()
+            };
 
     TestBed
       .configureTestingModule({
@@ -180,6 +199,7 @@ describe('CaseEventTriggerComponent', () => {
           // Mocks
           CaseReferencePipe
         ],
+         schemas: [NO_ERRORS_SCHEMA],
         providers: [
           { provide: ActivatedRoute, useValue: mockRoute },
           { provide: CaseNotifier, useValue: caseNotifier },
@@ -188,9 +208,12 @@ describe('CaseEventTriggerComponent', () => {
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivityPollingService, useValue: activityPollingService },
+          { provide: ActivityService, useValue: activityService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: LoadingService, useValue: loadingService },
-          { provide: EventTriggerResolver, useValue: eventResolverService }
+          { provide: EventTriggerResolver, useValue: eventResolverService },
+          { provide: CasesService, useValue: casesService },
+          { provide: ActivitySocketService, useValue: activitySocketService }
         ]
       })
       .compileComponents();
@@ -201,15 +224,18 @@ describe('CaseEventTriggerComponent', () => {
     fixture.detectChanges();
   }));
 
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  }
+);
+
   it('should edit case with sanitised data when form submitted', () => {
     component.submit()(SANITISED_EDIT_FORM);
-
     expect(casesService.createEvent).toHaveBeenCalledWith(CASE_DETAILS, SANITISED_EDIT_FORM);
   });
 
   it('should edit case with sanitised data when form validated', () => {
     component.validate()(SANITISED_EDIT_FORM, PAGE_ID);
-
     expect(casesService.validateCase).toHaveBeenCalledWith(CASE_DETAILS.case_type.id, SANITISED_EDIT_FORM, PAGE_ID);
   });
 
@@ -384,6 +410,27 @@ describe('CaseEventTriggerComponent', () => {
     expect(loadingService.unregisterSharedSpinner).toHaveBeenCalled();
   })
 
+  it('should emit edit again when socket reconnects while staying on the page', () => {
+    activitySocketService.editCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
+    activitySocketService.connected.next(false);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id, CASE_DETAILS.case_id]);
+  });
+
+  it('should not emit duplicate edit events for repeated connected notifications on the same socket', () => {
+    activitySocketService.editCalls = [];
+
+    activityService.modeSubject.next(MODES.socket);
+    activitySocketService.connected.next(true);
+    activitySocketService.connected.next(true);
+
+    expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id]);
+  });
+
   it('cancel should navigate to url with fragment if previousUrl contains #', () => {
     finalUrl = '/cases/case-details/1707912713167104#Claim%20details'
     spyOn(component as any, 'getNavigationUrl').and.callThrough();
@@ -397,4 +444,11 @@ describe('CaseEventTriggerComponent', () => {
     const result = component['getNavigationUrl'](url);
     expect(result).toBe('/case-details/TEST/TEST_CASE_TYPE/1707912713167104');
   });
-});
+
+  it('should call postEditActivity of activityPollingService with relavant case ID when calling postEditActivity from component', () => {
+    component.postEditActivity();
+
+    // Assert the service was called
+    expect(activityPollingService.postEditActivity).toHaveBeenCalledWith(CASE_DETAILS.case_id);
+  });
+ });

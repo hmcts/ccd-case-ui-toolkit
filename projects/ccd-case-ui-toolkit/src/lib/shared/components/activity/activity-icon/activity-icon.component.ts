@@ -1,12 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'ccd-activity-icon',
   templateUrl: './activity-icon.component.html',
-  styleUrls: ['./activity-icon.component.css'],
-  standalone: false
+  standalone: false,
+  styleUrls: ['./activity-icon.component.scss']
 })
-export class ActivityIconComponent implements OnInit {
+export class ActivityIconComponent {
   @Input()
   public description: string;
 
@@ -14,7 +14,4 @@ export class ActivityIconComponent implements OnInit {
   public imageLink: string;
 
   constructor() { }
-
-  public ngOnInit() {
-  }
 }
