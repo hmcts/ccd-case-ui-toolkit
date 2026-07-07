@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.68-exui-2906-activity-tracker-19",
+  "version": "7.3.69-exui-2906-activity-tracker-20",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -184,6 +184,7 @@
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
     "node-forge": "^0.10.0",
+    "node-gyp@npm:latest": "npm:12.4.0",
     "serialize-javascript": "^3.1.0",
     "socks": "^2.8.7",
     "tree-kill": "^1.2.2",

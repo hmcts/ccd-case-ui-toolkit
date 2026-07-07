@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.3.69
+**POFCC-75** Incorrect tab position on page load
+**POFCC-225** 'Skip to main content' link missing for case tabs
+**POFCC-214** Case tabs do not refresh after cancelling draft event
+
 ### Version 7.3.68
 **EXUI-4589** Package update - config
 
