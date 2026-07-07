@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../../case-editor';
@@ -83,6 +83,29 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(headingElement.textContent).toContain(SpecificAccessRequestPageText.TITLE);
     const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
     expect(hintElement.textContent).toContain(SpecificAccessRequestPageText.HINT);
+    expect(document.title).toBe(SpecificAccessRequestPageText.TITLE);
+  });
+
+  it('should prefix title with Error when submitted with empty specific reason', () => {
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+
+    submitButton.click();
+    fixture.detectChanges();
+
+    expect(component.errorMessage.fieldId).toBe('specific-reason');
+    expect(document.title).toBe(`Error: ${SpecificAccessRequestPageText.TITLE}`);
+  });
+
+  it('should clear title error prefix when onChange is triggered after invalid submit', () => {
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    submitButton.click();
+    fixture.detectChanges();
+    expect(document.title).toBe(`Error: ${SpecificAccessRequestPageText.TITLE}`);
+
+    component.onChange();
+    fixture.detectChanges();
+
+    expect(document.title).toBe(SpecificAccessRequestPageText.TITLE);
   });
 
   it('should clear the \"Specific reason\" validation error when the associated text field is populated and the form submitted', () => {
@@ -109,21 +132,17 @@ describe('CaseSpecificAccessRequestComponent', () => {
   });
 
   it('should return error when API call fails', () => {
-    casesService.createSpecificAccessRequest.and.returnValue(of({
-      errorCode: '500',
-      status: '500',
-      errorMessage: 'Internal Server Error',
-      timeStamp: new Date()
-    }));
+    casesService.createSpecificAccessRequest.and.returnValue(throwError(() => new Error('Internal Server Error')));
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     const otherReason = fixture.debugElement.nativeElement.querySelector('#specific-reason');
     otherReason.value = 'Test';
     otherReason.dispatchEvent(new Event('input'));
     submitButton.click();
     fixture.detectChanges();
-    expect(component.formGroup.invalid).toBe(false);
+    expect(component.getSpecificAccessError).toBe(true);
     const errorBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary');
     expect(errorBannerElement).toBeDefined();
+    expect(document.title).toBe(`Error: ${SpecificAccessRequestPageText.TITLE}`);
   });
 
   it('should go back to the page before previous one when the \"Cancel\" link is clicked', fakeAsync(() => {
