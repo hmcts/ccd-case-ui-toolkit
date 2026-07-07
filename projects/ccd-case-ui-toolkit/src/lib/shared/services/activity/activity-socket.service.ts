@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
@@ -29,7 +29,7 @@ const ACTIVITY_SOCKET_ACTIVE_READY_STATES = new Set(['connecting', 'opening', 'o
 @Injectable({
   providedIn: 'root'
 })
-export class ActivitySocketService {
+export class ActivitySocketService implements OnDestroy {
   public static readonly SOCKET_MODES: MODES[] = [ MODES.socket, MODES.socketLongPoll ];
 
   public activity: Observable<CaseActivityInfo[]>;
@@ -46,6 +46,7 @@ export class ActivitySocketService {
   private socketConnectSubscription?: Subscription;
   private socketConnectErrorSubscription?: Subscription;
   private socketDisconnectSubscription?: Subscription;
+  private modeSubscription?: Subscription;
 
   public socket!: Socket;
   private pUser!: UserInfo;
@@ -63,7 +64,7 @@ export class ActivitySocketService {
     private readonly activityService: ActivityService
   ) {
     this.activity = this.activitySubject.asObservable();
-    this.activityService.modeSubject
+    this.modeSubscription = this.activityService.modeSubject
       .pipe(filter(mode => !!mode))
       .pipe(distinctUntilChanged())
       .subscribe(mode => {
@@ -72,6 +73,12 @@ export class ActivitySocketService {
           this.init();
         }
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.modeSubscription?.unsubscribe();
+    this.modeSubscription = undefined;
+    this.destroy();
   }
 
   // Subscribes the socket to activity updates for the supplied case IDs.
@@ -236,7 +243,7 @@ export class ActivitySocketService {
     this.socketDisconnectSubscription = undefined;
   }
 
-  // Reuses the active shared socket or creates a new socket when none is active.
+  // Reuses the active or already-owned shared socket, otherwise creates a new one.
   private static getSharedSocket(user: UserInfo, allowWebSockets: boolean): Socket {
     const state = ActivitySocketService.sharedState;
     const userKey = JSON.stringify(user || {});
@@ -244,7 +251,7 @@ export class ActivitySocketService {
       state.socket &&
       state.userKey === userKey &&
       state.allowWebSockets === allowWebSockets &&
-      (ActivitySocketService.isSocketActive(state.socket) || !!state.reconnectTimer || !!state.connectRequested)
+      ActivitySocketService.shouldReuseSharedSocket(state)
     ) {
       return state.socket;
     }
@@ -255,6 +262,14 @@ export class ActivitySocketService {
     state.userKey = userKey;
 
     return state.socket;
+  }
+
+  private static shouldReuseSharedSocket(state: ActivitySocketSharedState): boolean {
+    return ActivitySocketService.isSocketActive(state.socket) ||
+      !!state.reconnectTimer ||
+      !!state.connectRequested ||
+      !!state.closeTimer ||
+      state.owners.size > 0;
   }
 
   // Stores shared socket state on globalThis so multiple service instances use one socket.

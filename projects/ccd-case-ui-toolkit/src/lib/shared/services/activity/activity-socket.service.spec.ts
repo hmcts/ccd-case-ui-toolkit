@@ -201,6 +201,17 @@ describe('ActivitySocketService', () => {
       (secondService as any).destroy();
     });
 
+    it('should unsubscribe from mode changes when Angular destroys the service', () => {
+      activityService.mode = MODES.socket;
+
+      service.ngOnDestroy();
+
+      activityService.mode = MODES.socketLongPoll;
+
+      expect(getSocketSpy).toHaveBeenCalledTimes(1);
+      expect(service.socket).toBeUndefined();
+    });
+
     it('should treat an open engine connection as active if the manager state is stale', () => {
       mockSocket.connected = false;
       mockSocket.active = false;
@@ -253,8 +264,9 @@ describe('ActivitySocketService', () => {
       expect(mockSocket.close).toHaveBeenCalledTimes(1);
     }));
 
-    it('should create a new socket when the shared socket is no longer active', () => {
+    it('should reuse and reconnect an owned shared socket when it becomes inactive', () => {
       activityService.mode = MODES.socket;
+      const firstSocket = service.socket;
       mockSocket.active = false;
       mockSocket.connected = false;
       mockSocket.io._readyState = 'closed';
@@ -265,9 +277,11 @@ describe('ActivitySocketService', () => {
 
       const secondService = new ActivitySocketService(sessionStorageService, activityService);
 
-      expect(secondService.socket).toBe(nextSocket);
-      expect(getSocketSpy).toHaveBeenCalledTimes(2);
-      expect(nextSocket.connect).toHaveBeenCalledTimes(1);
+      expect(secondService.socket).toBe(firstSocket);
+      expect(getSocketSpy).toHaveBeenCalledTimes(1);
+      expect(mockSocket.close).not.toHaveBeenCalled();
+      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
+      expect(nextSocket.connect).not.toHaveBeenCalled();
 
       (secondService as any).destroy();
     });
