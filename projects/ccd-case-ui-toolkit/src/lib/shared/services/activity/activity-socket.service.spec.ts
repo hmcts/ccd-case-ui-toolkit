@@ -130,8 +130,7 @@ describe('ActivitySocketService', () => {
 
       // Should have set up the default location to be the same as the current URL.
       expect(service.socket.io.opts.path).toEqual('/socket.io');
-      expect(service.socket.io.opts.hostname).toEqual(window.location.hostname);
-      expect(service.socket.io.opts.port).toEqual(window.location.port);
+      expect((service.socket.io as any).uri).toEqual(`${window.location.protocol}//${window.location.host}`);
     });
     it('should have set up socket connections', () => {
       expect(service.connect instanceof Observable).toBeTruthy();
