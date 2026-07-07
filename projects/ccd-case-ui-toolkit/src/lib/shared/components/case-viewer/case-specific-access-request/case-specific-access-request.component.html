@@ -41,20 +41,28 @@
       </div>
       <div id="conditional-reason-3">
         <div class="govuk-form-group">
+          <label class="govuk-label" for="specific-reason">
+            {{ 'Reason for requesting access' | rpxTranslate }}
+          </label>
           <div
             id="specific-reason-error-message"
             class="govuk-error-message"
-            *ngIf="formGroup.get('specificReason').invalid && submitted">
+            *ngIf="formGroup.get('specificReason')?.invalid && submitted">
             {{ errorMessage.description | rpxTranslate }}
           </div>
           <textarea
             class="govuk-textarea"
             [ngClass]="{
               'govuk-textarea--error':
-                formGroup.get('specificReason').invalid && submitted
+                formGroup.get('specificReason')?.invalid && submitted
             }"
             id="specific-reason"
             name="specific-reason"
+            [attr.aria-describedby]="
+              formGroup.get('specificReason')?.invalid && submitted
+                ? 'reason-hint specific-reason-error-message'
+                : 'reason-hint'
+            "
             rows="8"
             formControlName="specificReason">
           </textarea>
