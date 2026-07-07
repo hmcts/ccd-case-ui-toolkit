@@ -32,6 +32,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public $roleAssignmentResponseSubscription: Subscription;
 
   private readonly genericError = 'There is a problem';
+  private readonly errorPrefix = 'Error: ';
   private readonly specificReasonControlName = 'specificReason';
   public getSpecificAccessError = false;
 
@@ -65,6 +66,8 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
         updateOn: 'submit',
       })
     );
+
+    this.updateDocumentTitle();
   }
 
   public onChange(): void {
@@ -73,6 +76,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     // the field's FormControl when the field itself is removed from the DOM by *ngIf. (If it is subsequently added back
     // to the DOM by *ngIf, it will appear empty but the associated FormControl still has the previous value.)
     this.formGroup.get(this.specificReasonControlName).setValue('');
+    this.updateDocumentTitle();
   }
 
   public onSubmit(): void {
@@ -83,6 +87,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
         description: SpecificAccessRequestErrors.NO_REASON,
         fieldId: 'specific-reason',
       };
+      this.updateDocumentTitle();
     }
 
     // Initiate Specific Access Request
@@ -100,6 +105,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2
             this.getSpecificAccessError = false;
+            this.updateDocumentTitle();
             this.router.navigate(['success'], { relativeTo: this.route });
           },
           () => {
@@ -109,6 +115,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
               title: this.genericError,
               description: 'Sorry, there is a problem with the service; Try again later.'
             };
+            this.updateDocumentTitle();
           }
         );
     }
@@ -127,5 +134,14 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   private inputEmpty(input: AbstractControl): boolean {
     return input.value === null || input.value.trim().length === 0;
+  }
+
+  private updateDocumentTitle(): void {
+    if (!this.title) {
+      return;
+    }
+
+    const hasErrorState = (this.formGroup?.invalid && this.submitted) || this.getSpecificAccessError;
+    document.title = hasErrorState ? `${this.errorPrefix}${this.title}` : this.title;
   }
 }
