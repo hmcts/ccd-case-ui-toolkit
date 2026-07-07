@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.68-pofcc-split1",
+  "version": "7.3.69",
   "engines": {
     "node": ">=20.19.0"
   },
