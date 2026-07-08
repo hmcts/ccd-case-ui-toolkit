@@ -45,8 +45,8 @@ export class RequestOptionsBuilder {
 
     private static getCollectionValues(value: any, criterion: string): any[] {
       if (!Array.isArray(value) ||
-        criterion.indexOf('.value.') < 0 ||
-        value.some(item => item === null || typeof item !== 'object' || !Object.prototype.hasOwnProperty.call(item, 'value'))) {
+        !criterion.includes('.value.') ||
+        value.some(item => item === null || typeof item !== 'object' || !Object.hasOwn(item, 'value'))) {
         return value;
       }
       const valuePath = criterion.substring(criterion.indexOf('.value.') + 1);
