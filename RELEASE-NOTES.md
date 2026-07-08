@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.71
+**EXUI-4669** EndButtonLabel not being applied
+
 ### Version 7.3.70
 **EXUI-4802** Wrapper ticket 3 for package upgrades for em-media-viewer
 **POFCC-4826** Wrapper ticket 4 for package upgrades for em-media-viewer
