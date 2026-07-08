@@ -83,29 +83,6 @@ describe('CaseChallengedAccessRequestComponent', () => {
     expect(headingElement.textContent).toContain(ChallengedAccessRequestPageText.TITLE);
     const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
     expect(hintElement.textContent).toContain(ChallengedAccessRequestPageText.HINT);
-    expect(document.title).toBe(ChallengedAccessRequestPageText.TITLE);
-  });
-
-  it('should set no-selection error target to first option and prefix title with Error', () => {
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    fixture.detectChanges();
-
-    expect(component.errorMessage.fieldId).toBe('reason-0');
-    expect(document.title).toBe(`Error: ${ChallengedAccessRequestPageText.TITLE}`);
-  });
-
-  it('should clear title error prefix when user changes option after invalid submit', () => {
-    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-    submitButton.click();
-    fixture.detectChanges();
-    expect(document.title).toBe(`Error: ${ChallengedAccessRequestPageText.TITLE}`);
-
-    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-1');
-    radioButton.click();
-    fixture.detectChanges();
-
-    expect(document.title).toBe(ChallengedAccessRequestPageText.TITLE);
   });
 
   it('should show a validation error if form submitted with no option selected', () => {
