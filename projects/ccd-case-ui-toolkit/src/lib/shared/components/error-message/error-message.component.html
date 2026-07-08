@@ -5,8 +5,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a *ngIf="error.fieldId" routerLink="." tabindex="0" [fragment]="error.fieldId">{{error.description | rpxTranslate}}</a>
-          <span *ngIf="!error.fieldId">{{error.description | rpxTranslate}}</span>
+          <a routerLink="." tabindex="0" [fragment]="error.fieldId">{{error.description | rpxTranslate}}</a>
         </li>
       </ul>
     </div>
