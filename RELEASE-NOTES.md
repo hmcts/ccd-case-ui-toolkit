@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.72
+**EXUI-4803** axios upgrade
+
 ### Version 7.3.71
 **EXUI-4669** EndButtonLabel not being applied
 
