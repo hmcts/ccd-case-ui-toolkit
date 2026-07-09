@@ -1753,6 +1753,40 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
       expect(comp.editForm.controls.data.get('caseLinksFlag')).toBeNull();
     });
+
+    it('should call syncConditionalShowStates on each CaseEditFormComponent instance before form validation', () => {
+      const syncSpy = jasmine.createSpy('syncConditionalShowStates');
+      const mockFormComponent = { syncConditionalShowStates: syncSpy };
+      const forEachSpy = jasmine.createSpy('forEach').and.callFake((fn: Function) => fn(mockFormComponent));
+      (comp as any).caseEditFormComponents = { forEach: forEachSpy };
+
+      comp.eventTrigger = {
+        id: 'testEvent',
+        case_fields: [caseField1],
+        name: 'Test event trigger name',
+        can_save_draft: false,
+        event_token: 'test-token'
+      } as unknown as CaseEventTrigger;
+
+      comp.submit();
+
+      expect(forEachSpy).toHaveBeenCalled();
+      expect(syncSpy).toHaveBeenCalled();
+    });
+
+    it('should not throw when caseEditFormComponents is an empty QueryList during submit', () => {
+      (comp as any).caseEditFormComponents = { forEach: jasmine.createSpy('forEach') };
+
+      comp.eventTrigger = {
+        id: 'testEvent',
+        case_fields: [caseField1],
+        name: 'Test event trigger name',
+        can_save_draft: false,
+        event_token: 'test-token'
+      } as unknown as CaseEventTrigger;
+
+      expect(() => comp.submit()).not.toThrow();
+    });
   });
 
   describe('previous the form', () => {
