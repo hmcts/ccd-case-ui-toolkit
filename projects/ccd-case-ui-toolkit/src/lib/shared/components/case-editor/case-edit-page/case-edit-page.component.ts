@@ -627,7 +627,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     return this.canNavigateToSummaryPage()
       ? textBasedOnCanSaveDraft
-      : 'Submit';
+      : this.eventTrigger.end_button_label || 'Submit';
   }
 
   private discard(): void {
