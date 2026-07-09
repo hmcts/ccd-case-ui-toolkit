@@ -145,13 +145,17 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  private evalAllShowHideConditions(): void {
+  public evalAllShowHideConditions(): void {
     this.getCurrentPagesReadOnlyAndFormFieldValues();
     this.fieldsUtils.controlIterator(this.formGroup, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
   }
 
   private buildPath(c: AbstractFormFieldComponent, field: CaseField): string {
     if (c && c instanceof AbstractFieldWriteComponent) {
+      const parentPrefix = c.parent?.['component']?.idPrefix;
+      if (parentPrefix) {
+        return parentPrefix + field.id;
+      }
       if (c.idPrefix) {
         return c.idPrefix + field.id;
       }

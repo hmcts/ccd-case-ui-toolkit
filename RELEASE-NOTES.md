@@ -1,7 +1,86 @@
 ## RELEASE NOTES
 
-### Version 7.3.52-exui-4277
+### Version 7.3.74
 **EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.73
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
+### Version 7.3.72
+**EXUI-4803** axios upgrade
+
+### Version 7.3.71
+**EXUI-4669** EndButtonLabel not being applied
+
+### Version 7.3.70
+**EXUI-4802** Wrapper ticket 3 for package upgrades for em-media-viewer
+**POFCC-4826** Wrapper ticket 4 for package upgrades for em-media-viewer
+**POFCC-4851** Wrapper ticket 6 for package upgrades for em-media-viewer
+
+### Version 7.3.69
+**POFCC-75** Incorrect tab position on page load
+**POFCC-225** 'Skip to main content' link missing for case tabs
+**POFCC-214** Case tabs do not refresh after cancelling draft event
+
+### Version 7.3.68
+**EXUI-4589** Package update - config
+
+### Version 7.3.67
+**EXUI-4590** Package update - ngrx & npmpublish update
+
+### Version 7.3.66
+**EXUI-4590** Package update - ngrx
+
+### Version 7.3.65
+**EXUI-4648** Redact Sensitive Information Logged In through Console
+
+### Version 7.3.64
+**EXUI-4297** Suppressions - glob - major
+
+### Version 7.3.63
+**EXUI-3229** Event triggers cause duplicate requests
+
+### Version 7.3.62
+**POFCC-105** Monetary field adds a decimal point to invalid value
+**POFCC-78** First click not detected for radio options in an ExUI collection
+**POFCC-10** Defendant type - nested fields - error message
+
+### Version 7.3.61
+**EXUI-4108** Remove deprecated rx-polling-hmcts
+
+### Version 7.3.60
+**EXUI-4309** Error messaging when changing from an event to create case
+
+### Version 7.3.59
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.58
+**EXUI-4435** CVE Vulnerabilities Apr 26
+**EXUI-4300** Suppressions - core-js - major
+**EXUI-4295** Suppressions - axios - major
+**EXUI-4369** CVE Vulnerabilites
+
+### Version 7.3.57
+**EXUI-4298** Suppressions - express - major
+
+### Version 7.3.56
+**EXUI-4341** Remove unused packages
+
+### Version 7.3.55
+**EXUI-4442** Datepicker component 'Confirm' button
+
+### Version 7.3.54-exui-4648-rc-1
+**EXUI-4648** Redact Sensitive Information Logged In through Console
+
+### Version 7.3.54
+**EXUI-4636** Revert CME-220  and EXUI-2111
+**EXUI-4637** Revert EXUI-2645
+
+### Version 7.3.53
+**EXUI-4563** SRT Release
 
 ### Version 7.3.52
 **EXUI-4311** Remove unused packages
