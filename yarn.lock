@@ -3123,7 +3123,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.24"
+    "@hmcts/media-viewer": "npm:4.2.25"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -3196,7 +3196,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.4"
+    rpx-xui-translation: "npm:1.2.7"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -3238,9 +3238,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.24":
-  version: 4.2.24
-  resolution: "@hmcts/media-viewer@npm:4.2.24"
+"@hmcts/media-viewer@npm:4.2.25":
+  version: 4.2.25
+  resolution: "@hmcts/media-viewer@npm:4.2.25"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3261,9 +3261,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.3
+    rpx-xui-translation: 1.2.7
     rxjs: ^7.8.2
-  checksum: 10/bda2b73f79e9afb1f433083b74ef90657b77293d7ba3a632bf1a14f8099f73bac011e7f2cb604002ef12a8dd292f934313f226cec75058c2588fcc44c3b34550
+  checksum: 10/e3dc052c066d08dd76d155ca7da41f3ce5e8253b60349d25bb155cfe9a930104b36f31d7f16bbcdaabbf8cf5dc7af04ae5c1d66b9b3f24d99fcf19181ac51377
   languageName: node
   linkType: hard
 
@@ -10437,10 +10437,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^3.2.2":
-  version: 3.2.7
-  resolution: "dexie@npm:3.2.7"
-  checksum: 10/e70dae162b1589ff02b98810d1cdc157be0e0f66710be28ab2477db4ccd5cc7364f8c681e3f21883c3835ea800f8100ec975b015fa3ac6cdcb5686d187b31043
+"dexie@npm:^4.0.8":
+  version: 4.4.4
+  resolution: "dexie@npm:4.4.4"
+  checksum: 10/df6f98ef639dedd2428c30798a292ddd54ca5b6800df9e220af371249ea4434e923c03d7576141cdc9c39110a8f549f37fbfff2b550f679ecce912c6e424f114
   languageName: node
   linkType: hard
 
@@ -15997,7 +15997,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^2.4.0":
+"luxon@npm:^2.5.2":
   version: 2.5.2
   resolution: "luxon@npm:2.5.2"
   checksum: 10/9090506a702dac0edefbe87ad29836a842721b2ae255974b410ca705766502173b773ddfd1c918b2e19041679e2659b811d23085f8b23e28be54f063e6c1237a
@@ -19684,17 +19684,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.4":
-  version: 1.2.4
-  resolution: "rpx-xui-translation@npm:1.2.4"
+"rpx-xui-translation@npm:1.2.7":
+  version: 1.2.7
+  resolution: "rpx-xui-translation@npm:1.2.7"
   dependencies:
-    dexie: "npm:^3.2.2"
-    luxon: "npm:^2.4.0"
+    dexie: "npm:^4.0.8"
+    luxon: "npm:^2.5.2"
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/common": ^20.3.14
-    "@angular/core": ^20.3.14
-  checksum: 10/43497c9d8dbec5aac5fea41824493e0aae859775dd232dd0af945afb6698286b59e5165743ecd8d95ab633a4a05936b1cd373a47ca04ca5e7f4126f6e6070590
+    "@angular/common": ^20.3.18
+    "@angular/core": ^20.3.18
+    rxjs: ^7.8.0
+  checksum: 10/423c51d17fefbc00828a645ba4d1c766d1bab3ebbe2bf3e3b5cbc9327cab8468953d132c4e2d6ed14fec4d5c5d935a67057790342b8bfa7d6c1cdf84adb5f24f
   languageName: node
   linkType: hard
 
