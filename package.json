@@ -60,7 +60,7 @@
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/media-viewer": "4.2.25",
     "@ngrx/effects": "^20.1.0",
-    "@ngrx/store": "^20.1.0"
+    "@ngrx/store": "^20.1.0",
     "file-saver": "^2.0.2",
     "govuk-elements-sass": "^3.1.2",
     "govuk-frontend": "^4.9.0",
