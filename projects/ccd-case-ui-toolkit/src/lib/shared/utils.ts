@@ -14,13 +14,13 @@ export function getUserDetails(sessionStorageService: SessionStorageService): Us
 
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
-  return !!userDetails && userDetails?.roles
+  return !!userDetails?.roles
     && !(userDetails.roles.includes(PUI_CASE_MANAGER)
       || userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
 }
 
 export function isJudiciaryUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
-  return !!userDetails && userDetails?.roles
+  return !!userDetails?.roles
     && (userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
 }
