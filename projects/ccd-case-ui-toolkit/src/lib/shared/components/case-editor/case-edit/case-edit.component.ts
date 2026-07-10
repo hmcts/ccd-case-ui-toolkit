@@ -99,7 +99,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly caseNotifier: CaseNotifier,
+    readonly caseNotifier: CaseNotifier,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly fieldsUtils: FieldsUtils,
@@ -539,7 +539,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private finishEventCompletionLogic(eventResponse: any): void {
-    this.caseNotifier.cachedCaseView = null;
+    this.caseNotifier.removeCachedCase();
     this.sessionStorageService.removeItem('eventUrl');
     const confirmation: Confirmation = this.buildConfirmation(eventResponse);
     if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
