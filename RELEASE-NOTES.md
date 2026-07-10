@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.74
+**EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.73
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
 ### Version 7.3.72
 **EXUI-4803** axios upgrade
 
