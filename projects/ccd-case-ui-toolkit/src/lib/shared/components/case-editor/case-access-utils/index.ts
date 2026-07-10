@@ -52,8 +52,7 @@ export class CaseAccessUtils {
     }
 
     public roleHasKeyword(keyword: string, roleWords: string[]): boolean {
-        const keywordExists = roleWords.indexOf(keyword) > -1;
-        return keywordExists;
+        return roleWords.includes(keyword);
     }
 
     public getAMRoleName(accessType: string, aMRole: RoleCategory): string {
