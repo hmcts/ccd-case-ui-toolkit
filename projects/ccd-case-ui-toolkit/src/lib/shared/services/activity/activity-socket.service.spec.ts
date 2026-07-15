@@ -9,7 +9,6 @@ import { MODES, Utils } from './utils';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
-  const MOCK_USER_STRING = JSON.stringify(MOCK_USER);
   let service: ActivitySocketService;
   let mockModeSubject: BehaviorSubject<MODES>;
   let sessionStorageService: any;
@@ -122,7 +121,8 @@ describe('ActivitySocketService', () => {
     });
     it('should have instantiated the socket', () => {
       expect(service.socket instanceof Socket).toBeTruthy();
-      expect(service.socket.io.opts.query.user).toEqual(MOCK_USER_STRING);
+      expect(service.socket.auth).toEqual({ user: MOCK_USER });
+      expect(service.socket.io.opts.query).toBeUndefined();
 
       // Should have set up the default location to be the same as the current URL.
       expect(service.socket.io.opts.path).toEqual('/socket.io');

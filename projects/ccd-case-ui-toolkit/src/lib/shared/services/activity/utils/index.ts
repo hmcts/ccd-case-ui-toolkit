@@ -41,7 +41,7 @@ const UTILS = {
     return {
       ...BASE_CONFIGURATION,
       ...UTILS.getTransports(allowWebSockets),
-      query: { user: JSON.stringify(user) }
+      auth: { user }
     };
   },
   getSocket: (user: object, allowWebSockets = false): Socket => {

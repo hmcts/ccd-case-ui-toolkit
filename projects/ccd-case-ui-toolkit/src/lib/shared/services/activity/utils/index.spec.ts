@@ -15,6 +15,8 @@ describe('Activity Utils', () => {
       expect(options.timeout).toBe(20000);
       expect(options.transports).toEqual(['websocket']);
       expect(options.upgrade).toBe(true);
+      expect(options.auth).toEqual({ user });
+      expect(options.query).toBeUndefined();
     });
 
     it('should keep Socket.IO auto-reconnection enabled for long-poll socket mode', () => {
