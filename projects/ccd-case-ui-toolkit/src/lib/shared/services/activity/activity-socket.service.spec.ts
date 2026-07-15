@@ -28,10 +28,6 @@ describe('ActivitySocketService', () => {
       clearTimeout(sharedState.closeTimer);
       sharedState.closeTimer = undefined;
     }
-    if (sharedState.reconnectTimer) {
-      clearTimeout(sharedState.reconnectTimer);
-      sharedState.reconnectTimer = undefined;
-    }
     sharedState.owners.clear();
   }
 
@@ -166,10 +162,6 @@ describe('ActivitySocketService', () => {
       resetSharedSocket();
       mockSocket = createMockSocket();
       getSocketSpy = spyOn(Utils, 'getSocket').and.returnValue(mockSocket as Socket);
-      spyOn(globalThis.crypto, 'getRandomValues').and.callFake((array: Uint32Array) => {
-        array[0] = 0;
-        return array;
-      });
     });
 
     it('should reuse an active shared socket instead of opening another connection', () => {
@@ -285,7 +277,7 @@ describe('ActivitySocketService', () => {
       (secondService as any).destroy();
     });
 
-    it('should reconnect the shared websocket once after disconnect', fakeAsync(() => {
+    it('should leave websocket reconnects to Socket.IO after disconnect', () => {
       activityService.mode = MODES.socket;
       mockSocket.connected = true;
       mockSocket.active = true;
@@ -293,30 +285,10 @@ describe('ActivitySocketService', () => {
 
       mockSocket.trigger('disconnect');
 
-      expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
+      expect(service.connected.value).toBe(false);
+      expect(mockSocket.disconnect).not.toHaveBeenCalled();
       expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      tick(999);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      tick(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
-    }));
-
-    it('should not schedule duplicate reconnects for repeated websocket failure events', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      mockSocket.connected = true;
-      mockSocket.active = true;
-      mockSocket.io._readyState = 'open';
-
-      mockSocket.trigger('disconnect');
-      mockSocket.trigger('connect_error');
-      mockSocket.trigger('disconnect');
-
-      tick(1000);
-
-      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
-    }));
+    });
 
     it('should leave socket-long-poll reconnects to Socket.IO', fakeAsync(() => {
       activityService.mode = MODES.socketLongPoll;
@@ -329,23 +301,6 @@ describe('ActivitySocketService', () => {
 
       expect(mockSocket.connect).toHaveBeenCalledTimes(1);
     }));
-
-    it('should randomize websocket reconnect delay between one and twenty seconds', () => {
-      const randomValues = [0, 9500, 19000];
-      (globalThis.crypto.getRandomValues as jasmine.Spy).and.callFake((array: Uint32Array) => {
-        array[0] = randomValues.shift();
-        return array;
-      });
-
-      const minimumDelay = (ActivitySocketService as any).getReconnectDelayMs();
-      const middleDelay = (ActivitySocketService as any).getReconnectDelayMs();
-      const maximumDelay = (ActivitySocketService as any).getReconnectDelayMs();
-
-      expect(minimumDelay).toBe(1000);
-      expect(middleDelay).toBeGreaterThanOrEqual(1000);
-      expect(middleDelay).toBeLessThanOrEqual(20000);
-      expect(maximumDelay).toBe(20000);
-    });
 
     it('should not refresh watch while the websocket is idle', fakeAsync(() => {
       activityService.mode = MODES.socket;

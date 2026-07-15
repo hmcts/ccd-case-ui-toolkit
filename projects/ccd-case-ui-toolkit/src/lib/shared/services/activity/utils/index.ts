@@ -5,9 +5,11 @@ import { Activity, ActivityInfo, CaseActivityInfo, User } from '../../../domain'
 const BASE_CONFIGURATION = {
   autoConnect: false, // (default is false)
   reconnection: true,
-  reconnectionDelay: 1000 * 2, // 2 seconds (default is 1s)
-  reconnectionDelayMax: 1000 * 30, // 30 seconds (default is 5s)
-  timeout: 1000 * 60 * 3 // 5 minutes (default is 20s)
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000, // 1 second (default is 1s)
+  reconnectionDelayMax: 1000 * 10, // 10 seconds (default is 5s)
+  randomizationFactor: 0.5,
+  timeout: 1000 * 20 // Connection attempt timeout, not an idle timeout.
 };
 
 const TRANSPORTS = {
@@ -39,7 +41,6 @@ const UTILS = {
     return {
       ...BASE_CONFIGURATION,
       ...UTILS.getTransports(allowWebSockets),
-      reconnection: !allowWebSockets,
       query: { user: JSON.stringify(user) }
     };
   },

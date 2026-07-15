@@ -17,13 +17,10 @@ interface ActivitySocketSharedState {
   owners: Set<object>;
   connectRequested?: boolean;
   closeTimer?: ReturnType<typeof setTimeout>;
-  reconnectTimer?: ReturnType<typeof setTimeout>;
 }
 
 const ACTIVITY_SOCKET_SHARED_STATE_KEY = '__ccdActivitySocketSharedState__';
 const ACTIVITY_SOCKET_CLOSE_GRACE_MS = 5000;
-const ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS = 1000;
-const ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS = 20000;
 const ACTIVITY_SOCKET_ACTIVE_READY_STATES = new Set(['connecting', 'opening', 'open']);
 
 @Injectable({
@@ -187,16 +184,13 @@ export class ActivitySocketService implements OnDestroy {
     this.socketDisconnectSubscription = this.disconnect.subscribe(() => {
       ActivitySocketService.clearSharedSocketConnectRequest(socket);
       this.connected.next(false);
-      ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
     });
     this.socketConnectErrorSubscription = this.connect_error.subscribe(() => {
       ActivitySocketService.clearSharedSocketConnectRequest(socket);
       this.connected.next(false);
-      ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
     });
     this.socketConnectSubscription = this.connect.subscribe(() => {
       ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      ActivitySocketService.clearSharedSocketReconnect(socket);
       this.connected.next(true);
     });
 
@@ -266,7 +260,6 @@ export class ActivitySocketService implements OnDestroy {
 
   private static shouldReuseSharedSocket(state: ActivitySocketSharedState): boolean {
     return ActivitySocketService.isSocketActive(state.socket) ||
-      !!state.reconnectTimer ||
       !!state.connectRequested ||
       !!state.closeTimer ||
       state.owners.size > 0;
@@ -332,7 +325,6 @@ export class ActivitySocketService implements OnDestroy {
 
     if (socket === state.socket) {
       ActivitySocketService.clearSharedSocketCloseTimer(socket);
-      ActivitySocketService.clearSharedSocketReconnect(socket);
       ActivitySocketService.clearSharedSocketConnectRequest(socket);
       state.socket = undefined;
       state.allowWebSockets = undefined;
@@ -342,22 +334,12 @@ export class ActivitySocketService implements OnDestroy {
     socket.close();
   }
 
-  // Cancels a pending reconnect timer for the active shared socket.
-  private static clearSharedSocketReconnect(socket?: Socket): void {
-    const state = ActivitySocketService.sharedState;
-    if (socket === state.socket && state.reconnectTimer) {
-      clearTimeout(state.reconnectTimer);
-      state.reconnectTimer = undefined;
-    }
-  }
-
   // Starts a shared socket connection only when one is not already active or pending.
   private static connectSharedSocketIfNeeded(socket: Socket): void {
     const state = ActivitySocketService.sharedState;
     if (
       socket !== state.socket ||
       ActivitySocketService.isSocketActive(socket) ||
-      state.reconnectTimer ||
       state.connectRequested
     ) {
       return;
@@ -377,46 +359,6 @@ export class ActivitySocketService implements OnDestroy {
     if (socket === state.socket) {
       state.connectRequested = undefined;
     }
-  }
-
-  // Schedules one controlled reconnect for websocket mode after a failure event.
-  private static reconnectSharedSocketIfNeeded(socket: Socket): void {
-    const state = ActivitySocketService.sharedState;
-    if (!state.allowWebSockets || socket !== state.socket || state.owners.size === 0 || state.reconnectTimer) {
-      return;
-    }
-
-    console.warn('Activity socket connection lost, scheduling reconnect...'); 
-
-    state.reconnectTimer = setTimeout(() => {
-      state.reconnectTimer = undefined;
-      if (socket === state.socket && state.owners.size > 0 && !ActivitySocketService.isSocketActive(socket)) {
-        ActivitySocketService.connectSharedSocketIfNeeded(socket);
-      }
-    }, ActivitySocketService.getReconnectDelayMs());
-
-    if (ActivitySocketService.isSocketActive(socket)) {
-      socket.disconnect();
-    }
-  }
-
-  private static getReconnectDelayMs(): number {
-    const delayRange = ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS - ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS + 1;
-    const randomDelay = ActivitySocketService.getCryptoRandomInt(delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
-    console.log(`Activity socket reconnect scheduled in ${randomDelay}ms`);  
-    return randomDelay;
-  }
-
-  // Returns an unbiased crypto-random integer from 0 inclusive to exclusiveMax exclusive.
-  private static getCryptoRandomInt(exclusiveMax: number): number {
-    const randomValue = new Uint32Array(1);
-    const maxUnbiasedValue = Math.floor(0x100000000 / exclusiveMax) * exclusiveMax;
-
-    do {
-      globalThis.crypto.getRandomValues(randomValue);
-    } while (randomValue[0] >= maxUnbiasedValue);
-
-    return randomValue[0] % exclusiveMax;
   }
 
   // Treats connected, connecting, opening, and open sockets as active.
