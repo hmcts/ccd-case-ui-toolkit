@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.75
+**EXUI-4838** Unable to read long string
+
 ### Version 7.3.74
 **EXUI-4277** Suppressions to packages to update - easier
 
