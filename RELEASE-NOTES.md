@@ -2,6 +2,9 @@
 
 ### Version 7.3.75
 **EXUI-4838** Unable to read long string
+**EXUI-2212** Inconsistent error message display for link mark up
+**EXUI-4745** Marked library version update
+**EXUI-4284** Suppressions - @nicky-lenaers/ngx-scroll-to - deprecated
 
 ### Version 7.3.74
 **EXUI-4277** Suppressions to packages to update - easier
