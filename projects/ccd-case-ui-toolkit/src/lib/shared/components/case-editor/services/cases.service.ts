@@ -11,6 +11,7 @@ import {
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest, Draft,
+  HttpError,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload, SpecificAccessRequest
@@ -210,8 +211,14 @@ export class CasesService {
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
       .set('Content-Type', 'application/json');
     headers = this.addClientContextHeader(headers);
-    return this.http
-      .post(url, eventData, { headers, observe: 'response' as 'body' })
+
+    // TODO: Remove this temporary mock after validating the error handling journey.
+    const mockValidateCaseFailure = true;
+    const validateCaseResponse$: Observable<any> = mockValidateCaseFailure
+      ? throwError(new HttpError())
+      : this.http.post(url, eventData, { headers, observe: 'response' as 'body' });
+
+    return validateCaseResponse$
       .pipe(
         map((response) => {
           this.updateClientContextStorage(response.headers);
