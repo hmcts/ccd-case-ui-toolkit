@@ -3126,7 +3126,6 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.2.25"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
-    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@types/jasmine": "npm:~2.8.0"
     "@types/jasminewd2": "npm:^2.0.3"
     "@types/node": "npm:^20.19.0"
@@ -5015,18 +5014,6 @@ __metadata:
     typescript: ">=5.8 <6.0"
     webpack: ^5.54.0
   checksum: 10/32c206b14d589b1813e463182ca69a79b6eab3474a711586c115b0e0955416155e56f2b639b25281b7074e167b47c84f71da0989bec266cc3479f0f9613be4b7
-  languageName: node
-  linkType: hard
-
-"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^14.0.0
-    "@angular/core": ^14.0.0
-  checksum: 10/f3aa11a64e2d0267dce1850af769de0f9caa133008e048975970afd9b0e37ba5d517fd09a6f4303e3a5f579b6460f6274d73a7406d2d988a8d3c352940912e1e
   languageName: node
   linkType: hard
 
