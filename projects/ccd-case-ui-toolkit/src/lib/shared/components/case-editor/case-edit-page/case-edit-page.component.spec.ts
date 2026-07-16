@@ -2653,6 +2653,33 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should validate markdown pattern field value and log link markup error message', () => {
+      const caseField = aCaseField(
+        'InvalidMarkdownField',
+        'Invalid Markdown Field',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      const control = new FormControl('bad [link](markup)');
+      control.setErrors({ markDownPattern: true });
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          InvalidMarkdownField: control
+        })
+      });
+      caseEditDataService.addFormValidationError.calls.reset();
+      spyOn(window, 'scrollTo');
+
+      comp.generateErrorMessage([caseField]);
+
+      expect(caseEditDataService.addFormValidationError).toHaveBeenCalledWith({
+        id: 'InvalidMarkdownField',
+        message: 'The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.',
+        label: 'Invalid Markdown Field'
+      });
+    });
+
     it('should validate mandatory complex type fields and log error message', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',

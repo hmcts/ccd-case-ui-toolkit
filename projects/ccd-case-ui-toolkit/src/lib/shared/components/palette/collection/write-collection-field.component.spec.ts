@@ -232,6 +232,16 @@ describe('WriteCollectionFieldComponent', () => {
     });
   }));
 
+  it('should not scroll when the collection item target cannot be found', () => {
+    const getElementByIdSpy = spyOn(document, 'getElementById').and.returnValue(null);
+    const scrollToSpy = spyOn(window, 'scrollTo');
+
+    (component as any).scrollToCollectionItem('missing-target');
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('missing-target');
+    expect(scrollToSpy).not.toHaveBeenCalled();
+  });
+
   it('should NOT scroll when item added with bottom button', waitForAsync(() => {
     const addButton = de.query($ADD_BUTTON_BOTTOM);
     const scrollToSpy = spyOn(window, 'scrollTo');
