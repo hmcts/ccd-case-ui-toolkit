@@ -211,14 +211,8 @@ export class CasesService {
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
       .set('Content-Type', 'application/json');
     headers = this.addClientContextHeader(headers);
-
-    // TODO: Remove this temporary mock after validating the error handling journey.
-    const mockValidateCaseFailure = true;
-    const validateCaseResponse$: Observable<any> = mockValidateCaseFailure
-      ? throwError(new HttpError())
-      : this.http.post(url, eventData, { headers, observe: 'response' as 'body' });
-
-    return validateCaseResponse$
+    return this.http
+      .post(url, eventData, { headers, observe: 'response' as 'body' })
       .pipe(
         map((response) => {
           this.updateClientContextStorage(response.headers);

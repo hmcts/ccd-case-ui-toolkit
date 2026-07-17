@@ -13,7 +13,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from './case.notifier';
 import { getMockCaseNotifier } from './case.notifier.spec';
 
-xdescribe('CasesService', () => {
+describe('CasesService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
