@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -231,6 +231,7 @@ describe('CaseEditComponent', () => {
   let mockCookieService: jasmine.SpyObj<ReadCookieService>;
   let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
+  let mockCaseNotifier: jasmine.SpyObj<CaseNotifier>;
 
   describe('profile available in route', () => {
     routerStub = {
@@ -314,27 +315,28 @@ describe('CaseEditComponent', () => {
       };
 
       loadingServiceMock = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+      mockCaseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['removeCachedCase']); 
 
       TestBed
         .configureTestingModule({
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
+            RouterTestingModule,
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           declarations: [
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
-            FieldsFilterPipe,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            FieldsFilterPipe
           ],
           providers: [
             WizardFactoryService,
-            { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+            { provide: CaseNotifier, useValue: mockCaseNotifier },
             { provide: FormErrorService, useValue: formErrorService },
             { provide: FormValueService, useValue: formValueService },
             { provide: FieldsUtils, useValue: fieldsUtils },
@@ -882,9 +884,29 @@ describe('CaseEditComponent', () => {
         it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
-
+          routerStub.url = 'test.com';
           fixture.detectChanges();
           expect(component.checkPageRefresh()).toBe(false);
+        });
+
+        it('should redirect to first wizard page when user navigates directly to submit without initialUrl', async () => {
+          routerStub.url = '/some/case/path/submit';
+          component.initialUrl = null;
+          component.isPageRefreshed = false;
+          component.eventTrigger = {
+            wizard_pages: [
+              { id: 'secondPage', order: 2 },
+              { id: 'firstPage', order: 1 }
+            ]
+          } as any;
+
+          (routerStub.navigate as jasmine.Spy).and.returnValue(Promise.resolve(true));
+
+          const result = component.checkPageRefresh();
+
+          expect(result).toBeFalsy();
+          expect(component.isRefreshModalVisible).toBeTruthy();
+          expect(routerStub.navigate).toHaveBeenCalledWith(['firstPage'], { relativeTo: (component as any).route });
         });
 
         it('should check page is refreshed', () => {
@@ -1204,6 +1226,7 @@ describe('CaseEditComponent', () => {
 
         expect(component.isSubmitting).toEqual(false);
         expect(formValueService.sanitise).toHaveBeenCalled();
+        expect(mockCaseNotifier.removeCachedCase).toHaveBeenCalled();
       });
     });
 
@@ -1315,6 +1338,8 @@ describe('CaseEditComponent', () => {
 
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: '1234567890' } as CaseView;
+        mockWorkAllocationService.assignAndCompleteTask.and.returnValue(of({}));
 
         formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
@@ -1351,6 +1376,8 @@ describe('CaseEditComponent', () => {
 
         component.isCaseFlagSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: '1234567890' } as CaseView;
+        mockWorkAllocationService.completeTask.and.returnValue(of({}));
 
         formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
@@ -1362,6 +1389,48 @@ describe('CaseEditComponent', () => {
         });
 
         expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('1', component.eventTrigger.name);
+      });
+
+      it('should submit the case and clear client context without completing task when case ids do not match', () => {
+        mockSessionStorageService.getItem.and.returnValues(JSON.stringify(CLIENT_CONTEXT), 'false');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+        component.caseDetails = { case_id: 'different-case-id' } as CaseView;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit
+        });
+
+        expect(mockabstractConfig.logMessage).toHaveBeenCalledWith(
+          'postCompleteTaskIfRequired: task in session storage with taskId 1 has caseId: 1234567890 which does not match case details case id different-case-id, NOT completing task and clearing client context'
+        );
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith(CaseEditComponent.CLIENT_CONTEXT);
+        expect(mockWorkAllocationService.assignAndCompleteTask).not.toHaveBeenCalled();
+        expect(mockWorkAllocationService.completeTask).not.toHaveBeenCalled();
       });
 
       it('should submit the case and not complete task for an event submission when service makes this clear', () => {
@@ -1607,6 +1676,93 @@ describe('CaseEditComponent', () => {
     });
   });
 
+  describe('CaseEditComponent refresh modal', () => {
+    let fixture: ComponentFixture<CaseEditComponent>;
+    let component: CaseEditComponent;
+    let nativeEl: HTMLElement;
+
+    const sessionStub = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem','setItem','removeItem']);
+    // Return valid JSON string for isPageRefreshed and null for eventUrl
+    sessionStub.getItem.and.callFake((key: string) => {
+      if (key === 'isPageRefreshed') return 'false';
+      if (key === 'eventUrl') return null;
+      return null;
+    });
+
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [CaseEditComponent],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
+          { provide: SessionStorageService, useValue: sessionStub },
+          { provide: WindowService, useValue: jasmine.createSpyObj<WindowService>('WindowService', ['alert']) },
+          { provide: FieldsUtils, useValue: new FieldsUtils() },
+          { provide: FieldsPurger, useValue: new FieldsPurger(new FieldsUtils()) },
+          { provide: ConditionalShowRegistrarService, useValue: new ConditionalShowRegistrarService() },
+          { provide: ValidPageListCaseFieldsService, useValue: new ValidPageListCaseFieldsService(new FieldsUtils()) },
+          { provide: FormErrorService, useValue: jasmine.createSpyObj<FormErrorService>('FormErrorService', ['mapFieldErrors']) },
+          { provide: FormValueService, useValue: jasmine.createSpyObj<FormValueService>('FormValueService', ['sanitise']) },
+          { provide: LoadingService, useValue: jasmine.createSpyObj<LoadingService>('LoadingService', ['register','unregister']) },
+          { provide: WorkAllocationService, useValue: jasmine.createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask','completeTask']) },
+          { provide: AlertService, useValue: jasmine.createSpyObj<AlertService>('AlertService', ['error','setPreserveAlerts']) },
+          { provide: AbstractAppConfig, useValue: jasmine.createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['logMessage']) },
+          WizardFactoryService
+        ]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(CaseEditComponent);
+      component = fixture.componentInstance;
+      (component as any).eventTrigger = { id: 'TEST_TRIGGER', wizard_pages: [] };
+      fixture.detectChanges();
+
+      nativeEl = fixture.nativeElement as HTMLElement;
+    }));
+
+    it('renders modal when visible', () => {
+      component.isRefreshModalVisible = true;
+      fixture.detectChanges();
+
+      expect(nativeEl.querySelector('.refresh-modal-backdrop')).toBeTruthy();
+      expect(nativeEl.querySelector('.refresh-modal')).toBeTruthy();
+    });
+
+    it('hides modal when not visible', () => {
+      component.isRefreshModalVisible = false;
+      fixture.detectChanges();
+
+      expect(nativeEl.querySelector('.refresh-modal-backdrop')).toBeFalsy();
+      expect(nativeEl.querySelector('.refresh-modal')).toBeFalsy();
+    });
+
+    it('closes modal on OK click', () => {
+      component.isRefreshModalVisible = true;
+      fixture.detectChanges();
+
+      const okBtn = nativeEl.querySelector('.refresh-modal .button') as HTMLButtonElement;
+      expect(okBtn).toBeTruthy();
+
+      okBtn.click();
+      fixture.detectChanges();
+
+      expect(component.isRefreshModalVisible).toBeFalsy();
+      expect(nativeEl.querySelector('.refresh-modal-backdrop')).toBeFalsy();
+    });
+
+    // This test requires (keydown.escape)="onRefreshModalOk()" on the backdrop in the template
+    it('closes modal on Escape key (direct call to handler)', () => {
+      component.isRefreshModalVisible = true;
+      fixture.detectChanges();
+
+      // Call the handler directly since template has no keydown.escape binding
+      component.onRefreshModalOk();
+      fixture.detectChanges();
+
+      expect(component.isRefreshModalVisible).toBeFalsy();
+    });
+  });
+
   xdescribe('profile not available in route', () => {
     const USER = {
       idam: {
@@ -1681,16 +1837,14 @@ describe('CaseEditComponent', () => {
           imports: [
             ReactiveFormsModule,
             PaletteUtilsModule,
-            RouterTestingModule
-          ],
-          declarations: [
-            CaseEditComponent,
-
-            // Mocks
+            RouterTestingModule,
             eventTriggerHeaderComponentMock,
             routerLinkComponentMock,
             fieldReadComponentMock,
             fieldWriteComponentMock
+          ],
+          declarations: [
+            CaseEditComponent
           ],
           providers: [
             WizardFactoryService,

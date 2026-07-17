@@ -1,8 +1,6 @@
 # ccd-case-ui-toolkit 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/hmcts/ccd-case-ui-toolkit.svg?branch=master)](https://travis-ci.org/hmcts/ccd-case-ui-toolkit)
 [![codecov](https://codecov.io/gh/hmcts/ccd-case-ui-toolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/hmcts/ccd-case-ui-toolkit)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/93a438c61ff54973bc09a4387497e282)](https://www.codacy.com/app/adr1ancho/ccd-case-ui-toolkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hmcts/ccd-case-ui-toolkit&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit/badge.svg)](https://snyk.io/test/github/hmcts/ccd-case-ui-toolkit)
 [![HitCount](http://hits.dwyl.io/hmcts/ccd-case-ui-toolkit.svg)](#ccd-case-ui-toolkit)
 [![Issue Stats](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit/badge/pr)](http://issuestats.com/github/hmcts/ccd-case-ui-toolkit)
@@ -125,7 +123,6 @@ case-ui-toolkit
 ├─ .editorconfig                - Common IDE configuration
 ├─ .gitignore                   - List of files that are ignored while publishing to git repo
 ├─ .npmignore                   - List of files that are ignored while publishing to npmjs
-├─ .travis.yml                  - Travis CI configuration
 ├─ LICENSE.md                   - License details
 ├─ README.md                    - README for the library
 ├─ gulpfile.js                  - Gulp helper scripts
@@ -182,7 +179,6 @@ As a result once you change library source code it will be automatically re-comp
 
 ### Library Release
 
-Travis build system automatically publish NPM packages including GitHub releases whenever there is a version change in package.json
 
 Prerelease version from PR branch should follow the format as `x.y.z-RDM-xxx-prerelease`
 

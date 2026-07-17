@@ -4,7 +4,8 @@ import { CaseEditComponent } from '../../../case-edit';
 
 @Component({
   selector: 'app-case-event-completion-task-cancelled',
-  templateUrl: './case-event-completion-task-cancelled.html'
+  templateUrl: './case-event-completion-task-cancelled.html',
+  standalone: false
 })
 export class CaseEventCompletionTaskCancelledComponent implements OnInit {
   @Input()

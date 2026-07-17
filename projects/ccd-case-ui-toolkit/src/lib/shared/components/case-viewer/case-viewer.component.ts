@@ -8,7 +8,8 @@ import { OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-case-viewer',
-  templateUrl: './case-viewer.component.html'
+  templateUrl: './case-viewer.component.html',
+  standalone: false
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
   public static readonly METADATA_FIELD_ACCESS_PROCESS_ID = '[ACCESS_PROCESS]';
@@ -51,7 +52,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
-        console.info('Setting the case into case viewer component as retrieved from XHR request.');
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });

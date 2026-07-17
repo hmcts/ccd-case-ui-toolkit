@@ -1,6 +1,6 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
@@ -401,7 +401,7 @@ describe('CaseEditSubmitComponent', () => {
           CcdCaseTitlePipe,
           MockRpxTranslatePipe
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
@@ -435,6 +435,16 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
       const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
+    });
+
+    it('should interpolate triggerText when end_button_label contains a placeholder', () => {
+      const interpolateSpy = spyOn<any>(comp, 'interpolateButtonText').and.returnValue('Resolved text');
+      caseEditComponent.eventTrigger.end_button_label = 'Continue ${foo}';
+
+      comp.ngOnInit();
+
+      expect(interpolateSpy).toHaveBeenCalledWith('Continue ${foo}');
+      expect(comp.triggerText).toBe('Resolved text');
     });
 
     it('should delegate navigateToPage calls to caseEditComponent', () => {
@@ -1074,7 +1084,7 @@ describe('CaseEditSubmitComponent', () => {
           CcdCaseTitlePipe,
           MockRpxTranslatePipe
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
@@ -1258,7 +1268,7 @@ describe('CaseEditSubmitComponent', () => {
           CcdCaseTitlePipe,
           MockRpxTranslatePipe
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
@@ -1320,6 +1330,39 @@ describe('CaseEditSubmitComponent', () => {
         comp.callbackErrorsNotify(sampleCallbackErrorsContext);
         expect(caseEditComponent.ignoreWarning).toEqual(sampleCallbackErrorsContext.ignoreWarning);
         expect(comp.triggerText).toEqual(sampleCallbackErrorsContext.triggerText);
+      });
+    });
+
+    describe('placeholder helpers', () => {
+      it('should detect unresolved placeholders', () => {
+        expect((comp as any).hasUnresolvedPlaceholder('${completionNextStep}')).toBeTruthy();
+      });
+
+      it('should return false when no placeholder exists or input is not a string', () => {
+        expect((comp as any).hasUnresolvedPlaceholder('Submit')).toBeFalsy();
+        expect((comp as any).hasUnresolvedPlaceholder(null)).toBeFalsy();
+      });
+
+      it('should delegate interpolateButtonText to resolvePlaceholders', () => {
+        comp.allFieldsValues = { foo: 'bar' };
+        const resolveSpy = spyOn<any>(comp, 'resolvePlaceholders').and.returnValue('Hello bar');
+
+        const result = (comp as any).interpolateButtonText('Hello ${foo}');
+
+        expect(resolveSpy).toHaveBeenCalledWith(comp.allFieldsValues, 'Hello ${foo}');
+        expect(result).toBe('Hello bar');
+      });
+
+      it('should delegate resolvePlaceholders to PlaceholderService', () => {
+        const fields = { foo: 'bar' };
+        const text = 'Hello ${foo}';
+        const placeholderService = TestBed.inject(PlaceholderService);
+        const serviceSpy = spyOn(placeholderService, 'resolvePlaceholders').and.returnValue('Hello bar');
+
+        const result = (comp as any).resolvePlaceholders(fields, text);
+
+        expect(serviceSpy).toHaveBeenCalledWith(fields, text);
+        expect(result).toBe('Hello bar');
       });
     });
   });

@@ -143,15 +143,15 @@ describe('ReadComplexFieldTableComponent', () => {
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            fieldReadComponentMock
           ],
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             // Mocks
-            MockRpxTranslatePipe,
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: [
             FieldsUtils,
@@ -454,15 +454,15 @@ describe('ReadComplexFieldTableComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            PaletteUtilsModule
+            PaletteUtilsModule,
+            fieldReadComponentMock
           ],
           declarations: [
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             // Mocks
-            MockRpxTranslatePipe,
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: [
             FieldsUtils,

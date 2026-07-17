@@ -1,4 +1,4 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Injector } from '@angular/core';
 import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -159,18 +159,19 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   ] as FlagsWithFormGroupPath[];
   let mockRpxTranslationService: any;
   let mockChangeDetectorRef: any;
+  let pipe: ManageCaseFlagsLabelDisplayPipe;
 
   beforeEach(waitForAsync(() => {
     const source = new BehaviorSubject<RpxLanguage>('en');
     let currentLanguage: RpxLanguage = 'en';
     mockRpxTranslationService = {
       language$: source.asObservable(),
+      get language() {
+        return currentLanguage;
+      },
       set language(lang: RpxLanguage) {
         currentLanguage = lang;
         source.next(lang);
-      },
-      get language() {
-        return currentLanguage;
       },
       getTranslation$(_: string): Observable<string> {
         // Use delayed Observable to better simulate response from the RpxTranslationService
@@ -181,17 +182,28 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       markForCheck: () => {}
     };
     TestBed.configureTestingModule({
-      declarations: [ManageCaseFlagsLabelDisplayPipe],
       providers: [
+        ManageCaseFlagsLabelDisplayPipe,
         { provide: RpxTranslationService, useValue: mockRpxTranslationService },
-        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef }
+        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef },
+        {
+          provide: Injector,
+          useValue: {
+            get: (token: any) => {
+              if (token === ChangeDetectorRef) {
+                return mockChangeDetectorRef;
+              }
+              throw new Error('Unknown dependency');
+            }
+          }
+        }
       ]
-    })
-    .compileComponents();
+    });
+    pipe = TestBed.inject(ManageCaseFlagsLabelDisplayPipe);
   }));
 
   it('should get correct party name', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    // const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[2].flags.partyName,
@@ -201,17 +213,16 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       pathToFlagsFormGroup: 'caseFlags',
       caseField: flagsData[2].caseField
     } as FlagDetailDisplayWithFormGroupPath;
-    pipe.getPartyName(flagDisplay).subscribe(partyName => {
+    pipe.getPartyName(flagDisplay).subscribe((partyName) => {
       expect(partyName).toEqual('Case level');
     });
     flagDisplay.pathToFlagsFormGroup = null;
-    pipe.getPartyName(flagDisplay).subscribe(partyName => {
+    pipe.getPartyName(flagDisplay).subscribe((partyName) => {
       expect(partyName).toEqual('');
     });
   });
 
   it('should get correct party name when page language is set to Welsh', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
       flagDetailDisplay: {
@@ -222,17 +233,16 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       pathToFlagsFormGroup: 'caseFlags',
       caseField: flagsData[2].caseField
     } as FlagDetailDisplayWithFormGroupPath;
-    pipe.getPartyName(flagDisplay).subscribe(partyName => {
+    pipe.getPartyName(flagDisplay).subscribe((partyName) => {
       expect(partyName).toEqual('Dummy Welsh translation');
     });
     flagDisplay.pathToFlagsFormGroup = null;
-    pipe.getPartyName(flagDisplay).subscribe(partyName => {
+    pipe.getPartyName(flagDisplay).subscribe((partyName) => {
       expect(partyName).toEqual('');
     });
   });
 
   it('should get correct flag name', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     let flagDetail = flagsData[2].flags.details[0];
     expect(pipe.getFlagName(flagDetail)).toEqual('Level 2');
     flagDetail = flagsData[3].flags.details[0];
@@ -242,7 +252,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should get correct flag name when page language is set to Welsh', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     let flagDetail = flagsData[2].flags.details[0];
     // Currently, flag path values are stored in English only
@@ -255,7 +264,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should get party role on case', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[2].flags.partyName,
@@ -270,12 +278,10 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should get flag comment', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     expect(pipe.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag)');
   });
 
   it('should get flag comment when page language is set to Welsh', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     expect(pipe.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag - Welsh)');
     // No Welsh flag comment is available (undefined flagComment_cy), so fall back on English comment
@@ -283,7 +289,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the English formatted string for the case-level flag details', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[3].flags.partyName,
@@ -298,7 +303,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the English formatted string for the party-level flag details', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[3].flags.partyName,
@@ -313,7 +317,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the English formatted string for the party-level flag details with child flags', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[2].flags.partyName,
@@ -328,7 +331,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the English formatted string for the flag details of flag type "Other" with party role on case', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[4].flags.partyName,
@@ -344,7 +346,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the Welsh formatted string for the case-level flag details', fakeAsync(() => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
       flagDetailDisplay: {
@@ -367,7 +368,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   }));
 
   it('should return the Welsh formatted string for the party-level flag details', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
       flagDetailDisplay: {
@@ -383,7 +383,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the Welsh formatted string for the party-level flag details with child flags', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
       flagDetailDisplay: {
@@ -401,7 +400,6 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
   });
 
   it('should return the Welsh formatted string for the flag details of flag type "Other" with party role on case', () => {
-    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
       flagDetailDisplay: {

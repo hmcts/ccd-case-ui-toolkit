@@ -56,9 +56,17 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
+      <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true" [(selectedIndex)]="selectedTabIndex"
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+          <ng-template matTabContent>
+            <ng-container *ngIf="tab.id === 'tasks'">
+              <exui-tasks-ce></exui-tasks-ce>
+            </ng-container>
+            <ng-container *ngIf="tab.id === 'roles-and-access'">
+              <exui-roles-and-access-ce></exui-roles-and-access-ce>
+            </ng-container>
+          </ng-template>
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
           <ng-template matTabContent>
@@ -97,9 +105,13 @@
           </ng-template>
         </mat-tab>
         <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+          <ng-template matTabContent>
+            <ng-container *ngIf="tab.id === 'hearings'">
+              <exui-case-hearings-ce></exui-case-hearings-ce>
+            </ng-container>
+          </ng-template>
         </mat-tab>
       </mat-tab-group>
-      <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
     </ng-container>
   </div>
 </div>

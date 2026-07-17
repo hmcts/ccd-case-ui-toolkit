@@ -10,10 +10,14 @@ import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { UserTask } from '../../domain/work-allocation/Task';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
+import { safeJsonParse } from '../../json-utils';
+import { StructuredLoggerService } from '../logging';
 
 // @dynamic
 @Injectable()
 export class FieldsUtils {
+  private static readonly logger = new StructuredLoggerService();
+
   private static readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
@@ -23,11 +27,26 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+  public static readonly defaultTabList = {
+    "PRLAPPS": "Summary"
+  }
 
   public static isValidDisplayContext(ctx: string): boolean {
     return (ctx === 'MANDATORY' || ctx === 'READONLY'
       || ctx === 'OPTIONAL' || ctx === 'HIDDEN'
       || ctx === 'COMPLEX');
+  }
+
+  public static createToken(): string {
+    if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+    return `${Date.now()}`;
   }
 
   public static isTranslatable(fieldType: FieldType): boolean {
@@ -317,7 +336,7 @@ export class FieldsUtils {
             this.setDynamicListDefinition(field, field.field_type, rootCaseField);
           }
         } catch (error) {
-          console.log(error);
+          FieldsUtils.logger.error('Error setting dynamic list definition.', { error });
         }
       });
     } else if (caseFieldType.type === FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
@@ -642,11 +661,8 @@ export class FieldsUtils {
   }
 
   public static getUserTaskFromClientContext(clientContextStr: string): UserTask {
-    if (clientContextStr) {
-      let clientContext = JSON.parse(clientContextStr);
-      return clientContext.client_context.user_task;
-    }
-    return null;
+    const clientContext = safeJsonParse<any>(clientContextStr, null);
+    return clientContext?.client_context?.user_task || null;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

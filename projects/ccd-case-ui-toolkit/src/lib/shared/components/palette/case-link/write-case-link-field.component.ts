@@ -6,7 +6,8 @@ import { WriteComplexFieldComponent } from '../complex/write-complex-field.compo
 
 @Component({
   selector: 'ccd-write-case-link-field',
-  templateUrl: 'write-case-link-field.html'
+  templateUrl: 'write-case-link-field.html',
+  standalone: false
 })
 export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

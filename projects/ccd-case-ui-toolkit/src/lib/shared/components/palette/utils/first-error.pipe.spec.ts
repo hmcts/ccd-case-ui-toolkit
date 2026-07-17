@@ -1,9 +1,13 @@
 import { ChangeDetectorRef, Injector, Pipe, PipeTransform } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { Replacements, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { FirstErrorPipe } from './first-error.pipe';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 export class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string, args: { [key: string]: string } = {}) {
     return value;
@@ -16,34 +20,50 @@ describe('FirstErrorPipe', () => {
 
   let translationServiceMock: jasmine.SpyObj<RpxTranslationService>;
   let changeDetectorRefMock: jasmine.SpyObj<ChangeDetectorRef>;
-  let injectorMock: jasmine.SpyObj<Injector>;
-  let firstError: FirstErrorPipe;
+  let pipe: FirstErrorPipe;
 
   beforeEach(() => {
     translationServiceMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'getTranslationWithReplacements$']);
     changeDetectorRefMock = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
-    injectorMock = jasmine.createSpyObj('Injector', ['get']);
-    injectorMock.get.and.returnValue(changeDetectorRefMock);
-    firstError = new FirstErrorPipe(translationServiceMock, injectorMock);
-    translationServiceMock.getTranslation$.and.callFake((someString: string) => of(someString));
+
+    TestBed.configureTestingModule({
+      providers: [
+        FirstErrorPipe,
+        { provide: RpxTranslationService, useValue: translationServiceMock },
+        { provide: ChangeDetectorRef, useValue: changeDetectorRefMock },
+        {
+          provide: Injector,
+          useValue: {
+            get: (token: any) => {
+              if (token === ChangeDetectorRef) {
+                return changeDetectorRefMock;
+              }
+              throw new Error('Unknown dependency');
+            }
+          }
+        }
+      ]
+    });
+    pipe = TestBed.inject(FirstErrorPipe);
+    translationServiceMock.getTranslation$.and.callFake((s: string) => of(s));
   });
 
   it('should return empty string when null errors', () => {
-    const message = firstError.transform(null);
+    const message = pipe.transform(null);
 
     expect(message).toBe('');
   });
 
   it('should return empty string when empty errors', () => {
-    const message = firstError.transform({});
+    const message = pipe.transform({});
 
     expect(message).toBe('');
   });
 
   it('should return only error when 1 error', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
       errorkey: ERROR_MESSAGE
     });
 
@@ -54,8 +74,8 @@ describe('FirstErrorPipe', () => {
 
   it('should return only first error when multiple errors', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
       errorkey: ERROR_MESSAGE,
       error2: 'some other error'
     });
@@ -67,8 +87,8 @@ describe('FirstErrorPipe', () => {
 
   it('should return exact error along with label name when field value is MANDATORY', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
       required: true
     }, FIELD_LABEL);
 
@@ -80,9 +100,9 @@ describe('FirstErrorPipe', () => {
 
   it('should return exact error along with label name when pattern does not match', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
-      pattern: {actualValue: 'test ', requiredPattern: '^[0-9 +().-]{9,}$'}
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
+      pattern: { actualValue: 'test ', requiredPattern: '^[0-9 +().-]{9,}$' }
     }, FIELD_LABEL);
 
     expect(translationServiceMock.getTranslation$).toHaveBeenCalledWith(FIELD_LABEL);
@@ -93,9 +113,9 @@ describe('FirstErrorPipe', () => {
 
   it('should return exact error along with label name when field value is below minimum length', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
-      minlength: {actualValue: 'test', requiredLength: 5}
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
+      minlength: { actualValue: 'test', requiredLength: 5 }
     }, FIELD_LABEL);
 
     expect(translationServiceMock.getTranslation$).toHaveBeenCalledWith(FIELD_LABEL);
@@ -106,9 +126,9 @@ describe('FirstErrorPipe', () => {
 
   it('should return exact error along with label name when field value exceeds maximum length', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
-      maxlength: {actualValue: 'test is done', requiredLength: 10}
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
+      maxlength: { actualValue: 'test is done', requiredLength: 10 }
     }, FIELD_LABEL);
 
     expect(translationServiceMock.getTranslation$).toHaveBeenCalledWith(FIELD_LABEL);
@@ -119,8 +139,8 @@ describe('FirstErrorPipe', () => {
 
   it('should return exact error along with label name when field value is not valid date', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
-      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements['FIELDLABEL'])));
-    const message = firstError.transform({
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({
       matDatetimePickerParse: true
     }, FIELD_LABEL);
     const errorMessage = 'The date entered is not valid. Please provide a valid date';

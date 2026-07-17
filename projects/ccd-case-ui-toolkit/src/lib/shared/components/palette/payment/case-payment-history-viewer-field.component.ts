@@ -6,7 +6,8 @@ import { PaymentField } from '../base-field/payment-field.component';
 @Component({
   selector: 'ccd-case-payment-history-viewer-field',
   templateUrl: 'case-payment-history-viewer-field.html',
-  styleUrls: ['./case-payment-history-viewer-field.scss']
+  styleUrls: ['./case-payment-history-viewer-field.scss'],
+  standalone: false
 })
 export class CasePaymentHistoryViewerFieldComponent extends PaymentField {
   public readonly PAYMENT_HISTORY_WARNING = 'Recent payments may take a few minutes to reflect here.';

@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-number-field',
-  templateUrl: './write-number-field.html'
+  templateUrl: './write-number-field.html',
+  standalone: false
 })
 export class WriteNumberFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

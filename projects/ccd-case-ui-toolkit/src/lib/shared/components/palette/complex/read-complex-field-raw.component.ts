@@ -12,6 +12,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   styleUrls: [
     './read-complex-field-raw.scss'
   ],
+  standalone: false
 })
 export class ReadComplexFieldRawComponent extends AbstractFieldReadComponent {
   @Input()

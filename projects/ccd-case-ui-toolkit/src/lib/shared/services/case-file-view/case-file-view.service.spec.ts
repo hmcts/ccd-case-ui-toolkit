@@ -99,8 +99,8 @@ describe('Case File View service', () => {
       ]
     });
     // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9
-    service = TestBed.get(CaseFileViewService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(CaseFileViewService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

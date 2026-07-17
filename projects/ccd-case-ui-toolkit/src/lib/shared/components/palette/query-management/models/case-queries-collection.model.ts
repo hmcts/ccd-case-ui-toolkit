@@ -18,6 +18,7 @@ export interface CaseMessage {
   parentId?: string;
   isClosed?: string;
   messageType?: string;
+  isHmctsStaff?: string;
 }
 
 export interface QueryMessage {

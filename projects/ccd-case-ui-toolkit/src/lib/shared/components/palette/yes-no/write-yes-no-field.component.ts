@@ -5,7 +5,8 @@ import { YesNoService } from './yes-no.service';
 
 @Component({
   selector: 'ccd-write-yes-no-field',
-  templateUrl: './write-yes-no-field.html'
+  templateUrl: './write-yes-no-field.html',
+  standalone: false
 })
 export class WriteYesNoFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public yesNoValues = [ 'Yes', 'No' ];

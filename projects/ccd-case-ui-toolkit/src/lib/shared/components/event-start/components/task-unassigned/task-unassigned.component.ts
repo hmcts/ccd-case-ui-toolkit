@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-task-unassigned',
-  templateUrl: './task-unassigned.component.html'
+  templateUrl: './task-unassigned.component.html',
+  standalone: false
 })
 export class TaskUnassignedComponent {
 

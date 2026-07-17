@@ -56,13 +56,12 @@ describe('ReadMultiSelectListFieldComponent', () => {
     beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
             // Mocks
-            MockRpxTranslatePipe,
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -132,13 +131,12 @@ describe('ReadMultiSelectListFieldComponent', () => {
     beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [fieldReadComponentMock],
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
             // Mocks
-            MockRpxTranslatePipe,
-            fieldReadComponentMock
+            MockRpxTranslatePipe
           ],
           providers: []
         })

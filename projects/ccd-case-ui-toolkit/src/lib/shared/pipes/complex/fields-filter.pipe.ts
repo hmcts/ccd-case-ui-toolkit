@@ -5,7 +5,8 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 
 @Pipe({
-  name: 'ccdFieldsFilter'
+  name: 'ccdFieldsFilter',
+  standalone: false
 })
 export class FieldsFilterPipe implements PipeTransform {
 

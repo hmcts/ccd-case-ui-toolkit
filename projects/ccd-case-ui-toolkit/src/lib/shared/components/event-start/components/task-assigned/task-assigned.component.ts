@@ -7,7 +7,8 @@ import { JudicialworkerService } from '../../../case-editor/services/judicial-wo
 
 @Component({
   selector: 'app-task-assigned',
-  templateUrl: './task-assigned.component.html'
+  templateUrl: './task-assigned.component.html',
+  standalone: false
 })
 export class TaskAssignedComponent implements OnInit, OnDestroy {
 

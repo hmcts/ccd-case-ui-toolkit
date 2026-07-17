@@ -8,6 +8,7 @@ import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
+import { safeJsonParse } from '../../../json-utils';
 import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
@@ -20,6 +21,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
+
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
@@ -41,19 +43,28 @@ export class CaseResolver implements Resolve<CaseView> {
 
     // Prevent resolving if eventId=queryManagementRespondQuery is in the URL
     if (currentUrl.includes(CaseResolver.EVENT_ID_QM_RESPOND_TO_QUERY)) {
-      console.info('Skipping resolve for event queryManagementRespondQuery.');
       this.goToDefaultPage();
     }
 
     if (!cid) {
-      console.info('No case ID available in the route. Will navigate to case list.');
       // when redirected to case view after a case created, and the user has no READ access,
       // the post returns no id
       this.navigateToCaseList();
     } else {
-      return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
-        : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
-        : this.getAndCacheCaseView(cid);
+      const resultPromise =
+        this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
+          : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
+            : this.getAndCacheCaseView(cid);
+
+      return resultPromise.then((caseView) => {
+        const newCaseInfo = {
+          caseId: caseView.case_id,
+          jurisdiction: caseView.case_type.jurisdiction.id,
+          caseType: caseView.case_type.id
+        };
+        this.sessionStorage.setItem('caseInfo', JSON.stringify(newCaseInfo));
+        return caseView;
+      });
     }
   }
 
@@ -100,8 +111,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private processErrorInCaseFetch(error: any, caseReference: string) {
-    console.error('!!! processErrorInCaseFetch !!!');
-    console.error(error);
     // TODO Should be logged to remote logging infrastructure
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);
@@ -109,6 +118,11 @@ export class CaseResolver implements Resolve<CaseView> {
     }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
+      return of(null);
+    }
+    // EXUI-4061 - navigate to no results page for 404 errors
+    if (error.status === 404) {
+      this.router.navigate(['/search/noresults']);
       return of(null);
     }
     // Error 403, navigate to restricted case access page
@@ -125,8 +139,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
-    console.info('Going to default page!');
-    const userDetails = JSON.parse(this.sessionStorage.getItem(USER_DETAILS));
+    const userDetails = safeJsonParse<any>(this.sessionStorage.getItem(USER_DETAILS));
     userDetails && userDetails.roles
         && !userDetails.roles.includes(PUI_CASE_MANAGER)
         &&

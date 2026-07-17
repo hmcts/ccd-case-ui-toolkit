@@ -7,7 +7,8 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
   templateUrl: './read-complex-field-collection-table.html',
-  styleUrls: ['./read-complex-field-collection-table.scss']
+  styleUrls: ['./read-complex-field-collection-table.scss'],
+  standalone: false
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
   public columns: string[];

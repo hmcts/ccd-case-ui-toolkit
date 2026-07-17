@@ -4,7 +4,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 
 @Component({
   selector: 'ccd-write-order-summary-field',
-  templateUrl: './write-order-summary-field.html'
+  templateUrl: './write-order-summary-field.html',
+  standalone: false
 })
 export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

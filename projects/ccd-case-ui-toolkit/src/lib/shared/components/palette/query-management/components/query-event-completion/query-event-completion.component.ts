@@ -3,7 +3,8 @@ import { EventCompletionParams } from '../../../../case-editor/domain/event-comp
 
 @Component({
   selector: 'ccd-query-event-completion',
-  templateUrl: './query-event-completion.component.html'
+  templateUrl: './query-event-completion.component.html',
+  standalone: false
 })
 export class QueryEventCompletionComponent {
   @Input() public eventCompletionParams: EventCompletionParams;

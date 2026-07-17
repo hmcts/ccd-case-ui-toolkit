@@ -14,7 +14,8 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
 @Component({
   selector: 'ccd-select-flag-type',
   templateUrl: './select-flag-type.component.html',
-  styleUrls: ['./select-flag-type.component.scss']
+  styleUrls: ['./select-flag-type.component.scss'],
+  standalone: false
 })
 export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {
   @Input()

@@ -109,15 +109,15 @@ describe('ReadOrganisationFieldRawComponent', () => {
         CommonModule,
         HttpClientTestingModule,
         ReactiveFormsModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        fieldReadComponentMock
       ],
       declarations: [
         CaseReferencePipe,
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
-        MockRpxTranslatePipe,
-        fieldReadComponentMock
+        MockRpxTranslatePipe
       ],
       providers: [
         PaletteService,

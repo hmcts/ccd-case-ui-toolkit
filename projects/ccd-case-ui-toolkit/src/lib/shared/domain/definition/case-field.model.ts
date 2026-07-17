@@ -2,6 +2,7 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import * as _ from 'underscore';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
+import { StructuredLoggerService } from '../../services/logging';
 import { Orderable } from '../order';
 import { AccessControlList } from './access-control-list.model';
 import { FieldTypeEnum } from './field-type-enum.model';
@@ -9,11 +10,14 @@ import { FieldType } from './field-type.model';
 
 // @dynamic
 export class CaseField implements Orderable {
+  private static readonly logger = new StructuredLoggerService();
+
   public id: string;
   public hidden: boolean;
   public hiddenCannotChange: boolean;
   public label: string;
   public originalLabel?: string;
+  public noCacheLabel?: string;
   public order?: number;
   @Exclude()
   public parent?: CaseField;
@@ -183,11 +187,11 @@ export class CaseField implements Orderable {
         return prefix + this.id;
       }
     } else {
-      console.log("Path too long, possible circular reference in case field hierarchy");
+      CaseField.logger.error('Path too long, possible circular reference in case field hierarchy.');
       return this.id;
     }
   }
-  
+
   public set isTranslated(val: boolean)
   {
     this.isTranslatedFlag = val;

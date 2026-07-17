@@ -6,6 +6,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 @Component({
   selector: 'ccd-read-organisation-field',
   templateUrl: './read-organisation-field.html',
+  standalone: false
 })
 export class ReadOrganisationFieldComponent extends AbstractFieldReadComponent implements OnInit {
   @Input()

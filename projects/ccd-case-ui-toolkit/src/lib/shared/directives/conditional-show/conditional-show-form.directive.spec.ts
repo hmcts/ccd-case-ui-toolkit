@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldType } from '../../domain/definition/field-type.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
+import { AbstractFieldWriteComponent } from '../../components/palette/base-field/abstract-field-write.component';
 import { ConditionalShowFormDirective } from './conditional-show-form.directive';
 import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
 import { GreyBarService } from './services/grey-bar.service';
@@ -20,7 +21,8 @@ import createSpyObj = jasmine.createSpyObj;
         <input type="radio" [hidden]="carHidden" formControlName="hasCar" id="HasCarN" value="No">
         <input type="text" [hidden]="makeHidden" formControlName="carMake" id="CarMake"/>
         <input type="text" [hidden]="modelHidden" formControlName="carModel" id="CarModel"/>"
-      </div>`
+      </div>`,
+  standalone: false
 })
 
 class TestHostComponent {
@@ -41,6 +43,11 @@ class TestHostComponent {
       return f ? f.hidden : false;
     }
     return false;
+  }
+}
+
+class TestWriteComponent extends AbstractFieldWriteComponent {
+  protected addValidators(): void {
   }
 }
 
@@ -178,6 +185,22 @@ describe('ConditionalShowFormDirective', () => {
       expect(comp.caseFields[2].hidden).toBe(true);
     });
   }));
+
+  it('should build collection paths from the current row container prefix', () => {
+    const directive = conditionalShowForm;
+    const currentParent = new FormGroup({});
+    currentParent['component'] = {
+      idPrefix: 'repCollection_1_'
+    };
+
+    const childComponent = new TestWriteComponent();
+    childComponent.parent = currentParent;
+    childComponent.idPrefix = 'repCollection_3_';
+
+    const caseField = field('organizationName', 'Test Organisation', 'respondent="Yes"');
+
+    expect((directive as any).buildPath(childComponent, caseField)).toEqual('repCollection_1_organizationName');
+  });
   /*
   it('should display not grey bar when toggled to show if grey bar disabled', () => {
       fixture = TestBed.createComponent(TestHostGreyBarDisabledComponent);

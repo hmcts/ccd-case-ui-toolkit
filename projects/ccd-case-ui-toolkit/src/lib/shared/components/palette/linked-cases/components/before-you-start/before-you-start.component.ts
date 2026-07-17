@@ -9,7 +9,8 @@ import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
-  templateUrl: './before-you-start.component.html'
+  templateUrl: './before-you-start.component.html',
+  standalone: false
 })
 export class BeforeYouStartComponent extends AbstractJourneyComponent implements Journey {
 

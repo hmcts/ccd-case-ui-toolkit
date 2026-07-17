@@ -11,12 +11,16 @@ import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem } from '../.
 import { EventCompletionParams } from '../../../../../case-editor/domain/event-completion-params.model';
 import { QueryManagementService } from '../../../services';
 import { ActivatedRoute } from '@angular/router';
+import { StructuredLoggerService } from '../../../../../../services';
 
 @Component({
   selector: 'ccd-query-write-raise-query',
-  templateUrl: './query-write-raise-query.component.html'
+  templateUrl: './query-write-raise-query.component.html',
+  standalone: false
 })
 export class QueryWriteRaiseQueryComponent implements OnChanges {
+  private readonly logger = new StructuredLoggerService();
+
   @Input() public formGroup: FormGroup;
   @Input() public submitted: boolean;
   @Input() public caseDetails: CaseView;
@@ -71,7 +75,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
 
   public setCaseQueriesCollectionData(): boolean {
     if (!this.eventData) {
-      console.warn('Event data not available; skipping collection setup.');
+      this.logger.warn('Event data not available; skipping collection setup.');
       return false;
     }
 

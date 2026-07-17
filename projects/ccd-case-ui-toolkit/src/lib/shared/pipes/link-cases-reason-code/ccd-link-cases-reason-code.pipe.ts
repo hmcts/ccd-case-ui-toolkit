@@ -3,7 +3,8 @@ import { LinkReason } from '../../components';
 import { LinkedCasesService } from '../../components/palette/linked-cases/services';
 
 @Pipe({
-  name: 'ccdLinkCasesReasonValue'
+  name: 'ccdLinkCasesReasonValue',
+  standalone: false
 })
 export class LinkCasesReasonValuePipe implements PipeTransform {
 

@@ -31,13 +31,11 @@ describe('MoneyGbpInputComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          inputMockComponent
         ],
         declarations: [
-          MoneyGbpInputComponent,
-
-          // Mocks
-          inputMockComponent
+          MoneyGbpInputComponent
         ],
         providers: []
       })
@@ -97,6 +95,42 @@ describe('MoneyGbpInputComponent', () => {
     const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toBeNull();
+  });
+
+  it('should keep decimal value for display when writeValue contains a decimal point', () => {
+    component.writeValue('123.45');
+    fixture.detectChanges();
+
+    const input = de.query($INPUT).componentInstance;
+
+    expect(input.value).toEqual('123.45');
+  });
+
+  it('should convert pence value for display when writeValue does not contain a decimal point', () => {
+    component.writeValue('123');
+    fixture.detectChanges();
+
+    const input = de.query($INPUT).componentInstance;
+
+    expect(input.value).toEqual('1.23');
+  });
+
+  it('should pad decimal value for display when writeValue has one decimal place', () => {
+    component.writeValue('123.4');
+    fixture.detectChanges();
+
+    const input = de.query($INPUT).componentInstance;
+
+    expect(input.value).toEqual('123.4');
+  });
+
+  it('should keep negative decimal value for display when writeValue contains a decimal point', () => {
+    component.writeValue('-123.45');
+    fixture.detectChanges();
+
+    const input = de.query($INPUT).componentInstance;
+
+    expect(input.value).toEqual('-123.45');
   });
 
   it('should convert pounds to pences', () => {

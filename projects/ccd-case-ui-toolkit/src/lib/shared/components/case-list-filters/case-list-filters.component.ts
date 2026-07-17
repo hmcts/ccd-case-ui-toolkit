@@ -5,7 +5,8 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
 
 @Component({
   selector: 'ccd-case-list-filters',
-  templateUrl: './case-list-filters.component.html'
+  templateUrl: './case-list-filters.component.html',
+  standalone: false
 })
 export class CaseListFiltersComponent implements OnInit {
 

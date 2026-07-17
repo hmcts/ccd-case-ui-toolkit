@@ -104,13 +104,12 @@ describe('CaseTimelineComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [eventLogComponentMock,
+            caseHistoryComponentMock],
           declarations: [
             CaseTimelineComponent,
 
             // Mocks
-            eventLogComponentMock,
-            caseHistoryComponentMock,
             MockRpxTranslatePipe
           ],
           providers: [
@@ -204,13 +203,12 @@ describe('CaseTimelineComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [eventLogComponentMock,
+            caseHistoryComponentMock],
           declarations: [
             CaseTimelineComponent,
             // Mocks
-            MockRpxTranslatePipe,
-            eventLogComponentMock,
-            caseHistoryComponentMock
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },

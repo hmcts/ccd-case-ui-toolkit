@@ -22,12 +22,13 @@ class MockRpxTranslationService {
 
 // Host component to test directive integration
 @Component({
-  selector: 'test-host',
+    selector: 'test-host',
   template: `
     <ng-container *translatedMarkdown="question; let content">
       <p class="output">{{ content }}</p>
     </ng-container>
-  `
+  `,
+  standalone: false
 })
 class TestHostComponent {
   @Input() question: any = {

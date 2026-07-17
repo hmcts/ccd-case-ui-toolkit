@@ -11,6 +11,7 @@ export class DocumentTreeNode {
   public children?: DocumentTreeNode[];
   public document_filename?: string;
   public document_binary_url?: string;
+  public content_type?: string;
   public attribute_path?: string;
   public upload_timestamp?: string;
   public category_order?: number;

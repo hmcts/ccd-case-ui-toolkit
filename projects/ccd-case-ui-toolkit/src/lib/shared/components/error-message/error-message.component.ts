@@ -7,7 +7,8 @@ import { ErrorMessage } from '../../domain';
 
 @Component({
   selector: 'exui-error-message',
-  templateUrl: './error-message.component.html'
+  templateUrl: './error-message.component.html',
+  standalone: false
 })
 export class ErrorMessageComponent {
   @Input() public error: ErrorMessage;

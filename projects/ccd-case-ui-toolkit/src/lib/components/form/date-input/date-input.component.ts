@@ -16,6 +16,7 @@ import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_V
       multi: true
     }
   ],
+  standalone: false
 })
 export class DateInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input()

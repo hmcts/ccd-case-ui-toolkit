@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
+import { AbstractAppConfig } from '../../../../app.config';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { UserInfo } from '../../../domain/user/user-info.model';
@@ -19,6 +20,8 @@ export class EventStartStateMachineService {
   public stateMultipleTasksAssignedToUser: State;
   public stateTaskUnassigned: State;
   public stateFinal: State;
+
+  constructor(private readonly abstractConfig: AbstractAppConfig) {}
 
   public initialiseStateMachine(context: EventStartStateMachineContext): StateMachine {
     return new StateMachine(EVENT_STATE_MACHINE, context);
@@ -174,7 +177,7 @@ export class EventStartStateMachineService {
     context.router.navigate([`${navigationURL}`], { queryParams: theQueryParams, relativeTo: context.route });
   }
 
-  public entryActionForStateOneTaskAssignedToUser(state: State, context: EventStartStateMachineContext): void {
+  public entryActionForStateOneTaskAssignedToUser = (state: State, context: EventStartStateMachineContext): void => {
     // Trigger final state to complete processing of state machine
     state.trigger(EventStartStates.FINAL);
 
@@ -184,8 +187,7 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
-    const taskStr = JSON.stringify(task);
-    console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
+    this.abstractConfig?.logMessage?.(`entryActionForStateOneTaskAssignedToUser: task_state ${task?.task_state} for task id ${task?.id}`);
     // Store task to session
     const currentLanguage = context.cookieService.getCookie('exui-preferred-language');
     const clientContext = {
@@ -228,7 +230,6 @@ export class EventStartStateMachineService {
 
   public finalAction(state: State): void {
     // Final actions can be performed here, the state machine finished running
-    // console.log('FINAL', state);
     return;
   }
 

@@ -4,7 +4,8 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
 @Component({
   selector: 'ccd-case-file-view-folder-document-actions',
   templateUrl: './case-file-view-folder-document-actions.component.html',
-  styleUrls: ['./case-file-view-folder-document-actions.component.scss']
+  styleUrls: ['./case-file-view-folder-document-actions.component.scss'],
+  standalone: false
 })
 export class CaseFileViewFolderDocumentActionsComponent implements OnInit {
   public isOpen = false;

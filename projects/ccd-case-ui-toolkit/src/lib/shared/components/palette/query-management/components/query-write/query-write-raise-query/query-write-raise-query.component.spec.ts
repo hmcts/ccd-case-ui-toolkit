@@ -7,7 +7,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 import { MockComponent } from 'ng2-mock-component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  name: 'rpxTranslate',
+  standalone: false
+})
 class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -39,7 +42,8 @@ describe('QueryWriteRaiseQueryComponent', () => {
     ]);
 
     await TestBed.configureTestingModule({
-      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe, queryCaseDetailsHeaderComponentMock],
+      imports: [queryCaseDetailsHeaderComponentMock],
+      declarations: [QueryWriteRaiseQueryComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: routeStub },
         { provide: QueryManagementService, useValue: queryManagementServiceSpy }
@@ -150,10 +154,13 @@ describe('QueryWriteRaiseQueryComponent', () => {
 
 
   it('should warn and return false when eventData is null in setCaseQueriesCollectionData()', () => {
-    spyOn(console, 'warn');
+    const warnSpy = spyOn(console, 'warn');
     component.eventData = null;
     const result = component.setCaseQueriesCollectionData();
-    expect(console.warn).toHaveBeenCalledWith('Event data not available; skipping collection setup.');
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'Event data not available; skipping collection setup.'
+    }));
     expect(result).toBeFalsy();
   });
 

@@ -4,7 +4,8 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   selector: 'ccd-loading-spinner',
   templateUrl: './loading-spinner.component.html',
   styleUrls: ['./loading-spinner.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 
 export class LoadingSpinnerComponent {

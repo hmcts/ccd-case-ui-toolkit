@@ -13,10 +13,10 @@ import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   selector: 'ccd-case-view',
-  templateUrl: 'case-view.component.html'
+  templateUrl: 'case-view.component.html',
+  standalone: false
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
-
   @Input()
   public case: string;
   @Input()
@@ -78,8 +78,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   private checkErrorGettingCaseView(error: any) {
     // TODO Should be logged to remote logging infrastructure
-    console.error('Called checkErrorGettingCaseView.');
-    console.error(error);
     if (error.status !== 401 && error.status !== 403) {
       this.alertService.error(error.message);
     }

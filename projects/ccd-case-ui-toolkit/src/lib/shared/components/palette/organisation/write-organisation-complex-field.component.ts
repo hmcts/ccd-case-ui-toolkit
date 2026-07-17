@@ -6,7 +6,8 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
 @Component({
   selector: 'ccd-write-organisation-complex-field',
   templateUrl: './write-organisation-complex-field.component.html',
-  styleUrls: ['./organisation-field.scss']
+  styleUrls: ['./organisation-field.scss'],
+  standalone: false
 })
 export class WriteOrganisationComplexFieldComponent extends AbstractFormFieldComponent {
 

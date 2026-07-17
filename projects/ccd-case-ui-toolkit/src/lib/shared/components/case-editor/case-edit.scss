@@ -58,3 +58,25 @@ a.disabled {
 .case-field-change {
   width: 5%
 }
+
+.refresh-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .refresh-modal {
+    background: #fff;
+    padding: 24px;
+    max-width: 520px;
+    width: 90%;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    text-align: center;
+  }
+  .refresh-modal .button {
+    margin-top: 12px;
+  }

@@ -20,15 +20,19 @@ import { Task } from '../../../../../domain/work-allocation/Task';
 import { QueryManagementService } from '../../services/query-management.service';
 import {
   AlertService,
-  ErrorNotifierService
+  ErrorNotifierService,
+  StructuredLoggerService
 } from '../../../../../services';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
-  styleUrls: ['./query-check-your-answers.component.scss']
+  styleUrls: ['./query-check-your-answers.component.scss'],
+  standalone: false
 })
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
+  private readonly logger = new StructuredLoggerService();
+
   private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
   private readonly RESPOND_TO_QUERY_EVENT_TRIGGER_ID = 'queryManagementRespondQuery';
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -54,6 +58,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Output() public backClicked = new EventEmitter<boolean>();
   @Output() public querySubmitted = new EventEmitter<boolean>();
   @Output() public callbackConfirmationMessage = new EventEmitter<{ [key: string]: string }>();
+  @Output() public createEventResponse = new EventEmitter<CaseQueriesCollection>();
 
   private caseViewTrigger: CaseViewTrigger;
   public caseDetails: CaseView;
@@ -132,7 +137,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             if (error.status !== 401 && error.status !== 403) {
               this.errorNotifierService.announceError(error);
               this.alertService.error({ phrase: error.message });
-              console.error('Error occurred while fetching event data:', error);
+              this.logger.error('Error occurred while fetching event data.', { error });
               this.callbackErrorsSubject.next(error);
             } else {
               this.errorMessages = [
@@ -170,6 +175,10 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const data = this.qmCaseQueriesCollectionData;
     const createEvent$ = this.createEvent(data);
 
+    // Make sure qmCaseQueriesCollectionData is present and non-empty
+    const keys = data && typeof data === 'object' ? Object.keys(data) : [];
+    const fieldId = keys.length ? keys[0] : undefined;
+
     this.isSubmitting = true;
 
     if (this.queryCreateContext === QueryCreateContext.RESPOND) {
@@ -179,6 +188,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             const confirmationBody = createEventResponse?.after_submit_callback_response?.confirmation_body;
             const confirmationHeader = createEventResponse?.after_submit_callback_response?.confirmation_header;
             this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+
+            // Emit the extracted collection value (or null if not found)
+            this.createEventResponse.emit(fieldId ? createEventResponse?.data?.[fieldId] ?? null : null);
 
             return this.workAllocationService.completeTask(
               this.filteredTasks[0].id,
@@ -190,7 +202,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           error: (error) => this.handleError(error)
         });
       } else {
-        console.error('Error: No task to complete was found');
+        this.logger.error('No task to complete was found.');
         this.errorMessages = [
           {
             title: 'Error',
@@ -209,6 +221,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           const confirmationBody = callbackResponse?.after_submit_callback_response?.confirmation_body;
           const confirmationHeader = callbackResponse?.after_submit_callback_response?.confirmation_header;
           this.callbackConfirmationMessage.emit({ body: confirmationBody, header: confirmationHeader });
+          this.createEventResponse.emit(fieldId ? callbackResponse?.data?.[fieldId] ?? null : null);
         },
         error: (error) => this.handleError(error)
       });
@@ -235,7 +248,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private handleError(error: any): void {
-    console.error('Error in API calls:', error);
+    this.logger.error('Error in query management API calls.', { error });
     this.isSubmitting = false;
 
     if (this.isServiceErrorFound(error)){
@@ -266,7 +279,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public setCaseQueriesCollectionData(): void {
     if (!this.eventData) {
-      console.warn('Event data not available; skipping collection setup.');
+      this.logger.warn('Event data not available; skipping collection setup.');
     }
 
     this.queryManagementService.setCaseQueriesCollectionData(

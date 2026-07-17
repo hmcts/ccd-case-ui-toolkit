@@ -119,14 +119,10 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
 
     TestBed
       .configureTestingModule({
-        imports: [
-        ],
+        imports: [caseEditComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          CaseProgressComponent,
-
-          // Mocks
-          caseEditComponent,
+          CaseProgressComponent
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
@@ -244,12 +240,10 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
 
     TestBed
       .configureTestingModule({
-        imports: [
-        ],
+        imports: [caseEditComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          caseEditComponent,
-          CaseProgressComponent,
+          CaseProgressComponent
         ],
         providers: [
           { provide: CasesService, useValue: casesService },

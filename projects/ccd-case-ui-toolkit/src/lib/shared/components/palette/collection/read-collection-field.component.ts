@@ -6,7 +6,8 @@ import { CaseField } from '../../../../shared/domain/definition/case-field.model
 @Component({
   selector: 'ccd-read-collection-field',
   templateUrl: './read-collection-field.html',
-  styleUrls: ['./collection-field.scss']
+  styleUrls: ['./collection-field.scss'],
+  standalone: false
 })
 export class ReadCollectionFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

@@ -10,7 +10,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       useExisting: forwardRef(() => QueryWriteDateInputComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class QueryWriteDateInputComponent implements ControlValueAccessor {
   @Input() public formControlName: string;

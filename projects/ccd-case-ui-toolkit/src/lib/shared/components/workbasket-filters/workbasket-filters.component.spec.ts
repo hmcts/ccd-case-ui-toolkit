@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -23,8 +23,8 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   selector: 'ccd-field-write',
-  template: `{{value}}`
-
+  template: `{{value}}`,
+  standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
 }
@@ -1180,7 +1180,7 @@ describe('with no defaults', () => {
           { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: AlertService, useValue: alertService },
-          { provide: WindowService, useValue: windowService },
+          { provide: WindowService, useValue: windowService }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
@@ -1300,9 +1300,11 @@ describe('with no defaults', () => {
     expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
     expect(selector.children[1].nativeElement.textContent).toEqual(JURISDICTION_ONE.name);
     selector = de.query(By.css('#wb-case-type'));
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
+    expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+    expect(selector.nativeElement.selectedIndex).toEqual(0);
     selector = de.query(By.css('#wb-case-state'));
-    expect(selector.nativeElement.selectedIndex).toEqual(-1);
+    expect(selector.children[0].nativeElement.textContent).toEqual('Any');
+    expect(selector.nativeElement.selectedIndex).toEqual(0);
 
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');

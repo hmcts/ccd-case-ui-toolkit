@@ -42,7 +42,8 @@ const CLASS = 'text-cls';
 @Component({
   template: `
     <span class="${CLASS}"></span>
-  `
+  `,
+  standalone: false
 })
 class FieldTestComponent { }
 
@@ -50,7 +51,8 @@ class FieldTestComponent { }
   selector: 'ccd-field-read-label',
   template: `
     <ng-content></ng-content>
-  `
+  `,
+  standalone: false
 })
 class FieldReadLabelComponent {
   @Input()

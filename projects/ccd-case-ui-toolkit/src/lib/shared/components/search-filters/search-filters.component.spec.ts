@@ -126,8 +126,8 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 
 @Component({
   selector: 'ccd-field-write',
-  template: `{{value}}`
-
+  template: `{{value}}`,
+  standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
 }

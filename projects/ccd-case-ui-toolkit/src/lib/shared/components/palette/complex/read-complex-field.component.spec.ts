@@ -76,16 +76,14 @@ describe('ReadComplexFieldComponent', () => {
           .configureTestingModule({
             imports: [
               PaletteUtilsModule,
-              ConditionalShowModule
-            ],
-            declarations: [
-              ReadComplexFieldComponent,
-              FieldsFilterPipe,
-
-              // Mocks
+              ConditionalShowModule,
               readComplexFieldRawComponentMock,
               readComplexFieldTableComponentMock,
               readComplexFieldNewTableComponentMock
+            ],
+            declarations: [
+              ReadComplexFieldComponent,
+              FieldsFilterPipe
             ],
             providers: []
           })
@@ -162,16 +160,14 @@ describe('ReadComplexFieldComponent', () => {
           .configureTestingModule({
             imports: [
               PaletteUtilsModule,
-              ConditionalShowModule
-            ],
-            declarations: [
-              ReadComplexFieldComponent,
-              FieldsFilterPipe,
-
-              // Mocks
+              ConditionalShowModule,
               readComplexFieldRawComponentMock,
               readComplexFieldTableComponentMock,
               readComplexFieldNewTableComponentMock
+            ],
+            declarations: [
+              ReadComplexFieldComponent,
+              FieldsFilterPipe
             ],
             providers: []
           })
@@ -251,16 +247,14 @@ describe('ReadComplexFieldComponent', () => {
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
-            ConditionalShowModule
-          ],
-          declarations: [
-            ReadComplexFieldComponent,
-            FieldsFilterPipe,
-
-            // Mocks
+            ConditionalShowModule,
             readComplexFieldRawComponentMock,
             readComplexFieldTableComponentMock,
             readComplexFieldNewTableComponentMock
+          ],
+          declarations: [
+            ReadComplexFieldComponent,
+            FieldsFilterPipe
           ],
           providers: []
         })
@@ -367,16 +361,14 @@ describe('ReadComplexFieldComponent', () => {
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
-            ConditionalShowModule
-          ],
-          declarations: [
-            ReadComplexFieldComponent,
-            FieldsFilterPipe,
-
-            // Mocks
+            ConditionalShowModule,
             readComplexFieldRawComponentMock,
             readComplexFieldTableComponentMock,
             readComplexFieldNewTableComponentMock
+          ],
+          declarations: [
+            ReadComplexFieldComponent,
+            FieldsFilterPipe
           ],
           providers: []
         })
