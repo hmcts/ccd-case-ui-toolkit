@@ -11,7 +11,6 @@ import {
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest, Draft,
-  HttpError,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload, SpecificAccessRequest
