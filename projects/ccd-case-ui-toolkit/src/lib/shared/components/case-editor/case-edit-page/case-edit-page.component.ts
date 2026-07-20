@@ -286,6 +286,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (fieldElement.hasError('maxlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% exceeds the maximum length`, label });
             fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('markDownPattern')) {
+            this.caseEditDataService.addFormValidationError({
+              id, message: `The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.`, label
+            });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id, true);
