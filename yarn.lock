@@ -479,35 +479,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-material-components/datetime-picker@npm:16.0.1":
-  version: 16.0.1
-  resolution: "@angular-material-components/datetime-picker@npm:16.0.1"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/cdk": ^16.0.0
-    "@angular/common": ^16.0.0
-    "@angular/core": ^16.0.0
-    "@angular/forms": ^16.0.0
-    "@angular/material": ^16.0.0
-    "@angular/platform-browser": ^16.0.0
-  checksum: 10/df57c89ce7d3ec5f319bdd321d44c05d4307d920bf7e1dffc4719422a59128dbcc2fefedc2ac81edebd73602802a6a13ecbf6990c39e4b816e354bf243226894
-  languageName: node
-  linkType: hard
-
-"@angular-material-components/moment-adapter@npm:16.0.1":
-  version: 16.0.1
-  resolution: "@angular-material-components/moment-adapter@npm:16.0.1"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^16.0.0
-    "@angular/core": ^16.0.0
-    moment: ^2.18.1
-  checksum: 10/5335b53ae0363deeb7c2cb78237825e6070e6526e784572cc4c0b6daf44e9b82763a07bbb318703b0bfba1025ee4a081cb6ee028968c12bbbbe7968828bc8d10
-  languageName: node
-  linkType: hard
-
 "@angular/animations@npm:^20.3.18":
   version: 20.3.19
   resolution: "@angular/animations@npm:20.3.19"
@@ -758,6 +729,19 @@ __metadata:
     localize-migrate: tools/bundles/src/migrate/cli.js
     localize-translate: tools/bundles/src/translate/cli.js
   checksum: 10/73e5845d20efb6fc529f41cabb15816a0b19b38ba70d2a99665302eb76c76292afef7b54cfcd57a84dd7cda864e8721c0e04a6ce71b1e5ea134ee96b1a7e841e
+  languageName: node
+  linkType: hard
+
+"@angular/material-moment-adapter@npm:^20.0.0":
+  version: 20.2.14
+  resolution: "@angular/material-moment-adapter@npm:20.2.14"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0 || ^21.0.0
+    "@angular/material": 20.2.14
+    moment: ^2.18.1
+  checksum: 10/2211f4ea51ceb8fd1f1028334aac78e7b92f066b04cb8d6fc9c0fcd2068b69fe611d99bd3d57333ea62ea22cd40720809b1a12b491d9f76d33c08619341cdf60
   languageName: node
   linkType: hard
 
@@ -3103,8 +3087,6 @@ __metadata:
     "@angular-eslint/eslint-plugin-template": "npm:^20"
     "@angular-eslint/schematics": "npm:^20"
     "@angular-eslint/template-parser": "npm:^20"
-    "@angular-material-components/datetime-picker": "npm:16.0.1"
-    "@angular-material-components/moment-adapter": "npm:16.0.1"
     "@angular/animations": "npm:^20.3.18"
     "@angular/cdk": "npm:17.3.5"
     "@angular/cli": "npm:^20.3.24"
@@ -3115,6 +3097,7 @@ __metadata:
     "@angular/forms": "npm:^20.3.18"
     "@angular/localize": "npm:^20.3.18"
     "@angular/material": "npm:^16.2.12"
+    "@angular/material-moment-adapter": "npm:^20.0.0"
     "@angular/platform-browser": "npm:^20.3.18"
     "@angular/platform-browser-dynamic": "npm:^20.3.18"
     "@angular/router": "npm:^20.3.18"
@@ -3126,6 +3109,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.2.25"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
+    "@ngxmc/datetime-picker": "npm:20.1.0"
     "@types/jasmine": "npm:~2.8.0"
     "@types/jasminewd2": "npm:^2.0.3"
     "@types/node": "npm:^20.19.0"
@@ -5014,6 +4998,22 @@ __metadata:
     typescript: ">=5.8 <6.0"
     webpack: ^5.54.0
   checksum: 10/32c206b14d589b1813e463182ca69a79b6eab3474a711586c115b0e0955416155e56f2b639b25281b7074e167b47c84f71da0989bec266cc3479f0f9613be4b7
+  languageName: node
+  linkType: hard
+
+"@ngxmc/datetime-picker@npm:20.1.0":
+  version: 20.1.0
+  resolution: "@ngxmc/datetime-picker@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/material": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+  checksum: 10/2a8b28f77f4e36748bf7f7cedd65b1087b674ed6e8622d87047261a5d6faa3b2246de469c7405d7f083807641cb22e793d861a7f9d0c0d6cb4619d9a2c7c9072
   languageName: node
   linkType: hard
 

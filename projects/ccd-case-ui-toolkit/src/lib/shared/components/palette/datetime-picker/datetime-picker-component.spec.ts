@@ -1,9 +1,9 @@
-import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_LEGACY_DATE_LOCALE } from '@angular/material/legacy-core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { By } from '@angular/platform-browser';
@@ -47,9 +47,10 @@ describe('DatetimePickerComponent', () => {
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
+        NgxMatDatepickerActions,
+        NgxMatDatepickerApply,
+        NgxMatDatepickerInput,
+        NgxMatDatetimepicker,
         NoopAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
@@ -61,9 +62,9 @@ describe('DatetimePickerComponent', () => {
         DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
       ],
       providers: [FormatTranslatorService,
-        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
-        { provide: MAT_LEGACY_DATE_LOCALE, useValue: 'en-GB' },
+        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: DateAdapter, useClass: MomentDateAdapter },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         { provide: CaseFieldService, useValue: caseFieldService }
       ]
     })

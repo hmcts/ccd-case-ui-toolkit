@@ -1,4 +1,4 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
@@ -302,9 +302,10 @@ const PALETTE_COMPONENTS = [
     LabelSubstitutorModule,
     TranslatedMarkdownModule,
     MarkdownModule.forChild(),
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -334,9 +335,10 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    NgxMatTimepickerModule,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,

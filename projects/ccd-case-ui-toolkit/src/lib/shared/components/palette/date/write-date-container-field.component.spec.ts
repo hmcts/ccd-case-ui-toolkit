@@ -1,4 +1,4 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -45,9 +45,10 @@ describe('WriteDateContainerFieldComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
-          NgxMatDatetimePickerModule,
-          NgxMatTimepickerModule,
-          NgxMatNativeDateModule,
+          NgxMatDatepickerActions,
+          NgxMatDatepickerApply,
+          NgxMatDatepickerInput,
+          NgxMatDatetimepicker,
           NoopAnimationsModule,
           MatFormFieldModule,
           MatInputModule,
