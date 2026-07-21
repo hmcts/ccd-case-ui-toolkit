@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';

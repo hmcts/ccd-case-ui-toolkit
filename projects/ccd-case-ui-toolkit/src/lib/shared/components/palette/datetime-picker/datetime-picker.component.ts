@@ -11,24 +11,6 @@ import { FormatTranslatorService } from '../../../services/case-fields/format-tr
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 
-class CcdMomentDateAdapter extends MomentDateAdapter {
-  public sameTime(first: any, second: any): boolean {
-    if (first && second) {
-      return this.compareTime(first, second) === 0;
-    }
-
-    return first === second;
-  }
-
-  public compareTime(first: any, second: any): number {
-    return (
-      this.getHours(first) - this.getHours(second) ||
-      this.getMinutes(first) - this.getMinutes(second) ||
-      this.getSeconds(first) - this.getSeconds(second)
-    );
-  }
-}
-
 @Component({
   selector: 'ccd-datetime-picker',
   templateUrl: './datetime-picker.component.html',
@@ -38,7 +20,7 @@ class CcdMomentDateAdapter extends MomentDateAdapter {
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
     {
       provide: DateAdapter,
-      useClass: CcdMomentDateAdapter,
+      useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
