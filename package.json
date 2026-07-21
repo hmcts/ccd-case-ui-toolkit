@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.76-CME-1106-material-datetime",
+  "version": "7.3.75-CME-1106-material-datetime",
   "engines": {
     "node": ">=20.19.0"
   },
