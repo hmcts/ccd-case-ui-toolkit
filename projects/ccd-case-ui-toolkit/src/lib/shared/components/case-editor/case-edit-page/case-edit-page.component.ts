@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dial
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { CaseEditFormComponent } from '../case-edit-form/case-edit-form.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
@@ -25,7 +26,8 @@ import { ValidPageListCaseFieldsService } from '../services/valid-page-list-case
 import { JourneyInstigator } from '../../../domain/journey';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
-import { PlaceholderService } from '../../../directives';
+import { FocusService } from '../../../services/window/focus.service';
+import { PlaceholderService } from '../../../directives/substitutor/services';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -70,16 +72,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   private readonly fieldsUtils = new FieldsUtils();
   private readonly placeholderService = new PlaceholderService();
+  @ViewChildren(CaseEditFormComponent)
+  private readonly caseEditFormComponents: QueryList<CaseEditFormComponent> | undefined;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
-  }
-
-  private static setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
-    }
   }
 
   constructor(
@@ -97,7 +94,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly multipageComponentStateService: MultipageComponentStateService,
     private readonly addressService: AddressesService,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly caseFlagStateService: CaseFlagStateService
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private readonly focusService: FocusService
   ) {
     this.multipageComponentStateService.setInstigator(this);
   }
@@ -172,7 +170,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         }
         this.triggerText = this.getTriggerText();
       });
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
     this.caseEditFormSub = this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
@@ -240,7 +238,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     if (this.getPageNumber() !== undefined){
       this.previousStep();
     }
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
   }
 
   // Adding validation message to show it as Error Summary
@@ -291,6 +289,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (fieldElement.hasError('maxlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% exceeds the maximum length`, label });
             fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('markDownPattern')) {
+            this.caseEditDataService.addFormValidationError({
+              id, message: `The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.`, label
+            });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id, true);
@@ -402,6 +404,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.clearValidationErrors();
     this.checkForStagesCompleted();
+    this.caseEditFormComponents?.forEach(component => component.syncConditionalShowStates());
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
@@ -446,7 +449,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       // purposes)
       this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
     }
-    CaseEditPageComponent.setFocusToTop();
+    this.focusService.focus();
   }
 
   public updateFormData(jsonData: CaseEventData): void {
@@ -573,6 +576,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.cancelled.emit();
     }
 
+    // clear CaseView cache to allow any incidental changes to get picked up once the edit has cancelled
+    this.caseEdit.caseNotifier.removeCachedCase();
+
     this.clearValidationErrors();
     this.multipageComponentStateService.reset();
   }
@@ -633,7 +639,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     return this.canNavigateToSummaryPage()
       ? textBasedOnCanSaveDraft
-      : 'Submit';
+      : this.eventTrigger.end_button_label || 'Submit';
   }
 
   private discard(): void {

@@ -145,7 +145,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  private evalAllShowHideConditions(): void {
+  public evalAllShowHideConditions(): void {
     this.getCurrentPagesReadOnlyAndFormFieldValues();
     this.fieldsUtils.controlIterator(this.formGroup, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
   }
