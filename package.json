@@ -171,6 +171,7 @@
   },
   "resolutions": {
     "braces": "^3.0.3",
+    "brace-expansion": "^2.1.2",
     "dot-prop": "^5.1.1",
     "elliptic": "6.5.4",
     "graceful-fs": "^4.2.3",
