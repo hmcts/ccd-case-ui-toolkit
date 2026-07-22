@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.74",
+  "version": "7.3.76",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",
@@ -18,7 +18,6 @@
     "@angular/upgrade": "^20.3.18",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
-    "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "govuk-elements-sass": "^3.1.2",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.31",
