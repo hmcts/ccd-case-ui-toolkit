@@ -41,7 +41,13 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
 
   private shouldRenderInLocalTime(): boolean {
     return !this.isFormOriginField() &&
+      this.hasExplicitTimeZone() &&
       ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(this.getHmctsServiceId());
+  }
+
+  private hasExplicitTimeZone(): boolean {
+    return typeof this.caseField?.value === 'string' &&
+      /(Z|[+-]\d{2}:?\d{2})$/i.test(this.caseField.value);
   }
 
   private isFormOriginField(): boolean {

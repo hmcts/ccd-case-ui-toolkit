@@ -235,6 +235,18 @@ describe('ReadDateFieldComponent', () => {
       });
     });
 
+    it('should preserve the wall-clock time for a backend value without a time zone', () => {
+      const dateTimeWithoutTimeZone = '2026-06-30T14:54:33.061741';
+      component.caseField.value = dateTimeWithoutTimeZone;
+      caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', 'ABA6'));
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('utc');
+      expect(de.nativeElement.textContent).toEqual(
+        new DatePipe(new FormatTranslatorService()).transform(dateTimeWithoutTimeZone, 'utc', null)
+      );
+    });
+
     ['ABA1', 'ABA2'].forEach((hmctsServiceId) => {
       it(`should keep utc time zone for form-origin fields in ${hmctsServiceId}`, () => {
         component.valueOrigin = PaletteValueOrigin.FORM;
