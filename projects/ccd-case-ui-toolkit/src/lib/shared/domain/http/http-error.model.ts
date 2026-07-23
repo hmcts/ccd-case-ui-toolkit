@@ -14,7 +14,7 @@ export class HttpError {
     this.callbackWarnings = null;
   }
   private static readonly DEFAULT_ERROR = 'Unknown error';
-  private static readonly DEFAULT_MESSAGE = 'Something unexpected happened, our technical staff have been automatically notified';
+  private static readonly DEFAULT_MESSAGE = 'Sorry, there is a problem with this service. Please try again later.';
   private static readonly DEFAULT_STATUS = 500;
 
   private static readonly MESSAGE_ERROR_429 ='Your request was rate limited. Please wait a few seconds before retrying your document upload';

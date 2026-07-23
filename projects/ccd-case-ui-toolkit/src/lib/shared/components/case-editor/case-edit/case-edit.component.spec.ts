@@ -231,6 +231,7 @@ describe('CaseEditComponent', () => {
   let mockCookieService: jasmine.SpyObj<ReadCookieService>;
   let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
+  let mockCaseNotifier: jasmine.SpyObj<CaseNotifier>;
 
   describe('profile available in route', () => {
     routerStub = {
@@ -315,6 +316,7 @@ describe('CaseEditComponent', () => {
       };
 
       loadingServiceMock = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+      mockCaseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['removeCachedCase']); 
 
       TestBed
         .configureTestingModule({
@@ -335,7 +337,7 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+            { provide: CaseNotifier, useValue: mockCaseNotifier },
             { provide: FormErrorService, useValue: formErrorService },
             { provide: FormValueService, useValue: formValueService },
             { provide: FieldsUtils, useValue: fieldsUtils },
@@ -1229,6 +1231,7 @@ describe('CaseEditComponent', () => {
           { data: jasmine.any(Object) }
         );
         expect(formValueService.sanitise).toHaveBeenCalled();
+        expect(mockCaseNotifier.removeCachedCase).toHaveBeenCalled();
       });
     });
 
@@ -1697,7 +1700,7 @@ describe('CaseEditComponent', () => {
         declarations: [CaseEditComponent],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
           { provide: SessionStorageService, useValue: sessionStub },
           { provide: WindowService, useValue: jasmine.createSpyObj<WindowService>('WindowService', ['alert']) },
           { provide: FieldsUtils, useValue: new FieldsUtils() },
