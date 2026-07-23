@@ -1,60 +1,74 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, Subscription } from 'rxjs';
+import {
+  OnConnectedArgs,
+  OnDisconnectedArgs,
+  OnServerDataMessageArgs,
+  WebPubSubClient
+} from '@azure/web-pubsub-client';
+import { BehaviorSubject, firstValueFrom, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { Socket } from 'socket.io-client';
 
 import { CaseActivityInfo } from '../../domain/activity';
 import { UserInfo } from '../../domain/user';
+import { isSolicitorUser } from '../../utils';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';
-import { Utils, MODES } from './utils';
-import { isSolicitorUser } from '../../utils';
+import { MODES } from './utils';
 
-interface ActivitySocketSharedState {
-  socket?: Socket;
-  allowWebSockets?: boolean;
+interface ActivityWebPubSubSharedState {
+  client?: WebPubSubClient;
   userKey?: string;
-  owners: Set<object>;
-  connectRequested?: boolean;
+  owners: Set<ActivitySocketService>;
+  connected?: boolean;
+  startPromise?: Promise<void>;
   closeTimer?: ReturnType<typeof setTimeout>;
-  reconnectTimer?: ReturnType<typeof setTimeout>;
+  restartTimer?: ReturnType<typeof setTimeout>;
 }
 
-const ACTIVITY_SOCKET_SHARED_STATE_KEY = '__ccdActivitySocketSharedState__';
-const ACTIVITY_SOCKET_CLOSE_GRACE_MS = 5000;
-const ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS = 1000;
-const ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS = 20000;
-const ACTIVITY_SOCKET_ACTIVE_READY_STATES = new Set(['connecting', 'opening', 'open']);
+interface ActivityServerMessage {
+  event?: string;
+  data?: CaseActivityInfo[];
+}
 
+const ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY = '__ccdActivityWebPubSubSharedState__';
+const ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS = 5000;
+const ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS = 5000;
+
+/**
+ * Provides the real-time case activity API.
+ *
+ * The class name and socket mode values are retained for backwards compatibility with
+ * consuming applications and their LaunchDarkly configuration. The underlying transport
+ * is Azure Web PubSub.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ActivitySocketService implements OnDestroy {
-  public static readonly SOCKET_MODES: MODES[] = [ MODES.socket, MODES.socketLongPoll ];
+  public static readonly SOCKET_MODES: MODES[] = [MODES.socket, MODES.socketLongPoll];
 
-  public activity: Observable<CaseActivityInfo[]>;
-  public connect: Observable<any> = new Observable();
-  public connect_error: Observable<any> = new Observable();
-  public disconnect: Observable<any> = new Observable();
-  public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public readonly activity: Observable<CaseActivityInfo[]>;
+  public readonly connect: Observable<OnConnectedArgs>;
+  public readonly connect_error: Observable<unknown>;
+  public readonly disconnect: Observable<OnDisconnectedArgs>;
+  public readonly connected = new BehaviorSubject<boolean>(false);
+
+  public socket!: WebPubSubClient;
 
   private readonly activitySubject = new ReplaySubject<CaseActivityInfo[]>(1);
+  private readonly connectSubject = new Subject<OnConnectedArgs>();
+  private readonly connectErrorSubject = new Subject<unknown>();
+  private readonly disconnectSubject = new Subject<OnDisconnectedArgs>();
   private lastViewEmit = { caseId: '', time: 0 };
   private lastEditEmit = { caseId: '', time: 0 };
-  private readonly emitCooldownMs = 250; // ignore duplicate emits within 250ms
-  private socketActivitySubscription?: Subscription;
-  private socketConnectSubscription?: Subscription;
-  private socketConnectErrorSubscription?: Subscription;
-  private socketDisconnectSubscription?: Subscription;
+  private readonly emitCooldownMs = 250;
   private modeSubscription?: Subscription;
-
-  public socket!: Socket;
   private pUser!: UserInfo;
+
   public get user(): UserInfo {
     return this.pUser || this.setupUser();
   }
 
-  // Returns whether activity sockets are enabled and currently initialised.
   public get isEnabled(): boolean {
     return this.activityService.isEnabled && !!this.socket;
   }
@@ -64,15 +78,18 @@ export class ActivitySocketService implements OnDestroy {
     private readonly activityService: ActivityService
   ) {
     this.activity = this.activitySubject.asObservable();
+    this.connect = this.connectSubject.asObservable();
+    this.connect_error = this.connectErrorSubject.asObservable();
+    this.disconnect = this.disconnectSubject.asObservable();
+
     this.modeSubscription = this.activityService.modeSubject
-      .pipe(filter(mode => !!mode))
-      .pipe(distinctUntilChanged())
-      .subscribe(mode => {
+      .pipe(filter((mode) => !!mode), distinctUntilChanged())
+      .subscribe((mode) => {
         this.destroy();
         if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
           this.init();
         }
-    });
+      });
   }
 
   public ngOnDestroy(): void {
@@ -81,358 +98,340 @@ export class ActivitySocketService implements OnDestroy {
     this.destroy();
   }
 
-  // Subscribes the socket to activity updates for the supplied case IDs.
   public watchCases(caseIds: string[]): void {
-    if (this.socket) {
-      this.socket.emit('watch', { caseIds });
+    if (caseIds) {
+      this.sendEvent('watch', { caseIds });
     }
   }
 
-
-  // keep small wrappers to avoid breaking callers
-  // Starts viewing when the legacy wrapper is called with an active viewing flag.
+  // These wrappers are retained to avoid breaking current toolkit consumers.
   public viewCase(caseId: string, isViewing?: boolean): void {
-    if (isViewing) { this.startViewing(caseId); }
+    if (isViewing) {
+      this.startViewing(caseId);
+    }
   }
 
-  // Starts editing when the legacy wrapper is called with an active editing flag.
   public editCase(caseId: string, isEditing?: boolean): void {
-    if (isEditing) { this.startEditing(caseId); }
+    if (isEditing) {
+      this.startEditing(caseId);
+    }
   }
 
-  // Stops viewing when the legacy wrapper is called with an active stopping flag.
   public stopCase(caseId: string, isStopping?: boolean): void {
-    if (isStopping) { this.stopViewing(caseId); }
+    if (isStopping) {
+      this.stopViewing(caseId);
+    }
   }
 
-  // Stops viewing multiple cases when the legacy wrapper is called with an active stopping flag.
   public stopAllCase(caseIds: string[], isStopping?: boolean): void {
-    if (isStopping) { this.stopViewingCases(caseIds); }
+    if (isStopping) {
+      this.stopViewingCases(caseIds);
+    }
   }
 
-  // Emits a view event for a connected socket, with a short duplicate guard.
   public startViewing(caseId: string): void {
-    if (!caseId) { return; }
-    if (!this.socket || !this.connected.value) { return; } // defensive
-    const now = Date.now();
-    if (this.lastViewEmit.caseId === caseId && (now - this.lastViewEmit.time) < this.emitCooldownMs) {
-      return; // duplicate within cooldown
-    }
-     
-    try {
-      this.socket.emit('view', { caseId });
-      this.lastViewEmit = { caseId, time: now };
-    } catch (e) {
-      console.warn('startViewing emit failed', e);
-    }
-  }
-
-  // Emits a stop event for one case and clears the last view marker.
-  public stopViewing(caseId: string): void {
-    if (!caseId) { return; }
-    if (!this.socket || !this.connected.value) { return; }
-    try {
-      this.socket.emit('stop', { caseId });
-      if (this.lastViewEmit.caseId === caseId) {
-        this.lastViewEmit = { caseId: '', time: 0 };
-      }
-    } catch (e) {
-      console.warn('stopViewing emit failed', e);
-    }
-  }
-
-  // Emits a stopAll event for multiple cases and clears any matching view marker.
-  public stopViewingCases(caseIds: string[]): void {
-    if (!caseIds?.length) { return; }
-    if (!this.socket || !this.connected.value) { return; }
-    try {
-      this.socket.emit('stopAll', { caseIds });
-      if (caseIds.includes(this.lastViewEmit.caseId)) {
-        this.lastViewEmit = { caseId: '', time: 0 };
-      }
-    } catch (e) {
-      console.warn('stopViewingCases emit failed', e);
-    }
-  }
-
-  // Emits an edit event for a connected socket, with a short duplicate guard.
-  public startEditing(caseId: string): void {
-    if (!caseId) { return; }
-    if (!this.socket || !this.connected.value) { return; }
-    const now = Date.now();
-    if (this.lastEditEmit.caseId === caseId && (now - this.lastEditEmit.time) < this.emitCooldownMs) {
+    if (!caseId || !this.connected.value) {
       return;
     }
- 
-    try {
-      this.socket.emit('edit', { caseId });
-      this.lastEditEmit = { caseId, time: now };
-    } catch (e) {
-      console.warn('startEditing emit failed', e);
+
+    const now = Date.now();
+    if (this.lastViewEmit.caseId === caseId && now - this.lastViewEmit.time < this.emitCooldownMs) {
+      return;
+    }
+
+    this.sendEvent('view', { caseId });
+    this.lastViewEmit = { caseId, time: now };
+  }
+
+  public stopViewing(caseId: string): void {
+    if (!caseId || !this.connected.value) {
+      return;
+    }
+
+    this.sendEvent('stop', { caseId });
+    if (this.lastViewEmit.caseId === caseId) {
+      this.lastViewEmit = { caseId: '', time: 0 };
     }
   }
 
-  // Initialises this service instance against the shared socket.
-  private init(): void {
-    const socket = ActivitySocketService.getSharedSocket(this.user, this.activityService.mode === MODES.socket);
-    ActivitySocketService.attachSharedSocketOwner(this);
-    this.socket = socket;
-    this.connect = this.getObservableOnSocketEvent<any>('connect');
-    this.connect_error = this.getObservableOnSocketEvent<any>('connect_error');
-    this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
-    this.unsubscribeSocketSubscriptions();
-    this.socketActivitySubscription = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity')
-      .subscribe(activity => this.activitySubject.next(activity));
+  public stopViewingCases(caseIds: string[]): void {
+    if (!caseIds?.length || !this.connected.value) {
+      return;
+    }
 
-    this.socketDisconnectSubscription = this.disconnect.subscribe(() => {
-      ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      this.connected.next(false);
-      ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
-    });
-    this.socketConnectErrorSubscription = this.connect_error.subscribe(() => {
-      ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      this.connected.next(false);
-      ActivitySocketService.reconnectSharedSocketIfNeeded(socket);
-    });
-    this.socketConnectSubscription = this.connect.subscribe(() => {
-      ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      ActivitySocketService.clearSharedSocketReconnect(socket);
-      this.connected.next(true);
-    });
-
-    this.connected.next(socket.connected);
-    ActivitySocketService.connectSharedSocketIfNeeded(socket);
+    this.sendEvent('stopAll', { caseIds });
+    if (caseIds.includes(this.lastViewEmit.caseId)) {
+      this.lastViewEmit = { caseId: '', time: 0 };
+    }
   }
 
-  // Detaches this service instance and closes the shared socket if it is the last owner.
+  public startEditing(caseId: string): void {
+    if (!caseId || !this.connected.value) {
+      return;
+    }
+
+    const now = Date.now();
+    if (this.lastEditEmit.caseId === caseId && now - this.lastEditEmit.time < this.emitCooldownMs) {
+      return;
+    }
+
+    this.sendEvent('edit', { caseId });
+    this.lastEditEmit = { caseId, time: now };
+  }
+
+  private init(): void {
+    const client = ActivitySocketService.getSharedClient(this.user, this.activityService);
+    this.socket = client;
+    ActivitySocketService.attachSharedClientOwner(this);
+    this.connected.next(ActivitySocketService.sharedState.connected === true);
+    ActivitySocketService.startSharedClientIfNeeded(client);
+  }
+
   private destroy(): void {
-    this.unsubscribeSocketSubscriptions();
     this.connected.next(false);
     if (this.socket) {
-      ActivitySocketService.detachSharedSocketOwner(this, this.socket);
+      ActivitySocketService.detachSharedClientOwner(this, this.socket);
       this.socket = undefined as any;
     }
   }
 
-  // Wraps a socket event as an observable and removes the listener on unsubscribe.
-  private getObservableOnSocketEvent<T>(event: string): Observable<T> {
-    return new Observable<T>(observer => {
-      const socket = this.socket;
-      if (!socket) {
-        observer.complete();
-        return undefined;
-      }
+  private sendEvent(eventName: string, data: object): void {
+    if (!this.socket || !this.connected.value) {
+      return;
+    }
 
-      const handler = (payload: T) => {
-        observer.next(payload);
-      };
-      socket.on(event, handler);
-      return () => socket.off(event, handler);
+    this.socket.sendEvent(eventName, data, 'json').catch((error) => {
+      console.warn(`Activity Web PubSub ${eventName} event failed`, error);
+      this.connectErrorSubject.next(error);
     });
   }
 
-  // Clears all socket event subscriptions held by this service instance.
-  private unsubscribeSocketSubscriptions(): void {
-    this.socketActivitySubscription?.unsubscribe();
-    this.socketActivitySubscription = undefined;
-    this.socketConnectSubscription?.unsubscribe();
-    this.socketConnectSubscription = undefined;
-    this.socketConnectErrorSubscription?.unsubscribe();
-    this.socketConnectErrorSubscription = undefined;
-    this.socketDisconnectSubscription?.unsubscribe();
-    this.socketDisconnectSubscription = undefined;
+  private handleConnected(event: OnConnectedArgs): void {
+    this.connected.next(true);
+    this.connectSubject.next(event);
   }
 
-  // Reuses the active or already-owned shared socket, otherwise creates a new one.
-  private static getSharedSocket(user: UserInfo, allowWebSockets: boolean): Socket {
+  private handleDisconnected(event: OnDisconnectedArgs): void {
+    this.connected.next(false);
+    this.disconnectSubject.next(event);
+  }
+
+  private handleConnectError(error: unknown): void {
+    this.connected.next(false);
+    this.connectErrorSubject.next(error);
+  }
+
+  private handleServerMessage(event: OnServerDataMessageArgs): void {
+    const payload = ActivitySocketService.parseServerMessage(event.message.data);
+    if (payload?.event === 'activity' && Array.isArray(payload.data)) {
+      this.activitySubject.next(payload.data);
+    }
+  }
+
+  private static getSharedClient(user: UserInfo, activityService: ActivityService): WebPubSubClient {
     const state = ActivitySocketService.sharedState;
     const userKey = JSON.stringify(user || {});
-    if (
-      state.socket &&
-      state.userKey === userKey &&
-      state.allowWebSockets === allowWebSockets &&
-      ActivitySocketService.shouldReuseSharedSocket(state)
-    ) {
-      return state.socket;
+
+    if (state.client && state.userKey === userKey) {
+      return state.client;
     }
 
-    ActivitySocketService.closeSharedSocket(state.socket);
-    state.socket = Utils.getSocket(user, allowWebSockets);
-    state.allowWebSockets = allowWebSockets;
+    ActivitySocketService.closeSharedClient(state.client);
+    const client = new WebPubSubClient(
+      {
+        getClientAccessUrl: async () => {
+          const connection = await firstValueFrom(activityService.negotiateWebPubSubConnection());
+          if (!connection?.url) {
+            throw new Error('Web PubSub negotiation did not return a connection URL');
+          }
+          return connection.url;
+        }
+      },
+      {
+        autoReconnect: true,
+        reconnectRetryOptions: {
+          maxRetries: 10,
+          mode: 'Exponential',
+          retryDelayInMs: 1000,
+          maxRetryDelayInMs: 20000
+        }
+      }
+    );
+
+    state.client = client;
     state.userKey = userKey;
-
-    return state.socket;
+    state.connected = false;
+    ActivitySocketService.registerSharedClientEvents(client);
+    return client;
   }
 
-  private static shouldReuseSharedSocket(state: ActivitySocketSharedState): boolean {
-    return ActivitySocketService.isSocketActive(state.socket) ||
-      !!state.reconnectTimer ||
-      !!state.connectRequested ||
-      !!state.closeTimer ||
-      state.owners.size > 0;
+  private static registerSharedClientEvents(client: WebPubSubClient): void {
+    client.on('connected', (event) => {
+      const state = ActivitySocketService.sharedState;
+      if (client !== state.client) {
+        return;
+      }
+      state.connected = true;
+      ActivitySocketService.clearSharedClientRestart(client);
+      state.owners.forEach((owner) => owner.handleConnected(event));
+    });
+
+    client.on('disconnected', (event) => {
+      const state = ActivitySocketService.sharedState;
+      if (client !== state.client) {
+        return;
+      }
+      state.connected = false;
+      state.owners.forEach((owner) => owner.handleDisconnected(event));
+    });
+
+    client.on('stopped', () => {
+      const state = ActivitySocketService.sharedState;
+      if (client !== state.client) {
+        return;
+      }
+      state.connected = false;
+      ActivitySocketService.scheduleSharedClientRestart(client);
+    });
+
+    client.on('server-message', (event) => {
+      const state = ActivitySocketService.sharedState;
+      if (client === state.client) {
+        state.owners.forEach((owner) => owner.handleServerMessage(event));
+      }
+    });
   }
 
-  // Stores shared socket state on globalThis so multiple service instances use one socket.
-  private static get sharedState(): ActivitySocketSharedState {
+  private static parseServerMessage(data: unknown): ActivityServerMessage | undefined {
+    if (typeof data === 'string') {
+      try {
+        return JSON.parse(data) as ActivityServerMessage;
+      } catch (error) {
+        console.warn('Failed to parse activity Web PubSub server message', error);
+        return undefined;
+      }
+    }
+    if (data && typeof data === 'object' && !(data instanceof ArrayBuffer)) {
+      return data as ActivityServerMessage;
+    }
+    return undefined;
+  }
+
+  private static get sharedState(): ActivityWebPubSubSharedState {
     const globalScope = globalThis as typeof globalThis & {
-      [ACTIVITY_SOCKET_SHARED_STATE_KEY]?: ActivitySocketSharedState
+      [ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY]?: ActivityWebPubSubSharedState
     };
 
-    if (!globalScope[ACTIVITY_SOCKET_SHARED_STATE_KEY]) {
-      globalScope[ACTIVITY_SOCKET_SHARED_STATE_KEY] = { owners: new Set<object>() };
+    if (!globalScope[ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY]) {
+      globalScope[ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY] = {
+        owners: new Set<ActivitySocketService>()
+      };
     }
-
-    return globalScope[ACTIVITY_SOCKET_SHARED_STATE_KEY];
+    return globalScope[ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY];
   }
 
-  // Marks a service instance as an owner of the shared socket.
-  private static attachSharedSocketOwner(owner: object): void {
-    ActivitySocketService.clearSharedSocketCloseTimer();
-    ActivitySocketService.sharedState.owners.add(owner);
+  private static attachSharedClientOwner(owner: ActivitySocketService): void {
+    const state = ActivitySocketService.sharedState;
+    ActivitySocketService.clearSharedClientCloseTimer();
+    state.owners.add(owner);
   }
 
-  // Removes an owner and closes the shared socket when no owners remain.
-  private static detachSharedSocketOwner(owner: object, socket: Socket): void {
+  private static detachSharedClientOwner(owner: ActivitySocketService, client: WebPubSubClient): void {
     const state = ActivitySocketService.sharedState;
     state.owners.delete(owner);
-    if (state.owners.size === 0 && socket === state.socket) {
-      ActivitySocketService.scheduleSharedSocketClose(socket);
+    if (client === state.client && state.owners.size === 0) {
+      ActivitySocketService.scheduleSharedClientClose(client);
     }
   }
 
-  // Gives Angular a short handover window so provider churn does not create a new 101.
-  private static scheduleSharedSocketClose(socket: Socket): void {
+  private static scheduleSharedClientClose(client: WebPubSubClient): void {
     const state = ActivitySocketService.sharedState;
-    if (socket !== state.socket || state.closeTimer) {
+    if (client !== state.client || state.closeTimer) {
       return;
     }
 
     state.closeTimer = setTimeout(() => {
       state.closeTimer = undefined;
-      if (socket === state.socket && state.owners.size === 0) {
-        ActivitySocketService.closeSharedSocket(socket);
+      if (client === state.client && state.owners.size === 0) {
+        ActivitySocketService.closeSharedClient(client);
       }
-    }, ACTIVITY_SOCKET_CLOSE_GRACE_MS);
+    }, ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS);
   }
 
-  private static clearSharedSocketCloseTimer(socket?: Socket): void {
+  private static clearSharedClientCloseTimer(): void {
     const state = ActivitySocketService.sharedState;
-    if ((!socket || socket === state.socket) && state.closeTimer) {
+    if (state.closeTimer) {
       clearTimeout(state.closeTimer);
       state.closeTimer = undefined;
     }
   }
 
-  // Closes a socket and clears shared state when it is the active shared socket.
-  private static closeSharedSocket(socket?: Socket): void {
+  private static closeSharedClient(client?: WebPubSubClient): void {
     const state = ActivitySocketService.sharedState;
-    if (!socket) {
+    if (!client) {
       return;
     }
 
-    if (socket === state.socket) {
-      ActivitySocketService.clearSharedSocketCloseTimer(socket);
-      ActivitySocketService.clearSharedSocketReconnect(socket);
-      ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      state.socket = undefined;
-      state.allowWebSockets = undefined;
+    if (client === state.client) {
+      ActivitySocketService.clearSharedClientCloseTimer();
+      ActivitySocketService.clearSharedClientRestart(client);
+      state.client = undefined;
       state.userKey = undefined;
+      state.connected = false;
+      state.startPromise = undefined;
       state.owners.clear();
     }
-    socket.close();
+    client.stop();
   }
 
-  // Cancels a pending reconnect timer for the active shared socket.
-  private static clearSharedSocketReconnect(socket?: Socket): void {
-    const state = ActivitySocketService.sharedState;
-    if (socket === state.socket && state.reconnectTimer) {
-      clearTimeout(state.reconnectTimer);
-      state.reconnectTimer = undefined;
-    }
-  }
-
-  // Starts a shared socket connection only when one is not already active or pending.
-  private static connectSharedSocketIfNeeded(socket: Socket): void {
+  private static startSharedClientIfNeeded(client: WebPubSubClient): void {
     const state = ActivitySocketService.sharedState;
     if (
-      socket !== state.socket ||
-      ActivitySocketService.isSocketActive(socket) ||
-      state.reconnectTimer ||
-      state.connectRequested
+      client !== state.client ||
+      state.connected ||
+      state.startPromise ||
+      state.restartTimer ||
+      state.owners.size === 0
     ) {
       return;
     }
 
-    state.connectRequested = true;
-    try {
-      socket.connect();
-    } catch (error) {
-      ActivitySocketService.clearSharedSocketConnectRequest(socket);
-      throw error;
-    }
+    state.startPromise = client.start()
+      .catch((error) => {
+        if (client === state.client) {
+          state.owners.forEach((owner) => owner.handleConnectError(error));
+          ActivitySocketService.scheduleSharedClientRestart(client);
+        }
+      })
+      .finally(() => {
+        if (client === state.client) {
+          state.startPromise = undefined;
+        }
+      });
   }
 
-  private static clearSharedSocketConnectRequest(socket?: Socket): void {
+  private static scheduleSharedClientRestart(client: WebPubSubClient): void {
     const state = ActivitySocketService.sharedState;
-    if (socket === state.socket) {
-      state.connectRequested = undefined;
-    }
-  }
-
-  // Schedules one controlled reconnect for websocket mode after a failure event.
-  private static reconnectSharedSocketIfNeeded(socket: Socket): void {
-    const state = ActivitySocketService.sharedState;
-    if (!state.allowWebSockets || socket !== state.socket || state.owners.size === 0 || state.reconnectTimer) {
+    if (client !== state.client || state.owners.size === 0 || state.restartTimer) {
       return;
     }
 
-    console.warn('Activity socket connection lost, scheduling reconnect...'); 
-
-    state.reconnectTimer = setTimeout(() => {
-      state.reconnectTimer = undefined;
-      if (socket === state.socket && state.owners.size > 0 && !ActivitySocketService.isSocketActive(socket)) {
-        ActivitySocketService.connectSharedSocketIfNeeded(socket);
+    state.restartTimer = setTimeout(() => {
+      state.restartTimer = undefined;
+      if (client === state.client && state.owners.size > 0 && !state.connected) {
+        ActivitySocketService.startSharedClientIfNeeded(client);
       }
-    }, ActivitySocketService.getReconnectDelayMs());
+    }, ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS);
+  }
 
-    if (ActivitySocketService.isSocketActive(socket)) {
-      socket.disconnect();
+  private static clearSharedClientRestart(client: WebPubSubClient): void {
+    const state = ActivitySocketService.sharedState;
+    if (client === state.client && state.restartTimer) {
+      clearTimeout(state.restartTimer);
+      state.restartTimer = undefined;
     }
   }
 
-  private static getReconnectDelayMs(): number {
-    const delayRange = ACTIVITY_SOCKET_RECONNECT_DELAY_MAX_MS - ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS + 1;
-    const randomDelay = ActivitySocketService.getCryptoRandomInt(delayRange) + ACTIVITY_SOCKET_RECONNECT_DELAY_MIN_MS;
-    console.log(`Activity socket reconnect scheduled in ${randomDelay}ms`);  
-    return randomDelay;
-  }
-
-  // Returns an unbiased crypto-random integer from 0 inclusive to exclusiveMax exclusive.
-  private static getCryptoRandomInt(exclusiveMax: number): number {
-    const randomValue = new Uint32Array(1);
-    const maxUnbiasedValue = Math.floor(0x100000000 / exclusiveMax) * exclusiveMax;
-
-    do {
-      globalThis.crypto.getRandomValues(randomValue);
-    } while (randomValue[0] >= maxUnbiasedValue);
-
-    return randomValue[0] % exclusiveMax;
-  }
-
-  // Treats connected, connecting, opening, and open sockets as active.
-  private static isSocketActive(socket?: Socket): boolean {
-    if (!socket) {
-      return false;
-    }
-
-    const socketIo = socket.io as any;
-    return socket.connected ||
-      socket.active ||
-      ACTIVITY_SOCKET_ACTIVE_READY_STATES.has(socketIo?._readyState) ||
-      ACTIVITY_SOCKET_ACTIVE_READY_STATES.has(socketIo?.engine?.readyState);
-  }
-
-  // Loads the current user from session storage and removes the token before socket use.
   private setupUser(): UserInfo {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const user = userInfoStr ? JSON.parse(userInfoStr) : null;

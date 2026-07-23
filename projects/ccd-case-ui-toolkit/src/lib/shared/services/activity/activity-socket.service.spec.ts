@@ -1,94 +1,77 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Socket } from 'socket.io-client';
+import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import {
+  OnConnectedArgs,
+  OnDisconnectedArgs,
+  OnServerDataMessageArgs,
+  WebPubSubClient
+} from '@azure/web-pubsub-client';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { CaseActivityInfo } from '../../domain/activity';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
-import { MODES, Utils } from './utils';
+import { MODES } from './utils';
 
 describe('ActivitySocketService', () => {
-  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
-  const MOCK_USER_STRING = JSON.stringify(MOCK_USER);
+  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith', token: 'secret' };
+  const CONNECTED_EVENT: OnConnectedArgs = { connectionId: 'connection-1', userId: MOCK_USER.id };
   let service: ActivitySocketService;
-  let mockModeSubject: BehaviorSubject<MODES>;
-  let sessionStorageService: any;
+  let modeSubject: BehaviorSubject<MODES>;
+  let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let activityService: any;
+  let eventHandlers: Record<string, Array<(event?: any) => void>>;
+  let startSpy: jasmine.Spy;
+  let stopSpy: jasmine.Spy;
+  let sendEventSpy: jasmine.Spy;
 
-  function resetSharedSocket(): void {
-    const sharedState = (ActivitySocketService as any).sharedState;
-    if (sharedState.socket) {
-      sharedState.socket.close();
+  function resetSharedClient(): void {
+    const state = (ActivitySocketService as any).sharedState;
+    if (state.closeTimer) {
+      clearTimeout(state.closeTimer);
     }
-    sharedState.socket = undefined;
-    sharedState.allowWebSockets = undefined;
-    sharedState.userKey = undefined;
-    sharedState.connectRequested = undefined;
-    if (sharedState.closeTimer) {
-      clearTimeout(sharedState.closeTimer);
-      sharedState.closeTimer = undefined;
+    if (state.restartTimer) {
+      clearTimeout(state.restartTimer);
     }
-    if (sharedState.reconnectTimer) {
-      clearTimeout(sharedState.reconnectTimer);
-      sharedState.reconnectTimer = undefined;
-    }
-    sharedState.owners.clear();
+    state.client = undefined;
+    state.userKey = undefined;
+    state.connected = false;
+    state.startPromise = undefined;
+    state.closeTimer = undefined;
+    state.restartTimer = undefined;
+    state.owners.clear();
   }
 
-  function createMockSocket(): any {
-    const handlers: { [event: string]: Array<(payload?: any) => void> } = {};
-    const socket: any = {
-      active: false,
-      connected: false,
-      io: { _readyState: 'closed', opts: {} },
-      emit: jasmine.createSpy('emit'),
-      on: jasmine.createSpy('on').and.callFake((event: string, handler: (payload?: any) => void) => {
-        handlers[event] = handlers[event] || [];
-        handlers[event].push(handler);
-        return socket;
-      }),
-      off: jasmine.createSpy('off').and.callFake((event: string, handler: (payload?: any) => void) => {
-        handlers[event] = (handlers[event] || []).filter(item => item !== handler);
-        return socket;
-      }),
-      close: jasmine.createSpy('close').and.callFake(() => {
-        socket.active = false;
-        socket.connected = false;
-        socket.io._readyState = 'closed';
-        return socket;
-      }),
-      connect: jasmine.createSpy('connect').and.callFake(() => {
-        socket.active = true;
-        socket.io._readyState = 'opening';
-        return socket;
-      }),
-      disconnect: jasmine.createSpy('disconnect').and.callFake(() => {
-        socket.active = false;
-        socket.connected = false;
-        socket.io._readyState = 'closed';
-        return socket;
-      }),
-      trigger: (event: string, payload?: any) => {
-        (handlers[event] || []).slice().forEach(handler => handler(payload));
-      }
-    };
-    return socket;
+  function trigger(event: string, payload?: any): void {
+    (eventHandlers[event] || []).slice().forEach((handler) => handler(payload));
   }
 
   beforeEach(() => {
+    resetSharedClient();
+    eventHandlers = {};
+    spyOn(WebPubSubClient.prototype, 'on').and.callFake((event: any, listener: any) => {
+      eventHandlers[event] = eventHandlers[event] || [];
+      eventHandlers[event].push(listener);
+    });
+    startSpy = spyOn(WebPubSubClient.prototype, 'start').and.returnValue(Promise.resolve());
+    stopSpy = spyOn(WebPubSubClient.prototype, 'stop');
+    sendEventSpy = spyOn(WebPubSubClient.prototype, 'sendEvent').and.returnValue(Promise.resolve({ ackId: 1 }));
+
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
-    mockModeSubject = new BehaviorSubject<MODES>(undefined);
+    modeSubject = new BehaviorSubject<MODES>(undefined);
     activityService = {
+      isEnabled: true,
       pMode: undefined,
-      modeSubject: mockModeSubject.asObservable(),
+      modeSubject,
+      negotiateWebPubSubConnection: jasmine.createSpy('negotiateWebPubSubConnection')
+        .and.returnValue(of({ url: 'wss://example.webpubsub.azure.com/client/hubs/hub?access_token=token' })),
       get mode(): MODES {
         return activityService.pMode;
       },
       set mode(value: MODES) {
         if (value !== activityService.pMode) {
           activityService.pMode = value;
-          mockModeSubject.next(value);
+          modeSubject.next(value);
         }
       }
     };
@@ -96,420 +79,220 @@ describe('ActivitySocketService', () => {
   });
 
   afterEach(() => {
-    (service as any).destroy();
-    resetSharedSocket();
+    service.ngOnDestroy();
+    resetSharedClient();
   });
 
-  it('should be created', () => {
+  it('should be created without opening a client by default', () => {
     expect(service).toBeTruthy();
+    expect(service.socket).toBeUndefined();
+    expect(startSpy).not.toHaveBeenCalled();
   });
 
-  describe('when socket-like modes are not enabled', () => {
-    it('should not have created a socket by default', () => {
-      expect(service.socket).toBeUndefined();
-    });
-    it('should not have created a socket when mode is "off"', () => {
-      activityService.mode = MODES.off;
-      expect(service.socket).toBeUndefined();
-    });
-    it('should not have created a socket when mode is "polling"', () => {
-      activityService.mode = MODES.polling;
-      expect(service.socket).toBeUndefined();
-    });
+  it('should not open Web PubSub for off or polling modes', () => {
+    activityService.mode = MODES.off;
+    activityService.mode = MODES.polling;
 
+    expect(service.socket).toBeUndefined();
+    expect(startSpy).not.toHaveBeenCalled();
   });
 
-  describe('when "socket-long-polling" mode is enabled', () => {
+  [MODES.socket, MODES.socketLongPoll].forEach((mode) => {
+    it(`should use Web PubSub while retaining the "${mode}" mode value`, () => {
+      activityService.mode = mode;
 
-    beforeEach(() => {
-      activityService.mode = MODES.socketLongPoll;
-    });
-    it('should have instantiated the socket', () => {
-      expect(service.socket instanceof Socket).toBeTruthy();
-      expect(service.socket.io.opts.query.user).toEqual(MOCK_USER_STRING);
-
-      // Should have set up the default location to be the same as the current URL.
-      expect(service.socket.io.opts.path).toEqual('/socket.io');
-      expect((service.socket.io as any).uri).toEqual(`${window.location.protocol}//${window.location.host}`);
-    });
-    it('should have set up socket connections', () => {
+      expect(service.socket instanceof WebPubSubClient).toBeTruthy();
+      expect(startSpy).toHaveBeenCalledTimes(1);
       expect(service.connect instanceof Observable).toBeTruthy();
-      expect(service.activity instanceof Observable).toBeTruthy();
       expect(service.disconnect instanceof Observable).toBeTruthy();
+      expect(service.activity instanceof Observable).toBeTruthy();
     });
-    it('should destroy connection when socket-like modes are disabled', () => {
-      expect(service.socket instanceof Socket).toBeTruthy();
-      activityService.mode = MODES.polling;
-      expect(service.socket).toBeUndefined();
-    });
-
   });
 
-  describe('when "socket" mode is enabled', () => {
+  it('should negotiate a client access URL through ActivityService', async () => {
+    activityService.mode = MODES.socket;
+
+    const credential = (service.socket as any)._credential;
+    const url = await credential.getClientAccessUrl();
+
+    expect(url).toBe('wss://example.webpubsub.azure.com/client/hubs/hub?access_token=token');
+    expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+  });
+
+  it('should expose the current user without its token', () => {
+    expect(service.user).toEqual({ id: MOCK_USER.id, forename: 'Bob', surname: 'Smith' } as any);
+  });
+
+  it('should update connection observables from Web PubSub lifecycle events', () => {
+    activityService.mode = MODES.socket;
+    let connectedEvent: OnConnectedArgs;
+    let disconnectedEvent: OnDisconnectedArgs;
+    service.connect.subscribe((event) => connectedEvent = event);
+    service.disconnect.subscribe((event) => disconnectedEvent = event);
+
+    trigger('connected', CONNECTED_EVENT);
+    expect(service.connected.value).toBeTruthy();
+    expect(connectedEvent).toEqual(CONNECTED_EVENT);
+
+    const disconnect = { connectionId: CONNECTED_EVENT.connectionId };
+    trigger('disconnected', disconnect);
+    expect(service.connected.value).toBeFalsy();
+    expect(disconnectedEvent).toEqual(disconnect);
+  });
+
+  it('should publish activity arrays received in Web PubSub server messages', () => {
+    activityService.mode = MODES.socket;
+    const activity = [{ caseId: 'case-1', viewers: [], editors: [] }] as CaseActivityInfo[];
+    let received: CaseActivityInfo[];
+    service.activity.subscribe((value) => received = value);
+
+    trigger('server-message', {
+      message: {
+        kind: 'serverData',
+        dataType: 'json',
+        data: { event: 'activity', data: activity }
+      }
+    } as OnServerDataMessageArgs);
+
+    expect(received).toEqual(activity);
+  });
+
+  it('should parse string Web PubSub server messages and ignore unrelated events', () => {
+    activityService.mode = MODES.socket;
+    const activity = [{ caseId: 'case-1', viewers: [], editors: [] }] as CaseActivityInfo[];
+    const received: CaseActivityInfo[][] = [];
+    service.activity.subscribe((value) => received.push(value));
+
+    trigger('server-message', {
+      message: { kind: 'serverData', dataType: 'json', data: JSON.stringify({ event: 'ignored', data: activity }) }
+    });
+    trigger('server-message', {
+      message: { kind: 'serverData', dataType: 'json', data: JSON.stringify({ event: 'activity', data: activity }) }
+    });
+
+    expect(received).toEqual([activity]);
+  });
+
+  describe('activity events', () => {
     beforeEach(() => {
       activityService.mode = MODES.socket;
+      trigger('connected', CONNECTED_EVENT);
     });
 
-    it('should destroy connection when socket-like modes are disabled', () => {
-      expect(service.socket instanceof Socket).toBeTruthy();
-      activityService.mode = MODES.polling;
-      expect(service.socket).toBeUndefined();
-    });
-  });
+    it('should send watch through Web PubSub', () => {
+      service.watchCases(['case-1', 'case-2']);
 
-  describe('socket connection lifecycle', () => {
-    let getSocketSpy: jasmine.Spy;
-    let mockSocket: any;
-
-    beforeEach(() => {
-      (service as any).destroy();
-      resetSharedSocket();
-      mockSocket = createMockSocket();
-      getSocketSpy = spyOn(Utils, 'getSocket').and.returnValue(mockSocket as Socket);
-      spyOn(globalThis.crypto, 'getRandomValues').and.callFake((array: Uint32Array) => {
-        array[0] = 0;
-        return array;
-      });
+      expect(sendEventSpy).toHaveBeenCalledWith(
+        'watch',
+        { caseIds: ['case-1', 'case-2'] },
+        'json'
+      );
     });
 
-    it('should reuse an active shared socket instead of opening another connection', () => {
-      activityService.mode = MODES.socket;
-      const firstSocket = service.socket;
+    it('should send view through Web PubSub', () => {
+      service.viewCase('case-1', true);
 
-      const secondService = new ActivitySocketService(sessionStorageService, activityService);
-
-      expect(secondService.socket).toBe(firstSocket);
-      expect(getSocketSpy).toHaveBeenCalledTimes(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      (secondService as any).destroy();
+      expect(sendEventSpy).toHaveBeenCalledWith('view', { caseId: 'case-1' }, 'json');
     });
 
-    it('should not open another socket while the first connect request is pending', () => {
-      mockSocket.connect.and.callFake(() => mockSocket);
+    it('should send edit through Web PubSub', () => {
+      service.editCase('case-1', true);
 
-      activityService.mode = MODES.socket;
-      const firstSocket = service.socket;
-
-      const secondService = new ActivitySocketService(sessionStorageService, activityService);
-
-      expect(secondService.socket).toBe(firstSocket);
-      expect(getSocketSpy).toHaveBeenCalledTimes(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      (secondService as any).destroy();
+      expect(sendEventSpy).toHaveBeenCalledWith('edit', { caseId: 'case-1' }, 'json');
     });
 
-    it('should unsubscribe from mode changes when Angular destroys the service', () => {
-      activityService.mode = MODES.socket;
+    it('should send stop through Web PubSub', () => {
+      service.stopCase('case-1', true);
 
-      service.ngOnDestroy();
-
-      activityService.mode = MODES.socketLongPoll;
-
-      expect(getSocketSpy).toHaveBeenCalledTimes(1);
-      expect(service.socket).toBeUndefined();
+      expect(sendEventSpy).toHaveBeenCalledWith('stop', { caseId: 'case-1' }, 'json');
     });
 
-    it('should treat an open engine connection as active if the manager state is stale', () => {
-      mockSocket.connected = false;
-      mockSocket.active = false;
-      mockSocket.io._readyState = 'closed';
-      mockSocket.io.engine = { readyState: 'open' };
+    it('should send stopAll through Web PubSub', () => {
+      service.stopAllCase(['case-1', 'case-2'], true);
 
-      expect((ActivitySocketService as any).isSocketActive(mockSocket)).toBe(true);
+      expect(sendEventSpy).toHaveBeenCalledWith(
+        'stopAll',
+        { caseIds: ['case-1', 'case-2'] },
+        'json'
+      );
     });
 
-    it('should close the shared socket after the last owner grace period', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      const firstSocket = service.socket;
+    it('should not send activity events while disconnected', () => {
+      trigger('disconnected', { connectionId: CONNECTED_EVENT.connectionId });
 
-      const secondService = new ActivitySocketService(sessionStorageService, activityService);
-      (secondService as any).destroy();
+      service.watchCases(['case-1']);
+      service.startViewing('case-1');
+      service.startEditing('case-1');
+      service.stopViewing('case-1');
+      service.stopViewingCases(['case-1']);
 
-      expect(service.socket).toBe(firstSocket);
-      expect(mockSocket.close).not.toHaveBeenCalled();
-
-      (service as any).destroy();
-
-      expect(mockSocket.close).not.toHaveBeenCalled();
-
-      tick(4999);
-      expect(mockSocket.close).not.toHaveBeenCalled();
-
-      tick(1);
-      expect(mockSocket.close).toHaveBeenCalledTimes(1);
-    }));
-
-    it('should reuse the shared socket when a new owner appears during the close grace period', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      const firstSocket = service.socket;
-
-      (service as any).destroy();
-      tick(4999);
-
-      const secondService = new ActivitySocketService(sessionStorageService, activityService);
-
-      expect(secondService.socket).toBe(firstSocket);
-      expect(getSocketSpy).toHaveBeenCalledTimes(1);
-      expect(mockSocket.close).not.toHaveBeenCalled();
-
-      tick(1);
-      expect(mockSocket.close).not.toHaveBeenCalled();
-
-      (secondService as any).destroy();
-      tick(5000);
-
-      expect(mockSocket.close).toHaveBeenCalledTimes(1);
-    }));
-
-    it('should reuse and reconnect an owned shared socket when it becomes inactive', () => {
-      activityService.mode = MODES.socket;
-      const firstSocket = service.socket;
-      mockSocket.active = false;
-      mockSocket.connected = false;
-      mockSocket.io._readyState = 'closed';
-      (ActivitySocketService as any).clearSharedSocketConnectRequest(mockSocket);
-
-      const nextSocket = createMockSocket();
-      getSocketSpy.and.returnValue(nextSocket as Socket);
-
-      const secondService = new ActivitySocketService(sessionStorageService, activityService);
-
-      expect(secondService.socket).toBe(firstSocket);
-      expect(getSocketSpy).toHaveBeenCalledTimes(1);
-      expect(mockSocket.close).not.toHaveBeenCalled();
-      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
-      expect(nextSocket.connect).not.toHaveBeenCalled();
-
-      (secondService as any).destroy();
+      expect(sendEventSpy).not.toHaveBeenCalled();
     });
 
-    it('should reconnect the shared websocket once after disconnect', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      mockSocket.connected = true;
-      mockSocket.active = true;
-      mockSocket.io._readyState = 'open';
+    it('should suppress duplicate view and edit events during the cooldown', () => {
+      service.startViewing('case-1');
+      service.startViewing('case-1');
+      service.startEditing('case-1');
+      service.startEditing('case-1');
 
-      mockSocket.trigger('disconnect');
-
-      expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      tick(999);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-
-      tick(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
-    }));
-
-    it('should not schedule duplicate reconnects for repeated websocket failure events', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      mockSocket.connected = true;
-      mockSocket.active = true;
-      mockSocket.io._readyState = 'open';
-
-      mockSocket.trigger('disconnect');
-      mockSocket.trigger('connect_error');
-      mockSocket.trigger('disconnect');
-
-      tick(1000);
-
-      expect(mockSocket.connect).toHaveBeenCalledTimes(2);
-    }));
-
-    it('should leave socket-long-poll reconnects to Socket.IO', fakeAsync(() => {
-      activityService.mode = MODES.socketLongPoll;
-      mockSocket.connected = true;
-      mockSocket.active = true;
-      mockSocket.io._readyState = 'open';
-
-      mockSocket.trigger('disconnect');
-      tick(2000);
-
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-    }));
-
-    it('should randomize websocket reconnect delay between one and twenty seconds', () => {
-      const randomValues = [0, 9500, 19000];
-      (globalThis.crypto.getRandomValues as jasmine.Spy).and.callFake((array: Uint32Array) => {
-        array[0] = randomValues.shift();
-        return array;
-      });
-
-      const minimumDelay = (ActivitySocketService as any).getReconnectDelayMs();
-      const middleDelay = (ActivitySocketService as any).getReconnectDelayMs();
-      const maximumDelay = (ActivitySocketService as any).getReconnectDelayMs();
-
-      expect(minimumDelay).toBe(1000);
-      expect(middleDelay).toBeGreaterThanOrEqual(1000);
-      expect(middleDelay).toBeLessThanOrEqual(20000);
-      expect(maximumDelay).toBe(20000);
-    });
-
-    it('should not refresh watch while the websocket is idle', fakeAsync(() => {
-      activityService.mode = MODES.socket;
-      mockSocket.connected = true;
-      mockSocket.active = true;
-      mockSocket.io._readyState = 'open';
-
-      const caseIds = ['case1', 'case2'];
-      service.watchCases(caseIds);
-
-      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
-      expect(mockSocket.emit).toHaveBeenCalledWith('watch', { caseIds });
-
-      tick(59999);
-      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
-
-      tick(1);
-      expect(mockSocket.emit).toHaveBeenCalledTimes(1);
-      expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-    }));
-  });
-
-  describe('watchCases', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.socket;
-    });
-    it('should emit a "watch" event with the case IDs', () => {
-      spyOn(service.socket, 'emit');
-      const caseIds = ['case1', 'case2', 'case3'];
-      service.watchCases(caseIds);
-      expect(service.socket.emit).toHaveBeenCalledWith('watch', { caseIds });
-    });
-
-    it('should replay the latest activity payload to late subscribers', () => {
-      const activityPayload = [{ caseId: 'case1', viewers: [], editors: [] }] as CaseActivityInfo[];
-      let receivedActivity: CaseActivityInfo[];
-
-      (service as any).activitySubject.next(activityPayload);
-
-      service.activity.subscribe(activity => {
-        receivedActivity = activity;
-      });
-
-      expect(receivedActivity).toEqual(activityPayload);
+      expect(sendEventSpy.calls.allArgs()).toEqual([
+        ['view', { caseId: 'case-1' }, 'json'],
+        ['edit', { caseId: 'case-1' }, 'json']
+      ]);
     });
   });
 
-  describe('viewCase', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.socket;
-    });
-  it('should emit a "view" event with the case ID', () => {
-      spyOn(service.socket, 'emit');
-      service.connected.next(true);
+  it('should reuse one shared Web PubSub client across service instances', () => {
+    activityService.mode = MODES.socket;
+    const secondService = new ActivitySocketService(sessionStorageService, activityService);
 
-      const caseId = 'case42';
-      service.viewCase(caseId, true);
-      expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
-    });
+    expect(secondService.socket).toBe(service.socket);
+    expect(startSpy).toHaveBeenCalledTimes(1);
+
+    secondService.ngOnDestroy();
   });
 
-  describe('editCase', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.socket;
-    });
-    it('should emit an "edit" event with the case ID', () => {
-      spyOn(service.socket, 'emit');
-      service.connected.next(true);
-      
-      const caseId = 'case42';
-      service.editCase(caseId, true);
-      expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
-    });
-  });
+  it('should close the shared client after the final owner grace period', fakeAsync(() => {
+    activityService.mode = MODES.socket;
 
-  describe('explicit start/stop methods (startViewing, stopViewing, startEditing)', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.socket;
-      // mark socket as connected so guarded emits pass
-      service.connected.next(true);
-    });
+    service.ngOnDestroy();
+    tick(4999);
+    expect(stopSpy).not.toHaveBeenCalled();
 
-    it('startViewing should emit "view" when connected', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-view-1';
+    tick(1);
+    expect(stopSpy).toHaveBeenCalledTimes(1);
+  }));
 
-      service.startViewing(caseId);
+  it('should reuse the shared client when an owner appears during the close grace period', fakeAsync(() => {
+    activityService.mode = MODES.socket;
+    const firstClient = service.socket;
+    service.ngOnDestroy();
+    tick(4999);
 
-      expect(service.socket.emit).toHaveBeenCalledWith('view', { caseId });
-    });
+    const secondService = new ActivitySocketService(sessionStorageService, activityService);
+    expect(secondService.socket).toBe(firstClient);
 
-    it('startViewing should NOT emit when not connected', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-view-2';
-      // disconnect the service
-      service.connected.next(false);
+    tick(1);
+    expect(stopSpy).not.toHaveBeenCalled();
 
-      service.startViewing(caseId);
+    secondService.ngOnDestroy();
+    tick(5000);
+    expect(stopSpy).toHaveBeenCalledTimes(1);
+  }));
 
-      expect(service.socket.emit).not.toHaveBeenCalled();
-    });
+  it('should surface initial connection errors and retry the shared client', fakeAsync(() => {
+    startSpy.and.returnValues(Promise.reject(new Error('unavailable')), Promise.resolve());
+    let receivedError: unknown;
+    service.connect_error.subscribe((error) => receivedError = error);
 
-    it('startViewing should dedupe duplicates when a recent emit exists', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-view-3';
-      // simulate a very recent emit for same caseId
-      (service as any).lastViewEmit = { caseId, time: Date.now() };
+    activityService.mode = MODES.socket;
+    flushMicrotasks();
 
-      service.startViewing(caseId);
+    expect((receivedError as Error).message).toBe('unavailable');
+    expect(startSpy).toHaveBeenCalledTimes(1);
 
-      // blocked by cooldown so no new emit
-      expect(service.socket.emit).not.toHaveBeenCalled();
-    });
-
-    it('stopViewing should emit "stop" when connected and clear lastViewEmit', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-stop-1';
-      // set lastViewEmit so we can verify it's cleared
-      (service as any).lastViewEmit = { caseId, time: Date.now() };
-
-      service.stopViewing(caseId);
-
-      expect(service.socket.emit).toHaveBeenCalledWith('stop', { caseId });
-      // lastViewEmit for that case cleared
-      expect((service as any).lastViewEmit.caseId).toBe('');
-    });
-
-    it('stopAllCase should emit "stopAll" with the case IDs when connected', () => {
-      spyOn(service.socket, 'emit');
-      const caseIds = ['case-stop-1', 'case-stop-2'];
-
-      service.stopAllCase(caseIds, true);
-
-      expect(service.socket.emit).toHaveBeenCalledWith('stopAll', { caseIds });
-    });
-
-    it('stopAllCase should NOT emit when not connected', () => {
-      spyOn(service.socket, 'emit');
-      const caseIds = ['case-stop-1', 'case-stop-2'];
-      service.connected.next(false);
-
-      service.stopAllCase(caseIds, true);
-
-      expect(service.socket.emit).not.toHaveBeenCalled();
-    });
-
-    it('startEditing should emit "edit" when connected', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-edit-1';
-
-      service.startEditing(caseId);
-
-      expect(service.socket.emit).toHaveBeenCalledWith('edit', { caseId });
-    });
-
-    it('startEditing should dedupe duplicate edit emits when recent', () => {
-      spyOn(service.socket, 'emit');
-      const caseId = 'case-edit-2';
-      // simulate recent edit emit
-      (service as any).lastEditEmit = { caseId, time: Date.now() };
-
-      service.startEditing(caseId);
-
-      expect(service.socket.emit).not.toHaveBeenCalled();
-    });
-  });
+    tick(5000);
+    expect(startSpy).toHaveBeenCalledTimes(2);
+    flushMicrotasks();
+  }));
 });

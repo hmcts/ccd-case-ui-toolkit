@@ -1,4 +1,4 @@
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { SessionStorageService } from '../session';
@@ -31,7 +31,7 @@ describe('ActivityService', () => {
     expect(activityService.mode).toEqual(MODES.off);
   });
 
-   describe('when activity tracking is turned off', () => {
+  describe('when activity tracking is turned off', () => {
     // It should default to "off" so no need for a beforeEach() here...
     it('should indicate the service is disabled', () => {
       expect(activityService.isEnabled).toBeFalsy();
@@ -40,79 +40,79 @@ describe('ActivityService', () => {
       activityService.verifyUserIsAuthorized();
       expect(httpService.get).toHaveBeenCalledTimes(0);
     });
-  it('should not throw when session storage contains invalid JSON', () => {
-    sessionStorageService.getItem.and.returnValue('{not-json');
+    it('should not throw when session storage contains invalid JSON', () => {
+      sessionStorageService.getItem.and.returnValue('{not-json');
 
-    expect(() => activityService.getActivities('1111')).not.toThrow();
-    expect(httpService.get).toHaveBeenCalled();
-  });
-
-  it('should access AppConfig and HttpService for getActivities', () => {
-    httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    httpService.get.and.throwError('Error');
-
-    activityService.getActivities('1111');
-    expect(httpService.get).not.toHaveBeenCalled();
-    expect(appConfig.getActivityUrl).toHaveBeenCalled();
-  });
-
-  describe('when activity tracking is set to "polling"', () => {
-    beforeEach(() => {
-      activityService.mode = MODES.polling;
+      expect(() => activityService.getActivities('1111')).not.toThrow();
+      expect(httpService.get).toHaveBeenCalled();
     });
 
     it('should access AppConfig and HttpService for getActivities', () => {
+      httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
+      httpService.get.and.throwError('Error');
+
       activityService.getActivities('1111');
-      expect(httpService.get).toHaveBeenCalled();
+      expect(httpService.get).not.toHaveBeenCalled();
       expect(appConfig.getActivityUrl).toHaveBeenCalled();
     });
-    it('should accesss AppConfig and HttpService for postActivity', () => {
-      activityService.postActivity('1111', 'edit');
-      expect(httpService.post).toHaveBeenCalled();
-      expect(appConfig.getActivityUrl).toHaveBeenCalled();
-    });
-    it('should verify user authorization once', () => {
-      activityService.verifyUserIsAuthorized();
-      activityService.verifyUserIsAuthorized();
 
-      expect(httpService.get).toHaveBeenCalledTimes(1);
-      expect(activityService.isEnabled).toBeTruthy();
+    describe('when activity tracking is set to "polling"', () => {
+      beforeEach(() => {
+        activityService.mode = MODES.polling;
+      });
+
+      it('should access AppConfig and HttpService for getActivities', () => {
+        activityService.getActivities('1111');
+        expect(httpService.get).toHaveBeenCalled();
+        expect(appConfig.getActivityUrl).toHaveBeenCalled();
+      });
+      it('should accesss AppConfig and HttpService for postActivity', () => {
+        activityService.postActivity('1111', 'edit');
+        expect(httpService.post).toHaveBeenCalled();
+        expect(appConfig.getActivityUrl).toHaveBeenCalled();
+      });
+      it('should verify user authorization once', () => {
+        activityService.verifyUserIsAuthorized();
+        activityService.verifyUserIsAuthorized();
+
+        expect(httpService.get).toHaveBeenCalledTimes(1);
+        expect(activityService.isEnabled).toBeTruthy();
+      });
+    });
+
+    describe('when activity url is empty', () => {
+      beforeEach(() => {
+        appConfig.getActivityUrl.and.returnValue('');
+        (activityService as any).userAuthorised = true;
+        activityService.mode = MODES.polling;
+      });
+
+      it('should not be enabled', () => {
+        expect(activityService.isEnabled).toBeFalsy();
+      });
+    });
+
+    describe('when an error is returned while verifying the user is authorised', () => {
+      const goError = (status: number): void => {
+        const error = { status };
+        httpService.get.and.returnValue(throwError(error));
+        activityService.mode = MODES.polling;
+      };
+
+      it('should not be enabled when the error is 401', () => {
+        goError(401);
+        expect(activityService.isEnabled).toBeFalsy();
+      });
+      it('should not be enabled when the error is 403', () => {
+        goError(403);
+        expect(activityService.isEnabled).toBeFalsy();
+      });
+      it('should be enabled when the error is something other than 401 or 403', () => {
+        goError(400);
+        expect(activityService.isEnabled).toBeTruthy();
+      });
     });
   });
-
-  describe('when activity url is empty', () => {
-    beforeEach(() => {
-      appConfig.getActivityUrl.and.returnValue('');
-      activityService['userAuthorised'] = true;
-      activityService.mode = MODES.polling;
-    });
-
-    it('should not be enabled', () => {
-      expect(activityService.isEnabled).toBeFalsy();
-    });
-  });
-
-  describe('when an error is returned while verifying the user is authorised', () => {
-    const goError = (status: number): void => {
-      const error = { status };
-      httpService.get.and.returnValue(throwError(error));
-      activityService.mode = MODES.polling;
-    };
-
-     it('should not be enabled when the error is 401', () => {
-      goError(401);
-      expect(activityService.isEnabled).toBeFalsy();
-    });
-    it('should not be enabled when the error is 403', () => {
-      goError(403);
-      expect(activityService.isEnabled).toBeFalsy();
-    });
-    it('should be enabled when the error is something other than 401 or 403', () => {
-      goError(400);
-      expect(activityService.isEnabled).toBeTruthy();
-    });
-  });
-});
 
   it('should access AppConfig and HttpService for postActivity', () => {
     activityService.postActivity('1111', 'edit');
@@ -129,9 +129,25 @@ describe('ActivityService', () => {
     expect(activityService.isEnabled).toBeTruthy();
   });
 
+  it('should negotiate a Web PubSub connection with the current authentication options', () => {
+    const negotiation = { url: 'wss://example.webpubsub.azure.com/client/hubs/hub' };
+    httpService.get.and.returnValue(of(negotiation));
+    let result: any;
+
+    activityService.negotiateWebPubSubConnection().subscribe((value) => result = value);
+
+    expect(result).toEqual(negotiation);
+    expect(httpService.get).toHaveBeenCalledWith(
+      ActivityService.WEB_PUBSUB_NEGOTIATE_URL,
+      activityService.getOptions(),
+      false,
+      jasmine.any(Function)
+    );
+  });
+
   it('should return enabled when activity url is not emty', () => {
     appConfig.getActivityUrl.and.returnValue('www');
-    activityService['userAuthorised'] = true;
+    (activityService as any).userAuthorised = true;
     activityService.mode = MODES.polling;
 
     expect(activityService.isEnabled).toBeTruthy();
@@ -148,5 +164,4 @@ describe('ActivityService', () => {
 
     expect(activityService.isEnabled).toBeTruthy();
   });
-
 });

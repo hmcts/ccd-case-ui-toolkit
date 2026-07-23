@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dial
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { CaseEditFormComponent } from '../case-edit-form/case-edit-form.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
@@ -67,6 +68,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public saveDraftSub: Subscription;
   public caseFormValidationErrorsSub: Subscription;
   private readonly logger = new StructuredLoggerService();
+
+  @ViewChildren(CaseEditFormComponent)
+  private readonly caseEditFormComponents: QueryList<CaseEditFormComponent>;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -282,6 +286,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (fieldElement.hasError('maxlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% exceeds the maximum length`, label });
             fieldElement.markAsDirty();
+          } else if (fieldElement.hasError('markDownPattern')) {
+            this.caseEditDataService.addFormValidationError({
+              id, message: `The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.`, label
+            });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id, true);
@@ -393,6 +401,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.clearValidationErrors();
     this.checkForStagesCompleted();
+    this.caseEditFormComponents?.forEach(component => component.syncConditionalShowStates());
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
@@ -627,7 +636,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     return this.canNavigateToSummaryPage()
       ? textBasedOnCanSaveDraft
-      : 'Submit';
+      : this.eventTrigger.end_button_label || 'Submit';
   }
 
   private discard(): void {

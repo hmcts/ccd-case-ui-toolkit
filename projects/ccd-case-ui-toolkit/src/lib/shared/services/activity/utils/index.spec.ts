@@ -1,23 +1,19 @@
-import { Utils } from './index';
+import { MODES, Utils } from './index';
 
 describe('Activity Utils', () => {
-  const user = { id: 'abcdefg123456' };
+  it('should retain the socket mode values used by LaunchDarkly', () => {
+    expect(MODES.socket).toBe('socket');
+    expect(MODES.socketLongPoll).toBe('socket-long-poll');
+  });
 
-  describe('getOptions', () => {
-    it('should disable Socket.IO auto-reconnection for websocket mode only', () => {
-      const options = Utils.getOptions(user, true);
+  it('should generate the existing case activity descriptions', () => {
+    const activity = {
+      viewers: [{ id: '1', forename: 'Alex', surname: 'Smith' }],
+      unknownViewers: 0,
+      editors: [],
+      unknownEditors: 0
+    };
 
-      expect(options.reconnection).toBe(false);
-      expect(options.transports).toEqual(['websocket']);
-      expect(options.upgrade).toBe(true);
-    });
-
-    it('should keep Socket.IO auto-reconnection enabled for long-poll socket mode', () => {
-      const options = Utils.getOptions(user, false);
-
-      expect(options.reconnection).toBe(true);
-      expect(options.transports).toEqual(['polling']);
-      expect(options.upgrade).toBe(false);
-    });
+    expect(Utils.activity.viewersDescription(activity as any)).toBe('Alex Smith is viewing this case');
   });
 });

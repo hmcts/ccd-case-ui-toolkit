@@ -11,9 +11,14 @@ import { USER_DETAILS } from '../../utils';
 import { MODES } from '../activity/utils';
 import { safeJsonParse } from '../../json-utils';
 
+export interface WebPubSubConnection {
+  url: string;
+}
+
 // @dynamic
 @Injectable()
 export class ActivityService {
+  public static readonly WEB_PUBSUB_NEGOTIATE_URL = '/web-pubsub/negotiate';
   private readonly logger = new StructuredLoggerService();
 
   constructor(
@@ -28,8 +33,13 @@ export class ActivityService {
 
   public static readonly MODES = MODES;
   public static readonly DUMMY_CASE_REFERENCE = '0';
-  public static get ACTIVITY_VIEW() { return 'view'; }
-  public static get ACTIVITY_EDIT() { return 'edit'; }
+  public static get ACTIVITY_VIEW() {
+    return 'view';
+  }
+
+  public static get ACTIVITY_EDIT() {
+    return 'edit';
+  }
 
   public readonly modeSubject: BehaviorSubject<MODES> = new BehaviorSubject<MODES>(MODES.off);
 
@@ -38,6 +48,7 @@ export class ActivityService {
   public get mode(): MODES {
     return this.pMode;
   }
+
   public set mode(value: MODES) {
     if (!!value && this.pMode !== value) {
       this.pMode = value;
@@ -47,6 +58,7 @@ export class ActivityService {
       }
     }
   }
+
   private pActivityUrl: string;
   private pActivityUrlSet = false;
   private get activityUrl(): string {
@@ -73,7 +85,7 @@ export class ActivityService {
     return {
       headers,
       withCredentials: true,
-      observe: 'body',
+      observe: 'body'
     };
   }
 
@@ -98,25 +110,34 @@ export class ActivityService {
     }
   }
 
+  public negotiateWebPubSubConnection(): Observable<WebPubSubConnection> {
+    return this.http.get(
+      ActivityService.WEB_PUBSUB_NEGOTIATE_URL,
+      this.getOptions(),
+      false,
+      ActivityService.handleHttpError
+    );
+  }
+
   public verifyUserIsAuthorized(): void {
-     if (this.activityUrl && this.userAuthorised === undefined) {
+    if (this.activityUrl && this.userAuthorised === undefined) {
       if (this.mode === MODES.polling) {
         this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
           () => this.userAuthorised = true,
-          error => {
+          (error) => {
             if ([401, 403].includes(error.status)) {
               this.userAuthorised = false;
             } else {
               this.userAuthorised = true;
             }
-        });
+          });
       } else if (this.mode !== MODES.off) {
         this.userAuthorised = true;
       }
     }
   }
 
- private setupActivityUrl(): void {
+  private setupActivityUrl(): void {
     this.pActivityUrl = this.appConfig.getActivityUrl();
     this.pActivityUrlSet = true;
   }

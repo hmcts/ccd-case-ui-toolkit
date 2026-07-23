@@ -1,26 +1,11 @@
-import { connect, ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
-
 import { Activity, ActivityInfo, CaseActivityInfo, User } from '../../../domain';
-
-const BASE_CONFIGURATION = {
-  autoConnect: false, // (default is false)
-  reconnection: true,
-  reconnectionDelay: 1000 * 2, // 2 seconds (default is 1s)
-  reconnectionDelayMax: 1000 * 30, // 30 seconds (default is 5s)
-  timeout: 1000 * 60 * 3 // 5 minutes (default is 20s)
-};
-
-const TRANSPORTS = {
-  allowWebSockets: ['websocket'], // No fallback to long polling allowed.
-  disallowWebSockets: ['polling']
-};
 
 export enum MODES {
   off = 'off',
   polling = 'polling',
   socket = 'socket',
   socketLongPoll = 'socket-long-poll'
-};
+}
 
 const DESCRIPTIONS = {
   VIEWERS_SUFFIX: 'viewing this case',
@@ -28,25 +13,6 @@ const DESCRIPTIONS = {
 };
 
 const UTILS = {
-  getTransports: (allowWebSockets: boolean): object => {
-    const transports = allowWebSockets ? TRANSPORTS.allowWebSockets : TRANSPORTS.disallowWebSockets;
-    return {
-      transports,
-      upgrade: allowWebSockets
-    };
-  },
-  getOptions: (user: object, allowWebSockets: boolean): Partial<ManagerOptions & SocketOptions> => {
-    return {
-      ...BASE_CONFIGURATION,
-      ...UTILS.getTransports(allowWebSockets),
-      reconnection: !allowWebSockets,
-      query: { user: JSON.stringify(user) }
-    };
-  },
-  getSocket: (user: object, allowWebSockets = false): Socket => {
-    // Connects to current URL by not providing a uri parameter.
-    return connect(UTILS.getOptions(user, allowWebSockets));
-  },
   activity: {
     hasEditors: (activity: Activity | CaseActivityInfo): boolean => {
       if (activity) {
@@ -90,7 +56,7 @@ const UTILS = {
         if (names.length + unknownCount > 1) {
           preSuffix = ' are ';
         } else {
-          preSuffix = ' is '
+          preSuffix = ' is ';
         }
       }
       return `${resultText}${preSuffix}${suffix}`;
@@ -103,16 +69,16 @@ const UTILS = {
     },
     activityNames: (users: Array<ActivityInfo | User>): string => {
       if (users && users.length > 0) {
-        return users.map(info => UTILS.activity.activityName(info)).filter(name => !!name).join(', ');
+        return users.map((info) => UTILS.activity.activityName(info)).filter((name) => !!name).join(', ');
       }
       return '';
     },
-    stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => { 
-      const userId = user ? user['uid'] : undefined;
+    stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => {
+      const userId = user ? (user as { uid?: string }).uid : undefined;
 
       if (userId && UTILS.activity.hasViewersOrEditors(activity)) {
-        activity.editors = activity.editors.filter(e => e.id !== userId);
-        activity.viewers = activity.viewers.filter(v => v.id !== userId);
+        activity.editors = activity.editors.filter((e) => e.id !== userId);
+        activity.viewers = activity.viewers.filter((v) => v.id !== userId);
       }
       return activity;
     }
@@ -121,14 +87,14 @@ const UTILS = {
 
 function replaceLastCommaWithAnd(text: string): string {
   const i = text.lastIndexOf(',');
-  if (i === -1) return text;                 
-  const after = text.slice(i + 1);          
+  if (i === -1) {
+    return text;
+  }
+  const after = text.slice(i + 1);
   return text.slice(0, i) + ' and' + after;
 }
 
 export const Utils = {
-  BASE_CONFIGURATION,
   DESCRIPTIONS,
-  TRANSPORTS,
-  ...UTILS,
+  ...UTILS
 };
