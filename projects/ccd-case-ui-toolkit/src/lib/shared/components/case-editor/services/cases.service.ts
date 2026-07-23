@@ -15,7 +15,6 @@ import {
   RoleCategory,
   RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
-import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService, StructuredLoggerService } from '../../../services';
 import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
@@ -23,6 +22,7 @@ import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
 import { CaseEditComponent } from '../case-edit';
+import { getUserDetails } from '../../../utils';
 
 @Injectable()
 export class CasesService {
@@ -311,10 +311,8 @@ export class CasesService {
 
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const camUtils = new CaseAccessUtils();
-    let userInfo: UserInfo;
-    userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
+    let userInfo = getUserDetails(this.sessionStorageService);
     if (!userInfo) {
       return throwError(() => new Error('User info not found in session storage'));
     }
@@ -322,7 +320,8 @@ export class CasesService {
     // EXUI-4758 - getMappedRoleCategories no longer returns a single string, checks all roles to get the most likely roleCategory
     // Unsure whether we should be using mapped role categories any more - should trust the roleCategories from userInfo if they exist
     const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
-    const roleName = camUtils.getAMRoleName('challenged', roleCategories[0] as RoleCategory);
+    // If user has no role categories, default to LEGAL_OPERATIONS
+    const roleName = camUtils.getAMRoleName('challenged', roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS");
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -345,20 +344,16 @@ export class CasesService {
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
-    // Assignment API endpoint
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-
     const camUtils = new CaseAccessUtils();
-    let userInfo: UserInfo;
-    userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
+    let userInfo = getUserDetails(this.sessionStorageService);
     if (!userInfo) {
       return throwError(() => new Error('User info not found in session storage'));
     }
 
     // EXUI-4758 - See above comment
     const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
-    // EXUI-4758 - Return first roleCategory as the roleCategory for now
-    const roleCategory = roleCategories[0] as RoleCategory;
+    // EXUI-4758 - Return first roleCategory as the roleCategory for now, unless not present, in which case default to LEGAL_OPERATIONS
+    const roleCategory = roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS";
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,

@@ -101,7 +101,7 @@ describe('TaskRequirementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskAssignedComponent);
     component = fixture.componentInstance;
-    spyOn(mockCaseworkerService, 'getCaseworkers').and.returnValue(of(null));
+    spyOn(mockCaseworkerService, 'getUserByIdamId').and.returnValue(of(null));
     spyOn(mockJudicialworkerService, 'getJudicialworkers').and.returnValue(of([judicialworker]));
     component.task.assignee = '4321-4321-4321-4321';
     fixture.detectChanges();
@@ -111,7 +111,7 @@ describe('TaskRequirementComponent', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task assignment required');
-    expect(mockCaseworkerService.getCaseworkers).toHaveBeenCalled();
+    expect(mockCaseworkerService.getUserByIdamId).toHaveBeenCalled();
     expect(mockJudicialworkerService.getJudicialworkers).toHaveBeenCalled();
     expect(component.assignedUserName).toEqual('Test Judicialworker');
   });

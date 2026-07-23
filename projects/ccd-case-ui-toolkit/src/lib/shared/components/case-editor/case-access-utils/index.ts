@@ -29,31 +29,30 @@ export class CaseAccessUtils {
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
         const roleCategoryList: RoleCategory[] = [];
 
-        if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.JUDGE_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.JUDGE_ROLE_CATEGORY);
         }
-        if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.PROFESSIONAL_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY);
         }
-        if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.CITIZEN_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.CITIZEN_ROLE_CATEGORY);
         }
-        if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.ADMIN_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.ADMIN_ROLE_CATEGORY);
         }
-        if (this.roleOrCategoryExists(CaseAccessUtils.CTSC_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.CTSC_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.CTSC_ROLE_CATEGORY);
         }
-        if (this.roleOrCategoryExists(CaseAccessUtils.LEGAL_OPERATIONS_ROLE, roleKeywords)) {
+        if (this.roleHasKeyword(CaseAccessUtils.LEGAL_OPERATIONS_ROLE, roleKeywords)) {
             roleCategoryList.push(CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY);
         }
 
         return roleCategoryList;
     }
 
-    public roleOrCategoryExists(roleKeyword: string,roleKeywords: string[]): boolean {
-        const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
-        return keywordExists;
+    public roleHasKeyword(keyword: string, roleWords: string[]): boolean {
+        return roleWords.includes(keyword);
     }
 
     public getAMRoleName(accessType: string, aMRole: RoleCategory): string {

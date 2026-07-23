@@ -7,8 +7,3 @@ export interface Caseworker {
   roleCategories: string[];
   service?: string;
 }
-
-export interface CaseworkersByService {
-  service: string;
-  caseworkers: Caseworker[];
-}

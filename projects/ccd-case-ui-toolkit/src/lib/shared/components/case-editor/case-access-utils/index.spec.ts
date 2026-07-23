@@ -70,15 +70,15 @@ describe('CaseAccessUtils', () => {
         });
     });
 
-    describe('roleOrCategoryExists', () => {
+    describe('roleHasKeyword', () => {
 
         it('should return true when role exists', () => {
-            const response = camUtils.roleOrCategoryExists('solicitor', ['solicitor']);
+            const response = camUtils.roleHasKeyword('solicitor', ['solicitor']);
             expect(response).toBeTruthy();
         });
 
         it('should return false', () => {
-            const response = camUtils.roleOrCategoryExists('dummy', []);
+            const response = camUtils.roleHasKeyword('dummy', []);
             expect(response).toBeFalsy();
         });
     });

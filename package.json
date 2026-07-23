@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.74-multiple-role-categories",
+  "version": "7.3.76-multiple-role-categories-srt",
   "engines": {
     "node": ">=20.19.0"
   },
