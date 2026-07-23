@@ -1,6 +1,11 @@
 ## RELEASE NOTES
 
 ### Version 7.3.76-CME-1106-material-datetime
+
+### Version 7.3.76
+**EXUI-4946** Misleading error message
+
+### Version 7.3.75
 **EXUI-4838** Unable to read long string
 **EXUI-2212** Inconsistent error message display for link mark up
 **EXUI-4745** Marked library version update
