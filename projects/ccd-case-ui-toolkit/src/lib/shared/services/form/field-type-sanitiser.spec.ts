@@ -137,6 +137,53 @@ describe('FieldTypeSanitiser', () => {
     expect(editForm.data.dynamicList).toEqual(EXPECTED_VALUE_DYNAMIC_LIST);
   });
 
+  it('should use collection row DynamicMultiSelectList options without leaking selections to new rows', () => {
+    const defaultItems = [{ code: 'default-1', label: 'Default 1' }, { code: 'default-2', label: 'Default 2' }];
+    const recipientOneItems = [{ code: 'recipient-1-order-1', label: 'Recipient 1 order 1' }];
+    const recipientTwoItems = [{ code: 'recipient-2-order-1', label: 'Recipient 2 order 1' }];
+    const collectionCaseFields = [{
+      id: 'stmtOfServiceAddRecipient',
+      value: [
+        { id: 'recipient-1', value: { orderList: { list_items: recipientOneItems, value: [recipientOneItems[0]] } } },
+        { id: 'recipient-2', value: { orderList: { list_items: recipientTwoItems, value: [recipientTwoItems[0]] } } }
+      ],
+      field_type: {
+        type: 'Collection',
+        collection_field_type: {
+          type: 'Complex',
+          complex_fields: [{
+            id: 'orderList',
+            field_type: { type: 'DynamicMultiSelectList' },
+            display_context: 'OPTIONAL',
+            list_items: defaultItems
+          }]
+        }
+      }
+    }] as unknown as CaseField[];
+    const formData = {
+      stmtOfServiceAddRecipient: [
+        { id: 'recipient-1', value: { orderList: [recipientOneItems[0]] } },
+        { id: 'recipient-2', value: { orderList: [recipientTwoItems[0]] } },
+        { id: 'recipient-3', value: { orderList: [defaultItems[1]] } }
+      ]
+    };
+
+    new FieldTypeSanitiser().sanitiseLists(collectionCaseFields, formData);
+
+    expect(formData.stmtOfServiceAddRecipient[0].value.orderList as any).toEqual({
+      value: [recipientOneItems[0]],
+      list_items: recipientOneItems
+    });
+    expect(formData.stmtOfServiceAddRecipient[1].value.orderList as any).toEqual({
+      value: [recipientTwoItems[0]],
+      list_items: recipientTwoItems
+    });
+    expect(formData.stmtOfServiceAddRecipient[2].value.orderList as any).toEqual({
+      value: [defaultItems[1]],
+      list_items: defaultItems
+    });
+  });
+
   describe('ensureDynamicMultiSelectListPopulated', () => {
     let fieldTypeSanitiser: FieldTypeSanitiser;
     let mockCaseFields: CaseField[];
