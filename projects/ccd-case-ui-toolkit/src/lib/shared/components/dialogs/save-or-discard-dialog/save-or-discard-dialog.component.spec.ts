@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DebugElement } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog.component';

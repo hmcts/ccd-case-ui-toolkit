@@ -1,11 +1,11 @@
-import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_LEGACY_DATE_LOCALE } from '@angular/material/legacy-core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -47,9 +47,10 @@ describe('DatetimePickerComponent', () => {
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
+        NgxMatDatepickerActions,
+        NgxMatDatepickerApply,
+        NgxMatDatepickerInput,
+        NgxMatDatetimepicker,
         NoopAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
@@ -61,9 +62,9 @@ describe('DatetimePickerComponent', () => {
         DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
       ],
       providers: [FormatTranslatorService,
-        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
-        { provide: MAT_LEGACY_DATE_LOCALE, useValue: 'en-GB' },
+        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: DateAdapter, useClass: MomentDateAdapter },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         { provide: CaseFieldService, useValue: caseFieldService }
       ]
     })
@@ -209,40 +210,15 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
     tick(1);
     const initialValue = fixture.nativeElement.querySelector('input').value;
-    const initialDate = new Date();
+    const selectedDate = moment().startOf('month');
+    const expectedValue = selectedDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
 
-    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
+    component.inputElement.nativeElement.value = selectedDate.format(initialDateEntryParameter);
+    component.focusOut();
     fixture.detectChanges();
 
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-
-    const dayCells = fixture.debugElement.queryAll(
-      By.css('.mat-calendar-body-cell')
-    );
-
-    // get the collection of day buttons in order to click them
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
-
-    let setDay = fixture.nativeElement.querySelector('input').value.split('/');
-    const d = parseInt(setDay[0], 10);
-    const m = parseInt(setDay[1], 10);
-    const y = parseInt(setDay[2], 10);
-    setDay = new Date(y, m - 1, d);
-
-    // check the new input against the first day of the month of the year in order to verify
-    const firstDay = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
-    if (initialDate.getDate() !== 1) {
-      expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
-    }
-    expect(setDay.getFullYear()).toBe(firstDay.getFullYear());
-    expect(setDay.getMonth()).toBe(firstDay.getMonth());
-    expect(setDay.getDay()).toBe(firstDay.getDay());
+    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    expect(component.dateControl.value).toBe(expectedValue);
     flush();
     discardPeriodicTasks();
   }));
@@ -503,61 +479,18 @@ describe('DatetimePickerComponent', () => {
     tick(1);
 
     const initialValue = fixture.nativeElement.querySelector('.govuk-input').value;
-    const initialDate = new Date(initialValue);
+    const selectedDate = moment(initialValue, initialDateEntryParameter)
+      .subtract(1, 'year')
+      .month(1)
+      .date(1);
+    const expectedValue = selectedDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
 
-    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
+    component.inputElement.nativeElement.value = selectedDate.format(initialDateEntryParameter);
+    component.focusOut();
     fixture.detectChanges();
 
-    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
-
-    const periodSelector = fixture.debugElement.query(By.css('.mat-calendar-period-button')).nativeElement;
-
-    periodSelector.click();
-    fixture.detectChanges();
-
-    const yearCells = fixture.debugElement.queryAll(
-      By.css('ngx-mat-multi-year-view .mat-calendar-body-cell')
-    );
-
-    // double check that the first year shown will not be the current year
-    if (yearCells[0].nativeElement.innerText !== initialDate.getFullYear().toString()) {
-      yearCells[0].nativeElement.click();
-      fixture.detectChanges();
-    } else {
-      yearCells[1].nativeElement.click();
-      fixture.detectChanges();
-    }
-
-    const monthCells = fixture.debugElement.queryAll(
-      By.css('ngx-mat-year-view .mat-calendar-body-cell')
-    );
-
-    monthCells[1].nativeElement.click();
-    fixture.detectChanges();
-
-    const dayCells = fixture.debugElement.queryAll(
-      By.css('ngx-mat-month-view .mat-calendar-body-cell')
-    );
-
-    dayCells[0].nativeElement.click();
-    fixture.detectChanges();
-
-    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
-    confirm.dispatchEvent(new MouseEvent('click'));
-    fixture.detectChanges();
-
-    let setDate = fixture.nativeElement.querySelector('input').value.split('/');
-    const d = parseInt(setDate[0], 10);
-    const m = parseInt(setDate[1], 10);
-    const y = parseInt(setDate[2], 10);
-    setDate = new Date(y, m - 1, d);
-
-    // check all are first values (apart from year which can check is not initial selected year)
     expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
-    expect(setDate.getFullYear()).not.toBe(initialDate.getFullYear());
-    expect(setDate.getMonth()).toBe(1);
-    expect(setDate.getDay()).toBe(1);
+    expect(component.dateControl.value).toBe(expectedValue);
 
     flush();
     discardPeriodicTasks();

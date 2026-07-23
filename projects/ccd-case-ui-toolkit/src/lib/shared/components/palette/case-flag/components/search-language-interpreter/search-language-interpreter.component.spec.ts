@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
@@ -231,7 +231,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const languageSelectionPanel = document.querySelector('.mat-autocomplete-panel-extend');
     // The language selection panel will still be defined but it should be hidden
     expect(languageSelectionPanel).toBeTruthy();
-    expect(languageSelectionPanel.getAttribute('class')).toContain('mat-autocomplete-hidden');
+    expect(languageSelectionPanel.getAttribute('class')).toContain('mat-mdc-autocomplete-hidden');
     const matOptions = document.querySelectorAll('mat-option');
     expect(matOptions.length).toBe(0);
   });
