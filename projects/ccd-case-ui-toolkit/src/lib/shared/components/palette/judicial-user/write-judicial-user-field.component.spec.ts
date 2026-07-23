@@ -164,6 +164,8 @@ describe('WriteJudicialUserFieldComponent', () => {
   let nativeElement: any;
   let mockCaseNotifier: any;
 
+  const getAutocompleteOptions = (): HTMLElement => document.querySelector('.mat-mdc-autocomplete-panel') as HTMLElement;
+
   beforeEach(waitForAsync(() => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes', 'getSelectedJurisdiction']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
@@ -225,7 +227,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     expect(component.jurisdiction).toEqual('CIVIL');
     expect(component.caseType).toEqual('CIVIL');
@@ -267,7 +269,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('No results found');
   });
 
@@ -299,7 +301,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     expect(component.filterJudicialUsers).toHaveBeenCalledWith('123');
     expect(component.invalidSearchTerm).toBe(true);
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Invalid search term');
   });
 
@@ -315,7 +317,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     expect(component.filterJudicialUsers).toHaveBeenCalledWith('123');
     expect(component.invalidSearchTerm).toBe(true);
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Invalid search term');
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -431,7 +433,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toEqual(' No Email ');
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[3]]));
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -463,7 +465,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     selectedJudicial.dispatchEvent(new InputEvent('blur'));
     expect(judicialUserField.setValue).toHaveBeenCalledWith(null);
@@ -487,7 +489,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const autocompleteOptions = fixture.debugElement.query(By.css('.mat-autocomplete-panel')).nativeElement;
+    const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     selectedJudicial.dispatchEvent(new InputEvent('blur'));
     expect(judicialUserField.setValue).not.toHaveBeenCalledWith(null);
