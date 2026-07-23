@@ -60,7 +60,7 @@
               aria-hidden="true"
             />
           </div>
-          <span class="node__name node-name-document">
+          <span class="node__name node-name-document" [attr.title]="node.name">
             {{ node.name }}
             <br />
             <span class="node__document-upload-timestamp">{{
