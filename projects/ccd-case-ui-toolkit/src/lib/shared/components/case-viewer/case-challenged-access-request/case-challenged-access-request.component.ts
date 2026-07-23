@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -28,13 +29,15 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   private readonly radioSelectedControlName = 'radioSelected';
   private readonly caseReferenceControlName = 'caseReference';
   private readonly otherReasonControlName = 'otherReason';
+  private originalDocumentTitle: string;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly casesService: CasesService,
     private readonly route: ActivatedRoute,
-    private readonly caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier,
+    private readonly titleService: Title
   ) {
     this.accessReasons = [
       { reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false },
@@ -48,6 +51,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     this.title = ChallengedAccessRequestPageText.TITLE;
     this.hint = ChallengedAccessRequestPageText.HINT;
     this.caseRefLabel = ChallengedAccessRequestPageText.CASE_REF;
+    this.originalDocumentTitle = this.titleService.getTitle();
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
@@ -77,6 +81,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
 
   public onChange(): void {
     this.submitted = false;
+    this.restoreDocumentTitle();
     // Clear the "Case reference" and "Other reason" fields manually. This prevents any previous value being retained by
     // the field's FormControl when the field itself is removed from the DOM by *ngIf. (If it is subsequently added back
     // to the DOM by *ngIf, it will appear empty but the associated FormControl still has the previous value.)
@@ -90,8 +95,9 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       this.errorMessage = {
         title: this.genericError,
         description: ChallengedAccessRequestErrors.NO_SELECTION,
-        fieldId: 'error-message'
+        fieldId: 'reason-0'
       };
+      this.prefixDocumentTitleWithError();
     } else {
       if (this.formGroup.get(this.caseReferenceControlName).invalid) {
         this.errorMessage = {
@@ -99,6 +105,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
           description: ChallengedAccessRequestErrors.NO_CASE_REFERENCE,
           fieldId: 'case-reference'
         };
+        this.prefixDocumentTitleWithError();
       }
 
       if (this.formGroup.get(this.otherReasonControlName).invalid) {
@@ -107,11 +114,13 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
           description: ChallengedAccessRequestErrors.NO_REASON,
           fieldId: 'other-reason'
         };
+        this.prefixDocumentTitleWithError();
       }
     }
 
     // Initiate Challenged Access Request
     if (this.formGroup.valid) {
+      this.restoreDocumentTitle();
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
       const caseId = this.route.snapshot.params.cid;
       const radioSelectedValue = this.formGroup.get(this.radioSelectedControlName).value;
@@ -141,6 +150,18 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
 
   public onCancel(): void {
     this.router.navigateByUrl(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
+  }
+
+  private prefixDocumentTitleWithError(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.originalDocumentTitle}`);
+    }
+  }
+
+  private restoreDocumentTitle(): void {
+    if (this.titleService.getTitle() !== this.originalDocumentTitle) {
+      this.titleService.setTitle(this.originalDocumentTitle);
+    }
   }
 
   public ngOnDestroy(): void {
