@@ -182,6 +182,6 @@ As a result once you change library source code it will be automatically re-comp
 
 Prerelease version from PR branch should follow the format as `x.y.z-RDM-xxx-prerelease`
 
-## LICENSE
+## LICENSE.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
