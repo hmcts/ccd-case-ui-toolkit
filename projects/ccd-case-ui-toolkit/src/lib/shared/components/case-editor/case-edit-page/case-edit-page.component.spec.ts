@@ -923,7 +923,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         new MultipageComponentStateService(),
         {} as AddressesService,
         linkedCasesService,
-        new CaseFlagStateService()
+        new CaseFlagStateService(),
+        focusService
       );
       component.editForm = editForm;
       component.eventTrigger = eventTrigger;
