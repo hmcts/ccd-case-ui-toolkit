@@ -66,6 +66,7 @@ import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { FocusService } from '../../../services/window/focus.service'
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -97,6 +98,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
 
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -112,7 +115,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {},
     linkedCasesService = {},
-    caseFlagStateService = new CaseFlagStateService()
+    caseFlagStateService = new CaseFlagStateService(),
+    fs = focusService
   }) =>
     new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -129,7 +133,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     multipageComponentStateService as MultipageComponentStateService,
     addressesService as AddressesService,
     linkedCasesService as LinkedCasesService,
-    caseFlagStateService as CaseFlagStateService
+    caseFlagStateService as CaseFlagStateService,
+    fs as FocusService
     );
 
   it('should create', () => {
@@ -172,6 +177,356 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       component.ngOnDestroy();
 
       expect(multipageComponentStateService.reset).toHaveBeenCalled();
+    });
+  });
+
+  describe('journey page state helpers', () => {
+    const createJourney = (overrides = {}): any => ({
+      next: jasmine.createSpy('next'),
+      previous: jasmine.createSpy('previous'),
+      hasNext: () => true,
+      hasPrevious: () => true,
+      isFinished: () => false,
+      isStart: () => false,
+      onPageChange: () => undefined,
+      journeyId: 'journeyId',
+      journeyPageNumber: 1,
+      journeyStartPageNumber: 1,
+      journeyEndPageNumber: 3,
+      journeyPreviousPageNumber: 0,
+      childJourney: null,
+      fieldState: 1,
+      ...overrides
+    });
+
+    it('should prefer linked cases page over field state when returning the journey page number', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      multipageComponentStateService.setJourneyCollection([
+        createJourney({ fieldState: 2, linkedCasesPage: 4 })
+      ]);
+      component = initializeComponent({ multipageComponentStateService });
+
+      expect(component.getPageNumber()).toBe(4);
+    });
+
+    it('should return field state as the journey page number when linked cases page is not set', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      multipageComponentStateService.setJourneyCollection([
+        createJourney({ fieldState: 2 })
+      ]);
+      component = initializeComponent({ multipageComponentStateService });
+
+      expect(component.getPageNumber()).toBe(2);
+    });
+
+    it('should determine whether the current journey is at the start or end', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      multipageComponentStateService.setJourneyCollection([
+        createJourney({ fieldState: 3, journeyStartPageNumber: 1, journeyEndPageNumber: 3 })
+      ]);
+      component = initializeComponent({ multipageComponentStateService });
+
+      expect(component.isAtStart()).toBe(false);
+      expect(component.isAtEnd()).toBe(true);
+    });
+
+    it('should fall back to the previous page state when deciding if previous is disabled outside a journey', () => {
+      component = initializeComponent({});
+
+      component.hasPreviousPage$.next(false);
+      expect(component.isDisabled()).toBe(true);
+
+      component.hasPreviousPage$.next(true);
+      expect(component.isDisabled()).toBe(false);
+    });
+
+    it('should disable previous when the active journey is at the start', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      multipageComponentStateService.setJourneyCollection([
+        createJourney({ fieldState: 1, journeyStartPageNumber: 1 })
+      ]);
+      component = initializeComponent({ multipageComponentStateService });
+
+      expect(component.isDisabled()).toBe(true);
+    });
+  });
+
+  describe('navigation helpers', () => {
+    const createJourney = (overrides = {}): any => ({
+      next: jasmine.createSpy('next'),
+      previous: jasmine.createSpy('previous'),
+      hasNext: () => true,
+      hasPrevious: () => true,
+      isFinished: () => false,
+      isStart: () => false,
+      onPageChange: () => undefined,
+      journeyId: 'journeyId',
+      journeyPageNumber: 1,
+      journeyStartPageNumber: 1,
+      journeyEndPageNumber: 3,
+      journeyPreviousPageNumber: 0,
+      childJourney: null,
+      fieldState: 1,
+      ...overrides
+    });
+
+    it('should delegate final journey navigation to submit and cancel', () => {
+      component = initializeComponent({});
+      spyOn(component, 'submit');
+      spyOn(component, 'cancel');
+
+      component.onFinalNext();
+      component.onFinalPrevious();
+
+      expect(component.submit).toHaveBeenCalled();
+      expect(component.cancel).toHaveBeenCalled();
+    });
+
+    it('should update form data, move back, and step the child journey when returning to the previous page', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const caseEditDataServiceMock = createSpyObj<CaseEditDataService>('CaseEditDataService', ['clearFormValidationErrors']);
+      const focusServiceMock = createSpyObj<FocusService>('FocusService', ['focus']);
+      const caseEventData = {
+        data: { field1: 'current page value' },
+        event_data: { field1: 'previous page value' }
+      } as unknown as CaseEventData;
+      multipageComponentStateService.setJourneyCollection([createJourney({ fieldState: 2 })]);
+      component = initializeComponent({
+        caseEditDataService: caseEditDataServiceMock,
+        multipageComponentStateService,
+        fs: focusServiceMock
+      });
+      spyOn(component, 'buildCaseEventData').and.returnValue(caseEventData);
+      spyOn(component, 'updateFormData');
+      spyOn(component, 'previous');
+      spyOn(component, 'previousStep');
+
+      component.toPreviousPage();
+
+      expect(caseEventData.data).toEqual(caseEventData.event_data);
+      expect(component.updateFormData).toHaveBeenCalledWith(caseEventData);
+      expect(component.previous).toHaveBeenCalled();
+      expect(component.previousStep).toHaveBeenCalled();
+      expect(focusServiceMock.focus).toHaveBeenCalled();
+    });
+
+    it('should not step the child journey when returning to the previous page outside a journey', () => {
+      const caseEditDataServiceMock = createSpyObj<CaseEditDataService>('CaseEditDataService', ['clearFormValidationErrors']);
+      const caseEventData = {
+        data: { field1: 'current page value' },
+        event_data: { field1: 'previous page value' }
+      } as unknown as CaseEventData;
+      component = initializeComponent({ caseEditDataService: caseEditDataServiceMock });
+      spyOn(component, 'buildCaseEventData').and.returnValue(caseEventData);
+      spyOn(component, 'updateFormData');
+      spyOn(component, 'previous');
+      spyOn(component, 'previousStep');
+
+      component.toPreviousPage();
+
+      expect(component.previousStep).not.toHaveBeenCalled();
+    });
+
+    it('should scroll and focus the target element when navigating to an error', () => {
+      component = initializeComponent({});
+      const element = document.createElement('input');
+      element.id = 'field-error-target';
+      (element as any).scrollIntoView = jasmine.createSpy('scrollIntoView');
+      (element as any).focus = jasmine.createSpy('focus');
+      document.body.appendChild(element);
+
+      component.navigateToErrorElement(element.id);
+
+      expect((element as any).scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
+      expect((element as any).focus).toHaveBeenCalled();
+      document.body.removeChild(element);
+    });
+  });
+
+  describe('form state helpers', () => {
+    it('should record whether form values have changed', () => {
+      component = initializeComponent({});
+
+      component.applyValuesChanged(true);
+
+      expect(component.formValuesChanged).toBe(true);
+    });
+
+    it('should treat an unfinished linked cases journey as invalid even when fields are valid', () => {
+      const pageValidationServiceMock = createSpyObj<PageValidationService>('PageValidationService', ['getInvalidFields']);
+      pageValidationServiceMock.getInvalidFields.and.returnValue([]);
+      component = initializeComponent({ pageValidationService: pageValidationServiceMock });
+      component.editForm = new FormGroup({ data: new FormGroup({}) });
+      component.currentPage = new WizardPage();
+      component.currentPage.case_fields = [];
+      component.isLinkedCasesJourneyAtFinalStep = false;
+      spyOn(component, 'isLinkedCasesJourney').and.returnValue(true);
+
+      expect(component.currentPageIsNotValid()).toBe(true);
+
+      component.isLinkedCasesJourneyAtFinalStep = true;
+      expect(component.currentPageIsNotValid()).toBe(false);
+    });
+
+    it('should clear incomplete flag stage errors when the journey is at the end', () => {
+      component = initializeComponent({});
+      const flagLauncher = new FormControl('value');
+      flagLauncher.setErrors({ notAllCaseFlagStagesCompleted: true });
+      component.editForm = new FormGroup({
+        data: new FormGroup({ flagLauncherInternal: flagLauncher })
+      });
+      spyOn(component, 'isAtEnd').and.returnValue(true);
+
+      component.checkForStagesCompleted();
+
+      expect(flagLauncher.errors).toBeNull();
+    });
+
+    it('should not patch disabled form controls from callback data', () => {
+      component = initializeComponent({});
+      const fieldControl = new FormControl({ value: 'original value', disabled: true });
+      const formGroup = new FormGroup({
+        data: new FormGroup({ field1: fieldControl })
+      });
+
+      component.updateFormControlsValue(formGroup, 'field1', 'callback value');
+
+      expect(fieldControl.value).toBe('original value');
+    });
+
+    it('should preserve longer optional collection values already held by the form', () => {
+      component = initializeComponent({});
+      const collectionControl = new FormControl(['one', 'two']);
+      (collectionControl as any).caseField = {
+        display_context: 'OPTIONAL',
+        field_type: { type: 'Collection' }
+      };
+      const formGroup = new FormGroup({
+        data: new FormGroup({ collectionField: collectionControl })
+      });
+
+      component.updateFormControlsValue(formGroup, 'collectionField', ['one']);
+
+      expect(collectionControl.value).toEqual(['one', 'two']);
+    });
+
+    it('should delegate event completion changes to CaseEditComponent', () => {
+      const caseEdit = {
+        caseDetails: { case_id: '1234567812345678' },
+        onEventCanBeCompleted: jasmine.createSpy('onEventCanBeCompleted'),
+        submit: jasmine.createSpy('submit')
+      };
+      component = initializeComponent({ caseEdit });
+      component.eventTrigger = { id: 'eventId' } as CaseEventTrigger;
+      component.editForm = new FormGroup({ data: new FormGroup({}) });
+
+      component.onEventCanBeCompleted(true);
+
+      expect(caseEdit.onEventCanBeCompleted).toHaveBeenCalledWith({
+        eventTrigger: component.eventTrigger,
+        eventCanBeCompleted: true,
+        caseDetails: caseEdit.caseDetails,
+        form: component.editForm,
+        submit: caseEdit.submit,
+      });
+    });
+  });
+
+  describe('submit validation handling', () => {
+    it('should show a next button validation error when linked cases journey is not complete', () => {
+      const caseEditDataServiceMock = createSpyObj<CaseEditDataService>('CaseEditDataService', ['clearFormValidationErrors']);
+      const focusServiceMock = createSpyObj<FocusService>('FocusService', ['focus']);
+      const linkedCasesServiceMock = {
+        casesToUnlink: [],
+        isLinkedCasesEventTrigger: false,
+        linkedCases: []
+      };
+      component = initializeComponent({
+        caseEditDataService: caseEditDataServiceMock,
+        fs: focusServiceMock,
+        linkedCasesService: linkedCasesServiceMock
+      });
+      component.editForm = new FormGroup({ data: new FormGroup({}) });
+      component.eventTrigger = {
+        id: 'testEvent',
+        case_fields: [],
+        can_save_draft: false
+      } as unknown as CaseEventTrigger;
+      spyOn(component, 'currentPageIsNotValid').and.returnValue(true);
+      spyOn(component, 'isLinkedCasesJourney').and.returnValue(true);
+      spyOn(component, 'generateErrorMessage');
+      spyOn(CaseEditPageComponent as any, 'scrollToTop');
+
+      component.submit();
+
+      expect(component.validationErrors).toEqual([
+        { id: 'next-button', message: 'Please select Next to go to the next page' }
+      ]);
+      expect((CaseEditPageComponent as any).scrollToTop).toHaveBeenCalled();
+      expect(component.generateErrorMessage).not.toHaveBeenCalled();
+      expect(focusServiceMock.focus).toHaveBeenCalled();
+    });
+  });
+
+  describe('error handling', () => {
+    it('should reset submitting state, publish the error, map field errors, and log the failure', () => {
+      const formErrorServiceMock = createSpyObj<FormErrorService>('FormErrorService', ['mapFieldErrors']);
+      const caseEdit = {
+        callbackErrorsSubject: new Subject<any>(),
+        error: null,
+        isSubmitting: true
+      };
+      const fieldErrors = [{ id: 'field1', message: 'Field is invalid' }];
+      const error = {
+        details: {
+          field_errors: fieldErrors
+        }
+      };
+      component = initializeComponent({
+        caseEdit,
+        formErrorService: formErrorServiceMock
+      });
+      component.editForm = new FormGroup({
+        data: new FormGroup({ field1: new FormControl('invalid value') })
+      });
+      spyOn(caseEdit.callbackErrorsSubject, 'next');
+      spyOn(component.callbackErrorsSubject, 'next');
+      spyOn((component as any).logger, 'error');
+
+      (component as any).handleError(error);
+
+      expect(caseEdit.isSubmitting).toBe(false);
+      expect(caseEdit.error).toBe(error);
+      expect(caseEdit.callbackErrorsSubject.next).toHaveBeenCalledWith(error);
+      expect(component.callbackErrorsSubject.next).toHaveBeenCalledWith(error);
+      expect(formErrorServiceMock.mapFieldErrors).toHaveBeenCalledWith(
+        fieldErrors,
+        component.editForm.controls['data'] as FormGroup,
+        'validation'
+      );
+      expect((component as any).logger.error).toHaveBeenCalledWith('Case edit page handled an error.', { error });
+    });
+
+    it('should not map field errors when the error has no details', () => {
+      const formErrorServiceMock = createSpyObj<FormErrorService>('FormErrorService', ['mapFieldErrors']);
+      const caseEdit = {
+        callbackErrorsSubject: new Subject<any>(),
+        error: null,
+        isSubmitting: true
+      };
+      const error = { message: 'Callback failed' };
+      component = initializeComponent({
+        caseEdit,
+        formErrorService: formErrorServiceMock
+      });
+      spyOn((component as any).logger, 'error');
+
+      (component as any).handleError(error);
+
+      expect(caseEdit.isSubmitting).toBe(false);
+      expect(caseEdit.error).toBe(error);
+      expect(formErrorServiceMock.mapFieldErrors).not.toHaveBeenCalled();
+      expect((component as any).logger.error).toHaveBeenCalledWith('Case edit page handled an error.', { error });
     });
   });
 
@@ -492,6 +847,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
   const caseFlagStateService = new CaseFlagStateService();
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
+  const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
@@ -531,7 +887,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          validPageList: pageList
+          validPageList: pageList,
+          caseNotifier: createSpyObj('caseNotifier', ['removeCachedCase'])
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -615,7 +972,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -950,6 +1308,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       linkedCasesService.initialCaseLinkRefs = ['REF1', 'REF2'];
       comp.cancel();
       expect(comp.caseEdit.caseDetails.tabs[0].fields[0].value).toEqual([{ 'value': { 'CaseReference': 'REF1' } }]);
+      expect(caseEditComponentStub.caseNotifier.removeCachedCase).toHaveBeenCalled();
     });
   });
 
@@ -988,7 +1347,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          validPageList: pageList
+          validPageList: pageList,
+          caseNotifier: createSpyObj('caseNotifier', ['removeCachedCase'])
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1047,6 +1407,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1070,7 +1432,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1120,6 +1483,26 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(cancelled.emit).not.toHaveBeenCalledWith({
         status: CaseEditPageText.NEW_FORM_SAVE,
       });
+      expect(caseEditComponentStub.caseNotifier.removeCachedCase).toHaveBeenCalled();
+    });
+
+    it('should use the end button label on the final page when summary page is hidden', () => {
+      caseEditComponentStub.eventTrigger.show_summary = false;
+      caseEditComponentStub.eventTrigger.end_button_label = CaseEditPageText.TRIGGER_TEXT_SAVE;
+
+      fixture.detectChanges();
+
+      const button = fixture.debugElement.query($SELECT_SUBMIT_BUTTON);
+      expect(button.nativeElement.textContent.trim()).toEqual(CaseEditPageText.TRIGGER_TEXT_SAVE);
+    });
+
+    it('should use Submit on the final page when summary page is hidden and end button label is not set', () => {
+      caseEditComponentStub.eventTrigger.show_summary = false;
+
+      fixture.detectChanges();
+
+      const button = fixture.debugElement.query($SELECT_SUBMIT_BUTTON);
+      expect(button.nativeElement.textContent.trim()).toEqual('Submit');
     });
   });
 
@@ -1216,6 +1599,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1239,7 +1624,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1386,6 +1772,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         caseEditDataService.caseFormValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
         caseEditDataService.caseEditForm$ = of(caseEditComponentStub.form);
         caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
+        
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1414,7 +1802,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -1714,6 +2103,40 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.editForm.controls.data.get('caseNameHmctsInternal')).toBeNull();
       expect(comp.editForm.controls.data.get('caseLinksFlag')).toBeNull();
     });
+
+    it('should call syncConditionalShowStates on each CaseEditFormComponent instance before form validation', () => {
+      const syncSpy = jasmine.createSpy('syncConditionalShowStates');
+      const mockFormComponent = { syncConditionalShowStates: syncSpy };
+      const forEachSpy = jasmine.createSpy('forEach').and.callFake((fn: Function) => fn(mockFormComponent));
+      (comp as any).caseEditFormComponents = { forEach: forEachSpy };
+
+      comp.eventTrigger = {
+        id: 'testEvent',
+        case_fields: [caseField1],
+        name: 'Test event trigger name',
+        can_save_draft: false,
+        event_token: 'test-token'
+      } as unknown as CaseEventTrigger;
+
+      comp.submit();
+
+      expect(forEachSpy).toHaveBeenCalled();
+      expect(syncSpy).toHaveBeenCalled();
+    });
+
+    it('should not throw when caseEditFormComponents is an empty QueryList during submit', () => {
+      (comp as any).caseEditFormComponents = { forEach: jasmine.createSpy('forEach') };
+
+      comp.eventTrigger = {
+        id: 'testEvent',
+        case_fields: [caseField1],
+        name: 'Test event trigger name',
+        can_save_draft: false,
+        event_token: 'test-token'
+      } as unknown as CaseEventTrigger;
+
+      expect(() => comp.submit()).not.toThrow();
+    });
   });
 
   describe('previous the form', () => {
@@ -1812,6 +2235,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -1835,7 +2260,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -2033,6 +2459,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
 
+        const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -2056,7 +2484,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService },
             { provide: AddressesService, useValue: addressesServiceMock },
             { provide: LinkedCasesService, useValue: linkedCasesService },
-            { provide: CaseFlagStateService, useValue: caseFlagStateService }
+            { provide: CaseFlagStateService, useValue: caseFlagStateService },
+            { provide: FocusService, useValue: focusService }
           ],
         }).compileComponents();
       })
@@ -2221,6 +2650,33 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual('%FIELDLABEL% exceeds the maximum length');
+      });
+    });
+
+    it('should validate markdown pattern field value and log link markup error message', () => {
+      const caseField = aCaseField(
+        'InvalidMarkdownField',
+        'Invalid Markdown Field',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      const control = new FormControl('bad [link](markup)');
+      control.setErrors({ markDownPattern: true });
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          InvalidMarkdownField: control
+        })
+      });
+      caseEditDataService.addFormValidationError.calls.reset();
+      spyOn(window, 'scrollTo');
+
+      comp.generateErrorMessage([caseField]);
+
+      expect(caseEditDataService.addFormValidationError).toHaveBeenCalledWith({
+        id: 'InvalidMarkdownField',
+        message: 'The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.',
+        label: 'Invalid Markdown Field'
       });
     });
 
