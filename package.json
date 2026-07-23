@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.62-fix-case-filter-issue-v2",
+  "version": "7.3.74-user-by-idam-rework-v2",
   "engines": {
     "node": ">=20.19.0"
   },
