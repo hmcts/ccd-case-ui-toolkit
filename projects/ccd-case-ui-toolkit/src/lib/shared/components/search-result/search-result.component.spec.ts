@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
+import { of } from 'rxjs';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -18,7 +19,9 @@ import {
   SearchResultViewItem,
   SortOrder
 } from '../../domain';
+import { HmctsServiceDetail } from '../../domain/case-flag';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
+import { CaseFlagRefdataService } from '../../services/case-flag';
 import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
@@ -169,6 +172,10 @@ describe('SearchResultComponent', () => {
     let activityService: any;
     let searchHandler;
     let appConfig: any;
+    let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
+    const SERVICE_DETAILS = [{
+      service_code: 'ABA2'
+    }] as HmctsServiceDetail[];
     const caseReferencePipe = new CaseReferencePipe();
     const caseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
@@ -184,6 +191,8 @@ describe('SearchResultComponent', () => {
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
+      caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+      caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
 
       TestBed
         .configureTestingModule({
@@ -210,6 +219,7 @@ describe('SearchResultComponent', () => {
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
+            { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
             BrowserService,
             SessionStorageService
           ]
@@ -258,6 +268,11 @@ describe('SearchResultComponent', () => {
     it('should render pagination controls if results and metadata not empty', () => {
       const pagination = de.queryAll(By.css('ccd-pagination'));
       expect(pagination.length).toBeTruthy();
+    });
+
+    it('should add resolved HMCTS service ID to search result case fields', () => {
+      expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('TEST_CASE_TYPE');
+      expect(component.resultView.results[0].columns['PersonFirstName'].hmctsServiceId).toBe('ABA2');
     });
 
     it('should not render the pagination limit warning ', () => {
