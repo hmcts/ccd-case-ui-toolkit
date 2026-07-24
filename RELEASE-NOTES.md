@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.77
+**EXUI-4983** Package update-tar-minor
+
 ### Version 7.3.76
 **EXUI-4946** Misleading error message
 
