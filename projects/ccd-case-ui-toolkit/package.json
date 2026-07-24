@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.77-field-interpolation-01",
+  "version": "7.3.77-exui-5016-rc-1",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",

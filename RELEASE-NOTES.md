@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.77-exui-5016-rc-1
+**EXUI-5016** SRT changes
+
 ### Version 7.3.77
 **EXUI-4983** Package update-tar-minor
 
