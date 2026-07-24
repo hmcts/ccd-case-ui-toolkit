@@ -1,5 +1,39 @@
 ## RELEASE NOTES
 
+### Version 7.3.77
+**EXUI-4983** Package update-tar-minor
+
+### Version 7.3.76
+**EXUI-4946** Misleading error message
+
+### Version 7.3.75
+**EXUI-4838** Unable to read long string
+**EXUI-2212** Inconsistent error message display for link mark up
+**EXUI-4745** Marked library version update
+**EXUI-4284** Suppressions - @nicky-lenaers/ngx-scroll-to - deprecated
+
+### Version 7.3.74
+**EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.73
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
+### Version 7.3.72
+**EXUI-4803** axios upgrade
+
+### Version 7.3.71
+**EXUI-4669** EndButtonLabel not being applied
+
+### Version 7.3.70
+**EXUI-4802** Wrapper ticket 3 for package upgrades for em-media-viewer
+**POFCC-4826** Wrapper ticket 4 for package upgrades for em-media-viewer
+**POFCC-4851** Wrapper ticket 6 for package upgrades for em-media-viewer
+
+### Version 7.3.69
+**POFCC-75** Incorrect tab position on page load
+**POFCC-225** 'Skip to main content' link missing for case tabs
+**POFCC-214** Case tabs do not refresh after cancelling draft event
+
 ### Version 7.3.68
 **EXUI-4589** Package update - config
 
