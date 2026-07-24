@@ -849,6 +849,119 @@ describe('CaseEditPageComponent - all other tests', () => {
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
   const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
+  // EXUI-3839 - test added to verify that disabled hidden fields with retain_hidden_value true are included in the case event data
+  describe('buildCaseEventData', () => {
+    let data: any;
+    let eventData: any;
+
+    const setUpBuildCaseEventData = (retainedHiddenValue: boolean) => {
+      const retainedHiddenField = aCaseField(
+        'retainedHiddenField',
+        'Retained hidden field',
+        'Text',
+        'OPTIONAL',
+        null,
+        [],
+        retainedHiddenValue,
+        true
+      );
+      const visibleField = aCaseField(
+        'visibleField',
+        'Visible field',
+        'Text',
+        'OPTIONAL',
+        null
+      );
+      const editForm = new FormGroup({
+        data: new FormGroup({
+          retainedHiddenField: new FormControl('retained hidden value'),
+          visibleField: new FormControl('visible value')
+        }),
+        event: new FormGroup({
+          id: new FormControl('event-id'),
+          summary: new FormControl(''),
+          description: new FormControl('')
+        })
+      });
+      // Important - this replicates the scenario where the user has a hidden field which is disabled on the form
+      editForm.get('data.retainedHiddenField').disable();
+
+      const eventTrigger = {
+        case_fields: [retainedHiddenField, visibleField],
+        event_token: 'event-token',
+        name: 'Test event trigger name',
+        can_save_draft: false
+      } as CaseEventTrigger;
+      const page = createWizardPage([retainedHiddenField, visibleField]);
+      page.parsedShowCondition = ShowCondition.getInstance(null);
+      const wizard = new Wizard([page]);
+      const localFormValueService = new FormValueService(new FieldTypeSanitiser());
+      const localFieldsUtils = new FieldsUtils();
+      const localValidPageListCaseFieldsService = new ValidPageListCaseFieldsService(localFieldsUtils);
+      const caseEdit = {
+        form: editForm,
+        wizard,
+        eventTrigger,
+        ignoreWarning: false,
+        caseDetails: {
+          case_id: '1234567812345678'
+        },
+        validPageList: [page]
+      } as CaseEditComponent;
+      const component = new CaseEditPageComponent(
+        caseEdit,
+        {} as ActivatedRoute,
+        localFormValueService,
+        new FormErrorService(),
+        {} as ChangeDetectorRef,
+        new PageValidationService(new CaseFieldService()),
+        {} as MatDialog,
+        new CaseFieldService(),
+        {} as CaseEditDataService,
+        {} as LoadingService,
+        localValidPageListCaseFieldsService,
+        new MultipageComponentStateService(),
+        {} as AddressesService,
+        linkedCasesService,
+        new CaseFlagStateService(),
+        focusService
+      );
+      component.editForm = editForm;
+      component.eventTrigger = eventTrigger;
+      component.wizard = wizard;
+      component.currentPage = page;
+
+      const caseEventData = component.buildCaseEventData();
+      data = caseEventData.data as any;
+      eventData = caseEventData.event_data as any;
+    };
+
+    describe('when retain_hidden_value is true', () => {
+      beforeEach(() => {
+        setUpBuildCaseEventData(true);
+      });
+
+      it('should include disabled hidden fields in data and event data', () => {
+        // Expected that the disabled field is still present in the data (because of retain_hidden_value = true)
+        expect(data.retainedHiddenField).toEqual('retained hidden value');
+        expect(eventData.retainedHiddenField).toEqual('retained hidden value');
+        expect(data.visibleField).toEqual('visible value');
+      });
+    });
+
+    describe('when retain_hidden_value is false', () => {
+      beforeEach(() => {
+        setUpBuildCaseEventData(false);
+      });
+
+      it('should exclude disabled hidden fields in data and event data', () => {
+        expect(data.retainedHiddenField).toBeUndefined();
+        expect(eventData.retainedHiddenField).toBeUndefined();
+        expect(data.visibleField).toEqual('visible value');
+      });
+    });
+  });
+
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
       case_fields: [caseField1],
@@ -2727,6 +2840,115 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
+
+    it('should interpolate placeholders in mandatory complex type validation labels', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.isComplex = () => true;
+      complexField.isCollection = () => false;
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            inlineDocType: new FormControl('order'),
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+      caseEditDataService.caseFormValidationErrors$.subscribe(
+        validationErrors => comp.validationErrors = validationErrors
+      );
+
+      comp.generateErrorMessage([complexField]);
+
+      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors[0]).toEqual({
+        id: 'isReady',
+        message: '%FIELDLABEL% is required',
+        label: 'Is this order ready to be sealed and issued'
+      });
+    });
+
+    it('should interpolate placeholders in validation error translation args', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'READONLY',
+        1,
+        null,
+        true,
+        true
+      );
+      inlineDocTypeField.value = 'order';
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.value = {
+        inlineDocType: 'order',
+        isReady: null
+      };
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+
+      expect(comp.getRpxTranslatePipeArgs(approvalField.label)).toEqual({
+        FIELDLABEL: 'Is this order ready to be sealed and issued'
+      });
+    });
+
 
     it('should prefix complex child field id when generateErrorMessage recurses', () => {
       const childField: CaseField = aCaseField(
