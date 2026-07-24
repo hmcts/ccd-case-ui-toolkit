@@ -1,10 +1,14 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { of } from 'rxjs';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
+import { LabelSubstitutorModule, PlaceholderService } from '../../../directives/substitutor';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
@@ -25,7 +29,7 @@ describe('ReadComplexFieldTableComponent', () => {
 
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context', 'topLevelFormGroup']
+    inputs: ['caseField', 'caseFields', 'context', 'valueOrigin', 'topLevelFormGroup']
   });
 
   let fixture: ComponentFixture<ReadComplexFieldTableComponent>;
@@ -144,6 +148,7 @@ describe('ReadComplexFieldTableComponent', () => {
           imports: [
             PaletteUtilsModule,
             ConditionalShowModule,
+            LabelSubstitutorModule,
             fieldReadComponentMock
           ],
           declarations: [
@@ -156,7 +161,10 @@ describe('ReadComplexFieldTableComponent', () => {
           providers: [
             FieldsUtils,
             ConditionalShowRegistrarService,
-            GreyBarService
+            GreyBarService,
+            PlaceholderService,
+            { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe },
+            { provide: RpxTranslationService, useValue: { language: 'en', language$: of('en') } }
           ]
         })
         .compileComponents();
@@ -194,8 +202,24 @@ describe('ReadComplexFieldTableComponent', () => {
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
 
       expect(simpleRowsValues.length).toBe(2);
-      expect(simpleRowsValues[LINE_1].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1]);
-      expect(simpleRowsValues[LINE_2].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2]);
+      expect(simpleRowsValues[LINE_1].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].hidden,
+          value: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].value
+        }));
+      expect(simpleRowsValues[LINE_2].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].hidden,
+          value: FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].value
+        }));
     });
 
     it('should render a table with a row containing 1 column for each compound type', () => {
@@ -204,7 +228,14 @@ describe('ReadComplexFieldTableComponent', () => {
         .queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES);
 
       expect(compoundRowsHeaders.length).toBe(1);
-      expect(compoundRowsHeaders[0].componentInstance.caseField).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE]);
+      expect(compoundRowsHeaders[0].componentInstance.caseField)
+        .toEqual(jasmine.objectContaining({
+          id: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].id,
+          label: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].label,
+          display_context: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].display_context,
+          field_type: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].field_type,
+          hidden: FIELD_TYPE_WITH_VALUES.complex_fields[POSTCODE].hidden
+        }));
     });
 
     it('should NOT render fields with empty value', () => {
@@ -253,6 +284,61 @@ describe('ReadComplexFieldTableComponent', () => {
         .queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES);
 
       expect(compoundRowsValues[0].componentInstance.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
+    });
+
+    it('should interpolate child field labels from top-level form values', () => {
+      const caseField = (({
+        id: 'judgeApproval1',
+        label: 'Judge approval',
+        display_context: 'OPTIONAL',
+        value: {
+          inlineDocType: 'order',
+          isReady: 'Yes'
+        },
+        field_type: {
+          id: 'JudgeApproval',
+          type: 'Complex',
+          complex_fields: [
+            ({
+              id: 'inlineDocType',
+              label: 'Document type',
+              display_context: 'OPTIONAL',
+              field_type: {
+                id: 'Text',
+                type: 'Text'
+              }
+            }) as CaseField,
+            ({
+              id: 'isReady',
+              label: 'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+              display_context: 'OPTIONAL',
+              field_type: {
+                id: 'YesOrNo',
+                type: 'YesOrNo'
+              }
+            }) as CaseField
+          ]
+        }
+      }) as CaseField);
+      const rootFormGroup = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            inlineDocType: new FormControl('order'),
+            isReady: new FormControl('Yes')
+          })
+        })
+      });
+
+      component.caseField = caseField;
+      component.caseFields = [caseField];
+      component.topLevelFormGroup = rootFormGroup.get('data');
+      fixture.detectChanges();
+
+      const simpleRowsHeaders = de
+        .query($COMPLEX_PANEL)
+        .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
+
+      expect(simpleRowsHeaders[1].nativeElement.textContent).toBe('Is this order ready to be sealed and issued');
     });
 
     it('should set the dummy path for child fields correctly', () => {
@@ -455,6 +541,7 @@ describe('ReadComplexFieldTableComponent', () => {
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
+            LabelSubstitutorModule,
             fieldReadComponentMock
           ],
           declarations: [
@@ -467,7 +554,10 @@ describe('ReadComplexFieldTableComponent', () => {
           providers: [
             FieldsUtils,
             ConditionalShowRegistrarService,
-            GreyBarService
+            GreyBarService,
+            PlaceholderService,
+            { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe },
+            { provide: RpxTranslationService, useValue: { language: 'en', language$: of('en') } }
           ]
         })
         .compileComponents();
@@ -489,34 +579,34 @@ describe('ReadComplexFieldTableComponent', () => {
       expect(values.length).toBe(3);
 
       const line1 = FIELD_TYPE.complex_fields[LINE_1];
-      expect(values[LINE_1].componentInstance.caseField).toEqual({
+      expect(values[LINE_1].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: line1.id,
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressLine1']
-      });
+      }));
 
       const line2 = FIELD_TYPE.complex_fields[LINE_2];
-      expect(values[LINE_2].componentInstance.caseField).toEqual({
+      expect(values[LINE_2].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: line2.id,
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressLine2']
-      });
+      }));
 
       const postcode = FIELD_TYPE.complex_fields[POSTCODE];
-      expect(values[POSTCODE].componentInstance.caseField).toEqual({
+      expect(values[POSTCODE].componentInstance.caseField).toEqual(jasmine.objectContaining({
         id: postcode.id,
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
         hidden: false,
         value: CASE_FIELD.value['AddressPostcode']
-      });
+      }));
     });
 
     it('should NOT render fields with empty value', () => {
