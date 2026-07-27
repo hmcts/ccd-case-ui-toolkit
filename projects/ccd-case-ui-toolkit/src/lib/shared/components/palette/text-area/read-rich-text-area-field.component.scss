@@ -1,0 +1,39 @@
+.ccd-rich-text-area-read ul {
+  list-style: disc outside;
+  margin-top: 0;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area-read ol {
+  list-style: decimal outside;
+  margin-top: 0;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area-read li {
+  display: list-item;
+}
+
+.ccd-rich-text-area-read [data-indent="1"] {
+  margin-left: 40px;
+}
+
+.ccd-rich-text-area-read [data-indent="2"] {
+  margin-left: 80px;
+}
+
+.ccd-rich-text-area-read [data-indent="3"] {
+  margin-left: 120px;
+}
+
+.ccd-rich-text-area-read [data-indent="4"] {
+  margin-left: 160px;
+}
+
+.ccd-rich-text-area-read [data-indent="5"] {
+  margin-left: 200px;
+}
+
+.ccd-rich-text-area-read [data-indent="6"] {
+  margin-left: 240px;
+}

@@ -36,4 +36,3 @@ export * from './unsupported-field.component';
 export * from './utils';
 export * from './waystopay';
 export * from './yes-no';
-

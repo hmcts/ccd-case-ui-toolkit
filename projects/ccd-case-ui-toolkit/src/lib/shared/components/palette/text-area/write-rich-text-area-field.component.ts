@@ -1,0 +1,930 @@
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Editor } from 'ngx-editor';
+import { setBlockType } from 'prosemirror-commands';
+import { redo, undo } from 'prosemirror-history';
+import { liftListItem } from 'prosemirror-schema-list';
+import { Plugin } from 'prosemirror-state';
+import { Subscription } from 'rxjs';
+import { Constants } from '../../../commons/constants';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+
+type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
+
+@Component({
+  selector: 'ccd-write-text-area-field',
+  templateUrl: './write-rich-text-area-field.component.html',
+  styleUrls: ['./write-rich-text-area-field.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
+})
+export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('editorHost')
+  public editorHost: ElementRef<HTMLElement>;
+
+  public editor: Editor;
+  public richTextAreaControl: FormControl;
+  public activeToolbarCommands: { [key in RichTextToolbarCommand]?: boolean } = {};
+
+  private editorUpdateSubscription: Subscription;
+  private isNormalisingValue = false;
+  private paragraphCommandApplied = false;
+  private statusChangesSubscription: Subscription;
+  private valueChangesSubscription: Subscription;
+
+  public ngOnInit(): void {
+    this.editor = new Editor({
+      history: true,
+      keyboardShortcuts: true,
+      inputRules: true,
+      plugins: [
+        new Plugin({
+          props: {
+            handlePaste: (_view, event) => this.handleEditorPaste(event)
+          }
+        })
+      ],
+      features: {
+        linkOnPaste: false
+      }
+    });
+    this.richTextAreaControl = this.registerControl(new FormControl(this.caseField.value || '')) as FormControl;
+    this.editorUpdateSubscription = this.editor.update.subscribe(() => {
+      this.updateToolbarStateLater();
+      this.syncAccessibilityLater();
+    });
+    this.statusChangesSubscription = this.richTextAreaControl.statusChanges.subscribe(() => this.syncAccessibilityLater());
+    this.valueChangesSubscription = this.richTextAreaControl.valueChanges.subscribe((value) => {
+      this.normaliseRichTextControlValue(value);
+      this.syncAccessibilityLater();
+    });
+    this.normaliseRichTextControlValue(this.richTextAreaControl.value);
+  }
+
+  public ngAfterViewInit(): void {
+    this.updateToolbarStateLater();
+    this.syncAccessibilityLater();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.editorUpdateSubscription) {
+      this.editorUpdateSubscription.unsubscribe();
+    }
+    if (this.statusChangesSubscription) {
+      this.statusChangesSubscription.unsubscribe();
+    }
+    if (this.valueChangesSubscription) {
+      this.valueChangesSubscription.unsubscribe();
+    }
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  }
+
+  public labelId(): string {
+    return `${this.id()}_label`;
+  }
+
+  public hintId(): string {
+    return `${this.id()}_hint`;
+  }
+
+  public errorId(): string {
+    return `${this.id()}_error`;
+  }
+
+  public toolbarLabel(): string {
+    return `${this.caseField.label || this.caseField.id} formatting options`;
+  }
+
+  public isInvalid(): boolean {
+    return !!(this.richTextAreaControl.errors && (this.richTextAreaControl.dirty || this.richTextAreaControl.touched));
+  }
+
+  public focusEditor(): void {
+    const editorElement = this.getEditableElement();
+    if (editorElement) {
+      editorElement.focus();
+    }
+  }
+
+  public onEditorFocusOut(): void {
+    this.richTextAreaControl.markAsTouched();
+    this.syncAccessibilityLater();
+  }
+
+  public onToolbarButtonMouseDown(event: MouseEvent): void {
+    event.preventDefault();
+  }
+
+  public executeToolbarCommand(event: Event, command: RichTextToolbarCommand): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    switch (command) {
+      case 'undo':
+        undo(this.editor.view.state, this.editor.view.dispatch);
+        break;
+      case 'redo':
+        redo(this.editor.view.state, this.editor.view.dispatch);
+        break;
+      case 'bold':
+        this.editor.commands.toggleBold().exec();
+        break;
+      case 'italic':
+        this.editor.commands.toggleItalics().exec();
+        break;
+      case 'underline':
+        this.editor.commands.toggleUnderline().exec();
+        break;
+      case 'paragraph':
+        this.toggleParagraph();
+        break;
+      case 'indent':
+        this.editor.commands.indent().exec();
+        break;
+      case 'outdent':
+        this.editor.commands.outdent().exec();
+        break;
+      case 'ordered_list':
+        this.editor.commands.toggleOrderedList().exec();
+        this.paragraphCommandApplied = false;
+        break;
+      case 'bullet_list':
+        this.editor.commands.toggleBulletList().exec();
+        this.paragraphCommandApplied = false;
+        break;
+      default:
+        break;
+    }
+
+    this.richTextAreaControl.markAsDirty();
+    this.editor.view.focus();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
+  }
+
+  public isToolbarCommandActive(command: RichTextToolbarCommand): boolean {
+    return !!this.activeToolbarCommands[command];
+  }
+
+  public onPaste(event: ClipboardEvent): void {
+    if (event.defaultPrevented) {
+      return;
+    }
+    this.handleEditorPaste(event);
+  }
+
+  public handleEditorPaste(event: ClipboardEvent): boolean {
+    const html = event.clipboardData && event.clipboardData.getData('text/html');
+    const text = event.clipboardData && event.clipboardData.getData('text/plain');
+    if (!html && !text) {
+      return false;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (html) {
+      this.editor.commands.insertHTML(this.normalisePastedHtml(html)).exec();
+    } else {
+      this.editor.commands.insertText(this.normalisePlainTextValue(text)).exec();
+    }
+    this.richTextAreaControl.markAsDirty();
+    this.normaliseRichTextControlValue(this.richTextAreaControl.value);
+    this.syncAccessibilityLater();
+    return true;
+  }
+
+  public onEditorKeyDown(event: KeyboardEvent): void {
+    const isUnmodifiedEnter = event.key === 'Enter' &&
+      !event.shiftKey &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.metaKey;
+
+    if (!isUnmodifiedEnter) {
+      return;
+    }
+
+    const markNames = [
+      this.activeToolbarCommands.bold ? 'strong' : null,
+      this.activeToolbarCommands.italic ? 'em' : null,
+      this.activeToolbarCommands.underline ? 'u' : null
+    ].filter((markName) => !!markName);
+
+    if (markNames.length === 0) {
+      return;
+    }
+
+    const state = this.editor.view.state;
+    const marks = markNames
+      .map((markName) => state.schema.marks[markName])
+      .filter((markType) => !!markType)
+      .map((markType) => markType.create());
+
+    this.editor.view.dispatch(state.tr.setStoredMarks(marks));
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
+  }
+
+  public normalisePastedHtml(html: string): string {
+    const documentElement = new DOMParser().parseFromString(html, 'text/html');
+    this.removeWordNoise(documentElement);
+    this.convertWordLists(documentElement);
+    this.normaliseSupportedInlineFormatting(documentElement);
+    this.normaliseBlockFormatting(documentElement);
+    this.removeUnsupportedMarkup(documentElement);
+    this.removeUnsupportedAttributes(documentElement);
+    return this.normalisePlainTextValue(documentElement.body.innerHTML);
+  }
+
+  public normaliseRichTextValue(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    const documentElement = new DOMParser().parseFromString(value, 'text/html');
+    this.normaliseSupportedInlineFormatting(documentElement);
+    this.normaliseBlockFormatting(documentElement);
+    this.removeUnsupportedMarkup(documentElement);
+    this.removeUnsupportedAttributes(documentElement);
+    return this.normalisePlainTextValue(documentElement.body.innerHTML);
+  }
+
+  public syncAccessibilityLater(): void {
+    setTimeout(() => this.syncAccessibilityState());
+  }
+
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
+    super.addValidators(caseField, control);
+
+    if (caseField.display_context === Constants.MANDATORY) {
+      const validators: ValidatorFn[] = [this.richTextRequiredValidator()];
+      if (control.validator) {
+        validators.push(control.validator);
+      }
+      control.setValidators(validators);
+    }
+  }
+
+  private syncAccessibilityState(): void {
+    const editorElement = this.getEditableElement();
+    if (!editorElement) {
+      return;
+    }
+
+    editorElement.id = this.id();
+    editorElement.setAttribute('role', 'textbox');
+    editorElement.setAttribute('aria-multiline', 'true');
+    editorElement.setAttribute('aria-labelledby', this.labelId());
+    editorElement.setAttribute('aria-required', `${this.caseField.display_context === Constants.MANDATORY}`);
+    editorElement.setAttribute('aria-invalid', `${this.isInvalid()}`);
+
+    const describedBy = this.describedBy();
+    if (describedBy) {
+      editorElement.setAttribute('aria-describedby', describedBy);
+    } else {
+      editorElement.removeAttribute('aria-describedby');
+    }
+
+    this.syncToolbarAccessibility();
+  }
+
+  private describedBy(): string {
+    const ids = [];
+    if (this.caseField.hint_text) {
+      ids.push(this.hintId());
+    }
+    if (this.isInvalid()) {
+      ids.push(this.errorId());
+    }
+    return ids.join(' ');
+  }
+
+  private syncToolbarAccessibility(): void {
+    if (!this.editorHost) {
+      return;
+    }
+
+    const shortcutLabels = {
+      Undo: 'Control+Z',
+      Redo: 'Control+Y',
+      Bold: 'Control+B',
+      Italic: 'Control+I',
+      Underline: 'Control+U'
+    };
+    const toggleLabels = ['Bold', 'Italic', 'Underline', 'Paragraph', 'Ordered List', 'Bullet List'];
+    const buttons = this.editorHost.nativeElement.querySelectorAll('button');
+
+    buttons.forEach((button: HTMLButtonElement) => {
+      const label = button.getAttribute('aria-label') || button.title;
+      if (shortcutLabels[label]) {
+        button.setAttribute('aria-keyshortcuts', shortcutLabels[label]);
+      }
+      if (toggleLabels.indexOf(label) !== -1) {
+        button.setAttribute('aria-pressed', `${button.classList.contains('ccd-rich-text-area__toolbar-button--active')}`);
+      }
+    });
+  }
+
+  private getEditableElement(): HTMLElement {
+    if (!this.editorHost) {
+      return null;
+    }
+    return this.editorHost.nativeElement.querySelector('.ProseMirror');
+  }
+
+  private normaliseRichTextControlValue(value: string): void {
+    if (this.isNormalisingValue) {
+      return;
+    }
+
+    const normalisedValue = this.normaliseRichTextValue(value);
+    if (normalisedValue === value) {
+      return;
+    }
+
+    this.isNormalisingValue = true;
+    try {
+      this.richTextAreaControl.setValue(normalisedValue, { emitEvent: false });
+      this.editor.setContent(normalisedValue || '');
+    } finally {
+      this.isNormalisingValue = false;
+    }
+  }
+
+  private richTextRequiredValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const textValue = this.htmlToText(control.value);
+      return textValue.length === 0 ? { required: {} } : null;
+    };
+  }
+
+  private htmlToText(value: string): string {
+    const container = document.createElement('div');
+    container.innerHTML = value || '';
+    return (container.textContent || '').replace(/\u00a0/g, ' ').trim();
+  }
+
+  private isWordHtml(html: string): boolean {
+    return /(class="?Mso|mso-|urn:schemas-microsoft-com:office:word|xmlns:o)/i.test(html);
+  }
+
+  private removeWordNoise(documentElement: Document): void {
+    const noiseElements = documentElement.querySelectorAll('style, meta, link, xml');
+    noiseElements.forEach((element) => element.parentNode.removeChild(element));
+
+    const officeParagraphs = Array.prototype.slice.call(documentElement.getElementsByTagName('o:p'));
+    officeParagraphs.forEach((element: HTMLElement) => element.parentNode.removeChild(element));
+  }
+
+  private removeUnsupportedMarkup(documentElement: Document): void {
+    const links = documentElement.querySelectorAll('a');
+    links.forEach((link) => this.unwrapElement(link));
+
+    const images = documentElement.querySelectorAll('img');
+    images.forEach((image) => image.parentNode.removeChild(image));
+
+    const inlineContainers = documentElement.querySelectorAll('span, font');
+    inlineContainers.forEach((element) => this.unwrapElement(element));
+  }
+
+  private removeUnsupportedAttributes(documentElement: Document): void {
+    const elements = documentElement.body.querySelectorAll('*');
+
+    elements.forEach((element) => {
+      const dataIndent = this.normaliseDataIndent(element.getAttribute('data-indent'));
+      const align = this.normaliseAlign(element.getAttribute('align'));
+      const listStart = element.tagName.toLowerCase() === 'ol'
+        ? this.normaliseListStart(element.getAttribute('start'))
+        : null;
+
+      while (element.attributes.length > 0) {
+        element.removeAttribute(element.attributes[0].name);
+      }
+
+      if (dataIndent) {
+        element.setAttribute('data-indent', dataIndent);
+      }
+      if (align) {
+        element.setAttribute('align', align);
+      }
+      if (listStart) {
+        element.setAttribute('start', listStart);
+      }
+    });
+  }
+
+  private normaliseListStart(value: string): string {
+    if (!/^\d{1,6}$/.test(value || '')) {
+      return null;
+    }
+
+    const listStart = Number(value);
+    return listStart > 1 ? listStart.toString() : null;
+  }
+
+  private normaliseSupportedInlineFormatting(documentElement: Document): void {
+    const elements = documentElement.body.querySelectorAll('*');
+
+    elements.forEach((element) => {
+      const htmlElement = element as HTMLElement;
+      const style = htmlElement.getAttribute('style') || '';
+      if (!style) {
+        return;
+      }
+
+      if (this.hasBoldStyle(style)) {
+        this.wrapInlineContents(documentElement, htmlElement, 'strong');
+      }
+      if (this.hasItalicStyle(style)) {
+        this.wrapInlineContents(documentElement, htmlElement, 'em');
+      }
+      if (this.hasUnderlineStyle(style)) {
+        this.wrapInlineContents(documentElement, htmlElement, 'u');
+      }
+    });
+  }
+
+  private normaliseBlockFormatting(documentElement: Document): void {
+    const blockElements = Array.prototype.slice.call(documentElement.body.querySelectorAll('p, h1, h2, h3, h4, h5, h6, blockquote'));
+
+    blockElements.forEach((element: HTMLElement) => {
+      const style = element.getAttribute('style') || '';
+      const existingIndent = this.normaliseDataIndent(element.getAttribute('data-indent'));
+      const styleIndent = this.indentLevelFromStyle(style);
+      const tabIndent = this.indentLevelFromWordTab(element);
+      const indent = this.maximumIndent(existingIndent, styleIndent, tabIndent);
+      const align = this.normaliseAlign(element.getAttribute('align')) || this.normaliseAlign(this.cssStyleValue(style, 'text-align'));
+
+      if (indent) {
+        element.setAttribute('data-indent', indent);
+        this.removeLeadingIndentWhitespace(element);
+      }
+      if (align) {
+        element.setAttribute('align', align);
+      }
+    });
+  }
+
+  private hasBoldStyle(style: string): boolean {
+    const fontWeightMatch = /(?:mso-bidi-)?font-weight\s*:\s*([^;]+)/i.exec(style);
+    if (!fontWeightMatch) {
+      return false;
+    }
+
+    const fontWeight = fontWeightMatch[1].trim().toLowerCase();
+    return fontWeight === 'bold' || fontWeight === 'bolder' || Number(fontWeight) >= 600;
+  }
+
+  private hasItalicStyle(style: string): boolean {
+    return /(?:mso-bidi-)?font-style\s*:\s*italic/i.test(style);
+  }
+
+  private hasUnderlineStyle(style: string): boolean {
+    return /text-decoration(?:-line)?[^;]*underline/i.test(style);
+  }
+
+  private wrapInlineContents(documentElement: Document, element: HTMLElement, tagName: string): void {
+    let wrapper: HTMLElement = null;
+    let childNode = element.firstChild;
+
+    while (childNode) {
+      const nextChildNode = childNode.nextSibling;
+
+      if (this.isBlockNode(childNode)) {
+        wrapper = null;
+      } else if (childNode.nodeType === Node.TEXT_NODE || childNode instanceof HTMLElement) {
+        if (!wrapper) {
+          wrapper = documentElement.createElement(tagName);
+          element.insertBefore(wrapper, childNode);
+        }
+        wrapper.appendChild(childNode);
+      }
+
+      childNode = nextChildNode;
+    }
+  }
+
+  private isBlockNode(node: Node): boolean {
+    if (!(node instanceof HTMLElement)) {
+      return false;
+    }
+
+    return /^(address|article|aside|blockquote|div|dl|fieldset|figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|section|table|ul)$/i
+      .test(node.tagName);
+  }
+
+  private indentLevelFromStyle(style: string): string {
+    if (!style) {
+      return null;
+    }
+
+    const indentLength = Math.max(
+      this.cssLengthToPixels(this.cssStyleLength(style, 'margin-left')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'margin-inline-start')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'mso-para-margin-left')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'mso-margin-left-alt')),
+      this.cssLengthToPixels(this.cssMarginLeftLength(style)),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'text-indent'))
+    );
+
+    if (indentLength < 20) {
+      return null;
+    }
+
+    return `${Math.min(6, Math.max(1, Math.round(indentLength / 40)))}`;
+  }
+
+  private cssStyleLength(style: string, property: string): string {
+    const escapedProperty = property.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const match = new RegExp(`${escapedProperty}\\s*:\\s*(-?\\d*\\.?\\d+\\s*(?:px|pt|in|cm|mm|em|rem)?)`, 'i').exec(style);
+    return match ? match[1] : null;
+  }
+
+  private cssMarginLeftLength(style: string): string {
+    const margin = /(?:^|;)\s*margin\s*:\s*([^;]+)/i.exec(style);
+    if (!margin) {
+      return null;
+    }
+
+    const marginValues = margin[1].trim().split(/\s+/);
+    return marginValues[3] || marginValues[1] || marginValues[0] || null;
+  }
+
+  private cssLengthToPixels(value: string): number {
+    if (!value) {
+      return 0;
+    }
+
+    const match = /^\s*(-?\d*\.?\d+)\s*(px|pt|in|cm|mm|em|rem)?\s*$/i.exec(value);
+    if (!match) {
+      return 0;
+    }
+
+    const amount = Number(match[1]);
+    if (amount <= 0) {
+      return 0;
+    }
+
+    switch ((match[2] || 'px').toLowerCase()) {
+      case 'pt':
+        return amount * (96 / 72);
+      case 'in':
+        return amount * 96;
+      case 'cm':
+        return amount * (96 / 2.54);
+      case 'mm':
+        return amount * (96 / 25.4);
+      case 'em':
+      case 'rem':
+        return amount * 16;
+      case 'px':
+      default:
+        return amount;
+    }
+  }
+
+  private indentLevelFromWordTab(element: HTMLElement): string {
+    const tabElements = Array.prototype.slice.call(element.querySelectorAll('[style*="mso-tab-count"]')) as HTMLElement[];
+    let tabIndent = 0;
+
+    tabElements.forEach((tabElement) => {
+      const tabCountMatch = /mso-tab-count\s*:\s*(\d+)/i.exec(tabElement.getAttribute('style') || '');
+      if (tabCountMatch) {
+        tabIndent = Math.max(tabIndent, Number(tabCountMatch[1]));
+      }
+      tabElement.parentNode.removeChild(tabElement);
+    });
+
+    if (tabIndent > 0) {
+      return this.normaliseDataIndent(`${tabIndent}`);
+    }
+
+    const textNode = this.firstTextNode(element);
+    if (!textNode || !textNode.textContent) {
+      return null;
+    }
+
+    const leadingTabs = /^\t+/.exec(textNode.textContent);
+    if (leadingTabs) {
+      return this.normaliseDataIndent(`${leadingTabs[0].length}`);
+    }
+
+    const leadingSpaces = /^[\u00a0 ]{4,}/.exec(textNode.textContent);
+    return leadingSpaces ? this.normaliseDataIndent(`${Math.round(leadingSpaces[0].length / 4)}`) : null;
+  }
+
+  private maximumIndent(...indentValues: string[]): string {
+    const indents = indentValues
+      .map((indent) => Number(this.normaliseDataIndent(indent)))
+      .filter((indent) => indent > 0);
+
+    return indents.length ? `${Math.max.apply(null, indents)}` : null;
+  }
+
+  private normaliseDataIndent(value: string): string {
+    if (!value || !/^\d+$/.test(value)) {
+      return null;
+    }
+
+    const indentValue = Number(value);
+    if (indentValue <= 0) {
+      return null;
+    }
+
+    const indent = Math.min(6, indentValue);
+    return `${indent}`;
+  }
+
+  private normaliseAlign(value: string): string {
+    if (!value || !/^(center|right|justify)$/i.test(value)) {
+      return null;
+    }
+
+    return value.toLowerCase();
+  }
+
+  private cssStyleValue(style: string, property: string): string {
+    const escapedProperty = property.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const match = new RegExp(`${escapedProperty}\\s*:\\s*([^;]+)`, 'i').exec(style);
+    return match ? match[1].trim() : null;
+  }
+
+  private removeLeadingIndentWhitespace(element: HTMLElement): void {
+    while (element.firstChild && this.isLeadingIndentNode(element.firstChild)) {
+      element.removeChild(element.firstChild);
+    }
+    while (element.lastChild && element.lastChild.nodeType === Node.TEXT_NODE && /^[\s\u00a0]*$/.test(element.lastChild.textContent || '')) {
+      element.removeChild(element.lastChild);
+    }
+
+    const textNode = this.firstTextNode(element);
+    if (textNode && textNode.textContent) {
+      textNode.textContent = textNode.textContent.replace(/^[\s\u00a0]+/, '');
+    }
+  }
+
+  private isLeadingIndentNode(node: Node): boolean {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return /^[\s\u00a0]*$/.test(node.textContent || '');
+    }
+    if (!(node instanceof HTMLElement)) {
+      return false;
+    }
+
+    const style = node.getAttribute('style') || '';
+    return /mso-tab-count/i.test(style) && !((node.textContent || '').replace(/[\t\u00a0 ]/g, '').trim());
+  }
+
+  private normalisePlainTextValue(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    return value
+      .replace(/!?\[([^\]]{0,500})\]\(([^)]{0,500})\)/g, (_match: string, text: string, url: string) => text || url)
+      .replace(/!?\[((?:[^[\]\\]|\\.){0,500})\]\s*\[[^\]]{0,100}\]/g, '$1');
+  }
+
+  private unwrapElement(element: Element): void {
+    const parentNode = element.parentNode;
+    if (!parentNode) {
+      return;
+    }
+
+    while (element.firstChild) {
+      parentNode.insertBefore(element.firstChild, element);
+    }
+    parentNode.removeChild(element);
+  }
+
+  private convertWordLists(documentElement: Document): void {
+    const childNodes = Array.prototype.slice.call(documentElement.body.querySelectorAll('p'));
+    let currentList: HTMLElement = null;
+    let currentListParent: Node = null;
+
+    childNodes.forEach((node: Node) => {
+      if (!this.isWordListParagraph(node)) {
+        currentList = null;
+        currentListParent = null;
+        return;
+      }
+
+      const paragraph = node as HTMLElement;
+      const listType = this.wordListType(paragraph);
+      const listItem = documentElement.createElement('li');
+      this.copyListItemContents(documentElement, paragraph, listItem);
+
+      if (!currentList || currentList.tagName.toLowerCase() !== listType || currentListParent !== paragraph.parentNode) {
+        currentList = documentElement.createElement(listType);
+        const listStart = this.wordListStart(paragraph);
+        if (listType === 'ol' && listStart > 1) {
+          currentList.setAttribute('start', listStart.toString());
+        }
+        paragraph.parentNode.insertBefore(currentList, paragraph);
+        currentListParent = paragraph.parentNode;
+      }
+
+      currentList.appendChild(listItem);
+      paragraph.parentNode.removeChild(paragraph);
+    });
+  }
+
+  private isWordListParagraph(node: Node): boolean {
+    if (!(node instanceof HTMLElement) || node.tagName.toLowerCase() !== 'p') {
+      return false;
+    }
+
+    return /MsoListParagraph/i.test(node.className) || /mso-list/i.test(node.getAttribute('style') || '');
+  }
+
+  private wordListType(paragraph: HTMLElement): string {
+    const marker = paragraph.textContent.trim();
+    return /^(\d+|[a-z]|[ivxlcdm]+)[.)]/i.test(marker) ? 'ol' : 'ul';
+  }
+
+  private wordListStart(paragraph: HTMLElement): number {
+    const markerElement = Array.prototype.slice.call(paragraph.querySelectorAll('[style]'))
+      .find((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''));
+    const marker = (markerElement ? markerElement.textContent : paragraph.textContent).trim();
+    const match = marker.match(/^(\d+)[.)]/);
+
+    return match ? Number(match[1]) : 1;
+  }
+
+  private copyListItemContents(documentElement: Document, paragraph: HTMLElement, listItem: HTMLElement): void {
+    Array.prototype.slice.call(paragraph.childNodes).forEach((childNode: Node) => {
+      if (this.isWordListMarker(childNode)) {
+        return;
+      }
+      listItem.appendChild(childNode.cloneNode(true));
+    });
+
+    this.removeLeadingListMarker(listItem);
+    this.trimListItemWhitespace(listItem);
+  }
+
+  private isWordListMarker(node: Node): boolean {
+    if (node.nodeType === Node.COMMENT_NODE) {
+      return true;
+    }
+    if (!(node instanceof HTMLElement)) {
+      return false;
+    }
+    return /mso-list:\s*Ignore/i.test(node.getAttribute('style') || '');
+  }
+
+  private removeLeadingListMarker(listItem: HTMLElement): void {
+    const textNode = this.firstTextNode(listItem);
+    if (!textNode || !textNode.textContent) {
+      return;
+    }
+
+    textNode.textContent = textNode.textContent.replace(/^\s*(?:[\u2022\u00b7o-]|\d+\.|[a-z]\.|[ivxlcdm]+\.)\s*/i, '');
+  }
+
+  private firstTextNode(node: Node): Text {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node as Text;
+    }
+
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const textNode = this.firstTextNode(node.childNodes[i]);
+      if (textNode) {
+        return textNode;
+      }
+    }
+
+    return null;
+  }
+
+  private updateToolbarState(): void {
+    if (!this.editor || !this.editor.view) {
+      return;
+    }
+
+    this.activeToolbarCommands = {
+      bold: this.isMarkActive('strong'),
+      italic: this.isMarkActive('em'),
+      underline: this.isMarkActive('u'),
+      paragraph: this.paragraphCommandApplied && this.isPlainParagraphActive(),
+      ordered_list: this.isNodeActive('ordered_list'),
+      bullet_list: this.isNodeActive('bullet_list')
+    };
+  }
+
+  private updateToolbarStateLater(): void {
+    setTimeout(() => this.updateToolbarState());
+  }
+
+  private isMarkActive(markName: string): boolean {
+    const state = this.editor.view.state;
+    const markType = state.schema.marks[markName];
+    if (!markType) {
+      return false;
+    }
+
+    const { empty, from, to, $from } = state.selection;
+    if (empty) {
+      return !!markType.isInSet(state.storedMarks || $from.marks());
+    }
+
+    return state.doc.rangeHasMark(from, to, markType);
+  }
+
+  private applyParagraph(): void {
+    const { state, dispatch } = this.editor.view;
+    const paragraphType = state.schema.nodes.paragraph;
+    const listItemType = state.schema.nodes.list_item;
+
+    if (!paragraphType) {
+      return;
+    }
+
+    if (listItemType && this.isNodeActive('list_item')) {
+      liftListItem(listItemType)(state, dispatch);
+    }
+
+    setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
+  }
+
+  private toggleParagraph(): void {
+    if (this.paragraphCommandApplied && this.isPlainParagraphActive()) {
+      this.paragraphCommandApplied = false;
+      return;
+    }
+
+    this.applyParagraph();
+    this.paragraphCommandApplied = true;
+  }
+
+  private isPlainParagraphActive(): boolean {
+    return this.isNodeActive('paragraph') &&
+      !this.isNodeActive('list_item') &&
+      !this.isNodeActive('ordered_list') &&
+      !this.isNodeActive('bullet_list');
+  }
+
+  private isNodeActive(nodeName: string): boolean {
+    const state = this.editor.view.state;
+    const nodeType = state.schema.nodes[nodeName];
+    if (!nodeType) {
+      return false;
+    }
+
+    const { $from, from, to } = state.selection;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      if ($from.node(depth).type === nodeType) {
+        return true;
+      }
+    }
+
+    let isActive = false;
+    state.doc.nodesBetween(from, to, (node) => {
+      if (node.type === nodeType) {
+        isActive = true;
+        return false;
+      }
+      return true;
+    });
+
+    return isActive;
+  }
+
+  private lastTextNode(node: Node): Text {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node as Text;
+    }
+
+    for (let i = node.childNodes.length - 1; i >= 0; i--) {
+      const textNode = this.lastTextNode(node.childNodes[i]);
+      if (textNode) {
+        return textNode;
+      }
+    }
+
+    return null;
+  }
+
+  private trimListItemWhitespace(listItem: HTMLElement): void {
+    while (listItem.firstChild && listItem.firstChild.nodeType === Node.TEXT_NODE && !listItem.firstChild.textContent.trim()) {
+      listItem.removeChild(listItem.firstChild);
+    }
+
+    while (listItem.lastChild && listItem.lastChild.nodeType === Node.TEXT_NODE && !listItem.lastChild.textContent.trim()) {
+      listItem.removeChild(listItem.lastChild);
+    }
+
+    const firstTextNode = this.firstTextNode(listItem);
+    if (firstTextNode && firstTextNode.textContent) {
+      firstTextNode.textContent = firstTextNode.textContent.replace(/^\s+/, '');
+    }
+
+    const lastTextNode = this.lastTextNode(listItem);
+    if (lastTextNode && lastTextNode.textContent) {
+      lastTextNode.textContent = lastTextNode.textContent.replace(/\s+$/, '');
+    }
+  }
+}

@@ -34,8 +34,8 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
+import { ReadRichTextAreaFieldComponent } from './text-area/read-rich-text-area-field.component';
+import { WriteRichTextAreaFieldComponent } from './text-area/write-rich-text-area-field.component';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -163,12 +163,20 @@ describe('PaletteService', () => {
       assertComponent('Collection', true, WriteCollectionFieldComponent, 'AnID', 'AnID');
     });
 
-    it('should get ReadTextAreaField component class for TextArea input', () => {
-      assertComponent('TextArea', false, ReadTextAreaFieldComponent, 'AnID');
+    it('should get ReadRichTextAreaField component class for TextArea input', () => {
+      assertComponent('TextArea', false, ReadRichTextAreaFieldComponent, 'AnID');
     });
 
-    it('should get WriteTextAreaField component class for TextArea input', () => {
-      assertComponent('TextArea', true, WriteTextAreaFieldComponent, 'AnID');
+    it('should get WriteRichTextAreaField component class for TextArea input', () => {
+      assertComponent('TextArea', true, WriteRichTextAreaFieldComponent, 'AnID');
+    });
+
+    it('should get ReadRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', false, ReadRichTextAreaFieldComponent, 'AnID');
+    });
+
+    it('should get WriteRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', true, WriteRichTextAreaFieldComponent, 'AnID');
     });
 
     it('should get ReadMultiSelectListField component class for MultiSelectList input', () => {

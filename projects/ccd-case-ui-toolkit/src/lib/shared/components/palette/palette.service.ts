@@ -45,8 +45,8 @@ import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-h
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { ReadQueryManagementFieldComponent } from './query-management';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
+import { ReadRichTextAreaFieldComponent } from './text-area/read-rich-text-area-field.component';
+import { WriteRichTextAreaFieldComponent } from './text-area/write-rich-text-area-field.component';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -68,7 +68,8 @@ export class PaletteService {
       case 'Postcode':
         return write ? WriteTextFieldComponent : ReadTextFieldComponent;
       case 'TextArea':
-        return write ? WriteTextAreaFieldComponent : ReadTextAreaFieldComponent;
+      case 'RichTextArea':
+        return write ? WriteRichTextAreaFieldComponent : ReadRichTextAreaFieldComponent;
       case 'Number':
         return write ? WriteNumberFieldComponent : ReadNumberFieldComponent;
       case 'YesOrNo':
