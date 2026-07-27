@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.76",
+  "version": "7.3.76-4923",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -20,6 +20,8 @@
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
     "build:library": "ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
+    "build:stats": "npm run build:library && node ./scripts/analyse-bundles.mjs",
+    "analyse:bundles": "node ./scripts/analyse-bundles.mjs",
     "build:library:watch": "ng build ccd-case-ui-toolkit-lib --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
