@@ -1,11 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, EnvironmentInjector } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable, of, throwError } from 'rxjs';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { Observable, of, Subscription, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
 import {
+  CaseFileViewDocument,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
@@ -85,7 +89,10 @@ describe('CaseFileViewFieldComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientTestingModule,
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([])
       ],
       declarations: [
         CaseFileViewFieldComponent,
@@ -170,6 +177,34 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.currentDocument.document_filename).toEqual(dummyNodeTreeDocument.document_filename);
     expect(component.currentDocument.document_binary_url).toEqual(dummyNodeTreeDocument.document_binary_url);
     expect(mockWindowService.openOnNewTab).not.toHaveBeenCalled();
+  });
+
+  it('should render and configure the media viewer', async () => {
+    fixture.detectChanges();
+    component.currentDocument = Object.assign(new CaseFileViewDocument(), {
+      document_binary_url: '/test/binary',
+      document_filename: 'dummy_document.pdf',
+      content_type: 'application/pdf'
+    });
+
+    await (component as any).renderMediaViewer();
+
+    const mediaViewer = (component as any).mediaViewerComponentRef.instance;
+    expect(mediaViewer.url).toEqual('/test/binary');
+    expect(mediaViewer.downloadFileName).toEqual('dummy_document.pdf');
+    expect(mediaViewer.contentType).toEqual('application/pdf');
+    expect(mediaViewer.showToolbar).toBe(true);
+    expect(mediaViewer.caseId).toEqual(cidParam);
+
+    // The component is inspected before its content-init hook runs.
+    mediaViewer.$subscriptions = new Subscription();
+
+    // @hmcts/media-viewer destroys this root service before it has connected,
+    // but its ngOnDestroy assumes that subscription has been initialised.
+    const environmentInjector = TestBed.inject(EnvironmentInjector) as any;
+    const socketServiceToken = Array.from(environmentInjector.records.keys())
+      .find((token: any) => token?.name === 'SocketService');
+    environmentInjector.get(socketServiceToken).subscription = new Subscription();
   });
 
   it('should not render the media viewer without a document', async () => {
