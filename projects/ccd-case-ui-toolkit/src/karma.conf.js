@@ -27,6 +27,7 @@ module.exports = function (config) {
       dir: require('path').join(__dirname, '../../../coverage/ccd-case-ui-toolkit'),
       subdir: '.',
       reporters: [
+        { type: 'text-summary' },
         { type: 'html', subdir: 'html-report' },
         { type: 'lcov', subdir: 'lcov-report' },
         { type: 'lcov' }

@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { Confirmation, Wizard } from '../../components';
 import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '../../domain';
 interface CaseEditModel {

@@ -7,6 +7,18 @@
 
 # Quick Start (for local development and testing)
 
+## Lightweight entry points
+
+Import lightweight utilities from their focused entry point so consumers do not
+make the complete component library reachable from application-shell code:
+
+```ts
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
+```
+
+The root `@hmcts/ccd-case-ui-toolkit` export remains supported for backwards
+compatibility.
+
 ```bash
 # Install all dependencies
 yarn install

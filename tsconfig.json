@@ -23,6 +23,9 @@
       "dom"
     ],
     "paths": {
+      "@hmcts/ccd-case-ui-toolkit/json-utils": [
+        "projects/ccd-case-ui-toolkit/json-utils/public-api.ts"
+      ],
       "ccd-case-ui-toolkit": [
         "dist/ccd-case-ui-toolkit"
       ],

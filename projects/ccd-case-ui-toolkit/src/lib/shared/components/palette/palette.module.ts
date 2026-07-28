@@ -11,8 +11,6 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { RouterModule } from '@angular/router';
-import { PaymentLibModule } from '@hmcts/ccpay-web-component';
-import { MediaViewerModule } from '@hmcts/media-viewer';
 import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -311,12 +309,10 @@ const PALETTE_COMPONENTS = [
     MatAutocompleteModule,
     CdkTreeModule,
     OverlayModule,
-    PaymentLibModule,
     RpxTranslationModule.forChild(),
     CdkTreeModule,
     OverlayModule,
     MatDialogModule,
-    MediaViewerModule,
     LoadingModule,
     MarkdownComponentModule,
     ErrorsModule
