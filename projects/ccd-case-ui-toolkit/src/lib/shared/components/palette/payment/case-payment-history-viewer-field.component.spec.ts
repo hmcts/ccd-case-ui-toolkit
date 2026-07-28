@@ -99,7 +99,8 @@ it('returns empty roles when not initialized', () => {
     expect(component.getUserRoles().length).toBe(0);
 });
 
-it('returns empty email when not initialized', () => {
+  it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
 });
+
 });

@@ -5,7 +5,11 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
-import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
+import {
+  CategoriesAndDocuments,
+  DocumentTreeNode,
+  DocumentTreeNodeType
+} from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService, WindowService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
@@ -63,7 +67,11 @@ describe('CaseFileViewFieldComponent', () => {
     mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService',
       ['getCategoriesAndDocuments', 'updateDocumentCategory']
     );
-    mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
+    mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(Object.assign(new CategoriesAndDocuments(), {
+      case_version: 1,
+      categories: [],
+      uncategorised_documents: []
+    })));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
     mockWindowService = createSpyObj<WindowService>('WindowService', ['openOnNewTab']);
@@ -162,6 +170,13 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.currentDocument.document_filename).toEqual(dummyNodeTreeDocument.document_filename);
     expect(component.currentDocument.document_binary_url).toEqual(dummyNodeTreeDocument.document_binary_url);
     expect(mockWindowService.openOnNewTab).not.toHaveBeenCalled();
+  });
+
+  it('should not render the media viewer without a document', async () => {
+    fixture.detectChanges();
+
+    await (component as any).renderMediaViewer();
+    expect((component as any).mediaViewerComponentRef).toBeUndefined();
   });
 
   it('should open HTML document in a new tab when calling setMediaViewerFile', () => {

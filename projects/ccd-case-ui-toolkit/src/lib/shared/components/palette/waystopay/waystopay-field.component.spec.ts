@@ -1,4 +1,3 @@
-import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
@@ -86,7 +85,6 @@ let paymentWebComponentMock;
 describe('Ways To Pay Component', () => {
   let fixture: ComponentFixture<WaysToPayFieldComponent>;
   let component: WaysToPayFieldComponent;
-  let de: DebugElement;
 
   beforeEach(waitForAsync(() => {
     paymentWebComponentMock = MockComponent({
@@ -132,7 +130,6 @@ describe('Ways To Pay Component', () => {
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
 
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
@@ -155,4 +152,21 @@ describe('Ways To Pay Component', () => {
   it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
   });
+
+  it('should render and configure the Payments web component for a logged-in user', async () => {
+    spyOn(component, 'getUserRoles').and.returnValue(['caseworker']);
+    component.caseReference = '1234123412341234';
+
+    await (component as any).renderPayment();
+
+    const paymentComponent = (component as any).paymentComponentRef.instance;
+    expect(paymentComponent.API_ROOT).toEqual('paymentsUrl');
+    expect(paymentComponent.BULKSCAN_API_ROOT).toEqual('payBulkScanBaseUrl');
+    expect(paymentComponent.REFUNDS_API_ROOT).toEqual('refundsUrl');
+    expect(paymentComponent.NOTIFICATION_API_ROOT).toEqual('notificationUrl');
+    expect(paymentComponent.CCD_CASE_NUMBER).toEqual('1234123412341234');
+    expect(paymentComponent.LOGGEDINUSERROLES).toEqual(['caseworker']);
+    expect(paymentComponent.CARDPAYMENTRETURNURL).toEqual('paymentReturnUrl');
+  });
+
 });
