@@ -8,6 +8,7 @@ import { Predicate } from '../../../domain/predicate.model';
 import { AlertService } from '../../../services/alert/alert.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { RouterHelperService } from '../../../services/router/router-helper.service';
+import { EVENT_START_FIRST_PAGE_REDIRECT } from '../case-edit-utils/case-edit.utils';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { EventTriggerService } from './event-trigger.service';
@@ -69,10 +70,15 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
 
   private goToFirst(wizard: Wizard, canShowPredicate: Predicate<WizardPage>, route: ActivatedRouteSnapshot): Promise<boolean> {
     const firstPage = wizard.firstPage(canShowPredicate);
-    // If there’s no specific wizard page called, it makes another navigation to either the first page available or to the submit page
-    // TODO should find a way to navigate to target page without going through the whole loop (and make a second call to BE) again
+    // This route transition is an internal wizard redirect used to append the first page id to the URL.
+    // Mark it in navigation state so EventStartGuard can skip duplicate work allocation checks.
     return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'],
-      { queryParams: route.queryParams });
+      {
+        queryParams: route.queryParams,
+        state: {
+          [EVENT_START_FIRST_PAGE_REDIRECT]: true
+        }
+      });
   }
 
   private goToSubmit(route: ActivatedRouteSnapshot): Promise<boolean> {

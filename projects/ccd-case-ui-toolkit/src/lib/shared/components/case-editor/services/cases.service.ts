@@ -16,7 +16,7 @@ import {
   RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService } from '../../../services';
+import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService, StructuredLoggerService } from '../../../services';
 import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
@@ -26,6 +26,8 @@ import { CaseEditComponent } from '../case-edit';
 
 @Injectable()
 export class CasesService {
+  private readonly logger = new StructuredLoggerService();
+
   // Internal (UI) API
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
   public static readonly V2_MEDIATYPE_START_CASE_TRIGGER =
@@ -107,11 +109,10 @@ export class CasesService {
 
     const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
     const timeoutPeriods = this.appConfig.getTimeoutsForCaseRetrieval();
-    console.log(`Timeout periods: ${timeoutPeriods} seconds.`);
     if (timeoutPeriods && timeoutPeriods.length > 0 && timeoutPeriods[0] > 0) {
       http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, timeoutPeriods);
     } else {
-      console.warn('Skipping to pipe a retry mechanism!');
+      this.logger.warn('Skipping retry mechanism for case view retrieval.');
     }
 
     http$ = this.pipeErrorProcessor(http$);
@@ -123,8 +124,11 @@ export class CasesService {
 
   private pipeErrorProcessor(in$: Observable<CaseView>): Observable<CaseView> {
     const out$ = in$.pipe(catchError(error => {
-      console.error(`Error while getting case view with getCaseViewV2! Error type: '${typeof error}, Error name: '${error?.name}'`);
-      console.error(error);
+      this.logger.error('Error while getting case view with getCaseViewV2.', {
+        error,
+        errorName: error?.name,
+        errorType: typeof error
+      });
       this.errorService.setError(error);
       return throwError(error);
     }));

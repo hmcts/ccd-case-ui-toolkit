@@ -9,6 +9,7 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { SearchService } from '../../services/search/search.service';
 import { WindowService } from '../../services/window/window.service';
@@ -25,6 +26,8 @@ const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 })
 
 export class SearchFiltersComponent implements OnInit {
+  private readonly logger = new StructuredLoggerService();
+
   public readonly PARAM_JURISDICTION = 'jurisdiction';
   public readonly PARAM_CASE_TYPE = 'case-type';
   public readonly PARAM_CASE_STATE = 'case-state';
@@ -145,7 +148,7 @@ export class SearchFiltersComponent implements OnInit {
           return localStorageJurisdiction;
         }
       } catch (e) {
-        console.log("Failed to retrieve jurisdiction from local storage");
+        this.logger.error('Failed to retrieve jurisdiction from local storage.', { error: e });
         this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null)
       }
     }
@@ -210,9 +213,7 @@ export class SearchFiltersComponent implements OnInit {
         }
       });
       this.getCaseFields();
-    }, error => {
-      console.log('Search input fields request will be discarded reason: ', error.message);
-    });
+    }, error => this.logger.error('Search input fields request will be discarded.', { error }));
   }
 
   public isJurisdictionSelected(): boolean {

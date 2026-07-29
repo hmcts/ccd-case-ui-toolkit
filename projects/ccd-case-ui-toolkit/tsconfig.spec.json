@@ -13,8 +13,5 @@
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"
-  ],
-  "exclude": [
-    "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts",
   ]
 }

@@ -7,9 +7,10 @@
 @mixin mat-button-style {
   background-color: #00823b;
   position: relative;
-  display: -moz-inline-stack;
-  display: inline-block;
-  padding: .526315em .789473em .263157em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .526315em 1em .263157em;
   border: none;
   border-radius: 0;
   outline: 1px solid transparent;
@@ -23,7 +24,10 @@
   color: #fff;
   box-sizing: border-box;
   vertical-align: top;
-  width: 80px;
+  width: auto;
+  min-width: 96px;
+  white-space: nowrap;
+  overflow: visible;
   cursor: pointer;
 }
 
