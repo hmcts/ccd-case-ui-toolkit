@@ -82,7 +82,7 @@ describe('ReadComplexFieldRawComponent', () => {
   beforeEach(() => {
     fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
-      inputs: ['caseField', 'caseFields', 'context', 'valueOrigin', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+      inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
   });
 
@@ -179,7 +179,6 @@ describe('ReadComplexFieldRawComponent', () => {
       expectContext(complexListValues[1], PaletteContext.CHECK_YOUR_ANSWER);
       expectContext(complexListValues[2], PaletteContext.CHECK_YOUR_ANSWER);
     });
-
   });
 
   describe('when empty values split across children fields', () => {

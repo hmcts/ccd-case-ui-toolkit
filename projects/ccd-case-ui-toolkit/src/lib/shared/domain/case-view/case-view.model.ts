@@ -39,6 +39,5 @@ export class CaseView {
       baseLocation?: number
     }
   };
-  public hmctsServiceId?: string;
   public case_flag?: Flags;
 }

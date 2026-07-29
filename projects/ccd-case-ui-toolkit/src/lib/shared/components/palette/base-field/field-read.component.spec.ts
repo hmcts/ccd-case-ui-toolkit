@@ -19,7 +19,6 @@ import { PageValidationService } from '../../case-editor/services/page-validatio
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
-import { PaletteValueOrigin } from './palette-value-origin.enum';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -154,7 +153,6 @@ describe('FieldReadComponent', () => {
     component.caseFields = caseFields;
     component.formGroup = formGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    component.valueOrigin = PaletteValueOrigin.FORM;
 
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -187,13 +185,6 @@ describe('FieldReadComponent', () => {
 
     const fieldTest = de.query($FIELD_TEST).componentInstance;
     expect(fieldTest.context).toBe(PaletteContext.CHECK_YOUR_ANSWER);
-  });
-
-  it('should pass value origin to field instance', () => {
-    fixture.detectChanges();
-
-    const fieldTest = de.query($FIELD_TEST).componentInstance;
-    expect(fieldTest.valueOrigin).toBe(PaletteValueOrigin.FORM);
   });
 
   it('should NOT display label by default', () => {

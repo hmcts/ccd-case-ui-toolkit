@@ -23,8 +23,6 @@ class MockFieldReadComponent {
   public caseField: CaseField;
   @Input()
   public context: PaletteContext;
-  @Input()
-  public valueOrigin: string;
 }
 
 @Component({
