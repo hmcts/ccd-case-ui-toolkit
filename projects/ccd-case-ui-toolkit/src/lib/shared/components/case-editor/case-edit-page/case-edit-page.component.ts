@@ -708,17 +708,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public buildCaseEventData(fromPreviousPage?: boolean): CaseEventData {
-    // EXUI-3839 - we need to get the raw value of the form because otherwise disabled fields
-    // (e.g. read only fields or fields disabled due to show condition) will not be included
-    const formRawValue: object = this.editForm.getRawValue();
+    const formValue: object = this.editForm.value;
 
     // Get the CaseEventData for the current page.
     const pageFields: CaseField[] = this.currentPage.case_fields;
-    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formRawValue, true);
+    const pageEventData: CaseEventData = this.getFilteredCaseEventData(pageFields, formValue, true);
 
     // Get the CaseEventData for the entire form (all pages).
     const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
-    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formRawValue, false, true, fromPreviousPage);
+    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true, fromPreviousPage);
 
     // Now here's the key thing - the pageEventData has a property called `event_data` and
     // we need THAT to be the value of the entire form: `formEventData.data`.
