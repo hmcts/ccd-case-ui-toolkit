@@ -431,6 +431,20 @@ describe('CaseEventTriggerComponent', () => {
     expect(activitySocketService.editCalls).toEqual([CASE_DETAILS.case_id]);
   });
 
+  it('should not call polling postEditActivity when initialized in socket mode', () => {
+    activityPollingService.postEditActivity.calls.reset();
+    activitySocketService.editCalls = [];
+    activityService.mode = MODES.socket;
+    activityService.modeSubject = new BehaviorSubject<string>(MODES.socket);
+
+    const socketFixture = TestBed.createComponent(CaseEventTriggerComponent);
+    socketFixture.detectChanges();
+    activitySocketService.connected.next(true);
+
+    expect(activityPollingService.postEditActivity).not.toHaveBeenCalled();
+    expect(activitySocketService.editCalls).toContain(CASE_DETAILS.case_id);
+  });
+
   it('cancel should navigate to url with fragment if previousUrl contains #', () => {
     finalUrl = '/cases/case-details/1707912713167104#Claim%20details'
     spyOn(component as any, 'getNavigationUrl').and.callThrough();

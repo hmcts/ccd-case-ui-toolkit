@@ -20,7 +20,13 @@ class RpxTranslatePipeStub implements PipeTransform {
 }
 
 describe('CaseActivityComponent', () => {
-  const BOB_SMITH = { id: 'BS', forename: 'Bob', surname: 'Smith' };
+  const BOB_SMITH = {
+    uid: 'current-user-id',
+    id: 'sscs-dwp-cw4@justice.gov.uk',
+    email: 'sscs-dwp-cw4@justice.gov.uk',
+    forename: 'Bob',
+    surname: 'Smith'
+  };
   const JOE_BLOGGS = { id: 'JB', forename: 'Joe', surname: 'Bloggs', };
   const CASE_ID = 'bob';
   let component: CaseActivityComponent;
@@ -166,6 +172,20 @@ describe('CaseActivityComponent', () => {
         checkMode('icon');
         const editorsOnly = fixture.debugElement.query(By.css('.editors-only'));
         expect(editorsOnly).toBeNull();
+      });
+      it('should not show the current user when they are the only viewer', () => {
+        activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH])]);
+        checkHidden();
+      });
+      it('should show other viewers without showing the current user', () => {
+        activitySocketService.activity.next([getActivity(CASE_ID, [], [BOB_SMITH, JOE_BLOGGS])]);
+        checkShown([Utils.DESCRIPTIONS.VIEWERS_SUFFIX, 'Joe Bloggs']);
+        expect(fixture.nativeElement.textContent).not.toContain('Bob Smith');
+      });
+      it('should show other editors without showing the current user', () => {
+        activitySocketService.activity.next([getActivity(CASE_ID, [BOB_SMITH, JOE_BLOGGS], [])]);
+        checkShown([Utils.DESCRIPTIONS.EDITORS_PREFIX, 'Joe Bloggs']);
+        expect(fixture.nativeElement.textContent).not.toContain('Bob Smith');
       });
     });
 

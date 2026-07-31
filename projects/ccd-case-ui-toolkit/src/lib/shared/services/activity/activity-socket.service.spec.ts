@@ -26,6 +26,12 @@ describe('ActivitySocketService', () => {
 
   function resetSharedClient(): void {
     const state = (ActivitySocketService as any).sharedState;
+    if (state.pageHideHandler) {
+      window.removeEventListener('pagehide', state.pageHideHandler);
+    }
+    if (state.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', state.visibilityChangeHandler);
+    }
     if (state.closeTimer) {
       clearTimeout(state.closeTimer);
     }
@@ -38,6 +44,12 @@ describe('ActivitySocketService', () => {
     state.startPromise = undefined;
     state.closeTimer = undefined;
     state.restartTimer = undefined;
+    state.activeCaseId = undefined;
+    state.activeActivity = undefined;
+    state.desiredCaseId = undefined;
+    state.desiredActivity = undefined;
+    state.pageHideHandler = undefined;
+    state.visibilityChangeHandler = undefined;
     state.owners.clear();
   }
 
@@ -133,6 +145,7 @@ describe('ActivitySocketService', () => {
     trigger('connected', CONNECTED_EVENT);
     expect(service.connected.value).toBeTruthy();
     expect(connectedEvent).toEqual(CONNECTED_EVENT);
+    expect(service.user.uid).toBe(CONNECTED_EVENT.userId);
 
     const disconnect = { connectionId: CONNECTED_EVENT.connectionId };
     trigger('disconnected', disconnect);
@@ -171,6 +184,45 @@ describe('ActivitySocketService', () => {
     });
 
     expect(received).toEqual([activity]);
+  });
+
+  it('should publish each latest activity update received as a Web PubSub group message', () => {
+    activityService.mode = MODES.socket;
+    const viewActivity = [{
+      caseId: 'case-1',
+      viewers: [{ id: 'viewer-1', forename: 'View', surname: 'User' }],
+      unknownViewers: 0,
+      editors: [],
+      unknownEditors: 0
+    }] as CaseActivityInfo[];
+    const editActivity = [{
+      caseId: 'case-1',
+      viewers: [],
+      unknownViewers: 0,
+      editors: [{ id: 'editor-1', forename: 'Edit', surname: 'User' }],
+      unknownEditors: 0
+    }] as CaseActivityInfo[];
+    const received: CaseActivityInfo[][] = [];
+    service.activity.subscribe((value) => received.push(value));
+
+    trigger('group-message', {
+      message: {
+        kind: 'groupData',
+        group: 'case:case-1',
+        dataType: 'json',
+        data: { event: 'activity', data: viewActivity }
+      }
+    });
+    trigger('group-message', {
+      message: {
+        kind: 'groupData',
+        group: 'case:case-1',
+        dataType: 'json',
+        data: { event: 'activity', data: editActivity }
+      }
+    });
+
+    expect(received).toEqual([viewActivity, editActivity]);
   });
 
   describe('activity events', () => {
@@ -239,6 +291,71 @@ describe('ActivitySocketService', () => {
         ['view', { caseId: 'case-1' }, 'json'],
         ['edit', { caseId: 'case-1' }, 'json']
       ]);
+    });
+
+    it('should send one stop event for the active case when the page closes', () => {
+      service.startViewing('case-1');
+      service.startEditing('case-2');
+      sendEventSpy.calls.reset();
+
+      window.dispatchEvent(new Event('pagehide'));
+      window.dispatchEvent(new Event('pagehide'));
+
+      expect(sendEventSpy.calls.allArgs()).toEqual([
+        ['stop', { caseId: 'case-2' }, 'json']
+      ]);
+    });
+
+    it('should not send a page-close stop after the active case has already stopped', () => {
+      service.startViewing('case-1');
+      service.stopViewing('case-1');
+      sendEventSpy.calls.reset();
+
+      window.dispatchEvent(new Event('pagehide'));
+
+      expect(sendEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should stop while hidden, suppress idle reconnect activity, and resume only the latest page intent', () => {
+      let visibilityState: DocumentVisibilityState = 'visible';
+      spyOnProperty(document, 'visibilityState', 'get').and.callFake(() => visibilityState);
+      service.startViewing('case-1');
+      sendEventSpy.calls.reset();
+
+      visibilityState = 'hidden';
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(sendEventSpy.calls.allArgs()).toEqual([
+        ['stop', { caseId: 'case-1' }, 'json']
+      ]);
+
+      sendEventSpy.calls.reset();
+      trigger('disconnected', { connectionId: CONNECTED_EVENT.connectionId });
+      trigger('connected', CONNECTED_EVENT);
+      service.startViewing('case-1');
+      service.startEditing('case-2');
+      expect(sendEventSpy).not.toHaveBeenCalled();
+
+      visibilityState = 'visible';
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(sendEventSpy.calls.allArgs()).toEqual([
+        ['edit', { caseId: 'case-2' }, 'json']
+      ]);
+    });
+
+    it('should not restore activity after its component stops while the page is hidden', () => {
+      let visibilityState: DocumentVisibilityState = 'visible';
+      spyOnProperty(document, 'visibilityState', 'get').and.callFake(() => visibilityState);
+      service.startViewing('case-1');
+
+      visibilityState = 'hidden';
+      document.dispatchEvent(new Event('visibilitychange'));
+      service.stopViewing('case-1');
+      sendEventSpy.calls.reset();
+
+      visibilityState = 'visible';
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(sendEventSpy).not.toHaveBeenCalled();
     });
   });
 

@@ -74,16 +74,25 @@ const UTILS = {
       return '';
     },
     stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => {
-      const userId = user ? (user as { uid?: string }).uid : undefined;
+      const currentUser = user as { uid?: string; id?: string; email?: string };
+      const currentUserIds = new Set(
+        [currentUser?.uid, currentUser?.id, currentUser?.email]
+          .map(normaliseUserId)
+          .filter((userId) => !!userId)
+      );
 
-      if (userId && UTILS.activity.hasViewersOrEditors(activity)) {
-        activity.editors = activity.editors.filter((e) => e.id !== userId);
-        activity.viewers = activity.viewers.filter((v) => v.id !== userId);
+      if (currentUserIds.size > 0 && UTILS.activity.hasViewersOrEditors(activity)) {
+        activity.editors = activity.editors.filter((editor) => !currentUserIds.has(normaliseUserId(editor.id)));
+        activity.viewers = activity.viewers.filter((viewer) => !currentUserIds.has(normaliseUserId(viewer.id)));
       }
       return activity;
     }
   }
 };
+
+function normaliseUserId(userId: unknown): string {
+  return typeof userId === 'string' ? userId.trim().toLowerCase() : '';
+}
 
 function replaceLastCommaWithAnd(text: string): string {
   const i = text.lastIndexOf(',');

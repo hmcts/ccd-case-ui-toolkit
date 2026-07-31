@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import {
   OnConnectedArgs,
   OnDisconnectedArgs,
+  OnGroupDataMessageArgs,
   OnServerDataMessageArgs,
   WebPubSubClient
 } from '@azure/web-pubsub-client';
@@ -23,12 +24,20 @@ interface ActivityWebPubSubSharedState {
   startPromise?: Promise<void>;
   closeTimer?: ReturnType<typeof setTimeout>;
   restartTimer?: ReturnType<typeof setTimeout>;
+  activeCaseId?: string;
+  activeActivity?: ActivityEvent;
+  desiredCaseId?: string;
+  desiredActivity?: ActivityEvent;
+  pageHideHandler?: () => void;
+  visibilityChangeHandler?: () => void;
 }
 
 interface ActivityServerMessage {
   event?: string;
   data?: CaseActivityInfo[];
 }
+
+type ActivityEvent = 'view' | 'edit';
 
 const ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY = '__ccdActivityWebPubSubSharedState__';
 const ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS = 5000;
@@ -101,6 +110,7 @@ export class ActivitySocketService implements OnDestroy {
   public watchCases(caseIds: string[]): void {
     if (caseIds) {
       this.sendEvent('watch', { caseIds });
+      ActivitySocketService.clearActivityState(this.socket);
     }
   }
 
@@ -130,7 +140,12 @@ export class ActivitySocketService implements OnDestroy {
   }
 
   public startViewing(caseId: string): void {
-    if (!caseId || !this.connected.value) {
+    if (!caseId || !this.socket) {
+      return;
+    }
+
+    ActivitySocketService.setDesiredActivity(this.socket, caseId, 'view');
+    if (!this.connected.value || !ActivitySocketService.isPageVisible()) {
       return;
     }
 
@@ -140,11 +155,18 @@ export class ActivitySocketService implements OnDestroy {
     }
 
     this.sendEvent('view', { caseId });
+    ActivitySocketService.setActiveActivity(this.socket, caseId, 'view');
     this.lastViewEmit = { caseId, time: now };
   }
 
   public stopViewing(caseId: string): void {
-    if (!caseId || !this.connected.value) {
+    if (!caseId) {
+      return;
+    }
+
+    ActivitySocketService.clearDesiredActivity(this.socket, caseId);
+    ActivitySocketService.clearActiveActivity(this.socket, caseId);
+    if (!this.connected.value) {
       return;
     }
 
@@ -152,21 +174,38 @@ export class ActivitySocketService implements OnDestroy {
     if (this.lastViewEmit.caseId === caseId) {
       this.lastViewEmit = { caseId: '', time: 0 };
     }
+    if (this.lastEditEmit.caseId === caseId) {
+      this.lastEditEmit = { caseId: '', time: 0 };
+    }
   }
 
   public stopViewingCases(caseIds: string[]): void {
-    if (!caseIds?.length || !this.connected.value) {
+    if (!caseIds?.length) {
+      return;
+    }
+
+    ActivitySocketService.clearDesiredActivityForCases(this.socket, caseIds);
+    ActivitySocketService.clearActiveActivityForCases(this.socket, caseIds);
+    if (caseIds.includes(this.lastViewEmit.caseId)) {
+      this.lastViewEmit = { caseId: '', time: 0 };
+    }
+    if (caseIds.includes(this.lastEditEmit.caseId)) {
+      this.lastEditEmit = { caseId: '', time: 0 };
+    }
+    if (!this.connected.value) {
       return;
     }
 
     this.sendEvent('stopAll', { caseIds });
-    if (caseIds.includes(this.lastViewEmit.caseId)) {
-      this.lastViewEmit = { caseId: '', time: 0 };
-    }
   }
 
   public startEditing(caseId: string): void {
-    if (!caseId || !this.connected.value) {
+    if (!caseId || !this.socket) {
+      return;
+    }
+
+    ActivitySocketService.setDesiredActivity(this.socket, caseId, 'edit');
+    if (!this.connected.value || !ActivitySocketService.isPageVisible()) {
       return;
     }
 
@@ -176,6 +215,7 @@ export class ActivitySocketService implements OnDestroy {
     }
 
     this.sendEvent('edit', { caseId });
+    ActivitySocketService.setActiveActivity(this.socket, caseId, 'edit');
     this.lastEditEmit = { caseId, time: now };
   }
 
@@ -207,6 +247,9 @@ export class ActivitySocketService implements OnDestroy {
   }
 
   private handleConnected(event: OnConnectedArgs): void {
+    if (event.userId) {
+      this.pUser = { ...this.user, uid: String(event.userId) };
+    }
     this.connected.next(true);
     this.connectSubject.next(event);
   }
@@ -222,7 +265,15 @@ export class ActivitySocketService implements OnDestroy {
   }
 
   private handleServerMessage(event: OnServerDataMessageArgs): void {
-    const payload = ActivitySocketService.parseServerMessage(event.message.data);
+    this.handleActivityMessage(event.message.data);
+  }
+
+  private handleGroupMessage(event: OnGroupDataMessageArgs): void {
+    this.handleActivityMessage(event.message.data);
+  }
+
+  private handleActivityMessage(data: unknown): void {
+    const payload = ActivitySocketService.parseServerMessage(data);
     if (payload?.event === 'activity' && Array.isArray(payload.data)) {
       this.activitySubject.next(payload.data);
     }
@@ -262,6 +313,8 @@ export class ActivitySocketService implements OnDestroy {
     state.userKey = userKey;
     state.connected = false;
     ActivitySocketService.registerSharedClientEvents(client);
+    ActivitySocketService.registerPageHideHandler(client);
+    ActivitySocketService.registerVisibilityChangeHandler(client);
     return client;
   }
 
@@ -282,6 +335,7 @@ export class ActivitySocketService implements OnDestroy {
         return;
       }
       state.connected = false;
+      ActivitySocketService.clearActiveActivity(client);
       state.owners.forEach((owner) => owner.handleDisconnected(event));
     });
 
@@ -291,6 +345,7 @@ export class ActivitySocketService implements OnDestroy {
         return;
       }
       state.connected = false;
+      ActivitySocketService.clearActiveActivity(client);
       ActivitySocketService.scheduleSharedClientRestart(client);
     });
 
@@ -300,6 +355,72 @@ export class ActivitySocketService implements OnDestroy {
         state.owners.forEach((owner) => owner.handleServerMessage(event));
       }
     });
+
+    client.on('group-message', (event) => {
+      const state = ActivitySocketService.sharedState;
+      if (client === state.client) {
+        state.owners.forEach((owner) => owner.handleGroupMessage(event));
+      }
+    });
+  }
+
+  private static registerPageHideHandler(client: WebPubSubClient): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const state = ActivitySocketService.sharedState;
+    const handler = () => {
+      const currentState = ActivitySocketService.sharedState;
+      const caseId = currentState.activeCaseId;
+      if (client !== currentState.client || !currentState.connected || !caseId) {
+        return;
+      }
+
+      currentState.activeCaseId = undefined;
+      currentState.activeActivity = undefined;
+      ActivitySocketService.sendClientEvent(client, 'stop', caseId, 'during page close');
+    };
+
+    state.pageHideHandler = handler;
+    window.addEventListener('pagehide', handler);
+  }
+
+  private static registerVisibilityChangeHandler(client: WebPubSubClient): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const state = ActivitySocketService.sharedState;
+    const handler = () => {
+      const currentState = ActivitySocketService.sharedState;
+      if (client !== currentState.client || !currentState.connected) {
+        return;
+      }
+
+      if (!ActivitySocketService.isPageVisible()) {
+        const caseId = currentState.activeCaseId;
+        if (caseId) {
+          ActivitySocketService.clearActiveActivity(client, caseId);
+          ActivitySocketService.sendClientEvent(client, 'stop', caseId, 'while hiding page');
+        }
+        return;
+      }
+
+      const caseId = currentState.desiredCaseId;
+      const activity = currentState.desiredActivity;
+      if (
+        caseId &&
+        activity &&
+        (caseId !== currentState.activeCaseId || activity !== currentState.activeActivity)
+      ) {
+        ActivitySocketService.sendClientEvent(client, activity, caseId, 'while restoring page');
+        ActivitySocketService.setActiveActivity(client, caseId, activity);
+      }
+    };
+
+    state.visibilityChangeHandler = handler;
+    document.addEventListener('visibilitychange', handler);
   }
 
   private static parseServerMessage(data: unknown): ActivityServerMessage | undefined {
@@ -375,13 +496,101 @@ export class ActivitySocketService implements OnDestroy {
     if (client === state.client) {
       ActivitySocketService.clearSharedClientCloseTimer();
       ActivitySocketService.clearSharedClientRestart(client);
+      ActivitySocketService.removePageHideHandler();
+      ActivitySocketService.removeVisibilityChangeHandler();
       state.client = undefined;
       state.userKey = undefined;
       state.connected = false;
       state.startPromise = undefined;
+      state.activeCaseId = undefined;
+      state.activeActivity = undefined;
+      state.desiredCaseId = undefined;
+      state.desiredActivity = undefined;
       state.owners.clear();
     }
     client.stop();
+  }
+
+  private static setDesiredActivity(client: WebPubSubClient, caseId: string, activity: ActivityEvent): void {
+    const state = ActivitySocketService.sharedState;
+    if (client === state.client) {
+      state.desiredCaseId = caseId;
+      state.desiredActivity = activity;
+    }
+  }
+
+  private static setActiveActivity(client: WebPubSubClient, caseId: string, activity: ActivityEvent): void {
+    const state = ActivitySocketService.sharedState;
+    if (client === state.client) {
+      state.activeCaseId = caseId;
+      state.activeActivity = activity;
+    }
+  }
+
+  private static clearDesiredActivity(client: WebPubSubClient, caseId?: string): void {
+    const state = ActivitySocketService.sharedState;
+    if (client === state.client && (!caseId || state.desiredCaseId === caseId)) {
+      state.desiredCaseId = undefined;
+      state.desiredActivity = undefined;
+    }
+  }
+
+  private static clearDesiredActivityForCases(client: WebPubSubClient, caseIds: string[]): void {
+    const desiredCaseId = ActivitySocketService.sharedState.desiredCaseId;
+    if (desiredCaseId && caseIds.includes(desiredCaseId)) {
+      ActivitySocketService.clearDesiredActivity(client);
+    }
+  }
+
+  private static clearActiveActivity(client: WebPubSubClient, caseId?: string): void {
+    const state = ActivitySocketService.sharedState;
+    if (client === state.client && (!caseId || state.activeCaseId === caseId)) {
+      state.activeCaseId = undefined;
+      state.activeActivity = undefined;
+    }
+  }
+
+  private static clearActiveActivityForCases(client: WebPubSubClient, caseIds: string[]): void {
+    const activeCaseId = ActivitySocketService.sharedState.activeCaseId;
+    if (activeCaseId && caseIds.includes(activeCaseId)) {
+      ActivitySocketService.clearActiveActivity(client);
+    }
+  }
+
+  private static clearActivityState(client: WebPubSubClient): void {
+    ActivitySocketService.clearDesiredActivity(client);
+    ActivitySocketService.clearActiveActivity(client);
+  }
+
+  private static sendClientEvent(
+    client: WebPubSubClient,
+    eventName: ActivityEvent | 'stop',
+    caseId: string,
+    context: string
+  ): void {
+    client.sendEvent(eventName, { caseId }, 'json').catch((error) => {
+      console.warn(`Activity Web PubSub ${eventName} event failed ${context}`, error);
+    });
+  }
+
+  private static isPageVisible(): boolean {
+    return typeof document === 'undefined' || document.visibilityState !== 'hidden';
+  }
+
+  private static removePageHideHandler(): void {
+    const state = ActivitySocketService.sharedState;
+    if (typeof window !== 'undefined' && state.pageHideHandler) {
+      window.removeEventListener('pagehide', state.pageHideHandler);
+    }
+    state.pageHideHandler = undefined;
+  }
+
+  private static removeVisibilityChangeHandler(): void {
+    const state = ActivitySocketService.sharedState;
+    if (typeof document !== 'undefined' && state.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', state.visibilityChangeHandler);
+    }
+    state.visibilityChangeHandler = undefined;
   }
 
   private static startSharedClientIfNeeded(client: WebPubSubClient): void {
