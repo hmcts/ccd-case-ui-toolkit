@@ -317,13 +317,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
-    const formData = this.replaceHiddenFormValuesWithOriginalCaseData(
-      form.get('data') as FormGroup, eventTrigger.case_fields);
-    this.formValueService.sanitiseDynamicLists(eventTrigger.case_fields, { data: formData });
-
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
-        this.formValueService.sanitise(formData, this.isCaseFlagSubmission)),
+        this.formValueService.sanitise(
+          this.replaceHiddenFormValuesWithOriginalCaseData(
+            form.get('data') as FormGroup, eventTrigger.case_fields),
+          this.isCaseFlagSubmission)),
       event: form.value.event
     } as CaseEventData;
     this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);

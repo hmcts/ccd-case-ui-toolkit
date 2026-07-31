@@ -280,7 +280,6 @@ describe('CaseEditComponent', () => {
 
       formValueService = createSpyObj<FormValueService>('formValueService', [
         'sanitise',
-        'sanitiseDynamicLists',
         'clearNonCaseFields',
         'removeNullLabels',
         'removeEmptyDocuments',
@@ -1226,10 +1225,6 @@ describe('CaseEditComponent', () => {
         });
 
         expect(component.isSubmitting).toEqual(false);
-        expect(formValueService.sanitiseDynamicLists).toHaveBeenCalledWith(
-          component.eventTrigger.case_fields,
-          { data: jasmine.any(Object) }
-        );
         expect(formValueService.sanitise).toHaveBeenCalled();
         expect(mockCaseNotifier.removeCachedCase).toHaveBeenCalled();
       });
@@ -1708,7 +1703,7 @@ describe('CaseEditComponent', () => {
           { provide: ConditionalShowRegistrarService, useValue: new ConditionalShowRegistrarService() },
           { provide: ValidPageListCaseFieldsService, useValue: new ValidPageListCaseFieldsService(new FieldsUtils()) },
           { provide: FormErrorService, useValue: jasmine.createSpyObj<FormErrorService>('FormErrorService', ['mapFieldErrors']) },
-          { provide: FormValueService, useValue: jasmine.createSpyObj<FormValueService>('FormValueService', ['sanitise', 'sanitiseDynamicLists']) },
+          { provide: FormValueService, useValue: jasmine.createSpyObj<FormValueService>('FormValueService', ['sanitise']) },
           { provide: LoadingService, useValue: jasmine.createSpyObj<LoadingService>('LoadingService', ['register','unregister']) },
           { provide: WorkAllocationService, useValue: jasmine.createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask','completeTask']) },
           { provide: AlertService, useValue: jasmine.createSpyObj<AlertService>('AlertService', ['error','setPreserveAlerts']) },
@@ -1808,7 +1803,7 @@ describe('CaseEditComponent', () => {
       wizard.pages = [];
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
 
-      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise', 'sanitiseDynamicLists']);
+      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
 
       const snapshotNoProfile = {
         pathFromRoot: [
