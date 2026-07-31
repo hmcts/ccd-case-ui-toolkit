@@ -598,7 +598,7 @@ export class ActivitySocketService implements OnDestroy {
     if (
       client !== state.client ||
       state.connected ||
-      state.startPromise ||
+      state.startPromise !== undefined ||
       state.restartTimer ||
       state.owners.size === 0
     ) {
