@@ -9,4 +9,5 @@ export interface UserInfo {
   active: boolean;
   roles: string[];
   roleCategories?: RoleCategory[];
+  roleCategory?: string;
 }
