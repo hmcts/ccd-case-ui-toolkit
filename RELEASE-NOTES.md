@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.77-exui-5016-rc-1
+### Version 7.3.78
 **EXUI-5016** SRT changes
 
 ### Version 7.3.77
