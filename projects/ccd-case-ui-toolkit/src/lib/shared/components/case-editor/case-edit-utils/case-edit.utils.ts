@@ -1,6 +1,8 @@
 import { SessionStorageService } from "../../../services";
 import { CaseEditComponent } from "../case-edit/case-edit.component";
 
+export const EVENT_START_FIRST_PAGE_REDIRECT = 'eventStartFirstPageRedirect';
+
 export function convertNonASCIICharacter(character: string): string {
   if (character === '£') {
     // pound sign will be frequently used and works for btoa despite being non-ASCII

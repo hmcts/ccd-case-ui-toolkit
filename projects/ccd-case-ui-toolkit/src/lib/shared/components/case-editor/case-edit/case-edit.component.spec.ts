@@ -231,6 +231,7 @@ describe('CaseEditComponent', () => {
   let mockCookieService: jasmine.SpyObj<ReadCookieService>;
   let mockabstractConfig: jasmine.SpyObj<AbstractAppConfig>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
+  let mockCaseNotifier: jasmine.SpyObj<CaseNotifier>;
 
   describe('profile available in route', () => {
     routerStub = {
@@ -286,7 +287,8 @@ describe('CaseEditComponent', () => {
         'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
         'populateLinkedCasesDetailsFromCaseFields',
-        'removeUnnecessaryFields'
+        'removeUnnecessaryFields',
+        'sanitiseDynamicLists'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
@@ -314,6 +316,7 @@ describe('CaseEditComponent', () => {
       };
 
       loadingServiceMock = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+      mockCaseNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['removeCachedCase']); 
 
       TestBed
         .configureTestingModule({
@@ -334,7 +337,7 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+            { provide: CaseNotifier, useValue: mockCaseNotifier },
             { provide: FormErrorService, useValue: formErrorService },
             { provide: FormValueService, useValue: formValueService },
             { provide: FieldsUtils, useValue: fieldsUtils },
@@ -1224,6 +1227,100 @@ describe('CaseEditComponent', () => {
 
         expect(component.isSubmitting).toEqual(false);
         expect(formValueService.sanitise).toHaveBeenCalled();
+        expect(mockCaseNotifier.removeCachedCase).toHaveBeenCalled();
+      });
+
+      it('should submit dynamic list fields with full dynamic list data', () => {
+        const courtDynamicList = Object.assign(new CaseField(), {
+          id: 'submitCountyCourtSelection',
+          label: 'Court',
+          field_type: {
+            id: 'DynamicList',
+            type: 'DynamicList'
+          },
+          value: {
+            value: {
+              code: '41047:',
+              label: 'Wolverhampton Combined Court Centre - Pipers Row, Wolverhampton - WV1 3LQ'
+            },
+            list_items: [
+              {
+                code: '41047:',
+                label: 'Wolverhampton Combined Court Centre - Pipers Row, Wolverhampton - WV1 3LQ'
+              },
+              {
+                code: '827534:',
+                label: 'Aberystwyth Justice Centre - Trefechan - SY23 1AS'
+              }
+            ]
+          },
+          display_context: 'OPTIONAL'
+        });
+        component.eventTrigger = createCaseEventTrigger(
+          'TEST_TRIGGER',
+          'Test Trigger',
+          'caseId',
+          false,
+          [courtDynamicList]
+        );
+        component.form = new FormGroup({
+          data: new FormGroup({
+            submitCountyCourtSelection: new FormControl('41047:')
+          }),
+          event: new FormGroup({
+            id: new FormControl('TEST_TRIGGER'),
+            summary: new FormControl(''),
+            description: new FormControl('')
+          })
+        });
+        const mockClass = {
+          submit: () => of({
+            id: 'id',
+            callback_response_status: 'CALLBACK_HASNOT_COMPLETED'
+          })
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          callback_response_status: 'CALLBACK_HASNOT_COMPLETED'
+        }));
+        formValueService.sanitiseDynamicLists.and.callFake((caseFields: CaseField[], editForm: any) => {
+          editForm.data.submitCountyCourtSelection = {
+            value: caseFields[0].list_items[0],
+            list_items: caseFields[0].list_items
+          };
+        });
+        formValueService.sanitise.and.callFake((data) => ({ ...data }));
+
+        component.submitForm({
+          eventTrigger: component.eventTrigger,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(formValueService.sanitiseDynamicLists)
+          .toHaveBeenCalledWith(component.eventTrigger.case_fields, jasmine.any(Object));
+        expect(formValueService.sanitise).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            submitCountyCourtSelection: {
+              value: {
+                code: '41047:',
+                label: 'Wolverhampton Combined Court Centre - Pipers Row, Wolverhampton - WV1 3LQ'
+              },
+              list_items: [
+                {
+                  code: '41047:',
+                  label: 'Wolverhampton Combined Court Centre - Pipers Row, Wolverhampton - WV1 3LQ'
+                },
+                {
+                  code: '827534:',
+                  label: 'Aberystwyth Justice Centre - Trefechan - SY23 1AS'
+                }
+              ]
+            }
+          }),
+          false
+        );
       });
     });
 
@@ -1692,7 +1789,7 @@ describe('CaseEditComponent', () => {
         declarations: [CaseEditComponent],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
-          { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
           { provide: SessionStorageService, useValue: sessionStub },
           { provide: WindowService, useValue: jasmine.createSpyObj<WindowService>('WindowService', ['alert']) },
           { provide: FieldsUtils, useValue: new FieldsUtils() },

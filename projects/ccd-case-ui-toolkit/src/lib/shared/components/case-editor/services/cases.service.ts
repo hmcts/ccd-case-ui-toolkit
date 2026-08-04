@@ -15,17 +15,19 @@ import {
   RoleCategory,
   RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
-import { UserInfo } from '../../../domain/user/user-info.model';
-import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService } from '../../../services';
+import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService, StructuredLoggerService } from '../../../services';
 import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
 import { CaseEditComponent } from '../case-edit';
+import { getUserDetails } from '../../../utils';
 
 @Injectable()
 export class CasesService {
+  private readonly logger = new StructuredLoggerService();
+
   // Internal (UI) API
   public static readonly V2_MEDIATYPE_CASE_VIEW = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json';
   public static readonly V2_MEDIATYPE_START_CASE_TRIGGER =
@@ -107,11 +109,10 @@ export class CasesService {
 
     const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
     const timeoutPeriods = this.appConfig.getTimeoutsForCaseRetrieval();
-    console.log(`Timeout periods: ${timeoutPeriods} seconds.`);
     if (timeoutPeriods && timeoutPeriods.length > 0 && timeoutPeriods[0] > 0) {
       http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, timeoutPeriods);
     } else {
-      console.warn('Skipping to pipe a retry mechanism!');
+      this.logger.warn('Skipping retry mechanism for case view retrieval.');
     }
 
     http$ = this.pipeErrorProcessor(http$);
@@ -123,8 +124,11 @@ export class CasesService {
 
   private pipeErrorProcessor(in$: Observable<CaseView>): Observable<CaseView> {
     const out$ = in$.pipe(catchError(error => {
-      console.error(`Error while getting case view with getCaseViewV2! Error type: '${typeof error}, Error name: '${error?.name}'`);
-      console.error(error);
+      this.logger.error('Error while getting case view with getCaseViewV2.', {
+        error,
+        errorName: error?.name,
+        errorType: typeof error
+      });
       this.errorService.setError(error);
       return throwError(error);
     }));
@@ -307,15 +311,17 @@ export class CasesService {
 
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const camUtils = new CaseAccessUtils();
-    let userInfo: UserInfo;
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
+    let userInfo = getUserDetails(this.sessionStorageService);
+    if (!userInfo) {
+      return throwError(() => new Error('User info not found in session storage'));
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
-    const roleName = camUtils.getAMRoleName('challenged', roleCategory);
+    // EXUI-4758 - getMappedRoleCategories no longer returns a single string, checks all roles to get the most likely roleCategory
+    // Unsure whether we should be using mapped role categories any more - should trust the roleCategories from userInfo if they exist
+    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    // If user has no role categories, default to LEGAL_OPERATIONS
+    const roleName = camUtils.getAMRoleName('challenged', roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS");
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -324,7 +330,8 @@ export class CasesService {
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
       id,
       roleName,
-      roleCategory,
+      // EXUI-4758 - Return first roleCategory as the roleCategory
+      roleCategories[0] as RoleCategory,
       'CHALLENGED',
       caseId,
       request,
@@ -337,16 +344,16 @@ export class CasesService {
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
-    // Assignment API endpoint
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-
     const camUtils = new CaseAccessUtils();
-    let userInfo: UserInfo;
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
+    let userInfo = getUserDetails(this.sessionStorageService);
+    if (!userInfo) {
+      return throwError(() => new Error('User info not found in session storage'));
     }
 
-    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    // EXUI-4758 - See above comment
+    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    // EXUI-4758 - Return first roleCategory as the roleCategory for now, unless not present, in which case default to LEGAL_OPERATIONS
+    const roleCategory = roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS";
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
