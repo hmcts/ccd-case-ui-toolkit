@@ -200,7 +200,7 @@
     "hosted-git-info": "^3.0.8",
     "normalize-url": "^6.0.1",
     "trim-newlines": "^3.0.1",
-    "mermaid": "^11.15.0"
+    "mermaid": "^11.16.1"
   },
   "nyc": {
     "include": [
