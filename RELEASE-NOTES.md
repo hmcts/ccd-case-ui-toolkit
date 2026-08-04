@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.79-exui-5006
+### Version 7.3.79-exui-5006-1
 **EXUI-5006** Package update - ngx-markdown - major
 
 ### Version 7.3.79
