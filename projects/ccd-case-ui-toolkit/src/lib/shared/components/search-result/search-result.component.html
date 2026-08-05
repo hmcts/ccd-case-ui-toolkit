@@ -136,7 +136,6 @@
   [screenReaderPageLabel]="page"
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
-<div *ngIf="!(hasResults() || hasDrafts())" class="notification"
-[attr.aria-describedby]="'No cases found. Try using different filters.' | rpxTranslate">
+<div *ngIf="!(hasResults() || hasDrafts())" class="notification" role="status">
 {{'No cases found. Try using different filters.' | rpxTranslate}}
 </div>
