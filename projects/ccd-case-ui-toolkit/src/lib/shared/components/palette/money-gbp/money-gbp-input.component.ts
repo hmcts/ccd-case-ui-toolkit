@@ -76,15 +76,19 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   public writeValue(obj: any): void {
     if (obj) {
       this.rawValue = obj;
+      // If already contains decimal, use it directly
+      if (obj.includes('.')) {
+        this.displayValue = obj;
+      } else {
+        const integerPart = obj.slice(0, -2) || '0';
+        let decimalPart = obj.slice(-2);
 
-      const integerPart = obj.slice(0, -2) || '0';
-      let decimalPart = obj.slice(-2);
+        while (2 > decimalPart.length) {
+          decimalPart += '0';
+        }
 
-      while (2 > decimalPart.length) {
-        decimalPart += '0';
+        this.displayValue = [integerPart, decimalPart].join('.');
       }
-
-      this.displayValue = [integerPart, decimalPart].join('.');
     }
   }
 

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, publishReplay, refCount, take } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
+import { StructuredLoggerService } from '../logging';
 
 export interface OrganisationSuperUser {
     firstName: string;
@@ -48,6 +49,7 @@ export interface OrganisationVm {
 
 @Injectable()
 export class OrganisationService {
+    private readonly logger = new StructuredLoggerService();
 
     constructor(private readonly http: HttpClient,
                 private readonly appconfig: AbstractAppConfig) {}
@@ -82,7 +84,7 @@ export class OrganisationService {
             this.organisations$ = this.http.get<Organisation[]>(url)
             .pipe(map((orgs) => OrganisationService.mapOrganisation(orgs)),
             publishReplay(1, cacheTimeOut), refCount(), take(1), catchError(e => {
-                console.log(e);
+                this.logger.error('Error while retrieving active organisations.', { error: e });
                 // Handle error and return blank Observable array
                 return of([]);
             }));

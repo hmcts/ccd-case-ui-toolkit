@@ -60,9 +60,6 @@ export class CreateCaseFiltersComponent implements OnInit {
         this.jurisdictions = jurisdictions;
         this.selectJurisdiction(this.jurisdictions, this.filterJurisdictionControl);
       });
-    if (document.getElementById('cc-jurisdiction')) {
-      document.getElementById('cc-jurisdiction').focus();
-    }
   }
 
   public onJurisdictionIdChange(): void {

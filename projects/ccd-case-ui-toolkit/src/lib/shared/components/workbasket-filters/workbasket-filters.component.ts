@@ -10,6 +10,7 @@ import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.m
 import { AlertService } from '../../services/alert/alert.service';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
@@ -28,6 +29,8 @@ export class WorkbasketFiltersComponent implements OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+  private readonly logger = new StructuredLoggerService();
+
   public caseFields: CaseField[];
 
   @Input()
@@ -188,6 +191,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public onJurisdictionIdChange() {
+    this.clearStoredWorkbasketFilterValues();
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0
@@ -203,7 +207,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.clearWorkbasketInputs();
 
       if (!this.isApplyButtonDisabled()) {
-        this.onCaseTypeIdChange();
+        this.onCaseTypeIdChange(false);
       }
     } else {
       this.resetCaseType();
@@ -211,7 +215,10 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
   }
 
-  public onCaseTypeIdChange(): void {
+  public onCaseTypeIdChange(clearStoredValues = true): void {
+    if (clearStoredValues) {
+      this.clearStoredWorkbasketFilterValues();
+    }
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
@@ -235,9 +242,7 @@ export class WorkbasketFiltersComponent implements OnInit {
             }
           });
           this.getCaseFields();
-        }, error => {
-          console.log('Workbasket input fields request will be discarded reason: ', error.message);
-        });
+        }, error => this.logger.error('Workbasket input fields request will be discarded.', { error }));
       }
     } else {
       this.resetCaseState();
@@ -315,7 +320,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
         if (this.selected.caseType) {
-          this.onCaseTypeIdChange();
+          this.onCaseTypeIdChange(false);
           this.selected.caseState = this.selectCaseState(this.selected.caseType, routeSnapshot);
         }
         this.workbasketDefaults = true;
@@ -366,6 +371,10 @@ export class WorkbasketFiltersComponent implements OnInit {
   private clearWorkbasketInputs() {
     this.workbasketInputsReady = false;
     this.workbasketInputs = [];
+  }
+
+  private clearStoredWorkbasketFilterValues() {
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
   }
 
   private resetCaseState() {

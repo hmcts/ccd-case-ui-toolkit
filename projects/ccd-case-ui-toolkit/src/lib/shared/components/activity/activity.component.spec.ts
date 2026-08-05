@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { Subject } from 'rxjs';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
@@ -181,6 +182,34 @@ describe('CcdActivityComponent', () => {
     expect(banner.length).toEqual(2);
     expect(banner[0].componentInstance.bannerType).toBe('editor');
     expect(banner[1].componentInstance.bannerType).toBe('viewer');
+  });
+
+  it('should identify when a case has active activity', () => {
+    component.onActivityChange(ACTIVITY_WOUT_EDITOR_AND_VIEWER);
+    expect(component.isActiveCase()).toBe(0);
+
+    component.onActivityChange(ACTIVITY_W_EDITOR);
+    expect(component.isActiveCase()).toBeTruthy();
+
+    component.onActivityChange(ACTIVITY_W_VIEWER);
+    expect(component.isActiveCase()).toBeTruthy();
+
+    component.onActivityChange(ACTIVITY_W_UNKNOWN_EDITOR);
+    expect(component.isActiveCase()).toBeTruthy();
+
+    component.onActivityChange(ACTIVITY_W_UNKNOWN_VIEWER);
+    expect(component.isActiveCase()).toBeTruthy();
+  });
+
+  it('should complete the activity subscription and stop polling on destroy', () => {
+    const subscription = new Subject<Activity>();
+    spyOn(subscription, 'complete');
+    component.subscription = subscription;
+
+    component.ngOnDestroy();
+
+    expect(subscription.complete).toHaveBeenCalled();
+    expect(activityPollingService.stopPolling).toHaveBeenCalled();
   });
 
   it('should render single case VIEWER icon with the proper description', () => {
