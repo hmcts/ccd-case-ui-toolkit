@@ -1,6 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.76-CME-1106-material-datetime
+### Version 7.3.79
+**EXUI-5054** Halo IN-0190438 - Collated comments
+
+### Version 7.3.78
+**EXUI-5016** SRT changes
 
 ### Version 7.3.77
 **EXUI-4983** Package update-tar-minor

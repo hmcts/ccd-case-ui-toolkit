@@ -23,34 +23,36 @@ export class CaseAccessUtils {
     public static readonly CTSC_ROLE_CATEGORY = 'CTSC';
     public static readonly CTSC_ROLE_NAME = 'ctsc';
 
-    public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
+    // fallback purely if roleCategories is not available in 
+    public getMappedRoleCategories(roles: string[] = []): RoleCategory[] {
 
         const roleKeywords: string[] = roles.join().split('-').join().split(',');
+        const roleCategoryList: RoleCategory[] = [];
 
-        if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, CaseAccessUtils.JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.JUDGE_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE,
-            CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE,
-            CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.CITIZEN_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE,
-            CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.ADMIN_ROLE_CATEGORY;
-        } else if (this.roleOrCategoryExists(CaseAccessUtils.CTSC_ROLE,
-            CaseAccessUtils.CTSC_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-            return CaseAccessUtils.CTSC_ROLE_CATEGORY;
-        } else {
-            return CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY;
+        if (this.roleHasKeyword(CaseAccessUtils.JUDGE_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.JUDGE_ROLE_CATEGORY);
+        }
+        if (this.roleHasKeyword(CaseAccessUtils.PROFESSIONAL_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY);
+        }
+        if (this.roleHasKeyword(CaseAccessUtils.CITIZEN_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.CITIZEN_ROLE_CATEGORY);
+        }
+        if (this.roleHasKeyword(CaseAccessUtils.ADMIN_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.ADMIN_ROLE_CATEGORY);
+        }
+        if (this.roleHasKeyword(CaseAccessUtils.CTSC_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.CTSC_ROLE_CATEGORY);
+        }
+        if (this.roleHasKeyword(CaseAccessUtils.LEGAL_OPERATIONS_ROLE, roleKeywords)) {
+            roleCategoryList.push(CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY);
         }
 
+        return roleCategoryList;
     }
 
-    public roleOrCategoryExists(roleKeyword: string, roleCategory: string, roleKeywords: string[], roleCategories: string[]): boolean {
-        const categoryExists = roleCategories.indexOf(roleCategory) > -1;
-        const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
-        return categoryExists ? categoryExists : keywordExists;
+    public roleHasKeyword(keyword: string, roleWords: string[]): boolean {
+        return roleWords.includes(keyword);
     }
 
     public getAMRoleName(accessType: string, aMRole: RoleCategory): string {

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.75-CME-1106-material-datetime-3",
+  "version": "7.3.79",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -57,7 +57,7 @@
     "@angular/upgrade": "^20.3.18",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.22",
-    "@hmcts/media-viewer": "4.2.26",
+    "@hmcts/media-viewer": "4.2.27",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@ngxmc/datetime-picker": "20.1.0",
