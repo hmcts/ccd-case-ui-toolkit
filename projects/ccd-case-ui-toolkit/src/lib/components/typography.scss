@@ -1,5 +1,40 @@
-@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'govuk_frontend_toolkit/stylesheets/_typography';
+@forward 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+@use 'govuk_frontend_toolkit/stylesheets/_colours.scss' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_typography' as *;
+
+@mixin _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers: false, $font-weight: 400) {
+  @if $tabular-numbers == true {
+    font-family: $toolkit-font-stack-tabular;
+  } @else if $is-print {
+    font-family: $Print-reset;
+  } @else {
+    font-family: $toolkit-font-stack;
+
+    @if $toolkit-font-stack == '$NTA-Light' {
+      @if $font-weight > 400 {
+        font-size-adjust: 0.525;
+      } @else {
+        font-size-adjust: 0.5;
+      }
+    }
+  }
+
+  font-weight: $font-weight;
+  text-transform: none;
+
+  @if $is-print {
+    font-size: $font-size-print;
+    line-height: $line-height;
+  } @else {
+    font-size: $font-size-640;
+    line-height: $line-height-640;
+
+    @include media(tablet) {
+      font-size: $font-size;
+      line-height: $line-height;
+    }
+  }
+}
 
 @mixin core-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 24pt;

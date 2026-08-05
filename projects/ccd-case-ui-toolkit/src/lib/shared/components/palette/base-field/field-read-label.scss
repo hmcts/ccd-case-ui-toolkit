@@ -1,9 +1,10 @@
-@import 'govuk_frontend_toolkit/stylesheets/_typography';
-@import 'govuk_frontend_toolkit/stylesheets/_colours';
-@import 'govuk_frontend_toolkit/stylesheets/_measurements';
-@import 'govuk_frontend_toolkit/stylesheets/_shims';
-@import 'govuk_frontend_toolkit/stylesheets/_css3';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
+@use '../../palette/base-field/grey-bar.scss';
+@use 'govuk_frontend_toolkit/stylesheets/_typography' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_colours' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_measurements' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_shims' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_css3' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_conditionals' as conditionals;
 
 .case-field {
 
@@ -12,7 +13,7 @@
 
   margin-bottom: $gutter-half;
 
-  @include media(tablet) {
+  @include conditionals.media(tablet) {
     margin-bottom: $gutter;
   }
 
@@ -28,5 +29,3 @@
     @include core-19;
   }
 }
-
-@import "../../palette/base-field/grey-bar.scss";
