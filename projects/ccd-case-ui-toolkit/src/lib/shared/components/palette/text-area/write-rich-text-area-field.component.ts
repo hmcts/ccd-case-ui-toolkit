@@ -9,8 +9,11 @@ import { Subscription } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRichTextDocument } from './rich-text-sanitizer';
 
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
+
+const WORD_COLUMN_SPACING = 12;
 
 @Component({
   selector: 'ccd-write-text-area-field',
@@ -230,13 +233,19 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   public normalisePastedHtml(html: string): string {
     const documentElement = new DOMParser().parseFromString(html, 'text/html');
+    removeUnsafeRichTextElements(documentElement);
     this.removeWordNoise(documentElement);
+    this.normaliseWordSpacing(documentElement);
+    this.normaliseWordTables(documentElement);
+    this.normaliseWordSemanticBlocks(documentElement);
     this.convertWordLists(documentElement);
     this.normaliseSupportedInlineFormatting(documentElement);
     this.normaliseBlockFormatting(documentElement);
     this.removeUnsupportedMarkup(documentElement);
+    this.normaliseDateRangeSpacing(documentElement);
+    this.collapseRepeatedEmptyParagraphs(documentElement);
     this.removeUnsupportedAttributes(documentElement);
-    return this.normalisePlainTextValue(documentElement.body.innerHTML);
+    return this.normalisePlainTextValue(sanitiseRichTextDocument(documentElement));
   }
 
   public normaliseRichTextValue(value: string): string {
@@ -245,11 +254,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     const documentElement = new DOMParser().parseFromString(value, 'text/html');
+    removeUnsafeRichTextElements(documentElement);
+    this.normaliseWordSpacing(documentElement);
+    this.normaliseWordTables(documentElement);
+    this.normaliseWordSemanticBlocks(documentElement);
     this.normaliseSupportedInlineFormatting(documentElement);
     this.normaliseBlockFormatting(documentElement);
     this.removeUnsupportedMarkup(documentElement);
+    this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
-    return this.normalisePlainTextValue(documentElement.body.innerHTML);
+    return this.normalisePlainTextValue(sanitiseRichTextDocument(documentElement));
   }
 
   public syncAccessibilityLater(): void {
@@ -259,13 +273,15 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   protected addValidators(caseField: CaseField, control: AbstractControl): void {
     super.addValidators(caseField, control);
 
+    const existingValidator = control.validator;
+    const validators: ValidatorFn[] = [this.unsafeHtmlTextValidator()];
     if (caseField.display_context === Constants.MANDATORY) {
-      const validators: ValidatorFn[] = [this.richTextRequiredValidator()];
-      if (control.validator) {
-        validators.push(control.validator);
-      }
-      control.setValidators(validators);
+      validators.unshift(this.richTextRequiredValidator());
     }
+    if (existingValidator) {
+      validators.push(existingValidator);
+    }
+    control.setValidators(validators);
   }
 
   private syncAccessibilityState(): void {
@@ -361,6 +377,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     };
   }
 
+  private unsafeHtmlTextValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const visibleText = this.htmlToText(control.value);
+      return containsUnsafeRichTextMarkup(visibleText) ? { unsafeRichText: {} } : null;
+    };
+  }
+
   private htmlToText(value: string): string {
     const container = document.createElement('div');
     container.innerHTML = value || '';
@@ -379,6 +402,109 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     officeParagraphs.forEach((element: HTMLElement) => element.parentNode.removeChild(element));
   }
 
+  private normaliseWordSpacing(documentElement: Document): void {
+    const spacerElements = Array.prototype.slice.call(documentElement.body.querySelectorAll('[style*="mso-spacerun"]')) as HTMLElement[];
+
+    spacerElements.forEach((spacerElement) => {
+      const spacingLength = Math.max(4, (spacerElement.textContent || '').length);
+      spacerElement.textContent = '\u00a0'.repeat(spacingLength);
+    });
+  }
+
+  private normaliseWordTables(documentElement: Document): void {
+    const tables = Array.prototype.slice.call(documentElement.body.querySelectorAll('table')) as HTMLElement[];
+
+    tables.forEach((table) => {
+      if (!table.parentNode) {
+        return;
+      }
+
+      const rows = Array.prototype.slice.call(table.querySelectorAll('tr')) as HTMLElement[];
+      rows.forEach((row) => {
+        const cells = Array.prototype.slice.call(row.children)
+          .filter((child: HTMLElement) => /^(td|th)$/i.test(child.tagName) && !!(child.textContent || '').trim()) as HTMLElement[];
+        if (cells.length === 0) {
+          return;
+        }
+
+        const paragraph = documentElement.createElement('p');
+        cells.forEach((cell, index) => {
+          if (index > 0) {
+            paragraph.appendChild(documentElement.createTextNode('\u00a0'.repeat(WORD_COLUMN_SPACING)));
+          }
+          this.appendWordTableCellContents(documentElement, cell, paragraph);
+        });
+        table.parentNode.insertBefore(paragraph, table);
+      });
+
+      table.parentNode.removeChild(table);
+    });
+  }
+
+  private appendWordTableCellContents(documentElement: Document, cell: HTMLElement, paragraph: HTMLElement): void {
+    const childNodes = Array.prototype.slice.call(cell.childNodes) as Node[];
+
+    childNodes.forEach((childNode, index) => {
+      if (childNode instanceof HTMLElement && /^(div|p)$/i.test(childNode.tagName)) {
+        if (index > 0 && paragraph.lastChild) {
+          paragraph.appendChild(documentElement.createElement('br'));
+        }
+        const inlineContainer = documentElement.createElement('span');
+        const style = childNode.getAttribute('style');
+        if (style) {
+          inlineContainer.setAttribute('style', style);
+        }
+        while (childNode.firstChild) {
+          inlineContainer.appendChild(childNode.firstChild);
+        }
+        paragraph.appendChild(inlineContainer);
+        return;
+      }
+
+      paragraph.appendChild(childNode);
+    });
+  }
+
+  private normaliseWordSemanticBlocks(documentElement: Document): void {
+    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+
+    paragraphs.forEach((paragraph) => {
+      const headingLevel = this.wordHeadingLevel(paragraph);
+      if (headingLevel) {
+        this.replaceElementTag(documentElement, paragraph, `h${headingLevel}`);
+      }
+    });
+  }
+
+  private wordHeadingLevel(element: HTMLElement): number {
+    const headingClass = /MsoHeading([1-6])/i.exec(element.className || '');
+    if (headingClass) {
+      return Number(headingClass[1]);
+    }
+    if (/MsoTitle/i.test(element.className || '')) {
+      return 1;
+    }
+
+    const styledElements = [element].concat(Array.prototype.slice.call(element.querySelectorAll('[style]')) as HTMLElement[]);
+    const largestFontSize = styledElements.reduce((largestSize, styledElement) => {
+      const fontSize = this.cssLengthToPixels(this.cssStyleLength(styledElement.getAttribute('style') || '', 'font-size'));
+      return Math.max(largestSize, fontSize);
+    }, 0);
+    return largestFontSize >= 24 ? 1 : null;
+  }
+
+  private replaceElementTag(documentElement: Document, element: HTMLElement, tagName: string): HTMLElement {
+    const replacement = documentElement.createElement(tagName);
+    Array.prototype.slice.call(element.attributes).forEach((attribute: Attr) => {
+      replacement.setAttribute(attribute.name, attribute.value);
+    });
+    while (element.firstChild) {
+      replacement.appendChild(element.firstChild);
+    }
+    element.parentNode.replaceChild(replacement, element);
+    return replacement;
+  }
+
   private removeUnsupportedMarkup(documentElement: Document): void {
     const links = documentElement.querySelectorAll('a');
     links.forEach((link) => this.unwrapElement(link));
@@ -388,6 +514,35 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const inlineContainers = documentElement.querySelectorAll('span, font');
     inlineContainers.forEach((element) => this.unwrapElement(element));
+  }
+
+  private normaliseDateRangeSpacing(documentElement: Document): void {
+    const boldElements = Array.prototype.slice.call(documentElement.body.querySelectorAll('strong, b')) as HTMLElement[];
+    const dateRangePattern = /(?:19|20)(?:\d{2}|XX)\s*[\u2013\u2014-]\s*(?:19|20)(?:\d{2}|XX)\s*$/i;
+
+    boldElements.forEach((boldElement) => {
+      if (!boldElement.parentNode || boldElement.parentElement.closest('strong, b')) {
+        return;
+      }
+
+      const block = boldElement.closest('p, li, h1, h2, h3, h4, h5, h6');
+      if (!block) {
+        return;
+      }
+
+      const range = documentElement.createRange();
+      range.setStart(block, 0);
+      range.setEndBefore(boldElement);
+      const precedingText = range.cloneContents().textContent || '';
+      const comparableText = precedingText.replace(/[\u200b-\u200d\ufeff]/g, '');
+      if (dateRangePattern.test(comparableText)) {
+        const existingSpacing = (/\u00a0+$/.exec(precedingText) || [''])[0].length;
+        const spacingToAdd = Math.max(0, WORD_COLUMN_SPACING - existingSpacing);
+        if (spacingToAdd > 0) {
+          boldElement.parentNode.insertBefore(documentElement.createTextNode('\u00a0'.repeat(spacingToAdd)), boldElement);
+        }
+      }
+    });
   }
 
   private removeUnsupportedAttributes(documentElement: Document): void {
@@ -431,12 +586,12 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     elements.forEach((element) => {
       const htmlElement = element as HTMLElement;
       const style = htmlElement.getAttribute('style') || '';
-      if (!style) {
+      if (!style || this.isWordLayoutContainer(htmlElement)) {
         return;
       }
 
       if (this.hasBoldStyle(style)) {
-        this.wrapInlineContents(documentElement, htmlElement, 'strong');
+        this.wrapBoldInlineContents(documentElement, htmlElement);
       }
       if (this.hasItalicStyle(style)) {
         this.wrapInlineContents(documentElement, htmlElement, 'em');
@@ -447,10 +602,14 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     });
   }
 
+  private isWordLayoutContainer(element: HTMLElement): boolean {
+    return /^(col|colgroup|table|tbody|td|tfoot|th|thead|tr)$/i.test(element.tagName);
+  }
+
   private normaliseBlockFormatting(documentElement: Document): void {
     const blockElements = Array.prototype.slice.call(documentElement.body.querySelectorAll('p, h1, h2, h3, h4, h5, h6, blockquote'));
 
-    blockElements.forEach((element: HTMLElement) => {
+    blockElements.forEach((element: HTMLElement, index: number) => {
       const style = element.getAttribute('style') || '';
       const existingIndent = this.normaliseDataIndent(element.getAttribute('data-indent'));
       const styleIndent = this.indentLevelFromStyle(style);
@@ -458,6 +617,22 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const indent = this.maximumIndent(existingIndent, styleIndent, tabIndent);
       const align = this.normaliseAlign(element.getAttribute('align')) || this.normaliseAlign(this.cssStyleValue(style, 'text-align'));
 
+      if (/text-transform\s*:\s*uppercase/i.test(style)) {
+        this.transformTextNodes(element, (value) => value.toUpperCase());
+      }
+      if (this.hasVisibleBottomBorder(style)) {
+        const hasText = !!(element.textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim();
+        const heading = hasText ? element : this.previousTextBlock(blockElements, index);
+        if (heading) {
+          this.wrapInlineContents(documentElement, heading, 'strong');
+        }
+        const horizontalRule = documentElement.createElement('hr');
+        element.parentNode.insertBefore(horizontalRule, hasText ? element.nextSibling : element);
+        if (!hasText) {
+          element.parentNode.removeChild(element);
+          return;
+        }
+      }
       if (indent) {
         element.setAttribute('data-indent', indent);
         this.removeLeadingIndentWhitespace(element);
@@ -465,6 +640,49 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       if (align) {
         element.setAttribute('align', align);
       }
+    });
+  }
+
+  private transformTextNodes(element: HTMLElement, transform: (value: string) => string): void {
+    const walker = element.ownerDocument.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    let textNode = walker.nextNode();
+    while (textNode) {
+      textNode.textContent = transform(textNode.textContent || '');
+      textNode = walker.nextNode();
+    }
+  }
+
+  private hasVisibleBottomBorder(style: string): boolean {
+    const border = this.cssStyleValue(style, 'border-bottom') || this.cssStyleValue(style, 'mso-border-bottom-alt');
+    return !!border && !/^(?:none|0(?:px|pt)?)(?:\s|$)/i.test(border) && !/transparent/i.test(border);
+  }
+
+  private previousTextBlock(blockElements: HTMLElement[], index: number): HTMLElement {
+    for (let blockIndex = index - 1; blockIndex >= 0; blockIndex--) {
+      const block = blockElements[blockIndex];
+      if (block.parentNode && (block.textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim()) {
+        return block;
+      }
+    }
+    return null;
+  }
+
+  private collapseRepeatedEmptyParagraphs(documentElement: Document): void {
+    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+    let previousParagraphWasEmpty = false;
+
+    paragraphs.forEach((paragraph) => {
+      const isEmpty = !(paragraph.textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim();
+      if (!isEmpty) {
+        previousParagraphWasEmpty = false;
+        return;
+      }
+
+      if (previousParagraphWasEmpty) {
+        paragraph.parentNode.removeChild(paragraph);
+        return;
+      }
+      previousParagraphWasEmpty = true;
     });
   }
 
@@ -476,6 +694,50 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const fontWeight = fontWeightMatch[1].trim().toLowerCase();
     return fontWeight === 'bold' || fontWeight === 'bolder' || Number(fontWeight) >= 600;
+  }
+
+  private hasNormalFontWeight(element: HTMLElement): boolean {
+    const fontWeight = this.cssStyleValue(element.getAttribute('style') || '', 'font-weight');
+    if (!fontWeight) {
+      return false;
+    }
+
+    const normalisedWeight = fontWeight.toLowerCase();
+    return normalisedWeight === 'normal' || Number(normalisedWeight) < 600;
+  }
+
+  private wrapBoldInlineContents(documentElement: Document, element: HTMLElement): void {
+    const walker = documentElement.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const textNodes: Node[] = [];
+    let textNode = walker.nextNode();
+
+    while (textNode) {
+      textNodes.push(textNode);
+      textNode = walker.nextNode();
+    }
+
+    textNodes.forEach((node) => {
+      if (!node.parentNode || this.hasFormattingBoundary(node, element)) {
+        return;
+      }
+
+      const wrapper = documentElement.createElement('strong');
+      node.parentNode.insertBefore(wrapper, node);
+      wrapper.appendChild(node);
+    });
+  }
+
+  private hasFormattingBoundary(node: Node, root: HTMLElement): boolean {
+    let parent = node.parentElement;
+
+    while (parent && parent !== root) {
+      if (this.hasNormalFontWeight(parent) || this.isBlockNode(parent) || /^(b|strong)$/i.test(parent.tagName)) {
+        return true;
+      }
+      parent = parent.parentElement;
+    }
+
+    return false;
   }
 
   private hasItalicStyle(style: string): boolean {
@@ -592,10 +854,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     tabElements.forEach((tabElement) => {
       const tabCountMatch = /mso-tab-count\s*:\s*(\d+)/i.exec(tabElement.getAttribute('style') || '');
-      if (tabCountMatch) {
-        tabIndent = Math.max(tabIndent, Number(tabCountMatch[1]));
+      const tabCount = tabCountMatch ? Number(tabCountMatch[1]) : 1;
+      if (this.isLeadingWordTab(element, tabElement)) {
+        tabIndent = Math.max(tabIndent, tabCount);
+        tabElement.parentNode.removeChild(tabElement);
+      } else {
+        tabElement.textContent = '\u00a0'.repeat(tabCount * 4);
       }
-      tabElement.parentNode.removeChild(tabElement);
     });
 
     if (tabIndent > 0) {
@@ -614,6 +879,14 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const leadingSpaces = /^[\u00a0 ]{4,}/.exec(textNode.textContent);
     return leadingSpaces ? this.normaliseDataIndent(`${Math.round(leadingSpaces[0].length / 4)}`) : null;
+  }
+
+  private isLeadingWordTab(block: HTMLElement, tabElement: HTMLElement): boolean {
+    const range = block.ownerDocument.createRange();
+    range.setStart(block, 0);
+    range.setEndBefore(tabElement);
+    const precedingText = (range.cloneContents().textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim();
+    return precedingText.length === 0;
   }
 
   private maximumIndent(...indentValues: string[]): string {

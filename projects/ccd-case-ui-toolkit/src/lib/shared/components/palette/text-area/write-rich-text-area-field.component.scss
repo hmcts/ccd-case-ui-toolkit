@@ -15,10 +15,15 @@
 }
 
 .ccd-rich-text-area .NgxEditor__Wrapper {
-  border: 1px solid #0b0c0c;
+  border: 1px solid #000;
   border-radius: 0;
   max-width: 100%;
   width: 100%;
+}
+
+.ccd-rich-text-area .NgxEditor__Wrapper:focus-within {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
 }
 
 .ccd-rich-text-area__toolbar-button {
@@ -278,9 +283,8 @@
 }
 
 .ccd-rich-text-area .ProseMirror:focus {
-  box-shadow: inset 0 0 0 2px #0b0c0c;
-  outline: 3px solid #ffdd00;
-  outline-offset: 0;
+  box-shadow: none;
+  outline: 0;
 }
 
 .ccd-rich-text-area .ProseMirror p,

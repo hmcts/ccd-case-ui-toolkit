@@ -1,6 +1,7 @@
 import { Component, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
+import { sanitiseRichTextHtml } from './rich-text-sanitizer';
 
 @Component({
   selector: 'ccd-read-text-area-field',
@@ -15,6 +16,7 @@ export class ReadRichTextAreaFieldComponent extends AbstractFieldReadComponent {
   }
 
   public sanitisedValue(): string {
-    return this.sanitizer.sanitize(SecurityContext.HTML, this.caseField.value || '') || '';
+    const supportedHtml = sanitiseRichTextHtml(this.caseField.value || '');
+    return this.sanitizer.sanitize(SecurityContext.HTML, supportedHtml) || '';
   }
 }

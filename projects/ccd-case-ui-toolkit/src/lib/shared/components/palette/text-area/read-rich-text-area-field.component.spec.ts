@@ -53,12 +53,24 @@ describe('ReadRichTextAreaFieldComponent', () => {
   });
 
   it('should sanitize unsafe HTML before rendering', () => {
-    component.caseField.value = '<p>Safe</p><img src="x" onerror="alert(1)"><script>alert(1)</script>';
+    component.caseField.value = `
+      <p onclick="alert(1)">Safe <strong onmouseover="alert(2)">text</strong></p>
+      <a href="javascript:alert(3)">unsafe link</a>
+      <img src="x" onerror="alert(4)">
+      <script>alert(5)</script>
+      <iframe srcdoc="<script>alert(6)</script>"></iframe>
+      <svg onload="alert(7)"><script>alert(8)</script></svg>`;
     fixture.detectChanges();
 
     const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement;
-    expect(readValue.innerHTML).toContain('<p>Safe</p>');
+    expect(readValue.innerHTML).toContain('<p>Safe <strong>text</strong></p>');
+    expect(readValue.textContent).toContain('unsafe link');
+    expect(readValue.innerHTML).not.toContain('<a');
     expect(readValue.innerHTML).not.toContain('<script>');
     expect(readValue.innerHTML).not.toContain('onerror');
+    expect(readValue.innerHTML).not.toContain('onclick');
+    expect(readValue.innerHTML).not.toContain('<iframe');
+    expect(readValue.innerHTML).not.toContain('<svg');
+    expect(readValue.innerHTML).not.toContain('javascript:');
   });
 });
