@@ -248,7 +248,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(editorContentStyle.overflowX).toBe('hidden');
     expect(editorContentStyle.overflowY).toBe('auto');
     expect(editorContentStyle.overflowWrap).toBe('anywhere');
-    expect(editorContentStyle.wordBreak).toBe('break-word');
+    expect(editorContentStyle.wordBreak).toBe('normal');
   }));
 
   it('should use the standard text-field border and accessible focus indicator', fakeAsync(() => {

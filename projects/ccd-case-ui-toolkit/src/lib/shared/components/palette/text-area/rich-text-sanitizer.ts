@@ -74,7 +74,7 @@ export function containsUnsafeRichTextMarkup(value: string): boolean {
 
     return Array.prototype.slice.call(element.attributes).some((attribute: Attr) => {
       const attributeName = attribute.name.toLowerCase();
-      if (attributeName.indexOf('on') === 0 || attributeName === 'srcdoc' || attributeName === 'style') {
+      if (attributeName.startsWith('on') || attributeName === 'srcdoc' || attributeName === 'style') {
         return true;
       }
 
@@ -92,8 +92,8 @@ export function removeUnsafeRichTextElements(documentElement: Document): void {
   const elements = Array.prototype.slice.call(documentElement.body.querySelectorAll('*')) as HTMLElement[];
 
   elements.forEach((element) => {
-    if (UNSAFE_RICH_TEXT_TAGS.has(element.tagName.toLowerCase()) && element.parentNode) {
-      element.parentNode.removeChild(element);
+    if (UNSAFE_RICH_TEXT_TAGS.has(element.tagName.toLowerCase())) {
+      element.remove();
     }
   });
 }
@@ -112,13 +112,11 @@ export function sanitiseRichTextDocument(documentElement: Document): string {
       while (element.firstChild) {
         element.parentNode.insertBefore(element.firstChild, element);
       }
-      element.parentNode.removeChild(element);
+      element.remove();
       return;
     }
 
-    const dataIndent = /^[1-6]$/.test(element.getAttribute('data-indent') || '')
-      ? element.getAttribute('data-indent')
-      : null;
+    const dataIndent = /^[1-6]$/.test(element.dataset.indent || '') ? element.dataset.indent : null;
     const align = /^(left|center|right|justify)$/.test(element.getAttribute('align') || '')
       ? element.getAttribute('align')
       : null;
@@ -131,7 +129,7 @@ export function sanitiseRichTextDocument(documentElement: Document): string {
     }
 
     if (dataIndent) {
-      element.setAttribute('data-indent', dataIndent);
+      element.dataset.indent = dataIndent;
     }
     if (align) {
       element.setAttribute('align', align);

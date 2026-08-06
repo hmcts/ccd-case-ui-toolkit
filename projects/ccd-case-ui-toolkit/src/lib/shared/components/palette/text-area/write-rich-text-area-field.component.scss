@@ -240,7 +240,7 @@
   outline: 0;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: normal;
 }
 
 .ccd-rich-text-area .ProseMirror [data-indent="1"] {
@@ -292,7 +292,7 @@
 .ccd-rich-text-area .ProseMirror ol {
   margin-top: 0;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  word-break: normal;
 }
 
 .ccd-rich-text-area .ProseMirror ul {

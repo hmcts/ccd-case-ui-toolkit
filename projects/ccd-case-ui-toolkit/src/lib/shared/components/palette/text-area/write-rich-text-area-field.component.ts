@@ -14,6 +14,11 @@ import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRic
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
 
 const WORD_COLUMN_SPACING = 12;
+const CSS_LENGTH_UNITS = ['rem', 'px', 'pt', 'in', 'cm', 'mm', 'em'];
+const BLOCK_NODE_NAMES = new Set([
+  'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'
+]);
 
 @Component({
   selector: 'ccd-write-text-area-field',
@@ -173,8 +178,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   public handleEditorPaste(event: ClipboardEvent): boolean {
-    const html = event.clipboardData && event.clipboardData.getData('text/html');
-    const text = event.clipboardData && event.clipboardData.getData('text/plain');
+    const html = event.clipboardData?.getData('text/html');
+    const text = event.clipboardData?.getData('text/plain');
     if (!html && !text) {
       return false;
     }
@@ -331,7 +336,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       if (shortcutLabels[label]) {
         button.setAttribute('aria-keyshortcuts', shortcutLabels[label]);
       }
-      if (toggleLabels.indexOf(label) !== -1) {
+      if (toggleLabels.includes(label)) {
         button.setAttribute('aria-pressed', `${button.classList.contains('ccd-rich-text-area__toolbar-button--active')}`);
       }
     });
@@ -380,7 +385,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private htmlToText(value: string): string {
     const container = document.createElement('div');
     container.innerHTML = value || '';
-    return (container.textContent || '').replace(/\u00a0/g, ' ').trim();
+    return (container.textContent || '').replaceAll('\u00a0', ' ').trim();
   }
 
   private isWordHtml(html: string): boolean {
@@ -389,10 +394,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   private removeWordNoise(documentElement: Document): void {
     const noiseElements = documentElement.querySelectorAll('style, meta, link, xml');
-    noiseElements.forEach((element) => element.parentNode.removeChild(element));
+    noiseElements.forEach((element) => element.remove());
 
     const officeParagraphs = Array.prototype.slice.call(documentElement.getElementsByTagName('o:p'));
-    officeParagraphs.forEach((element: HTMLElement) => element.parentNode.removeChild(element));
+    officeParagraphs.forEach((element: HTMLElement) => element.remove());
   }
 
   private normaliseWordSpacing(documentElement: Document): void {
@@ -430,7 +435,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         table.parentNode.insertBefore(paragraph, table);
       });
 
-      table.parentNode.removeChild(table);
+      table.remove();
     });
   }
 
@@ -503,7 +508,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     links.forEach((link) => this.unwrapElement(link));
 
     const images = documentElement.querySelectorAll('img');
-    images.forEach((image) => image.parentNode.removeChild(image));
+    images.forEach((image) => image.remove());
 
     const inlineContainers = documentElement.querySelectorAll('span, font');
     inlineContainers.forEach((element) => this.unwrapElement(element));
@@ -529,7 +534,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const precedingText = range.cloneContents().textContent || '';
       const comparableText = precedingText.replace(/[\u200b-\u200d\ufeff]/g, '');
       if (dateRangePattern.test(comparableText)) {
-        const existingSpacing = (/\u00a0+$/.exec(precedingText) || [''])[0].length;
+        const existingSpacing = this.trailingCharacterCount(precedingText, '\u00a0');
         const spacingToAdd = Math.max(0, WORD_COLUMN_SPACING - existingSpacing);
         if (spacingToAdd > 0) {
           boldElement.parentNode.insertBefore(documentElement.createTextNode('\u00a0'.repeat(spacingToAdd)), boldElement);
@@ -541,8 +546,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private removeUnsupportedAttributes(documentElement: Document): void {
     const elements = documentElement.body.querySelectorAll('*');
 
-    elements.forEach((element) => {
-      const dataIndent = this.normaliseDataIndent(element.getAttribute('data-indent'));
+    elements.forEach((element: HTMLElement) => {
+      const dataIndent = this.normaliseDataIndent(element.dataset.indent);
       const align = this.normaliseAlign(element.getAttribute('align'));
       const listStart = element.tagName.toLowerCase() === 'ol'
         ? this.normaliseListStart(element.getAttribute('start'))
@@ -553,7 +558,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
 
       if (dataIndent) {
-        element.setAttribute('data-indent', dataIndent);
+        element.dataset.indent = dataIndent;
       }
       if (align) {
         element.setAttribute('align', align);
@@ -604,7 +609,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     blockElements.forEach((element: HTMLElement, index: number) => {
       const style = element.getAttribute('style') || '';
-      const existingIndent = this.normaliseDataIndent(element.getAttribute('data-indent'));
+      const existingIndent = this.normaliseDataIndent(element.dataset.indent);
       const styleIndent = this.indentLevelFromStyle(style);
       const tabIndent = this.indentLevelFromWordTab(element);
       const indent = this.maximumIndent(existingIndent, styleIndent, tabIndent);
@@ -622,12 +627,12 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         const horizontalRule = documentElement.createElement('hr');
         element.parentNode.insertBefore(horizontalRule, hasText ? element.nextSibling : element);
         if (!hasText) {
-          element.parentNode.removeChild(element);
+          element.remove();
           return;
         }
       }
       if (indent) {
-        element.setAttribute('data-indent', indent);
+        element.dataset.indent = indent;
         this.removeLeadingIndentWhitespace(element);
       }
       if (align) {
@@ -672,7 +677,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
 
       if (previousParagraphWasEmpty) {
-        paragraph.parentNode.removeChild(paragraph);
+        paragraph.remove();
         return;
       }
       previousParagraphWasEmpty = true;
@@ -753,7 +758,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       } else if (childNode.nodeType === Node.TEXT_NODE || childNode instanceof HTMLElement) {
         if (!wrapper) {
           wrapper = documentElement.createElement(tagName);
-          element.insertBefore(wrapper, childNode);
+          (childNode as ChildNode).before(wrapper);
         }
         wrapper.appendChild(childNode);
       }
@@ -767,8 +772,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return false;
     }
 
-    return /^(address|article|aside|blockquote|div|dl|fieldset|figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|section|table|ul)$/i
-      .test(node.tagName);
+    return BLOCK_NODE_NAMES.has(node.tagName.toLowerCase());
   }
 
   private indentLevelFromStyle(style: string): string {
@@ -793,9 +797,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private cssStyleLength(style: string, property: string): string {
-    const escapedProperty = property.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-    const match = new RegExp(`${escapedProperty}\\s*:\\s*(-?\\d*\\.?\\d+\\s*(?:px|pt|in|cm|mm|em|rem)?)`, 'i').exec(style);
-    return match ? match[1] : null;
+    const value = this.cssStyleValue(style, property);
+    return this.parseCssLength(value) ? value : null;
   }
 
   private cssMarginLeftLength(style: string): string {
@@ -813,17 +816,17 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return 0;
     }
 
-    const match = /^\s*(-?\d*\.?\d+)\s*(px|pt|in|cm|mm|em|rem)?\s*$/i.exec(value);
-    if (!match) {
+    const parsedLength = this.parseCssLength(value);
+    if (!parsedLength) {
       return 0;
     }
 
-    const amount = Number(match[1]);
+    const { amount, unit } = parsedLength;
     if (amount <= 0) {
       return 0;
     }
 
-    switch ((match[2] || 'px').toLowerCase()) {
+    switch (unit) {
       case 'pt':
         return amount * (96 / 72);
       case 'in':
@@ -841,6 +844,45 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
+  private parseCssLength(value: string): { amount: number; unit: string } {
+    if (!value) {
+      return null;
+    }
+
+    const normalisedValue = value.trim().toLowerCase();
+    const unit = CSS_LENGTH_UNITS.find((candidate) => normalisedValue.endsWith(candidate)) || 'px';
+    const numericValue = unit === 'px' && !normalisedValue.endsWith('px')
+      ? normalisedValue
+      : normalisedValue.slice(0, -unit.length).trim();
+
+    if (!this.isCssDecimal(numericValue)) {
+      return null;
+    }
+
+    return { amount: Number(numericValue), unit };
+  }
+
+  private isCssDecimal(value: string): boolean {
+    let digitCount = 0;
+    let decimalPointSeen = false;
+
+    for (let index = value.startsWith('-') ? 1 : 0; index < value.length; index++) {
+      const character = value[index];
+      if (character === '.') {
+        if (decimalPointSeen || index === value.length - 1) {
+          return false;
+        }
+        decimalPointSeen = true;
+      } else if (character >= '0' && character <= '9') {
+        digitCount++;
+      } else {
+        return false;
+      }
+    }
+
+    return digitCount > 0;
+  }
+
   private indentLevelFromWordTab(element: HTMLElement): string {
     const tabElements = Array.prototype.slice.call(element.querySelectorAll('[style*="mso-tab-count"]')) as HTMLElement[];
     let tabIndent = 0;
@@ -850,7 +892,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const tabCount = tabCountMatch ? Number(tabCountMatch[1]) : 1;
       if (this.isLeadingWordTab(element, tabElement)) {
         tabIndent = Math.max(tabIndent, tabCount);
-        tabElement.parentNode.removeChild(tabElement);
+        tabElement.remove();
       } else {
         tabElement.textContent = '\u00a0'.repeat(tabCount * 4);
       }
@@ -861,7 +903,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     const textNode = this.firstTextNode(element);
-    if (!textNode || !textNode.textContent) {
+    if (!textNode?.textContent) {
       return null;
     }
 
@@ -913,21 +955,35 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private cssStyleValue(style: string, property: string): string {
-    const escapedProperty = property.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-    const match = new RegExp(`${escapedProperty}\\s*:\\s*([^;]+)`, 'i').exec(style);
-    return match ? match[1].trim() : null;
+    const normalisedProperty = property.trim().toLowerCase();
+
+    for (const declaration of style.split(';')) {
+      const separatorIndex = declaration.indexOf(':');
+      if (separatorIndex < 0) {
+        continue;
+      }
+
+      const declarationProperty = declaration.slice(0, separatorIndex).trim().toLowerCase();
+      if (declarationProperty === normalisedProperty) {
+        return declaration.slice(separatorIndex + 1).trim() || null;
+      }
+    }
+
+    return null;
   }
 
   private removeLeadingIndentWhitespace(element: HTMLElement): void {
     while (element.firstChild && this.isLeadingIndentNode(element.firstChild)) {
-      element.removeChild(element.firstChild);
+      (element.firstChild as ChildNode).remove();
     }
-    while (element.lastChild && element.lastChild.nodeType === Node.TEXT_NODE && /^[\s\u00a0]*$/.test(element.lastChild.textContent || '')) {
-      element.removeChild(element.lastChild);
+    let lastChild = element.lastChild;
+    while (lastChild?.nodeType === Node.TEXT_NODE && /^[\s\u00a0]*$/.test(lastChild.textContent || '')) {
+      (lastChild as ChildNode).remove();
+      lastChild = element.lastChild;
     }
 
     const textNode = this.firstTextNode(element);
-    if (textNode && textNode.textContent) {
+    if (textNode?.textContent) {
       textNode.textContent = textNode.textContent.replace(/^[\s\u00a0]+/, '');
     }
   }
@@ -963,7 +1019,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     while (element.firstChild) {
       parentNode.insertBefore(element.firstChild, element);
     }
-    parentNode.removeChild(element);
+    element.remove();
   }
 
   private convertWordLists(documentElement: Document): void {
@@ -983,7 +1039,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const listItem = documentElement.createElement('li');
       this.copyListItemContents(documentElement, paragraph, listItem);
 
-      if (!currentList || currentList.tagName.toLowerCase() !== listType || currentListParent !== paragraph.parentNode) {
+      if (currentList?.tagName.toLowerCase() !== listType || currentListParent !== paragraph.parentNode) {
         currentList = documentElement.createElement(listType);
         const listStart = this.wordListStart(paragraph);
         if (listType === 'ol' && listStart > 1) {
@@ -994,7 +1050,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
 
       currentList.appendChild(listItem);
-      paragraph.parentNode.removeChild(paragraph);
+      paragraph.remove();
     });
   }
 
@@ -1044,7 +1100,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   private removeLeadingListMarker(listItem: HTMLElement): void {
     const textNode = this.firstTextNode(listItem);
-    if (!textNode || !textNode.textContent) {
+    if (!textNode?.textContent) {
       return;
     }
 
@@ -1056,8 +1112,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return node as Text;
     }
 
-    for (let i = 0; i < node.childNodes.length; i++) {
-      const textNode = this.firstTextNode(node.childNodes[i]);
+    for (const childNode of Array.from(node.childNodes)) {
+      const textNode = this.firstTextNode(childNode);
       if (textNode) {
         return textNode;
       }
@@ -1067,7 +1123,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private updateToolbarState(): void {
-    if (!this.editor || !this.editor.view) {
+    if (!this.editor?.view) {
       return;
     }
 
@@ -1175,22 +1231,34 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private trimListItemWhitespace(listItem: HTMLElement): void {
-    while (listItem.firstChild && listItem.firstChild.nodeType === Node.TEXT_NODE && !listItem.firstChild.textContent.trim()) {
-      listItem.removeChild(listItem.firstChild);
+    let firstChild = listItem.firstChild;
+    while (firstChild?.nodeType === Node.TEXT_NODE && !firstChild.textContent?.trim()) {
+      (firstChild as ChildNode).remove();
+      firstChild = listItem.firstChild;
     }
 
-    while (listItem.lastChild && listItem.lastChild.nodeType === Node.TEXT_NODE && !listItem.lastChild.textContent.trim()) {
-      listItem.removeChild(listItem.lastChild);
+    let lastChild = listItem.lastChild;
+    while (lastChild?.nodeType === Node.TEXT_NODE && !lastChild.textContent?.trim()) {
+      (lastChild as ChildNode).remove();
+      lastChild = listItem.lastChild;
     }
 
     const firstTextNode = this.firstTextNode(listItem);
-    if (firstTextNode && firstTextNode.textContent) {
-      firstTextNode.textContent = firstTextNode.textContent.replace(/^\s+/, '');
+    if (firstTextNode?.textContent) {
+      firstTextNode.textContent = firstTextNode.textContent.trimStart();
     }
 
     const lastTextNode = this.lastTextNode(listItem);
-    if (lastTextNode && lastTextNode.textContent) {
-      lastTextNode.textContent = lastTextNode.textContent.replace(/\s+$/, '');
+    if (lastTextNode?.textContent) {
+      lastTextNode.textContent = lastTextNode.textContent.trimEnd();
     }
+  }
+
+  private trailingCharacterCount(value: string, character: string): number {
+    let index = value.length - 1;
+    while (index >= 0 && value[index] === character) {
+      index--;
+    }
+    return value.length - index - 1;
   }
 }
