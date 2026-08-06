@@ -328,7 +328,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       Italic: 'Control+I',
       Underline: 'Control+U'
     };
-    const toggleLabels = ['Bold', 'Italic', 'Underline', 'Paragraph', 'Ordered List', 'Bullet List'];
+    const toggleLabels = new Set(['Bold', 'Italic', 'Underline', 'Paragraph', 'Ordered List', 'Bullet List']);
     const buttons = this.editorHost.nativeElement.querySelectorAll('button');
 
     buttons.forEach((button: HTMLButtonElement) => {
@@ -336,7 +336,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       if (shortcutLabels[label]) {
         button.setAttribute('aria-keyshortcuts', shortcutLabels[label]);
       }
-      if (toggleLabels.includes(label)) {
+      if (toggleLabels.has(label)) {
         button.setAttribute('aria-pressed', `${button.classList.contains('ccd-rich-text-area__toolbar-button--active')}`);
       }
     });
