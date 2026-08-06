@@ -124,7 +124,7 @@
     "jasmine-spec-reporter": "~7.0.0",
     "json-loader": "^0.5.4",
     "just-clone": "^6.2.0",
-    "karma": "~6.4.0",
+    "karma": "patch:karma@npm%3A6.4.4#~/.yarn/patches/karma-npm-6.4.4-d2157b2fad.patch",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.0.3",
     "karma-coverage-istanbul-reporter": "~2.0.1",

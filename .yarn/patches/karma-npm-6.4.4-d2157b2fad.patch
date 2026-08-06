@@ -1,0 +1,14 @@
+diff --git a/lib/file-list.js b/lib/file-list.js
+index b4ec01d29edf7a77b837b098a57a4a7189482f51..446679011d6b4662373151d1c7fa449af666cca6 100644
+--- a/lib/file-list.js
++++ b/lib/file-list.js
+@@ -1,7 +1,8 @@
+ 'use strict'
+ 
+ const { promisify } = require('util')
+-const mm = require('minimatch')
++const minimatch = require('minimatch')
++const mm = typeof minimatch === 'function' ? minimatch : minimatch.minimatch
+ const Glob = require('glob').Glob
+ const fs = require('graceful-fs')
+ const statAsync = promisify(fs.stat.bind(fs))

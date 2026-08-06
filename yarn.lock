@@ -3161,7 +3161,7 @@ __metadata:
     jasmine-spec-reporter: "npm:~7.0.0"
     json-loader: "npm:^0.5.4"
     just-clone: "npm:^6.2.0"
-    karma: "npm:~6.4.0"
+    karma: "patch:karma@npm%3A6.4.4#~/.yarn/patches/karma-npm-6.4.4-d2157b2fad.patch"
     karma-chrome-launcher: "npm:~3.1.0"
     karma-coverage: "npm:~2.0.3"
     karma-coverage-istanbul-reporter: "npm:~2.0.1"
@@ -15222,7 +15222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma@npm:~6.4.0":
+"karma@npm:6.4.4":
   version: 6.4.4
   resolution: "karma@npm:6.4.4"
   dependencies:
@@ -15253,6 +15253,40 @@ __metadata:
   bin:
     karma: bin/karma
   checksum: 10/170a11cd94391149671c2ebb90bddf4347d97d656feb6fc9a6e9b31062ecccc1515527ef93781ecadd643a8258403e42fc7252868d70e529ec7214cae8dc1c31
+  languageName: node
+  linkType: hard
+
+"karma@patch:karma@npm%3A6.4.4#~/.yarn/patches/karma-npm-6.4.4-d2157b2fad.patch":
+  version: 6.4.4
+  resolution: "karma@patch:karma@npm%3A6.4.4#~/.yarn/patches/karma-npm-6.4.4-d2157b2fad.patch::version=6.4.4&hash=4a9e12"
+  dependencies:
+    "@colors/colors": "npm:1.5.0"
+    body-parser: "npm:^1.19.0"
+    braces: "npm:^3.0.2"
+    chokidar: "npm:^3.5.1"
+    connect: "npm:^3.7.0"
+    di: "npm:^0.0.1"
+    dom-serialize: "npm:^2.2.1"
+    glob: "npm:^7.1.7"
+    graceful-fs: "npm:^4.2.6"
+    http-proxy: "npm:^1.18.1"
+    isbinaryfile: "npm:^4.0.8"
+    lodash: "npm:^4.17.21"
+    log4js: "npm:^6.4.1"
+    mime: "npm:^2.5.2"
+    minimatch: "npm:^3.0.4"
+    mkdirp: "npm:^0.5.5"
+    qjobs: "npm:^1.2.0"
+    range-parser: "npm:^1.2.1"
+    rimraf: "npm:^3.0.2"
+    socket.io: "npm:^4.7.2"
+    source-map: "npm:^0.6.1"
+    tmp: "npm:^0.2.1"
+    ua-parser-js: "npm:^0.7.30"
+    yargs: "npm:^16.1.1"
+  bin:
+    karma: bin/karma
+  checksum: 10/0a1d9cfdea9dcf19a7ed0568f582be8990a849143337d36bf20001f605afebd4e4e96f4695c21bf7975a857c3b06ce0a9b7bdb12e01a67363e6e82606e7da17b
   languageName: node
   linkType: hard
 
