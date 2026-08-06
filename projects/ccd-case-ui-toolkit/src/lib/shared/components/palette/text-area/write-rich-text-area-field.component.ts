@@ -105,13 +105,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return !!(this.richTextAreaControl.errors && (this.richTextAreaControl.dirty || this.richTextAreaControl.touched));
   }
 
-  public focusEditor(): void {
-    const editorElement = this.getEditableElement();
-    if (editorElement) {
-      editorElement.focus();
-    }
-  }
-
   public onEditorFocusOut(): void {
     this.richTextAreaControl.markAsTouched();
     this.syncAccessibilityLater();

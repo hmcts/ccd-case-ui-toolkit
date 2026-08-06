@@ -228,6 +228,15 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(editor.getAttribute('aria-invalid')).toBe('false');
   }));
 
+  it('should not add the editor label to the keyboard tab order', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    const label = fixture.nativeElement.querySelector(`#${component.labelId()}`) as HTMLElement;
+
+    expect(label.tabIndex).toBe(-1);
+    expect(label.hasAttribute('tabindex')).toBe(false);
+  }));
+
   it('should keep editor height fixed and wrap long text inside the editor', fakeAsync(() => {
     tick();
     fixture.detectChanges();
