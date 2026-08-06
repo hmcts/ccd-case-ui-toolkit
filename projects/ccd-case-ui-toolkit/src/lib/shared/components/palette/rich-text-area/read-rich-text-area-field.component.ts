@@ -4,7 +4,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { sanitiseRichTextHtml } from './rich-text-sanitizer';
 
 @Component({
-  selector: 'ccd-read-text-area-field',
+  selector: 'ccd-read-rich-text-area-field',
   template: `<div class="ccd-rich-text-area-read" [innerHTML]="sanitisedValue()"></div>`,
   styleUrls: ['./read-rich-text-area-field.component.scss'],
   encapsulation: ViewEncapsulation.None,

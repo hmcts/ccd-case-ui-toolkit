@@ -21,7 +21,7 @@ const BLOCK_NODE_NAMES = new Set([
 ]);
 
 @Component({
-  selector: 'ccd-write-text-area-field',
+  selector: 'ccd-write-rich-text-area-field',
   templateUrl: './write-rich-text-area-field.component.html',
   styleUrls: ['./write-rich-text-area-field.component.scss'],
   encapsulation: ViewEncapsulation.None,

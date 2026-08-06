@@ -140,6 +140,7 @@ import {
 } from './query-management';
 import { QualifyingQuestionService, QueryManagementService } from './query-management/services';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
+import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
@@ -147,7 +148,7 @@ import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from 
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
-import { ReadRichTextAreaFieldComponent, WriteRichTextAreaFieldComponent } from './text-area';
+import { ReadRichTextAreaFieldComponent, WriteRichTextAreaFieldComponent } from './rich-text-area';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -166,6 +167,7 @@ const PALETTE_COMPONENTS = [
 
   // Read
   ReadTextFieldComponent,
+  ReadTextAreaFieldComponent,
   ReadRichTextAreaFieldComponent,
   ReadNumberFieldComponent,
   ReadEmailFieldComponent,
@@ -205,6 +207,7 @@ const PALETTE_COMPONENTS = [
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
   WriteTextFieldComponent,
+  WriteTextAreaFieldComponent,
   WriteDateContainerFieldComponent,
   WriteRichTextAreaFieldComponent,
   WritePhoneUKFieldComponent,
