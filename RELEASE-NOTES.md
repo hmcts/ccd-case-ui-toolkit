@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.79-exui-5013
+**EXUI-5013** Package update - sass
+
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
 
