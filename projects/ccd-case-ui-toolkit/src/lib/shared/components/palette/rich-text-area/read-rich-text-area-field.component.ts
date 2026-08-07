@@ -24,7 +24,7 @@ export class ReadRichTextAreaFieldComponent extends AbstractFieldReadComponent {
 
     indentedElements.forEach((element) => {
       const indent = element.dataset.indent;
-      element.removeAttribute('data-indent');
+      delete element.dataset.indent;
       element.classList.add(`ccd-rich-text-indent-${indent}`);
     });
 
