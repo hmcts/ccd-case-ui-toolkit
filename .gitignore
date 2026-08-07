@@ -47,10 +47,6 @@ tmp/*
 
 # Yarn
 .yarn
-!.yarn/
-.yarn/*
-!.yarn/patches/
-!.yarn/patches/*.patch
 
 # docs
 docs/
