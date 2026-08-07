@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.79-exui-5013",
+  "version": "7.3.80-exui-5013",
   "engines": {
     "node": ">=20.19.0"
   },
