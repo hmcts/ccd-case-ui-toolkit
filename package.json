@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.79",
+  "version": "7.3.79-exui-4950-rc-1",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -171,6 +171,7 @@
   },
   "resolutions": {
     "braces": "^3.0.3",
+    "dompurify": "^3.4.13",
     "dot-prop": "^5.1.1",
     "elliptic": "6.5.4",
     "graceful-fs": "^4.2.3",
