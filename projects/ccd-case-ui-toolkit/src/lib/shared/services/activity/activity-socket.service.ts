@@ -42,6 +42,10 @@ type ActivityEvent = 'view' | 'edit';
 const ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY = '__ccdActivityWebPubSubSharedState__';
 const ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS = 5000;
 const ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS = 5000;
+// Avoid application-level ping/pong frames. The WebSocket remains open and the
+// client still reconnects when the browser receives an actual close event.
+const ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_INTERVAL_MS = 0;
+const ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_TIMEOUT_MS = 0;
 
 /**
  * Provides the real-time case activity API.
@@ -300,6 +304,8 @@ export class ActivitySocketService implements OnDestroy {
       },
       {
         autoReconnect: true,
+        keepAliveIntervalInMs: ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_INTERVAL_MS,
+        keepAliveTimeoutInMs: ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_TIMEOUT_MS,
         reconnectRetryOptions: {
           maxRetries: 10,
           mode: 'Exponential',

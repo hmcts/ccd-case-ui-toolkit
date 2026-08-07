@@ -121,6 +121,15 @@ describe('ActivitySocketService', () => {
     });
   });
 
+  it('should disable SDK ping/pong frames while retaining automatic reconnection', () => {
+    activityService.mode = MODES.socket;
+
+    const clientOptions = (service.socket as any)._options;
+    expect(clientOptions.keepAliveIntervalInMs).toBe(0);
+    expect(clientOptions.keepAliveTimeoutInMs).toBe(0);
+    expect(clientOptions.autoReconnect).toBe(true);
+  });
+
   it('should negotiate a client access URL through ActivityService', async () => {
     activityService.mode = MODES.socket;
 
