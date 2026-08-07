@@ -17,6 +17,17 @@ export class ReadRichTextAreaFieldComponent extends AbstractFieldReadComponent {
 
   public sanitisedValue(): string {
     const supportedHtml = sanitiseRichTextHtml(this.caseField.value || '');
-    return this.sanitizer.sanitize(SecurityContext.HTML, supportedHtml) || '';
+    const documentElement = new DOMParser().parseFromString(supportedHtml, 'text/html');
+    const indentedElements = Array.prototype.slice.call(
+      documentElement.body.querySelectorAll('[data-indent]')
+    ) as HTMLElement[];
+
+    indentedElements.forEach((element) => {
+      const indent = element.dataset.indent;
+      element.removeAttribute('data-indent');
+      element.classList.add(`ccd-rich-text-indent-${indent}`);
+    });
+
+    return this.sanitizer.sanitize(SecurityContext.HTML, documentElement.body.innerHTML) || '';
   }
 }

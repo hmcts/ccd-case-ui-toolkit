@@ -52,6 +52,36 @@ describe('ReadRichTextAreaFieldComponent', () => {
     expect(readValue.innerHTML).toContain('<em>world</em>');
   });
 
+  it('should display rich text using the same formatting rules as the editor', () => {
+    component.caseField.value = '<p><strong>Heading</strong></p><p data-indent="2">Indented text</p><ul><li><p>First item</p></li></ul>';
+    fixture.detectChanges();
+
+    const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement as HTMLElement;
+    const boldText = readValue.querySelector('strong') as HTMLElement;
+    const indentedText = readValue.querySelector('.ccd-rich-text-indent-2') as HTMLElement;
+    const listItem = readValue.querySelector('li') as HTMLElement;
+    const listParagraph = readValue.querySelector('li > p') as HTMLElement;
+
+    expect(getComputedStyle(boldText).fontWeight).toBe('700');
+    expect(indentedText).not.toBeNull();
+    expect(getComputedStyle(indentedText).marginLeft).toBe('80px');
+    expect(getComputedStyle(listItem).marginBottom).toBe('5px');
+    expect(getComputedStyle(listParagraph).margin).toBe('0px');
+  });
+
+  it('should render every empty paragraph as a visible blank line', () => {
+    component.caseField.value = '<p>First line</p><p></p><p></p><p>Fourth line</p>';
+    fixture.detectChanges();
+
+    const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement as HTMLElement;
+    const emptyParagraphs = Array.prototype.slice.call(readValue.querySelectorAll('p:empty')) as HTMLElement[];
+
+    expect(emptyParagraphs.length).toBe(2);
+    emptyParagraphs.forEach((paragraph) => {
+      expect(getComputedStyle(paragraph, '::before').content).not.toBe('none');
+    });
+  });
+
   it('should sanitize unsafe HTML before rendering', () => {
     component.caseField.value = `
       <p onclick="alert(1)">Safe <strong onmouseover="alert(2)">text</strong></p>
