@@ -239,9 +239,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.convertWordLists(documentElement);
     this.normaliseSupportedInlineFormatting(documentElement);
     this.normaliseBlockFormatting(documentElement);
+    this.normalisePastedListSpacing(documentElement);
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
-    this.collapseRepeatedEmptyParagraphs(documentElement);
     this.removeUnsupportedAttributes(documentElement);
     return this.normalisePlainTextValue(sanitiseRichTextDocument(documentElement));
   }
@@ -406,6 +406,14 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     spacerElements.forEach((spacerElement) => {
       const spacingLength = Math.max(4, (spacerElement.textContent || '').length);
       spacerElement.textContent = '\u00a0'.repeat(spacingLength);
+    });
+
+    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+    paragraphs.forEach((paragraph) => {
+      const visibleText = (paragraph.textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim();
+      if (!visibleText) {
+        paragraph.textContent = '';
+      }
     });
   }
 
@@ -641,6 +649,19 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     });
   }
 
+  private normalisePastedListSpacing(documentElement: Document): void {
+    const listItems = Array.prototype.slice.call(documentElement.body.querySelectorAll('li')) as HTMLElement[];
+
+    listItems.forEach((listItem) => {
+      const paragraphs = Array.prototype.slice.call(listItem.querySelectorAll('p')) as HTMLElement[];
+      paragraphs.forEach((paragraph) => {
+        paragraph.removeAttribute('data-indent');
+        this.removeLeadingIndentWhitespace(paragraph);
+      });
+      this.removeLeadingIndentWhitespace(listItem);
+    });
+  }
+
   private transformTextNodes(element: HTMLElement, transform: (value: string) => string): void {
     const walker = element.ownerDocument.createTreeWalker(element, NodeFilter.SHOW_TEXT);
     let textNode = walker.nextNode();
@@ -663,25 +684,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
     }
     return null;
-  }
-
-  private collapseRepeatedEmptyParagraphs(documentElement: Document): void {
-    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
-    let previousParagraphWasEmpty = false;
-
-    paragraphs.forEach((paragraph) => {
-      const isEmpty = !(paragraph.textContent || '').replace(/[\u200b-\u200d\ufeff\u00a0]/g, ' ').trim();
-      if (!isEmpty) {
-        previousParagraphWasEmpty = false;
-        return;
-      }
-
-      if (previousParagraphWasEmpty) {
-        paragraph.remove();
-        return;
-      }
-      previousParagraphWasEmpty = true;
-    });
   }
 
   private hasBoldStyle(style: string): boolean {
@@ -1095,7 +1097,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     if (!(node instanceof HTMLElement)) {
       return false;
     }
-    return /mso-list:\s*Ignore/i.test(node.getAttribute('style') || '');
+
+    if (/mso-list:\s*Ignore/i.test(node.getAttribute('style') || '')) {
+      return true;
+    }
+
+    return Array.prototype.slice.call(node.querySelectorAll('[style]'))
+      .some((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''));
   }
 
   private removeLeadingListMarker(listItem: HTMLElement): void {

@@ -544,6 +544,46 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(normalisedHtml).toContain('<li><em>Second item</em></li>');
   });
 
+  it('should remove duplicate Word indentation between bullet markers and list text', () => {
+    const wordHtml = `
+      <ul>
+        <li>
+          <p style="margin-left: 72pt;">
+            <span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;</span>Test1
+          </p>
+        </li>
+        <li><p style="margin-left: 72pt;">Test2</p></li>
+      </ul>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const listParagraphs = Array.prototype.slice.call(normalisedDocument.querySelectorAll('li > p')) as HTMLElement[];
+
+    expect(listParagraphs.map((paragraph) => paragraph.textContent.trim())).toEqual(['Test1', 'Test2']);
+    expect(listParagraphs.every((paragraph) => !paragraph.hasAttribute('data-indent'))).toBe(true);
+    expect(normalisedHtml).not.toContain('data-indent');
+    expect(normalisedHtml).not.toContain('&nbsp;');
+  });
+
+  it('should remove spacing contained in a nested Word list marker', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="mso-list:l0 level1 lfo1">
+        <span style="font-family: Symbol">
+          <span style="mso-list: Ignore">&#8226;<span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+        </span>Test1
+      </p>
+      <p class="MsoListParagraph" style="mso-list:l0 level1 lfo1">
+        <span style="font-family: Symbol">
+          <span style="mso-list: Ignore">&#8226;<span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+        </span>Test2
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+
+    expect(normalisedHtml).toContain('<ul><li>Test1</li><li>Test2</li></ul>');
+    expect(normalisedHtml).not.toContain('&nbsp;');
+  });
+
   it('should retain supported Word formatting and remove Word layout styling', () => {
     const wordHtml = `
       <html>
@@ -637,7 +677,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(normalisedHtml).not.toContain('<p></p>');
   });
 
-  it('should collapse repeated empty Word paragraphs', () => {
+  it('should preserve repeated empty Word paragraphs', () => {
     const wordHtml = `
       <p>Contact details</p>
       <div><p>&nbsp;</p></div>
@@ -650,7 +690,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const emptyParagraphs = Array.prototype.slice.call(normalisedDocument.querySelectorAll('p'))
       .filter((paragraph: HTMLElement) => !(paragraph.textContent || '').replace(/\u00a0/g, ' ').trim());
 
-    expect(emptyParagraphs.length).toBe(1);
+    expect(emptyParagraphs.length).toBe(3);
   });
 
   it('should preserve repeated empty paragraphs entered in the editor', () => {
