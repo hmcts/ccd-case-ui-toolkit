@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.80-5014
+**EXUI-5014** Package update - @hmcts/properties-volume
+
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
 
