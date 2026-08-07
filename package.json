@@ -109,7 +109,7 @@
     "core-js": "^3.49.0",
     "css-loader": "^6.7.1",
     "del": "^3.0.0",
-    "eslint": "^10.8.0",
+    "eslint": "^9.39.2",
     "exceljs": "^4.4.0",
     "expect": "^23.0.0",
     "font-awesome": "^4.6.1",
