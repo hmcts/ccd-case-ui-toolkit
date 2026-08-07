@@ -655,7 +655,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     listItems.forEach((listItem) => {
       const paragraphs = Array.prototype.slice.call(listItem.querySelectorAll('p')) as HTMLElement[];
       paragraphs.forEach((paragraph) => {
-        paragraph.removeAttribute('data-indent');
+        delete paragraph.dataset.indent;
         this.removeLeadingIndentWhitespace(paragraph);
       });
       this.removeLeadingIndentWhitespace(listItem);
