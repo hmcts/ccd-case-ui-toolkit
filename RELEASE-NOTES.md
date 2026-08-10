@@ -1,7 +1,14 @@
 ## RELEASE NOTES
 
-### Version 7.3.79-exui-5006-1
+### Version 7.3.82
+**EXUI-4949** Package update - Angular - major
+**EXUI-5044** Package update - Angular build tools - major
+
+### Version 7.3.81
 **EXUI-5006** Package update - ngx-markdown - major
+
+### Version 7.3.80
+**POFCC-131** Onboard PCS to Work Allocation
 
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
