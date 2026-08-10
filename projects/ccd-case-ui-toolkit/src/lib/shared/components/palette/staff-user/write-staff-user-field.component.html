@@ -1,7 +1,21 @@
-<div class="form-group" [formGroup]="formGroup">
+<div class="form-group" [formGroup]="formGroup" [ngClass]="{'form-group-error': !!staffUserControl && errors}">
   <label [for]="id()">
     <span *ngIf="caseField.label" class="form-label">{{ caseField.label }}</span>
   </label>
   <span *ngIf="caseField.hint_text" class="form-hint">{{ caseField.hint_text }}</span>
-  <input class="form-control bottom-30" [id]="id()" [formControl]="staffUserControl">
+  <span class="error-message" *ngIf="errors">{{ caseField.label }} is required</span>
+  <input class="form-control bottom-30" [id]="id()" [formControl]="staffUserControl"
+    [matAutocomplete]="autoComplete" (blur)="onBlur($event)">
+  <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayStaffUser">
+    <mat-option *ngFor="let staffUser of filteredStaffUsers$ | async" class="select-option"
+      [ngClass]="{'hide-autocomplete': !showAutocomplete}" [value]="staffUser" (onSelectionChange)="onSelectionChange($event)">
+      {{ staffUser.displayName }}
+    </mat-option>
+    <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
+      No results found
+    </mat-option>
+    <mat-option *ngIf="invalidSearchTerm" class="select-option" disabled>
+      Invalid search term
+    </mat-option>
+  </mat-autocomplete>
 </div>
