@@ -26,6 +26,7 @@ export class CaseField implements Orderable {
   public field_type: FieldType;
 
   public hint_text?: string;
+  public role_categories?: string;
   public security_label?: string;
   public display_context: string;
   public display_context_parameter?: string;

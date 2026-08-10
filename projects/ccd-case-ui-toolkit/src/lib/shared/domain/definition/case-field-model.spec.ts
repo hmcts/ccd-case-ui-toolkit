@@ -1,4 +1,5 @@
 import { waitForAsync } from '@angular/core/testing';
+import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from './case-field.model';
 import { FieldType } from './field-type.model';
 
@@ -31,6 +32,16 @@ describe('CaseField', () => {
     component.id = 'joeyramone';
     const htmlId = component.getHierachicalId();
     expect(htmlId).toBe('joeyramone');
+  });
+
+  it('should retain role categories from a CCD definition', () => {
+    const caseField = plainToClassFromExist(new CaseField(), {
+      id: 'staffUser',
+      field_type: { id: 'Text', type: 'Text' },
+      role_categories: 'ADMIN,CTSC'
+    });
+
+    expect(caseField.role_categories).toBe('ADMIN,CTSC');
   });
 
   it('should return simple id for top level field', () => {
