@@ -138,8 +138,32 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].hasError('unsafeRichText')).toBe(true);
   }));
 
+  it('should reject unsafe HTML tags obfuscated with whitespace', fakeAsync(() => {
+    const unsafeValues = [
+      '<p>&lt; script&gt;alert("xss")&lt; / script&gt;</p>',
+      '<p>&lt;s c r i p t&gt;alert("xss")&lt;/s c r i p t&gt;</p>',
+      '<p>&lt;\tiframe&gt;unsafe&lt;\n/ iframe&gt;</p>',
+      '<p>&lt;s\u2003v\u2003g&gt;unsafe&lt;/s\u2003v\u2003g&gt;</p>',
+      '<p>&lt; a href="https://example.com"&gt;unsafe link&lt; / a&gt;</p>',
+      '<p>&lt; defendent onclick="alert(1)"&gt;unsafe&lt; / defendent&gt;</p>'
+    ];
+
+    unsafeValues.forEach((value) => {
+      formGroup.controls[FIELD_ID].setValue(value);
+      tick();
+      expect(formGroup.controls[FIELD_ID].hasError('unsafeRichText')).toBe(true);
+    });
+  }));
+
   it('should allow non-dangerous tag-like text', fakeAsync(() => {
     formGroup.controls[FIELD_ID].setValue('<p>&lt;defendent&gt;Test&lt;/defendent&gt;</p>');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].hasError('unsafeRichText')).toBe(false);
+  }));
+
+  it('should allow non-dangerous tag-like text containing whitespace', fakeAsync(() => {
+    formGroup.controls[FIELD_ID].setValue('<p>&lt; defendent&gt;Test&lt; / defendent&gt;</p>');
     tick();
 
     expect(formGroup.controls[FIELD_ID].hasError('unsafeRichText')).toBe(false);

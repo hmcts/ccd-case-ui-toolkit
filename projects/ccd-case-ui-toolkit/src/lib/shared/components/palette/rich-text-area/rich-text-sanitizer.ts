@@ -64,7 +64,12 @@ const UNSAFE_RICH_TEXT_URL_ATTRIBUTES = new Set([
 const UNSAFE_RICH_TEXT_URL_PATTERN = /^(?:data|javascript|vbscript):/i;
 
 export function containsUnsafeRichTextMarkup(value: string): boolean {
-  const documentElement = new DOMParser().parseFromString(value || '', 'text/html');
+  const inspectableValue = normaliseObfuscatedRichTextMarkup(value || '');
+  if (containsObfuscatedUnsafeRichTextTag(inspectableValue)) {
+    return true;
+  }
+
+  const documentElement = new DOMParser().parseFromString(inspectableValue, 'text/html');
   const elements = Array.prototype.slice.call(documentElement.querySelectorAll('*')) as HTMLElement[];
 
   return elements.some((element) => {
@@ -86,6 +91,92 @@ export function containsUnsafeRichTextMarkup(value: string): boolean {
       return UNSAFE_RICH_TEXT_URL_PATTERN.test(compactValue);
     });
   });
+}
+
+function normaliseObfuscatedRichTextMarkup(value: string): string {
+  let normalisedValue = '';
+
+  for (let index = 0; index < value.length; index++) {
+    normalisedValue += value[index];
+    if (value[index] !== '<') {
+      continue;
+    }
+
+    while (index + 1 < value.length && isRichTextControlOrWhitespace(value.charCodeAt(index + 1))) {
+      index++;
+    }
+    if (value[index + 1] === '/') {
+      normalisedValue += '/';
+      index++;
+      while (index + 1 < value.length && isRichTextControlOrWhitespace(value.charCodeAt(index + 1))) {
+        index++;
+      }
+    }
+  }
+
+  return normalisedValue;
+}
+
+function containsObfuscatedUnsafeRichTextTag(value: string): boolean {
+  for (let index = 0; index < value.length; index++) {
+    if (value[index] !== '<') {
+      continue;
+    }
+
+    let cursor = index + 1;
+    while (cursor < value.length && isRichTextControlOrWhitespace(value.charCodeAt(cursor))) {
+      cursor++;
+    }
+    if (value[cursor] === '/') {
+      cursor++;
+      while (cursor < value.length && isRichTextControlOrWhitespace(value.charCodeAt(cursor))) {
+        cursor++;
+      }
+    }
+
+    let tagName = '';
+    while (cursor < value.length) {
+      const character = value[cursor];
+      if (isRichTextControlOrWhitespace(value.charCodeAt(cursor))) {
+        if (isRejectedRichTextTextTag(tagName)) {
+          return true;
+        }
+        cursor++;
+        continue;
+      }
+      if (character === '>' || character === '/') {
+        if (isRejectedRichTextTextTag(tagName)) {
+          return true;
+        }
+        break;
+      }
+      if (!/[a-z0-9:-]/i.test(character)) {
+        break;
+      }
+
+      tagName += character.toLowerCase();
+      cursor++;
+    }
+  }
+
+  return false;
+}
+
+function isRejectedRichTextTextTag(tagName: string): boolean {
+  return tagName === 'a' || UNSAFE_RICH_TEXT_TAGS.has(tagName);
+}
+
+function isRichTextControlOrWhitespace(characterCode: number): boolean {
+  return characterCode <= 0x20 ||
+    (characterCode >= 0x7f && characterCode <= 0xa0) ||
+    characterCode === 0x1680 ||
+    (characterCode >= 0x2000 && characterCode <= 0x200a) ||
+    characterCode === 0x2028 ||
+    characterCode === 0x2029 ||
+    characterCode === 0x202f ||
+    characterCode === 0x205f ||
+    characterCode === 0x3000 ||
+    characterCode === 0xfeff;
 }
 
 export function removeUnsafeRichTextElements(documentElement: Document): void {
