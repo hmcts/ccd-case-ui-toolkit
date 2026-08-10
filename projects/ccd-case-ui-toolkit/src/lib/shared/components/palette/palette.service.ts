@@ -29,6 +29,8 @@ import { WriteFixedRadioListFieldComponent } from './fixed-radio-list/write-fixe
 import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-field.component';
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { ReadStaffUserFieldComponent } from './staff-user/read-staff-user-field.component';
+import { WriteStaffUserFieldComponent } from './staff-user/write-staff-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
@@ -105,6 +107,8 @@ export class PaletteService {
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           case 'JudicialUser':
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
+          case 'StaffUser':
+            return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
