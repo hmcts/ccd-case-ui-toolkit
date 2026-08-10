@@ -5,9 +5,11 @@ export type StaffUserRoleCategory = Extract<
   'ADMIN' | 'CTSC' | 'LEGAL_OPERATIONS' | 'JUDICIAL'
 >;
 
+export type StaffCacheRoleCategory = Exclude<StaffUserRoleCategory, 'JUDICIAL'>;
+
 export interface StaffUserSearchConfiguration {
   roleCategories: StaffUserRoleCategory[];
-  staffRoleCategories: StaffUserRoleCategory[];
+  staffRoleCategories: StaffCacheRoleCategory[];
   includesJudicial: boolean;
 }
 
