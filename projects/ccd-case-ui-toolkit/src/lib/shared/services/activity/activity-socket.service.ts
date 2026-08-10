@@ -28,8 +28,7 @@ interface ActivityWebPubSubSharedState {
   activeActivity?: ActivityEvent;
   desiredCaseId?: string;
   desiredActivity?: ActivityEvent;
-  pageHideHandler?: () => void;
-  visibilityChangeHandler?: () => void;
+  pageExitHandler?: () => void;
 }
 
 interface ActivityServerMessage {
@@ -38,6 +37,7 @@ interface ActivityServerMessage {
 }
 
 type ActivityEvent = 'view' | 'edit';
+type LoggedActivityEvent = ActivityEvent | 'stop' | 'stopAll';
 
 const ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY = '__ccdActivityWebPubSubSharedState__';
 const ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS = 5000;
@@ -149,7 +149,7 @@ export class ActivitySocketService implements OnDestroy {
     }
 
     ActivitySocketService.setDesiredActivity(this.socket, caseId, 'view');
-    if (!this.connected.value || !ActivitySocketService.isPageVisible()) {
+    if (!this.connected.value) {
       return;
     }
 
@@ -209,7 +209,7 @@ export class ActivitySocketService implements OnDestroy {
     }
 
     ActivitySocketService.setDesiredActivity(this.socket, caseId, 'edit');
-    if (!this.connected.value || !ActivitySocketService.isPageVisible()) {
+    if (!this.connected.value) {
       return;
     }
 
@@ -244,6 +244,9 @@ export class ActivitySocketService implements OnDestroy {
       return;
     }
 
+    if (ActivitySocketService.isLoggedActivityEvent(eventName)) {
+      console.log(`[Case activity] Sending '${eventName}' event`, data);
+    }
     this.socket.sendEvent(eventName, data, 'json').catch((error) => {
       console.warn(`Activity Web PubSub ${eventName} event failed`, error);
       this.connectErrorSubject.next(error);
@@ -319,8 +322,7 @@ export class ActivitySocketService implements OnDestroy {
     state.userKey = userKey;
     state.connected = false;
     ActivitySocketService.registerSharedClientEvents(client);
-    ActivitySocketService.registerPageHideHandler(client);
-    ActivitySocketService.registerVisibilityChangeHandler(client);
+    ActivitySocketService.registerPageExitHandlers(client);
     return client;
   }
 
@@ -370,7 +372,7 @@ export class ActivitySocketService implements OnDestroy {
     });
   }
 
-  private static registerPageHideHandler(client: WebPubSubClient): void {
+  private static registerPageExitHandlers(client: WebPubSubClient): void {
     if (typeof window === 'undefined') {
       return;
     }
@@ -385,48 +387,12 @@ export class ActivitySocketService implements OnDestroy {
 
       currentState.activeCaseId = undefined;
       currentState.activeActivity = undefined;
-      ActivitySocketService.sendClientEvent(client, 'stop', caseId, 'during page close');
+      ActivitySocketService.sendClientEvent(client, 'stop', caseId, 'during page exit');
     };
 
-    state.pageHideHandler = handler;
+    state.pageExitHandler = handler;
+    window.addEventListener('beforeunload', handler);
     window.addEventListener('pagehide', handler);
-  }
-
-  private static registerVisibilityChangeHandler(client: WebPubSubClient): void {
-    if (typeof document === 'undefined') {
-      return;
-    }
-
-    const state = ActivitySocketService.sharedState;
-    const handler = () => {
-      const currentState = ActivitySocketService.sharedState;
-      if (client !== currentState.client || !currentState.connected) {
-        return;
-      }
-
-      if (!ActivitySocketService.isPageVisible()) {
-        const caseId = currentState.activeCaseId;
-        if (caseId) {
-          ActivitySocketService.clearActiveActivity(client, caseId);
-          ActivitySocketService.sendClientEvent(client, 'stop', caseId, 'while hiding page');
-        }
-        return;
-      }
-
-      const caseId = currentState.desiredCaseId;
-      const activity = currentState.desiredActivity;
-      if (
-        caseId &&
-        activity &&
-        (caseId !== currentState.activeCaseId || activity !== currentState.activeActivity)
-      ) {
-        ActivitySocketService.sendClientEvent(client, activity, caseId, 'while restoring page');
-        ActivitySocketService.setActiveActivity(client, caseId, activity);
-      }
-    };
-
-    state.visibilityChangeHandler = handler;
-    document.addEventListener('visibilitychange', handler);
   }
 
   private static parseServerMessage(data: unknown): ActivityServerMessage | undefined {
@@ -502,8 +468,7 @@ export class ActivitySocketService implements OnDestroy {
     if (client === state.client) {
       ActivitySocketService.clearSharedClientCloseTimer();
       ActivitySocketService.clearSharedClientRestart(client);
-      ActivitySocketService.removePageHideHandler();
-      ActivitySocketService.removeVisibilityChangeHandler();
+      ActivitySocketService.removePageExitHandlers();
       state.client = undefined;
       state.userKey = undefined;
       state.connected = false;
@@ -574,29 +539,23 @@ export class ActivitySocketService implements OnDestroy {
     caseId: string,
     context: string
   ): void {
-    client.sendEvent(eventName, { caseId }, 'json').catch((error) => {
+    console.log(`[Case activity] Sending '${eventName}' event ${context}`, { caseId });
+    client.sendEvent(eventName, { caseId }, 'json', { fireAndForget: true }).catch((error) => {
       console.warn(`Activity Web PubSub ${eventName} event failed ${context}`, error);
     });
   }
 
-  private static isPageVisible(): boolean {
-    return typeof document === 'undefined' || document.visibilityState !== 'hidden';
+  private static isLoggedActivityEvent(eventName: string): eventName is LoggedActivityEvent {
+    return ['view', 'edit', 'stop', 'stopAll'].includes(eventName);
   }
 
-  private static removePageHideHandler(): void {
+  private static removePageExitHandlers(): void {
     const state = ActivitySocketService.sharedState;
-    if (typeof window !== 'undefined' && state.pageHideHandler) {
-      window.removeEventListener('pagehide', state.pageHideHandler);
+    if (typeof window !== 'undefined' && state.pageExitHandler) {
+      window.removeEventListener('beforeunload', state.pageExitHandler);
+      window.removeEventListener('pagehide', state.pageExitHandler);
     }
-    state.pageHideHandler = undefined;
-  }
-
-  private static removeVisibilityChangeHandler(): void {
-    const state = ActivitySocketService.sharedState;
-    if (typeof document !== 'undefined' && state.visibilityChangeHandler) {
-      document.removeEventListener('visibilitychange', state.visibilityChangeHandler);
-    }
-    state.visibilityChangeHandler = undefined;
+    state.pageExitHandler = undefined;
   }
 
   private static startSharedClientIfNeeded(client: WebPubSubClient): void {

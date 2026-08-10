@@ -26,11 +26,9 @@ describe('ActivitySocketService', () => {
 
   function resetSharedClient(): void {
     const state = (ActivitySocketService as any).sharedState;
-    if (state.pageHideHandler) {
-      window.removeEventListener('pagehide', state.pageHideHandler);
-    }
-    if (state.visibilityChangeHandler) {
-      document.removeEventListener('visibilitychange', state.visibilityChangeHandler);
+    if (state.pageExitHandler) {
+      window.removeEventListener('beforeunload', state.pageExitHandler);
+      window.removeEventListener('pagehide', state.pageExitHandler);
     }
     if (state.closeTimer) {
       clearTimeout(state.closeTimer);
@@ -48,8 +46,7 @@ describe('ActivitySocketService', () => {
     state.activeActivity = undefined;
     state.desiredCaseId = undefined;
     state.desiredActivity = undefined;
-    state.pageHideHandler = undefined;
-    state.visibilityChangeHandler = undefined;
+    state.pageExitHandler = undefined;
     state.owners.clear();
   }
 
@@ -142,6 +139,16 @@ describe('ActivitySocketService', () => {
 
   it('should expose the current user without its token', () => {
     expect(service.user).toEqual({ id: MOCK_USER.id, forename: 'Bob', surname: 'Smith' } as any);
+  });
+
+  it('should register page-exit handling for beforeunload and pagehide', () => {
+    const addEventListenerSpy = spyOn(window, 'addEventListener').and.callThrough();
+
+    activityService.mode = MODES.socket;
+
+    const pageExitHandler = (ActivitySocketService as any).sharedState.pageExitHandler;
+    expect(addEventListenerSpy).toHaveBeenCalledWith('beforeunload', pageExitHandler);
+    expect(addEventListenerSpy).toHaveBeenCalledWith('pagehide', pageExitHandler);
   });
 
   it('should update connection observables from Web PubSub lifecycle events', () => {
@@ -278,6 +285,22 @@ describe('ActivitySocketService', () => {
       );
     });
 
+    it('should log view, edit, stop and stopAll events sent to the backend', () => {
+      const consoleLogSpy = spyOn(console, 'log');
+
+      service.viewCase('case-1', true);
+      service.editCase('case-1', true);
+      service.stopCase('case-1', true);
+      service.stopAllCase(['case-1', 'case-2'], true);
+
+      expect(consoleLogSpy.calls.allArgs()).toEqual([
+        ["[Case activity] Sending 'view' event", { caseId: 'case-1' }],
+        ["[Case activity] Sending 'edit' event", { caseId: 'case-1' }],
+        ["[Case activity] Sending 'stop' event", { caseId: 'case-1' }],
+        ["[Case activity] Sending 'stopAll' event", { caseIds: ['case-1', 'case-2'] }]
+      ]);
+    });
+
     it('should not send activity events while disconnected', () => {
       trigger('disconnected', { connectionId: CONNECTED_EVENT.connectionId });
 
@@ -302,17 +325,38 @@ describe('ActivitySocketService', () => {
       ]);
     });
 
-    it('should send one stop event for the active case when the page closes', () => {
+    it('should send one fire-and-forget stop before unload and ignore the later pagehide', () => {
+      const consoleLogSpy = spyOn(console, 'log');
       service.startViewing('case-1');
       service.startEditing('case-2');
       sendEventSpy.calls.reset();
+      consoleLogSpy.calls.reset();
 
-      window.dispatchEvent(new Event('pagehide'));
+      (ActivitySocketService as any).sharedState.pageExitHandler();
       window.dispatchEvent(new Event('pagehide'));
 
       expect(sendEventSpy.calls.allArgs()).toEqual([
-        ['stop', { caseId: 'case-2' }, 'json']
+        ['stop', { caseId: 'case-2' }, 'json', { fireAndForget: true }]
       ]);
+      expect(consoleLogSpy).toHaveBeenCalledTimes(1);
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        "[Case activity] Sending 'stop' event during page exit",
+        { caseId: 'case-2' }
+      );
+    });
+
+    it('should use pagehide as a fallback when beforeunload does not fire', () => {
+      service.startViewing('case-1');
+      sendEventSpy.calls.reset();
+
+      window.dispatchEvent(new Event('pagehide'));
+
+      expect(sendEventSpy).toHaveBeenCalledWith(
+        'stop',
+        { caseId: 'case-1' },
+        'json',
+        { fireAndForget: true }
+      );
     });
 
     it('should not send a page-close stop after the active case has already stopped', () => {
@@ -325,7 +369,7 @@ describe('ActivitySocketService', () => {
       expect(sendEventSpy).not.toHaveBeenCalled();
     });
 
-    it('should stop while hidden, suppress idle reconnect activity, and resume only the latest page intent', () => {
+    it('should keep the current activity active when the page loses visibility', () => {
       let visibilityState: DocumentVisibilityState = 'visible';
       spyOnProperty(document, 'visibilityState', 'get').and.callFake(() => visibilityState);
       service.startViewing('case-1');
@@ -333,38 +377,23 @@ describe('ActivitySocketService', () => {
 
       visibilityState = 'hidden';
       document.dispatchEvent(new Event('visibilitychange'));
-      expect(sendEventSpy.calls.allArgs()).toEqual([
-        ['stop', { caseId: 'case-1' }, 'json']
-      ]);
-
-      sendEventSpy.calls.reset();
-      trigger('disconnected', { connectionId: CONNECTED_EVENT.connectionId });
-      trigger('connected', CONNECTED_EVENT);
-      service.startViewing('case-1');
-      service.startEditing('case-2');
       expect(sendEventSpy).not.toHaveBeenCalled();
 
       visibilityState = 'visible';
       document.dispatchEvent(new Event('visibilitychange'));
-      expect(sendEventSpy.calls.allArgs()).toEqual([
-        ['edit', { caseId: 'case-2' }, 'json']
-      ]);
+      expect(sendEventSpy).not.toHaveBeenCalled();
     });
 
-    it('should not restore activity after its component stops while the page is hidden', () => {
-      let visibilityState: DocumentVisibilityState = 'visible';
-      spyOnProperty(document, 'visibilityState', 'get').and.callFake(() => visibilityState);
+    it('should send view and edit activity even when the page is hidden', () => {
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue('hidden');
+
       service.startViewing('case-1');
+      service.startEditing('case-2');
 
-      visibilityState = 'hidden';
-      document.dispatchEvent(new Event('visibilitychange'));
-      service.stopViewing('case-1');
-      sendEventSpy.calls.reset();
-
-      visibilityState = 'visible';
-      document.dispatchEvent(new Event('visibilitychange'));
-
-      expect(sendEventSpy).not.toHaveBeenCalled();
+      expect(sendEventSpy.calls.allArgs()).toEqual([
+        ['view', { caseId: 'case-1' }, 'json'],
+        ['edit', { caseId: 'case-2' }, 'json']
+      ]);
     });
   });
 
