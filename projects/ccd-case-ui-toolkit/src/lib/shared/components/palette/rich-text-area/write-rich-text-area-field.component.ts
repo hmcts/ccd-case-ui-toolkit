@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@an
 import { Editor } from 'ngx-editor';
 import { setBlockType } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
-import { liftListItem } from 'prosemirror-schema-list';
+import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { Plugin } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
 import { Constants } from '../../../commons/constants';
@@ -46,6 +46,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       history: true,
       keyboardShortcuts: true,
       inputRules: true,
+      parseOptions: {
+        preserveWhitespace: true
+      },
       plugins: [
         new Plugin({
           props: {
@@ -143,10 +146,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         this.toggleParagraph();
         break;
       case 'indent':
-        this.editor.commands.indent().exec();
+        this.changeIndent(true);
         break;
       case 'outdent':
-        this.editor.commands.outdent().exec();
+        this.changeIndent(false);
         break;
       case 'ordered_list':
         this.editor.commands.toggleOrderedList().exec();
@@ -978,11 +981,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     while (element.firstChild && this.isLeadingIndentNode(element.firstChild)) {
       (element.firstChild as ChildNode).remove();
     }
-    let lastChild = element.lastChild;
-    while (lastChild?.nodeType === Node.TEXT_NODE && /^[\s\u00a0]*$/.test(lastChild.textContent || '')) {
-      (lastChild as ChildNode).remove();
-      lastChild = element.lastChild;
-    }
 
     const textNode = this.firstTextNode(element);
     if (textNode?.textContent) {
@@ -1178,6 +1176,24 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
+  }
+
+  private changeIndent(increase: boolean): void {
+    const { state, dispatch } = this.editor.view;
+    const listItemType = state.schema.nodes.list_item;
+
+    if (listItemType && this.isNodeActive('list_item')) {
+      const listCommand = increase ? sinkListItem(listItemType) : liftListItem(listItemType);
+      if (listCommand(state, dispatch)) {
+        return;
+      }
+    }
+
+    if (increase) {
+      this.editor.commands.indent().exec();
+    } else {
+      this.editor.commands.outdent().exec();
+    }
   }
 
   private toggleParagraph(): void {

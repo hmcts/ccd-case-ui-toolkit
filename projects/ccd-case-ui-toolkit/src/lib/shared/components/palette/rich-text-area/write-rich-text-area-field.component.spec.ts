@@ -546,6 +546,76 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).toContain('<li><p>First item</p></li>');
   }));
 
+  it('should indent and outdent a bullet list item from the toolbar', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>First item</p></li><li><p>Second item</p></li></ul>');
+    selectEditorText('Second item');
+
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<li><p>First item</p><ul><li><p>Second item</p></li></ul></li>'
+    );
+
+    clickToolbarButton('Decrease Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ul><li><p>First item</p></li><li><p>Second item</p></li></ul>'
+    );
+  }));
+
+  it('should indent and outdent a numbered list item from the toolbar', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ol><li><p>First item</p></li><li><p>Second item</p></li></ol>');
+    selectEditorText('Second item');
+
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<li><p>First item</p><ol><li><p>Second item</p></li></ol></li>'
+    );
+
+    clickToolbarButton('Decrease Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ol><li><p>First item</p></li><li><p>Second item</p></li></ol>'
+    );
+  }));
+
+  it('should retain a typed space after formatted text in an indented paragraph', () => {
+    const normalisedHtml = component.normaliseRichTextValue(
+      '<p data-indent="1"><strong>Indented text</strong> </p>'
+    );
+
+    expect(normalisedHtml).toContain('<strong>Indented text</strong> </p>');
+  });
+
+  it('should insert spaces after indenting existing text', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p>Indented text</p>');
+
+    const documentEnd = component.editor.view.state.doc.content.size - 1;
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, documentEnd)
+    ));
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    component.editor.commands.insertText(' ').exec();
+    tick();
+    component.editor.commands.insertText('more').exec();
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p data-indent="1">Indented text more</p>');
+  }));
+
   it('should retain supported formatting when normalising Word list HTML', () => {
     const wordHtml = `
       <html>
