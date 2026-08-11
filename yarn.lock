@@ -3266,8 +3266,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.2.27"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
-    "@types/jasmine": "npm:~2.8.0"
-    "@types/jasminewd2": "npm:^2.0.3"
+    "@types/jasmine": "npm:~5.1.0"
     "@types/node": "npm:^20.19.0"
     "@types/underscore": "npm:^1.11.4"
     "@types/webpack": "npm:^4.41.25"
@@ -3334,7 +3333,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.10"
+    rpx-xui-translation: "npm:1.2.12"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -6597,26 +6596,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:*":
-  version: 5.1.13
-  resolution: "@types/jasmine@npm:5.1.13"
-  checksum: 10/f873c5650202b339866244a1c019fecc7abe47694cf8899ef17e965aae51b57cd777bb7ab813a61c4482cbc436eb0c18f02ff8def320999e403a56bd5a80d21e
-  languageName: node
-  linkType: hard
-
-"@types/jasmine@npm:~2.8.0":
-  version: 2.8.23
-  resolution: "@types/jasmine@npm:2.8.23"
-  checksum: 10/01d2c2ed4d651147ebc6ff690a5795f6a33d007f5965cfb7f76bda104f9cc900ecebbd26046cf59a994a1e6ba32feafe5625777504e600616f99ffb2ec12f48c
-  languageName: node
-  linkType: hard
-
-"@types/jasminewd2@npm:^2.0.3":
-  version: 2.0.13
-  resolution: "@types/jasminewd2@npm:2.0.13"
-  dependencies:
-    "@types/jasmine": "npm:*"
-  checksum: 10/a661e1add2d7c0582b05e79fcdbc0297fa4292b38b1273e2970d88d0775c85ecc322e1417c84826b5e6caeceab4dc267f5f00300c0c11d0fc459601057698700
+"@types/jasmine@npm:~5.1.0":
+  version: 5.1.15
+  resolution: "@types/jasmine@npm:5.1.15"
+  checksum: 10/e86a962c153ff91ffe3c65a633578a5e3f6e065e58268c00e839b03dac6792b1e0a2afca216ccfa1e31647e49ef1a935332242350dca91a2940ad883643abd04
   languageName: node
   linkType: hard
 
@@ -19796,9 +19779,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.10":
-  version: 1.2.10
-  resolution: "rpx-xui-translation@npm:1.2.10"
+"rpx-xui-translation@npm:1.2.12":
+  version: 1.2.12
+  resolution: "rpx-xui-translation@npm:1.2.12"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -19807,7 +19790,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/ff264770f29d5bfb01f2db39ed9d76adbe8518e58666113cb780e51bc92713a445130fc775e11d02e92d0c9181f00baed3266655ea810bcc2e186f2573d6824e
+  checksum: 10/b75a3c9de89a972496aca8fcb4811e9c80e7095e93f500766148d0e1403dfe0a26cc14ab6a99635c8dd50b89556c5c773f85310d9308142c9eb27cf5eb1053f9
   languageName: node
   linkType: hard
 

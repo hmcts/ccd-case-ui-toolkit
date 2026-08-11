@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.83
+**EXUI-1855** Upgrade jasmine types and fix toolkit tests
+
 ### Version 7.3.82
 **EXUI-4949** Package update - Angular - major
 **EXUI-5044** Package update - Angular build tools - major

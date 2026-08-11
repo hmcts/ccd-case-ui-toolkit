@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.82",
+  "version": "7.3.83",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -72,7 +72,7 @@
     "ngx-chips": "^3.0.0",
     "ngx-markdown": "^20.1.0",
     "ngx-pagination": "6.0.3",
-    "rpx-xui-translation": "1.2.10",
+    "rpx-xui-translation": "1.2.12",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.13.8",
@@ -92,8 +92,7 @@
     "@angular/compiler-cli": "20.3.27",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.12",
-    "@types/jasmine": "~2.8.0",
-    "@types/jasminewd2": "^2.0.3",
+    "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
     "@types/webpack": "^4.41.25",
