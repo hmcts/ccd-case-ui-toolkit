@@ -51,10 +51,12 @@ describe('WriteStaffUserFieldComponent', () => {
       'getHmctsServiceDetailsByServiceName'
     ]);
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of([
-      { service_code: 'FIRST' },
-      { service_code: 'SECOND' }
+      { service_code: 'FIRST', ccd_service_name: 'PRIVATELAW' },
+      { service_code: 'SECOND', ccd_service_name: 'ANOTHER_SERVICE' }
     ]));
-    caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of([{ service_code: 'FALLBACK' }]));
+    caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of([
+      { service_code: 'FALLBACK', ccd_service_name: 'FALLBACK' }
+    ]));
 
     const compoundPipe = createSpyObj<IsCompoundPipe>('IsCompoundPipe', ['transform']);
     compoundPipe.transform.and.returnValue(false);
@@ -144,7 +146,7 @@ describe('WriteStaffUserFieldComponent', () => {
     tick(299);
     expect(caseworkerService.searchStaffUsers).not.toHaveBeenCalled();
     tick(1);
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['FIRST'], 'ale', ['ADMIN']);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'ale', ['ADMIN']);
   }));
 
   it('should search only the staff cache for staff categories', () => {
@@ -154,7 +156,7 @@ describe('WriteStaffUserFieldComponent', () => {
       expect(staffUsers).toEqual([{ idamId: 'staff-id', displayName: 'Alex Admin' }]);
     });
 
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['FIRST'], 'alex', ['ADMIN']);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'alex', ['ADMIN']);
     expect(jurisdictionService.searchJudicialUsers).not.toHaveBeenCalled();
   });
 

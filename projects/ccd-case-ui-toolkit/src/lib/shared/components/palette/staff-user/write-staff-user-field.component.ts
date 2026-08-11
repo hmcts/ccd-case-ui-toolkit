@@ -4,6 +4,7 @@ import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Constants } from '../../../commons/constants';
 import { StaffUser, parseStaffUserSearchConfiguration } from '../../../domain/work-allocation';
+import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService } from '../../../services';
 import { CaseworkerService } from '../../case-editor/services/case-worker.service';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
@@ -91,15 +92,15 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
       return of([]);
     }
 
-    return this.resolveServiceCode().pipe(
-      switchMap(serviceCode => {
+    return this.resolveServiceDetails().pipe(
+      switchMap(serviceDetails => {
         const searches: Observable<StaffUser[]>[] = [];
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
-            [serviceCode], searchTerm, configuration.configuration.staffRoleCategories));
+            [serviceDetails.ccd_service_name], searchTerm, configuration.configuration.staffRoleCategories));
         }
         if (configuration.configuration.includesJudicial) {
-          searches.push(this.jurisdictionService.searchJudicialUsers(searchTerm, serviceCode).pipe(
+          searches.push(this.jurisdictionService.searchJudicialUsers(searchTerm, serviceDetails.service_code).pipe(
             map(judicialUsers => judicialUsers.map(judicialUser => ({
               idamId: judicialUser.idamId,
               displayName: judicialUser.fullName || ''
@@ -116,11 +117,16 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   public resolveServiceCode(): Observable<string> {
+    return this.resolveServiceDetails().pipe(map(serviceDetails => serviceDetails.service_code));
+  }
+
+  public resolveServiceDetails(): Observable<HmctsServiceDetail> {
     const caseType = this.getBaseCaseType();
     return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseType).pipe(
       catchError(() => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
       map(serviceDetails => {
-        return serviceDetails[0].service_code;
+        console.log(`Resolved service details for case type ${caseType}:`, serviceDetails);
+        return serviceDetails[0];
       })
     );
   }
