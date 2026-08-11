@@ -588,6 +588,48 @@ describe('WriteRichTextAreaFieldComponent', () => {
     );
   }));
 
+  it('should indent and outdent a bullet list when the item cannot be nested', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>Only item</p></li></ul>');
+    selectEditorText('Only item');
+
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ul data-indent="1"><li><p>Only item</p></li></ul>'
+    );
+
+    clickToolbarButton('Decrease Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ul><li><p>Only item</p></li></ul>'
+    );
+  }));
+
+  it('should indent and outdent a numbered list when the item cannot be nested', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ol><li><p>Only item</p></li></ol>');
+    selectEditorText('Only item');
+
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ol data-indent="1"><li><p>Only item</p></li></ol>'
+    );
+
+    clickToolbarButton('Decrease Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ol><li><p>Only item</p></li></ol>'
+    );
+  }));
+
   it('should retain a typed space after formatted text in an indented paragraph', () => {
     const normalisedHtml = component.normaliseRichTextValue(
       '<p data-indent="1"><strong>Indented text</strong> </p>'

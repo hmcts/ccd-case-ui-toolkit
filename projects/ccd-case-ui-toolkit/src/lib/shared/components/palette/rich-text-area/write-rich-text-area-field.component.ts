@@ -1,10 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Editor } from 'ngx-editor';
+import { marks as editorMarks, nodes as editorNodes } from 'ngx-editor/schema';
 import { setBlockType } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
+import { Schema } from 'prosemirror-model';
+import type { DOMOutputSpec, NodeSpec } from 'prosemirror-model';
 import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { Plugin } from 'prosemirror-state';
+import { EditorState, Plugin } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -14,11 +17,53 @@ import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRic
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
 
 const WORD_COLUMN_SPACING = 12;
+const MAX_INDENT = 6;
 const CSS_LENGTH_UNITS = ['rem', 'px', 'pt', 'in', 'cm', 'mm', 'em'];
 const BLOCK_NODE_NAMES = new Set([
   'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'
 ]);
+
+const richTextNodes = {
+  ...editorNodes,
+  ordered_list: {
+    ...editorNodes.ordered_list,
+    attrs: {
+      order: { default: 1 },
+      indent: { default: null }
+    },
+    parseDOM: [{
+      tag: 'ol',
+      getAttrs: (element) => {
+        const list = element as HTMLElement;
+        return {
+          order: list.hasAttribute('start') ? Number(list.getAttribute('start')) : 1,
+          indent: Number(list.getAttribute('data-indent')) || null
+        };
+      }
+    }],
+    toDOM: (node): DOMOutputSpec => ['ol', {
+      start: node.attrs.order === 1 ? null : node.attrs.order,
+      'data-indent': node.attrs.indent
+    }, 0]
+  } as NodeSpec,
+  bullet_list: {
+    ...editorNodes.bullet_list,
+    attrs: {
+      indent: { default: null }
+    },
+    parseDOM: [{
+      tag: 'ul',
+      getAttrs: (element) => {
+        const list = element as HTMLElement;
+        return { indent: Number(list.getAttribute('data-indent')) || null };
+      }
+    }],
+    toDOM: (node): DOMOutputSpec => ['ul', { 'data-indent': node.attrs.indent }, 0]
+  } as NodeSpec
+};
+
+const richTextSchema = new Schema({ nodes: richTextNodes, marks: editorMarks });
 
 @Component({
   selector: 'ccd-write-rich-text-area-field',
@@ -46,6 +91,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       history: true,
       keyboardShortcuts: true,
       inputRules: true,
+      schema: richTextSchema,
       parseOptions: {
         preserveWhitespace: true
       },
@@ -1183,8 +1229,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const listItemType = state.schema.nodes.list_item;
 
     if (listItemType && this.isNodeActive('list_item')) {
+      if (!increase && this.changeListIndent(false, state, dispatch)) {
+        return;
+      }
+
       const listCommand = increase ? sinkListItem(listItemType) : liftListItem(listItemType);
       if (listCommand(state, dispatch)) {
+        return;
+      }
+
+      if (increase && this.changeListIndent(true, state, dispatch)) {
         return;
       }
     }
@@ -1194,6 +1248,31 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     } else {
       this.editor.commands.outdent().exec();
     }
+  }
+
+  private changeListIndent(increase: boolean, state: EditorState, dispatch: Editor['view']['dispatch']): boolean {
+    const { $from } = state.selection;
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name !== 'ordered_list' && node.type.name !== 'bullet_list') {
+        continue;
+      }
+
+      const currentIndent = Number(node.attrs.indent) || 0;
+      const nextIndent = Math.min(MAX_INDENT, Math.max(0, currentIndent + (increase ? 1 : -1)));
+      if (nextIndent === currentIndent) {
+        return false;
+      }
+
+      dispatch(state.tr.setNodeMarkup($from.before(depth), node.type, {
+        ...node.attrs,
+        indent: nextIndent || null
+      }));
+      return true;
+    }
+
+    return false;
   }
 
   private toggleParagraph(): void {
