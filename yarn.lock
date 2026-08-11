@@ -3216,6 +3216,7 @@ __metadata:
     prism: "npm:^4.1.2"
     prosemirror-commands: "npm:1.7.1"
     prosemirror-history: "npm:1.5.0"
+    prosemirror-model: "npm:1.25.11"
     prosemirror-schema-list: "npm:1.5.1"
     raw-loader: "npm:^0.5.1"
     reflect-metadata: "npm:^0.1.12"
@@ -18724,7 +18725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prosemirror-model@npm:^1.0.0, prosemirror-model@npm:^1.21.0, prosemirror-model@npm:^1.25.0, prosemirror-model@npm:^1.25.8":
+"prosemirror-model@npm:1.25.11, prosemirror-model@npm:^1.0.0, prosemirror-model@npm:^1.21.0, prosemirror-model@npm:^1.25.0, prosemirror-model@npm:^1.25.8":
   version: 1.25.11
   resolution: "prosemirror-model@npm:1.25.11"
   dependencies:
