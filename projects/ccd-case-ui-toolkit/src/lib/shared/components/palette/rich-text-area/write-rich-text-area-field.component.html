@@ -1,6 +1,6 @@
 <div class="form-group ccd-rich-text-area" [ngClass]="{'form-group-error': !richTextAreaControl.valid && richTextAreaControl.dirty}">
   <div [id]="labelId()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}} 1</span>
+    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </div>
   <span [id]="hintId()" class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span [id]="errorId()" class="error-message" *ngIf="isInvalid()">
