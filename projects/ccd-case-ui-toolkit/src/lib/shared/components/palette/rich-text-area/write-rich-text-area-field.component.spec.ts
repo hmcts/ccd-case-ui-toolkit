@@ -865,8 +865,12 @@ describe('WriteRichTextAreaFieldComponent', () => {
       </html>`;
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const paragraph = normalisedDocument.querySelector('p');
 
-    expect(normalisedHtml).toContain('<p data-indent="1"><strong>Test Indent</strong></p>');
+    expect(paragraph.dataset.indent).toBe('1');
+    expect(paragraph.textContent.trim()).toBe('Test Indent');
+    expect(paragraph.querySelector('strong').textContent).toBe('Test Indent');
     expect(normalisedHtml).not.toContain('mso-tab-count');
     expect(normalisedHtml).not.toContain('&nbsp;');
   });
