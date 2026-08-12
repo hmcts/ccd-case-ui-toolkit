@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.80-exui-5063
+**EXUI-5063** Staff type-ahead component
+
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
 
