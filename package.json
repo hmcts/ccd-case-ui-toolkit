@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.79",
+  "version": "7.3.83-CME-1008-dart-sass",
   "engines": {
     "node": ">=20.19.0"
   },
