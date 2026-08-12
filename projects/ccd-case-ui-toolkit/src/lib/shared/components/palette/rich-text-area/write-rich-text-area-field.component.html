@@ -4,7 +4,7 @@
   </div>
   <span [id]="hintId()" class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span [id]="errorId()" class="error-message" *ngIf="isInvalid()">
-    {{richTextAreaControl.errors | ccdFirstError:caseField.label}} 1
+    {{richTextAreaControl.errors | ccdFirstError:caseField.label}}
   </span>
 
   <div
