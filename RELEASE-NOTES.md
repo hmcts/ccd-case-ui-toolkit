@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
 ### Version 7.3.83
 **EXUI-1855** Upgrade jasmine types and fix toolkit tests
 
