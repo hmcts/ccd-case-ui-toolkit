@@ -996,6 +996,82 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(normalisedHtml).not.toContain('mso-list');
   });
 
+  it('should retain a Word bullet list nested beneath a numbered list item', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">1.<span>&nbsp;&nbsp;</span></span>First issue
+      </p>
+      <p class="MsoListParagraph" style="mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">2.<span>&nbsp;&nbsp;</span></span>Second issue
+      </p>
+      <p class="MsoListParagraph" style="mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">3.<span>&nbsp;&nbsp;</span></span>How often;
+      </p>
+      <p class="MsoListParagraph" style="mso-list:l1 level2 lfo2">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;&nbsp;</span></span>test1
+      </p>
+      <p class="MsoListParagraph" style="mso-list:l1 level2 lfo2">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;&nbsp;</span></span>test2
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const numberedItems = normalisedDocument.querySelectorAll('body > ol > li');
+    const nestedBulletItems = numberedItems[2].querySelectorAll(':scope > ul > li');
+
+    expect(numberedItems.length).toBe(3);
+    expect(numberedItems[2].firstChild.textContent.trim()).toBe('How often;');
+    expect(Array.from(nestedBulletItems).map((item) => item.textContent.trim())).toEqual(['test1', 'test2']);
+    expect(normalisedDocument.querySelector('body > ul')).toBeNull();
+  });
+
+  it('should retain a nested Word numbered list when Word restarts it at level one', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;&nbsp;</span></span><strong>Bold item text</strong>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l0 level2 lfo1">
+        <span style="mso-list:Ignore">&#9702;<span>&nbsp;&nbsp;</span></span><em>Italic item text</em>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l0 level2 lfo1">
+        <span style="mso-list:Ignore">&#9702;<span>&nbsp;&nbsp;</span></span>Arial 14pt item text
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">1.<span>&nbsp;&nbsp;</span></span><u>Some numbering 1 with underline</u>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">2.<span>&nbsp;&nbsp;</span></span><strong>Some numbering 2 with Bold</strong>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;&nbsp;</span></span>Item containing a link: example.com
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const topLevelItems = normalisedDocument.querySelectorAll('body > ul > li');
+    const nestedBulletItems = topLevelItems[0].querySelectorAll(':scope > ul > li');
+    const numberedItems = nestedBulletItems[1].querySelectorAll(':scope > ol > li');
+
+    expect(topLevelItems.length).toBe(2);
+    expect(Array.from(nestedBulletItems).map((item) => item.firstChild.textContent.trim())).toEqual([
+      'Italic item text',
+      'Arial 14pt item text'
+    ]);
+    expect(Array.from(numberedItems).map((item) => item.textContent.trim())).toEqual([
+      'Some numbering 1 with underline',
+      'Some numbering 2 with Bold'
+    ]);
+    expect(topLevelItems[1].textContent.trim()).toBe('Item containing a link: example.com');
+
+    component.editor.setContent(normalisedHtml);
+    fixture.detectChanges();
+
+    const editorNumberedList = fixture.nativeElement.querySelector(
+      '.ProseMirror > ul > li:first-child > ul > li:nth-child(2) > ol'
+    );
+    expect(editorNumberedList).toBeTruthy();
+  });
+
   it('should retain ordered-list numbering when Word wraps items in separate containers', () => {
     const wordHtml = `
       <html>

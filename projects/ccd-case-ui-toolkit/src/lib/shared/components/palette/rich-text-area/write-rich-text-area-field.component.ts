@@ -1070,33 +1070,63 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   private convertWordLists(documentElement: Document): void {
     const childNodes = Array.prototype.slice.call(documentElement.body.querySelectorAll('p'));
-    let currentList: HTMLElement = null;
-    let currentListParent: Node = null;
+    const wordListIndents = this.wordListIndents(childNodes);
+    const listStack: HTMLElement[] = [];
+    const listParents: Node[] = [];
+    const resetListLevels = new Map<string, number>();
+    let previousListId: string = null;
 
     childNodes.forEach((node: Node) => {
       if (!this.isWordListParagraph(node)) {
-        currentList = null;
-        currentListParent = null;
+        listStack.length = 0;
+        listParents.length = 0;
+        resetListLevels.clear();
+        previousListId = null;
         return;
       }
 
       const paragraph = node as HTMLElement;
       const listType = this.wordListType(paragraph);
+      const listId = this.wordListId(paragraph);
+      const declaredLevel = this.wordListDeclaredLevel(paragraph);
+      let requestedLevel = this.wordListLevel(paragraph, wordListIndents);
+      const rememberedResetLevel = declaredLevel === 1 ? resetListLevels.get(listId) : null;
+      if (rememberedResetLevel) {
+        requestedLevel = Math.max(requestedLevel, rememberedResetLevel);
+      } else if (declaredLevel === 1 && listId !== previousListId && listStack.length > 1 && requestedLevel === listStack.length) {
+        requestedLevel++;
+        resetListLevels.set(listId, requestedLevel);
+      } else if (declaredLevel === 1 && listId) {
+        resetListLevels.set(listId, requestedLevel);
+      }
+      const level = Math.min(requestedLevel, listStack.length + 1);
+      const stackIndex = level - 1;
+      const parentListItem = stackIndex > 0 ? listStack[stackIndex - 1]?.lastElementChild : null;
+      const listParent = parentListItem || paragraph.parentNode;
       const listItem = documentElement.createElement('li');
       this.copyListItemContents(documentElement, paragraph, listItem);
 
-      if (currentList?.tagName.toLowerCase() !== listType || currentListParent !== paragraph.parentNode) {
+      let currentList = listStack[stackIndex];
+      if (currentList?.tagName.toLowerCase() !== listType || listParents[stackIndex] !== listParent) {
         currentList = documentElement.createElement(listType);
         const listStart = this.wordListStart(paragraph);
         if (listType === 'ol' && listStart > 1) {
           currentList.setAttribute('start', listStart.toString());
         }
-        paragraph.parentNode.insertBefore(currentList, paragraph);
-        currentListParent = paragraph.parentNode;
+        if (parentListItem) {
+          parentListItem.appendChild(currentList);
+        } else {
+          paragraph.parentNode.insertBefore(currentList, paragraph);
+        }
+        listStack[stackIndex] = currentList;
+        listParents[stackIndex] = listParent;
       }
 
+      listStack.length = level;
+      listParents.length = level;
       currentList.appendChild(listItem);
       paragraph.remove();
+      previousListId = listId;
     });
   }
 
@@ -1111,6 +1141,46 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private wordListType(paragraph: HTMLElement): string {
     const marker = paragraph.textContent.trim();
     return /^(\d+|[a-z]|[ivxlcdm]+)[.)]/i.test(marker) ? 'ol' : 'ul';
+  }
+
+  private wordListLevel(paragraph: HTMLElement, wordListIndents: number[]): number {
+    const declaredLevel = this.wordListDeclaredLevel(paragraph);
+    const indent = this.wordListIndent(paragraph);
+    const visualLevel = wordListIndents.indexOf(indent) + 1;
+
+    return Math.max(declaredLevel, visualLevel || 1);
+  }
+
+  private wordListDeclaredLevel(paragraph: HTMLElement): number {
+    const match = (paragraph.getAttribute('style') || '').match(/mso-list:[^;]*\blevel(\d+)/i);
+    return match ? Math.max(1, Number(match[1])) : 1;
+  }
+
+  private wordListId(paragraph: HTMLElement): string {
+    const match = (paragraph.getAttribute('style') || '').match(/mso-list:\s*([^;\s]+)/i);
+    return match ? match[1] : null;
+  }
+
+  private wordListIndents(nodes: Node[]): number[] {
+    const indents = nodes
+      .filter((node) => this.isWordListParagraph(node))
+      .map((node: HTMLElement) => this.wordListIndent(node))
+      .filter((indent) => indent > 0);
+
+    return Array.from(new Set(indents)).sort((left, right) => left - right);
+  }
+
+  private wordListIndent(paragraph: HTMLElement): number {
+    const style = paragraph.getAttribute('style') || '';
+    const indent = Math.max(
+      this.cssLengthToPixels(this.cssStyleLength(style, 'margin-left')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'margin-inline-start')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'mso-para-margin-left')),
+      this.cssLengthToPixels(this.cssStyleLength(style, 'mso-margin-left-alt')),
+      this.cssLengthToPixels(this.cssMarginLeftLength(style))
+    );
+
+    return Math.round(indent);
   }
 
   private wordListStart(paragraph: HTMLElement): number {
