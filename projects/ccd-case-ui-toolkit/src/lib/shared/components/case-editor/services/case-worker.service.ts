@@ -44,7 +44,8 @@ export class CaseworkerService {
           .filter(caseworker => roleCategories.some(roleCategory => caseworker.roleCategories.includes(roleCategory)))
           .map(caseworker => ({
             idamId: caseworker.idamId,
-            displayName: `${caseworker.firstName} ${caseworker.lastName}`.trim()
+            displayName: `${caseworker.firstName} ${caseworker.lastName}`.trim(),
+            ...(caseworker.email ? { emailId: caseworker.email } : {})
           }))
           .filter(staffUser => staffUser.displayName.toLowerCase().includes(normalisedSearchTerm))
         ),

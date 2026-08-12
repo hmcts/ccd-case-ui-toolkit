@@ -16,4 +16,5 @@ export interface StaffUserSearchConfiguration {
 export interface StaffUser {
   idamId: string;
   displayName: string;
+  emailId?: string;
 }

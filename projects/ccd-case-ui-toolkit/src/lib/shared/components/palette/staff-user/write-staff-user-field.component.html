@@ -16,7 +16,7 @@
     <mat-option *ngFor="let staffUser of filteredStaffUsers$ | async" 
       class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
       [value]="staffUser" (onSelectionChange)="onSelectionChange($event)">
-      {{ staffUser.displayName }}
+      {{staffUser?.displayName ? staffUser.displayName : ''}}{{staffUser?.emailId ? ' (' + staffUser.emailId + ')' : ''}}
     </mat-option>
     <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
       No results found

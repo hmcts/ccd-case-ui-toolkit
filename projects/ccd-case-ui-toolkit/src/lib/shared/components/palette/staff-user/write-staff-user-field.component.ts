@@ -103,7 +103,8 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
           searches.push(this.jurisdictionService.searchJudicialUsers(searchTerm, serviceDetails.service_code).pipe(
             map(judicialUsers => judicialUsers.map(judicialUser => ({
               idamId: judicialUser.idamId,
-              displayName: judicialUser.fullName || ''
+              displayName: judicialUser.fullName || '',
+              ...(judicialUser.emailId ? { emailId: judicialUser.emailId } : {})
             })))
           ));
         }

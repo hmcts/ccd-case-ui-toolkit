@@ -107,8 +107,8 @@ describe('CaseworkerService', () => {
 
     caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN']).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
-        { idamId: 'admin-idam-id', displayName: 'Alex Admin' },
-        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple' }
+        { idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk' },
+        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple', emailId: 'morgan.multiple@justice.gov.uk' }
       ]);
     });
   }));
@@ -118,8 +118,8 @@ describe('CaseworkerService', () => {
 
     caseworkerService.searchStaffUsers(['service-a'], '', ['CTSC']).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
-        { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC' },
-        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple' }
+        { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC', emailId: 'casey.ctsc@justice.gov.uk' },
+        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple', emailId: 'morgan.multiple@justice.gov.uk' }
       ]);
     });
   }));
@@ -129,9 +129,9 @@ describe('CaseworkerService', () => {
 
     caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN', 'CTSC']).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
-        { idamId: 'admin-idam-id', displayName: 'Alex Admin' },
-        { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC' },
-        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple' }
+        { idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk' },
+        { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC', emailId: 'casey.ctsc@justice.gov.uk' },
+        { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple', emailId: 'morgan.multiple@justice.gov.uk' }
       ]);
     });
   }));
@@ -140,7 +140,9 @@ describe('CaseworkerService', () => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
     caseworkerService.searchStaffUsers(['service-a'], 'admin', ['ADMIN']).subscribe((staffUsers: StaffUser[]) => {
-      expect(staffUsers).toEqual([{ idamId: 'admin-idam-id', displayName: 'Alex Admin' }]);
+      expect(staffUsers).toEqual([{
+        idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk'
+      }]);
     });
   }));
 
