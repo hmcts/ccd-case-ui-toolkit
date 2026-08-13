@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.86-exui-2837
+**EXUI-2837** Support searching nested fields within Collections
+
 ### Version 7.3.86
 **EXUI-5013** Package update - sass
 
