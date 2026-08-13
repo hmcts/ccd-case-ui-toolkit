@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.85-exui-5069
+**EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
+
 ### Version 7.3.85
 **EXUI-4817** Package update - File-saver - minor
 
