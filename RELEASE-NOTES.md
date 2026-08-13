@@ -1,5 +1,27 @@
 ## RELEASE NOTES
 
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
+### Version 7.3.83
+**EXUI-1855** Upgrade jasmine types and fix toolkit tests
+
+### Version 7.3.82
+**EXUI-4949** Package update - Angular - major
+**EXUI-5044** Package update - Angular build tools - major
+
+### Version 7.3.81
+**EXUI-5006** Package update - ngx-markdown - major
+
+### Version 7.3.80
+**POFCC-131** Onboard PCS to Work Allocation
+
+### Version 7.3.79
+**EXUI-5054** Halo IN-0190438 - Collated comments
+
+### Version 7.3.78
+**EXUI-5016** SRT changes
+
 ### Version 7.3.77
 **EXUI-4983** Package update-tar-minor
 
