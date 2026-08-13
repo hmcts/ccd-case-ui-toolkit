@@ -2,6 +2,7 @@ import { Component, DebugElement, Input} from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { of, Subject } from 'rxjs';
 
@@ -13,6 +14,7 @@ import { AddressesService } from '../../../services/addresses/addresses.service'
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, PaletteUtilsModule } from '../utils';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { MarkdownComponentModule } from '../markdown';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -34,6 +36,8 @@ describe('WriteAddressFieldComponent', () => {
 
   const $MANUAL_LINK = By.css('.manual-link');
   const $ADDRESS_COMPLEX_FIELD = By.css('ccd-write-complex-type-field');
+  const $ADDRESS_HINT = By.css('.form-hint');
+  const $ADDRESS_HINT_MARKDOWN = By.css('.form-hint ccd-markdown');
 
   let addressesService: jasmine.SpyObj<AddressesService>;
   let writeAddressFieldComponent: WriteAddressFieldComponent;
@@ -126,7 +130,9 @@ describe('WriteAddressFieldComponent', () => {
           ConditionalShowModule,
           FocusElementModule,
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          MarkdownComponentModule,
+          RouterTestingModule
         ],
         declarations: [
           WriteAddressFieldComponent,
@@ -163,6 +169,35 @@ describe('WriteAddressFieldComponent', () => {
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD)).toBeTruthy();
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD).nativeElement['hidden']).toBeTruthy();
 
+  });
+
+  it('should not render address guidance when hint text is absent', () => {
+    expect(debugElement.query($ADDRESS_HINT)).toBeFalsy();
+    expect(debugElement.query($ADDRESS_HINT_MARKDOWN)).toBeFalsy();
+  });
+
+  it('should render address guidance below the address heading', async () => {
+    writeAddressFieldComponent.caseField.hint_text = 'Non-represented defendants must have an address in England or Wales';
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const heading = debugElement.query(By.css('h2.heading-h2')).nativeElement;
+    const hint = debugElement.query($ADDRESS_HINT).nativeElement;
+    expect(hint.textContent).toContain('Non-represented defendants must have an address in England or Wales');
+    expect(heading.compareDocumentPosition(hint) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('should render bold markdown in address guidance', async () => {
+    writeAddressFieldComponent.caseField.hint_text = '**Please enter address details**';
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const boldGuidance = debugElement.query(By.css('.form-hint strong'));
+    expect(boldGuidance).toBeTruthy();
+    expect(boldGuidance.nativeElement.textContent.trim()).toEqual('Please enter address details');
+    expect(debugElement.query($ADDRESS_HINT).nativeElement.textContent).not.toContain('**');
   });
 
   it('should render only address lines if field is search ', () => {
