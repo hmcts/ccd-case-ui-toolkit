@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.85",
+  "version": "7.3.86",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -59,7 +59,7 @@
     "@angular/upgrade": "20.3.27",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.22",
-    "@hmcts/media-viewer": "4.2.27",
+    "@hmcts/media-viewer": "4.2.30",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "file-saver": "^2.0.5",

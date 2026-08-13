@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.86
+**EXUI-5013** Package update - sass
+
 ### Version 7.3.85
 **EXUI-4817** Package update - File-saver - minor
 
