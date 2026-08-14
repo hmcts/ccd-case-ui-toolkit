@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.86-exui-5056
+**EXUI-5056** Hardcoded Credentials v2
+
 ### Version 7.3.86
 **EXUI-5013** Package update - sass
 
