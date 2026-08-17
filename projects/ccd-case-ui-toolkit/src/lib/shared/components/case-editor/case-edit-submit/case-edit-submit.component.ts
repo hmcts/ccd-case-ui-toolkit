@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
@@ -10,7 +11,8 @@ import {
   MultipageComponentStateService,
   FormValidatorsService,
   OrderService,
-  ProfileNotifier
+  ProfileNotifier,
+  ProfileService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { PaletteContext } from '../../palette';
@@ -78,6 +80,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
+    private readonly profileService: ProfileService,
     private readonly multipageComponentStateService: MultipageComponentStateService,
     private readonly formValidatorsService: FormValidatorsService,
     private readonly caseFlagStateService: CaseFlagStateService,
@@ -88,6 +91,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe((_) => this.profile = _);
+    this.profileService.get().pipe(
+      catchError(() => EMPTY)
+    ).subscribe((profile) => this.profileNotifier.announceProfile(profile));
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
@@ -289,7 +295,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // 1. show_event_notes flag is set to true
     // 2. profile is not a solicitor
     // 3. is not a case flags journey, as it uses a custom check your answers component
-    if (this.eventTrigger.show_event_notes) {
+    if (this.eventTrigger.show_event_notes && Array.isArray(this.profile?.user?.idam?.roles)) {
       return !this.profile?.isSolicitor()
         && !this.caseEdit.isCaseFlagSubmission;
     }
@@ -380,4 +386,3 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.placeholderService.resolvePlaceholders(fields, stringToResolve);
   }
 }
-

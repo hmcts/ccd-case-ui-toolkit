@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
 import { CaseField, CaseTab, Jurisdiction, Profile } from '../../../domain';
@@ -24,6 +24,7 @@ import {
   JurisdictionService,
   OrderService,
   ProfileNotifier,
+  ProfileService,
   SearchService,
   SessionStorageService
 } from '../../../services';
@@ -131,6 +132,7 @@ describe('CaseEditSubmitComponent', () => {
   let caseEditComponent: any;
   let orderService: OrderService;
   let profileNotifier: ProfileNotifier;
+  let profileService: jasmine.SpyObj<ProfileService>;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
   let formValidatorsService: jasmine.SpyObj<FormValidatorsService>;
   let linkedCasesServiceSpy: jasmine.SpyObj<LinkedCasesService>;
@@ -382,6 +384,8 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+      profileService = createSpyObj<ProfileService>('ProfileService', ['get']);
+      profileService.get.and.returnValue(of(createAProfile()));
 
       caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache', 'resetInitialCaseFlags']);
       caseFlagStateServiceSpy.formGroup = FORM_GROUP;
@@ -414,6 +418,7 @@ describe('CaseEditSubmitComponent', () => {
           { provide: OrderService, useValue: orderService },
           { provide: OrderService, useValue: orderService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: ProfileService, useValue: profileService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
@@ -429,6 +434,18 @@ describe('CaseEditSubmitComponent', () => {
 
       comp.ngOnInit();
       comp.wizard.pages[0].case_fields = [caseField1];
+    });
+
+    it('should load and announce the profile', () => {
+      expect(profileService.get).toHaveBeenCalled();
+      expect(profileNotifierSpy).toHaveBeenCalled();
+    });
+
+    it('should continue initialising when getting the profile fails', () => {
+      profileService.get.and.returnValue(throwError(() => new Error('Profile unavailable')));
+
+      expect(() => comp.ngOnInit()).not.toThrow();
+      expect(comp.eventTrigger).toBe(caseEditComponent.eventTrigger);
     });
 
     it('must render correct button label', () => {
@@ -650,6 +667,15 @@ describe('CaseEditSubmitComponent', () => {
       const result = comp.showEventNotes();
       expect(result).toEqual(false);
       expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes while the profile roles are unavailable', () => {
+      comp.profile.user.idam.roles = undefined;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+
+      expect(comp.showEventNotes()).toBeFalse();
+      expect(de.query($EVENT_NOTES)).toBeNull();
     });
 
     it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
@@ -1047,6 +1073,8 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+      profileService = createSpyObj<ProfileService>('ProfileService', ['get']);
+      profileService.get.and.returnValue(of(createAProfile()));
 
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
@@ -1096,6 +1124,7 @@ describe('CaseEditSubmitComponent', () => {
           { provide: ActivatedRoute, useValue: mockRouteNoProfile },
           { provide: OrderService, useValue: orderService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: ProfileService, useValue: profileService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
@@ -1231,6 +1260,8 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier = new ProfileNotifier();
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+      profileService = createSpyObj<ProfileService>('ProfileService', ['get']);
+      profileService.get.and.returnValue(of(createAProfile()));
 
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
@@ -1280,6 +1311,7 @@ describe('CaseEditSubmitComponent', () => {
           { provide: ActivatedRoute, useValue: mockRouteNoProfile },
           { provide: OrderService, useValue: orderService },
           { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: ProfileService, useValue: profileService },
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
