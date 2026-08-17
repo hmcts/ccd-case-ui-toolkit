@@ -1,5 +1,6 @@
+import 'reflect-metadata';
 import { HttpHeaders } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Profile } from '../../domain';
 import { createAProfile } from '../../domain/profile/profile.test.fixture';
@@ -50,6 +51,34 @@ describe('ProfileService', () => {
         .subscribe(
           profile => expect(profile).toEqual(MOCK_PROFILE)
         );
+    });
+
+    it('should make only one API call for repeated get calls', () => {
+      profileService.get().subscribe();
+      profileService.get().subscribe();
+
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should share an in-flight API call between subscribers', () => {
+      const profileResponse = new Subject<object>();
+      httpService.get.and.returnValue(profileResponse.asObservable());
+
+      profileService.get().subscribe();
+      profileService.get().subscribe();
+
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+
+      profileResponse.next(MOCK_PROFILE);
+      profileResponse.complete();
+    });
+
+    it('should make a fresh API call after clearing the cache', () => {
+      profileService.get().subscribe();
+      profileService.clearProfileCache();
+      profileService.get().subscribe();
+
+      expect(httpService.get).toHaveBeenCalledTimes(2);
     });
   });
 });
