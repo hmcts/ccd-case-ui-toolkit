@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.87",
+  "version": "7.3.87-CME-1008-dart-sass-3",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^20.0.0",
     "@ngxmc/datetime-picker": "20.1.0",
