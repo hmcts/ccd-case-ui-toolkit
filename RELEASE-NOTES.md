@@ -1,5 +1,30 @@
 ## RELEASE NOTES
 
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
+### Version 7.3.86
+**EXUI-5013** Package update - sass
+
+### Version 7.3.85
+**EXUI-4817** Package update - File-saver - minor
+
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
+### Version 7.3.83
+**EXUI-1855** Upgrade jasmine types and fix toolkit tests
+
+### Version 7.3.82
+**EXUI-4949** Package update - Angular - major
+**EXUI-5044** Package update - Angular build tools - major
+
+### Version 7.3.81
+**EXUI-5006** Package update - ngx-markdown - major
+
+### Version 7.3.80
+**POFCC-131** Onboard PCS to Work Allocation
+
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
 
