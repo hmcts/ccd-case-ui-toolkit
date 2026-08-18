@@ -16,9 +16,6 @@ export const editorRouting: Routes = [
   },
   {
     path: 'submit',
-    resolve: {
-      profile: ProfileResolver,
-    },
     component: CaseEditSubmitComponent,
   },
   {
@@ -29,6 +26,7 @@ export const editorRouting: Routes = [
     path: ':page',
     resolve: {
       caseEditWizardGuard: CaseEditWizardGuard,
+      profile: ProfileResolver,
     },
     canDeactivate: [FileUploadProgressGuard],
     component: CaseEditPageComponent,
