@@ -3263,7 +3263,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.30"
+    "@hmcts/media-viewer": "npm:4.2.31"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@types/jasmine": "npm:~5.1.0"
@@ -3375,9 +3375,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.30":
-  version: 4.2.30
-  resolution: "@hmcts/media-viewer@npm:4.2.30"
+"@hmcts/media-viewer@npm:4.2.31":
+  version: 4.2.31
+  resolution: "@hmcts/media-viewer@npm:4.2.31"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3398,9 +3398,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.7
+    rpx-xui-translation: 1.2.12
     rxjs: ^7.8.2
-  checksum: 10/2c50f718f64962b6388b5d3392d3e572fdf59001dba857c1b14977415b4035cae66a0507c9a60cfbcc434d345514311450026fc721e9ed925799428b21c2f678
+  checksum: 10/5af45c15865ccec3d16848aa02f552ec24aa6a2f6158ff4f9043733f9c07ab7a88a445f595b773572061c0ea7e9d296de5a20e227eef289aff501551326c4f10
   languageName: node
   linkType: hard
 
