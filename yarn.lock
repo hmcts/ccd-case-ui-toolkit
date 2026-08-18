@@ -3230,7 +3230,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.12"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.27"
+    "@hmcts/media-viewer": "npm:4.2.31"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@ngxmc/datetime-picker": "npm:20.1.0"
@@ -3254,7 +3254,7 @@ __metadata:
     eslint: "npm:^8.57.0"
     exceljs: "npm:^4.4.0"
     expect: "npm:^23.0.0"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     font-awesome: "npm:^4.6.1"
     gh-pages: "npm:^2.0.0"
     git-message: "npm:^2.0.2"
@@ -3344,9 +3344,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.27":
-  version: 4.2.27
-  resolution: "@hmcts/media-viewer@npm:4.2.27"
+"@hmcts/media-viewer@npm:4.2.31":
+  version: 4.2.31
+  resolution: "@hmcts/media-viewer@npm:4.2.31"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3367,9 +3367,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.7
+    rpx-xui-translation: 1.2.12
     rxjs: ^7.8.2
-  checksum: 10/31ef99ab45c738237db6bfab48dae32f09d397d10de48b12bb3a521c0cad6bd0506255c064967be78191cb4d51b8e501fc2283e179a336faaad1eefacac57594
+  checksum: 10/5af45c15865ccec3d16848aa02f552ec24aa6a2f6158ff4f9043733f9c07ab7a88a445f595b773572061c0ea7e9d296de5a20e227eef289aff501551326c4f10
   languageName: node
   linkType: hard
 
@@ -11417,7 +11417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.2, file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.83-CME-1008-dart-sass",
+  "version": "7.3.87",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -58,11 +58,11 @@
     "@angular/upgrade": "20.3.27",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.22",
-    "@hmcts/media-viewer": "4.2.27",
+    "@hmcts/media-viewer": "4.2.31",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@ngxmc/datetime-picker": "20.1.0",
-    "file-saver": "^2.0.2",
+    "file-saver": "^2.0.5",
     "govuk-elements-sass": "^3.1.2",
     "govuk-frontend": "^4.9.0",
     "lz-string": "^1.5.0",

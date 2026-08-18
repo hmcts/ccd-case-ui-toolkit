@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
+### Version 7.3.86
+**EXUI-5013** Package update - sass
+
+### Version 7.3.85
+**EXUI-4817** Package update - File-saver - minor
+
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
 ### Version 7.3.83
 **EXUI-1855** Upgrade jasmine types and fix toolkit tests
 
