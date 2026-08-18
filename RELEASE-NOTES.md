@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.87-exui-5098
+### Version 7.3.88-exui-5098
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
 
 ### Version 7.3.87
 **EXUI-5014** Package update - @hmcts/properties-volume
