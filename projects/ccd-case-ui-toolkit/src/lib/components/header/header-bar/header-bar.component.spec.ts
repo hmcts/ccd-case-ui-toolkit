@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 import { HeaderBarComponent } from './header-bar.component';
 import { ProfileNotifier } from '../../../shared/services/profile/profile.notifier';
 import { ProfileService } from '../../../shared/services/profile/profile.service';
