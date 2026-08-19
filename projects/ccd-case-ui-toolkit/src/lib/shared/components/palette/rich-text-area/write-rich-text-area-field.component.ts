@@ -5,7 +5,7 @@ import { marks as editorMarks, nodes as editorNodes } from 'ngx-editor/schema';
 import { setBlockType } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
 import { Schema } from 'prosemirror-model';
-import type { DOMOutputSpec, NodeSpec } from 'prosemirror-model';
+import type { DOMOutputSpec, Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRichTextDocument } from './rich-text-sanitizer';
 
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
+type RichTextListStyle = '' | 'ordered_list' | 'ordered_alpha' | 'ordered_roman' | 'bullet_list';
+type RichTextOrderedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
 
 const WORD_COLUMN_SPACING = 12;
 const MAX_INDENT = 6;
@@ -30,7 +32,8 @@ const richTextNodes = {
     ...editorNodes.ordered_list,
     attrs: {
       order: { default: 1 },
-      indent: { default: null }
+      indent: { default: null },
+      listStyle: { default: null }
     },
     parseDOM: [{
       tag: 'ol',
@@ -38,13 +41,17 @@ const richTextNodes = {
         const list = element as HTMLElement;
         return {
           order: list.hasAttribute('start') ? Number(list.getAttribute('start')) : 1,
-          indent: Number(list.getAttribute('data-indent')) || null
+          indent: Number(list.getAttribute('data-indent')) || null,
+          listStyle: list.getAttribute('type') === 'a'
+            ? 'lower-alpha'
+            : list.getAttribute('type') === 'i' ? 'lower-roman' : null
         };
       }
     }],
     toDOM: (node): DOMOutputSpec => ['ol', {
       start: node.attrs.order === 1 ? null : node.attrs.order,
-      'data-indent': node.attrs.indent
+      'data-indent': node.attrs.indent,
+      type: node.attrs.listStyle === 'lower-alpha' ? 'a' : node.attrs.listStyle === 'lower-roman' ? 'i' : null
     }, 0]
   } as NodeSpec,
   bullet_list: {
@@ -98,7 +105,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       plugins: [
         new Plugin({
           props: {
-            handlePaste: (_view, event) => this.handleEditorPaste(event)
+            handlePaste: (_view, event) => this.handleEditorPaste(event),
+            handleDOMEvents: {
+              keydown: (_view, event) => this.handleEditorKeyDown(event)
+            }
           }
         })
       ],
@@ -151,6 +161,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return `${this.id()}_error`;
   }
 
+  public listStyleId(): string {
+    return `${this.id()}_list_style`;
+  }
+
   public toolbarLabel(): string {
     return `${this.caseField.label || this.caseField.id} formatting options`;
   }
@@ -166,6 +180,15 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   public onToolbarButtonMouseDown(event: MouseEvent): void {
     event.preventDefault();
+  }
+
+  private handleEditorKeyDown(event: KeyboardEvent): boolean {
+    if (event.key !== 'Tab' || !this.isNodeActive('list_item')) {
+      return false;
+    }
+
+    this.executeToolbarCommand(event, event.shiftKey ? 'outdent' : 'indent');
+    return true;
   }
 
   public executeToolbarCommand(event: Event, command: RichTextToolbarCommand): void {
@@ -198,11 +221,11 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         this.changeIndent(false);
         break;
       case 'ordered_list':
-        this.editor.commands.toggleOrderedList().exec();
+        this.applyListStyleSelection('ordered_list');
         this.paragraphCommandApplied = false;
         break;
       case 'bullet_list':
-        this.editor.commands.toggleBulletList().exec();
+        this.toggleBulletList();
         this.paragraphCommandApplied = false;
         break;
       default:
@@ -217,6 +240,201 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   public isToolbarCommandActive(command: RichTextToolbarCommand): boolean {
     return !!this.activeToolbarCommands[command];
+  }
+
+  public currentListStyle(): RichTextListStyle {
+    if (this.isToolbarCommandActive('ordered_list')) {
+      const orderedListStyle = this.activeOrderedListStyle();
+      if (orderedListStyle === 'lower-alpha') {
+        return 'ordered_alpha';
+      }
+      if (orderedListStyle === 'lower-roman') {
+        return 'ordered_roman';
+      }
+      return 'ordered_list';
+    }
+    if (this.isToolbarCommandActive('bullet_list')) {
+      return 'bullet_list';
+    }
+    return '';
+  }
+
+  public currentListSelectValue(): RichTextListStyle {
+    const currentListStyle = this.currentListStyle();
+    return currentListStyle === 'bullet_list' ? '' : currentListStyle;
+  }
+
+  public onListStyleChange(event: Event): void {
+    const listStyle = (event.target as HTMLSelectElement).value as RichTextListStyle;
+    this.applyListStyleSelection(listStyle);
+
+    this.richTextAreaControl.markAsDirty();
+    this.editor.view.focus();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
+  }
+
+  private applyListStyleSelection(listStyle: RichTextListStyle): void {
+    const currentListStyle = this.currentListStyle();
+    if (listStyle === currentListStyle) {
+      return;
+    }
+
+    const currentListType = this.listType(currentListStyle);
+    const nextListType = this.listType(listStyle);
+    if (currentListType && nextListType && currentListType !== nextListType) {
+      this.changeActiveListType(nextListType, this.orderedListStyle(listStyle));
+    } else if (nextListType === 'ordered_list') {
+      if (currentListType !== 'ordered_list') {
+        this.editor.commands.toggleOrderedList().exec();
+      }
+      this.applyOrderedListStyle(this.orderedListStyle(listStyle));
+    } else if (listStyle === 'bullet_list') {
+      if (currentListType !== 'bullet_list') {
+        this.editor.commands.toggleBulletList().exec();
+      }
+    } else {
+      this.applyParagraph();
+      this.paragraphCommandApplied = true;
+    }
+  }
+
+  private changeActiveListType(
+    listType: 'ordered_list' | 'bullet_list',
+    orderedListStyle: RichTextOrderedListStyle
+  ): void {
+    const { state, dispatch } = this.editor.view;
+    const { $from } = state.selection;
+    const targetType = state.schema.nodes[listType];
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name !== 'ordered_list' && node.type.name !== 'bullet_list') {
+        continue;
+      }
+
+      const transaction = state.tr;
+      this.contiguousListPositions(depth).forEach(({ position, list }) => {
+        const indent = Number(list.attrs.indent) || null;
+        const attrs = listType === 'ordered_list'
+          ? {
+            order: 1,
+            indent,
+            listStyle: orderedListStyle === 'decimal' ? null : orderedListStyle
+          }
+          : { indent };
+        transaction.setNodeMarkup(position, targetType, attrs);
+      });
+      dispatch(transaction);
+      return;
+    }
+  }
+
+  private contiguousListPositions(depth: number): Array<{ position: number; list: ProseMirrorNode }> {
+    const { $from } = this.editor.view.state.selection;
+    const parentDepth = depth - 1;
+    const parent = $from.node(parentDepth);
+    const activeList = $from.node(depth);
+    const activeIndex = $from.index(parentDepth);
+    const includedIndexes = new Set([activeIndex]);
+
+    this.collectContiguousListIndexes(parent, activeList, activeIndex, -1, includedIndexes);
+    this.collectContiguousListIndexes(parent, activeList, activeIndex, 1, includedIndexes);
+
+    const positions = [];
+    parent.forEach((child, childOffset, index) => {
+      if (includedIndexes.has(index) && this.hasMatchingListType(child, activeList)) {
+        positions.push({ position: $from.start(parentDepth) + childOffset, list: child });
+      }
+    });
+    return positions;
+  }
+
+  private collectContiguousListIndexes(
+    parent: ProseMirrorNode,
+    activeList: ProseMirrorNode,
+    activeIndex: number,
+    direction: -1 | 1,
+    includedIndexes: Set<number>
+  ): void {
+    for (let index = activeIndex + direction; index >= 0 && index < parent.childCount; index += direction) {
+      const child = parent.child(index);
+      if (this.isEmptyParagraph(child)) {
+        continue;
+      }
+      if (!this.hasMatchingListType(child, activeList)) {
+        return;
+      }
+      includedIndexes.add(index);
+    }
+  }
+
+  private hasMatchingListType(node: ProseMirrorNode, activeList: ProseMirrorNode): boolean {
+    if (node.type !== activeList.type) {
+      return false;
+    }
+    return node.type.name !== 'ordered_list' ||
+      (node.attrs.listStyle || 'decimal') === (activeList.attrs.listStyle || 'decimal');
+  }
+
+  private isEmptyParagraph(node: ProseMirrorNode): boolean {
+    return node.type.name === 'paragraph' && !node.textContent.trim();
+  }
+
+  private toggleBulletList(): void {
+    const currentListStyle = this.currentListStyle();
+    const currentListType = this.listType(currentListStyle);
+
+    if (currentListType === 'ordered_list') {
+      this.changeActiveListType('bullet_list', 'decimal');
+    } else {
+      this.editor.commands.toggleBulletList().exec();
+    }
+  }
+
+  private listType(listStyle: RichTextListStyle): '' | 'ordered_list' | 'bullet_list' {
+    if (listStyle === 'bullet_list') {
+      return 'bullet_list';
+    }
+    return listStyle ? 'ordered_list' : '';
+  }
+
+  private orderedListStyle(listStyle: RichTextListStyle): RichTextOrderedListStyle {
+    if (listStyle === 'ordered_alpha') {
+      return 'lower-alpha';
+    }
+    if (listStyle === 'ordered_roman') {
+      return 'lower-roman';
+    }
+    return 'decimal';
+  }
+
+  private activeOrderedListStyle(): RichTextOrderedListStyle {
+    const { $from } = this.editor.view.state.selection;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name === 'ordered_list') {
+        return node.attrs.listStyle || 'decimal';
+      }
+    }
+    return 'decimal';
+  }
+
+  private applyOrderedListStyle(listStyle: RichTextOrderedListStyle): void {
+    const { state, dispatch } = this.editor.view;
+    const { $from } = state.selection;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name !== 'ordered_list') {
+        continue;
+      }
+
+      dispatch(state.tr.setNodeMarkup($from.before(depth), node.type, {
+        ...node.attrs,
+        listStyle: listStyle === 'decimal' ? null : listStyle
+      }));
+      return;
+    }
   }
 
   public onPaste(event: ClipboardEvent): void {
@@ -281,11 +499,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   public normalisePastedHtml(html: string): string {
     const documentElement = new DOMParser().parseFromString(html, 'text/html');
     removeUnsafeRichTextElements(documentElement);
+    this.normaliseWordStylesheetFormatting(documentElement);
     this.removeWordNoise(documentElement);
     this.normaliseWordSpacing(documentElement);
     this.normaliseWordTables(documentElement);
     this.normaliseWordSemanticBlocks(documentElement);
     this.convertWordLists(documentElement);
+    this.normaliseNestedListStructure(documentElement);
     this.normaliseSupportedInlineFormatting(documentElement);
     this.normaliseBlockFormatting(documentElement);
     this.normalisePastedListSpacing(documentElement);
@@ -302,6 +522,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const documentElement = new DOMParser().parseFromString(value, 'text/html');
     removeUnsafeRichTextElements(documentElement);
+    this.normaliseWordStylesheetFormatting(documentElement);
     this.normaliseWordSpacing(documentElement);
     this.normaliseWordTables(documentElement);
     this.normaliseWordSemanticBlocks(documentElement);
@@ -377,7 +598,14 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       Italic: 'Control+I',
       Underline: 'Control+U'
     };
-    const toggleLabels = new Set(['Bold', 'Italic', 'Underline', 'Paragraph', 'Ordered List', 'Bullet List']);
+    const toggleCommands: Record<string, RichTextToolbarCommand> = {
+      Bold: 'bold',
+      Italic: 'italic',
+      Underline: 'underline',
+      Paragraph: 'paragraph',
+      'Bullet List': 'bullet_list',
+      'Numbered List': 'ordered_list'
+    };
     const buttons = this.editorHost.nativeElement.querySelectorAll('button');
 
     buttons.forEach((button: HTMLButtonElement) => {
@@ -385,8 +613,11 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       if (shortcutLabels[label]) {
         button.setAttribute('aria-keyshortcuts', shortcutLabels[label]);
       }
-      if (toggleLabels.has(label)) {
-        button.setAttribute('aria-pressed', `${button.classList.contains('ccd-rich-text-area__toolbar-button--active')}`);
+      if (toggleCommands[label]) {
+        const isActive = label === 'Numbered List'
+          ? this.currentListStyle() === 'ordered_list'
+          : this.isToolbarCommandActive(toggleCommands[label]);
+        button.setAttribute('aria-pressed', `${isActive}`);
       }
     });
   }
@@ -447,6 +678,45 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const officeParagraphs = Array.prototype.slice.call(documentElement.getElementsByTagName('o:p'));
     officeParagraphs.forEach((element: HTMLElement) => element.remove());
+  }
+
+  private normaliseWordStylesheetFormatting(documentElement: Document): void {
+    const styleElements = Array.prototype.slice.call(documentElement.querySelectorAll('style')) as HTMLStyleElement[];
+
+    styleElements.forEach((styleElement) => {
+      const stylesheet = (styleElement.textContent || '').replace(/<!--|-->/g, '');
+      const rules = stylesheet.matchAll(/([^{}]+)\{([^{}]+)\}/g);
+
+      Array.from(rules).forEach((rule) => {
+        const declarations = rule[2];
+        const hasBoldStyle = this.hasBoldStyle(declarations);
+        const headingLevel = this.wordOutlineLevel(declarations);
+        if (!hasBoldStyle && !headingLevel) {
+          return;
+        }
+
+        rule[1].split(',').forEach((selector) => {
+          const normalisedSelector = selector.trim();
+          if (!normalisedSelector || normalisedSelector.startsWith('@')) {
+            return;
+          }
+
+          try {
+            const matchingElements = documentElement.body.querySelectorAll(normalisedSelector);
+            matchingElements.forEach((element: HTMLElement) => {
+              if (headingLevel) {
+                element.dataset.wordHeadingLevel = headingLevel.toString();
+              }
+              if (hasBoldStyle) {
+                this.wrapBoldInlineContents(documentElement, element);
+              }
+            });
+          } catch {
+            // Ignore Microsoft Office selectors that are not valid browser CSS selectors.
+          }
+        });
+      });
+    });
   }
 
   private normaliseWordSpacing(documentElement: Document): void {
@@ -521,20 +791,34 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private normaliseWordSemanticBlocks(documentElement: Document): void {
-    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+    const blocks = Array.prototype.slice.call(
+      documentElement.body.querySelectorAll('p, h1, h2, h3, h4, h5, h6')
+    ) as HTMLElement[];
 
-    paragraphs.forEach((paragraph) => {
-      const headingLevel = this.wordHeadingLevel(paragraph);
+    blocks.forEach((block) => {
+      const namedHeadingLevel = this.namedWordHeadingLevel(block);
+      const existingHeadingLevel = /^h([1-6])$/i.exec(block.tagName)?.[1];
+      if (existingHeadingLevel) {
+        if (namedHeadingLevel) {
+          this.wrapBoldInlineContents(documentElement, block);
+        }
+        return;
+      }
+
+      const headingLevel = this.wordHeadingLevel(block);
       if (headingLevel) {
-        this.replaceElementTag(documentElement, paragraph, `h${headingLevel}`);
+        const heading = this.replaceElementTag(documentElement, block, `h${headingLevel}`);
+        if (namedHeadingLevel) {
+          this.wrapBoldInlineContents(documentElement, heading);
+        }
       }
     });
   }
 
   private wordHeadingLevel(element: HTMLElement): number {
-    const headingClass = /MsoHeading([1-6])/i.exec(element.className || '');
-    if (headingClass) {
-      return Number(headingClass[1]);
+    const namedHeadingLevel = this.namedWordHeadingLevel(element);
+    if (namedHeadingLevel) {
+      return namedHeadingLevel;
     }
     if (/MsoTitle/i.test(element.className || '')) {
       return 1;
@@ -546,6 +830,36 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return Math.max(largestSize, fontSize);
     }, 0);
     return largestFontSize >= 24 ? 1 : null;
+  }
+
+  private namedWordHeadingLevel(element: HTMLElement): number {
+    const styledElements = [element].concat(Array.prototype.slice.call(element.querySelectorAll('*')) as HTMLElement[]);
+    for (const styledElement of styledElements) {
+      const storedHeadingLevel = Number(styledElement.dataset.wordHeadingLevel);
+      if (storedHeadingLevel >= 1 && storedHeadingLevel <= 6) {
+        return storedHeadingLevel;
+      }
+
+      const className = styledElement.className || '';
+      const style = styledElement.getAttribute('style') || '';
+      const headingDescription = `${className} ${style}`;
+      const namedHeadingLevel = /(?:Mso)?Heading\s*([1-6])(?:Char)?/i.exec(headingDescription);
+      if (namedHeadingLevel) {
+        return Number(namedHeadingLevel[1]);
+      }
+
+      const outlineLevel = this.wordOutlineLevel(style);
+      if (outlineLevel) {
+        return outlineLevel;
+      }
+    }
+
+    return null;
+  }
+
+  private wordOutlineLevel(style: string): number {
+    const outlineLevel = /mso-outline-level\s*:\s*([1-6])/i.exec(style || '');
+    return outlineLevel ? Number(outlineLevel[1]) : null;
   }
 
   private replaceElementTag(documentElement: Document, element: HTMLElement, tagName: string): HTMLElement {
@@ -609,6 +923,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const listStart = element.tagName.toLowerCase() === 'ol'
         ? this.normaliseListStart(element.getAttribute('start'))
         : null;
+      const listType = element.tagName.toLowerCase() === 'ol' && /^(a|i)$/.test(element.getAttribute('type') || '')
+        ? element.getAttribute('type')
+        : null;
 
       while (element.attributes.length > 0) {
         element.removeAttribute(element.attributes[0].name);
@@ -622,6 +939,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
       if (listStart) {
         element.setAttribute('start', listStart);
+      }
+      if (listType) {
+        element.setAttribute('type', listType);
       }
     });
   }
@@ -738,7 +1058,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private hasBoldStyle(style: string): boolean {
     const fontWeightMatch = /(?:mso-bidi-)?font-weight\s*:\s*([^;]+)/i.exec(style);
     if (!fontWeightMatch) {
-      return false;
+      return /(?:^|;)\s*font\s*:[^;]*\bbold\b/i.test(style);
     }
 
     const fontWeight = fontWeightMatch[1].trim().toLowerCase();
@@ -1071,6 +1391,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private convertWordLists(documentElement: Document): void {
     const childNodes = Array.prototype.slice.call(documentElement.body.querySelectorAll('p'));
     const wordListIndents = this.wordListIndents(childNodes);
+    const orderedListTypes = this.wordOrderedListTypes(childNodes);
     const listStack: HTMLElement[] = [];
     const listParents: Node[] = [];
     const resetListLevels = new Map<string, number>();
@@ -1087,6 +1408,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
       const paragraph = node as HTMLElement;
       const listType = this.wordListType(paragraph);
+      const orderedListType = listType === 'ol' ? orderedListTypes.get(this.wordListLevelKey(paragraph)) || null : null;
       const listId = this.wordListId(paragraph);
       const declaredLevel = this.wordListDeclaredLevel(paragraph);
       let requestedLevel = this.wordListLevel(paragraph, wordListIndents);
@@ -1107,11 +1429,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       this.copyListItemContents(documentElement, paragraph, listItem);
 
       let currentList = listStack[stackIndex];
-      if (currentList?.tagName.toLowerCase() !== listType || listParents[stackIndex] !== listParent) {
+      if (currentList?.tagName.toLowerCase() !== listType ||
+        currentList?.getAttribute('type') !== orderedListType ||
+        listParents[stackIndex] !== listParent) {
         currentList = documentElement.createElement(listType);
         const listStart = this.wordListStart(paragraph);
         if (listType === 'ol' && listStart > 1) {
           currentList.setAttribute('start', listStart.toString());
+        }
+        if (orderedListType) {
+          currentList.setAttribute('type', orderedListType);
         }
         if (parentListItem) {
           parentListItem.appendChild(currentList);
@@ -1130,6 +1457,19 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     });
   }
 
+  private normaliseNestedListStructure(documentElement: Document): void {
+    const orphanedNestedLists = Array.prototype.slice.call(
+      documentElement.body.querySelectorAll('ol > ol, ol > ul, ul > ol, ul > ul')
+    ) as HTMLElement[];
+
+    orphanedNestedLists.forEach((nestedList) => {
+      const previousListItem = nestedList.previousElementSibling;
+      if (previousListItem?.tagName.toLowerCase() === 'li') {
+        previousListItem.appendChild(nestedList);
+      }
+    });
+  }
+
   private isWordListParagraph(node: Node): boolean {
     if (!(node instanceof HTMLElement) || node.tagName.toLowerCase() !== 'p') {
       return false;
@@ -1139,8 +1479,44 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private wordListType(paragraph: HTMLElement): string {
-    const marker = paragraph.textContent.trim();
-    return /^(\d+|[a-z]|[ivxlcdm]+)[.)]/i.test(marker) ? 'ol' : 'ul';
+    return /^\(?(?:\d+|[a-z]+)[.)]/i.test(this.wordListMarker(paragraph)) ? 'ol' : 'ul';
+  }
+
+  private wordOrderedListTypes(nodes: Node[]): Map<string, string> {
+    const markersByLevel = new Map<string, string[]>();
+
+    nodes.filter((node) => this.isWordListParagraph(node)).forEach((node: HTMLElement) => {
+      const marker = this.wordListMarker(node);
+      if (!/^\(?(?:\d+|[a-z]+)[.)]/i.test(marker)) {
+        return;
+      }
+
+      const key = this.wordListLevelKey(node);
+      markersByLevel.set(key, [...(markersByLevel.get(key) || []), marker]);
+    });
+
+    const listTypes = new Map<string, string>();
+    markersByLevel.forEach((markers, key) => {
+      const markerTokens = markers.map((marker) => marker.match(/^\(?([a-z]+|\d+)[.)]/i)?.[1]?.toLowerCase());
+      if (markers.some((marker) => /^\([ivxlcdm]+\)/i.test(marker)) ||
+        markerTokens.some((token) => token?.length > 1 && /^[ivxlcdm]+$/.test(token))) {
+        listTypes.set(key, 'i');
+      } else if (markerTokens.every((token) => /^[a-z]$/.test(token || ''))) {
+        listTypes.set(key, 'a');
+      }
+    });
+
+    return listTypes;
+  }
+
+  private wordListLevelKey(paragraph: HTMLElement): string {
+    return `${this.wordListId(paragraph) || ''}:${this.wordListDeclaredLevel(paragraph)}`;
+  }
+
+  private wordListMarker(paragraph: HTMLElement): string {
+    const markerElement = Array.prototype.slice.call(paragraph.querySelectorAll('[style]'))
+      .find((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''));
+    return (markerElement ? markerElement.textContent : paragraph.textContent).trim();
   }
 
   private wordListLevel(paragraph: HTMLElement, wordListIndents: number[]): number {
@@ -1164,8 +1540,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private wordListIndents(nodes: Node[]): number[] {
     const indents = nodes
       .filter((node) => this.isWordListParagraph(node))
-      .map((node: HTMLElement) => this.wordListIndent(node))
-      .filter((indent) => indent > 0);
+      .map((node: HTMLElement) => this.wordListIndent(node));
 
     return Array.from(new Set(indents)).sort((left, right) => left - right);
   }
@@ -1184,10 +1559,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private wordListStart(paragraph: HTMLElement): number {
-    const markerElement = Array.prototype.slice.call(paragraph.querySelectorAll('[style]'))
-      .find((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''));
-    const marker = (markerElement ? markerElement.textContent : paragraph.textContent).trim();
-    const match = marker.match(/^(\d+)[.)]/);
+    const match = this.wordListMarker(paragraph).match(/^(\d+)[.)]/);
 
     return match ? Number(match[1]) : 1;
   }
@@ -1305,6 +1677,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
       const listCommand = increase ? sinkListItem(listItemType) : liftListItem(listItemType);
       if (listCommand(state, dispatch)) {
+        this.applyOrderedListStyleForCurrentDepth();
         return;
       }
 
@@ -1318,6 +1691,37 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     } else {
       this.editor.commands.outdent().exec();
     }
+  }
+
+  private applyOrderedListStyleForCurrentDepth(): void {
+    const { state, dispatch } = this.editor.view;
+    const { $from } = state.selection;
+    let orderedListDepth = 0;
+    let activeOrderedListDepth: number | null = null;
+
+    for (let depth = 1; depth <= $from.depth; depth++) {
+      if ($from.node(depth).type.name === 'ordered_list') {
+        orderedListDepth++;
+        activeOrderedListDepth = depth;
+      }
+    }
+
+    if (activeOrderedListDepth === null) {
+      return;
+    }
+
+    const activeList = $from.node(activeOrderedListDepth);
+    let listStyle: RichTextOrderedListStyle = 'lower-roman';
+    if (orderedListDepth === 1) {
+      listStyle = 'decimal';
+    } else if (orderedListDepth === 2) {
+      listStyle = 'lower-alpha';
+    }
+
+    dispatch(state.tr.setNodeMarkup($from.before(activeOrderedListDepth), activeList.type, {
+      ...activeList.attrs,
+      listStyle: listStyle === 'decimal' ? null : listStyle
+    }));
   }
 
   private changeListIndent(increase: boolean, state: EditorState, dispatch: Editor['view']['dispatch']): boolean {

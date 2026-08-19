@@ -41,6 +41,18 @@
   padding-left: 25px;
 }
 
+.ccd-rich-text-area-read ol[type="a"] {
+  list-style-type: lower-alpha;
+}
+
+.ccd-rich-text-area-read ol[type="i"] {
+  list-style-type: lower-roman;
+}
+
+.ccd-rich-text-area-read ol[type="i"] > li::marker {
+  content: "(" counter(list-item, lower-roman) ") ";
+}
+
 .ccd-rich-text-area-read li {
   display: list-item;
   margin-bottom: 5px;

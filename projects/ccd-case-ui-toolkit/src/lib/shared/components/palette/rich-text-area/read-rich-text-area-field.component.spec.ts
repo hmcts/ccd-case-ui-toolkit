@@ -82,6 +82,30 @@ describe('ReadRichTextAreaFieldComponent', () => {
     });
   });
 
+  it('should preserve supported lettered and Roman numeral list styles', () => {
+    component.caseField.value = `
+      <ol type="a"><li><p>Lettered item</p></li></ol>
+      <ol type="i"><li><p>Roman item</p></li></ol>`;
+    fixture.detectChanges();
+
+    const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement as HTMLElement;
+    const letteredList = readValue.querySelector('ol[type="a"]') as HTMLElement;
+    const romanList = readValue.querySelector('ol[type="i"]') as HTMLElement;
+
+    expect(letteredList).not.toBeNull();
+    expect(romanList).not.toBeNull();
+    expect(getComputedStyle(letteredList).listStyleType).toBe('lower-alpha');
+    expect(getComputedStyle(romanList).listStyleType).toBe('lower-roman');
+  });
+
+  it('should discard unsupported ordered list styles', () => {
+    component.caseField.value = '<ol type="A"><li><p>Item</p></li></ol>';
+    fixture.detectChanges();
+
+    const list = fixture.debugElement.query(By.css('.ccd-rich-text-area-read ol')).nativeElement as HTMLElement;
+    expect(list.hasAttribute('type')).toBe(false);
+  });
+
   it('should sanitize unsafe HTML before rendering', () => {
     component.caseField.value = `
       <p onclick="alert(1)">Safe <strong onmouseover="alert(2)">text</strong></p>
