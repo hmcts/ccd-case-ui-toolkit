@@ -34,6 +34,8 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
+import { ReadRichTextAreaFieldComponent } from './rich-text-area/read-rich-text-area-field.component';
+import { WriteRichTextAreaFieldComponent } from './rich-text-area/write-rich-text-area-field.component';
 import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
 import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
@@ -169,6 +171,14 @@ describe('PaletteService', () => {
 
     it('should get WriteTextAreaField component class for TextArea input', () => {
       assertComponent('TextArea', true, WriteTextAreaFieldComponent, 'AnID');
+    });
+
+    it('should get ReadRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', false, ReadRichTextAreaFieldComponent, 'AnID');
+    });
+
+    it('should get WriteRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', true, WriteRichTextAreaFieldComponent, 'AnID');
     });
 
     it('should get ReadMultiSelectListField component class for MultiSelectList input', () => {

@@ -213,11 +213,31 @@ describe('FormValidatorsService', () => {
     expect(result.valid).toBeFalsy();
   });
 
+  it('should return add Markdown validator for OPTIONAL fields - RichTextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<a href="https://www.google.com">Google</a>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
   it('should return add Markdown validator for MANDATORY fields - TextArea', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'Label', 'TextArea', 'MANDATORY', null);
     const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for MANDATORY fields - RichTextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<a href="https://www.google.com">Google</a>');
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.valid).toBeFalsy();

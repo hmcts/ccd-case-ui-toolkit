@@ -117,6 +117,34 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
   });
 
+  describe('RichTextArea field type', () => {
+
+    it('Should return a comparator to order strings', () => {
+
+      const comparator
+        = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('RichTextArea'));
+
+      expect(comparator.compare(item('<p>cat</p>'), item('<p>cat</p>'))).toBe(0);
+      expect(comparator.compare(item('<p>cat</p>'), item('<p>dog</p>'))).toBe(-1);
+      expect(comparator.compare(item('<p>dog</p>'), item('<p>cat</p>'))).toBe(1);
+
+    });
+
+    it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
+
+      const comparator
+        = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('RichTextArea'));
+
+      expect(comparator.compare(item(undefined), item(''))).toBe(0);
+      expect(comparator.compare(item(''), item(undefined))).toBe(0);
+
+      expect(comparator.compare(item(null), item(''))).toBe(0);
+      expect(comparator.compare(item(''), item(null))).toBe(0);
+
+    });
+
+  });
+
   describe('Email field type', () => {
 
     it('Should return a comparator to order email addresses', () => {

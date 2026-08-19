@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.88-exui-4951-v2",
+  "version": "7.3.89-4951",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -70,8 +70,13 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.31",
     "ngx-chips": "^3.0.0",
+    "ngx-editor": "19.0.0-beta.1",
     "ngx-markdown": "^20.1.0",
     "ngx-pagination": "6.0.3",
+    "prosemirror-commands": "1.7.1",
+    "prosemirror-history": "1.5.0",
+    "prosemirror-model": "1.25.11",
+    "prosemirror-schema-list": "1.5.1",
     "rpx-xui-translation": "1.2.12",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",

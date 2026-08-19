@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
+
 ### Version 7.3.88
 **EXUI-5043** Package update - socket-io - minor
 

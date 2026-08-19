@@ -111,6 +111,18 @@ describe('FirstErrorPipe', () => {
     expect(message).toBe(`The data entered is not valid for ${FIELD_LABEL}`);
   });
 
+  it('should return an unsafe rich text error with the field label', () => {
+    translationServiceMock.getTranslationWithReplacements$.and.callFake(
+      (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
+    const message = pipe.transform({ unsafeRichText: true }, FIELD_LABEL);
+
+    expect(translationServiceMock.getTranslation$).toHaveBeenCalledWith(FIELD_LABEL);
+    expect(translationServiceMock.getTranslationWithReplacements$).toHaveBeenCalledWith(
+      'The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field',
+      { FIELDLABEL: FIELD_LABEL });
+    expect(message).toBe(`The data entered is not valid for ${FIELD_LABEL}. Potentially unsafe HTML content is not allowed in this field`);
+  });
+
   it('should return exact error along with label name when field value is below minimum length', () => {
     translationServiceMock.getTranslationWithReplacements$.and.callFake(
       (someString: string, someReplacements: Replacements) => of(someString.replace('%FIELDLABEL%', someReplacements.FIELDLABEL)));
