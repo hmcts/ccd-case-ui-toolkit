@@ -1,7 +1,17 @@
 ## RELEASE NOTES
 
-### Version 7.3.86-exui-5056
+### Version 7.3.89-exui-5056
 **EXUI-5056** Hardcoded Credentials v2
+
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
+
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
+
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
 
 ### Version 7.3.86
 **EXUI-5013** Package update - sass

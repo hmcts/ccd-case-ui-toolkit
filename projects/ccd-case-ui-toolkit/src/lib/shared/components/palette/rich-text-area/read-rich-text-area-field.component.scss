@@ -1,0 +1,75 @@
+.ccd-rich-text-area-read {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: normal;
+}
+
+.ccd-rich-text-area-read strong,
+.ccd-rich-text-area-read strong *,
+.ccd-rich-text-area-read b,
+.ccd-rich-text-area-read b * {
+  font-weight: 700;
+}
+
+.ccd-rich-text-area-read strong u,
+.ccd-rich-text-area-read u strong,
+.ccd-rich-text-area-read b u,
+.ccd-rich-text-area-read u b {
+  font-weight: 700 !important;
+  text-decoration: underline;
+}
+
+.ccd-rich-text-area-read p,
+.ccd-rich-text-area-read ul,
+.ccd-rich-text-area-read ol {
+  margin-top: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ccd-rich-text-area-read p:empty::before {
+  content: "\00a0";
+}
+
+.ccd-rich-text-area-read ul {
+  list-style: disc outside;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area-read ol {
+  list-style: decimal outside;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area-read li {
+  display: list-item;
+  margin-bottom: 5px;
+}
+
+.ccd-rich-text-area-read li > p {
+  margin: 0;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-1 {
+  margin-left: 40px;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-2 {
+  margin-left: 80px;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-3 {
+  margin-left: 120px;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-4 {
+  margin-left: 160px;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-5 {
+  margin-left: 200px;
+}
+
+.ccd-rich-text-area-read .ccd-rich-text-indent-6 {
+  margin-left: 240px;
+}

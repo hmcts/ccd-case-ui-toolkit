@@ -1,0 +1,166 @@
+<div class="form-group ccd-rich-text-area" [ngClass]="{'form-group-error': !richTextAreaControl.valid && richTextAreaControl.dirty}">
+  <div [id]="labelId()">
+    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+  </div>
+  <span [id]="hintId()" class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
+  <span [id]="errorId()" class="error-message" *ngIf="isInvalid()">
+    {{richTextAreaControl.errors | ccdFirstError:caseField.label}}
+  </span>
+
+  <div
+    #editorHost
+    class="ccd-rich-text-area__editor"
+    [ngClass]="{'ccd-rich-text-area__editor--error': isInvalid()}"
+    (click)="syncAccessibilityLater()"
+    (keydown)="onEditorKeyDown($event)"
+    (keyup)="syncAccessibilityLater()"
+    (paste)="onPaste($event)">
+    <div
+      class="ccd-rich-text-area__toolbar"
+      role="toolbar"
+      [attr.aria-label]="toolbarLabel()">
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        aria-label="Undo"
+        title="Undo"
+        aria-keyshortcuts="Control+Z"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'undo')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--undo" aria-hidden="true">&#8630;</span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        aria-label="Redo"
+        title="Redo"
+        aria-keyshortcuts="Control+Y"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'redo')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--redo" aria-hidden="true">&#8631;</span>
+      </button>
+      <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--bold"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('bold')}"
+        [attr.aria-pressed]="isToolbarCommandActive('bold')"
+        aria-label="Bold"
+        title="Bold"
+        aria-keyshortcuts="Control+B"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'bold')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--bold" aria-hidden="true">B</span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--italic"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('italic')}"
+        [attr.aria-pressed]="isToolbarCommandActive('italic')"
+        aria-label="Italic"
+        title="Italic"
+        aria-keyshortcuts="Control+I"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'italic')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--italic" aria-hidden="true">I</span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--underline"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('underline')}"
+        [attr.aria-pressed]="isToolbarCommandActive('underline')"
+        aria-label="Underline"
+        title="Underline"
+        aria-keyshortcuts="Control+U"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'underline')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--underline" aria-hidden="true">U</span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--paragraph"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('paragraph')}"
+        [attr.aria-pressed]="isToolbarCommandActive('paragraph')"
+        aria-label="Paragraph"
+        title="Paragraph"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'paragraph')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--paragraph" aria-hidden="true">P</span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('ordered_list')}"
+        [attr.aria-pressed]="isToolbarCommandActive('ordered_list')"
+        aria-label="Ordered List"
+        title="Ordered List"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'ordered_list')">
+        <span class="ccd-rich-text-area__list-icon ccd-rich-text-area__list-icon--ordered" aria-hidden="true">
+          <span class="ccd-rich-text-area__list-marker">1</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+          <span class="ccd-rich-text-area__list-marker">2</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+          <span class="ccd-rich-text-area__list-marker">3</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+        </span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('bullet_list')}"
+        [attr.aria-pressed]="isToolbarCommandActive('bullet_list')"
+        aria-label="Bullet List"
+        title="Bullet List"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'bullet_list')">
+        <span class="ccd-rich-text-area__list-icon ccd-rich-text-area__list-icon--bullet" aria-hidden="true">
+          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
+          <span class="ccd-rich-text-area__list-line"></span>
+        </span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        aria-label="Decrease Indent"
+        title="Decrease Indent"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'outdent')">
+        <span class="ccd-rich-text-area__indent-icon ccd-rich-text-area__indent-icon--outdent" aria-hidden="true">
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--top"></span>
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--middle"></span>
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--bottom"></span>
+          <span class="ccd-rich-text-area__indent-arrow"></span>
+        </span>
+      </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        aria-label="Increase Indent"
+        title="Increase Indent"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'indent')">
+        <span class="ccd-rich-text-area__indent-icon ccd-rich-text-area__indent-icon--indent" aria-hidden="true">
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--top"></span>
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--middle"></span>
+          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--bottom"></span>
+          <span class="ccd-rich-text-area__indent-arrow"></span>
+        </span>
+      </button>
+    </div>
+
+    <div class="NgxEditor__Wrapper">
+      <ngx-editor
+        [editor]="editor"
+        [formControl]="richTextAreaControl"
+        outputFormat="html"
+        (focusIn)="syncAccessibilityLater()"
+        (focusOut)="onEditorFocusOut()">
+      </ngx-editor>
+    </div>
+  </div>
+</div>
