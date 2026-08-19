@@ -18,6 +18,33 @@ type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' 
 type RichTextListStyle = '' | 'ordered_list' | 'ordered_alpha' | 'ordered_roman' | 'bullet_list';
 type RichTextOrderedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
 
+interface WordListConversionState {
+  listStack: HTMLElement[];
+  listParents: Node[];
+  resetListLevels: Map<string, number>;
+  previousListId: string;
+}
+
+function orderedListStyleForType(type: string): RichTextOrderedListStyle | null {
+  if (type === 'a') {
+    return 'lower-alpha';
+  }
+  if (type === 'i') {
+    return 'lower-roman';
+  }
+  return null;
+}
+
+function orderedListTypeForStyle(style: RichTextOrderedListStyle): string | null {
+  if (style === 'lower-alpha') {
+    return 'a';
+  }
+  if (style === 'lower-roman') {
+    return 'i';
+  }
+  return null;
+}
+
 const WORD_COLUMN_SPACING = 12;
 const MAX_INDENT = 6;
 const CSS_LENGTH_UNITS = ['rem', 'px', 'pt', 'in', 'cm', 'mm', 'em'];
@@ -41,17 +68,15 @@ const richTextNodes = {
         const list = element as HTMLElement;
         return {
           order: list.hasAttribute('start') ? Number(list.getAttribute('start')) : 1,
-          indent: Number(list.getAttribute('data-indent')) || null,
-          listStyle: list.getAttribute('type') === 'a'
-            ? 'lower-alpha'
-            : list.getAttribute('type') === 'i' ? 'lower-roman' : null
+          indent: Number(list.dataset.indent) || null,
+          listStyle: orderedListStyleForType(list.getAttribute('type'))
         };
       }
     }],
     toDOM: (node): DOMOutputSpec => ['ol', {
       start: node.attrs.order === 1 ? null : node.attrs.order,
       'data-indent': node.attrs.indent,
-      type: node.attrs.listStyle === 'lower-alpha' ? 'a' : node.attrs.listStyle === 'lower-roman' ? 'i' : null
+      type: orderedListTypeForStyle(node.attrs.listStyle)
     }, 0]
   } as NodeSpec,
   bullet_list: {
@@ -685,17 +710,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     styleElements.forEach((styleElement) => {
       const stylesheet = (styleElement.textContent || '').replace(/<!--|-->/g, '');
-      const rules = stylesheet.matchAll(/([^{}]+)\{([^{}]+)\}/g);
+      const rules = this.stylesheetRules(stylesheet);
 
-      Array.from(rules).forEach((rule) => {
-        const declarations = rule[2];
+      rules.forEach(([selectors, declarations]) => {
         const hasBoldStyle = this.hasBoldStyle(declarations);
         const headingLevel = this.wordOutlineLevel(declarations);
         if (!hasBoldStyle && !headingLevel) {
           return;
         }
 
-        rule[1].split(',').forEach((selector) => {
+        selectors.split(',').forEach((selector) => {
           const normalisedSelector = selector.trim();
           if (!normalisedSelector || normalisedSelector.startsWith('@')) {
             return;
@@ -717,6 +741,28 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         });
       });
     });
+  }
+
+  private stylesheetRules(stylesheet: string): Array<[string, string]> {
+    const rules: Array<[string, string]> = [];
+    let searchFrom = 0;
+    let openingBrace = stylesheet.indexOf('{', searchFrom);
+
+    while (openingBrace !== -1) {
+      const closingBrace = stylesheet.indexOf('}', openingBrace + 1);
+      if (closingBrace === -1) {
+        break;
+      }
+
+      rules.push([
+        stylesheet.slice(searchFrom, openingBrace),
+        stylesheet.slice(openingBrace + 1, closingBrace)
+      ]);
+      searchFrom = closingBrace + 1;
+      openingBrace = stylesheet.indexOf('{', searchFrom);
+    }
+
+    return rules;
   }
 
   private normaliseWordSpacing(documentElement: Document): void {
@@ -923,7 +969,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const listStart = element.tagName.toLowerCase() === 'ol'
         ? this.normaliseListStart(element.getAttribute('start'))
         : null;
-      const listType = element.tagName.toLowerCase() === 'ol' && /^(a|i)$/.test(element.getAttribute('type') || '')
+      const listType = element.tagName.toLowerCase() === 'ol' && /^[ai]$/.test(element.getAttribute('type') || '')
         ? element.getAttribute('type')
         : null;
 
@@ -1392,69 +1438,103 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const childNodes = Array.prototype.slice.call(documentElement.body.querySelectorAll('p'));
     const wordListIndents = this.wordListIndents(childNodes);
     const orderedListTypes = this.wordOrderedListTypes(childNodes);
-    const listStack: HTMLElement[] = [];
-    const listParents: Node[] = [];
-    const resetListLevels = new Map<string, number>();
-    let previousListId: string = null;
+    const state: WordListConversionState = {
+      listStack: [],
+      listParents: [],
+      resetListLevels: new Map<string, number>(),
+      previousListId: null
+    };
 
     childNodes.forEach((node: Node) => {
-      if (!this.isWordListParagraph(node)) {
-        listStack.length = 0;
-        listParents.length = 0;
-        resetListLevels.clear();
-        previousListId = null;
-        return;
-      }
-
-      const paragraph = node as HTMLElement;
-      const listType = this.wordListType(paragraph);
-      const orderedListType = listType === 'ol' ? orderedListTypes.get(this.wordListLevelKey(paragraph)) || null : null;
-      const listId = this.wordListId(paragraph);
-      const declaredLevel = this.wordListDeclaredLevel(paragraph);
-      let requestedLevel = this.wordListLevel(paragraph, wordListIndents);
-      const rememberedResetLevel = declaredLevel === 1 ? resetListLevels.get(listId) : null;
-      if (rememberedResetLevel) {
-        requestedLevel = Math.max(requestedLevel, rememberedResetLevel);
-      } else if (declaredLevel === 1 && listId !== previousListId && listStack.length > 1 && requestedLevel === listStack.length) {
-        requestedLevel++;
-        resetListLevels.set(listId, requestedLevel);
-      } else if (declaredLevel === 1 && listId) {
-        resetListLevels.set(listId, requestedLevel);
-      }
-      const level = Math.min(requestedLevel, listStack.length + 1);
-      const stackIndex = level - 1;
-      const parentListItem = stackIndex > 0 ? listStack[stackIndex - 1]?.lastElementChild : null;
-      const listParent = parentListItem || paragraph.parentNode;
-      const listItem = documentElement.createElement('li');
-      this.copyListItemContents(documentElement, paragraph, listItem);
-
-      let currentList = listStack[stackIndex];
-      if (currentList?.tagName.toLowerCase() !== listType ||
-        currentList?.getAttribute('type') !== orderedListType ||
-        listParents[stackIndex] !== listParent) {
-        currentList = documentElement.createElement(listType);
-        const listStart = this.wordListStart(paragraph);
-        if (listType === 'ol' && listStart > 1) {
-          currentList.setAttribute('start', listStart.toString());
-        }
-        if (orderedListType) {
-          currentList.setAttribute('type', orderedListType);
-        }
-        if (parentListItem) {
-          parentListItem.appendChild(currentList);
-        } else {
-          paragraph.parentNode.insertBefore(currentList, paragraph);
-        }
-        listStack[stackIndex] = currentList;
-        listParents[stackIndex] = listParent;
-      }
-
-      listStack.length = level;
-      listParents.length = level;
-      currentList.appendChild(listItem);
-      paragraph.remove();
-      previousListId = listId;
+      this.convertWordListParagraph(documentElement, node, wordListIndents, orderedListTypes, state);
     });
+  }
+
+  private convertWordListParagraph(documentElement: Document, node: Node, wordListIndents: number[],
+    orderedListTypes: Map<string, string>, state: WordListConversionState): void {
+    if (!this.isWordListParagraph(node)) {
+      this.resetWordListConversionState(state);
+      return;
+    }
+
+    const paragraph = node as HTMLElement;
+    const listType = this.wordListType(paragraph);
+    const orderedListType = listType === 'ol' ? orderedListTypes.get(this.wordListLevelKey(paragraph)) || null : null;
+    const listId = this.wordListId(paragraph);
+    const requestedLevel = this.wordListRequestedLevel(paragraph, listId, wordListIndents, state);
+    const level = Math.min(requestedLevel, state.listStack.length + 1);
+    const currentList = this.wordListForParagraph(documentElement, paragraph, listType, orderedListType, level, state);
+    const listItem = documentElement.createElement('li');
+
+    this.copyListItemContents(documentElement, paragraph, listItem);
+    currentList.appendChild(listItem);
+    paragraph.remove();
+    state.previousListId = listId;
+  }
+
+  private resetWordListConversionState(state: WordListConversionState): void {
+    state.listStack.length = 0;
+    state.listParents.length = 0;
+    state.resetListLevels.clear();
+    state.previousListId = null;
+  }
+
+  private wordListRequestedLevel(paragraph: HTMLElement, listId: string, wordListIndents: number[],
+    state: WordListConversionState): number {
+    const declaredLevel = this.wordListDeclaredLevel(paragraph);
+    let requestedLevel = this.wordListLevel(paragraph, wordListIndents);
+    const rememberedResetLevel = declaredLevel === 1 ? state.resetListLevels.get(listId) : null;
+
+    if (rememberedResetLevel) {
+      return Math.max(requestedLevel, rememberedResetLevel);
+    }
+    if (declaredLevel === 1 && listId !== state.previousListId && state.listStack.length > 1 && requestedLevel === state.listStack.length) {
+      requestedLevel++;
+      state.resetListLevels.set(listId, requestedLevel);
+    } else if (declaredLevel === 1 && listId) {
+      state.resetListLevels.set(listId, requestedLevel);
+    }
+
+    return requestedLevel;
+  }
+
+  private wordListForParagraph(documentElement: Document, paragraph: HTMLElement, listType: string,
+    orderedListType: string, level: number, state: WordListConversionState): HTMLElement {
+    const stackIndex = level - 1;
+    const parentListItem = stackIndex > 0 ? state.listStack[stackIndex - 1]?.lastElementChild : null;
+    const listParent = parentListItem || paragraph.parentNode;
+    let currentList = state.listStack[stackIndex];
+
+    if (currentList?.tagName.toLowerCase() !== listType || currentList?.getAttribute('type') !== orderedListType ||
+      state.listParents[stackIndex] !== listParent) {
+      currentList = this.createWordList(documentElement, paragraph, listType, orderedListType, parentListItem);
+      state.listStack[stackIndex] = currentList;
+      state.listParents[stackIndex] = listParent;
+    }
+
+    state.listStack.length = level;
+    state.listParents.length = level;
+    return currentList;
+  }
+
+  private createWordList(documentElement: Document, paragraph: HTMLElement, listType: string,
+    orderedListType: string, parentListItem: Element): HTMLElement {
+    const list = documentElement.createElement(listType);
+    const listStart = this.wordListStart(paragraph);
+
+    if (listType === 'ol' && listStart > 1) {
+      list.setAttribute('start', listStart.toString());
+    }
+    if (orderedListType) {
+      list.setAttribute('type', orderedListType);
+    }
+    if (parentListItem) {
+      parentListItem.appendChild(list);
+    } else {
+      paragraph.parentNode.insertBefore(list, paragraph);
+    }
+
+    return list;
   }
 
   private normaliseNestedListStructure(documentElement: Document): void {
@@ -1497,7 +1577,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     const listTypes = new Map<string, string>();
     markersByLevel.forEach((markers, key) => {
-      const markerTokens = markers.map((marker) => marker.match(/^\(?([a-z]+|\d+)[.)]/i)?.[1]?.toLowerCase());
+      const markerPattern = /^\(?([a-z]+|\d+)[.)]/i;
+      const markerTokens = markers.map((marker) => markerPattern.exec(marker)?.[1]?.toLowerCase());
       if (markers.some((marker) => /^\([ivxlcdm]+\)/i.test(marker)) ||
         markerTokens.some((token) => token?.length > 1 && /^[ivxlcdm]+$/.test(token))) {
         listTypes.set(key, 'i');
@@ -1559,7 +1640,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private wordListStart(paragraph: HTMLElement): number {
-    const match = this.wordListMarker(paragraph).match(/^(\d+)[.)]/);
+    const match = /^(\d+)[.)]/.exec(this.wordListMarker(paragraph));
 
     return match ? Number(match[1]) : 1;
   }

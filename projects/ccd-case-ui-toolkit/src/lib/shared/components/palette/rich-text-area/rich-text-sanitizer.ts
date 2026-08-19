@@ -214,7 +214,7 @@ export function sanitiseRichTextDocument(documentElement: Document): string {
     const listStart = tagName === 'ol' && /^\d{1,6}$/.test(element.getAttribute('start') || '')
       ? element.getAttribute('start')
       : null;
-    const listType = tagName === 'ol' && /^(a|i)$/.test(element.getAttribute('type') || '')
+    const listType = tagName === 'ol' && /^[ai]$/.test(element.getAttribute('type') || '')
       ? element.getAttribute('type')
       : null;
 
