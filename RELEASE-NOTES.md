@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
+
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
 ### Version 7.3.86
 **EXUI-5013** Package update - sass
 
