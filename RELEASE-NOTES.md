@@ -1,7 +1,11 @@
 ## RELEASE NOTES
 
-### Version 7.3.88-exui-5098
+### Version 7.3.89-exui-5098
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
 
 ### Version 7.3.88
 **EXUI-5043** Package update - socket-io - minor
