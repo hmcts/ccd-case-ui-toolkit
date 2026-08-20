@@ -12,6 +12,7 @@ import { EventCompletionParams } from '../../../../../case-editor/domain/event-c
 import { QueryManagementService } from '../../../services';
 import { ActivatedRoute } from '@angular/router';
 import { StructuredLoggerService } from '../../../../../../services';
+import { FormValidatorsService } from '../../../../../../services/form';
 
 @Component({
   selector: 'ccd-query-write-raise-query',
@@ -20,6 +21,7 @@ import { StructuredLoggerService } from '../../../../../../services';
 })
 export class QueryWriteRaiseQueryComponent implements OnChanges {
   private readonly logger = new StructuredLoggerService();
+  private static readonly MARKDOWN_VALIDATOR = FormValidatorsService.markDownPatternValidator();
 
   @Input() public formGroup: FormGroup;
   @Input() public submitted: boolean;
@@ -44,10 +46,11 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
   ) {}
 
   public ngOnChanges(): void {
+    this.addMarkdownValidators();
     this.messageId= this.route.snapshot.params.dataid;
     const isCollectionDataSet = this.setCaseQueriesCollectionData();
     if (isCollectionDataSet) {
-      if (this.triggerSubmission) {
+      if (this.triggerSubmission && this.formGroup.valid) {
         const data = this.generateCaseQueriesCollectionData();
         this.queryDataCreated.emit(data);
       }
@@ -70,7 +73,18 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
     if (control.hasError('maxlength')) {
       return this.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH;
     }
+    if (control.hasError('markDownPattern')) {
+      return 'The data entered is not valid for Query subject. Link mark up characters are not allowed in this field';
+    }
     return '';
+  }
+
+  public getBodyErrorMessage(): string {
+    const control = this.formGroup.get('body');
+    if (control.hasError('markDownPattern')) {
+      return 'The data entered is not valid for Query detail. Link mark up characters are not allowed in this field';
+    }
+    return this.raiseQueryErrorMessage.QUERY_BODY;
   }
 
   public setCaseQueriesCollectionData(): boolean {
@@ -96,5 +110,15 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
       this.queryItem,
       this.messageId
     );
+  }
+
+  private addMarkdownValidators(): void {
+    ['subject', 'body'].forEach((controlName) => {
+      const control = this.formGroup?.get(controlName);
+      if (control) {
+        control.addValidators(QueryWriteRaiseQueryComponent.MARKDOWN_VALIDATOR);
+        control.updateValueAndValidity({ emitEvent: false });
+      }
+    });
   }
 }

@@ -10,6 +10,7 @@ import { RaiseQueryErrorMessage } from '../../../enums';
 import { CaseQueriesCollection, QmCaseQueriesCollection, QueryCreateContext, QueryListData, QueryListItem } from '../../../models';
 import { QueryManagementService } from '../../../services';
 import { StructuredLoggerService } from '../../../../../../services';
+import { FormValidatorsService } from '../../../../../../services/form';
 @Component({
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
@@ -19,6 +20,7 @@ import { StructuredLoggerService } from '../../../../../../services';
 
 export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   private readonly logger = new StructuredLoggerService();
+  private static readonly MARKDOWN_VALIDATOR = FormValidatorsService.markDownPatternValidator();
 
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
@@ -64,6 +66,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(): void {
+    this.addMarkdownValidator();
     if (!this.caseQueriesCollections || this.caseQueriesCollections.length === 0) {
     // Silent return – this is not an error.
       return;
@@ -105,7 +108,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
     this.queryResponseStatus = this.queryListData?.responseStatus;
     const isCollectionDataSet = this.setCaseQueriesCollectionData();
     if (isCollectionDataSet) {
-      if (this.triggerSubmission) {
+      if (this.triggerSubmission && this.formGroup.valid) {
         const data = this.generateCaseQueriesCollectionData();
         this.queryDataCreated.emit(data);
       }
@@ -115,6 +118,15 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
   public hasResponded(value: boolean): void {
     this.hasRespondedToQuery = value;
     this.hasRespondedToQueryTask.emit(value);
+  }
+
+  public getBodyErrorMessage(): string {
+    if (this.formGroup.get('body')?.hasError('markDownPattern')) {
+      return 'The data entered is not valid for Response detail. Link mark up characters are not allowed in this field';
+    }
+    return this.queryCreateContext === QueryCreateContext.RESPOND
+      ? this.raiseQueryErrorMessages.RESPOND_QUERY_BODY
+      : this.raiseQueryErrorMessages.QUERY_BODY;
   }
 
   public setCaseQueriesCollectionData(): boolean {
@@ -140,5 +152,13 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
       this.queryItem,
       this.messageId
     );
+  }
+
+  private addMarkdownValidator(): void {
+    const control = this.formGroup?.get('body');
+    if (control) {
+      control.addValidators(QueryWriteRespondToQueryComponent.MARKDOWN_VALIDATOR);
+      control.updateValueAndValidity({ emitEvent: false });
+    }
   }
 }

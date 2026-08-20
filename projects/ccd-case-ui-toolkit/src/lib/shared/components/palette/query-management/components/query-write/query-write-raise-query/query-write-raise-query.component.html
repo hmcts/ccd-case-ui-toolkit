@@ -22,7 +22,7 @@
             </ccd-markdown>
           </strong>
         </div>
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').invalid}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
               {{ 'Query subject' | rpxTranslate }}
@@ -32,7 +32,7 @@
             {{ 'The subject should be a summary of your query' | rpxTranslate }}
           </div>
           <p id="subject-error" class="govuk-error-message"
-            *ngIf="submitted && (formGroup.get('subject').hasError('required') || formGroup.get('subject').hasError('maxlength'))">
+            *ngIf="submitted && formGroup.get('subject').invalid">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
             {{ getSubjectErrorMessage() | rpxTranslate }}
           </p>
@@ -47,7 +47,7 @@
       </div>
 
         <div class="govuk-form-group"
-             [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
+             [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').invalid}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
               {{ 'Query detail' | rpxTranslate }}
@@ -57,14 +57,14 @@
             {{ 'Include as many details as possible so case workers can respond to your query' | rpxTranslate }}
           </div>
           <p id="body-error" class="govuk-error-message"
-              *ngIf="submitted && formGroup.get('body').hasError('required')">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
+              *ngIf="submitted && formGroup.get('body').invalid">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ getBodyErrorMessage() | rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'"
                     id="body" name="body" rows="5"
                     aria-describedby="body-hint body-error"
                     class="govuk-textarea"
-                    [class.govuk-textarea--error]="submitted && formGroup.get('body').hasError('required')"
+                    [class.govuk-textarea--error]="submitted && formGroup.get('body').invalid"
           >
           </textarea>
       </div>
