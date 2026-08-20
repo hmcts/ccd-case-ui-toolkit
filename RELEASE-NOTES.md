@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.89-exui-3879
+**EXUI-3879** Gov Notify can get a Markdown link by using 2 sets of square brackets - Part2
+
 ### Version 7.3.89
 **EXUI-4919** Create a Rich Text Editor Component - Write
 **EXUI-4920** Create a Rich Text Editor Component - Read
