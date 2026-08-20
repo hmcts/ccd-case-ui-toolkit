@@ -10,6 +10,7 @@ import {
   SessionStorageService
 } from '../../../../../../services';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../../models';
+import { RaiseQueryErrorMessage } from '../../../enums';
 import { of, throwError } from 'rxjs';
 
 @Pipe({
@@ -133,10 +134,15 @@ describe('QueryWriteRespondToQueryComponent', () => {
   it('should reject markdown in response and follow-up detail while preserving required validation', () => {
     const body = component.formGroup.get('body');
 
+    component.queryCreateContext = QueryCreateContext.RESPOND;
     component.ngOnChanges();
 
     body.setValue('[[Test]](www.google.com)');
     expect(body.hasError('markDownPattern')).toBeTrue();
+    expect(component.getBodyErrorMessage()).toBe(RaiseQueryErrorMessage.RESPOND_QUERY_BODY_MARKDOWN);
+
+    component.queryCreateContext = QueryCreateContext.FOLLOWUP;
+    expect(component.getBodyErrorMessage()).toBe(RaiseQueryErrorMessage.QUERY_BODY_MARKDOWN);
 
     body.setValue('');
     expect(body.hasError('required')).toBeTrue();

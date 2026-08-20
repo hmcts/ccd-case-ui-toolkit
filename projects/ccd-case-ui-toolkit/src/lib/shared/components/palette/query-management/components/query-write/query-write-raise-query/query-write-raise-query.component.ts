@@ -74,7 +74,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
       return this.raiseQueryErrorMessage.QUERY_SUBJECT_MAX_LENGTH;
     }
     if (control.hasError('markDownPattern')) {
-      return 'The data entered is not valid for Query subject. Link mark up characters are not allowed in this field';
+      return this.raiseQueryErrorMessage.QUERY_SUBJECT_MARKDOWN;
     }
     return '';
   }
@@ -82,7 +82,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
   public getBodyErrorMessage(): string {
     const control = this.formGroup.get('body');
     if (control.hasError('markDownPattern')) {
-      return 'The data entered is not valid for Query detail. Link mark up characters are not allowed in this field';
+      return this.raiseQueryErrorMessage.QUERY_BODY_MARKDOWN;
     }
     return this.raiseQueryErrorMessage.QUERY_BODY;
   }

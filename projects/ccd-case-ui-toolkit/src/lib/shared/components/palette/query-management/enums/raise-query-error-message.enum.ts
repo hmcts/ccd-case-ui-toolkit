@@ -5,5 +5,8 @@ export enum RaiseQueryErrorMessage {
   QUERY_HEARING_RELATED = 'Select whether the query is hearing related or not',
   QUERY_HEARING_DATE = 'Enter a valid date',
   QUERY_SUBJECT_MAX_LENGTH = 'Query subject must be less than 201 characters in length',
-  RESPOND_QUERY_BODY = 'Add a response before continue'
+  RESPOND_QUERY_BODY = 'Add a response before continue',
+  QUERY_SUBJECT_MARKDOWN = 'The data entered is not valid for Query subject. Link mark up characters are not allowed in this field',
+  QUERY_BODY_MARKDOWN = 'The data entered is not valid for Query detail. Link mark up characters are not allowed in this field',
+  RESPOND_QUERY_BODY_MARKDOWN = 'The data entered is not valid for Response detail. Link mark up characters are not allowed in this field'
 }

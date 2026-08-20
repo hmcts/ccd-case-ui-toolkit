@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 import { ActivatedRoute } from '@angular/router';
 import { QueryManagementService } from '../../../services';
+import { RaiseQueryErrorMessage } from '../../../enums';
 import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 import { MockComponent } from 'ng2-mock-component';
@@ -96,6 +97,8 @@ describe('QueryWriteRaiseQueryComponent', () => {
 
     expect(subject.hasError('markDownPattern')).toBeTrue();
     expect(body.hasError('markDownPattern')).toBeTrue();
+    expect(component.getSubjectErrorMessage()).toBe(RaiseQueryErrorMessage.QUERY_SUBJECT_MARKDOWN);
+    expect(component.getBodyErrorMessage()).toBe(RaiseQueryErrorMessage.QUERY_BODY_MARKDOWN);
 
     subject.setValue('a'.repeat(201));
     expect(subject.hasError('maxlength')).toBeTrue();

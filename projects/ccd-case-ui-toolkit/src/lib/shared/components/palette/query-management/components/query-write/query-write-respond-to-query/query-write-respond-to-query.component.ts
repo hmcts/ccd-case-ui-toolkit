@@ -122,7 +122,9 @@ export class QueryWriteRespondToQueryComponent implements OnInit, OnChanges {
 
   public getBodyErrorMessage(): string {
     if (this.formGroup.get('body')?.hasError('markDownPattern')) {
-      return 'The data entered is not valid for Response detail. Link mark up characters are not allowed in this field';
+      return this.queryCreateContext === QueryCreateContext.RESPOND
+        ? this.raiseQueryErrorMessages.RESPOND_QUERY_BODY_MARKDOWN
+        : this.raiseQueryErrorMessages.QUERY_BODY_MARKDOWN;
     }
     return this.queryCreateContext === QueryCreateContext.RESPOND
       ? this.raiseQueryErrorMessages.RESPOND_QUERY_BODY
