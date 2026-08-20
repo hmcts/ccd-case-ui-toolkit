@@ -82,16 +82,21 @@ const richTextNodes = {
   bullet_list: {
     ...editorNodes.bullet_list,
     attrs: {
-      indent: { default: null }
+      indent: { default: null },
+      continuationOrder: { default: null }
     },
     parseDOM: [{
       tag: 'ul',
       getAttrs: (element) => {
         const list = element as HTMLElement;
-        return { indent: Number(list.getAttribute('data-indent')) || null };
+        return {
+          indent: Number(list.dataset.indent) || null
+        };
       }
     }],
-    toDOM: (node): DOMOutputSpec => ['ul', { 'data-indent': node.attrs.indent }, 0]
+    toDOM: (node): DOMOutputSpec => ['ul', {
+      'data-indent': node.attrs.indent
+    }, 0]
   } as NodeSpec
 };
 
@@ -268,8 +273,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   public currentListStyle(): RichTextListStyle {
-    if (this.isToolbarCommandActive('ordered_list')) {
-      const orderedListStyle = this.activeOrderedListStyle();
+    const activeList = this.activeListNode();
+    if (activeList?.type.name === 'ordered_list') {
+      const orderedListStyle = activeList.attrs.listStyle || 'decimal';
       if (orderedListStyle === 'lower-alpha') {
         return 'ordered_alpha';
       }
@@ -278,7 +284,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
       return 'ordered_list';
     }
-    if (this.isToolbarCommandActive('bullet_list')) {
+    if (activeList?.type.name === 'bullet_list') {
       return 'bullet_list';
     }
     return '';
@@ -302,6 +308,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private applyListStyleSelection(listStyle: RichTextListStyle): void {
     const currentListStyle = this.currentListStyle();
     if (listStyle === currentListStyle) {
+      if (listStyle === 'ordered_list') {
+        this.changeActiveListType('ordered_list', 'decimal');
+      }
       return;
     }
 
@@ -339,23 +348,31 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
 
       const transaction = state.tr;
-      this.contiguousListPositions(depth).forEach(({ position, list }) => {
+      let nextOrder = 1;
+      this.contiguousListPositions(depth, listType).forEach(({ position, list }) => {
         const indent = Number(list.attrs.indent) || null;
         const attrs = listType === 'ordered_list'
           ? {
-            order: 1,
+            order: nextOrder,
             indent,
             listStyle: orderedListStyle === 'decimal' ? null : orderedListStyle
           }
-          : { indent };
+          : {
+            indent,
+            continuationOrder: Number(list.attrs.order) || null
+          };
         transaction.setNodeMarkup(position, targetType, attrs);
+        nextOrder += list.childCount;
       });
       dispatch(transaction);
       return;
     }
   }
 
-  private contiguousListPositions(depth: number): Array<{ position: number; list: ProseMirrorNode }> {
+  private contiguousListPositions(
+    depth: number,
+    targetListType: 'ordered_list' | 'bullet_list'
+  ): Array<{ position: number; list: ProseMirrorNode }> {
     const { $from } = this.editor.view.state.selection;
     const parentDepth = depth - 1;
     const parent = $from.node(parentDepth);
@@ -363,12 +380,12 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const activeIndex = $from.index(parentDepth);
     const includedIndexes = new Set([activeIndex]);
 
-    this.collectContiguousListIndexes(parent, activeList, activeIndex, -1, includedIndexes);
-    this.collectContiguousListIndexes(parent, activeList, activeIndex, 1, includedIndexes);
+    this.collectContiguousListIndexes(parent, activeList, activeIndex, -1, targetListType, includedIndexes);
+    this.collectContiguousListIndexes(parent, activeList, activeIndex, 1, targetListType, includedIndexes);
 
     const positions = [];
     parent.forEach((child, childOffset, index) => {
-      if (includedIndexes.has(index) && this.hasMatchingListType(child, activeList)) {
+      if (includedIndexes.has(index) && this.isList(child)) {
         positions.push({ position: $from.start(parentDepth) + childOffset, list: child });
       }
     });
@@ -380,18 +397,74 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     activeList: ProseMirrorNode,
     activeIndex: number,
     direction: -1 | 1,
+    targetListType: 'ordered_list' | 'bullet_list',
     includedIndexes: Set<number>
   ): void {
+    let adjacentList = activeList;
+    let crossedContent = false;
+    let crossedSectionHeading = false;
     for (let index = activeIndex + direction; index >= 0 && index < parent.childCount; index += direction) {
       const child = parent.child(index);
       if (this.isEmptyParagraph(child)) {
         continue;
       }
-      if (!this.hasMatchingListType(child, activeList)) {
+
+      const matchesActiveList = this.hasMatchingListType(child, activeList);
+      const isMixedListToRepair = crossedSectionHeading && this.isList(child) &&
+        child.type.name !== activeList.type.name && targetListType === activeList.type.name;
+      if (matchesActiveList || isMixedListToRepair) {
+        const isHeadingSeparatedBulletList = activeList.type.name === 'bullet_list';
+        if (matchesActiveList && crossedContent && !isHeadingSeparatedBulletList &&
+          !this.isSequentialList(child, adjacentList, direction)) {
+          return;
+        }
+        includedIndexes.add(index);
+        adjacentList = child;
+        crossedContent = false;
+        crossedSectionHeading = false;
+        continue;
+      }
+
+      if (this.isList(child)) {
         return;
       }
-      includedIndexes.add(index);
+      if (activeList.type.name === 'bullet_list') {
+        if (!this.isListSectionHeading(child)) {
+          return;
+        }
+      } else if (!this.hasListContinuation(activeList)) {
+        return;
+      }
+      crossedContent = true;
+      crossedSectionHeading = crossedSectionHeading || this.isListSectionHeading(child);
     }
+  }
+
+  private isSequentialList(
+    candidateList: ProseMirrorNode,
+    adjacentList: ProseMirrorNode,
+    direction: -1 | 1
+  ): boolean {
+    const candidateOrder = this.listContinuationOrder(candidateList);
+    const adjacentOrder = this.listContinuationOrder(adjacentList);
+    if (!candidateOrder || !adjacentOrder) {
+      return false;
+    }
+    return direction === 1
+      ? candidateOrder === adjacentOrder + adjacentList.childCount
+      : candidateOrder + candidateList.childCount === adjacentOrder;
+  }
+
+  private hasListContinuation(list: ProseMirrorNode): boolean {
+    return list.type.name === 'ordered_list' || Boolean(list.attrs.continuationOrder);
+  }
+
+  private listContinuationOrder(list: ProseMirrorNode): number {
+    return Number(list.type.name === 'ordered_list' ? list.attrs.order : list.attrs.continuationOrder) || null;
+  }
+
+  private isList(node: ProseMirrorNode): boolean {
+    return node.type.name === 'ordered_list' || node.type.name === 'bullet_list';
   }
 
   private hasMatchingListType(node: ProseMirrorNode, activeList: ProseMirrorNode): boolean {
@@ -404,6 +477,28 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   private isEmptyParagraph(node: ProseMirrorNode): boolean {
     return node.type.name === 'paragraph' && !node.textContent.trim();
+  }
+
+  private isListSectionHeading(node: ProseMirrorNode): boolean {
+    if (!node.textContent.trim()) {
+      return false;
+    }
+    if (node.type.name === 'heading') {
+      return true;
+    }
+    if (node.type.name !== 'paragraph') {
+      return false;
+    }
+
+    let hasText = false;
+    let allTextIsBold = true;
+    node.descendants((child) => {
+      if (child.isText && child.textContent.trim()) {
+        hasText = true;
+        allTextIsBold = allTextIsBold && child.marks.some((mark) => mark.type.name === 'strong');
+      }
+    });
+    return hasText && allTextIsBold;
   }
 
   private toggleBulletList(): void {
@@ -434,15 +529,15 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return 'decimal';
   }
 
-  private activeOrderedListStyle(): RichTextOrderedListStyle {
+  private activeListNode(): ProseMirrorNode | null {
     const { $from } = this.editor.view.state.selection;
     for (let depth = $from.depth; depth > 0; depth--) {
       const node = $from.node(depth);
-      if (node.type.name === 'ordered_list') {
-        return node.attrs.listStyle || 'decimal';
+      if (this.isList(node)) {
+        return node;
       }
     }
-    return 'decimal';
+    return null;
   }
 
   private applyOrderedListStyle(listStyle: RichTextOrderedListStyle): void {
@@ -1702,13 +1797,14 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return;
     }
 
+    const activeListType = this.activeListNode()?.type.name;
     this.activeToolbarCommands = {
       bold: this.isMarkActive('strong'),
       italic: this.isMarkActive('em'),
       underline: this.isMarkActive('u'),
       paragraph: this.paragraphCommandApplied && this.isPlainParagraphActive(),
-      ordered_list: this.isNodeActive('ordered_list'),
-      bullet_list: this.isNodeActive('bullet_list')
+      ordered_list: activeListType === 'ordered_list',
+      bullet_list: activeListType === 'bullet_list'
     };
   }
 
@@ -1777,32 +1873,36 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private applyOrderedListStyleForCurrentDepth(): void {
     const { state, dispatch } = this.editor.view;
     const { $from } = state.selection;
-    let orderedListDepth = 0;
+    const orderedListDepths: number[] = [];
     let activeOrderedListDepth: number | null = null;
 
     for (let depth = 1; depth <= $from.depth; depth++) {
       if ($from.node(depth).type.name === 'ordered_list') {
-        orderedListDepth++;
+        orderedListDepths.push(depth);
         activeOrderedListDepth = depth;
       }
     }
 
-    if (activeOrderedListDepth === null) {
+    if (activeOrderedListDepth === null || orderedListDepths.length < 2) {
       return;
     }
 
     const activeList = $from.node(activeOrderedListDepth);
-    let listStyle: RichTextOrderedListStyle = 'lower-roman';
-    if (orderedListDepth === 1) {
-      listStyle = 'decimal';
-    } else if (orderedListDepth === 2) {
-      listStyle = 'lower-alpha';
-    }
+    const parentListDepth = orderedListDepths[orderedListDepths.length - 2];
+    const parentListStyle = $from.node(parentListDepth).attrs.listStyle || 'decimal';
+    const listStyle = this.nextNestedOrderedListStyle(parentListStyle);
 
     dispatch(state.tr.setNodeMarkup($from.before(activeOrderedListDepth), activeList.type, {
       ...activeList.attrs,
       listStyle: listStyle === 'decimal' ? null : listStyle
     }));
+  }
+
+  private nextNestedOrderedListStyle(parentListStyle: RichTextOrderedListStyle): RichTextOrderedListStyle {
+    if (parentListStyle === 'decimal') {
+      return 'lower-alpha';
+    }
+    return 'lower-roman';
   }
 
   private changeListIndent(increase: boolean, state: EditorState, dispatch: Editor['view']['dispatch']): boolean {

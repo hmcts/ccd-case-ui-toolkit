@@ -657,6 +657,34 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(component.currentListStyle()).toBe('ordered_alpha');
   }));
 
+  it('should change only a nested bullet list to letters', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>First item</p></li><li><p>Second item</p>'
+      + '<ul><li><p>Nested first item</p></li><li><p>Nested second item</p></li></ul></li></ol>'
+    );
+    selectEditorText('Nested first item');
+    tick();
+    fixture.detectChanges();
+
+    expect(component.currentListStyle()).toBe('bullet_list');
+    expect((fixture.nativeElement.querySelector('button[aria-label="Bullet List"]') as HTMLButtonElement)
+      .getAttribute('aria-pressed')).toBe('true');
+    expect((fixture.nativeElement.querySelector('button[aria-label="Numbered List"]') as HTMLButtonElement)
+      .getAttribute('aria-pressed')).toBe('false');
+
+    selectListStyle('ordered_alpha');
+    tick();
+    fixture.detectChanges();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ol><li><p>First item</p></li><li><p>Second item</p>'
+      + '<ol type="a"><li><p>Nested first item</p></li><li><p>Nested second item</p></li></ol></li></ol>'
+    );
+    expect(component.currentListStyle()).toBe('ordered_alpha');
+  }));
+
   it('should apply and retain parenthesised Roman numeral list formatting from the toolbar', fakeAsync(() => {
     tick();
     fixture.detectChanges();
@@ -777,6 +805,119 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ul>');
   }));
 
+  it('should switch a continued Word list sequence between numbers and bullets across headings', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p><strong>Issues</strong></p>'
+      + '<ol start="4"><li><p>First section</p><ol type="a"><li><p>Nested item</p></li></ol></li></ol>'
+      + '<p></p><ol start="5"><li><p>Second section</p></li></ol>'
+      + '<p><strong>Parental responsibility</strong></p>'
+      + '<ol start="6"><li><p>Third section</p></li></ol>'
+      + '<p><strong>Other recitals</strong></p>'
+      + '<ol start="7"><li><p>Fourth section</p></li></ol>'
+    );
+    selectEditorText('First section');
+    tick();
+
+    clickToolbarButton('Bullet List');
+    tick();
+    fixture.detectChanges();
+
+    const editor = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    expect(editor.querySelectorAll(':scope > ul').length).toBe(4);
+    expect(editor.querySelector(':scope > ol')).toBeNull();
+    expect(editor.querySelector(':scope > ul > li > ol[type="a"]')).not.toBeNull();
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const orderedLists = editor.querySelectorAll(':scope > ol');
+    expect(orderedLists.length).toBe(4);
+    expect(orderedLists[0].getAttribute('start')).toBeNull();
+    expect(orderedLists[1].getAttribute('start')).toBe('2');
+    expect(orderedLists[2].getAttribute('start')).toBe('3');
+    expect(orderedLists[3].getAttribute('start')).toBe('4');
+    expect(editor.querySelector(':scope > ol > li > ol[type="a"]')).not.toBeNull();
+  }));
+
+  it('should continue numbering across pasted bullet lists split by blank Word paragraphs', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>First top item</p></li><li><p>Second top item</p></li></ul>'
+      + '<p></p><ul><li><p>Third top item</p></li></ul>'
+    );
+    selectEditorText('First top item');
+    tick();
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const editor = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    const orderedLists = editor.querySelectorAll(':scope > ol');
+    expect(orderedLists.length).toBe(2);
+    expect(orderedLists[0].getAttribute('start')).toBeNull();
+    expect(orderedLists[1].getAttribute('start')).toBe('3');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ol start="3">');
+  }));
+
+  it('should continue numbering across pasted bullet lists separated by bold Word headings', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p><strong>Issues</strong></p>'
+      + '<ul><li><p>First section</p></li><li><p>Second section</p></li></ul>'
+      + '<h2>Parental responsibility</h2>'
+      + '<ul><li><p>Third section</p></li></ul>'
+      + '<h2>Other recitals</h2>'
+      + '<ul><li><p>Fourth section</p></li></ul>'
+    );
+    selectEditorText('First section');
+    tick();
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const editor = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    const orderedLists = editor.querySelectorAll(':scope > ol');
+    expect(orderedLists.length).toBe(3);
+    expect(editor.querySelector(':scope > ul')).toBeNull();
+    expect(orderedLists[0].getAttribute('start')).toBeNull();
+    expect(orderedLists[1].getAttribute('start')).toBe('3');
+    expect(orderedLists[2].getAttribute('start')).toBe('4');
+  }));
+
+  it('should repair later bullet sections when the active section is already numbered', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p><strong>Issues</strong></p>'
+      + '<ol><li><p>First section</p></li><li><p>Second section</p></li></ol>'
+      + '<h2>Parental responsibility</h2>'
+      + '<ul><li><p>Third section</p></li></ul>'
+      + '<h2>Other recitals</h2>'
+      + '<ul><li><p>Fourth section</p></li></ul>'
+    );
+    selectEditorText('First section');
+    tick();
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const editor = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    const orderedLists = editor.querySelectorAll(':scope > ol');
+    expect(orderedLists.length).toBe(3);
+    expect(editor.querySelector(':scope > ul')).toBeNull();
+    expect(orderedLists[0].getAttribute('start')).toBeNull();
+    expect(orderedLists[1].getAttribute('start')).toBe('3');
+    expect(orderedLists[2].getAttribute('start')).toBe('4');
+  }));
+
   it('should not switch a separate list after a non-empty paragraph', fakeAsync(() => {
     tick();
     fixture.detectChanges();
@@ -859,6 +1000,23 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).toContain(
       '<ol><li><p>First item</p><ol type="a"><li><p>Second item</p>'
       + '<ol type="i"><li><p>Third item</p></li></ol></li></ol></li></ol>'
+    );
+    expect(component.currentListStyle()).toBe('ordered_roman');
+  }));
+
+  it('should use Roman markers when lettered list items are nested', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol type="a"><li><p>First item</p></li><li><p>Second item</p></li></ol>'
+    );
+
+    selectEditorText('Second item');
+    clickToolbarButton('Increase Indent');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<ol type="a"><li><p>First item</p><ol type="i"><li><p>Second item</p></li></ol></li></ol>'
     );
     expect(component.currentListStyle()).toBe('ordered_roman');
   }));
