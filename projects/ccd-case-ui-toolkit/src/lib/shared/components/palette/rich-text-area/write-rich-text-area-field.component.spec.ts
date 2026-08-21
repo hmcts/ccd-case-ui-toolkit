@@ -63,6 +63,31 @@ describe('WriteRichTextAreaFieldComponent', () => {
     );
   };
 
+  const selectEditorTextRange = (fromText: string, toText: string): void => {
+    let fromPosition = null;
+    let toPosition = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (!node.isText || !node.text) {
+        return true;
+      }
+      if (fromPosition === null && node.text.includes(fromText)) {
+        fromPosition = position + node.text.indexOf(fromText);
+      }
+      if (node.text.includes(toText)) {
+        toPosition = position + node.text.indexOf(toText) + toText.length;
+      }
+      return true;
+    });
+
+    component.editor.view.dispatch(
+      component.editor.view.state.tr.setSelection(TextSelection.create(
+        component.editor.view.state.doc,
+        fromPosition,
+        toPosition
+      ))
+    );
+  };
+
   const expectTextToHaveAncestorTags = (html: string, text: string, tagNames: string[]): void => {
     const container = document.createElement('div');
     container.innerHTML = html;
@@ -234,6 +259,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
       'Italic',
       'Underline',
       'Paragraph',
+      'Heading level 1',
       'Bullet List',
       'Numbered List',
       'Decrease Indent',
@@ -243,12 +269,14 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
   it('should separate paragraph and list controls from adjacent toolbar groups', () => {
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]') as HTMLButtonElement;
-    const paragraphSeparator = paragraphButton.nextElementSibling as HTMLSpanElement;
+    const headingButton = paragraphButton.nextElementSibling as HTMLButtonElement;
+    const paragraphSeparator = headingButton.nextElementSibling as HTMLSpanElement;
     const bulletListButton = paragraphSeparator.nextElementSibling as HTMLButtonElement;
     const numberedListButton = bulletListButton.nextElementSibling as HTMLButtonElement;
     const listStyle = numberedListButton.nextElementSibling as HTMLDivElement;
     const listStyleSeparator = listStyle.nextElementSibling as HTMLSpanElement;
 
+    expect(headingButton.getAttribute('aria-label')).toBe('Heading level 1');
     expect(paragraphSeparator.classList).toContain('ccd-rich-text-area__toolbar-separator');
     expect(bulletListButton.getAttribute('aria-label')).toBe('Bullet List');
     expect(numberedListButton.getAttribute('aria-label')).toBe('Numbered List');
@@ -293,6 +321,24 @@ describe('WriteRichTextAreaFieldComponent', () => {
     ]);
   });
 
+  it('should hide the No list option while an ordered list style is active', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ol type="i"><li><p>First item</p></li></ol>');
+    selectEditorText('First item');
+    tick();
+    fixture.detectChanges();
+
+    const select = fixture.nativeElement.querySelector(`#${component.listStyleId()}`) as HTMLSelectElement;
+
+    expect(Array.from(select.options).map((option) => option.text)).toEqual([
+      'Numbers (1, 2, 3)',
+      'Letters (a, b, c)',
+      'Roman numerals (i), (ii), (iii)'
+    ]);
+    expect(select.value).toBe('ordered_roman');
+  }));
+
   it('should render the editor and toolbar with accessible labels', fakeAsync(() => {
     tick();
     fixture.detectChanges();
@@ -319,18 +365,48 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(label.hasAttribute('tabindex')).toBe(false);
   }));
 
-  it('should keep editor height fixed and wrap long text inside the editor', fakeAsync(() => {
+  it('should allow the editor to be resized while wrapping and scrolling long text', fakeAsync(() => {
     tick();
     fixture.detectChanges();
 
+    const editorWrapper = fixture.nativeElement.querySelector('.NgxEditor__Wrapper') as HTMLElement;
     const editorContent = fixture.nativeElement.querySelector('.NgxEditor__Content') as HTMLElement;
+    const editorWrapperStyle = window.getComputedStyle(editorWrapper);
     const editorContentStyle = window.getComputedStyle(editorContent);
 
-    expect(editorContentStyle.height).toBe('255px');
+    expect(editorWrapperStyle.height).toBe('255px');
+    expect(editorWrapperStyle.minHeight).toBe('255px');
+    expect(editorWrapperStyle.resize).toBe('both');
+    expect(editorContentStyle.height).toBe(`${editorWrapper.clientHeight}px`);
     expect(editorContentStyle.overflowX).toBe('hidden');
     expect(editorContentStyle.overflowY).toBe('auto');
     expect(editorContentStyle.overflowWrap).toBe('anywhere');
     expect(editorContentStyle.wordBreak).toBe('normal');
+  }));
+
+  it('should keep the same vertical spacing when a list item is indented', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>Parent item</p><ul><li><p>Indented item</p></li></ul></li></ul>'
+    );
+    fixture.detectChanges();
+
+    const nestedList = fixture.nativeElement.querySelector('.ProseMirror li > ul') as HTMLElement;
+
+    expect(getComputedStyle(nestedList).marginTop).toBe('5px');
+  }));
+
+  it('should keep list-item spacing after list content is converted to paragraphs', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p>First item</p><p data-indent="1">Nested item</p>');
+    fixture.detectChanges();
+
+    const paragraphs = fixture.nativeElement.querySelectorAll('.ProseMirror p') as NodeListOf<HTMLElement>;
+
+    expect(getComputedStyle(paragraphs[0]).marginBottom).toBe('5px');
+    expect(getComputedStyle(paragraphs[1]).marginBottom).toBe('5px');
   }));
 
   it('should use the standard text-field border and accessible focus indicator', fakeAsync(() => {
@@ -371,11 +447,13 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const boldButton = fixture.nativeElement.querySelector('button[aria-label="Bold"]');
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
     const undoButton = fixture.nativeElement.querySelector('button[aria-label="Undo"]');
 
     expect(boldButton.getAttribute('aria-keyshortcuts')).toBe('Control+B');
     expect(boldButton.getAttribute('aria-pressed')).toBe('true');
     expect(paragraphButton.getAttribute('aria-pressed')).toBe('false');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('false');
     expect(undoButton.getAttribute('aria-keyshortcuts')).toBe('Control+Z');
   }));
 
@@ -561,6 +639,77 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(paragraphButton.getAttribute('aria-pressed')).toBe('true');
   }));
 
+  it('should keep paragraph and heading controls beside each other', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+
+    expect(paragraphButton).toBeTruthy();
+    expect(paragraphButton.nextElementSibling).toBe(headingButton);
+  }));
+
+  it('should toggle heading level 1 formatting from the toolbar', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p>Section heading</p>');
+    selectEditorText('Section heading');
+
+    clickToolbarButton('Heading level 1');
+    tick();
+    fixture.detectChanges();
+
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<h1>Section heading</h1>');
+    expect(headingButton.classList).toContain('ccd-rich-text-area__toolbar-button--active');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('true');
+
+    clickToolbarButton('Heading level 1');
+    tick();
+    fixture.detectChanges();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>Section heading</p>');
+    expect(headingButton.classList).not.toContain('ccd-rich-text-area__toolbar-button--active');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('false');
+  }));
+
+  it('should allow heading level 1 formatting inside an ordered list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ol><li><p>Heading item</p></li></ol>');
+    selectEditorText('Heading item');
+
+    clickToolbarButton('Heading level 1');
+    tick();
+    fixture.detectChanges();
+
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const numberedListButton = fixture.nativeElement.querySelector('button[aria-label="Numbered List"]');
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><h1>Heading item</h1></li></ol>');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('true');
+    expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
+  }));
+
+  it('should allow ordered list formatting to be applied to a heading', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<h1>Heading item</h1>');
+    selectEditorText('Heading item');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const numberedListButton = fixture.nativeElement.querySelector('button[aria-label="Numbered List"]');
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><h1>Heading item</h1></li></ol>');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('true');
+    expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
+  }));
+
   it('should remove list formatting when paragraph formatting is applied inside a list', fakeAsync(() => {
     tick();
     fixture.detectChanges();
@@ -627,7 +776,29 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
   }));
 
-  it('should switch a lettered list to numbers when the numbered list button is selected', fakeAsync(() => {
+  it('should keep the numbered list button selected for lettered and Roman numeral lists', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ol type="a"><li><p>First item</p></li></ol>');
+    selectEditorText('First item');
+    tick();
+    fixture.detectChanges();
+
+    const numberedListButton = fixture.nativeElement.querySelector(
+      'button[aria-label="Numbered List"]'
+    ) as HTMLButtonElement;
+
+    expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
+
+    selectListStyle('ordered_roman');
+    tick();
+    fixture.detectChanges();
+
+    expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
+    expect(numberedListButton.classList).toContain('ccd-rich-text-area__toolbar-button--active');
+  }));
+
+  it('should remove any ordered list style when the numbered list button is unselected', fakeAsync(() => {
     tick();
     fixture.detectChanges();
     component.editor.setContent('<ol type="a"><li><p>First item</p></li></ol>');
@@ -638,9 +809,368 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<ol>');
-    expect(formGroup.controls[FIELD_ID].value).not.toContain('<ol type="a">');
-    expect(component.currentListSelectValue()).toBe('ordered_list');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>First item</p>');
+    expect(formGroup.controls[FIELD_ID].value).not.toContain('<ol');
+    expect(component.currentListStyle()).toBe('');
+    expect((fixture.nativeElement.querySelector('button[aria-label="Numbered List"]') as HTMLButtonElement)
+      .getAttribute('aria-pressed')).toBe('false');
+    const paragraphButton = fixture.nativeElement.querySelector(
+      'button[aria-label="Paragraph"]'
+    ) as HTMLButtonElement;
+    expect(paragraphButton.getAttribute('aria-pressed')).toBe('false');
+    expect(paragraphButton.classList).not.toContain('ccd-rich-text-area__toolbar-button--active');
+  }));
+
+  it('should preserve and restore numbering when a single list item is toggled', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>One</p></li><li><p>Two</p></li><li><p>Three</p></li><li><p>Four</p></li></ol>'
+    );
+    selectEditorText('Three');
+
+    clickToolbarButton('Numbered List');
+    tick();
+
+    let orderedLists = Array.from(fixture.nativeElement.querySelectorAll('.ProseMirror > ol')) as HTMLOListElement[];
+    expect(orderedLists.length).toBe(2);
+    expect(orderedLists[0].start).toBe(1);
+    expect(orderedLists[1].start).toBe(3);
+    expect(orderedLists[1].textContent).toBe('Four');
+
+    selectEditorText('Three');
+    clickToolbarButton('Numbered List');
+    tick();
+
+    orderedLists = Array.from(fixture.nativeElement.querySelectorAll('.ProseMirror > ol')) as HTMLOListElement[];
+    expect(orderedLists.length).toBe(1);
+    expect(Array.from(orderedLists[0].querySelectorAll(':scope > li')).map((item) => item.textContent))
+      .toEqual(['One', 'Two', 'Three', 'Four']);
+
+    selectEditorTextRange('One', 'Four');
+    clickToolbarButton('Numbered List');
+    tick();
+
+    expect(fixture.nativeElement.querySelector('.ProseMirror > ol')).toBeNull();
+    expect(Array.from(fixture.nativeElement.querySelectorAll('.ProseMirror > p')).map((item: HTMLElement) => item.textContent))
+      .toEqual(['One', 'Two', 'Three', 'Four']);
+  }));
+
+  it('should remove all selected nested list levels while preserving paragraph indentation', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>One</p></li><li><p>Two</p>'
+      + '<ol type="a"><li><p>Nested one</p></li><li><p>Nested two</p>'
+      + '<ol type="i"><li><p>Roman one</p></li><li><p>Roman two</p></li></ol>'
+      + '</li></ol></li><li><p>Three</p></li></ol>'
+    );
+    selectEditorTextRange('One', 'Three');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.ProseMirror ol, .ProseMirror ul')).toBeNull();
+    const paragraphs = Array.from(
+      fixture.nativeElement.querySelectorAll('.ProseMirror > p')
+    ) as HTMLParagraphElement[];
+    expect(paragraphs.map((paragraph) => paragraph.textContent)).toEqual([
+      'One', 'Two', 'Nested one', 'Nested two', 'Roman one', 'Roman two', 'Three'
+    ]);
+    expect(paragraphs.map((paragraph) => paragraph.dataset.indent || null)).toEqual([
+      null, null, '1', '1', '2', '2', null
+    ]);
+  }));
+
+  it('should restore selected indented paragraphs as a nested numbered list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>One</p></li><li><p>Two</p>'
+      + '<ol type="a"><li><p>Nested one</p></li><li><p>Nested two</p>'
+      + '<ol type="i"><li><p>Roman one</p></li><li><p>Roman two</p></li></ol>'
+      + '</li></ol></li><li><p>Three</p></li></ol>'
+    );
+    selectEditorTextRange('One', 'Three');
+    clickToolbarButton('Numbered List');
+    tick();
+
+    selectEditorTextRange('One', 'Three');
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const rootList = fixture.nativeElement.querySelector('.ProseMirror > ol') as HTMLOListElement;
+    expect(rootList).not.toBeNull();
+    expect(Array.from(rootList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['One', 'Two', 'Three']);
+    const letteredList = rootList.querySelector(':scope > li:nth-child(2) > ol[type="a"]') as HTMLOListElement;
+    expect(letteredList).not.toBeNull();
+    expect(Array.from(letteredList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Nested one', 'Nested two']);
+    const romanList = letteredList.querySelector(':scope > li:nth-child(2) > ol[type="i"]') as HTMLOListElement;
+    expect(romanList).not.toBeNull();
+    expect(Array.from(romanList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Roman one', 'Roman two']);
+  }));
+
+  it('should restore selected indented paragraphs as nested bullet lists at every level', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>One</p></li><li><p>Two</p>'
+      + '<ol type="a"><li><p>Nested one</p></li><li><p>Nested two</p>'
+      + '<ol type="i"><li><p>Roman one</p></li><li><p>Roman two</p></li></ol>'
+      + '</li></ol></li><li><p>Three</p></li></ol>'
+    );
+    selectEditorTextRange('One', 'Three');
+    clickToolbarButton('Numbered List');
+    tick();
+
+    selectEditorTextRange('One', 'Three');
+    clickToolbarButton('Bullet List');
+    tick();
+    fixture.detectChanges();
+
+    const rootList = fixture.nativeElement.querySelector('.ProseMirror > ul') as HTMLUListElement;
+    expect(rootList).not.toBeNull();
+    expect(Array.from(rootList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['One', 'Two', 'Three']);
+    const nestedList = rootList.querySelector(':scope > li:nth-child(2) > ul') as HTMLUListElement;
+    expect(nestedList).not.toBeNull();
+    expect(Array.from(nestedList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Nested one', 'Nested two']);
+    const deepestList = nestedList.querySelector(':scope > li:nth-child(2) > ul') as HTMLUListElement;
+    expect(deepestList).not.toBeNull();
+    expect(Array.from(deepestList.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Roman one', 'Roman two']);
+    expect(rootList.querySelector('ol')).toBeNull();
+  }));
+
+  it('should align a numbered-list marker with a single indented paragraph', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p>Test1</p><p>Test2</p><p data-indent="1">Test3</p><p data-indent="1">Test4</p>'
+      + '<p data-indent="2">Test5</p><p data-indent="2">Test6</p><p data-indent="1">Test7</p><p>Test8</p>'
+    );
+    selectEditorText('Test5');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const list = fixture.nativeElement.querySelector('.ProseMirror > ol') as HTMLOListElement;
+    expect(list.dataset.indent).toBe('2');
+    expect(list.textContent).toBe('Test5');
+    expect((list.querySelector('p') as HTMLParagraphElement).hasAttribute('data-indent')).toBe(false);
+  }));
+
+  it('should align numbered-list markers with multiple paragraphs at the same indentation', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p>Test1</p><p>Test2</p><p data-indent="1">Test3</p><p data-indent="1">Test4</p>'
+      + '<p data-indent="2">Test5</p><p data-indent="2">Test6</p><p data-indent="1">Test7</p><p>Test8</p>'
+    );
+    selectEditorTextRange('Test5', 'Test6');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const list = fixture.nativeElement.querySelector('.ProseMirror > ol') as HTMLOListElement;
+    expect(list.dataset.indent).toBe('2');
+    expect(Array.from(list.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Test5', 'Test6']);
+    expect(Array.from(list.querySelectorAll('p')).every((paragraph) => !paragraph.hasAttribute('data-indent')))
+      .toBe(true);
+  }));
+
+  it('should align bullet-list markers with multiple paragraphs at the same indentation', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<p>Test1</p><p>Test2</p><p data-indent="1">Test3</p><p data-indent="1">Test4</p>'
+      + '<p data-indent="2">Test5</p><p data-indent="2">Test6</p><p data-indent="1">Test7</p><p>Test8</p>'
+    );
+    selectEditorTextRange('Test3', 'Test4');
+
+    clickToolbarButton('Bullet List');
+    tick();
+    fixture.detectChanges();
+
+    const list = fixture.nativeElement.querySelector('.ProseMirror > ul') as HTMLUListElement;
+    const listStyle = getComputedStyle(list);
+    expect(list.dataset.indent).toBe('1');
+    expect(Array.from(list.querySelectorAll(':scope > li > p')).map((item) => item.textContent))
+      .toEqual(['Test3', 'Test4']);
+    expect(Array.from(list.querySelectorAll('p')).every((paragraph) => !paragraph.hasAttribute('data-indent')))
+      .toBe(true);
+    expect(listStyle.marginLeft).toBe('40px');
+    expect(listStyle.paddingLeft).toBe('25px');
+  }));
+
+  it('should align a bullet-list marker when the cursor is in a single indented paragraph', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p data-indent="2">Test5</p>');
+    let textPosition = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'Test5') {
+        textPosition = position + 2;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    clickToolbarButton('Bullet List');
+    tick();
+    fixture.detectChanges();
+
+    const list = fixture.nativeElement.querySelector('.ProseMirror > ul') as HTMLUListElement;
+    expect(list.dataset.indent).toBe('2');
+    expect(list.textContent).toBe('Test5');
+    expect((list.querySelector('p') as HTMLParagraphElement).hasAttribute('data-indent')).toBe(false);
+  }));
+
+  it('should keep the cursor on a nested item when removing it from a list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>Parent</p><ol type="a"><li><p>Nested item</p></li></ol></li></ol>'
+    );
+
+    let textPosition: number | null = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'Nested item') {
+        textPosition = position + 4;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    clickToolbarButton('Numbered List');
+    tick();
+
+    const { $from } = component.editor.view.state.selection;
+    expect(component.editor.view.state.selection.empty).toBe(true);
+    expect($from.parent.textContent).toBe('Nested item');
+    expect($from.parentOffset).toBe(4);
+  }));
+
+  it('should clear the list toolbar state after removing a nested Roman item', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>Parent</p><ol type="a"><li><p>Letter item</p><ol type="i">'
+      + '<li><p>First Roman item</p></li><li><p>Second Roman item</p></li>'
+      + '</ol></li></ol></li></ul>'
+    );
+
+    let textPosition: number | null = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'First Roman item') {
+        textPosition = position + 4;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    expect(component.editor.view.state.selection.$from.parent.textContent).toBe('First Roman item');
+    expect(component.currentListStyle()).toBe('');
+    expect(component.isOrderedListActive()).toBe(false);
+    expect((fixture.nativeElement.querySelector('.ccd-rich-text-area__list-style-select') as HTMLSelectElement).value)
+      .toBe('');
+  }));
+
+  it('should keep Enter on a removed nested list item as plain indented text', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>Parent</p><ol type="a"><li><p>Letter item</p><ol type="i">'
+      + '<li><p>First Roman item</p></li><li><p>Second Roman item</p></li>'
+      + '</ol></li></ol></li></ol>'
+    );
+
+    let textPosition: number | null = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'First Roman item') {
+        textPosition = position + node.nodeSize;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror');
+    editorElement.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter',
+      bubbles: true,
+      cancelable: true
+    }));
+    tick();
+    fixture.detectChanges();
+
+    const { $from } = component.editor.view.state.selection;
+    const letteredList = editorElement.querySelector(':scope > ol > li > ol[type="a"]') as HTMLOListElement;
+    expect($from.parent.type.name).toBe('paragraph');
+    expect($from.parent.textContent).toBe('');
+    expect(component.currentListStyle()).toBe('');
+    expect(letteredList.querySelectorAll(':scope > li').length).toBe(1);
+    expect(letteredList.querySelectorAll(':scope > li > ol[type="i"] > li').length).toBe(1);
+  }));
+
+  it('should not flatten ancestor lists when removing a selected nested Roman list item', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>The issues that the court needed to decide were as follows:</p>'
+      + '<ol type="a"><li><p>with whom the child should live;</p></li>'
+      + '<li><p>whether they should spend time with the other parent and, if so,</p></li>'
+      + '<li><p>how often;</p><ol type="i">'
+      + '<li><p>whether there should be overnight stays and longer stays;</p></li>'
+      + '<li><p>whether it should be supervised or supported;</p></li>'
+      + '<li><p>whether it should be limited to indirect contact;</p></li>'
+      + '</ol></li><li><p>the child’s education;</p></li></ol></li></ul>'
+    );
+    selectEditorText('whether there should be overnight stays and longer stays;');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const editor = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    expect(editor.querySelector(':scope > ul')).not.toBeNull();
+    const letteredList = editor.querySelector(':scope > ul > li > ol[type="a"]') as HTMLOListElement;
+    expect(letteredList).not.toBeNull();
+    expect(letteredList.querySelectorAll(':scope > li').length).toBe(4);
+    const selectedParagraph = Array.from(letteredList.querySelectorAll('p'))
+      .find((paragraph) => paragraph.textContent.includes('overnight stays'));
+    expect(selectedParagraph?.hasAttribute('data-indent')).toBe(false);
+    const remainingRomanList = letteredList.querySelector('ol[type="i"]') as HTMLOListElement;
+    expect(remainingRomanList.querySelectorAll(':scope > li').length).toBe(2);
+    expect(remainingRomanList.start).toBe(1);
   }));
 
   it('should apply and retain lettered list formatting from the toolbar', fakeAsync(() => {
@@ -733,7 +1263,33 @@ describe('WriteRichTextAreaFieldComponent', () => {
       .getAttribute('aria-pressed')).toBe('true');
   }));
 
-  it('should remove list formatting when no list is selected', fakeAsync(() => {
+  it('should restore a middle bullet item and remove the complete restored list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>One</p></li><li><p>Two</p></li><li><p>Three</p></li></ul>'
+    );
+    selectEditorText('Two');
+
+    clickToolbarButton('Bullet List');
+    tick();
+
+    selectEditorText('Two');
+    clickToolbarButton('Bullet List');
+    tick();
+
+    expect(fixture.nativeElement.querySelectorAll('.ProseMirror > ul').length).toBe(1);
+
+    selectEditorTextRange('One', 'Three');
+    clickToolbarButton('Bullet List');
+    tick();
+
+    expect(fixture.nativeElement.querySelector('.ProseMirror > ul')).toBeNull();
+    expect(Array.from(fixture.nativeElement.querySelectorAll('.ProseMirror > p')).map((item: HTMLElement) => item.textContent))
+      .toEqual(['One', 'Two', 'Three']);
+  }));
+
+  it('should leave list formatting unchanged when no list is selected from the dropdown', fakeAsync(() => {
     tick();
     fixture.detectChanges();
     component.editor.setContent('<ol><li><p>First item</p></li></ol>');
@@ -743,9 +1299,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     selectListStyle('');
     tick();
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<p>First item</p>');
-    expect(formGroup.controls[FIELD_ID].value).not.toContain('<ol>');
-    expect(component.currentListStyle()).toBe('');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><p>First item</p></li></ol>');
+    expect(component.currentListStyle()).toBe('ordered_list');
   }));
 
   it('should switch directly between numbered and bullet list styles', fakeAsync(() => {
@@ -761,6 +1316,52 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).toContain('<ul>');
     expect(formGroup.controls[FIELD_ID].value).not.toContain('<ol>');
     expect(component.currentListStyle()).toBe('bullet_list');
+  }));
+
+  it('should convert a fully selected nested bullet hierarchy to the default ordered list styles', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ul><li><p>Top one</p></li><li><p>Top two</p>'
+      + '<ul><li><p>Nested one</p></li><li><p>Nested two</p>'
+      + '<ul><li><p>Deep one</p></li><li><p>Deep two</p></li></ul>'
+      + '</li><li><p>Nested three</p></li></ul></li><li><p>Top three</p></li></ul>'
+    );
+    selectEditorTextRange('Top one', 'Top three');
+
+    clickToolbarButton('Numbered List');
+    tick();
+    fixture.detectChanges();
+
+    const rootList = fixture.nativeElement.querySelector('.ProseMirror > ol') as HTMLOListElement;
+    expect(rootList).not.toBeNull();
+    const letteredList = rootList.querySelector(':scope > li:nth-child(2) > ol[type="a"]') as HTMLOListElement;
+    expect(letteredList).not.toBeNull();
+    expect(letteredList.querySelector(':scope > li:nth-child(2) > ol[type="i"]')).not.toBeNull();
+    expect(rootList.querySelector('ul')).toBeNull();
+  }));
+
+  it('should convert a fully selected nested ordered hierarchy to bullets at every level', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>Top one</p></li><li><p>Top two</p>'
+      + '<ol type="a"><li><p>Nested one</p></li><li><p>Nested two</p>'
+      + '<ol type="i"><li><p>Deep one</p></li><li><p>Deep two</p></li></ol>'
+      + '</li><li><p>Nested three</p></li></ol></li><li><p>Top three</p></li></ol>'
+    );
+    selectEditorTextRange('Top one', 'Top three');
+
+    clickToolbarButton('Bullet List');
+    tick();
+    fixture.detectChanges();
+
+    const rootList = fixture.nativeElement.querySelector('.ProseMirror > ul') as HTMLUListElement;
+    expect(rootList).not.toBeNull();
+    const nestedList = rootList.querySelector(':scope > li:nth-child(2) > ul') as HTMLUListElement;
+    expect(nestedList).not.toBeNull();
+    expect(nestedList.querySelector(':scope > li:nth-child(2) > ul')).not.toBeNull();
+    expect(rootList.querySelector('ol')).toBeNull();
   }));
 
   it('should preserve nested lettered and Roman lists when switching the parent list to bullets', fakeAsync(() => {
@@ -905,7 +1506,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     selectEditorText('First section');
     tick();
 
-    clickToolbarButton('Numbered List');
+    selectListStyle('ordered_list');
     tick();
     fixture.detectChanges();
 
@@ -1297,7 +1898,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(normalisedHtml).not.toContain('style=');
   });
 
-  it('should retain bold styling inherited from a Word heading style', () => {
+  it('should convert a Word heading style without retaining a redundant bold mark', () => {
     const wordHtml = `
       <html>
         <body>
@@ -1312,20 +1913,21 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const regularParagraph = Array.prototype.slice.call(normalisedDocument.querySelectorAll('p'))
       .find((paragraph: HTMLElement) => paragraph.textContent === 'Regular paragraph text');
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h2', 'strong']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h2', 'strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1']);
+    expect(normalisedDocument.querySelector('h1 strong, h1 b')).toBeNull();
     expect(regularParagraph.querySelector('strong')).toBeNull();
 
     component.editor.setContent(normalisedHtml);
     fixture.detectChanges();
 
     const renderedHeadings = Array.prototype.slice.call(
-      fixture.nativeElement.querySelectorAll('.ProseMirror h2 strong')
+      fixture.nativeElement.querySelectorAll('.ProseMirror h1')
     ).map((heading: HTMLElement) => heading.textContent);
     expect(renderedHeadings).toEqual(['Parental responsibility', 'Other recitals']);
   });
 
-  it('should retain bold styling inherited from a Word clipboard stylesheet', () => {
+  it('should convert a Word clipboard heading without retaining a redundant bold mark', () => {
     const wordHtml = `
       <html>
         <head>
@@ -1343,8 +1945,9 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['strong']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1']);
+    expect(normalisedHtml).not.toContain('<strong>');
     expect(normalisedHtml).not.toContain('<style');
     expect(normalisedHtml).not.toContain('class=');
   });
@@ -1366,13 +1969,13 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Contact centre', ['h2', 'strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Contact centre', ['h1']);
     expectTextToHaveAncestorTags(normalisedHtml, 'Such contact is to be supervised at the contact centre.', ['p']);
 
     component.editor.setContent(normalisedHtml);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ProseMirror h2 strong').textContent).toBe('Contact centre');
+    expect(fixture.nativeElement.querySelector('.ProseMirror h1').textContent).toBe('Contact centre');
   });
 
   it('should infer a Word title from its large font size', () => {
@@ -1648,6 +2251,74 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(Array.from(romanList.children).map((item) => item.textContent.trim())).toEqual([
       'whether there should be overnight stays;',
       'whether it should be supervised;'
+    ]);
+  });
+
+  it('should retain nested list text when a Word wrapper contains both the marker and content', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="margin-left:0pt;mso-list:l1 level1 lfo1">
+        <span style="mso-list:Ignore">1.<span>&nbsp;</span></span>The applicant is <em>[applicant name]</em>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l1 level2 lfo1">
+        <span><span style="mso-list:Ignore">a.<span>&nbsp;</span></span>The first respondent is <em>respondent name</em></span>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level3 lfo1">
+        <span><span style="mso-list:Ignore">i.<span>&nbsp;</span></span>The second respondent is <em>respondent name</em></span>
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level3 lfo1">
+        <span><span style="mso-list:Ignore">ii.<span>&nbsp;</span></span>The third respondent is <em>respondent name</em></span>
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const documentElement = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const numberedItem = documentElement.body.querySelector(':scope > ol > li');
+    const letteredItem = numberedItem.querySelector(':scope > ol[type="a"] > li');
+    const romanItems = letteredItem.querySelectorAll(':scope > ol[type="i"] > li');
+    const ownText = (item: Element): string => Array.from(item.childNodes)
+      .filter((node: Node) => !(node instanceof HTMLElement) || !['OL', 'UL'].includes(node.tagName))
+      .map((node: Node) => node.textContent)
+      .join('')
+      .trim();
+
+    expect(ownText(numberedItem)).toBe('The applicant is [applicant name]');
+    expect(ownText(letteredItem)).toBe('The first respondent is respondent name');
+    expect(Array.from(romanItems).map((item) => item.textContent.trim())).toEqual([
+      'The second respondent is respondent name',
+      'The third respondent is respondent name'
+    ]);
+    expect(normalisedHtml).not.toContain('mso-list:Ignore');
+  });
+
+  it('should retain nested lettered and Roman list styles pasted from Outlook HTML', () => {
+    const outlookHtml = `
+      <style>
+        ol.outlook-alpha { list-style-type: lower-alpha; }
+        ol.outlook-roman { list-style-type: lower-roman; }
+      </style>
+      <ol>
+        <li>Number list
+          <ol class="outlook-alpha">
+            <li>Indent list to alphabet
+              <ol class="outlook-roman">
+                <li>Roman numerals as well</li>
+                <li>Second Roman item</li>
+              </ol>
+            </li>
+            <li>Second alphabet item</li>
+          </ol>
+        </li>
+      </ol>`;
+
+    const normalisedHtml = component.normalisePastedHtml(outlookHtml);
+    const documentElement = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const letteredList = documentElement.body.querySelector('ol > li > ol[type="a"]');
+    const romanList = letteredList?.querySelector('ol[type="i"]');
+
+    expect(letteredList).not.toBeNull();
+    expect(romanList).not.toBeNull();
+    expect(Array.from(romanList.children).map((item) => item.textContent.trim())).toEqual([
+      'Roman numerals as well',
+      'Second Roman item'
     ]);
   });
 

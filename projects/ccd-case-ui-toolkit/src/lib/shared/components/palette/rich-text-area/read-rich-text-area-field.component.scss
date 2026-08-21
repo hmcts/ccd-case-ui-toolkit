@@ -62,6 +62,16 @@
   margin: 0;
 }
 
+.ccd-rich-text-area-read li > ul,
+.ccd-rich-text-area-read li > ol {
+  margin-top: 5px;
+}
+
+.ccd-rich-text-area-read h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
 .ccd-rich-text-area-read .ccd-rich-text-indent-1 {
   margin-left: 40px;
 }

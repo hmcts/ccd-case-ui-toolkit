@@ -22,7 +22,13 @@
 .ccd-rich-text-area .NgxEditor__Wrapper {
   border: 1px solid #000;
   border-radius: 0;
+  box-sizing: border-box;
+  height: 255px;
   max-width: 100%;
+  min-height: 255px;
+  min-width: 200px;
+  overflow: hidden;
+  resize: both;
   width: 100%;
 }
 
@@ -60,6 +66,11 @@
 }
 
 .ccd-rich-text-area__toolbar-button--active {
+  background: #1d70b8;
+  color: #fff;
+}
+
+.ccd-rich-text-area__toolbar-button--active:hover {
   background: #1d70b8;
   color: #fff;
 }
@@ -122,11 +133,24 @@
   width: auto;
 }
 
+.ccd-rich-text-area__toolbar-icon--heading {
+  display: inline-flex;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  width: auto;
+}
+
+.ccd-rich-text-area .ProseMirror h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
 .ccd-rich-text-area .NgxEditor__Wrapper .NgxEditor {
   border: 0;
   border-radius: 0;
-  height: 255px;
-  min-height: 255px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   width: 100%;
 }
@@ -137,8 +161,8 @@
 
 .ccd-rich-text-area .NgxEditor__Content {
   box-sizing: border-box;
-  height: 255px;
-  min-height: 255px;
+  height: 100%;
+  min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 12px 14px;
@@ -204,6 +228,10 @@
   word-break: normal;
 }
 
+.ccd-rich-text-area .ProseMirror p {
+  margin-bottom: 5px;
+}
+
 .ccd-rich-text-area .ProseMirror ul {
   list-style: disc outside;
   padding-left: 25px;
@@ -211,6 +239,43 @@
 
 .ccd-rich-text-area .ProseMirror ol {
   list-style: decimal outside;
+  padding-left: 25px;
+}
+
+// Move the list box so an outside marker and its text keep the same gutter.
+.ccd-rich-text-area .ProseMirror ul[data-indent="1"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="1"] {
+  margin-left: 40px;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ul[data-indent="2"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="2"] {
+  margin-left: 80px;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ul[data-indent="3"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="3"] {
+  margin-left: 120px;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ul[data-indent="4"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="4"] {
+  margin-left: 160px;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ul[data-indent="5"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="5"] {
+  margin-left: 200px;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ul[data-indent="6"],
+.ccd-rich-text-area .ProseMirror ol[data-indent="6"] {
+  margin-left: 240px;
   padding-left: 25px;
 }
 
@@ -233,4 +298,9 @@
 
 .ccd-rich-text-area .ProseMirror li > p {
   margin: 0;
+}
+
+.ccd-rich-text-area .ProseMirror li > ul,
+.ccd-rich-text-area .ProseMirror li > ol {
+  margin-top: 5px;
 }

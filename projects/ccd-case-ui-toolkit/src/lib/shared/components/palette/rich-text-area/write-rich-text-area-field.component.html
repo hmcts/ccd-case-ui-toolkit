@@ -97,6 +97,17 @@
         (click)="executeToolbarCommand($event, 'paragraph')">
         <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--paragraph" aria-hidden="true">P</span>
       </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--heading"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('heading')}"
+        [attr.aria-pressed]="isToolbarCommandActive('heading')"
+        aria-label="Heading level 1"
+        title="Heading level 1"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'heading')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--heading" aria-hidden="true">H</span>
+      </button>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
       <button
         type="button"
@@ -114,8 +125,8 @@
       <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
-        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': currentListStyle() === 'ordered_list'}"
-        [attr.aria-pressed]="currentListStyle() === 'ordered_list'"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isOrderedListActive()}"
+        [attr.aria-pressed]="isOrderedListActive()"
         aria-label="Numbered List"
         title="Numbered List"
         (mousedown)="onToolbarButtonMouseDown($event)"
@@ -131,7 +142,7 @@
           [id]="listStyleId()"
           [value]="currentListSelectValue()"
           (change)="onListStyleChange($event)">
-          <option value="">No list</option>
+          <option *ngIf="!isOrderedListActive()" value="">No list</option>
           <option value="ordered_list">Numbers (1, 2, 3)</option>
           <option value="ordered_alpha">Letters (a, b, c)</option>
           <option value="ordered_roman">Roman numerals (i), (ii), (iii)</option>

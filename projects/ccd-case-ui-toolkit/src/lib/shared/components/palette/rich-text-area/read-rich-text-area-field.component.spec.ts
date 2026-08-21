@@ -53,7 +53,8 @@ describe('ReadRichTextAreaFieldComponent', () => {
   });
 
   it('should display rich text using the same formatting rules as the editor', () => {
-    component.caseField.value = '<p><strong>Heading</strong></p><p data-indent="2">Indented text</p><ul><li><p>First item</p></li></ul>';
+    component.caseField.value = '<p><strong>Heading</strong></p><p data-indent="2">Indented text</p>'
+      + '<ul><li><p>First item</p><ul><li><p>Nested item</p></li></ul></li></ul>';
     fixture.detectChanges();
 
     const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement as HTMLElement;
@@ -61,12 +62,14 @@ describe('ReadRichTextAreaFieldComponent', () => {
     const indentedText = readValue.querySelector('.ccd-rich-text-indent-2') as HTMLElement;
     const listItem = readValue.querySelector('li') as HTMLElement;
     const listParagraph = readValue.querySelector('li > p') as HTMLElement;
+    const nestedList = readValue.querySelector('li > ul') as HTMLElement;
 
     expect(getComputedStyle(boldText).fontWeight).toBe('700');
     expect(indentedText).not.toBeNull();
     expect(getComputedStyle(indentedText).marginLeft).toBe('80px');
     expect(getComputedStyle(listItem).marginBottom).toBe('5px');
     expect(getComputedStyle(listParagraph).margin).toBe('0px');
+    expect(getComputedStyle(nestedList).marginTop).toBe('5px');
   });
 
   it('should render every empty paragraph as a visible blank line', () => {

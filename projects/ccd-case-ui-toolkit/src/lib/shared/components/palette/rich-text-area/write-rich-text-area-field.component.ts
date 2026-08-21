@@ -4,17 +4,17 @@ import { Editor } from 'ngx-editor';
 import { marks as editorMarks, nodes as editorNodes } from 'ngx-editor/schema';
 import { setBlockType } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
-import { Schema } from 'prosemirror-model';
+import { Fragment, Schema } from 'prosemirror-model';
 import type { DOMOutputSpec, Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { EditorState, Plugin } from 'prosemirror-state';
+import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRichTextDocument } from './rich-text-sanitizer';
 
-type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
+type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'heading' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
 type RichTextListStyle = '' | 'ordered_list' | 'ordered_alpha' | 'ordered_roman' | 'bullet_list';
 type RichTextOrderedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
 
@@ -23,6 +23,18 @@ interface WordListConversionState {
   listParents: Node[];
   resetListLevels: Map<string, number>;
   previousListId: string;
+}
+
+interface IndentedListBlock {
+  node: ProseMirrorNode;
+  position: number;
+  index: number;
+  indent: number;
+}
+
+interface NestedListBuildResult {
+  list: ProseMirrorNode;
+  nextIndex: number;
 }
 
 function orderedListStyleForType(type: string): RichTextOrderedListStyle | null {
@@ -55,6 +67,10 @@ const BLOCK_NODE_NAMES = new Set([
 
 const richTextNodes = {
   ...editorNodes,
+  list_item: {
+    ...editorNodes.list_item,
+    content: '(paragraph | heading) block*'
+  } as NodeSpec,
   ordered_list: {
     ...editorNodes.ordered_list,
     attrs: {
@@ -213,11 +229,71 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private handleEditorKeyDown(event: KeyboardEvent): boolean {
+    const isUnmodifiedEnter = event.key === 'Enter' &&
+      !event.shiftKey &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.metaKey;
+
+    if (isUnmodifiedEnter && this.splitListContinuationParagraph()) {
+      event.preventDefault();
+      event.stopPropagation();
+      return true;
+    }
+
     if (event.key !== 'Tab' || !this.isNodeActive('list_item')) {
       return false;
     }
 
     this.executeToolbarCommand(event, event.shiftKey ? 'outdent' : 'indent');
+    return true;
+  }
+
+  private splitListContinuationParagraph(): boolean {
+    const { state, dispatch } = this.editor.view;
+    const { $from, empty } = state.selection;
+    const textBlock = $from.parent;
+
+    if (!empty || !textBlock.isTextblock) {
+      return false;
+    }
+
+    let isContinuation = false;
+    for (let depth = $from.depth - 1; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name !== 'list_item') {
+        continue;
+      }
+
+      isContinuation = depth < $from.depth &&
+        $from.node(depth + 1) === textBlock &&
+        node.firstChild !== textBlock;
+      break;
+    }
+
+    if (!isContinuation) {
+      return false;
+    }
+
+    const textBlockStart = $from.before($from.depth);
+    const before = textBlock.type.create(
+      textBlock.attrs,
+      textBlock.content.cut(0, $from.parentOffset),
+      textBlock.marks
+    );
+    const after = textBlock.type.create(
+      textBlock.attrs,
+      textBlock.content.cut($from.parentOffset),
+      textBlock.marks
+    );
+    const transaction = state.tr.replaceWith(
+      textBlockStart,
+      $from.after($from.depth),
+      Fragment.fromArray([before, after])
+    );
+    transaction.setSelection(TextSelection.create(transaction.doc, textBlockStart + before.nodeSize + 1));
+    transaction.setStoredMarks(state.storedMarks || $from.marks());
+    dispatch(transaction.scrollIntoView());
     return true;
   }
 
@@ -244,6 +320,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       case 'paragraph':
         this.toggleParagraph();
         break;
+      case 'heading':
+        this.toggleHeading();
+        break;
       case 'indent':
         this.changeIndent(true);
         break;
@@ -251,8 +330,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         this.changeIndent(false);
         break;
       case 'ordered_list':
-        this.applyListStyleSelection('ordered_list');
-        this.paragraphCommandApplied = false;
+        this.toggleOrderedList();
         break;
       case 'bullet_list':
         this.toggleBulletList();
@@ -295,8 +373,17 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return currentListStyle === 'bullet_list' ? '' : currentListStyle;
   }
 
+  public isOrderedListActive(): boolean {
+    return this.listType(this.currentListStyle()) === 'ordered_list';
+  }
+
   public onListStyleChange(event: Event): void {
-    const listStyle = (event.target as HTMLSelectElement).value as RichTextListStyle;
+    const select = event.target as HTMLSelectElement;
+    const listStyle = select.value as RichTextListStyle;
+    if (!listStyle) {
+      select.value = this.currentListSelectValue();
+      return;
+    }
     this.applyListStyleSelection(listStyle);
 
     this.richTextAreaControl.markAsDirty();
@@ -320,7 +407,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       this.changeActiveListType(nextListType, this.orderedListStyle(listStyle));
     } else if (nextListType === 'ordered_list') {
       if (currentListType !== 'ordered_list') {
-        this.editor.commands.toggleOrderedList().exec();
+        const rebuiltIndentedList = this.rebuildSelectedIndentedBlocksAsList(
+          'ordered_list',
+          this.orderedListStyle(listStyle)
+        );
+        if (!rebuiltIndentedList) {
+          this.editor.commands.toggleOrderedList().exec();
+        }
       }
       this.applyOrderedListStyle(this.orderedListStyle(listStyle));
     } else if (listStyle === 'bullet_list') {
@@ -340,6 +433,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const { state, dispatch } = this.editor.view;
     const { $from } = state.selection;
     const targetType = state.schema.nodes[listType];
+
+    if (this.changeFullySelectedListHierarchy(listType, orderedListStyle)) {
+      return;
+    }
 
     for (let depth = $from.depth; depth > 0; depth--) {
       const node = $from.node(depth);
@@ -367,6 +464,72 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       dispatch(transaction);
       return;
     }
+  }
+
+  private changeFullySelectedListHierarchy(
+    listType: 'ordered_list' | 'bullet_list',
+    rootStyle: RichTextOrderedListStyle
+  ): boolean {
+    const { state, dispatch } = this.editor.view;
+    const { $from, $to, empty, from, to } = state.selection;
+    const targetListType = state.schema.nodes[listType];
+
+    if (empty || !targetListType) {
+      return false;
+    }
+
+    for (let depth = 1; depth <= $from.depth; depth++) {
+      const list = $from.node(depth);
+      if (!this.isListNode(list) || $to.depth < depth || $to.node(depth) !== list ||
+        $from.index(depth) !== 0 || $to.indexAfter(depth) !== list.childCount) {
+        continue;
+      }
+
+      const listPosition = $from.before(depth);
+      if (!this.selectionCoversListContent(list, listPosition, from, to)) {
+        continue;
+      }
+
+      const transaction = state.tr;
+      const changeListHierarchy = (node: ProseMirrorNode, position: number, listDepth: number): void => {
+        const orderedStyle = this.orderedListStyleAtDepth(rootStyle, listDepth);
+        const indent = Number(node.attrs.indent) || null;
+        const attrs = listType === 'ordered_list'
+          ? {
+            order: 1,
+            indent,
+            listStyle: orderedStyle === 'decimal' ? null : orderedStyle
+          }
+          : {
+            indent,
+            continuationOrder: Number(node.attrs.order) || null
+          };
+        transaction.setNodeMarkup(position, targetListType, attrs);
+
+        node.forEach((child, childOffset) => {
+          const childPosition = position + 1 + childOffset;
+          if (this.isListNode(child)) {
+            changeListHierarchy(child, childPosition, listDepth + 1);
+            return;
+          }
+
+          child.descendants((descendant, descendantOffset) => {
+            if (!this.isListNode(descendant)) {
+              return true;
+            }
+
+            changeListHierarchy(descendant, childPosition + descendantOffset + 1, listDepth + 1);
+            return false;
+          });
+        });
+      };
+
+      changeListHierarchy(list, listPosition, 0);
+      dispatch(transaction.scrollIntoView());
+      return true;
+    }
+
+    return false;
   }
 
   private contiguousListPositions(
@@ -507,8 +670,128 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     if (currentListType === 'ordered_list') {
       this.changeActiveListType('bullet_list', 'decimal');
-    } else {
+      return;
+    }
+
+    if (currentListType === 'bullet_list') {
+      this.applyParagraph();
+      this.paragraphCommandApplied = false;
+      return;
+    }
+
+    if (!this.rebuildSelectedIndentedBlocksAsList('bullet_list', 'decimal')) {
       this.editor.commands.toggleBulletList().exec();
+    }
+    this.joinAdjacentLists('bullet_list');
+    this.paragraphCommandApplied = false;
+  }
+
+  private toggleOrderedList(): void {
+    if (this.isOrderedListActive()) {
+      const continuation = this.orderedListContinuationAfterSelection();
+      this.applyParagraph();
+      this.restoreOrderedListContinuation(continuation);
+      this.paragraphCommandApplied = false;
+      return;
+    }
+
+    this.applyListStyleSelection('ordered_list');
+    this.joinAdjacentLists('ordered_list');
+    this.paragraphCommandApplied = false;
+  }
+
+  private orderedListContinuationAfterSelection(): { text: string; order: number; listStyle: string | null } | null {
+    const { state } = this.editor.view;
+    const { $from, $to } = state.selection;
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const list = $from.node(depth);
+      if (list.type.name !== 'ordered_list') {
+        continue;
+      }
+
+      const fromIndex = $from.index(depth);
+      const toIndex = $to.depth >= depth && $to.node(depth) === list
+        ? $to.indexAfter(depth)
+        : fromIndex + 1;
+      if (toIndex >= list.childCount) {
+        return null;
+      }
+
+      return {
+        text: list.child(toIndex).textContent,
+        order: (Number(list.attrs.order) || 1) + fromIndex,
+        listStyle: list.attrs.listStyle || null
+      };
+    }
+
+    return null;
+  }
+
+  private restoreOrderedListContinuation(
+    continuation: { text: string; order: number; listStyle: string | null } | null
+  ): void {
+    if (!continuation) {
+      return;
+    }
+
+    const { state, dispatch } = this.editor.view;
+    let listPosition: number | null = null;
+    let listNode: ProseMirrorNode | null = null;
+    state.doc.descendants((node, position) => {
+      if (listPosition !== null || node.type.name !== 'ordered_list' || !node.childCount) {
+        return listPosition === null;
+      }
+      if (node.firstChild.textContent === continuation.text &&
+        (node.attrs.listStyle || null) === continuation.listStyle) {
+        listPosition = position;
+        listNode = node;
+        return false;
+      }
+      return true;
+    });
+
+    if (listPosition !== null && listNode && Number(listNode.attrs.order) !== continuation.order) {
+      dispatch(state.tr.setNodeMarkup(listPosition, listNode.type, {
+        ...listNode.attrs,
+        order: continuation.order
+      }));
+    }
+  }
+
+  private joinAdjacentLists(listType: 'ordered_list' | 'bullet_list'): void {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { state, dispatch } = this.editor.view;
+      const { $from } = state.selection;
+      let joined = false;
+
+      for (let depth = $from.depth; depth > 0; depth--) {
+        const activeList = $from.node(depth);
+        if (activeList.type.name !== listType) {
+          continue;
+        }
+
+        const parent = $from.node(depth - 1);
+        const index = $from.index(depth - 1);
+        const before = index > 0 ? parent.child(index - 1) : null;
+        const after = index + 1 < parent.childCount ? parent.child(index + 1) : null;
+        const hasSameStyle = (list: ProseMirrorNode | null): boolean => Boolean(list &&
+          list.type === activeList.type &&
+          (list.attrs.listStyle || null) === (activeList.attrs.listStyle || null));
+
+        if (hasSameStyle(before)) {
+          dispatch(state.tr.join($from.before(depth)));
+          joined = true;
+        } else if (hasSameStyle(after)) {
+          dispatch(state.tr.join($from.after(depth)));
+          joined = true;
+        }
+        break;
+      }
+
+      if (!joined) {
+        return;
+      }
     }
   }
 
@@ -533,9 +816,18 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const { $from } = this.editor.view.state.selection;
     for (let depth = $from.depth; depth > 0; depth--) {
       const node = $from.node(depth);
-      if (this.isList(node)) {
-        return node;
+      if (node.type.name !== 'list_item') {
+        continue;
       }
+
+      const list = $from.node(depth - 1);
+      if (!this.isList(list)) {
+        return null;
+      }
+
+      // A lifted nested item remains inside its parent list item to retain its
+      // indentation, but only the first block owns that parent's list marker.
+      return depth < $from.depth && node.firstChild === $from.node(depth + 1) ? list : null;
     }
     return null;
   }
@@ -620,6 +912,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const documentElement = new DOMParser().parseFromString(html, 'text/html');
     removeUnsafeRichTextElements(documentElement);
     this.normaliseWordStylesheetFormatting(documentElement);
+    this.normaliseOrderedListStyles(documentElement);
     this.removeWordNoise(documentElement);
     this.normaliseWordSpacing(documentElement);
     this.normaliseWordTables(documentElement);
@@ -643,6 +936,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const documentElement = new DOMParser().parseFromString(value, 'text/html');
     removeUnsafeRichTextElements(documentElement);
     this.normaliseWordStylesheetFormatting(documentElement);
+    this.normaliseOrderedListStyles(documentElement);
     this.normaliseWordSpacing(documentElement);
     this.normaliseWordTables(documentElement);
     this.normaliseWordSemanticBlocks(documentElement);
@@ -723,6 +1017,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       Italic: 'italic',
       Underline: 'underline',
       Paragraph: 'paragraph',
+      'Heading level 1': 'heading',
       'Bullet List': 'bullet_list',
       'Numbered List': 'ordered_list'
     };
@@ -735,7 +1030,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       }
       if (toggleCommands[label]) {
         const isActive = label === 'Numbered List'
-          ? this.currentListStyle() === 'ordered_list'
+          ? this.isOrderedListActive()
           : this.isToolbarCommandActive(toggleCommands[label]);
         button.setAttribute('aria-pressed', `${isActive}`);
       }
@@ -810,7 +1105,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       rules.forEach(([selectors, declarations]) => {
         const hasBoldStyle = this.hasBoldStyle(declarations);
         const headingLevel = this.wordOutlineLevel(declarations);
-        if (!hasBoldStyle && !headingLevel) {
+        const orderedListType = this.orderedListTypeFromStyle(declarations);
+        if (!hasBoldStyle && !headingLevel && !orderedListType) {
           return;
         }
 
@@ -823,6 +1119,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
           try {
             const matchingElements = documentElement.body.querySelectorAll(normalisedSelector);
             matchingElements.forEach((element: HTMLElement) => {
+              if (orderedListType && element.tagName.toLowerCase() === 'ol') {
+                element.setAttribute('type', orderedListType);
+              }
               if (headingLevel) {
                 element.dataset.wordHeadingLevel = headingLevel.toString();
               }
@@ -836,6 +1135,30 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         });
       });
     });
+  }
+
+  private normaliseOrderedListStyles(documentElement: Document): void {
+    const orderedLists = documentElement.body.querySelectorAll('ol');
+
+    orderedLists.forEach((list: HTMLOListElement) => {
+      const listType = this.orderedListTypeFromStyle(list.getAttribute('style') || '');
+      if (listType) {
+        list.setAttribute('type', listType);
+      }
+    });
+  }
+
+  private orderedListTypeFromStyle(style: string): string | null {
+    const listStyle = (this.cssStyleValue(style, 'list-style-type') || '').toLowerCase();
+    const wordListStyle = (this.cssStyleValue(style, 'mso-level-number-format') || '').toLowerCase();
+
+    if (listStyle === 'lower-alpha' || listStyle === 'lower-latin' || wordListStyle === 'alpha-lower') {
+      return 'a';
+    }
+    if (listStyle === 'lower-roman' || wordListStyle === 'roman-lower') {
+      return 'i';
+    }
+    return null;
   }
 
   private stylesheetRules(stylesheet: string): Array<[string, string]> {
@@ -940,20 +1263,28 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const namedHeadingLevel = this.namedWordHeadingLevel(block);
       const existingHeadingLevel = /^h([1-6])$/i.exec(block.tagName)?.[1];
       if (existingHeadingLevel) {
+        const heading = existingHeadingLevel === '1'
+          ? block
+          : this.replaceElementTag(documentElement, block, 'h1');
         if (namedHeadingLevel) {
-          this.wrapBoldInlineContents(documentElement, block);
+          this.removeRedundantHeadingBold(heading);
         }
         return;
       }
 
       const headingLevel = this.wordHeadingLevel(block);
       if (headingLevel) {
-        const heading = this.replaceElementTag(documentElement, block, `h${headingLevel}`);
+        const heading = this.replaceElementTag(documentElement, block, 'h1');
         if (namedHeadingLevel) {
-          this.wrapBoldInlineContents(documentElement, heading);
+          this.removeRedundantHeadingBold(heading);
         }
       }
     });
+  }
+
+  private removeRedundantHeadingBold(heading: HTMLElement): void {
+    const boldElements = Array.prototype.slice.call(heading.querySelectorAll('strong, b')) as HTMLElement[];
+    boldElements.reverse().forEach((element) => this.unwrapElement(element));
   }
 
   private wordHeadingLevel(element: HTMLElement): number {
@@ -987,6 +1318,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       const namedHeadingLevel = /(?:Mso)?Heading\s*([1-6])(?:Char)?/i.exec(headingDescription);
       if (namedHeadingLevel) {
         return Number(namedHeadingLevel[1]);
+      }
+      if (/heading/i.test(headingDescription)) {
+        return 1;
       }
 
       const outlineLevel = this.wordOutlineLevel(style);
@@ -1745,7 +2079,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       if (this.isWordListMarker(childNode)) {
         return;
       }
-      listItem.appendChild(childNode.cloneNode(true));
+
+      const clonedNode = childNode.cloneNode(true);
+      this.removeNestedWordListMarkers(clonedNode);
+      if (clonedNode instanceof HTMLElement && !clonedNode.textContent?.trim() && !clonedNode.querySelector('br')) {
+        return;
+      }
+      listItem.appendChild(clonedNode);
     });
 
     this.removeLeadingListMarker(listItem);
@@ -1760,12 +2100,17 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return false;
     }
 
-    if (/mso-list:\s*Ignore/i.test(node.getAttribute('style') || '')) {
-      return true;
+    return /mso-list:\s*Ignore/i.test(node.getAttribute('style') || '');
+  }
+
+  private removeNestedWordListMarkers(node: Node): void {
+    if (!(node instanceof HTMLElement)) {
+      return;
     }
 
-    return Array.prototype.slice.call(node.querySelectorAll('[style]'))
-      .some((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''));
+    Array.prototype.slice.call(node.querySelectorAll('[style]'))
+      .filter((element: HTMLElement) => /mso-list:\s*Ignore/i.test(element.getAttribute('style') || ''))
+      .forEach((element: HTMLElement) => element.remove());
   }
 
   private removeLeadingListMarker(listItem: HTMLElement): void {
@@ -1803,6 +2148,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       italic: this.isMarkActive('em'),
       underline: this.isMarkActive('u'),
       paragraph: this.paragraphCommandApplied && this.isPlainParagraphActive(),
+      heading: this.isHeadingOneActive(),
       ordered_list: activeListType === 'ordered_list',
       bullet_list: activeListType === 'bullet_list'
     };
@@ -1836,11 +2182,347 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return;
     }
 
+    if (this.flattenSelectedNestedListItems()) {
+      return;
+    }
+
+    if (this.flattenFullySelectedList()) {
+      return;
+    }
+
     if (listItemType && this.isNodeActive('list_item')) {
       liftListItem(listItemType)(state, dispatch);
     }
 
     setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
+  }
+
+  private flattenSelectedNestedListItems(): boolean {
+    const { state, dispatch } = this.editor.view;
+    const { $from, $to } = state.selection;
+    const paragraphType = state.schema.nodes.paragraph;
+
+    if (!paragraphType) {
+      return false;
+    }
+
+    for (let depth = $from.depth; depth > 1; depth--) {
+      const list = $from.node(depth);
+      if (!this.isListNode(list) || $from.node(depth - 1).type.name !== 'list_item' ||
+        $to.depth < depth || $to.node(depth) !== list) {
+        continue;
+      }
+
+      const fromIndex = $from.index(depth);
+      const toIndex = $to.indexAfter(depth);
+      const replacement: ProseMirrorNode[] = [];
+      const beforeItems = this.listItemsBetween(list, 0, fromIndex);
+      const afterItems = this.listItemsBetween(list, toIndex, list.childCount);
+      const sourceTextBlock = state.selection.empty && $from.parent.isTextblock ? $from.parent : null;
+      const sourceCaretOffset = $from.parentOffset;
+      const replacementStart = $from.before(depth);
+      let caretPosition: number | null = null;
+
+      if (beforeItems.length) {
+        replacement.push(list.copy(Fragment.fromArray(beforeItems)));
+      }
+
+      const paragraphIndent = Number(list.attrs.indent) || 0;
+      this.listItemsBetween(list, fromIndex, toIndex).forEach((listItem) => {
+        listItem.forEach((child) => {
+          if (child.isTextblock) {
+            const indent = Math.min(MAX_INDENT, paragraphIndent + (Number(child.attrs.indent) || 0));
+            const paragraph = paragraphType.create({
+              ...child.attrs,
+              indent: indent || null
+            }, child.content);
+            if (child === sourceTextBlock) {
+              const precedingSize = replacement.reduce((size, node) => size + node.nodeSize, 0);
+              caretPosition = replacementStart + precedingSize + 1 +
+                Math.min(sourceCaretOffset, paragraph.content.size);
+            }
+            replacement.push(paragraph);
+          } else if (this.isListNode(child)) {
+            replacement.push(child);
+          }
+        });
+      });
+
+      if (afterItems.length) {
+        const afterListAttrs = list.type.name === 'ordered_list'
+          ? { ...list.attrs, order: (Number(list.attrs.order) || 1) + toIndex }
+          : { ...list.attrs };
+        replacement.push(list.type.create(afterListAttrs, Fragment.fromArray(afterItems)));
+      }
+
+      const transaction = state.tr.replaceWith(
+        replacementStart,
+        $from.after(depth),
+        Fragment.fromArray(replacement)
+      );
+      if (caretPosition !== null) {
+        transaction.setSelection(TextSelection.create(transaction.doc, caretPosition));
+      }
+      dispatch(transaction.scrollIntoView());
+      return true;
+    }
+
+    return false;
+  }
+
+  private listItemsBetween(list: ProseMirrorNode, fromIndex: number, toIndex: number): ProseMirrorNode[] {
+    const items: ProseMirrorNode[] = [];
+    for (let index = fromIndex; index < toIndex; index++) {
+      items.push(list.child(index));
+    }
+    return items;
+  }
+
+  private flattenFullySelectedList(): boolean {
+    const { state, dispatch } = this.editor.view;
+    const { $from, $to, empty } = state.selection;
+    const paragraphType = state.schema.nodes.paragraph;
+
+    if (empty || !paragraphType) {
+      return false;
+    }
+
+    for (let depth = 1; depth <= $from.depth; depth++) {
+      const list = $from.node(depth);
+      if (!this.isListNode(list) || $to.depth < depth || $to.node(depth) !== list) {
+        continue;
+      }
+
+      const selectionStartsInFirstItem = $from.index(depth) === 0;
+      const selectionEndsInLastItem = $to.indexAfter(depth) === list.childCount;
+      const selectionCoversListContent = this.selectionCoversListContent(
+        list,
+        $from.before(depth),
+        state.selection.from,
+        state.selection.to
+      );
+      if (!selectionStartsInFirstItem || !selectionEndsInLastItem ||
+        !selectionCoversListContent) {
+        continue;
+      }
+
+      const paragraphs = this.flattenListToParagraphs(list, 0);
+      const transaction = state.tr.replaceWith(
+        $from.before(depth),
+        $from.after(depth),
+        Fragment.fromArray(paragraphs)
+      );
+      dispatch(transaction.scrollIntoView());
+      return true;
+    }
+
+    return false;
+  }
+
+  private selectionCoversListContent(list: ProseMirrorNode, listPosition: number, from: number, to: number): boolean {
+    let firstTextBlockStart: number | null = null;
+    let lastTextBlockEnd: number | null = null;
+
+    list.descendants((node, position) => {
+      if (!node.isTextblock) {
+        return true;
+      }
+
+      const textBlockStart = listPosition + position + 2;
+      firstTextBlockStart ??= textBlockStart;
+      lastTextBlockEnd = textBlockStart + node.content.size;
+      return false;
+    });
+
+    return firstTextBlockStart !== null && lastTextBlockEnd !== null &&
+      from <= firstTextBlockStart && to >= lastTextBlockEnd;
+  }
+
+  private flattenListToParagraphs(list: ProseMirrorNode, nestingIndent: number): ProseMirrorNode[] {
+    const paragraphType = this.editor.view.state.schema.nodes.paragraph;
+    const listIndent = Number(list.attrs.indent) || 0;
+    const itemIndent = Math.min(MAX_INDENT, nestingIndent + listIndent);
+    const paragraphs: ProseMirrorNode[] = [];
+
+    list.forEach((listItem) => {
+      listItem.forEach((child) => {
+        if (this.isListNode(child)) {
+          paragraphs.push(...this.flattenListToParagraphs(child, itemIndent + 1));
+          return;
+        }
+
+        if (child.isTextblock) {
+          const existingIndent = Number(child.attrs.indent) || 0;
+          const indent = Math.min(MAX_INDENT, itemIndent + existingIndent);
+          paragraphs.push(paragraphType.create({
+            ...child.attrs,
+            indent: indent || null
+          }, child.content));
+        }
+      });
+    });
+
+    return paragraphs;
+  }
+
+  private rebuildSelectedIndentedBlocksAsList(
+    listType: 'ordered_list' | 'bullet_list',
+    orderedListStyle: RichTextOrderedListStyle
+  ): boolean {
+    const { state, dispatch } = this.editor.view;
+    const { from, to } = state.selection;
+    const selectedBlocks: IndentedListBlock[] = [];
+
+    state.doc.forEach((node, position, index) => {
+      if (!node.isTextblock) {
+        return;
+      }
+
+      const contentStart = position + 1;
+      const contentEnd = contentStart + node.content.size;
+      if (from <= contentEnd && to >= contentStart) {
+        selectedBlocks.push({
+          node,
+          position,
+          index,
+          indent: Number(node.attrs.indent) || 0
+        });
+      }
+    });
+
+    if (selectedBlocks.length === 1 && selectedBlocks[0].indent > 0) {
+      const block = selectedBlocks[0];
+      const { schema } = state;
+      const listItemType = schema.nodes.list_item;
+      const listNodeType = schema.nodes[listType];
+      const textBlock = block.node.type.create({
+        ...block.node.attrs,
+        indent: null
+      }, block.node.content, block.node.marks);
+      const orderedStyle = this.orderedListStyleAtDepth(orderedListStyle, 0);
+      const attrs = listType === 'ordered_list'
+        ? {
+          order: 1,
+          indent: block.indent,
+          listStyle: orderedStyle === 'decimal' ? null : orderedStyle
+        }
+        : {
+          indent: block.indent,
+          continuationOrder: null
+        };
+      const list = listNodeType.create(attrs, listItemType.create(null, textBlock));
+      const transaction = state.tr.replaceWith(block.position, block.position + block.node.nodeSize, list);
+
+      transaction.setSelection(TextSelection.create(transaction.doc, from + 2, to + 2));
+      dispatch(transaction.scrollIntoView());
+      return true;
+    }
+
+    if (selectedBlocks.length < 2 ||
+      selectedBlocks[selectedBlocks.length - 1].index - selectedBlocks[0].index + 1 !== selectedBlocks.length) {
+      return false;
+    }
+
+    const firstBlock = selectedBlocks[0];
+    const lastBlock = selectedBlocks[selectedBlocks.length - 1];
+    const selectionCoversBlocks = from <= firstBlock.position + 1 &&
+      to >= lastBlock.position + 1 + lastBlock.node.content.size;
+    const baseIndent = Math.min(...selectedBlocks.map((block) => block.indent));
+    const normalisedBlocks = selectedBlocks.map((block) => ({
+      ...block,
+      indent: Math.max(0, block.indent - baseIndent)
+    }));
+
+    if (!selectionCoversBlocks || (baseIndent === 0 && !normalisedBlocks.some((block) => block.indent > 0))) {
+      return false;
+    }
+
+    const rebuilt = this.buildNestedList(normalisedBlocks, 0, 0, listType, orderedListStyle);
+    if (rebuilt.nextIndex !== normalisedBlocks.length) {
+      return false;
+    }
+
+    const rootList = baseIndent > 0
+      ? rebuilt.list.type.create({ ...rebuilt.list.attrs, indent: baseIndent }, rebuilt.list.content)
+      : rebuilt.list;
+
+    const transaction = state.tr.replaceWith(
+      firstBlock.position,
+      lastBlock.position + lastBlock.node.nodeSize,
+      rootList
+    );
+    dispatch(transaction.scrollIntoView());
+    return true;
+  }
+
+  private buildNestedList(
+    blocks: IndentedListBlock[],
+    startIndex: number,
+    depth: number,
+    listType: 'ordered_list' | 'bullet_list',
+    rootOrderedListStyle: RichTextOrderedListStyle
+  ): NestedListBuildResult {
+    const { schema } = this.editor.view.state;
+    const listItemType = schema.nodes.list_item;
+    const listNodeType = schema.nodes[listType];
+    const listItems: ProseMirrorNode[] = [];
+    let index = startIndex;
+
+    while (index < blocks.length) {
+      const block = blocks[index];
+      if (block.indent < depth) {
+        break;
+      }
+
+      if (block.indent > depth && listItems.length) {
+        const nested = this.buildNestedList(blocks, index, depth + 1, listType, rootOrderedListStyle);
+        const parentItem = listItems[listItems.length - 1];
+        listItems[listItems.length - 1] = parentItem.copy(
+          parentItem.content.append(Fragment.from(nested.list))
+        );
+        index = nested.nextIndex;
+        continue;
+      }
+
+      const textBlock = block.node.type.create({
+        ...block.node.attrs,
+        indent: null
+      }, block.node.content, block.node.marks);
+      listItems.push(listItemType.create(null, textBlock));
+      index++;
+    }
+
+    const orderedStyle = this.orderedListStyleAtDepth(rootOrderedListStyle, depth);
+    const attrs = listType === 'ordered_list'
+      ? {
+        order: 1,
+        indent: null,
+        listStyle: orderedStyle === 'decimal' ? null : orderedStyle
+      }
+      : {
+        indent: null,
+        continuationOrder: null
+      };
+
+    return {
+      list: listNodeType.create(attrs, Fragment.fromArray(listItems)),
+      nextIndex: index
+    };
+  }
+
+  private orderedListStyleAtDepth(
+    rootStyle: RichTextOrderedListStyle,
+    depth: number
+  ): RichTextOrderedListStyle {
+    let listStyle = rootStyle;
+    for (let currentDepth = 0; currentDepth < depth; currentDepth++) {
+      listStyle = this.nextNestedOrderedListStyle(listStyle);
+    }
+    return listStyle;
+  }
+
+  private isListNode(node: ProseMirrorNode): boolean {
+    return node.type.name === 'ordered_list' || node.type.name === 'bullet_list';
   }
 
   private changeIndent(increase: boolean): void {
@@ -1938,6 +2620,49 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     this.applyParagraph();
     this.paragraphCommandApplied = true;
+  }
+
+  private toggleHeading(): void {
+    if (this.isHeadingOneActive()) {
+      const paragraphType = this.editor.view.state.schema.nodes.paragraph;
+      if (paragraphType) {
+        setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
+      }
+      this.paragraphCommandApplied = false;
+      return;
+    }
+
+    const headingType = this.editor.view.state.schema.nodes.heading;
+    if (headingType) {
+      setBlockType(headingType, { level: 1 })(this.editor.view.state, this.editor.view.dispatch);
+    }
+    this.paragraphCommandApplied = false;
+  }
+
+  private isHeadingOneActive(): boolean {
+    const state = this.editor.view.state;
+    const headingType = state.schema.nodes.heading;
+    if (!headingType) {
+      return false;
+    }
+
+    const { $from, from, to } = state.selection;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type === headingType && node.attrs.level === 1) {
+        return true;
+      }
+    }
+
+    let isActive = false;
+    state.doc.nodesBetween(from, to, (node) => {
+      if (node.type === headingType && node.attrs.level === 1) {
+        isActive = true;
+        return false;
+      }
+      return true;
+    });
+    return isActive;
   }
 
   private isPlainParagraphActive(): boolean {
