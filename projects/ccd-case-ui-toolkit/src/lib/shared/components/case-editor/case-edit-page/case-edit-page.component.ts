@@ -291,6 +291,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             this.caseEditDataService.addFormValidationError({
               id, message: `The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.`, label
             });
+          } else if (fieldElement.hasError('unsafeRichText')) {
+            this.caseEditDataService.addFormValidationError({
+              id, message: `The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field.`, label
+            });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id, true);

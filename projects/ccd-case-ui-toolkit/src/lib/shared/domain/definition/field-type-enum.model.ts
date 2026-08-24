@@ -1,6 +1,7 @@
 export type FieldTypeEnum =
   'Text'
   | 'TextArea'
+  | 'RichTextArea'
   | 'Postcode'
   | 'Number'
   | 'YesOrNo'

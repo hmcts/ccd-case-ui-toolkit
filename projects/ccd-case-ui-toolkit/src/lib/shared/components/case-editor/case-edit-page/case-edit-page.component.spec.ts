@@ -2685,6 +2685,33 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should validate unsafe rich text and log an HTML content error message', () => {
+      const caseField = aCaseField(
+        'UnsafeRichTextField',
+        'Case note',
+        'RichTextArea',
+        'MANDATORY',
+        null
+      );
+      const control = new FormControl('&lt;script&gt;alert("xss")&lt;/script&gt;');
+      control.setErrors({ unsafeRichText: true });
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          UnsafeRichTextField: control
+        })
+      });
+      caseEditDataService.addFormValidationError.calls.reset();
+      spyOn(window, 'scrollTo');
+
+      comp.generateErrorMessage([caseField]);
+
+      expect(caseEditDataService.addFormValidationError).toHaveBeenCalledWith({
+        id: 'UnsafeRichTextField',
+        message: 'The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field.',
+        label: 'Case note'
+      });
+    });
+
     it('should validate mandatory complex type fields and log error message', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',

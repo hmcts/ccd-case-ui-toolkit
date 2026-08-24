@@ -33,7 +33,7 @@ export class FormValidatorsService {
         }
       }
 
-      if (caseField.field_type.type === 'TextArea') {
+      if (this.isTextAreaType(caseField.field_type.type)) {
         validators.push(this.emptyValidator());
         validators.push(this.markDownPatternValidator());
       }
@@ -42,7 +42,7 @@ export class FormValidatorsService {
         validators.push(control.validator);
       }
       control.setValidators(validators);
-    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || caseField.field_type.type === 'TextArea')
+    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || this.isTextAreaType(caseField.field_type.type))
       || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
       control.setValidators(this.markDownPatternValidator());
     }
@@ -84,6 +84,10 @@ export class FormValidatorsService {
       const value = control?.value?.toString().trim();
       return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || this.matchesReferenceUrlDef(value) || autolinkPattern.test(value) || wwwAutolinkPattern.test(value) || this.hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
     };
+  }
+
+  private static isTextAreaType(fieldType: FieldTypeEnum): boolean {
+    return fieldType === 'TextArea' || fieldType === 'RichTextArea';
   }
 
   // TODO: Strip this out as it's only here for the moment because

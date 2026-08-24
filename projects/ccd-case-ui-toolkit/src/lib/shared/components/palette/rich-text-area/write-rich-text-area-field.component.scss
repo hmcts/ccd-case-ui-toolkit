@@ -1,0 +1,315 @@
+.ccd-rich-text-area {
+  margin-bottom: 30px;
+}
+
+.ccd-rich-text-area__editor {
+  max-width: 100%;
+}
+
+.ccd-rich-text-area__toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 4px;
+  margin-bottom: 6px;
+}
+
+.ccd-rich-text-area .NgxEditor__Wrapper {
+  border: 1px solid #000;
+  border-radius: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ccd-rich-text-area .NgxEditor__Wrapper:focus-within {
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.ccd-rich-text-area__toolbar-button {
+  background: #fff;
+  align-items: center;
+  border: 1px solid #0b0c0c;
+  border-radius: 0;
+  color: #0b0c0c;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  height: 36px;
+  justify-content: center;
+  min-width: 36px;
+  padding: 4px;
+  width: 36px;
+}
+
+.ccd-rich-text-area__toolbar-button:hover {
+  background: #f3f2f1;
+}
+
+.ccd-rich-text-area__toolbar-button:focus {
+  background: #ffdd00;
+  box-shadow: 0 0 0 2px #0b0c0c;
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
+.ccd-rich-text-area__toolbar-button--active {
+  background: #1d70b8;
+  color: #fff;
+}
+
+.ccd-rich-text-area__toolbar-button--italic {
+  font-style: italic;
+}
+
+.ccd-rich-text-area__toolbar-button--underline {
+  text-decoration: underline;
+}
+
+.ccd-rich-text-area__toolbar-separator {
+  border-left: 1px solid #b1b4b6;
+  height: 36px;
+  margin: 0 8px 0 6px;
+}
+
+.ccd-rich-text-area__toolbar-icon {
+  display: inline-flex;
+  line-height: 1;
+}
+
+.ccd-rich-text-area__toolbar-icon--undo,
+.ccd-rich-text-area__toolbar-icon--redo {
+  font-size: 23px;
+  font-weight: 400;
+  transform: translateY(-1px);
+}
+
+.ccd-rich-text-area__toolbar-icon--bold {
+  font-size: 18px;
+}
+
+.ccd-rich-text-area__toolbar-icon--italic {
+  color: inherit;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.ccd-rich-text-area__toolbar-icon--underline {
+  font-size: 18px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ccd-rich-text-area__toolbar-icon--paragraph {
+  font-size: 18px;
+}
+
+.ccd-rich-text-area__list-icon {
+  column-gap: 2px;
+  display: grid;
+  grid-template-columns: 8px 13px;
+  grid-template-rows: repeat(3, 5px);
+  height: 17px;
+  width: 23px;
+}
+
+.ccd-rich-text-area__list-marker {
+  align-self: center;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: right;
+}
+
+.ccd-rich-text-area__list-icon--ordered .ccd-rich-text-area__list-marker::after {
+  content: ".";
+}
+
+.ccd-rich-text-area__list-icon--bullet .ccd-rich-text-area__list-marker {
+  font-size: 14px;
+  line-height: 0.5;
+}
+
+.ccd-rich-text-area__list-line {
+  align-self: center;
+  border-top: 2px solid currentColor;
+  display: block;
+  width: 12px;
+}
+
+.ccd-rich-text-area__indent-icon {
+  display: block;
+  height: 18px;
+  position: relative;
+  width: 23px;
+}
+
+.ccd-rich-text-area__indent-line {
+  background: currentColor;
+  display: block;
+  height: 2px;
+  position: absolute;
+  right: 0;
+}
+
+.ccd-rich-text-area__indent-line--top {
+  top: 3px;
+  width: 18px;
+}
+
+.ccd-rich-text-area__indent-line--middle {
+  top: 8px;
+  width: 13px;
+}
+
+.ccd-rich-text-area__indent-line--bottom {
+  top: 13px;
+  width: 18px;
+}
+
+.ccd-rich-text-area__indent-arrow {
+  background: currentColor;
+  display: block;
+  height: 2px;
+  left: 1px;
+  position: absolute;
+  top: 8px;
+  width: 9px;
+}
+
+.ccd-rich-text-area__indent-arrow::before,
+.ccd-rich-text-area__indent-arrow::after {
+  background: currentColor;
+  content: "";
+  display: block;
+  height: 2px;
+  position: absolute;
+  top: 0;
+  width: 6px;
+}
+
+.ccd-rich-text-area__indent-icon--outdent .ccd-rich-text-area__indent-arrow::before {
+  left: -1px;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.ccd-rich-text-area__indent-icon--outdent .ccd-rich-text-area__indent-arrow::after {
+  left: -1px;
+  transform: rotate(-45deg);
+  transform-origin: left center;
+}
+
+.ccd-rich-text-area__indent-icon--indent .ccd-rich-text-area__indent-arrow::before {
+  right: -1px;
+  transform: rotate(45deg);
+  transform-origin: right center;
+}
+
+.ccd-rich-text-area__indent-icon--indent .ccd-rich-text-area__indent-arrow::after {
+  right: -1px;
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}
+
+.ccd-rich-text-area .NgxEditor__Wrapper .NgxEditor {
+  border: 0;
+  border-radius: 0;
+  height: 255px;
+  min-height: 255px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ccd-rich-text-area__editor--error .NgxEditor__Wrapper {
+  border-color: #d4351c;
+}
+
+.ccd-rich-text-area .NgxEditor__Content {
+  box-sizing: border-box;
+  height: 255px;
+  min-height: 255px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 12px 14px;
+}
+
+.ccd-rich-text-area .ProseMirror {
+  min-height: 231px;
+  outline: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: normal;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="1"] {
+  margin-left: 40px;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="2"] {
+  margin-left: 80px;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="3"] {
+  margin-left: 120px;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="4"] {
+  margin-left: 160px;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="5"] {
+  margin-left: 200px;
+}
+
+.ccd-rich-text-area .ProseMirror [data-indent="6"] {
+  margin-left: 240px;
+}
+
+.ccd-rich-text-area .ProseMirror strong,
+.ccd-rich-text-area .ProseMirror strong *,
+.ccd-rich-text-area .ProseMirror b,
+.ccd-rich-text-area .ProseMirror b * {
+  font-weight: 700;
+}
+
+.ccd-rich-text-area .ProseMirror strong u,
+.ccd-rich-text-area .ProseMirror u strong,
+.ccd-rich-text-area .ProseMirror b u,
+.ccd-rich-text-area .ProseMirror u b {
+  font-weight: 700 !important;
+  text-decoration: underline;
+}
+
+.ccd-rich-text-area .ProseMirror:focus {
+  box-shadow: none;
+  outline: 0;
+}
+
+.ccd-rich-text-area .ProseMirror p,
+.ccd-rich-text-area .ProseMirror ul,
+.ccd-rich-text-area .ProseMirror ol {
+  margin-top: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ccd-rich-text-area .ProseMirror ul {
+  list-style: disc outside;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror ol {
+  list-style: decimal outside;
+  padding-left: 25px;
+}
+
+.ccd-rich-text-area .ProseMirror li {
+  display: list-item;
+  margin-bottom: 5px;
+}
+
+.ccd-rich-text-area .ProseMirror li > p {
+  margin: 0;
+}

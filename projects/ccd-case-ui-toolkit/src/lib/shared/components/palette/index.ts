@@ -33,6 +33,7 @@ export * from './phone-uk';
 export * from './query-management';
 export * from './text';
 export * from './text-area';
+export * from './rich-text-area';
 export * from './unsupported-field.component';
 export * from './utils';
 export * from './waystopay';
