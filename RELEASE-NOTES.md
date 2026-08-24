@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
+
 ### Version 7.3.90
 **EXUI-4950** Package update - dompurify - major
 
