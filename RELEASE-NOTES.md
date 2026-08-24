@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.90
+**EXUI-4950** Package update - dompurify - major
+
 ### Version 7.3.89
 **EXUI-4919** Create a Rich Text Editor Component - Write
 **EXUI-4920** Create a Rich Text Editor Component - Read
