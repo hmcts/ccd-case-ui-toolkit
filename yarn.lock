@@ -10558,7 +10558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.3.3":
+"dompurify@npm:^3.4.13":
   version: 3.4.13
   resolution: "dompurify@npm:3.4.13"
   dependencies:
