@@ -13,6 +13,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
+import { NgxEditorModule } from 'ngx-editor';
 import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -147,6 +148,7 @@ import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from 
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
+import { ReadRichTextAreaFieldComponent, WriteRichTextAreaFieldComponent } from './rich-text-area';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -166,6 +168,7 @@ const PALETTE_COMPONENTS = [
   // Read
   ReadTextFieldComponent,
   ReadTextAreaFieldComponent,
+  ReadRichTextAreaFieldComponent,
   ReadNumberFieldComponent,
   ReadEmailFieldComponent,
   ReadPhoneUKFieldComponent,
@@ -204,8 +207,9 @@ const PALETTE_COMPONENTS = [
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
   WriteTextFieldComponent,
-  WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
+  WriteDateContainerFieldComponent,
+  WriteRichTextAreaFieldComponent,
   WritePhoneUKFieldComponent,
   WriteNumberFieldComponent,
   WriteEmailFieldComponent,
@@ -319,7 +323,20 @@ const PALETTE_COMPONENTS = [
     MediaViewerModule,
     LoadingModule,
     MarkdownComponentModule,
-    ErrorsModule
+    ErrorsModule,
+    NgxEditorModule.forChild({
+      locals: {
+        bold: 'Bold',
+        italic: 'Italic',
+        underline: 'Underline',
+        ordered_list: 'Ordered List',
+        bullet_list: 'Bullet List',
+        indent: 'Increase Indent',
+        outdent: 'Decrease Indent',
+        undo: 'Undo',
+        redo: 'Redo'
+      }
+    })
   ],
   declarations: [
     FixedListPipe,
