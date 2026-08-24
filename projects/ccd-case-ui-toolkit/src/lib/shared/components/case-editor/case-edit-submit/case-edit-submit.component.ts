@@ -380,3 +380,4 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.placeholderService.resolvePlaceholders(fields, stringToResolve);
   }
 }
+
