@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.89-exui-5098",
+  "version": "7.3.90-exui-5098",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",

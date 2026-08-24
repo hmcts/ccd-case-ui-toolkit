@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.89-exui-5098
+### Version 7.3.90-exui-5098
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.3.90
+**EXUI-4950** Package update - dompurify - major
 
 ### Version 7.3.89
 **EXUI-4919** Create a Rich Text Editor Component - Write
