@@ -59,34 +59,27 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public ngOnInit(): void {
     super.ngOnInit();
-    this.staffUserControl = new FormControl(this.caseField.value?.displayName);
+    this.staffUserControl = new FormControl(this.caseField.value);
+    console.log('this.caseField.value: ', this.caseField.value);
     this.formGroup.setControl(`${this.caseField.id}_staffUserControl`, this.staffUserControl);
     FieldsUtils.addCaseFieldAndComponentReferences(this.staffUserControl, this.caseField, this);
     this.setupValidation();
-    this.staffUserSelected = !!this.caseField.value?.idamId;
     this.filteredStaffUsers$ = this.staffUserControl.valueChanges.pipe(
-      tap(value => {
-        this.showAutocomplete = false;
-        if (typeof value === 'string' && value !== this.caseField.value?.displayName) {
-          this.staffUserSelected = false;
-          this.clearSelection();
-        }
-      }),
+      tap(() => this.showAutocomplete = false),
       debounceTime(300),
-      filter((value): value is string => typeof value === 'string' && value.length > this.minSearchCharacters),
+      map(input => typeof input === 'string' ? input : input?.displayName),
       tap(searchTerm => {
         this.searchTerm = searchTerm;
         this.invalidSearchTerm = false;
       }),
-      switchMap(searchTerm => this.filterStaffUsers(searchTerm).pipe(
+      filter((searchTerm: string) => searchTerm && searchTerm.length > this.minSearchCharacters),
+      switchMap((searchTerm: string) => this.filterStaffUsers(searchTerm).pipe(
         tap(staffUsers => {
           this.showAutocomplete = true;
           this.noResults = !this.invalidSearchTerm && staffUsers.length === 0;
         })
       ))
     );
-    console.log('oninit this.jurisdiction: ', this.jurisdiction);
-    console.log('oninit this.caseType: ', this.caseType);
   }
 
   public filterStaffUsers(searchTerm: string): Observable<StaffUser[]> {
@@ -144,7 +137,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public setupValidation(): void {
     this.complexGroup.get('idamId')?.clearValidators();
-    this.complexGroup.get('displayName')?.clearValidators();
     if (this.caseField.display_context === Constants.MANDATORY) {
       this.staffUserControl.setValidators(Validators.required);
     }
@@ -155,20 +147,24 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   public onSelectionChange(event: any): void {
-    const staffUser = event.source.value as StaffUser;
-    if (!staffUser) {
-      return;
-    }
-    this.caseField.value = { idamId: staffUser.idamId, displayName: staffUser.displayName };
-    this.complexGroup.get('idamId')?.setValue(staffUser.idamId);
-    this.complexGroup.get('displayName')?.setValue(staffUser.displayName);
+    console.log('onSelectionChange event: ', event);
+    this.caseField.value = {
+      idamId: event.source.value.idamId
+    };
+    this.complexGroup.get('idamId')?.setValue(this.caseField.value.idamId);
     this.staffUserSelected = true;
+
+    console.log('onSelectionChange this.caseField: ', this.caseField);
   }
 
   public onBlur(event: any): void {
     if (event.relatedTarget?.role !== 'option' && !this.staffUserSelected) {
       this.staffUserControl.setValue(null);
-      this.clearSelection();
+    }
+
+    if (!this.staffUserControl.value) {
+      this.caseField.value = null;
+      this.complexGroup.get('idamId')?.setValue(null);
     }
   }
 
@@ -179,6 +175,7 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   private getBaseCaseType(): string {
     const caseType = this.caseType || this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
+    console.log('caseType: ', caseType);
     return caseType?.split('-')[0];
   }
 
