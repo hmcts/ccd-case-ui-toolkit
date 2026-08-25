@@ -42,14 +42,12 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   ) {
     super(compoundPipe, validatorsService);
     this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe(jurisdiction => {
-      console.log('this.jurisdictionSubscription jurisdiction: ', jurisdiction);
       if (jurisdiction?.currentCaseType) {
         this.jurisdiction = jurisdiction.id ?? this.jurisdiction;
         this.caseType = jurisdiction.currentCaseType.id ?? this.caseType;
       }
     });
     this.notifierSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
-      console.log('this.notifierSubscription caseDetails: ', caseDetails);
       if (caseDetails) {
         this.jurisdiction = caseDetails.case_type?.jurisdiction?.id ?? this.jurisdiction;
         this.caseType = caseDetails.case_type?.id ?? this.caseType;
@@ -60,7 +58,12 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   public ngOnInit(): void {
     super.ngOnInit();
     this.staffUserControl = new FormControl(this.caseField.value);
-    console.log('this.caseField.value: ', this.caseField.value);
+
+    // Ensure idamId sub-control always exists in complexGroup, regardless of whether
+    // the CCD field definition has complex_fields populated (the backend only needs idamId)
+    if (!this.complexGroup.get('idamId')) {
+      this.complexGroup.addControl('idamId', new FormControl(this.caseField.value?.idamId ?? null));
+    }
     this.formGroup.setControl(`${this.caseField.id}_staffUserControl`, this.staffUserControl);
     FieldsUtils.addCaseFieldAndComponentReferences(this.staffUserControl, this.caseField, this);
     this.setupValidation();
@@ -84,7 +87,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public filterStaffUsers(searchTerm: string): Observable<StaffUser[]> {
     const configuration = parseStaffUserSearchConfiguration(this.getDisplayContextParameter());
-    console.log('configuration: ', configuration);
     if (!configuration.valid) {
       this.invalidSearchTerm = true;
       return of([]);
@@ -125,13 +127,9 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public resolveServiceDetails(): Observable<HmctsServiceDetail> {
     const caseType = this.getBaseCaseType();
-    console.log('caseType: ', caseType);
     return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseType).pipe(
       catchError(() => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
-      map(serviceDetails => {
-        console.log(`Resolved service details for case type ${caseType}:`, serviceDetails);
-        return serviceDetails[0];
-      })
+      map(serviceDetails => serviceDetails[0])
     );
   }
 
@@ -147,14 +145,11 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   public onSelectionChange(event: any): void {
-    console.log('onSelectionChange event: ', event);
     this.caseField.value = {
       idamId: event.source.value.idamId
     };
     this.complexGroup.get('idamId')?.setValue(this.caseField.value.idamId);
     this.staffUserSelected = true;
-
-    console.log('onSelectionChange this.caseField: ', this.caseField);
   }
 
   public onBlur(event: any): void {
@@ -175,7 +170,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   private getBaseCaseType(): string {
     const caseType = this.caseType || this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
-    console.log('caseType: ', caseType);
     return caseType?.split('-')[0];
   }
 
@@ -195,7 +189,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   private clearSelection(): void {
     this.caseField.value = null;
     this.complexGroup.get('idamId')?.setValue(null);
-    this.complexGroup.get('displayName')?.setValue(null);
   }
 
   private removeDuplicateUsers(results: StaffUser[][]): StaffUser[] {
