@@ -32,13 +32,14 @@ export class CaseworkerService {
   public searchStaffUsers(
     services: string[],
     searchTerm: string,
-    roleCategories: StaffCacheRoleCategory[]
+    roleCategories: StaffCacheRoleCategory[],
+    regions: string[] = []
   ): Observable<StaffUser[]> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUsersByServiceName`;
     const normalisedSearchTerm = searchTerm.toLowerCase();
 
     return this.http
-      .post(url, { services, term: searchTerm })
+      .post(url, { services, term: searchTerm, ...(regions.length ? { regions } : {}) })
       .pipe(
         map((caseworkers: Caseworker[]) => caseworkers
           .filter(caseworker => roleCategories.some(roleCategory => caseworker.roleCategories.includes(roleCategory)))

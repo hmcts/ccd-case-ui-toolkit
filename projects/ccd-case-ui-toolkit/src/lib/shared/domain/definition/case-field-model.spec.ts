@@ -34,14 +34,14 @@ describe('CaseField', () => {
     expect(htmlId).toBe('joeyramone');
   });
 
-  it('should retain role categories from a CCD definition', () => {
+  it('should retain the display context parameter from a CCD definition', () => {
     const caseField = plainToClassFromExist(new CaseField(), {
       id: 'staffUser',
       field_type: { id: 'Text', type: 'Text' },
-      role_categories: 'ADMIN,CTSC'
+      display_context_parameter: '#ARGUMENT(CATEGORY-ADMIN,CATEGORY-CTSC)'
     });
 
-    expect(caseField.role_categories).toBe('ADMIN,CTSC');
+    expect(caseField.display_context_parameter).toBe('#ARGUMENT(CATEGORY-ADMIN,CATEGORY-CTSC)');
   });
 
   it('should return simple id for top level field', () => {

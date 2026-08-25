@@ -22,7 +22,7 @@ const CASE_FIELD: any = {
       { id: 'displayName', field_type: { id: 'Text', type: 'Text' } }
     ]
   },
-  role_categories: 'ADMIN',
+  display_context_parameter: '#ARGUMENT(CATEGORY-ADMIN)',
   value: { idamId: 'idam-id', displayName: 'Alex Admin' }
 };
 
@@ -146,7 +146,7 @@ describe('WriteStaffUserFieldComponent', () => {
     tick(299);
     expect(caseworkerService.searchStaffUsers).not.toHaveBeenCalled();
     tick(1);
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'ale', ['ADMIN']);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'ale', ['ADMIN'], []);
   }));
 
   it('should search only the staff cache for staff categories', () => {
@@ -160,12 +160,12 @@ describe('WriteStaffUserFieldComponent', () => {
       }]);
     });
 
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'alex', ['ADMIN']);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'alex', ['ADMIN'], []);
     expect(jurisdictionService.searchJudicialUsers).not.toHaveBeenCalled();
   });
 
-  it('should search only the judicial source for JUDICIAL', () => {
-    component.caseField.role_categories = 'JUDICIAL';
+  it('should search only the judicial source for CATEGORY-JUDICIAL', () => {
+    component.caseField.display_context_parameter = '#ARGUMENT(CATEGORY-JUDICIAL)';
     jurisdictionService.searchJudicialUsers.and.returnValue(of([{
       idamId: 'judicial-id', fullName: 'Judge Judy', emailId: 'judge.judy@justice.gov.uk'
     }]));
@@ -177,11 +177,11 @@ describe('WriteStaffUserFieldComponent', () => {
     });
 
     expect(caseworkerService.searchStaffUsers).not.toHaveBeenCalled();
-    expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalledWith('jud', 'FIRST');
+    expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalledWith('jud', 'FIRST', []);
   });
 
   it('should merge source results by idamId without duplicates', () => {
-    component.caseField.role_categories = 'ADMIN,JUDICIAL';
+    component.caseField.display_context_parameter = '#ARGUMENT(CATEGORY-ADMIN,CATEGORY-JUDICIAL)';
     caseworkerService.searchStaffUsers.and.returnValue(of([
       { idamId: 'shared-id', displayName: 'Staff name' },
       { idamId: 'staff-id', displayName: 'Staff user' }
@@ -243,7 +243,7 @@ describe('WriteStaffUserFieldComponent', () => {
   }));
 
   it('should show an invalid search state for invalid configuration and skip requests', () => {
-    component.caseField.role_categories = 'UNKNOWN';
+    component.caseField.display_context_parameter = '#ARGUMENT(CATEGORY-UNKNOWN)';
 
     component.filterStaffUsers('invalid').subscribe(staffUsers => expect(staffUsers).toEqual([]));
 

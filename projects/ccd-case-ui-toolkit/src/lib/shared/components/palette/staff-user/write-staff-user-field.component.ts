@@ -42,12 +42,14 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   ) {
     super(compoundPipe, validatorsService);
     this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe(jurisdiction => {
+      console.log('this.jurisdictionSubscription jurisdiction: ', jurisdiction);
       if (jurisdiction?.currentCaseType) {
         this.jurisdiction = jurisdiction.id;
         this.caseType = jurisdiction.currentCaseType.id;
       }
     });
     this.notifierSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+      console.log('this.notifierSubscription caseDetails: ', caseDetails);
       if (caseDetails) {
         this.jurisdiction = caseDetails.case_type?.jurisdiction?.id;
         this.caseType = caseDetails.case_type?.id;
@@ -86,7 +88,8 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   public filterStaffUsers(searchTerm: string): Observable<StaffUser[]> {
-    const configuration = parseStaffUserSearchConfiguration(this.caseField.role_categories);
+    const configuration = parseStaffUserSearchConfiguration(this.getDisplayContextParameter());
+    console.log('configuration: ', configuration);
     if (!configuration.valid) {
       this.invalidSearchTerm = true;
       return of([]);
@@ -97,10 +100,14 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
         const searches: Observable<StaffUser[]>[] = [];
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
-            [serviceDetails.ccd_service_name], searchTerm, configuration.configuration.staffRoleCategories));
+            [serviceDetails.ccd_service_name],
+            searchTerm,
+            configuration.configuration.staffRoleCategories,
+            configuration.configuration.regions));
         }
         if (configuration.configuration.includesJudicial) {
-          searches.push(this.jurisdictionService.searchJudicialUsers(searchTerm, serviceDetails.service_code).pipe(
+          searches.push(this.jurisdictionService.searchJudicialUsers(
+            searchTerm, serviceDetails.service_code, configuration.configuration.regions).pipe(
             map(judicialUsers => judicialUsers.map(judicialUser => ({
               idamId: judicialUser.idamId,
               displayName: judicialUser.fullName || '',
@@ -170,6 +177,19 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   private getBaseCaseType(): string {
     const caseType = this.caseType || this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
     return caseType?.split('-')[0];
+  }
+
+  /**
+   * The search filters are configured through the field's display_context_parameter, for example
+   * `#ARGUMENT(CATEGORY-LEGAL-OPS,CATEGORY-ADMIN,REGION-1235)`.
+   *
+   * When this component is rendered for a field nested within a complex type or collection, the
+   * CaseField instance handed to the component can be the child definition, which does not always
+   * carry the parameter. Fall back to the matching field in the page's context fields.
+   */
+  private getDisplayContextParameter(): string {
+    return this.caseField?.display_context_parameter
+      || this.caseFields?.find(caseField => caseField.id === this.caseField?.field_type?.id)?.display_context_parameter;
   }
 
   private clearSelection(): void {

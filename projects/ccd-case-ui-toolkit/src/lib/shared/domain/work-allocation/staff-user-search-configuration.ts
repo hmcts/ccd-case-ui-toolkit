@@ -15,34 +15,84 @@ const SUPPORTED_ROLE_CATEGORIES: StaffUserRoleCategory[] = [
   'JUDICIAL'
 ];
 
+// Aliases allow the definition to use the shorter, hyphenated form within #ARGUMENT(...)
+const ROLE_CATEGORY_ALIASES: { [alias: string]: StaffUserRoleCategory } = {
+  LEGAL_OPS: 'LEGAL_OPERATIONS'
+};
+
+const ARGUMENT_REGEX = /#ARGUMENT\(([^)]*)\)/;
+const CATEGORY_PREFIX = 'CATEGORY-';
+const REGION_PREFIX = 'REGION-';
+
 export type StaffUserSearchConfigurationResult =
   | { valid: true; configuration: StaffUserSearchConfiguration }
   | { valid: false; error: 'INVALID_ROLE_CATEGORIES' };
 
-export function parseStaffUserSearchConfiguration(roleCategories?: string): StaffUserSearchConfigurationResult {
-  if (!roleCategories) {
+/**
+ * Parses the `display_context_parameter` of a StaffUser field to determine the filters to apply
+ * when searching reference data.
+ *
+ * Expected format: `#ARGUMENT(CATEGORY-LEGAL-OPS,CATEGORY-ADMIN,REGION-1235)`
+ */
+export function parseStaffUserSearchConfiguration(displayContextParameter?: string): StaffUserSearchConfigurationResult {
+  console.log('displayContextParameter: ', displayContextParameter);
+  if (!displayContextParameter) {
     return invalidConfiguration();
   }
 
-  const categories = roleCategories.split(',').map(category => category.trim());
-  if (categories.some(category => !category)) {
+  const match = displayContextParameter.match(ARGUMENT_REGEX);
+  if (!match || !match[1]) {
     return invalidConfiguration();
   }
 
-  const uniqueCategories = categories.filter((category, index) => categories.indexOf(category) === index);
-  if (!uniqueCategories.every(isStaffUserRoleCategory)) {
+  const tokens = match[1].split(',').map(token => token.trim());
+  if (tokens.some(token => !token)) {
     return invalidConfiguration();
   }
 
-  const selectedCategories = uniqueCategories as StaffUserRoleCategory[];
+  const roleCategories: StaffUserRoleCategory[] = [];
+  const regions: string[] = [];
+
+  for (const token of tokens) {
+    if (token.startsWith(CATEGORY_PREFIX)) {
+      const category = normaliseRoleCategory(token.substring(CATEGORY_PREFIX.length));
+      if (!isStaffUserRoleCategory(category)) {
+        return invalidConfiguration();
+      }
+      if (!roleCategories.includes(category)) {
+        roleCategories.push(category);
+      }
+    } else if (token.startsWith(REGION_PREFIX)) {
+      const region = token.substring(REGION_PREFIX.length);
+      if (!region) {
+        return invalidConfiguration();
+      }
+      if (!regions.includes(region)) {
+        regions.push(region);
+      }
+    } else {
+      return invalidConfiguration();
+    }
+  }
+
+  if (!roleCategories.length) {
+    return invalidConfiguration();
+  }
+
   return {
     valid: true,
     configuration: {
-      roleCategories: selectedCategories,
-      staffRoleCategories: selectedCategories.filter(isStaffCacheRoleCategory),
-      includesJudicial: selectedCategories.includes('JUDICIAL')
+      roleCategories,
+      staffRoleCategories: roleCategories.filter(isStaffCacheRoleCategory),
+      includesJudicial: roleCategories.includes('JUDICIAL'),
+      regions
     }
   };
+}
+
+function normaliseRoleCategory(category: string): string {
+  const normalised = category.replace(/-/g, '_');
+  return ROLE_CATEGORY_ALIASES[normalised] || normalised;
 }
 
 function isStaffUserRoleCategory(category: string): category is StaffUserRoleCategory {
