@@ -44,15 +44,15 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
     this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe(jurisdiction => {
       console.log('this.jurisdictionSubscription jurisdiction: ', jurisdiction);
       if (jurisdiction?.currentCaseType) {
-        this.jurisdiction = jurisdiction.id;
-        this.caseType = jurisdiction.currentCaseType.id;
+        this.jurisdiction = jurisdiction.id ?? this.jurisdiction;
+        this.caseType = jurisdiction.currentCaseType.id ?? this.caseType;
       }
     });
     this.notifierSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
       console.log('this.notifierSubscription caseDetails: ', caseDetails);
       if (caseDetails) {
-        this.jurisdiction = caseDetails.case_type?.jurisdiction?.id;
-        this.caseType = caseDetails.case_type?.id;
+        this.jurisdiction = caseDetails.case_type?.jurisdiction?.id ?? this.jurisdiction;
+        this.caseType = caseDetails.case_type?.id ?? this.caseType;
       }
     });
   }
@@ -85,6 +85,8 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
         })
       ))
     );
+    console.log('oninit this.jurisdiction: ', this.jurisdiction);
+    console.log('oninit this.caseType: ', this.caseType);
   }
 
   public filterStaffUsers(searchTerm: string): Observable<StaffUser[]> {
@@ -130,6 +132,7 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public resolveServiceDetails(): Observable<HmctsServiceDetail> {
     const caseType = this.getBaseCaseType();
+    console.log('caseType: ', caseType);
     return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseType).pipe(
       catchError(() => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
       map(serviceDetails => {
