@@ -51,16 +51,18 @@ describe('CasesService', () => {
     triggers: [],
     events: []
   };
-  const CLIENT_CONTEXT = { client_context: {
-    user_task: {
-      task_data: {
-        id: '1',
-        name: 'Example task',
-        case_id: '1234567890'
-      },
-      complete_task: true
+  const CLIENT_CONTEXT = {
+    client_context: {
+      user_task: {
+        task_data: {
+          id: '1',
+          name: 'Example task',
+          case_id: '1234567890'
+        },
+        complete_task: true
+      }
     }
-  }};
+  };
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -562,35 +564,20 @@ describe('CasesService', () => {
       casesService.createChallengedAccessRequest(CASE_ID, car);
       expect(httpService.post).toHaveBeenCalled();
     });
-  });
 
-  describe('createSpecificAccessRequest()', () => {
-    beforeEach(() => {
-      httpService.post.and.callThrough();
-    });
-
-    it('should make an api call', () => {
-      const sar: SpecificAccessRequest = {
-        specificReason: 'dummy'
-      };
-      casesService.createSpecificAccessRequest(CASE_ID, sar);
-      expect(httpService.post).toHaveBeenCalled();
-    });
-  });
-
-  describe('createChallengedAccessRequest()', () => {
-    beforeEach(() => {
-      httpService.post.and.callThrough();
-    });
-
-    it('should make an api call', () => {
+    it('should throw an error when userInfo not present', () => {
       const car: ChallengedAccessRequest = {
         reason: 0,
         caseReference: '1234',
         otherReason: 'dummy'
       };
-      casesService.createChallengedAccessRequest(CASE_ID, car);
-      expect(httpService.post).toHaveBeenCalled();
+      sessionStorageService.getItem.and.returnValue(null);
+      casesService.createChallengedAccessRequest(CASE_ID, car).subscribe(
+        () => fail('should have errored'),
+        (error) => {
+          expect(error.message).toBe('User info not found in session storage');
+        }
+      );
     });
   });
 
@@ -605,6 +592,19 @@ describe('CasesService', () => {
       };
       casesService.createSpecificAccessRequest(CASE_ID, sar);
       expect(httpService.post).toHaveBeenCalled();
+    });
+
+    it('should throw an error when userInfo not present', () => {
+      const sar: SpecificAccessRequest = {
+        specificReason: 'dummy'
+      };
+      sessionStorageService.getItem.and.returnValue(null);
+      casesService.createSpecificAccessRequest(CASE_ID, sar).subscribe(
+        () => fail('should have errored'),
+        (error) => {
+          expect(error.message).toBe('User info not found in session storage');
+        }
+      );
     });
   });
 
