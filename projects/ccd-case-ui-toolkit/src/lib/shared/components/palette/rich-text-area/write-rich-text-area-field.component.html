@@ -27,7 +27,9 @@
         aria-keyshortcuts="Control+Z"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'undo')">
-        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--undo" aria-hidden="true">&#8630;</span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"></path>
+        </svg>
       </button>
       <button
         type="button"
@@ -37,7 +39,9 @@
         aria-keyshortcuts="Control+Y"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'redo')">
-        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--redo" aria-hidden="true">&#8631;</span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"></path>
+        </svg>
       </button>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
       <button
@@ -50,7 +54,9 @@
         aria-keyshortcuts="Control+B"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'bold')">
-        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--bold" aria-hidden="true">B</span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5S13.83 9.5 13 9.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"></path>
+        </svg>
       </button>
       <button
         type="button"
@@ -62,7 +68,9 @@
         aria-keyshortcuts="Control+I"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'italic')">
-        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--italic" aria-hidden="true">I</span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"></path>
+        </svg>
       </button>
       <button
         type="button"
@@ -74,7 +82,9 @@
         aria-keyshortcuts="Control+U"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'underline')">
-        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--underline" aria-hidden="true">U</span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"></path>
+        </svg>
       </button>
       <button
         type="button"
@@ -89,22 +99,16 @@
       </button>
       <button
         type="button"
-        class="ccd-rich-text-area__toolbar-button"
-        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('ordered_list')}"
-        [attr.aria-pressed]="isToolbarCommandActive('ordered_list')"
-        aria-label="Ordered List"
-        title="Ordered List"
+        class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--heading"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('heading')}"
+        [attr.aria-pressed]="isToolbarCommandActive('heading')"
+        aria-label="Heading level 1"
+        title="Heading level 1"
         (mousedown)="onToolbarButtonMouseDown($event)"
-        (click)="executeToolbarCommand($event, 'ordered_list')">
-        <span class="ccd-rich-text-area__list-icon ccd-rich-text-area__list-icon--ordered" aria-hidden="true">
-          <span class="ccd-rich-text-area__list-marker">1</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-          <span class="ccd-rich-text-area__list-marker">2</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-          <span class="ccd-rich-text-area__list-marker">3</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-        </span>
+        (click)="executeToolbarCommand($event, 'heading')">
+        <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--heading" aria-hidden="true">H</span>
       </button>
+      <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
       <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
@@ -114,15 +118,37 @@
         title="Bullet List"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'bullet_list')">
-        <span class="ccd-rich-text-area__list-icon ccd-rich-text-area__list-icon--bullet" aria-hidden="true">
-          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-          <span class="ccd-rich-text-area__list-marker">&#8226;</span>
-          <span class="ccd-rich-text-area__list-line"></span>
-        </span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6C3.17 4.5 2.5 5.17 2.5 6S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM7 13h14v-2H7v2zm0 6h14v-2H7v2zM7 5v2h14V5H7z"></path>
+        </svg>
       </button>
+      <button
+        type="button"
+        class="ccd-rich-text-area__toolbar-button"
+        [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isOrderedListActive()}"
+        [attr.aria-pressed]="isOrderedListActive()"
+        aria-label="Numbered List"
+        title="Numbered List"
+        (mousedown)="onToolbarButtonMouseDown($event)"
+        (click)="executeToolbarCommand($event, 'ordered_list')">
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1V14h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"></path>
+        </svg>
+      </button>
+      <div class="ccd-rich-text-area__list-style">
+        <label class="ccd-rich-text-area__list-style-label" [for]="listStyleId()">List style</label>
+        <select
+          class="ccd-rich-text-area__list-style-select"
+          [id]="listStyleId()"
+          [value]="currentListSelectValue()"
+          (change)="onListStyleChange($event)">
+          <option *ngIf="!isOrderedListActive()" value="">No list</option>
+          <option value="ordered_list">Numbers (1, 2, 3)</option>
+          <option value="ordered_alpha">Letters (a, b, c)</option>
+          <option value="ordered_roman">Roman numerals (i), (ii), (iii)</option>
+        </select>
+      </div>
+      <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
       <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
@@ -130,12 +156,9 @@
         title="Decrease Indent"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'outdent')">
-        <span class="ccd-rich-text-area__indent-icon ccd-rich-text-area__indent-icon--outdent" aria-hidden="true">
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--top"></span>
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--middle"></span>
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--bottom"></span>
-          <span class="ccd-rich-text-area__indent-arrow"></span>
-        </span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M11 17h10v-2H11v2zm-8-5 4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"></path>
+        </svg>
       </button>
       <button
         type="button"
@@ -144,12 +167,9 @@
         title="Increase Indent"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'indent')">
-        <span class="ccd-rich-text-area__indent-icon ccd-rich-text-area__indent-icon--indent" aria-hidden="true">
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--top"></span>
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--middle"></span>
-          <span class="ccd-rich-text-area__indent-line ccd-rich-text-area__indent-line--bottom"></span>
-          <span class="ccd-rich-text-area__indent-arrow"></span>
-        </span>
+        <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"></path>
+        </svg>
       </button>
     </div>
 

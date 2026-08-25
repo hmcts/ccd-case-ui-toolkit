@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
 ### Version 7.3.91
 **EXUI-5056** Hardcoded Credentials v2
 
