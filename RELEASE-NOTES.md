@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.3.94
+**EXUI-4951** Package update - uuid - major
+
+### Version 7.3.93
+**EXUI-4937** Package update - minimist - minor
+
 ### Version 7.3.92
 **EXUI-5101** RTF - Additional options
 
