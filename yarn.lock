@@ -3247,7 +3247,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.34"
+    "@hmcts/media-viewer": "npm:4.2.36"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@types/jasmine": "npm:~5.1.0"
@@ -3364,9 +3364,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.34":
-  version: 4.2.34
-  resolution: "@hmcts/media-viewer@npm:4.2.34"
+"@hmcts/media-viewer@npm:4.2.36":
+  version: 4.2.36
+  resolution: "@hmcts/media-viewer@npm:4.2.36"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3374,7 +3374,7 @@ __metadata:
     pdfjs-dist: "npm:^4.10.38"
     socket.io-client: "npm:^4.8.0"
     tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
+    uuid: "npm:^11.1.1"
   peerDependencies:
     "@angular/animations": ^20.0.0
     "@angular/cdk": ^17.3.8
@@ -3389,7 +3389,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.12
     rxjs: ^7.8.2
-  checksum: 10/a803ddfe5b93e49cb3b890497c33b4bb71fc177208a64bf44ea0c3785df1812c55708eb4d25eb9b561993ffeb2129d0728d9d2566fd848ab8715515b7b55408d
+  checksum: 10/213a7ae40cbc97c8f46885e4776e6e7afa8b630c58e19b81849b645648f46e7b283eaeb7100735e4b793a6772e66d065e71863259f2a2634b0f54533976d5c98
   languageName: node
   linkType: hard
 
@@ -21728,7 +21728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:11.1.0, uuid@npm:^11.0.3":
+"uuid@npm:11.1.0":
   version: 11.1.0
   resolution: "uuid@npm:11.1.0"
   bin:
@@ -21743,6 +21743,15 @@ __metadata:
   bin:
     uuid: dist-node/bin/uuid
   checksum: 10/0f978fd5b0269d7acb615342aeb131f0b8d85eeb8ec34f2915d906baa3befcc14a079a430d0f8116aec6fd20c850cbfab65d1b3d1643fa81ed373c0cf9574f18
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "uuid@npm:11.1.1"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
   languageName: node
   linkType: hard
 
