@@ -3247,7 +3247,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.33"
+    "@hmcts/media-viewer": "npm:4.2.34"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@types/jasmine": "npm:~5.1.0"
@@ -3364,9 +3364,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.33":
-  version: 4.2.33
-  resolution: "@hmcts/media-viewer@npm:4.2.33"
+"@hmcts/media-viewer@npm:4.2.34":
+  version: 4.2.34
+  resolution: "@hmcts/media-viewer@npm:4.2.34"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3389,7 +3389,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.12
     rxjs: ^7.8.2
-  checksum: 10/3b7ba951ae53b9da31023c9bc36e04b85895ea36de8e416d06921ff3ef9d6c60928659f2e41879d33bd77ffec6c5dca471b98f41614393e55e794f6b23e5bd76
+  checksum: 10/a803ddfe5b93e49cb3b890497c33b4bb71fc177208a64bf44ea0c3785df1812c55708eb4d25eb9b561993ffeb2129d0728d9d2566fd848ab8715515b7b55408d
   languageName: node
   linkType: hard
 
@@ -16135,7 +16135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.3":
+"minimist@npm:^1.2.8":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 10/908491b6cc15a6c440ba5b22780a0ba89b9810e1aea684e253e43c4e3b8d56ec1dcdd7ea96dde119c29df59c936cde16062159eae4225c691e19c70b432b6e6f
@@ -16752,7 +16752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^12.1.0":
+"node-gyp@npm:12.4.0, node-gyp@npm:^12.1.0":
   version: 12.4.0
   resolution: "node-gyp@npm:12.4.0"
   dependencies:
@@ -16769,26 +16769,6 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 10/b1f52282398b08ed485f7d93859d45a7bd54f9a3ba8f1e2626ebc2e7e150834c20d90d7f204e07f67c0a88e85c7400d90e01618d7e6d7dd8056bc493821ef181
-  languageName: node
-  linkType: hard
-
-"node-gyp@npm:latest":
-  version: 12.1.0
-  resolution: "node-gyp@npm:12.1.0"
-  dependencies:
-    env-paths: "npm:^2.2.0"
-    exponential-backoff: "npm:^3.1.1"
-    graceful-fs: "npm:^4.2.6"
-    make-fetch-happen: "npm:^15.0.0"
-    nopt: "npm:^9.0.0"
-    proc-log: "npm:^6.0.0"
-    semver: "npm:^7.3.5"
-    tar: "npm:^7.5.2"
-    tinyglobby: "npm:^0.2.12"
-    which: "npm:^6.0.0"
-  bin:
-    node-gyp: bin/node-gyp.js
-  checksum: 10/d93079236cef1dd7fa4df683708d8708ad255c55865f6656664c8959e4d3963d908ac48e8f9f341705432e979dbbf502a40d68d65a17fe35956a5a05ba6c1cb4
   languageName: node
   linkType: hard
 
@@ -20820,7 +20800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^7.4.3, tar@npm:^7.5.2":
+"tar@npm:^7.4.3":
   version: 7.5.2
   resolution: "tar@npm:7.5.2"
   dependencies:

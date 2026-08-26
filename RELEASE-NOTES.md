@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.3.90-exui-3879
+### Version 7.3.92-exui-3879
 **EXUI-3879** Gov Notify can get a Markdown link by using 2 sets of square brackets - Part2
+
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
 
 ### Version 7.3.90
 **EXUI-4950** Package update - dompurify - major
