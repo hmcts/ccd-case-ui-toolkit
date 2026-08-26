@@ -175,6 +175,7 @@
   },
   "resolutions": {
     "braces": "^3.0.3",
+    "dompurify": "^3.4.13",
     "dot-prop": "^5.1.1",
     "elliptic": "6.5.4",
     "graceful-fs": "^4.2.3",
@@ -185,7 +186,8 @@
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.23",
     "minimatch": "^8.0.4",
-    "minimist": "^1.2.3",
+    "minimist": "^1.2.8",
+    "node-gyp@npm:latest": "12.4.0",
     "node-fetch": "^2.6.7",
     "node-forge": "^0.10.0",
     "serialize-javascript": "^3.1.0",
