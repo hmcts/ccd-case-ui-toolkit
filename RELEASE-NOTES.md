@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.95
+**EXUI-5033** upgrade TK to node 24
+
 ### Version 7.3.94
 **EXUI-4951** Package update - uuid - major
 
