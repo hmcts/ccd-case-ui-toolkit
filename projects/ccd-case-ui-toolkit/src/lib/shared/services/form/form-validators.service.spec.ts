@@ -153,6 +153,16 @@ describe('FormValidatorsService', () => {
     expect(result.valid).toBeFalsy();
   });
 
+  it('should allow ordinary bracketed text', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+
+    result.setValue('Please bring [photo identification] to the hearing');
+
+    expect(result.valid).toBeTruthy();
+  });
+
   it('should return add Markdown validator for MANDATORY fields - reference box pattern', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'MANDATORY', null);

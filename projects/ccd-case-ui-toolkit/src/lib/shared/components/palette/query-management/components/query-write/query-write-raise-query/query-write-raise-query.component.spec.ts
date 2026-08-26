@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 import { ActivatedRoute } from '@angular/router';
 import { QueryManagementService } from '../../../services';
+import { RaiseQueryErrorMessage } from '../../../enums';
 import { Pipe, PipeTransform } from '@angular/core';
 import { QueryCreateContext } from '../../../models';
 import { MockComponent } from 'ng2-mock-component';
@@ -85,6 +86,29 @@ describe('QueryWriteRaiseQueryComponent', () => {
     expect(component.formGroup.get('subject').hasError('maxlength')).toBeTruthy();
   });
 
+  it('should reject markdown in the query subject and detail while preserving existing validators', () => {
+    const subject = component.formGroup.get('subject');
+    const body = component.formGroup.get('body');
+
+    component.ngOnChanges();
+
+    subject.setValue('[[Test]](www.google.com)');
+    body.setValue('[[Test]](www.google.com)');
+
+    expect(subject.hasError('markDownPattern')).toBeTrue();
+    expect(body.hasError('markDownPattern')).toBeTrue();
+    expect(component.getSubjectErrorMessage()).toBe(RaiseQueryErrorMessage.QUERY_SUBJECT_MARKDOWN);
+    expect(component.getBodyErrorMessage()).toBe(RaiseQueryErrorMessage.QUERY_BODY_MARKDOWN);
+
+    subject.setValue('a'.repeat(201));
+    expect(subject.hasError('maxlength')).toBeTrue();
+
+    subject.setValue('Plain subject');
+    body.setValue('Plain detail');
+    expect(subject.valid).toBeTrue();
+    expect(body.valid).toBeTrue();
+  });
+
   it('should truncate subject value to 200 characters on input', () => {
     const tooLong = 'a'.repeat(250);
     component.formGroup.get('subject').setValue(tooLong);
@@ -113,12 +137,36 @@ describe('QueryWriteRaiseQueryComponent', () => {
 
     spyOn(component.queryDataCreated, 'emit');
 
+    component.formGroup.patchValue({
+      name: 'Query author',
+      subject: 'Valid subject',
+      body: 'Valid detail',
+      isHearingRelated: false
+    });
     component.triggerSubmission = true;
     component.ngOnChanges();
 
     expect(queryManagementServiceSpy.setCaseQueriesCollectionData).toHaveBeenCalled();
     expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).toHaveBeenCalled();
     expect(component.queryDataCreated.emit).toHaveBeenCalledWith(mockGeneratedData);
+  });
+
+  it('should not emit query data when markdown makes the form invalid', () => {
+    queryManagementServiceSpy.setCaseQueriesCollectionData.and.returnValue(true);
+    spyOn(component.queryDataCreated, 'emit');
+    component.formGroup.patchValue({
+      name: 'Query author',
+      subject: 'Valid subject',
+      body: '[[Test]](www.google.com)',
+      isHearingRelated: false
+    });
+    component.triggerSubmission = true;
+
+    component.ngOnChanges();
+
+    expect(component.formGroup.invalid).toBeTrue();
+    expect(queryManagementServiceSpy.generateCaseQueriesCollectionData).not.toHaveBeenCalled();
+    expect(component.queryDataCreated.emit).not.toHaveBeenCalled();
   });
 
   it('should not call generateCaseQueriesCollectionData if triggerSubmission is false', () => {
