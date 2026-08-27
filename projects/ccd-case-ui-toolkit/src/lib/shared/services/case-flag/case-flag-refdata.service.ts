@@ -68,8 +68,6 @@ export class CaseFlagRefdataService {
   public getHmctsServiceDetailsByServiceName(serviceNames?: string): Observable<HmctsServiceDetail[]> {
     let url = this.appConfig.getLocationRefApiUrl();
 
-    console.log('getHmctsServiceDetailsByServiceName serviceNames: ', serviceNames);
-
     if (url) {
       url += '/orgServices';
       if (serviceNames) {
@@ -93,8 +91,8 @@ export class CaseFlagRefdataService {
    */
   public getHmctsServiceDetailsByCaseType(caseTypeId?: string): Observable<HmctsServiceDetail[]> {
     let url = this.appConfig.getLocationRefApiUrl();
-    console.log('getHmctsServiceDetailsByCaseType caseTypeId: ', caseTypeId)
-    // caseTypeId = 'Benefit'
+    
+    // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
     caseTypeId = 'CIVIL';
     if (url) {
       url += '/orgServices';

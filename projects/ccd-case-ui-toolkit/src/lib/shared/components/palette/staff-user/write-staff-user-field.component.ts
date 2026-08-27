@@ -57,7 +57,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public ngOnInit(): void {
     super.ngOnInit();
-    console.log('writestaffuserfieldcomponent ngOnInit: ', this.caseField.value)
     this.staffUserControl = new FormControl(this.caseField.value);
 
     this.formGroup.setControl(`${this.caseField.id}_staffUserControl`, this.staffUserControl);
@@ -114,7 +113,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
     return this.resolveServiceDetails().pipe(
       switchMap(serviceDetails => {
-        console.log('WriteStaffUserFieldComponent serviceDetails: ', serviceDetails);
         const searches: Observable<StaffUser[]>[] = [];
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
@@ -147,7 +145,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public resolveServiceDetails(): Observable<HmctsServiceDetail> {
     const caseType = this.getBaseCaseType();
-    console.log('caseType: ', caseType);
     return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseType).pipe(
       catchError(() => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
       map(serviceDetails => serviceDetails[0])
@@ -190,7 +187,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   private getBaseCaseType(): string {
-    console.log('this.jurisdictionService.getSelectedJurisdiction()?.getValue(): ', this.jurisdictionService.getSelectedJurisdiction()?.getValue());
     const caseType = this.caseType || this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
     return caseType?.split('-')[0];
   }
@@ -206,11 +202,6 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   private getDisplayContextParameter(): string {
     return this.caseField?.display_context_parameter
       || this.caseFields?.find(caseField => caseField.id === this.caseField?.field_type?.id)?.display_context_parameter;
-  }
-
-  private clearSelection(): void {
-    this.caseField.value = null;
-    this.complexGroup.get('idamId')?.setValue(null);
   }
 
   private removeDuplicateUsers(results: StaffUser[][]): StaffUser[] {

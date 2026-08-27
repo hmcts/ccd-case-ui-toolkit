@@ -35,7 +35,6 @@ export type StaffUserSearchConfigurationResult =
  * Expected format: `#ARGUMENT(CATEGORY-LEGAL-OPS,CATEGORY-ADMIN,REGION-1235)`
  */
 export function parseStaffUserSearchConfiguration(displayContextParameter?: string): StaffUserSearchConfigurationResult {
-  console.log('displayContextParameter: ', displayContextParameter);
   if (!displayContextParameter) {
     return invalidConfiguration();
   }

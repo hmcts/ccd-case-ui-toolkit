@@ -19,7 +19,6 @@ export class ReadStaffUserFieldComponent extends AbstractFieldReadComponent impl
 
   public ngOnInit(): void {
     const idamId = this.caseField?.value?.idamId;
-    console.log('idamId: ', idamId);
     if (idamId) {
       this.sub = this.caseworkerService.getUserByIdamId(idamId).subscribe(caseworker => {
         if (caseworker) {
