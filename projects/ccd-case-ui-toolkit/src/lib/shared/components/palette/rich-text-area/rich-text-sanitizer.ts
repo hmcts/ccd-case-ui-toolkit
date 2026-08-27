@@ -214,6 +214,9 @@ export function sanitiseRichTextDocument(documentElement: Document): string {
     const listStart = tagName === 'ol' && /^\d{1,6}$/.test(element.getAttribute('start') || '')
       ? element.getAttribute('start')
       : null;
+    const listType = tagName === 'ol' && /^[ai]$/.test(element.getAttribute('type') || '')
+      ? element.getAttribute('type')
+      : null;
 
     while (element.attributes.length > 0) {
       element.removeAttribute(element.attributes[0].name);
@@ -227,6 +230,9 @@ export function sanitiseRichTextDocument(documentElement: Document): string {
     }
     if (listStart) {
       element.setAttribute('start', listStart);
+    }
+    if (listType) {
+      element.setAttribute('type', listType);
     }
   });
 
