@@ -69,8 +69,9 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
     this.filteredStaffUsers$ = this.staffUserControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
+      filter(input => typeof input === 'string'),
       debounceTime(300),
-      map(input => typeof input === 'string' ? input : input?.displayName),
+      map(input => input as string),
       tap(searchTerm => {
         this.searchTerm = searchTerm;
         this.invalidSearchTerm = false;
