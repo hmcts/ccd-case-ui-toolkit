@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Constants } from '../../../commons/constants';
 import { StaffUser, parseStaffUserSearchConfiguration } from '../../../domain/work-allocation';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
@@ -57,16 +57,16 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public ngOnInit(): void {
     super.ngOnInit();
+    console.log('writestaffuserfieldcomponent ngOnInit: ', this.caseField.value)
     this.staffUserControl = new FormControl(this.caseField.value);
 
-    // Ensure idamId sub-control always exists in complexGroup, regardless of whether
-    // the CCD field definition has complex_fields populated (the backend only needs idamId)
-    if (!this.complexGroup.get('idamId')) {
-      this.complexGroup.addControl('idamId', new FormControl(this.caseField.value?.idamId ?? null));
-    }
     this.formGroup.setControl(`${this.caseField.id}_staffUserControl`, this.staffUserControl);
     FieldsUtils.addCaseFieldAndComponentReferences(this.staffUserControl, this.caseField, this);
     this.setupValidation();
+    if (this.caseField.value?.idamId) {
+      this.loadStaffUser(this.caseField.value.idamId);
+    }
+
     this.filteredStaffUsers$ = this.staffUserControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
       debounceTime(300),
@@ -83,6 +83,25 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
         })
       ))
     );
+  }
+
+  public loadStaffUser(idamId: string): void {
+    if (idamId) {
+      this.caseworkerService.getUserByIdamId(idamId).pipe(take(1)).subscribe({
+        next: (caseworker) => {
+          if (caseworker) {
+            const staffUser: StaffUser = {
+              idamId: caseworker.idamId,
+              displayName: `${caseworker.firstName} ${caseworker.lastName}`.trim(),
+              ...(caseworker.email ? { emailId: caseworker.email } : {})
+            };
+            this.staffUserControl.setValue(staffUser, { emitEvent: false });
+            this.staffUserSelected = true;
+          }
+        },
+        error: () => { /* leave the control empty if lookup fails */ }
+      });
+    }
   }
 
   public filterStaffUsers(searchTerm: string): Observable<StaffUser[]> {
