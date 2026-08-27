@@ -19,8 +19,9 @@ export class CaseworkerService {
 
   public getUserByIdamId(idamId: string): Observable<Caseworker> {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUserByIdamId`;
+    const body = { idamId };
     return this.http
-      .post(url, idamId)
+      .post(url, body)
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
