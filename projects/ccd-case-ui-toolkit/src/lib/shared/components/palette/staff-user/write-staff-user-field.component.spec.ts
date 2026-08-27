@@ -146,7 +146,7 @@ describe('WriteStaffUserFieldComponent', () => {
     tick(299);
     expect(caseworkerService.searchStaffUsers).not.toHaveBeenCalled();
     tick(1);
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'ale', ['ADMIN'], []);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'ale', ['ADMIN']);
   }));
 
   it('should search only the staff cache for staff categories', () => {
@@ -160,7 +160,7 @@ describe('WriteStaffUserFieldComponent', () => {
       }]);
     });
 
-    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'alex', ['ADMIN'], []);
+    expect(caseworkerService.searchStaffUsers).toHaveBeenCalledWith(['PRIVATELAW'], 'alex', ['ADMIN']);
     expect(jurisdictionService.searchJudicialUsers).not.toHaveBeenCalled();
   });
 

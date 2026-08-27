@@ -16,19 +16,6 @@ describe('JurisdictionService', () => {
 
       expect(mockHttpService.post).toHaveBeenCalledWith('api/prd/judicial/getJudicialUsersSearch', { searchString: 'searchTerm', serviceCode: 'serviceId' });
     });
-
-    it('should include the regions when provided', () => {
-      const mockHttpService = {
-        post: () => { }
-      };
-
-      service = new JurisdictionService(mockHttpService as unknown as HttpService);
-      spyOn(mockHttpService, 'post');
-      service.searchJudicialUsers('searchTerm', 'serviceId', ['1235']);
-
-      expect(mockHttpService.post).toHaveBeenCalledWith('api/prd/judicial/getJudicialUsersSearch',
-        { searchString: 'searchTerm', serviceCode: 'serviceId', regions: ['1235'] });
-    });
   });
 
   describe('searchJudicialUsersByPersonalCodes', () => {

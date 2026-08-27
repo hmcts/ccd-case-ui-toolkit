@@ -28,11 +28,10 @@ export class JurisdictionService {
     return this._selectedJurisdictionBS;
   }
 
-  public searchJudicialUsers(searchTerm: string, serviceId: string, regions: string[] = []): Observable<JudicialUserModel[]> {
+  public searchJudicialUsers(searchTerm: string, serviceId: string): Observable<JudicialUserModel[]> {
     return this.httpService.post('api/prd/judicial/getJudicialUsersSearch', {
       searchString: searchTerm,
-      serviceCode: serviceId,
-      ...(regions.length ? { regions } : {})
+      serviceCode: serviceId
     });
   }
 

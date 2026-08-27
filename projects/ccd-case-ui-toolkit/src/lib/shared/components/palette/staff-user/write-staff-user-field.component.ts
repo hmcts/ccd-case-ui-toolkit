@@ -94,17 +94,17 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
     return this.resolveServiceDetails().pipe(
       switchMap(serviceDetails => {
+        console.log('WriteStaffUserFieldComponent serviceDetails: ', serviceDetails);
         const searches: Observable<StaffUser[]>[] = [];
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
             [serviceDetails.ccd_service_name],
             searchTerm,
-            configuration.configuration.staffRoleCategories,
-            configuration.configuration.regions));
+            configuration.configuration.staffRoleCategories));
         }
         if (configuration.configuration.includesJudicial) {
           searches.push(this.jurisdictionService.searchJudicialUsers(
-            searchTerm, serviceDetails.service_code, configuration.configuration.regions).pipe(
+            searchTerm, serviceDetails.service_code).pipe(
             map(judicialUsers => judicialUsers.map(judicialUser => ({
               idamId: judicialUser.idamId,
               displayName: judicialUser.fullName || '',
@@ -127,6 +127,7 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public resolveServiceDetails(): Observable<HmctsServiceDetail> {
     const caseType = this.getBaseCaseType();
+    console.log('caseType: ', caseType);
     return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseType).pipe(
       catchError(() => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
       map(serviceDetails => serviceDetails[0])
@@ -169,6 +170,7 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   }
 
   private getBaseCaseType(): string {
+    console.log('this.jurisdictionService.getSelectedJurisdiction()?.getValue(): ', this.jurisdictionService.getSelectedJurisdiction()?.getValue());
     const caseType = this.caseType || this.jurisdictionService.getSelectedJurisdiction()?.getValue()?.currentCaseType?.id;
     return caseType?.split('-')[0];
   }

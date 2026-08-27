@@ -11,7 +11,6 @@ export interface StaffUserSearchConfiguration {
   roleCategories: StaffUserRoleCategory[];
   staffRoleCategories: StaffCacheRoleCategory[];
   includesJudicial: boolean;
-  regions: string[];
 }
 
 export interface StaffUser {

@@ -51,7 +51,6 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
   }
 
   const roleCategories: StaffUserRoleCategory[] = [];
-  const regions: string[] = [];
 
   for (const token of tokens) {
     if (token.startsWith(CATEGORY_PREFIX)) {
@@ -63,13 +62,7 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
         roleCategories.push(category);
       }
     } else if (token.startsWith(REGION_PREFIX)) {
-      const region = token.substring(REGION_PREFIX.length);
-      if (!region) {
-        return invalidConfiguration();
-      }
-      if (!regions.includes(region)) {
-        regions.push(region);
-      }
+      // Region filtering is not supported in this version; REGION- tokens are silently ignored
     } else {
       return invalidConfiguration();
     }
@@ -84,8 +77,7 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
     configuration: {
       roleCategories,
       staffRoleCategories: roleCategories.filter(isStaffCacheRoleCategory),
-      includesJudicial: roleCategories.includes('JUDICIAL'),
-      regions
+      includesJudicial: roleCategories.includes('JUDICIAL')
     }
   };
 }

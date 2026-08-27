@@ -111,6 +111,8 @@ export class PaletteService {
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           case 'JudicialUser':
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
+          case 'StaffUser':
+            return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
@@ -132,8 +134,6 @@ export class PaletteService {
         return this.getComponentLauncherComponent(caseField, write);
       case 'FlagLauncher':
         return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
-      case 'StaffUser':
-        return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

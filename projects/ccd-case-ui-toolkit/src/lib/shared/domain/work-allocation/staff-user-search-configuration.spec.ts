@@ -7,8 +7,7 @@ describe('parseStaffUserSearchConfiguration', () => {
       configuration: {
         roleCategories: ['ADMIN'],
         staffRoleCategories: ['ADMIN'],
-        includesJudicial: false,
-        regions: []
+        includesJudicial: false
       }
     });
   });
@@ -19,8 +18,7 @@ describe('parseStaffUserSearchConfiguration', () => {
       configuration: {
         roleCategories: ['ADMIN', 'CTSC'],
         staffRoleCategories: ['ADMIN', 'CTSC'],
-        includesJudicial: false,
-        regions: []
+        includesJudicial: false
       }
     });
   });
@@ -31,32 +29,29 @@ describe('parseStaffUserSearchConfiguration', () => {
       configuration: {
         roleCategories: ['LEGAL_OPERATIONS'],
         staffRoleCategories: ['LEGAL_OPERATIONS'],
-        includesJudicial: false,
-        regions: []
+        includesJudicial: false
       }
     });
   });
 
-  it('should collect the regions to filter on', () => {
+  it('should ignore region tokens (region filtering not supported in this version)', () => {
     expect(parseStaffUserSearchConfiguration('#ARGUMENT(CATEGORY-LEGAL-OPS,CATEGORY-ADMIN,REGION-1235)')).toEqual({
       valid: true,
       configuration: {
         roleCategories: ['LEGAL_OPERATIONS', 'ADMIN'],
         staffRoleCategories: ['LEGAL_OPERATIONS', 'ADMIN'],
-        includesJudicial: false,
-        regions: ['1235']
+        includesJudicial: false
       }
     });
   });
 
-  it('should de-duplicate categories and regions while preserving their order', () => {
+  it('should de-duplicate categories while preserving their order, ignoring region tokens', () => {
     expect(parseStaffUserSearchConfiguration('#ARGUMENT(CATEGORY-CTSC,CATEGORY-ADMIN,CATEGORY-CTSC,REGION-1,REGION-1)')).toEqual({
       valid: true,
       configuration: {
         roleCategories: ['CTSC', 'ADMIN'],
         staffRoleCategories: ['CTSC', 'ADMIN'],
-        includesJudicial: false,
-        regions: ['1']
+        includesJudicial: false
       }
     });
   });
@@ -67,8 +62,7 @@ describe('parseStaffUserSearchConfiguration', () => {
       configuration: {
         roleCategories: ['JUDICIAL'],
         staffRoleCategories: [],
-        includesJudicial: true,
-        regions: []
+        includesJudicial: true
       }
     });
   });
@@ -79,8 +73,7 @@ describe('parseStaffUserSearchConfiguration', () => {
       configuration: {
         roleCategories: ['ADMIN', 'JUDICIAL'],
         staffRoleCategories: ['ADMIN'],
-        includesJudicial: true,
-        regions: ['3']
+        includesJudicial: true
       }
     });
   });
