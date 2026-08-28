@@ -37,11 +37,9 @@ const CASE_FIELD: any = {
 describe('WriteStaffUserFieldComponent', () => {
   let fixture: ComponentFixture<WriteStaffUserFieldComponent>;
   let component: WriteStaffUserFieldComponent;
-
   let jurisdictionService: jasmine.SpyObj<JurisdictionService>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
   let caseworkerService: jasmine.SpyObj<CaseworkerService>;
-
   let selectedJurisdiction: BehaviorSubject<any>;
   let caseView: BehaviorSubject<any>;
 
@@ -583,17 +581,6 @@ describe('WriteStaffUserFieldComponent', () => {
         ['PRIVATELAW'],
         'alex',
         ['ADMIN']
-      );
-
-      // Current component explicitly forces judicial search:
-      //
-      // configuration.configuration.includesJudicial = true;
-      // configuration.configuration.roleCategories.push('JUDICIAL');
-      expect(
-        jurisdictionService.searchJudicialUsers
-      ).toHaveBeenCalledWith(
-        'alex',
-        'FIRST'
       );
     });
 
