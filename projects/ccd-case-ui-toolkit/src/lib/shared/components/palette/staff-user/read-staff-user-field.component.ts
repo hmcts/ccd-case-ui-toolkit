@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { CaseworkerService } from '../../case-editor/services/case-worker.service';
 import { JurisdictionService } from '../../../services';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
@@ -13,6 +13,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 export class ReadStaffUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
 
   public displayName: string;
+  public showSpinner = false;
   private sub: Subscription;
 
   constructor(private readonly caseworkerService: CaseworkerService,
@@ -23,20 +24,24 @@ export class ReadStaffUserFieldComponent extends AbstractFieldReadComponent impl
   public ngOnInit(): void {
     const idamId = this.caseField?.value?.idamId;
     if (idamId) {
+      this.showSpinner = true;
       this.sub = this.caseworkerService.getUserByIdamId(idamId).pipe(
         catchError(() => of(null)),
         switchMap(caseworker => {
           if (caseworker) {
-            this.displayName = `${caseworker.firstName} ${caseworker.lastName}`.trim();
-            return of(null);
+            return of(`${caseworker.firstName} ${caseworker.lastName}`.trim());
           }
-          return this.jurisdictionService.getJudicialUserByIdamId(idamId);
+          return this.jurisdictionService.getJudicialUserByIdamId(idamId).pipe(
+            map(judicialUser => judicialUser ? (judicialUser.fullName || judicialUser.knownAs || '') : '')
+          );
         })
-      ).subscribe(judicialUser => {
-        if (judicialUser) {
-          this.displayName = judicialUser.fullName || `${judicialUser.knownAs}`.trim();
-        }
-      });
+      ).subscribe(
+        (displayName: string) => {
+          this.displayName = displayName;
+          this.showSpinner = false;
+        },
+        () => this.showSpinner = false
+      );
     }
   }
 
