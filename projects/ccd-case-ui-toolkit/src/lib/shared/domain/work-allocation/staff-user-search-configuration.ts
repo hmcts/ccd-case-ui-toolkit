@@ -83,7 +83,7 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
 }
 
 function normaliseRoleCategory(category: string): string {
-  const normalised = category.replaceAll(/-/g, '_');
+  const normalised = category.replaceAll('-', '_');
   return ROLE_CATEGORY_ALIASES[normalised] || normalised;
 }
 
