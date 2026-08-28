@@ -13,7 +13,6 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
 
 @Component({
   selector: 'ccd-write-staff-user-field',
-  styleUrls: ['./write-staff-user-field.component.scss'],
   templateUrl: './write-staff-user-field.component.html',
   standalone: false
 })
@@ -30,7 +29,7 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
   public errors: ValidationErrors;
   public staffUserSelected = false;
   public jurisdictionSubscription: Subscription;
-  private notifierSubscription: Subscription;
+  private readonly notifierSubscription: Subscription;
 
   constructor(
     private readonly jurisdictionService: JurisdictionService,

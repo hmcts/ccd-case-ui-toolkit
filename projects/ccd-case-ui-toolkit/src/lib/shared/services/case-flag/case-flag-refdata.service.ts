@@ -93,9 +93,12 @@ export class CaseFlagRefdataService {
     let url = this.appConfig.getLocationRefApiUrl();
     
     // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
-    caseTypeId = 'PRLAPPS';
+    const caseTypeIdOverride = 'PRLAPPS';
     if (url) {
       url += '/orgServices';
+      if (caseTypeIdOverride) {
+        url += `?ccdCaseType=${caseTypeIdOverride}`;
+      }
       if (caseTypeId) {
         url += `?ccdCaseType=${caseTypeId}`;
       }

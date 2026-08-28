@@ -4,16 +4,16 @@ import {
   StaffUserSearchConfiguration
 } from './staff-user.model';
 
-const STAFF_CACHE_ROLE_CATEGORIES: StaffCacheRoleCategory[] = [
+const STAFF_CACHE_ROLE_CATEGORIES = new Set<StaffCacheRoleCategory>([
   'ADMIN',
   'CTSC',
   'LEGAL_OPERATIONS'
-];
+]);
 
-const SUPPORTED_ROLE_CATEGORIES: StaffUserRoleCategory[] = [
+const SUPPORTED_ROLE_CATEGORIES = new Set<StaffUserRoleCategory>([
   ...STAFF_CACHE_ROLE_CATEGORIES,
-  'JUDICIAL'
-];
+  'JUDICIAL',
+]);
 
 // Aliases allow the definition to use the shorter, hyphenated form within #ARGUMENT(...)
 const ROLE_CATEGORY_ALIASES: { [alias: string]: StaffUserRoleCategory } = {
@@ -39,7 +39,8 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
     return invalidConfiguration();
   }
 
-  const match = displayContextParameter.match(ARGUMENT_REGEX);
+  const match = ARGUMENT_REGEX.exec(displayContextParameter);
+
   if (!match || !match[1]) {
     return invalidConfiguration();
   }
@@ -82,16 +83,16 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
 }
 
 function normaliseRoleCategory(category: string): string {
-  const normalised = category.replace(/-/g, '_');
+  const normalised = category.replaceAll(/-/g, '_');
   return ROLE_CATEGORY_ALIASES[normalised] || normalised;
 }
 
 function isStaffUserRoleCategory(category: string): category is StaffUserRoleCategory {
-  return SUPPORTED_ROLE_CATEGORIES.includes(category as StaffUserRoleCategory);
+  return SUPPORTED_ROLE_CATEGORIES.has(category as StaffUserRoleCategory);
 }
 
 function isStaffCacheRoleCategory(category: StaffUserRoleCategory): category is StaffCacheRoleCategory {
-  return STAFF_CACHE_ROLE_CATEGORIES.includes(category as StaffCacheRoleCategory);
+  return STAFF_CACHE_ROLE_CATEGORIES.has(category as StaffCacheRoleCategory);
 }
 
 function invalidConfiguration(): StaffUserSearchConfigurationResult {
