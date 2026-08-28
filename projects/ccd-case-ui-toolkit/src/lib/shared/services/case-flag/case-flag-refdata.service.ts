@@ -98,8 +98,7 @@ export class CaseFlagRefdataService {
       url += '/orgServices';
       if (caseTypeIdOverride) {
         url += `?ccdCaseType=${caseTypeIdOverride}`;
-      }
-      if (caseTypeId) {
+      } else if (caseTypeId) {
         url += `?ccdCaseType=${caseTypeId}`;
       }
 
