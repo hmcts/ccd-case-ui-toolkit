@@ -102,12 +102,24 @@
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--heading"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('heading')}"
         [attr.aria-pressed]="isToolbarCommandActive('heading')"
-        aria-label="Heading level 1"
-        title="Heading level 1"
+        aria-label="Heading"
+        title="Heading"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'heading')">
         <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--heading" aria-hidden="true">H</span>
       </button>
+      <div class="ccd-rich-text-area__heading-level">
+        <label class="ccd-rich-text-area__heading-level-label" [for]="headingLevelId()">Heading level</label>
+        <select
+          class="ccd-rich-text-area__heading-level-select"
+          [id]="headingLevelId()"
+          [value]="selectedHeadingLevel"
+          (change)="onHeadingLevelChange($event)">
+          <option value="1">H1 (20px)</option>
+          <option value="2">H2 (16px)</option>
+          <option value="3">H3 (14px)</option>
+        </select>
+      </div>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
       <button
         type="button"

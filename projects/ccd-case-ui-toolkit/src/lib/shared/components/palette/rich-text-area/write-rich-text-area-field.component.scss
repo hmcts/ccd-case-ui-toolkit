@@ -89,6 +89,41 @@
   margin: 0 5px 0 3px;
 }
 
+.ccd-rich-text-area__heading-level {
+  display: inline-flex;
+  margin-right: 3px;
+}
+
+.ccd-rich-text-area__heading-level-label {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.ccd-rich-text-area__heading-level-select {
+  background-color: #fff;
+  border: 1px solid #0b0c0c;
+  border-radius: 0;
+  color: #0b0c0c;
+  font-family: inherit;
+  font-size: 16px;
+  height: 32px;
+  min-width: 108px;
+  padding: 2px 24px 2px 6px;
+}
+
+.ccd-rich-text-area__heading-level-select:focus {
+  box-shadow: 0 0 0 2px #0b0c0c;
+  outline: 3px solid #ffdd00;
+  outline-offset: 0;
+}
+
 .ccd-rich-text-area__list-style {
   align-items: center;
   display: inline-flex;
@@ -143,6 +178,16 @@
 
 .ccd-rich-text-area .ProseMirror h1 {
   font-size: 20px;
+  font-weight: 700;
+}
+
+.ccd-rich-text-area .ProseMirror h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ccd-rich-text-area .ProseMirror h3 {
+  font-size: 14px;
   font-weight: 700;
 }
 

@@ -17,6 +17,7 @@ import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRic
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'heading' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
 type RichTextListStyle = '' | 'ordered_list' | 'ordered_alpha' | 'ordered_roman' | 'bullet_list';
 type RichTextOrderedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
+type RichTextHeadingLevel = 1 | 2 | 3;
 
 interface WordListConversionState {
   listStack: HTMLElement[];
@@ -59,6 +60,7 @@ function orderedListTypeForStyle(style: RichTextOrderedListStyle): string | null
 
 const WORD_COLUMN_SPACING = 12;
 const MAX_INDENT = 6;
+const DEFAULT_HEADING_LEVEL: RichTextHeadingLevel = 3;
 const CSS_LENGTH_UNITS = ['rem', 'px', 'pt', 'in', 'cm', 'mm', 'em'];
 const BLOCK_NODE_NAMES = new Set([
   'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
@@ -67,6 +69,13 @@ const BLOCK_NODE_NAMES = new Set([
 
 const richTextNodes = {
   ...editorNodes,
+  heading: {
+    ...editorNodes.heading,
+    attrs: {
+      ...editorNodes.heading.attrs,
+      level: { default: DEFAULT_HEADING_LEVEL }
+    }
+  } as NodeSpec,
   list_item: {
     ...editorNodes.list_item,
     content: '(paragraph | heading) block*'
@@ -132,6 +141,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   public editor: Editor;
   public richTextAreaControl: FormControl;
   public activeToolbarCommands: { [key in RichTextToolbarCommand]?: boolean } = {};
+  public selectedHeadingLevel: RichTextHeadingLevel = DEFAULT_HEADING_LEVEL;
 
   private editorUpdateSubscription: Subscription;
   private isNormalisingValue = false;
@@ -209,6 +219,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   public listStyleId(): string {
     return `${this.id()}_list_style`;
+  }
+
+  public headingLevelId(): string {
+    return `${this.id()}_heading_level`;
   }
 
   public toolbarLabel(): string {
@@ -348,6 +362,20 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   public isToolbarCommandActive(command: RichTextToolbarCommand): boolean {
     return !!this.activeToolbarCommands[command];
+  }
+
+  public onHeadingLevelChange(event: Event): void {
+    const level = Number((event.target as HTMLSelectElement).value);
+    if (level !== 1 && level !== 2 && level !== 3) {
+      return;
+    }
+
+    this.selectedHeadingLevel = level;
+    this.applyHeadingLevel(level);
+    this.richTextAreaControl.markAsDirty();
+    this.editor.view.focus();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
   }
 
   public currentListStyle(): RichTextListStyle {
@@ -1017,7 +1045,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       Italic: 'italic',
       Underline: 'underline',
       Paragraph: 'paragraph',
-      'Heading level 1': 'heading',
+      Heading: 'heading',
       'Bullet List': 'bullet_list',
       'Numbered List': 'ordered_list'
     };
@@ -1125,7 +1153,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
               if (headingLevel) {
                 element.dataset.wordHeadingLevel = headingLevel.toString();
               }
-              if (hasBoldStyle) {
+              // A Word heading style is rendered bold by the corresponding h1-h3
+              // element. Only retain a strong mark for independently bold text.
+              if (hasBoldStyle && !headingLevel) {
                 this.wrapBoldInlineContents(documentElement, element);
               }
             });
@@ -1260,31 +1290,21 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     ) as HTMLElement[];
 
     blocks.forEach((block) => {
-      const namedHeadingLevel = this.namedWordHeadingLevel(block);
       const existingHeadingLevel = /^h([1-6])$/i.exec(block.tagName)?.[1];
       if (existingHeadingLevel) {
-        const heading = existingHeadingLevel === '1'
-          ? block
-          : this.replaceElementTag(documentElement, block, 'h1');
-        if (namedHeadingLevel) {
-          this.removeRedundantHeadingBold(heading);
+        const supportedHeadingLevel = Math.min(Number(existingHeadingLevel), 3);
+        const headingTag = `h${supportedHeadingLevel}`;
+        if (block.tagName.toLowerCase() !== headingTag) {
+          this.replaceElementTag(documentElement, block, headingTag);
         }
         return;
       }
 
       const headingLevel = this.wordHeadingLevel(block);
       if (headingLevel) {
-        const heading = this.replaceElementTag(documentElement, block, 'h1');
-        if (namedHeadingLevel) {
-          this.removeRedundantHeadingBold(heading);
-        }
+        this.replaceElementTag(documentElement, block, `h${Math.min(headingLevel, 3)}`);
       }
     });
-  }
-
-  private removeRedundantHeadingBold(heading: HTMLElement): void {
-    const boldElements = Array.prototype.slice.call(heading.querySelectorAll('strong, b')) as HTMLElement[];
-    boldElements.reverse().forEach((element) => this.unwrapElement(element));
   }
 
   private wordHeadingLevel(element: HTMLElement): number {
@@ -1440,7 +1460,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         return;
       }
 
-      if (this.hasBoldStyle(style)) {
+      // Heading elements provide their own bold presentation. Do not turn that
+      // semantic heading weight into an independently selected Bold mark.
+      const isHeading = /^h[1-3]$/i.test(htmlElement.tagName);
+      if (this.hasBoldStyle(style) && !isHeading) {
         this.wrapBoldInlineContents(documentElement, htmlElement);
       }
       if (this.hasItalicStyle(style)) {
@@ -2143,12 +2166,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     const activeListType = this.activeListNode()?.type.name;
+    const activeHeadingLevel = this.activeHeadingLevel();
+    if (activeHeadingLevel === 1 || activeHeadingLevel === 2 || activeHeadingLevel === 3) {
+      this.selectedHeadingLevel = activeHeadingLevel;
+    }
     this.activeToolbarCommands = {
       bold: this.isMarkActive('strong'),
       italic: this.isMarkActive('em'),
       underline: this.isMarkActive('u'),
       paragraph: this.paragraphCommandApplied && this.isPlainParagraphActive(),
-      heading: this.isHeadingOneActive(),
+      heading: activeHeadingLevel !== null,
       ordered_list: activeListType === 'ordered_list',
       bullet_list: activeListType === 'bullet_list'
     };
@@ -2623,7 +2650,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private toggleHeading(): void {
-    if (this.isHeadingOneActive()) {
+    if (this.activeHeadingLevel() !== null) {
       const paragraphType = this.editor.view.state.schema.nodes.paragraph;
       if (paragraphType) {
         setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
@@ -2632,37 +2659,42 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return;
     }
 
+    this.applyHeadingLevel(this.selectedHeadingLevel);
+    this.paragraphCommandApplied = false;
+  }
+
+  private applyHeadingLevel(level: RichTextHeadingLevel): void {
     const headingType = this.editor.view.state.schema.nodes.heading;
     if (headingType) {
-      setBlockType(headingType, { level: 1 })(this.editor.view.state, this.editor.view.dispatch);
+      setBlockType(headingType, { level })(this.editor.view.state, this.editor.view.dispatch);
     }
     this.paragraphCommandApplied = false;
   }
 
-  private isHeadingOneActive(): boolean {
+  private activeHeadingLevel(): number | null {
     const state = this.editor.view.state;
     const headingType = state.schema.nodes.heading;
     if (!headingType) {
-      return false;
+      return null;
     }
 
     const { $from, from, to } = state.selection;
     for (let depth = $from.depth; depth > 0; depth--) {
       const node = $from.node(depth);
-      if (node.type === headingType && node.attrs.level === 1) {
-        return true;
+      if (node.type === headingType) {
+        return Number(node.attrs.level);
       }
     }
 
-    let isActive = false;
+    let activeLevel: number | null = null;
     state.doc.nodesBetween(from, to, (node) => {
-      if (node.type === headingType && node.attrs.level === 1) {
-        isActive = true;
+      if (node.type === headingType) {
+        activeLevel = Number(node.attrs.level);
         return false;
       }
       return true;
     });
-    return isActive;
+    return activeLevel;
   }
 
   private isPlainParagraphActive(): boolean {
