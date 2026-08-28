@@ -76,7 +76,7 @@ describe('CaseworkerService', () => {
     caseworkerService.getUserByIdamId(CASE_WORKER_1.idamId)
       .subscribe()
       .add(() => {
-        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, CASE_WORKER_1.idamId);
+        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, { idamId: CASE_WORKER_1.idamId });
       });
   }));
 
