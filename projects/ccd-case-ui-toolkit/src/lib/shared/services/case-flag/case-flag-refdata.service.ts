@@ -93,7 +93,7 @@ export class CaseFlagRefdataService {
     let url = this.appConfig.getLocationRefApiUrl();
     
     // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
-    caseTypeId = 'PRLAPPS'; // CIVIL ASYLUM DIVORCE PRLAPPS GrantOfRepresentation CARE_SUPERVISION_EPO FinancialRemedyContested
+    caseTypeId = 'PRLAPPS';
     if (url) {
       url += '/orgServices';
       if (caseTypeId) {

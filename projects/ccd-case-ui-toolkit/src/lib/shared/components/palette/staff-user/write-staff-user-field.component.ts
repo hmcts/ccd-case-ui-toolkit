@@ -127,11 +127,9 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
     return this.resolveServiceDetails().pipe(
       switchMap(serviceDetails => {
         const searches: Observable<StaffUser[]>[] = [];
-        // cj remove
+        // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
         configuration.configuration.includesJudicial = true;
         configuration.configuration.roleCategories.push('JUDICIAL');
-        console.log('filterStaffUsers (after) configuration: ', configuration);
-        // cj remove
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
             [serviceDetails.ccd_service_name],
