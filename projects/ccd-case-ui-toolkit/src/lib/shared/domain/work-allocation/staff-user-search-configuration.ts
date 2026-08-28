@@ -41,7 +41,7 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
 
   const match = ARGUMENT_REGEX.exec(displayContextParameter);
 
-  if (!match || !match[1]) {
+  if (!match?.[1]) {
     return invalidConfiguration();
   }
 
