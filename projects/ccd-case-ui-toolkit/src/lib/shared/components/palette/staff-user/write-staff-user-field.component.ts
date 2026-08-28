@@ -87,8 +87,10 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
 
   public loadStaffUser(idamId: string): void {
     if (idamId) {
-      this.caseworkerService.getUserByIdamId(idamId).pipe(take(1)).subscribe({
-        next: (caseworker) => {
+      this.caseworkerService.getUserByIdamId(idamId).pipe(
+        take(1),
+        catchError(() => of(null)),
+        switchMap(caseworker => {
           if (caseworker) {
             const staffUser: StaffUser = {
               idamId: caseworker.idamId,
@@ -97,9 +99,20 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
             };
             this.staffUserControl.setValue(staffUser, { emitEvent: false });
             this.staffUserSelected = true;
+            return of(null);
           }
-        },
-        error: () => { /* leave the control empty if lookup fails */ }
+          return this.jurisdictionService.getJudicialUserByIdamId(idamId);
+        })
+      ).subscribe(judicialUser => {
+        if (judicialUser) {
+          const staffUser: StaffUser = {
+            idamId: judicialUser.idamId,
+            displayName: judicialUser.fullName || judicialUser.knownAs || '',
+            ...(judicialUser.emailId ? { emailId: judicialUser.emailId } : {})
+          };
+          this.staffUserControl.setValue(staffUser, { emitEvent: false });
+          this.staffUserSelected = true;
+        }
       });
     }
   }
@@ -114,6 +127,11 @@ export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent imp
     return this.resolveServiceDetails().pipe(
       switchMap(serviceDetails => {
         const searches: Observable<StaffUser[]>[] = [];
+        // cj remove
+        configuration.configuration.includesJudicial = true;
+        configuration.configuration.roleCategories.push('JUDICIAL');
+        console.log('filterStaffUsers (after) configuration: ', configuration);
+        // cj remove
         if (configuration.configuration.staffRoleCategories.length) {
           searches.push(this.caseworkerService.searchStaffUsers(
             [serviceDetails.ccd_service_name],
