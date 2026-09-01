@@ -1,4 +1,5 @@
 .ccd-rich-text-area-read {
+  font-size: 14px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   word-break: normal;
@@ -21,7 +22,9 @@
 
 .ccd-rich-text-area-read p,
 .ccd-rich-text-area-read ul,
-.ccd-rich-text-area-read ol {
+.ccd-rich-text-area-read ol,
+.ccd-rich-text-area-read li {
+  font-size: 14px;
   margin-top: 0;
   overflow-wrap: anywhere;
   word-break: normal;
@@ -73,12 +76,12 @@
 }
 
 .ccd-rich-text-area-read h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .ccd-rich-text-area-read h3 {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 }
 

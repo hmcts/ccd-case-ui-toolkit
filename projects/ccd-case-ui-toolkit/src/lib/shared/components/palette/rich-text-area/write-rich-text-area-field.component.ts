@@ -147,6 +147,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private isNormalisingValue = false;
   private paragraphCommandApplied = false;
   private statusChangesSubscription: Subscription;
+  private toolbarPointerInteraction = false;
   private valueChangesSubscription: Subscription;
 
   public ngOnInit(): void {
@@ -217,6 +218,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return `${this.id()}_error`;
   }
 
+  public keyboardInstructionsId(): string {
+    return `${this.id()}_keyboard_instructions`;
+  }
+
   public listStyleId(): string {
     return `${this.id()}_list_style`;
   }
@@ -238,11 +243,79 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.syncAccessibilityLater();
   }
 
+  public onEditorClick(): void {
+    this.syncAccessibilityLater();
+  }
+
   public onToolbarButtonMouseDown(event: MouseEvent): void {
+    this.toolbarPointerInteraction = true;
+    this.setToolbarTabStop(event.currentTarget as HTMLElement);
     event.preventDefault();
   }
 
+  public onToolbarFocusIn(event: FocusEvent): void {
+    const control = event.target as HTMLElement;
+    if (control?.matches('button, select')) {
+      this.setToolbarTabStop(control);
+    }
+  }
+
+  public onToolbarKeyDown(event: KeyboardEvent): void {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+      return;
+    }
+
+    const control = event.target as HTMLElement;
+    if (!control?.matches('button, select')) {
+      return;
+    }
+
+    const isSelect = control.tagName === 'SELECT';
+    const isPrevious = event.key === 'ArrowLeft';
+    const isNext = event.key === 'ArrowRight';
+    const isFirst = event.key === 'Home' && !isSelect;
+    const isLast = event.key === 'End' && !isSelect;
+    if (!isPrevious && !isNext && !isFirst && !isLast) {
+      return;
+    }
+
+    const controls = this.toolbarControls();
+    const currentIndex = controls.indexOf(control);
+    if (currentIndex === -1 || controls.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let nextIndex: number;
+    if (isFirst) {
+      nextIndex = 0;
+    } else if (isLast) {
+      nextIndex = controls.length - 1;
+    } else {
+      const direction = isPrevious ? -1 : 1;
+      nextIndex = (currentIndex + direction + controls.length) % controls.length;
+    }
+
+    const nextControl = controls[nextIndex];
+    this.setToolbarTabStop(nextControl);
+    nextControl.focus();
+  }
+
   private handleEditorKeyDown(event: KeyboardEvent): boolean {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      const controls = this.toolbarControls();
+      const toolbarControl = controls.find((control) => control.tabIndex === 0) || controls[0];
+      if (toolbarControl) {
+        this.setToolbarTabStop(toolbarControl);
+        toolbarControl.focus();
+      }
+      return true;
+    }
+
     const isUnmodifiedEnter = event.key === 'Enter' &&
       !event.shiftKey &&
       !event.altKey &&
@@ -255,11 +328,28 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return true;
     }
 
-    if (event.key !== 'Tab' || !this.isNodeActive('list_item')) {
+    if (event.key !== 'Tab') {
       return false;
     }
 
-    this.executeToolbarCommand(event, event.shiftKey ? 'outdent' : 'indent');
+    if (event.altKey || event.ctrlKey || event.metaKey) {
+      return false;
+    }
+
+    if (!this.isNodeActive('list_item')) {
+      return false;
+    }
+
+    const indentChanged = this.changeIndent(!event.shiftKey);
+    if (!indentChanged) {
+      return false;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.richTextAreaControl.markAsDirty();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
     return true;
   }
 
@@ -355,7 +445,15 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     this.richTextAreaControl.markAsDirty();
-    this.editor.view.focus();
+    const eventTarget = event.currentTarget as HTMLElement;
+    const keepToolbarFocus = eventTarget?.matches('button, select') && !this.toolbarPointerInteraction;
+    if (keepToolbarFocus) {
+      this.setToolbarTabStop(eventTarget);
+      eventTarget.focus();
+    } else {
+      this.editor.view.focus();
+    }
+    this.toolbarPointerInteraction = false;
     this.updateToolbarState();
     this.syncAccessibilityLater();
   }
@@ -373,7 +471,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.selectedHeadingLevel = level;
     this.applyHeadingLevel(level);
     this.richTextAreaControl.markAsDirty();
-    this.editor.view.focus();
     this.updateToolbarState();
     this.syncAccessibilityLater();
   }
@@ -415,7 +512,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.applyListStyleSelection(listStyle);
 
     this.richTextAreaControl.markAsDirty();
-    this.editor.view.focus();
     this.updateToolbarState();
     this.syncAccessibilityLater();
   }
@@ -1022,6 +1118,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     if (this.caseField.hint_text) {
       ids.push(this.hintId());
     }
+    ids.push(this.keyboardInstructionsId());
     if (this.isInvalid()) {
       ids.push(this.errorId());
     }
@@ -1062,6 +1159,29 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
           : this.isToolbarCommandActive(toggleCommands[label]);
         button.setAttribute('aria-pressed', `${isActive}`);
       }
+    });
+
+    const controls = this.toolbarControls();
+    if (controls.length && !controls.some((control) => control.tabIndex === 0)) {
+      this.setToolbarTabStop(controls[0]);
+    }
+  }
+
+  private toolbarControls(): HTMLElement[] {
+    if (!this.editorHost) {
+      return [];
+    }
+
+    return Array.prototype.slice.call(
+      this.editorHost.nativeElement.querySelectorAll(
+        '.ccd-rich-text-area__toolbar button:not([disabled]), .ccd-rich-text-area__toolbar select:not([disabled])'
+      )
+    );
+  }
+
+  private setToolbarTabStop(activeControl: HTMLElement): void {
+    this.toolbarControls().forEach((control) => {
+      control.tabIndex = control === activeControl ? 0 : -1;
     });
   }
 
@@ -2552,31 +2672,30 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return node.type.name === 'ordered_list' || node.type.name === 'bullet_list';
   }
 
-  private changeIndent(increase: boolean): void {
+  private changeIndent(increase: boolean): boolean {
     const { state, dispatch } = this.editor.view;
     const listItemType = state.schema.nodes.list_item;
 
     if (listItemType && this.isNodeActive('list_item')) {
       if (!increase && this.changeListIndent(false, state, dispatch)) {
-        return;
+        return true;
       }
 
       const listCommand = increase ? sinkListItem(listItemType) : liftListItem(listItemType);
       if (listCommand(state, dispatch)) {
         this.applyOrderedListStyleForCurrentDepth();
-        return;
+        return true;
       }
 
       if (increase && this.changeListIndent(true, state, dispatch)) {
-        return;
+        return true;
       }
     }
 
     if (increase) {
-      this.editor.commands.indent().exec();
-    } else {
-      this.editor.commands.outdent().exec();
+      return this.editor.commands.indent().exec();
     }
+    return this.editor.commands.outdent().exec();
   }
 
   private applyOrderedListStyleForCurrentDepth(): void {

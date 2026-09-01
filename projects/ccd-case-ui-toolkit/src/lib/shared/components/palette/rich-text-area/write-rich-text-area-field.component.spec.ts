@@ -276,21 +276,23 @@ describe('WriteRichTextAreaFieldComponent', () => {
   it('should separate paragraph and list controls from adjacent toolbar groups', () => {
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]') as HTMLButtonElement;
     const headingButton = paragraphButton.nextElementSibling as HTMLButtonElement;
-    const headingLevel = headingButton.nextElementSibling as HTMLDivElement;
-    const paragraphSeparator = headingLevel.nextElementSibling as HTMLSpanElement;
-    const bulletListButton = paragraphSeparator.nextElementSibling as HTMLButtonElement;
+    const paragraphSeparator = headingButton.parentElement.nextElementSibling as HTMLSpanElement;
+    const listGroup = paragraphSeparator.nextElementSibling as HTMLDivElement;
+    const bulletListButton = listGroup.firstElementChild as HTMLButtonElement;
     const numberedListButton = bulletListButton.nextElementSibling as HTMLButtonElement;
     const listStyle = numberedListButton.nextElementSibling as HTMLDivElement;
-    const listStyleSeparator = listStyle.nextElementSibling as HTMLSpanElement;
+    const listStyleSeparator = listGroup.nextElementSibling as HTMLSpanElement;
+    const indentationGroup = listStyleSeparator.nextElementSibling as HTMLDivElement;
 
     expect(headingButton.getAttribute('aria-label')).toBe('Heading');
-    expect(headingLevel.classList).toContain('ccd-rich-text-area__heading-level');
+    expect(fixture.nativeElement.querySelector('.ccd-rich-text-area__heading-level')).toBeNull();
     expect(paragraphSeparator.classList).toContain('ccd-rich-text-area__toolbar-separator');
+    expect(listGroup.classList).toContain('ccd-rich-text-area__toolbar-group--list');
     expect(bulletListButton.getAttribute('aria-label')).toBe('Bullet List');
     expect(numberedListButton.getAttribute('aria-label')).toBe('Numbered List');
     expect(listStyle.classList).toContain('ccd-rich-text-area__list-style');
     expect(listStyleSeparator.classList).toContain('ccd-rich-text-area__toolbar-separator');
-    expect(listStyleSeparator.nextElementSibling.getAttribute('aria-label')).toBe('Decrease Indent');
+    expect(indentationGroup.firstElementChild.getAttribute('aria-label')).toBe('Decrease Indent');
   });
 
   it('should render toolbar icons as decorative SVGs without changing accessible button names', () => {
@@ -355,13 +357,58 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const editor = fixture.nativeElement.querySelector('.ProseMirror');
 
     expect(toolbar.getAttribute('role')).toBe('toolbar');
+    expect(toolbar.getAttribute('aria-orientation')).toBe('horizontal');
     expect(toolbar.getAttribute('aria-label')).toBe('Add recitals or preamble formatting options');
     expect(editor.getAttribute('role')).toBe('textbox');
     expect(editor.getAttribute('aria-multiline')).toBe('true');
     expect(editor.getAttribute('aria-labelledby')).toBe(component.labelId());
-    expect(editor.getAttribute('aria-describedby')).toBe(component.hintId());
+    expect(editor.getAttribute('aria-describedby')).toContain(component.hintId());
+    expect(editor.getAttribute('aria-describedby')).toContain(component.keyboardInstructionsId());
     expect(editor.getAttribute('aria-required')).toBe('true');
     expect(editor.getAttribute('aria-invalid')).toBe('false');
+  }));
+
+  it('should expose one toolbar tab stop and support arrow-key navigation with wrapping', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const toolbar = fixture.nativeElement.querySelector('.ccd-rich-text-area__toolbar') as HTMLElement;
+    const controls = Array.from(toolbar.querySelectorAll('button, select')) as HTMLElement[];
+    const undoButton = toolbar.querySelector('button[aria-label="Undo"]') as HTMLButtonElement;
+    const increaseIndentButton = toolbar.querySelector('button[aria-label="Increase Indent"]') as HTMLButtonElement;
+
+    expect(controls.filter((control) => control.tabIndex === 0)).toEqual([undoButton]);
+
+    undoButton.focus();
+    undoButton.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      bubbles: true,
+      cancelable: true
+    }));
+
+    expect(document.activeElement).toBe(increaseIndentButton);
+    expect(controls.filter((control) => control.tabIndex === 0)).toEqual([increaseIndentButton]);
+
+    increaseIndentButton.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true
+    }));
+
+    expect(document.activeElement).toBe(undoButton);
+  }));
+
+  it('should retain toolbar focus after keyboard activation', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const boldButton = fixture.nativeElement.querySelector('button[aria-label="Bold"]') as HTMLButtonElement;
+    boldButton.focus();
+    boldButton.click();
+    tick();
+
+    expect(document.activeElement).toBe(boldButton);
+    expect(boldButton.tabIndex).toBe(0);
   }));
 
   it('should not add the editor label to the keyboard tab order', fakeAsync(() => {
@@ -658,7 +705,15 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(paragraphButton.nextElementSibling).toBe(headingButton);
   }));
 
-  it('should expose accessible heading level choices and default to H3', fakeAsync(() => {
+  it('should only expose accessible heading level choices for a heading and default to Heading 3', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector(`#${component.headingLevelId()}`)).toBeNull();
+
+    component.editor.setContent('<p>Section heading</p>');
+    selectEditorText('Section heading');
+    clickToolbarButton('Heading');
     tick();
     fixture.detectChanges();
 
@@ -672,9 +727,9 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(headingLevelLabel.textContent.trim()).toBe('Heading level');
     expect(headingLevelSelect.value).toBe('3');
     expect(Array.from(headingLevelSelect.options).map((option) => option.text)).toEqual([
-      'H1 (20px)',
-      'H2 (16px)',
-      'H3 (14px)'
+      'Heading 1',
+      'Heading 2',
+      'Heading 3'
     ]);
   }));
 
@@ -683,6 +738,10 @@ describe('WriteRichTextAreaFieldComponent', () => {
     fixture.detectChanges();
     component.editor.setContent('<p>Section heading</p>');
     selectEditorText('Section heading');
+
+    clickToolbarButton('Heading');
+    tick();
+    fixture.detectChanges();
 
     selectHeadingLevel('1');
     tick();
@@ -1757,6 +1816,44 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     expect(tab.defaultPrevented).toBe(false);
     expect(formGroup.controls[FIELD_ID].value).toContain('<p>Paragraph text</p>');
+  }));
+
+  it('should move focus to the toolbar when Escape is pressed inside a list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>List item</p></li></ul>');
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    const undoButton = fixture.nativeElement.querySelector('button[aria-label="Undo"]') as HTMLButtonElement;
+    selectEditorText('List item');
+
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    editorElement.dispatchEvent(escape);
+    tick();
+
+    expect(escape.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(undoButton);
+    expect(undoButton.tabIndex).toBe(0);
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ul><li><p>List item</p></li></ul>');
+  }));
+
+  it('should leave modified Tab shortcuts available while editing a list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>List item</p></li></ul>');
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    selectEditorText('List item');
+
+    const controlTab = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true
+    });
+    editorElement.dispatchEvent(controlTab);
+    tick();
+
+    expect(controlTab.defaultPrevented).toBe(false);
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ul><li><p>List item</p></li></ul>');
   }));
 
   it('should indent and outdent a bullet list when the item cannot be nested', fakeAsync(() => {

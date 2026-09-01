@@ -6,17 +6,43 @@
   max-width: 100%;
 }
 
+.ccd-rich-text-area__keyboard-instructions {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .ccd-rich-text-area__toolbar {
   align-items: center;
   background: #fff;
   border: 1px solid #d8dde0;
   border-radius: 6px;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  column-gap: 2px;
   margin-bottom: 10px;
+  max-width: 100%;
   padding: 6px 8px;
+  row-gap: 6px;
   width: fit-content;
+}
+
+.ccd-rich-text-area__toolbar-group {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.ccd-rich-text-area__toolbar-group--list {
+  max-width: 100%;
 }
 
 .ccd-rich-text-area .NgxEditor__Wrapper {
@@ -116,6 +142,7 @@
   height: 32px;
   min-width: 108px;
   padding: 2px 24px 2px 6px;
+  width: 150px;
 }
 
 .ccd-rich-text-area__heading-level-select:focus {
@@ -129,6 +156,7 @@
   display: inline-flex;
   gap: 8px;
   margin: 0 4px;
+  min-width: 0;
 }
 
 .ccd-rich-text-area__list-style-label {
@@ -144,14 +172,32 @@
   font-family: inherit;
   font-size: 16px;
   height: 32px;
-  min-width: 190px;
+  max-width: 100%;
+  min-width: 0;
   padding: 2px 28px 2px 8px;
+  width: 260px;
 }
 
 .ccd-rich-text-area__list-style-select:focus {
   box-shadow: 0 0 0 2px #0b0c0c;
   outline: 3px solid #ffdd00;
   outline-offset: 0;
+}
+
+@media (max-width: 480px) {
+  .ccd-rich-text-area__toolbar-group--list {
+    flex-wrap: wrap;
+  }
+
+  .ccd-rich-text-area__list-style {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+
+  .ccd-rich-text-area__list-style-select {
+    flex: 1 1 auto;
+    width: auto;
+  }
 }
 
 .ccd-rich-text-area__toolbar-icon {
@@ -182,12 +228,12 @@
 }
 
 .ccd-rich-text-area .ProseMirror h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .ccd-rich-text-area .ProseMirror h3 {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -206,6 +252,7 @@
 
 .ccd-rich-text-area .NgxEditor__Content {
   box-sizing: border-box;
+  font-size: 14px;
   height: 100%;
   min-height: 0;
   overflow-x: hidden;
@@ -214,6 +261,7 @@
 }
 
 .ccd-rich-text-area .ProseMirror {
+  font-size: 14px;
   min-height: 231px;
   outline: 0;
   overflow-wrap: anywhere;
@@ -267,7 +315,9 @@
 
 .ccd-rich-text-area .ProseMirror p,
 .ccd-rich-text-area .ProseMirror ul,
-.ccd-rich-text-area .ProseMirror ol {
+.ccd-rich-text-area .ProseMirror ol,
+.ccd-rich-text-area .ProseMirror li {
+  font-size: 14px;
   margin-top: 0;
   overflow-wrap: anywhere;
   word-break: normal;
