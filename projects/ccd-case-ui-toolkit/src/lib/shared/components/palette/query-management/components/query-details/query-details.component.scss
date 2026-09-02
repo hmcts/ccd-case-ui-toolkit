@@ -5,4 +5,9 @@
   .govuk-table__header {
     width: 330px;
   }
+
+  .govuk-table__header--no-border,
+  .govuk-table__cell--no-border {
+    border-bottom: none;
+  }
 }
