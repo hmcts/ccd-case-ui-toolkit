@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
+
 ### Version 7.3.95
 **EXUI-5033** upgrade TK to node 24
 
