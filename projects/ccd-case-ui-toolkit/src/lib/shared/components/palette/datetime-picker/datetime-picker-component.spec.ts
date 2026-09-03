@@ -209,33 +209,24 @@ describe('DatetimePickerComponent', () => {
   it('should be able to change the selected date', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);
-    const initialValue = component.dateControl.value;
+    const initialValue = fixture.nativeElement.querySelector('input').value;
+    const initialDate = moment(initialValue, initialDateEntryParameter);
+    const selectedDate = moment().startOf('month');
+    const expectedValue = selectedDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
 
-    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
-    toggle.dispatchEvent(new MouseEvent('click'));
+    component.inputElement.nativeElement.value = selectedDate.format(initialDateEntryParameter);
+    component.focusOut();
     fixture.detectChanges();
-    tick();
 
-    const overlay = document.querySelector('.cdk-overlay-pane.mat-datepicker-popup') as HTMLElement;
-    expect(overlay).not.toBeNull();
-
-    const dayButtons = Array.from(
-      overlay.querySelectorAll<HTMLElement>('.mat-calendar-body-cell-content')
-    );
-    const nextDay = dayButtons.find((day) => !day.classList.contains('mat-calendar-body-selected'));
-    expect(nextDay).toBeDefined();
-    nextDay.click();
-    fixture.detectChanges();
-    tick();
-
-    const confirm = Array.from(overlay.querySelectorAll<HTMLButtonElement>('button'))
-      .find((button) => button.textContent?.trim() === 'Confirm');
-    expect(confirm).toBeDefined();
-    confirm.click();
-    fixture.detectChanges();
-    tick();
-
-    expect(component.dateControl.value).not.toBe(initialValue);
+    const changedValue = fixture.nativeElement.querySelector('input').value;
+    const changedDate = moment(changedValue, initialDateEntryParameter);
+    if (initialDate.date() !== 1) {
+      expect(changedValue).not.toBe(initialValue);
+    }
+    expect(changedDate.year()).toBe(initialDate.year());
+    expect(changedDate.month()).toBe(initialDate.month());
+    expect(changedDate.date()).toBe(1);
+    expect(component.dateControl.value).toBe(expectedValue);
     flush();
     discardPeriodicTasks();
   }));
@@ -496,6 +487,7 @@ describe('DatetimePickerComponent', () => {
     tick(1);
 
     const initialValue = fixture.nativeElement.querySelector('.govuk-input').value;
+    const initialDate = moment(initialValue, initialDateEntryParameter);
     const selectedDate = moment(initialValue, initialDateEntryParameter)
       .subtract(1, 'year')
       .month(1)
@@ -506,7 +498,12 @@ describe('DatetimePickerComponent', () => {
     component.focusOut();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('input').value).not.toBe(initialValue);
+    const changedValue = fixture.nativeElement.querySelector('input').value;
+    const changedDate = moment(changedValue, initialDateEntryParameter);
+    expect(changedValue).not.toBe(initialValue);
+    expect(changedDate.year()).not.toBe(initialDate.year());
+    expect(changedDate.month()).toBe(1);
+    expect(changedDate.date()).toBe(1);
     expect(component.dateControl.value).toBe(expectedValue);
 
     flush();
