@@ -1,4 +1,4 @@
-@import "govuk-frontend/govuk/all";
+@use 'govuk-frontend/govuk/all' as *;
 
 .query-list {
   &__row {
