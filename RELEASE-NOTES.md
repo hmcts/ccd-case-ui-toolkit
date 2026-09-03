@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.3.95-exui-5063-2
+### Version 7.3.96-exui-5063
 **EXUI-5063** Staff type-ahead component
+
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
 
 ### Version 7.3.95
 **EXUI-5033** upgrade TK to node 24
