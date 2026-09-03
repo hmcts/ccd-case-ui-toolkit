@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.96-exui-5098
+**EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
 ### Version 7.3.96
 **EXUI-4977** Package update - minimatch - major
 
