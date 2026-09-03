@@ -91,14 +91,10 @@ export class CaseFlagRefdataService {
    */
   public getHmctsServiceDetailsByCaseType(caseTypeId?: string): Observable<HmctsServiceDetail[]> {
     let url = this.appConfig.getLocationRefApiUrl();
-    
-    // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
-    const caseTypeIdOverride = 'PRLAPPS';
+
     if (url) {
       url += '/orgServices';
-      if (caseTypeIdOverride) {
-        url += `?ccdCaseType=${caseTypeIdOverride}`;
-      } else if (caseTypeId) {
+      if (caseTypeId) {
         url += `?ccdCaseType=${caseTypeId}`;
       }
 

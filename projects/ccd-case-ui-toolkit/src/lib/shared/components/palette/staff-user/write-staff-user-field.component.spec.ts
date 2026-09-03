@@ -472,14 +472,9 @@ describe('WriteStaffUserFieldComponent', () => {
         ['ADMIN']
       );
 
-      // Judicial search is currently forced by the QA override
-      // in filterStaffUsers().
       expect(
         jurisdictionService.searchJudicialUsers
-      ).toHaveBeenCalledWith(
-        'ale',
-        'FIRST'
-      );
+      ).not.toHaveBeenCalled();
     }));
 
     it('should ignore StaffUser object values emitted by the control', fakeAsync(() => {
@@ -550,7 +545,7 @@ describe('WriteStaffUserFieldComponent', () => {
   });
 
   describe('filterStaffUsers', () => {
-    it('should search staff and judicial users for staff categories while QA override is enabled', () => {
+    it('should search staff users for staff categories', () => {
       caseworkerService.searchStaffUsers.and.returnValue(
         of([
           {
@@ -727,6 +722,9 @@ describe('WriteStaffUserFieldComponent', () => {
     });
 
     it('should show an invalid search state when the judicial source fails', () => {
+      component.caseField.display_context_parameter =
+        '#ARGUMENT(CATEGORY-JUDICIAL)';
+
       jurisdictionService.searchJudicialUsers.and.returnValue(
         throwError(new Error('search failed'))
       );

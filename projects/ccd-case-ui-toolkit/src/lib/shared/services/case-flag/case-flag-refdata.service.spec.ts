@@ -171,8 +171,7 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyServiceDetails);
   });
 
-  // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
-  xit('should retrieve the HMCTS service details for the given case type', () => {
+  it('should retrieve the HMCTS service details for the given case type', () => {
     service.getHmctsServiceDetailsByCaseType('testCaseType').subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
@@ -182,8 +181,7 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyServiceDetails);
   });
 
-  // HARDCODED OVERRIDE FOR QA PURPOSES - REMOVE BEFORE MERGING/DEPLOYMENT
-  xit('should retrieve the HMCTS service details for all services when no case type specified', () => {
+  it('should retrieve the HMCTS service details for all services when no case type specified', () => {
     service.getHmctsServiceDetailsByCaseType().subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });

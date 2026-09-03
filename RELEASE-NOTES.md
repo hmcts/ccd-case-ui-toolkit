@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.95-exui-5063-1
+### Version 7.3.95-exui-5063-2
 **EXUI-5063** Staff type-ahead component
 
 ### Version 7.3.95
