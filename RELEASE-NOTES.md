@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.97
+**EXUI-5153** RTF - Add in option for different heading options
+
 ### Version 7.3.96
 **EXUI-4977** Package update - minimatch - major
 
