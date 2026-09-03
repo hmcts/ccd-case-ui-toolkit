@@ -17,9 +17,7 @@ export class PageValidationService {
       .filter((caseField) => !this.caseFieldService.isReadOnly(caseField))
       .filter((caseField) => !this.isHidden(caseField, editForm))
       .forEach((caseField) => {
-        const theControl = FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])
-          ? editForm.controls.data.get(`${caseField.id}_judicialUserControl`)
-          : editForm.controls.data.get(caseField.id);
+        const theControl = editForm.controls.data.get(this.getValidationControlName(caseField));
         if (!(this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl))) {
           failingCaseFields.push(caseField);
         }
@@ -52,5 +50,15 @@ export class PageValidationService {
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
     return this.caseFieldService.isMandatory(caseField) && theControl === null;
+  }
+
+  private getValidationControlName(caseField: CaseField): string {
+    if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
+      return `${caseField.id}_judicialUserControl`;
+    }
+    if (FieldsUtils.isCaseFieldOfType(caseField, ['StaffUser'])) {
+      return `${caseField.id}_staffUserControl`;
+    }
+    return caseField.id;
   }
 }

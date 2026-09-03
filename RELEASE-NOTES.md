@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.96-exui-5063
+**EXUI-5063** Staff type-ahead component
+
 ### Version 7.3.96
 **EXUI-4977** Package update - minimatch - major
 
