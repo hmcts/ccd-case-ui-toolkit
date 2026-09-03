@@ -1,7 +1,25 @@
 ## RELEASE NOTES
 
-### Version 7.3.90-exui-5098
+### Version 7.3.96-exui-5098
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
+
+### Version 7.3.95
+**EXUI-5033** upgrade TK to node 24
+
+### Version 7.3.94
+**EXUI-4951** Package update - uuid - major
+
+### Version 7.3.93
+**EXUI-4937** Package update - minimist - minor
+
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
 
 ### Version 7.3.90
 **EXUI-4950** Package update - dompurify - major
