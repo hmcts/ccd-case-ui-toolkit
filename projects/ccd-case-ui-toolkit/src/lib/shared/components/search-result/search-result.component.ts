@@ -17,7 +17,6 @@ import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory,
   standalone: false
 })
 export class SearchResultComponent implements OnChanges, OnInit {
-
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
@@ -118,7 +117,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public ngOnInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
-        if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
+        if (this.selectedCases && !this.selectedCases.some((aCase) => aCase.case_id === preSelectedCase.case_id)) {
           this.selectedCases.push(preSelectedCase);
         }
       }
@@ -128,8 +127,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-
-    if (changes['resultView']) {
+    if (changes.resultView) {
       this.hideRows = false;
 
       this.sortParameters = undefined;
@@ -147,8 +145,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
     }
-    if (changes['page']) {
-      this.selected.page = (changes['page']).currentValue;
+    if (changes.page) {
+      this.selected.page = (changes.page).currentValue;
     }
   }
 
@@ -185,7 +183,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public selectAll(): void {
     if (this.allOnPageSelected()) {
       // all cases already selected, so unselect all on this page
-      this.resultView.results.forEach(c => {
+      this.resultView.results.forEach((c) => {
         this.selectedCases.forEach((s, i) => {
           if (c.case_id === s.case_id) {
             this.selectedCases.splice(i, 1);
@@ -193,7 +191,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         });
       });
     } else {
-      this.resultView.results.forEach(c => {
+      this.resultView.results.forEach((c) => {
         if (!this.isSelected(c) && this.canBeShared(c)) {
           this.selectedCases.push(c);
         }
@@ -248,11 +246,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
    */
   // A longer term resolution is to move this piece of logic to the backend
   public hydrateResultView(): void {
-    this.resultView.results.forEach(result => {
+    this.resultView.results.forEach((result) => {
       const caseFields = [];
 
-      Object.keys(result.case_fields).forEach(fieldId => {
-
+      Object.keys(result.case_fields).forEach((fieldId) => {
         const field = result.case_fields[fieldId];
 
         caseFields.push(Object.assign(new CaseField(), {
@@ -260,18 +257,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
           label: null,
           field_type: {},
           value: field,
-          display_context: null,
+          display_context: null
         }));
       });
 
       result.hydrated_case_fields = caseFields;
       result.columns = {};
 
-      this.resultView.columns.forEach(col => {
+      this.resultView.columns.forEach((col) => {
         result.columns[col.case_field_id] = this.buildCaseField(col, result);
       });
     });
-
   }
 
   public goToPage(page): void {
@@ -309,7 +305,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
       display_context_parameter: col.display_context_parameter,
-      display_context: col.display_context,
+      display_context: col.display_context
     });
   }
 
@@ -364,7 +360,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       condition = this.isSortAscending(column);
     }
 
-    return condition ? '&#9660;' : '&#9650;';
+    return String.fromCharCode(condition ? 9660 : 9650);
   }
 
   public activityEnabled(): boolean {
@@ -374,17 +370,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public hyphenateIfCaseReferenceOrGet(col, result): any {
     if (col.case_field_id === '[CASE_REFERENCE]') {
       return this.caseReferencePipe.transform(result.case_fields[col.case_field_id]);
-    } else {
-      if (col.id) {
-        if (col.id === '[CASE_REFERENCE]') {
-          return this.caseReferencePipe.transform(result.case_fields[col.id]);
-        } else {
-          return result.case_fields[col.id];
-        }
-      } else {
-        return result.case_fields[col.case_field_id];
-      }
     }
+    if (col.id) {
+      if (col.id === '[CASE_REFERENCE]') {
+        return this.caseReferencePipe.transform(result.case_fields[col.id]);
+      }
+      return result.case_fields[col.id];
+    }
+    return result.case_fields[col.case_field_id];
   }
 
   public draftPrefixOrGet(col, result): any {
@@ -429,7 +422,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   private numberOfDrafts(): number {
-    return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
+    return this.resultView.results.filter((_) => _.case_id.startsWith(DRAFT_PREFIX)).length;
   }
 
   public goToCase(caseId: string) {
