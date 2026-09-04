@@ -25,7 +25,6 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     super.ngOnInit();
     if (this.caseField.display_context_parameter
       && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
-
       const displayContextParameter = this.caseField.display_context_parameter.trim();
       const result: string = displayContextParameter.replace('#TABLE(', '');
       this.columns = result.replace(')', '').split(',').map((c: string) => c.trim());
@@ -40,21 +39,18 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       this.columnsVerticalLabel = labelsVertical;
       this.columnsHorizontalLabel = labelsHorizontal;
       this.columnsAllLabels = allLabels;
-
     }
   }
 
   public getImage(row): string {
     if (this.isHidden[row]) {
       return 'assets/img/accordion-plus.png';
-    } else {
-      if (this.isVerticleDataNotEmpty(row)) {
-        return 'assets/img/accordion-minus.png';
-      } else {
-        this.isHidden[row] = true;
-        return 'assets/img/accordion-plus.png';
-      }
     }
+    if (this.isVerticleDataNotEmpty(row)) {
+      return 'assets/img/accordion-minus.png';
+    }
+    this.isHidden[row] = true;
+    return 'assets/img/accordion-plus.png';
   }
 
   /**
@@ -70,7 +66,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   public addCaseReferenceValue(field, value: any): any {
-    field.value = { CaseReference: value};
+    field.value = { CaseReference: value };
     return field;
   }
 
@@ -84,7 +80,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     });
   }
 
-  public keepOriginalOrder = (a, b) => a.key;
+  public keepOriginalOrder = (a) => a.key;
 
   public sortRowsByColumns(column): void {
     const shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
@@ -127,12 +123,12 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   public sortWidget(column: any): string {
-    return ReadComplexFieldCollectionTableComponent.isSortAscending(column) ? '&#9660;' : '&#9650;';
+    return String.fromCharCode(ReadComplexFieldCollectionTableComponent.isSortAscending(column) ? 9660 : 9650);
   }
 
   private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
-                                   allLabels: { [p: string]: any },
-                                   labelsVertical: { [p: string]: any }): void {
+    allLabels: { [p: string]: any },
+    labelsVertical: { [p: string]: any }): void {
     for (const id of this.columns) {
       const trimmedId = id.trim();
       labelsHorizontal[trimmedId] = allLabels[trimmedId];
@@ -146,14 +142,14 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       if (obj.field_type.type === 'FixedList' ||
         obj.field_type.type === 'MultiSelectList' ||
         obj.field_type.type === 'FixedRadioList') {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: obj.field_type};
+        labelsVertical[obj.id] = { label: obj.label, type: obj.field_type, caseField: obj };
+        allLabels[obj.id] = { label: obj.label, type: obj.field_type };
       } else if (obj.isComplex()) {
-        labelsVertical[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: obj.field_type.type, caseField: obj};
+        labelsVertical[obj.id] = { label: obj.label, type: obj.field_type.type, caseField: obj };
+        allLabels[obj.id] = { label: obj.label, type: obj.field_type.type, caseField: obj };
       } else {
-        labelsVertical[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
-        allLabels[obj.id] = {label: obj.label, type: {type: obj.field_type.type}, caseField: obj};
+        labelsVertical[obj.id] = { label: obj.label, type: { type: obj.field_type.type }, caseField: obj };
+        allLabels[obj.id] = { label: obj.label, type: { type: obj.field_type.type }, caseField: obj };
       }
     }
   }

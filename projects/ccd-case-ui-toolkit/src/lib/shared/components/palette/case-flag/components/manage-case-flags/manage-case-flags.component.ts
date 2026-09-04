@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
+import DOMPurify from 'dompurify';
 import { cloneDeep } from 'lodash';
 import { CaseField, ErrorMessage, Journey } from '../../../../../domain';
 import { MultipageComponentStateService } from '../../../../../services';
@@ -36,8 +36,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   };
 
   constructor(
-    multipageComponentStateService: MultipageComponentStateService,
-    private readonly sanitizer: DomSanitizer
+    multipageComponentStateService: MultipageComponentStateService
   ) {
     super(multipageComponentStateService);
   }
@@ -311,6 +310,6 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
 
   // Ensure there is no dangerous HTML in the flag name or description that could lead to XSS vulnerabilities
   public sanitizeHtml(content: string | null | undefined): string {
-    return this.sanitizer.sanitize(SecurityContext.HTML, content ?? '') ?? '';
+    return DOMPurify.sanitize(content ?? '');
   }
 }
