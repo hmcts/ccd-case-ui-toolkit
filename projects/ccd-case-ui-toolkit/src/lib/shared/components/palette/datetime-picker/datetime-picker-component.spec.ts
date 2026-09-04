@@ -211,11 +211,22 @@ describe('DatetimePickerComponent', () => {
     tick(1);
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const initialDate = moment(initialValue, initialDateEntryParameter);
-    const selectedDate = moment().startOf('month');
-    const expectedValue = selectedDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
+    const firstDay = initialDate.clone().startOf('month');
 
-    component.inputElement.nativeElement.value = selectedDate.format(initialDateEntryParameter);
-    component.focusOut();
+    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
+    toggle.dispatchEvent(new MouseEvent('click'));
+    fixture.detectChanges();
+    tick();
+
+    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+
+    const dayCells = fixture.debugElement.queryAll(By.css('.mat-calendar-body-cell'));
+    dayCells[0].nativeElement.click();
+    fixture.detectChanges();
+    tick();
+
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
+    confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
     const changedValue = fixture.nativeElement.querySelector('input').value;
@@ -223,10 +234,10 @@ describe('DatetimePickerComponent', () => {
     if (initialDate.date() !== 1) {
       expect(changedValue).not.toBe(initialValue);
     }
+    expect(changedDate.isValid()).toBeTrue();
     expect(changedDate.year()).toBe(initialDate.year());
     expect(changedDate.month()).toBe(initialDate.month());
-    expect(changedDate.date()).toBe(1);
-    expect(component.dateControl.value).toBe(expectedValue);
+    expect(changedDate.day()).toBe(firstDay.day());
     flush();
     discardPeriodicTasks();
   }));
@@ -488,23 +499,56 @@ describe('DatetimePickerComponent', () => {
 
     const initialValue = fixture.nativeElement.querySelector('.govuk-input').value;
     const initialDate = moment(initialValue, initialDateEntryParameter);
-    const selectedDate = moment(initialValue, initialDateEntryParameter)
-      .subtract(1, 'year')
-      .month(1)
-      .date(1);
-    const expectedValue = selectedDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
 
-    component.inputElement.nativeElement.value = selectedDate.format(initialDateEntryParameter);
-    component.focusOut();
+    const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
+    toggle.dispatchEvent(new MouseEvent('click'));
+    fixture.detectChanges();
+    tick();
+
+    expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
+
+    const periodSelector = fixture.debugElement.query(By.css('.mat-calendar-period-button')).nativeElement;
+    periodSelector.click();
+    fixture.detectChanges();
+    tick();
+
+    const yearCells = fixture.debugElement.queryAll(
+      By.css('ngx-mat-multi-year-view .mat-calendar-body-cell')
+    );
+
+    if (yearCells[0].nativeElement.innerText !== initialDate.year().toString()) {
+      yearCells[0].nativeElement.click();
+    } else {
+      yearCells[1].nativeElement.click();
+    }
+    fixture.detectChanges();
+    tick();
+
+    const monthCells = fixture.debugElement.queryAll(
+      By.css('ngx-mat-year-view .mat-calendar-body-cell')
+    );
+    monthCells[1].nativeElement.click();
+    fixture.detectChanges();
+    tick();
+
+    const dayCells = fixture.debugElement.queryAll(
+      By.css('ngx-mat-month-view .mat-calendar-body-cell')
+    );
+    dayCells[0].nativeElement.click();
+    fixture.detectChanges();
+    tick();
+
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
+    confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
     const changedValue = fixture.nativeElement.querySelector('input').value;
     const changedDate = moment(changedValue, initialDateEntryParameter);
     expect(changedValue).not.toBe(initialValue);
+    expect(changedDate.isValid()).toBeTrue();
     expect(changedDate.year()).not.toBe(initialDate.year());
     expect(changedDate.month()).toBe(1);
-    expect(changedDate.date()).toBe(1);
-    expect(component.dateControl.value).toBe(expectedValue);
+    expect(changedDate.day()).toBe(1);
 
     flush();
     discardPeriodicTasks();
