@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.98
+**EXUI-5063** Staff type-ahead component
+
 ### Version 7.3.97
 **EXUI-5153** RTF - Add in option for different heading options
 
