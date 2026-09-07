@@ -30,6 +30,14 @@ export class WindowService {
     return window.sessionStorage.getItem(key);
   }
 
+  public removeSessionStorage(key: string): void {
+    window.sessionStorage.removeItem(key);
+  }
+
+  public clearSessionStorage(): void {
+    window.sessionStorage.clear();
+  }
+
   public openOnNewTab(url: string): void {
     const openedWindow = window.open(url, '_blank', 'noopener,noreferrer');
     if (openedWindow) {
