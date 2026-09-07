@@ -17,6 +17,7 @@ import { containsUnsafeRichTextMarkup, removeUnsafeRichTextElements, sanitiseRic
 type RichTextToolbarCommand = 'undo' | 'redo' | 'bold' | 'italic' | 'underline' | 'paragraph' | 'heading' | 'indent' | 'outdent' | 'ordered_list' | 'bullet_list';
 type RichTextListStyle = '' | 'ordered_list' | 'ordered_alpha' | 'ordered_roman' | 'bullet_list';
 type RichTextOrderedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
+type RichTextHeadingLevel = 1 | 2 | 3;
 
 interface WordListConversionState {
   listStack: HTMLElement[];
@@ -59,6 +60,7 @@ function orderedListTypeForStyle(style: RichTextOrderedListStyle): string | null
 
 const WORD_COLUMN_SPACING = 12;
 const MAX_INDENT = 6;
+const DEFAULT_HEADING_LEVEL: RichTextHeadingLevel = 3;
 const CSS_LENGTH_UNITS = ['rem', 'px', 'pt', 'in', 'cm', 'mm', 'em'];
 const BLOCK_NODE_NAMES = new Set([
   'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
@@ -67,6 +69,13 @@ const BLOCK_NODE_NAMES = new Set([
 
 const richTextNodes = {
   ...editorNodes,
+  heading: {
+    ...editorNodes.heading,
+    attrs: {
+      ...editorNodes.heading.attrs,
+      level: { default: DEFAULT_HEADING_LEVEL }
+    }
+  } as NodeSpec,
   list_item: {
     ...editorNodes.list_item,
     content: '(paragraph | heading) block*'
@@ -132,11 +141,13 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   public editor: Editor;
   public richTextAreaControl: FormControl;
   public activeToolbarCommands: { [key in RichTextToolbarCommand]?: boolean } = {};
+  public selectedHeadingLevel: RichTextHeadingLevel = DEFAULT_HEADING_LEVEL;
 
   private editorUpdateSubscription: Subscription;
   private isNormalisingValue = false;
   private paragraphCommandApplied = false;
   private statusChangesSubscription: Subscription;
+  private toolbarPointerInteraction = false;
   private valueChangesSubscription: Subscription;
 
   public ngOnInit(): void {
@@ -207,8 +218,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return `${this.id()}_error`;
   }
 
+  public keyboardInstructionsId(): string {
+    return `${this.id()}_keyboard_instructions`;
+  }
+
   public listStyleId(): string {
     return `${this.id()}_list_style`;
+  }
+
+  public headingLevelId(): string {
+    return `${this.id()}_heading_level`;
   }
 
   public toolbarLabel(): string {
@@ -224,11 +243,79 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.syncAccessibilityLater();
   }
 
+  public onEditorClick(): void {
+    this.syncAccessibilityLater();
+  }
+
   public onToolbarButtonMouseDown(event: MouseEvent): void {
+    this.toolbarPointerInteraction = true;
+    this.setToolbarTabStop(event.currentTarget as HTMLElement);
     event.preventDefault();
   }
 
+  public onToolbarFocusIn(event: FocusEvent): void {
+    const control = event.target as HTMLElement;
+    if (control?.matches('button, select')) {
+      this.setToolbarTabStop(control);
+    }
+  }
+
+  public onToolbarKeyDown(event: KeyboardEvent): void {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+      return;
+    }
+
+    const control = event.target as HTMLElement;
+    if (!control?.matches('button, select')) {
+      return;
+    }
+
+    const isSelect = control.tagName === 'SELECT';
+    const isPrevious = event.key === 'ArrowLeft';
+    const isNext = event.key === 'ArrowRight';
+    const isFirst = event.key === 'Home' && !isSelect;
+    const isLast = event.key === 'End' && !isSelect;
+    if (!isPrevious && !isNext && !isFirst && !isLast) {
+      return;
+    }
+
+    const controls = this.toolbarControls();
+    const currentIndex = controls.indexOf(control);
+    if (currentIndex === -1 || controls.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let nextIndex: number;
+    if (isFirst) {
+      nextIndex = 0;
+    } else if (isLast) {
+      nextIndex = controls.length - 1;
+    } else {
+      const direction = isPrevious ? -1 : 1;
+      nextIndex = (currentIndex + direction + controls.length) % controls.length;
+    }
+
+    const nextControl = controls[nextIndex];
+    this.setToolbarTabStop(nextControl);
+    nextControl.focus();
+  }
+
   private handleEditorKeyDown(event: KeyboardEvent): boolean {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      const controls = this.toolbarControls();
+      const toolbarControl = controls.find((control) => control.tabIndex === 0) || controls[0];
+      if (toolbarControl) {
+        this.setToolbarTabStop(toolbarControl);
+        toolbarControl.focus();
+      }
+      return true;
+    }
+
     const isUnmodifiedEnter = event.key === 'Enter' &&
       !event.shiftKey &&
       !event.altKey &&
@@ -241,11 +328,28 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return true;
     }
 
-    if (event.key !== 'Tab' || !this.isNodeActive('list_item')) {
+    if (event.key !== 'Tab') {
       return false;
     }
 
-    this.executeToolbarCommand(event, event.shiftKey ? 'outdent' : 'indent');
+    if (event.altKey || event.ctrlKey || event.metaKey) {
+      return false;
+    }
+
+    if (!this.isNodeActive('list_item')) {
+      return false;
+    }
+
+    const indentChanged = this.changeIndent(!event.shiftKey);
+    if (!indentChanged) {
+      return false;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.richTextAreaControl.markAsDirty();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
     return true;
   }
 
@@ -341,13 +445,34 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     this.richTextAreaControl.markAsDirty();
-    this.editor.view.focus();
+    const eventTarget = event.currentTarget as HTMLElement;
+    const keepToolbarFocus = eventTarget?.matches('button, select') && !this.toolbarPointerInteraction;
+    if (keepToolbarFocus) {
+      this.setToolbarTabStop(eventTarget);
+      eventTarget.focus();
+    } else {
+      this.editor.view.focus();
+    }
+    this.toolbarPointerInteraction = false;
     this.updateToolbarState();
     this.syncAccessibilityLater();
   }
 
   public isToolbarCommandActive(command: RichTextToolbarCommand): boolean {
     return !!this.activeToolbarCommands[command];
+  }
+
+  public onHeadingLevelChange(event: Event): void {
+    const level = Number((event.target as HTMLSelectElement).value);
+    if (level !== 1 && level !== 2 && level !== 3) {
+      return;
+    }
+
+    this.selectedHeadingLevel = level;
+    this.applyHeadingLevel(level);
+    this.richTextAreaControl.markAsDirty();
+    this.updateToolbarState();
+    this.syncAccessibilityLater();
   }
 
   public currentListStyle(): RichTextListStyle {
@@ -387,7 +512,6 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.applyListStyleSelection(listStyle);
 
     this.richTextAreaControl.markAsDirty();
-    this.editor.view.focus();
     this.updateToolbarState();
     this.syncAccessibilityLater();
   }
@@ -994,6 +1118,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     if (this.caseField.hint_text) {
       ids.push(this.hintId());
     }
+    ids.push(this.keyboardInstructionsId());
     if (this.isInvalid()) {
       ids.push(this.errorId());
     }
@@ -1017,7 +1142,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       Italic: 'italic',
       Underline: 'underline',
       Paragraph: 'paragraph',
-      'Heading level 1': 'heading',
+      Heading: 'heading',
       'Bullet List': 'bullet_list',
       'Numbered List': 'ordered_list'
     };
@@ -1034,6 +1159,29 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
           : this.isToolbarCommandActive(toggleCommands[label]);
         button.setAttribute('aria-pressed', `${isActive}`);
       }
+    });
+
+    const controls = this.toolbarControls();
+    if (controls.length && !controls.some((control) => control.tabIndex === 0)) {
+      this.setToolbarTabStop(controls[0]);
+    }
+  }
+
+  private toolbarControls(): HTMLElement[] {
+    if (!this.editorHost) {
+      return [];
+    }
+
+    return Array.prototype.slice.call(
+      this.editorHost.nativeElement.querySelectorAll(
+        '.ccd-rich-text-area__toolbar button:not([disabled]), .ccd-rich-text-area__toolbar select:not([disabled])'
+      )
+    );
+  }
+
+  private setToolbarTabStop(activeControl: HTMLElement): void {
+    this.toolbarControls().forEach((control) => {
+      control.tabIndex = control === activeControl ? 0 : -1;
     });
   }
 
@@ -1125,7 +1273,9 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
               if (headingLevel) {
                 element.dataset.wordHeadingLevel = headingLevel.toString();
               }
-              if (hasBoldStyle) {
+              // A Word heading style is rendered bold by the corresponding h1-h3
+              // element. Only retain a strong mark for independently bold text.
+              if (hasBoldStyle && !headingLevel) {
                 this.wrapBoldInlineContents(documentElement, element);
               }
             });
@@ -1260,31 +1410,21 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     ) as HTMLElement[];
 
     blocks.forEach((block) => {
-      const namedHeadingLevel = this.namedWordHeadingLevel(block);
       const existingHeadingLevel = /^h([1-6])$/i.exec(block.tagName)?.[1];
       if (existingHeadingLevel) {
-        const heading = existingHeadingLevel === '1'
-          ? block
-          : this.replaceElementTag(documentElement, block, 'h1');
-        if (namedHeadingLevel) {
-          this.removeRedundantHeadingBold(heading);
+        const supportedHeadingLevel = Math.min(Number(existingHeadingLevel), 3);
+        const headingTag = `h${supportedHeadingLevel}`;
+        if (block.tagName.toLowerCase() !== headingTag) {
+          this.replaceElementTag(documentElement, block, headingTag);
         }
         return;
       }
 
       const headingLevel = this.wordHeadingLevel(block);
       if (headingLevel) {
-        const heading = this.replaceElementTag(documentElement, block, 'h1');
-        if (namedHeadingLevel) {
-          this.removeRedundantHeadingBold(heading);
-        }
+        this.replaceElementTag(documentElement, block, `h${Math.min(headingLevel, 3)}`);
       }
     });
-  }
-
-  private removeRedundantHeadingBold(heading: HTMLElement): void {
-    const boldElements = Array.prototype.slice.call(heading.querySelectorAll('strong, b')) as HTMLElement[];
-    boldElements.reverse().forEach((element) => this.unwrapElement(element));
   }
 
   private wordHeadingLevel(element: HTMLElement): number {
@@ -1440,7 +1580,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         return;
       }
 
-      if (this.hasBoldStyle(style)) {
+      // Heading elements provide their own bold presentation. Do not turn that
+      // semantic heading weight into an independently selected Bold mark.
+      const isHeading = /^h[1-3]$/i.test(htmlElement.tagName);
+      if (this.hasBoldStyle(style) && !isHeading) {
         this.wrapBoldInlineContents(documentElement, htmlElement);
       }
       if (this.hasItalicStyle(style)) {
@@ -2143,12 +2286,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     }
 
     const activeListType = this.activeListNode()?.type.name;
+    const activeHeadingLevel = this.activeHeadingLevel();
+    if (activeHeadingLevel === 1 || activeHeadingLevel === 2 || activeHeadingLevel === 3) {
+      this.selectedHeadingLevel = activeHeadingLevel;
+    }
     this.activeToolbarCommands = {
       bold: this.isMarkActive('strong'),
       italic: this.isMarkActive('em'),
       underline: this.isMarkActive('u'),
       paragraph: this.paragraphCommandApplied && this.isPlainParagraphActive(),
-      heading: this.isHeadingOneActive(),
+      heading: activeHeadingLevel !== null,
       ordered_list: activeListType === 'ordered_list',
       bullet_list: activeListType === 'bullet_list'
     };
@@ -2525,31 +2672,30 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return node.type.name === 'ordered_list' || node.type.name === 'bullet_list';
   }
 
-  private changeIndent(increase: boolean): void {
+  private changeIndent(increase: boolean): boolean {
     const { state, dispatch } = this.editor.view;
     const listItemType = state.schema.nodes.list_item;
 
     if (listItemType && this.isNodeActive('list_item')) {
       if (!increase && this.changeListIndent(false, state, dispatch)) {
-        return;
+        return true;
       }
 
       const listCommand = increase ? sinkListItem(listItemType) : liftListItem(listItemType);
       if (listCommand(state, dispatch)) {
         this.applyOrderedListStyleForCurrentDepth();
-        return;
+        return true;
       }
 
       if (increase && this.changeListIndent(true, state, dispatch)) {
-        return;
+        return true;
       }
     }
 
     if (increase) {
-      this.editor.commands.indent().exec();
-    } else {
-      this.editor.commands.outdent().exec();
+      return this.editor.commands.indent().exec();
     }
+    return this.editor.commands.outdent().exec();
   }
 
   private applyOrderedListStyleForCurrentDepth(): void {
@@ -2623,7 +2769,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private toggleHeading(): void {
-    if (this.isHeadingOneActive()) {
+    if (this.activeHeadingLevel() !== null) {
       const paragraphType = this.editor.view.state.schema.nodes.paragraph;
       if (paragraphType) {
         setBlockType(paragraphType)(this.editor.view.state, this.editor.view.dispatch);
@@ -2632,37 +2778,42 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       return;
     }
 
+    this.applyHeadingLevel(this.selectedHeadingLevel);
+    this.paragraphCommandApplied = false;
+  }
+
+  private applyHeadingLevel(level: RichTextHeadingLevel): void {
     const headingType = this.editor.view.state.schema.nodes.heading;
     if (headingType) {
-      setBlockType(headingType, { level: 1 })(this.editor.view.state, this.editor.view.dispatch);
+      setBlockType(headingType, { level })(this.editor.view.state, this.editor.view.dispatch);
     }
     this.paragraphCommandApplied = false;
   }
 
-  private isHeadingOneActive(): boolean {
+  private activeHeadingLevel(): number | null {
     const state = this.editor.view.state;
     const headingType = state.schema.nodes.heading;
     if (!headingType) {
-      return false;
+      return null;
     }
 
     const { $from, from, to } = state.selection;
     for (let depth = $from.depth; depth > 0; depth--) {
       const node = $from.node(depth);
-      if (node.type === headingType && node.attrs.level === 1) {
-        return true;
+      if (node.type === headingType) {
+        return Number(node.attrs.level);
       }
     }
 
-    let isActive = false;
+    let activeLevel: number | null = null;
     state.doc.nodesBetween(from, to, (node) => {
-      if (node.type === headingType && node.attrs.level === 1) {
-        isActive = true;
+      if (node.type === headingType) {
+        activeLevel = Number(node.attrs.level);
         return false;
       }
       return true;
     });
-    return isActive;
+    return activeLevel;
   }
 
   private isPlainParagraphActive(): boolean {
