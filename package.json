@@ -96,7 +96,7 @@
     "@angular/compiler": "20.3.27",
     "@angular/compiler-cli": "20.3.27",
     "@babel/core": "^7.23.0",
-    "@compodoc/compodoc": "1.1.32",
+    "@compodoc/compodoc": "1.2.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
