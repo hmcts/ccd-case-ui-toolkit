@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.3.98-exui-4454-1
+### Version 7.3.98-exui-4454-2
 **EXUI-4454** Local storage should not be used
 
 ### Version 7.3.98
