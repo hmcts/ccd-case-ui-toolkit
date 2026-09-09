@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+const MEDIA_VIEWER_HANDOFF_RETRY_INTERVAL_MS = 100;
+const MEDIA_VIEWER_HANDOFF_MAX_ATTEMPTS = 100;
+
 @Injectable()
 export class WindowService {
   public locationAssign(url: string): void {
@@ -57,7 +60,7 @@ export class WindowService {
     };
     window.addEventListener('message', acknowledgementListener);
     const send = () => {
-      if (acknowledged || openedWindow.closed || attempts++ >= 20) {
+      if (acknowledged || openedWindow.closed || attempts++ >= MEDIA_VIEWER_HANDOFF_MAX_ATTEMPTS) {
         window.removeEventListener('message', acknowledgementListener);
         if (!openedWindow.closed) {
           openedWindow.opener = null;
@@ -65,7 +68,7 @@ export class WindowService {
         return;
       }
       openedWindow.postMessage(handoff, targetOrigin);
-      retryTimer = window.setTimeout(send, 100);
+      retryTimer = window.setTimeout(send, MEDIA_VIEWER_HANDOFF_RETRY_INTERVAL_MS);
     };
     send();
   }

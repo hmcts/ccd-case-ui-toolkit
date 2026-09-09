@@ -49,6 +49,28 @@ describe('WindowService', () => {
       expect(openedWindow.opener).toBeNull();
   }));
 
+  it('should keep handing off while a slow new tab is loading', fakeAsync(() => {
+    const openedWindow = {
+      closed: false,
+      opener: window,
+      postMessage: jasmine.createSpy('postMessage')
+    } as unknown as Window;
+    spyOn(window, 'open').and.returnValue(openedWindow);
+    const addEventListenerSpy = spyOn(window, 'addEventListener').and.callThrough();
+
+    windowService.openOnNewTabWithMessage('media-viewer', '{}', 'token');
+    tick(2100);
+
+    expect(openedWindow.postMessage).toHaveBeenCalledTimes(22);
+
+    const acknowledgementListener = addEventListenerSpy.calls.mostRecent().args[1] as EventListener;
+    acknowledgementListener({
+      origin: window.location.origin,
+      source: openedWindow,
+      data: { type: 'MEDIA_VIEWER_HANDOFF_RECEIVED', token: 'token' }
+    } as MessageEvent);
+  }));
+
   xit('should open on confirm message', () => {
     windowService.confirm('organisationDetails');
     expect(windowService.confirm).toHaveBeenCalled();
