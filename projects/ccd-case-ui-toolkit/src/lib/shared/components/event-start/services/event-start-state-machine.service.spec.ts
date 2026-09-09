@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StateMachine } from '@edium/fsm';
+import { CaseView } from '../../../domain/case-view/case-view.model';
 import { Task } from '../../../domain/work-allocation/Task';
 import { ReadCookieService, SessionStorageService } from '../../../services';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
@@ -244,10 +245,50 @@ describe('EventStartStateMachineService', () => {
       { queryParams: context.tasks[0], relativeTo: context.route });
   });
   it('should action no task available', () => {
+    mockRouter.navigate.calls.reset();
+    context.tasks = [];
+    context.caseDetails = {
+      case_id: context.caseId,
+      case_type: {
+        id: 'TestCaseType',
+        jurisdiction: {
+          id: 'TestJurisdiction'
+        }
+      }
+    } as CaseView;
+
     stateMachine = service.initialiseStateMachine(context);
     service.createStates(stateMachine);
     service.addTransitions();
-    expect(mockRouter.navigate).toHaveBeenCalled();
+    service.startStateMachine(stateMachine);
+
+    expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['/cases/case-details/TestJurisdiction/TestCaseType/1620409659381330/no-tasks-available'],
+      { relativeTo: mockRoute }
+    );
+  });
+
+  it('should use task jurisdiction and case type when a task is available', () => {
+    mockRouter.navigate.calls.reset();
+    context.caseDetails = {
+      case_id: context.caseId,
+      case_type: {
+        id: 'CaseDetailsCaseType',
+        jurisdiction: {
+          id: 'CaseDetailsJurisdiction'
+        }
+      }
+    } as CaseView;
+    context.tasks = [oneTask];
+    const mockState = { trigger: jasmine.createSpy('trigger') } as any;
+
+    service.entryActionForStateNoTask(mockState, context);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['/cases/case-details/Immigration and Asylum/Appeal-864/1620409659381330/no-tasks-available'],
+      { relativeTo: mockRoute }
+    );
   });
 
   it('should add transition for state check for matching tasks', () => {

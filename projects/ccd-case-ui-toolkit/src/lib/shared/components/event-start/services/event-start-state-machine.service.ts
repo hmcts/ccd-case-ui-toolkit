@@ -113,9 +113,12 @@ export class EventStartStateMachineService {
 
   public entryActionForStateNoTask(state: State, context: EventStartStateMachineContext): void {
     // Trigger final state to complete processing of state machine
+    const task = context.tasks[0];
+    const jurisdiction = task?.jurisdiction ?? context.caseDetails?.case_type?.jurisdiction?.id;
+    const caseTypeId = task?.case_type_id ?? context.caseDetails?.case_type?.id;
     state.trigger(EventStartStates.FINAL);
     // Navigate to no tasks available error page
-    context.router.navigate([`/cases/case-details/${context.tasks[0]?.jurisdiction}/${context.tasks[0]?.case_type_id}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
+    context.router.navigate([`/cases/case-details/${jurisdiction}/${caseTypeId}/${context.caseId}/no-tasks-available`], { relativeTo: context.route });
   }
 
   public entryActionForStateOneOrMoreTasks(state: State, context: EventStartStateMachineContext): void {
