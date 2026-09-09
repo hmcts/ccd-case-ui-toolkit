@@ -15,10 +15,10 @@ import { SearchService } from '../../services/search/search.service';
 import { WindowService } from '../../services/window/window.service';
 import { SearchInput } from './domain/search-input.model';
 
-const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';
-const META_FIELDS_LOC_STORAGE = 'search-metadata-fields';
-const FORM_GROUP_VALUE_LOC_STORAGE = 'search-form-group-value';
-const CASE_TYPE_LOC_STORAGE = 'search-caseType';
+const JURISDICTION_SES_STORAGE = 'search-jurisdiction';
+const META_FIELDS_SES_STORAGE = 'search-metadata-fields';
+const FORM_GROUP_VALUE_SES_STORAGE = 'search-form-group-value';
+const CASE_TYPE_SES_STORAGE = 'search-caseType';
 @Component({
   selector: 'ccd-search-filters',
   templateUrl: './search-filters.component.html',
@@ -72,7 +72,7 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const jurisdiction = this.getValuesFromLocalStorage();
+    const jurisdiction = this.getValuesFromSessionStorage();
     if (this.jurisdictions.length === 1 || jurisdiction) {
       this.selected.jurisdiction = this.jurisdictions[0];
       if(jurisdiction) {
@@ -100,10 +100,10 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public reset(): void {
-    this.windowService.removeLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
-    this.windowService.removeLocalStorage(CASE_TYPE_LOC_STORAGE);
-    this.windowService.removeLocalStorage(JURISDICTION_LOC_STORAGE);
-    this.windowService.removeLocalStorage(META_FIELDS_LOC_STORAGE);
+    this.windowService.removeSessionStorage(FORM_GROUP_VALUE_SES_STORAGE);
+    this.windowService.removeSessionStorage(CASE_TYPE_SES_STORAGE);
+    this.windowService.removeSessionStorage(JURISDICTION_SES_STORAGE);
+    this.windowService.removeSessionStorage(META_FIELDS_SES_STORAGE);
     this.selected = {};
     if (this.jurisdictions.length === 1) {
       this.selected.jurisdiction = this.jurisdictions[0];
@@ -116,7 +116,7 @@ export class SearchFiltersComponent implements OnInit {
     this.selected.formGroup = this.formGroup;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
-    this.populateValuesInLocalStorage();
+    this.populateValuesInSessionStorage();
     this.onApply.emit({
       selected: this.selected,
       queryParams: this.getQueryParams()
@@ -124,32 +124,32 @@ export class SearchFiltersComponent implements OnInit {
     this.setFocusToTop();
   }
 
-  public populateValuesInLocalStorage(): void {
-    this.windowService.setLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE,
+  public populateValuesInSessionStorage(): void {
+    this.windowService.setSessionStorage(FORM_GROUP_VALUE_SES_STORAGE,
       JSON.stringify(this.selected.formGroup.value));
-    this.windowService.setLocalStorage(META_FIELDS_LOC_STORAGE, JSON.stringify(this.selected.metadataFields));
+    this.windowService.setSessionStorage(META_FIELDS_SES_STORAGE, JSON.stringify(this.selected.metadataFields));
     try {
       const compJurisd = compressToUTF16(JSON.stringify(this.selected.jurisdiction));
-      this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, compJurisd);
+      this.windowService.setSessionStorage(JURISDICTION_SES_STORAGE, compJurisd);
      } catch (e) {
-      this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null);
+      this.windowService.setSessionStorage(JURISDICTION_SES_STORAGE, null);
     }
     if (this.selected.caseType) {
-      this.windowService.setLocalStorage(CASE_TYPE_LOC_STORAGE, JSON.stringify(this.selected.caseType));
+      this.windowService.setSessionStorage(CASE_TYPE_SES_STORAGE, JSON.stringify(this.selected.caseType));
     }
   }
 
-  public getValuesFromLocalStorage(): Jurisdiction {
-    const jurisdiction = this.windowService.getLocalStorage(JURISDICTION_LOC_STORAGE);
+  public getValuesFromSessionStorage(): Jurisdiction {
+    const jurisdiction = this.windowService.getSessionStorage(JURISDICTION_SES_STORAGE);
     if (jurisdiction) {
       try {
-        const localStorageJurisdiction = JSON.parse(decompressFromUTF16(jurisdiction));
-        if (localStorageJurisdiction) {
-          return localStorageJurisdiction;
+        const sessionStorageJurisdiction = JSON.parse(decompressFromUTF16(jurisdiction));
+        if (sessionStorageJurisdiction) {
+          return sessionStorageJurisdiction;
         }
       } catch (e) {
-        this.logger.error('Failed to retrieve jurisdiction from local storage.', { error: e });
-        this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null)
+        this.logger.error('Failed to retrieve jurisdiction from session storage.', { error: e });
+        this.windowService.setSessionStorage(JURISDICTION_SES_STORAGE, null)
       }
     }
     return null;
@@ -198,7 +198,7 @@ export class SearchFiltersComponent implements OnInit {
     ).subscribe(searchInputs => {
       this.searchInputs = searchInputs.sort(this.orderService.sortAsc);
 
-      const formValue = this.windowService.getLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
+      const formValue = this.windowService.getSessionStorage(FORM_GROUP_VALUE_SES_STORAGE);
       let formValueObject = null;
       if (formValue) {
         formValueObject = JSON.parse(formValue);
@@ -239,7 +239,7 @@ export class SearchFiltersComponent implements OnInit {
   private selectCaseType(caseTypes: CaseTypeLite[]) {
     if (caseTypes && caseTypes.length > 0) {
       this.selected.caseType = caseTypes[0];
-      const caseType = this.windowService.getLocalStorage(CASE_TYPE_LOC_STORAGE);
+      const caseType = this.windowService.getSessionStorage(CASE_TYPE_SES_STORAGE);
       if (caseType) {
         const caseTypeObject = JSON.parse(caseType);
         const result = caseTypes.filter(c => c.id === caseTypeObject.id);

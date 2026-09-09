@@ -161,7 +161,7 @@ describe('SearchFiltersComponent', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage']);
 
     onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
     onJurisdictionHandler.applyJurisdiction.and.returnValue();
@@ -234,11 +234,11 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should select the first caseType from LocalStorage', () => {
+  it('should select the first caseType from session storage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
-    windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
+    windowService.getSessionStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
     fixture.detectChanges();
     component.ngOnInit();
     fixture.detectChanges();
@@ -247,11 +247,11 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if nothing in LocalStorage', () => {
+  it('should select the first caseType from newly selected jurisdiction if nothing in session storage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
-    windowService.getLocalStorage.and.returnValues(undefined, undefined);
+    windowService.getSessionStorage.and.returnValues(undefined, undefined);
     fixture.detectChanges();
     component.ngOnInit();
 
@@ -263,11 +263,11 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if not in LocalStorage already', () => {
+  it('should select the first caseType from newly selected jurisdiction if not in session storage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
-    windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_1));
+    windowService.getSessionStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_1));
     fixture.detectChanges();
     component.ngOnInit();
 
@@ -279,11 +279,11 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if different in LocalStorage already', () => {
+  it('should select the first caseType from newly selected jurisdiction if different in session storage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
-    windowService.getLocalStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
+    windowService.getSessionStorage.and.returnValues(undefined, JSON.stringify(CASE_TYPE_2));
     fixture.detectChanges();
     component.ngOnInit();
 
@@ -295,7 +295,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the caseType when no LocalStorage is present', () => {
+  it('should select the caseType when no session storage is present', () => {
     resetCaseTypes(JURISDICTION_1, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_1];
@@ -446,7 +446,7 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     mockSearchService.getSearchInputs.and.returnValue(of([]));
-    windowService.getLocalStorage.and.returnValue('{}');
+    windowService.getSessionStorage.and.returnValue('{}');
     component.onCaseTypeIdChange();
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[2].id);
   }));
@@ -543,7 +543,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 });
-describe('Clear localStorage', () => {
+describe('Clear session storage', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
@@ -558,7 +558,7 @@ describe('Clear localStorage', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['clearSessionStorage', 'locationAssign', 'getSessionStorage', 'removeSessionStorage']);
 
     TestBed
       .configureTestingModule({
@@ -604,7 +604,7 @@ describe('Clear localStorage', () => {
       });
   }));
 
-  it('should remove localStorage once reset button is clicked', waitForAsync(() => {
+  it('should remove session storage once reset button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyReset.calls.reset();
     component.selected.jurisdiction = JURISDICTION_3;
@@ -626,7 +626,7 @@ describe('Clear localStorage', () => {
         const button = de.query(By.css('#reset'));
         component.formGroup = formGroup;
         button.nativeElement.click();
-        expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(4);
+        expect(windowService.removeSessionStorage).toHaveBeenCalledTimes(4);
 
       });
 

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.3.98-exui-4454-3
+**EXUI-4454** Local storage should not be used
+
 ### Version 7.3.98
 **EXUI-5063** Staff type-ahead component
 
