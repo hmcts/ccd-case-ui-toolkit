@@ -28,8 +28,9 @@ export class EventStartComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get task and case id payload from route data
+    const caseDetails = this.route.snapshot.data.case;
     const tasks: Task[] = this.route.snapshot.data.tasks;
-    const caseId = this.route.snapshot.data.case.case_id;
+    const caseId = caseDetails.case_id;
     const eventId = this.route.snapshot.queryParams['eventId'];
     const taskId = this.route.snapshot.queryParams['taskId'];
 
@@ -39,6 +40,7 @@ export class EventStartComponent implements OnInit {
       caseId,
       eventId,
       taskId,
+      caseDetails,
       router: this.router,
       route: this.route,
       sessionStorageService: this.sessionStorageService,
