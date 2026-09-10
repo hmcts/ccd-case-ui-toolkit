@@ -1,7 +1,7 @@
-@import '../../../components/typography.scss';
-@import 'govuk_frontend_toolkit/stylesheets/_shims';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'govuk_frontend_toolkit/stylesheets/_measurements';
+@use '../../../components/typography.scss' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_shims' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_conditionals' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_measurements' as *;
 
 div select {
   @include core-12pt;

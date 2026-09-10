@@ -1,5 +1,5 @@
-@import 'govuk_frontend_toolkit/stylesheets/_typography';
-@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+@use 'govuk_frontend_toolkit/stylesheets/_typography' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_colours.scss' as *;
 
 .collection-field-table {
   tr:first-child>td {
