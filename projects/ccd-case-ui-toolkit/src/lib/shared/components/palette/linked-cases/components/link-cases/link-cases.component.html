@@ -3,7 +3,7 @@
     <div>
       <span class="govuk-caption-l">Link cases to {{caseName}} {{caseId | ccdCaseReference}}</span>
       <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
-      <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
+      <div class="govuk-form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
         <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!caseNumberError}">
           <h3 class="govuk-heading-s">Enter case reference</h3>
           <span class="govuk-error-message" *ngIf="caseNumberError">

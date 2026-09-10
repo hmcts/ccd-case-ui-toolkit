@@ -29,7 +29,7 @@ describe('CallbackErrorsComponent', () => {
     }
   };
 
-  const $ERROR_SUMMARY = By.css('.error-summary');
+  const $ERROR_SUMMARY = By.css('.govuk-error-summary');
   const $ERROR_MESSAGES = By.css('#errors');
   const $WARNING_MESSAGES = By.css('#warnings');
 

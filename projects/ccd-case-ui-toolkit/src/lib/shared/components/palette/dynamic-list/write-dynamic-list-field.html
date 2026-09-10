@@ -1,16 +1,16 @@
-<div class="form-group"
-  [ngClass]="{'form-group-error': !dynamicListFormControl.valid && (dynamicListFormControl.dirty || dynamicListFormControl.touched)}">
+<div class="govuk-form-group"
+  [ngClass]="{'govuk-form-group--error': !dynamicListFormControl.valid && (dynamicListFormControl.dirty || dynamicListFormControl.touched)}">
 
-  <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
+  <label class="govuk-label" [for]="id()">
+    <ng-container *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</ng-container>
+    <ng-container *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option from the dropdown' | rpxTranslate}}</ng-container>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option from the dropdown' | rpxTranslate}}</span>
-  <span class="error-message"
-    *ngIf="dynamicListFormControl.errors && dynamicListFormControl.dirty">{{(dynamicListFormControl.errors |
+  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message"
+    *ngIf="dynamicListFormControl.errors && dynamicListFormControl.dirty"><span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{(dynamicListFormControl.errors |
     ccdFirstError:caseField.label)}}</span>
 
-  <select class="form-control ccd-dropdown bottom-30" [id]="id()"
+  <select class="govuk-select ccd-dropdown bottom-30" [id]="id()"
     [formControl]="dynamicListFormControl">
     <option [ngValue]=null>{{'--Select a value--' | rpxTranslate}}</option>
     <option [ngValue]="type.code" *ngFor="let type of caseField.list_items">{{type.label | rpxTranslate}}</option>

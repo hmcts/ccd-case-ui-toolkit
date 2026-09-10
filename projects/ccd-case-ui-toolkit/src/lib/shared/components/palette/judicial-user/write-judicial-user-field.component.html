@@ -1,16 +1,16 @@
-<div class="form-group" [formGroup]="formGroup" [ngClass]="{'form-group-error': !!judicialUserControl && errors}">
-  <label [for]="id()">
-    <span *ngIf="caseField.label" class="form-label">
+<div class="govuk-form-group" [formGroup]="formGroup" [ngClass]="{'govuk-form-group--error': !!judicialUserControl && errors}">
+  <label class="govuk-label" [for]="id()">
+    <ng-container *ngIf="caseField.label">
       {{caseField | ccdFieldLabel}}
-    </span>
+    </ng-container>
   </label>
-  <span *ngIf="caseField.hint_text" class="form-hint">
+  <div *ngIf="caseField.hint_text" class="govuk-hint">
     {{caseField.hint_text}}
+  </div>
+  <span class="govuk-error-message" *ngIf="errors">
+    <span class="govuk-visually-hidden">Error:</span> {{errors | ccdFirstError:caseField.label}}
   </span>
-  <span class="error-message" *ngIf="errors">
-    {{errors | ccdFirstError:caseField.label}}
-  </span>
-  <input class="form-control bottom-30" [id]="id()"
+  <input class="govuk-input bottom-30" [id]="id()"
     [formControl]="judicialUserControl" [matAutocomplete]="autoComplete" (blur)="onBlur($event)">
   <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayJudicialUser">
     <mat-option *ngFor="let judicialUser of filteredJudicialUsers$ | async"

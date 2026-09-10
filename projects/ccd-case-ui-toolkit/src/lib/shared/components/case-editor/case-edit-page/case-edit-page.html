@@ -61,11 +61,11 @@
       </div>
     </fieldset>
 
-    <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">
+    <div class="govuk-button-group">
+      <button class="govuk-button govuk-button--secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">
         {{'Previous' | rpxTranslate}}
       </button>
-      <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
+      <button class="govuk-button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
     </div>
 
     <p class="cancel"><button type="button" (click)="cancel()" class="govuk-js-link">{{getCancelText() | rpxTranslate}}</button></p>
