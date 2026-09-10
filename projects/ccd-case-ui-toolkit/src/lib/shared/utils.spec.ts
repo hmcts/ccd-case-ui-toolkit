@@ -52,16 +52,6 @@ describe('isInternalUser', () => {
         sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["some-enforcement-role"]}');
         expect(isInternalUser(sessionStorageService)).toBeTruthy();
     });
-
-    it('is true when user has case manager role but has an enforcement role category', () => {
-        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["pui-case-manager"], "roleCategories": ["ENFORCEMENT"]}');
-        expect(isInternalUser(sessionStorageService)).toBeTruthy();
-    });
-
-    it('is true when user has judge role but has an enforcement role category', () => {
-        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["some-judge-role"], "roleCategories": ["ENFORCEMENT"]}');
-        expect(isInternalUser(sessionStorageService)).toBeTruthy();
-    });
 });
 
 describe('isWorkAllocationUser', () => {
@@ -101,11 +91,6 @@ describe('isWorkAllocationUser', () => {
         expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
 
         sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker-privatelaw"]}');
-        expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
-    });
-
-    it('is true when user has an ENFORCEMENT role category', () => {
-        sessionStorageService.getItem = jasmine.createSpy('getItem').and.returnValue('{"roles": ["caseworker"], "roleCategories": ["ENFORCEMENT"]}');
         expect(isWorkAllocationUser(sessionStorageService)).toBeTruthy();
     });
 });

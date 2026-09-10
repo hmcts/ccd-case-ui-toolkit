@@ -15,14 +15,11 @@ export function getUserDetails(sessionStorageService: SessionStorageService): Us
 export function isInternalUser(sessionStorageService: SessionStorageService): boolean {
   const userDetails = getUserDetails(sessionStorageService);
 
-  if (!userDetails?.roles) {
-    return false;
-  } else if (userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT)) {
-    return true;
-  } else {
-    return !(userDetails.roles.includes(PUI_CASE_MANAGER) || 
-      userDetails.roles.some((role: string) => role.toLowerCase().includes(RoleKeyword.JUDGE)))
-  }
+  return !!userDetails?.roles &&
+    !userDetails.roles.includes(PUI_CASE_MANAGER) &&
+    !userDetails.roles.some(role =>
+      role.toLowerCase().includes(RoleKeyword.JUDGE)
+    )
 }
 
 export function isJudiciaryUser(sessionStorageService: SessionStorageService): boolean {
@@ -45,8 +42,7 @@ export function isWorkAllocationUser(sessionStorageService: SessionStorageServic
         || userDetails.roles.includes('caseworker-ia-caseofficer')
         || userDetails.roles.includes('caseworker-ia-admofficer')
         || userDetails.roles.includes('caseworker-civil')
-        || userDetails.roles.includes('caseworker-privatelaw')
-        || userDetails?.roleCategories?.includes(RoleCategory.ENFORCEMENT));
+        || userDetails.roles.includes('caseworker-privatelaw'));
 }
 
 // fallback purely if roleCategories is not available in 
