@@ -360,7 +360,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       condition = this.isSortAscending(column);
     }
 
-    return String.fromCharCode(condition ? 9660 : 9650);
+    return String.fromCodePoint(condition ? 9660 : 9650);
   }
 
   public activityEnabled(): boolean {
