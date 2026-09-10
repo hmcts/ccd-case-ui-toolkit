@@ -123,7 +123,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   public sortWidget(column: any): string {
-    return String.fromCharCode(ReadComplexFieldCollectionTableComponent.isSortAscending(column) ? 9660 : 9650);
+    return String.fromCodePoint(ReadComplexFieldCollectionTableComponent.isSortAscending(column) ? 9660 : 9650);
   }
 
   private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
