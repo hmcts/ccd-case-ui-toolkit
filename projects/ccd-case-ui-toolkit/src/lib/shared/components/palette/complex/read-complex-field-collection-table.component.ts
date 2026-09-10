@@ -105,6 +105,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
       }
       case 'Text':
       case 'TextArea':
+      case 'RichTextArea':
       case 'Email':
       case 'Date':
       case 'DateTime':

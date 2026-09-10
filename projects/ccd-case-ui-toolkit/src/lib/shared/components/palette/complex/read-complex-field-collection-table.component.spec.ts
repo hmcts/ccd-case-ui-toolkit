@@ -208,6 +208,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
     });
 
+    it('should sort rows based on a RichTextArea column', () => {
+      component.columnsHorizontalLabel.AddressLine1.type.type = 'RichTextArea';
+
+      component.sortRowsByColumns('AddressLine1');
+
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
+    });
+
     it('should sort rows based on Number type', () => {
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
       component.sortRowsByColumns('AddressLine2');
