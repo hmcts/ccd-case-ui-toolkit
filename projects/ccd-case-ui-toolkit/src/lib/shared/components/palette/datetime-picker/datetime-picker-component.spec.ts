@@ -211,7 +211,6 @@ describe('DatetimePickerComponent', () => {
     tick(1);
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const initialDate = moment(initialValue, initialDateEntryParameter);
-    const firstDay = initialDate.clone().startOf('month');
 
     const toggle = fixture.debugElement.query(By.css('#pickerOpener')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
@@ -237,7 +236,7 @@ describe('DatetimePickerComponent', () => {
     expect(changedDate.isValid()).toBeTrue();
     expect(changedDate.year()).toBe(initialDate.year());
     expect(changedDate.month()).toBe(initialDate.month());
-    expect(changedDate.day()).toBe(firstDay.day());
+    expect(changedDate.date()).toBe(1);
     flush();
     discardPeriodicTasks();
   }));
@@ -516,11 +515,11 @@ describe('DatetimePickerComponent', () => {
       By.css('ngx-mat-multi-year-view .mat-calendar-body-cell')
     );
 
-    if (yearCells[0].nativeElement.innerText !== initialDate.year().toString()) {
-      yearCells[0].nativeElement.click();
-    } else {
-      yearCells[1].nativeElement.click();
-    }
+    const yearCell = yearCells[0].nativeElement.innerText !== initialDate.year().toString()
+      ? yearCells[0]
+      : yearCells[1];
+    const selectedYear = Number(yearCell.nativeElement.innerText);
+    yearCell.nativeElement.click();
     fixture.detectChanges();
     tick();
 
@@ -547,8 +546,9 @@ describe('DatetimePickerComponent', () => {
     expect(changedValue).not.toBe(initialValue);
     expect(changedDate.isValid()).toBeTrue();
     expect(changedDate.year()).not.toBe(initialDate.year());
+    expect(changedDate.year()).toBe(selectedYear);
     expect(changedDate.month()).toBe(1);
-    expect(changedDate.day()).toBe(1);
+    expect(changedDate.date()).toBe(1);
 
     flush();
     discardPeriodicTasks();
