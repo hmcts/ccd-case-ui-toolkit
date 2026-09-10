@@ -1,3 +1,4 @@
+import { RoleCategory } from '../case-view';
 import {
   StaffCacheRoleCategory,
   StaffUserRoleCategory,
@@ -5,19 +6,19 @@ import {
 } from './staff-user.model';
 
 const STAFF_CACHE_ROLE_CATEGORIES = new Set<StaffCacheRoleCategory>([
-  'ADMIN',
-  'CTSC',
-  'LEGAL_OPERATIONS'
+  RoleCategory.ADMIN,
+  RoleCategory.CTSC,
+  RoleCategory.LEGAL_OPERATIONS
 ]);
 
 const SUPPORTED_ROLE_CATEGORIES = new Set<StaffUserRoleCategory>([
   ...STAFF_CACHE_ROLE_CATEGORIES,
-  'JUDICIAL',
+  RoleCategory.JUDICIAL,
 ]);
 
 // Aliases allow the definition to use the shorter, hyphenated form within #ARGUMENT(...)
 const ROLE_CATEGORY_ALIASES: { [alias: string]: StaffUserRoleCategory } = {
-  LEGAL_OPS: 'LEGAL_OPERATIONS'
+  LEGAL_OPS: RoleCategory.LEGAL_OPERATIONS
 };
 
 const ARGUMENT_REGEX = /#ARGUMENT\(([^)]*)\)/;
@@ -77,7 +78,7 @@ export function parseStaffUserSearchConfiguration(displayContextParameter?: stri
     configuration: {
       roleCategories,
       staffRoleCategories: roleCategories.filter(isStaffCacheRoleCategory),
-      includesJudicial: roleCategories.includes('JUDICIAL')
+      includesJudicial: roleCategories.includes(RoleCategory.JUDICIAL)
     }
   };
 }

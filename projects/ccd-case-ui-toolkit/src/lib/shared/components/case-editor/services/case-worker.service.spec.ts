@@ -7,6 +7,7 @@ import { StaffUser } from '../../../domain/work-allocation/staff-user.model';
 import { HttpErrorService, HttpService } from '../../../services';
 import { CaseworkerService } from './case-worker.service';
 import createSpyObj = jasmine.createSpyObj;
+import { StaffCacheRoleCategory } from 'ccd-case-ui-toolkit';
 
 describe('CaseworkerService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
@@ -94,7 +95,7 @@ describe('CaseworkerService', () => {
   it('should post services and search term when searching staff users', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a', 'service-b'], 'alex', ['ADMIN']).subscribe();
+    caseworkerService.searchStaffUsers(['service-a', 'service-b'], 'alex', ['ADMIN' as StaffCacheRoleCategory]).subscribe();
 
     expect(httpService.post).toHaveBeenCalledWith(STAFF_USER_SEARCH_URL, {
       services: ['service-a', 'service-b'],
@@ -105,7 +106,7 @@ describe('CaseworkerService', () => {
   it('should find users matching ADMIN', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
         { idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk' },
         { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple', emailId: 'morgan.multiple@justice.gov.uk' }
@@ -116,7 +117,7 @@ describe('CaseworkerService', () => {
   it('should find users matching CTSC', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a'], '', ['CTSC']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], '', ['CTSC' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
         { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC', emailId: 'casey.ctsc@justice.gov.uk' },
         { idamId: 'multiple-roles-idam-id', displayName: 'Morgan Multiple', emailId: 'morgan.multiple@justice.gov.uk' }
@@ -127,7 +128,7 @@ describe('CaseworkerService', () => {
   it('should find users matching any requested staff category without duplicates', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN', 'CTSC']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], '', ['ADMIN' as StaffCacheRoleCategory, 'CTSC' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([
         { idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk' },
         { idamId: 'ctsc-idam-id', displayName: 'Casey CTSC', emailId: 'casey.ctsc@justice.gov.uk' },
@@ -139,7 +140,7 @@ describe('CaseworkerService', () => {
   it('should use name-only matching after filtering by role category', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a'], 'admin', ['ADMIN']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], 'admin', ['ADMIN' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([{
         idamId: 'admin-idam-id', displayName: 'Alex Admin', emailId: 'alex.admin@justice.gov.uk'
       }]);
@@ -149,7 +150,7 @@ describe('CaseworkerService', () => {
   it('should return no users when no caseworker matches the requested search term', waitForAsync(() => {
     httpService.post.and.returnValue(of(CASE_WORKERS));
 
-    caseworkerService.searchStaffUsers(['service-a'], 'nobody', ['LEGAL_OPERATIONS']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], 'nobody', ['LEGAL_OPERATIONS' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([]);
     });
   }));
@@ -157,7 +158,7 @@ describe('CaseworkerService', () => {
   it('should return an empty list when the cache returns no users', waitForAsync(() => {
     httpService.post.and.returnValue(of([]));
 
-    caseworkerService.searchStaffUsers(['service-a'], 'alex', ['ADMIN']).subscribe((staffUsers: StaffUser[]) => {
+    caseworkerService.searchStaffUsers(['service-a'], 'alex', ['ADMIN' as StaffCacheRoleCategory]).subscribe((staffUsers: StaffUser[]) => {
       expect(staffUsers).toEqual([]);
     });
   }));
@@ -165,7 +166,7 @@ describe('CaseworkerService', () => {
   it('should set the error service error and rethrow when staff search fails', waitForAsync(() => {
     httpService.post.and.returnValue(throwError(ERROR));
 
-    caseworkerService.searchStaffUsers(['service-a'], 'alex', ['ADMIN']).subscribe(
+    caseworkerService.searchStaffUsers(['service-a'], 'alex', ['ADMIN' as StaffCacheRoleCategory]).subscribe(
       () => fail('Expected an error'),
       error => {
         expect(error).toEqual(ERROR);
