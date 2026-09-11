@@ -34,6 +34,19 @@ describe('FormValidatorsService', () => {
     expect(result.invalid).toBeTruthy();
   });
 
+  (['JudicialUser', 'StaffUser'] as const).forEach((complexTypeId) => {
+    it(`should not add a required validator to a mandatory ${complexTypeId} complex group`, () => {
+      const formControl = new FormControl();
+      const caseField = aCaseField('id', 'label', complexTypeId, 'MANDATORY', null);
+      caseField.field_type.type = 'Complex';
+
+      const result = formValidatorsService.addValidators(caseField, formControl);
+      result.updateValueAndValidity();
+
+      expect(result.valid).toBe(true);
+    });
+  });
+
   it('should validate text field for MANDATORY with regular expression', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);

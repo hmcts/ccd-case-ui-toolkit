@@ -44,6 +44,12 @@ describe('WriteRichTextAreaFieldComponent', () => {
     select.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
+  const selectHeadingLevel = (headingLevel: string): void => {
+    const select = fixture.nativeElement.querySelector(`#${component.headingLevelId()}`) as HTMLSelectElement;
+    select.value = headingLevel;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
   const selectEditorText = (text: string): void => {
     let textPosition = null;
     component.editor.view.state.doc.descendants((node, position) => {
@@ -259,7 +265,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
       'Italic',
       'Underline',
       'Paragraph',
-      'Heading level 1',
+      'Heading',
       'Bullet List',
       'Numbered List',
       'Decrease Indent',
@@ -270,19 +276,23 @@ describe('WriteRichTextAreaFieldComponent', () => {
   it('should separate paragraph and list controls from adjacent toolbar groups', () => {
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]') as HTMLButtonElement;
     const headingButton = paragraphButton.nextElementSibling as HTMLButtonElement;
-    const paragraphSeparator = headingButton.nextElementSibling as HTMLSpanElement;
-    const bulletListButton = paragraphSeparator.nextElementSibling as HTMLButtonElement;
+    const paragraphSeparator = headingButton.parentElement.nextElementSibling as HTMLSpanElement;
+    const listGroup = paragraphSeparator.nextElementSibling as HTMLDivElement;
+    const bulletListButton = listGroup.firstElementChild as HTMLButtonElement;
     const numberedListButton = bulletListButton.nextElementSibling as HTMLButtonElement;
     const listStyle = numberedListButton.nextElementSibling as HTMLDivElement;
-    const listStyleSeparator = listStyle.nextElementSibling as HTMLSpanElement;
+    const listStyleSeparator = listGroup.nextElementSibling as HTMLSpanElement;
+    const indentationGroup = listStyleSeparator.nextElementSibling as HTMLDivElement;
 
-    expect(headingButton.getAttribute('aria-label')).toBe('Heading level 1');
+    expect(headingButton.getAttribute('aria-label')).toBe('Heading');
+    expect(fixture.nativeElement.querySelector('.ccd-rich-text-area__heading-level')).toBeNull();
     expect(paragraphSeparator.classList).toContain('ccd-rich-text-area__toolbar-separator');
+    expect(listGroup.classList).toContain('ccd-rich-text-area__toolbar-group--list');
     expect(bulletListButton.getAttribute('aria-label')).toBe('Bullet List');
     expect(numberedListButton.getAttribute('aria-label')).toBe('Numbered List');
     expect(listStyle.classList).toContain('ccd-rich-text-area__list-style');
     expect(listStyleSeparator.classList).toContain('ccd-rich-text-area__toolbar-separator');
-    expect(listStyleSeparator.nextElementSibling.getAttribute('aria-label')).toBe('Decrease Indent');
+    expect(indentationGroup.firstElementChild.getAttribute('aria-label')).toBe('Decrease Indent');
   });
 
   it('should render toolbar icons as decorative SVGs without changing accessible button names', () => {
@@ -347,13 +357,58 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const editor = fixture.nativeElement.querySelector('.ProseMirror');
 
     expect(toolbar.getAttribute('role')).toBe('toolbar');
+    expect(toolbar.getAttribute('aria-orientation')).toBe('horizontal');
     expect(toolbar.getAttribute('aria-label')).toBe('Add recitals or preamble formatting options');
     expect(editor.getAttribute('role')).toBe('textbox');
     expect(editor.getAttribute('aria-multiline')).toBe('true');
     expect(editor.getAttribute('aria-labelledby')).toBe(component.labelId());
-    expect(editor.getAttribute('aria-describedby')).toBe(component.hintId());
+    expect(editor.getAttribute('aria-describedby')).toContain(component.hintId());
+    expect(editor.getAttribute('aria-describedby')).toContain(component.keyboardInstructionsId());
     expect(editor.getAttribute('aria-required')).toBe('true');
     expect(editor.getAttribute('aria-invalid')).toBe('false');
+  }));
+
+  it('should expose one toolbar tab stop and support arrow-key navigation with wrapping', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const toolbar = fixture.nativeElement.querySelector('.ccd-rich-text-area__toolbar') as HTMLElement;
+    const controls = Array.from(toolbar.querySelectorAll('button, select')) as HTMLElement[];
+    const undoButton = toolbar.querySelector('button[aria-label="Undo"]') as HTMLButtonElement;
+    const increaseIndentButton = toolbar.querySelector('button[aria-label="Increase Indent"]') as HTMLButtonElement;
+
+    expect(controls.filter((control) => control.tabIndex === 0)).toEqual([undoButton]);
+
+    undoButton.focus();
+    undoButton.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      bubbles: true,
+      cancelable: true
+    }));
+
+    expect(document.activeElement).toBe(increaseIndentButton);
+    expect(controls.filter((control) => control.tabIndex === 0)).toEqual([increaseIndentButton]);
+
+    increaseIndentButton.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true
+    }));
+
+    expect(document.activeElement).toBe(undoButton);
+  }));
+
+  it('should retain toolbar focus after keyboard activation', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const boldButton = fixture.nativeElement.querySelector('button[aria-label="Bold"]') as HTMLButtonElement;
+    boldButton.focus();
+    boldButton.click();
+    tick();
+
+    expect(document.activeElement).toBe(boldButton);
+    expect(boldButton.tabIndex).toBe(0);
   }));
 
   it('should not add the editor label to the keyboard tab order', fakeAsync(() => {
@@ -447,7 +502,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const boldButton = fixture.nativeElement.querySelector('button[aria-label="Bold"]');
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]');
-    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
     const undoButton = fixture.nativeElement.querySelector('button[aria-label="Undo"]');
 
     expect(boldButton.getAttribute('aria-keyshortcuts')).toBe('Control+B');
@@ -644,28 +699,99 @@ describe('WriteRichTextAreaFieldComponent', () => {
     fixture.detectChanges();
 
     const paragraphButton = fixture.nativeElement.querySelector('button[aria-label="Paragraph"]');
-    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
 
     expect(paragraphButton).toBeTruthy();
     expect(paragraphButton.nextElementSibling).toBe(headingButton);
   }));
 
-  it('should toggle heading level 1 formatting from the toolbar', fakeAsync(() => {
+  it('should only expose accessible heading level choices for a heading and default to Heading 3', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector(`#${component.headingLevelId()}`)).toBeNull();
+
+    component.editor.setContent('<p>Section heading</p>');
+    selectEditorText('Section heading');
+    clickToolbarButton('Heading');
+    tick();
+    fixture.detectChanges();
+
+    const headingLevelLabel = fixture.nativeElement.querySelector(
+      `label[for="${component.headingLevelId()}"]`
+    ) as HTMLLabelElement;
+    const headingLevelSelect = fixture.nativeElement.querySelector(
+      `#${component.headingLevelId()}`
+    ) as HTMLSelectElement;
+
+    expect(headingLevelLabel.textContent.trim()).toBe('Heading level');
+    expect(headingLevelSelect.value).toBe('3');
+    expect(Array.from(headingLevelSelect.options).map((option) => option.text)).toEqual([
+      'Heading 1',
+      'Heading 2',
+      'Heading 3'
+    ]);
+  }));
+
+  it('should apply the heading level selected from the dropdown', fakeAsync(() => {
     tick();
     fixture.detectChanges();
     component.editor.setContent('<p>Section heading</p>');
     selectEditorText('Section heading');
 
-    clickToolbarButton('Heading level 1');
+    clickToolbarButton('Heading');
     tick();
     fixture.detectChanges();
 
-    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    selectHeadingLevel('1');
+    tick();
+    fixture.detectChanges();
     expect(formGroup.controls[FIELD_ID].value).toContain('<h1>Section heading</h1>');
+
+    selectHeadingLevel('2');
+    tick();
+    fixture.detectChanges();
+    expect(formGroup.controls[FIELD_ID].value).toContain('<h2>Section heading</h2>');
+
+    selectHeadingLevel('3');
+    tick();
+    fixture.detectChanges();
+    expect(formGroup.controls[FIELD_ID].value).toContain('<h3>Section heading</h3>');
+  }));
+
+  it('should update the heading level dropdown from the selected heading', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<h2>Existing heading</h2>');
+    selectEditorText('Existing heading');
+    tick();
+    fixture.detectChanges();
+
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
+    const headingLevelSelect = fixture.nativeElement.querySelector(
+      `#${component.headingLevelId()}`
+    ) as HTMLSelectElement;
+
+    expect(headingLevelSelect.value).toBe('2');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('true');
+  }));
+
+  it('should toggle the default heading level 3 formatting from the toolbar', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p>Section heading</p>');
+    selectEditorText('Section heading');
+
+    clickToolbarButton('Heading');
+    tick();
+    fixture.detectChanges();
+
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<h3>Section heading</h3>');
     expect(headingButton.classList).toContain('ccd-rich-text-area__toolbar-button--active');
     expect(headingButton.getAttribute('aria-pressed')).toBe('true');
 
-    clickToolbarButton('Heading level 1');
+    clickToolbarButton('Heading');
     tick();
     fixture.detectChanges();
 
@@ -674,20 +800,20 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(headingButton.getAttribute('aria-pressed')).toBe('false');
   }));
 
-  it('should allow heading level 1 formatting inside an ordered list', fakeAsync(() => {
+  it('should allow the default heading level 3 formatting inside an ordered list', fakeAsync(() => {
     tick();
     fixture.detectChanges();
     component.editor.setContent('<ol><li><p>Heading item</p></li></ol>');
     selectEditorText('Heading item');
 
-    clickToolbarButton('Heading level 1');
+    clickToolbarButton('Heading');
     tick();
     fixture.detectChanges();
 
-    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
     const numberedListButton = fixture.nativeElement.querySelector('button[aria-label="Numbered List"]');
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><h1>Heading item</h1></li></ol>');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><h3>Heading item</h3></li></ol>');
     expect(headingButton.getAttribute('aria-pressed')).toBe('true');
     expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
   }));
@@ -702,7 +828,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading level 1"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
     const numberedListButton = fixture.nativeElement.querySelector('button[aria-label="Numbered List"]');
 
     expect(formGroup.controls[FIELD_ID].value).toContain('<ol><li><h1>Heading item</h1></li></ol>');
@@ -1692,6 +1818,44 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).toContain('<p>Paragraph text</p>');
   }));
 
+  it('should move focus to the toolbar when Escape is pressed inside a list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>List item</p></li></ul>');
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    const undoButton = fixture.nativeElement.querySelector('button[aria-label="Undo"]') as HTMLButtonElement;
+    selectEditorText('List item');
+
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    editorElement.dispatchEvent(escape);
+    tick();
+
+    expect(escape.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(undoButton);
+    expect(undoButton.tabIndex).toBe(0);
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ul><li><p>List item</p></li></ul>');
+  }));
+
+  it('should leave modified Tab shortcuts available while editing a list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<ul><li><p>List item</p></li></ul>');
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    selectEditorText('List item');
+
+    const controlTab = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true
+    });
+    editorElement.dispatchEvent(controlTab);
+    tick();
+
+    expect(controlTab.defaultPrevented).toBe(false);
+    expect(formGroup.controls[FIELD_ID].value).toContain('<ul><li><p>List item</p></li></ul>');
+  }));
+
   it('should indent and outdent a bullet list when the item cannot be nested', fakeAsync(() => {
     tick();
     fixture.detectChanges();
@@ -1898,7 +2062,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(normalisedHtml).not.toContain('style=');
   });
 
-  it('should convert a Word heading style without retaining a redundant bold mark', () => {
+  it('should convert a Word heading style without exposing implicit heading bold as an explicit mark', fakeAsync(() => {
     const wordHtml = `
       <html>
         <body>
@@ -1913,21 +2077,25 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const regularParagraph = Array.prototype.slice.call(normalisedDocument.querySelectorAll('p'))
       .find((paragraph: HTMLElement) => paragraph.textContent === 'Regular paragraph text');
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1']);
-    expect(normalisedDocument.querySelector('h1 strong, h1 b')).toBeNull();
+    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h2']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h2']);
+    expect(normalisedDocument.querySelector('h2 strong, h2 b')).toBeNull();
     expect(regularParagraph.querySelector('strong')).toBeNull();
 
     component.editor.setContent(normalisedHtml);
+    selectEditorText('Parental responsibility');
+    tick();
     fixture.detectChanges();
 
     const renderedHeadings = Array.prototype.slice.call(
-      fixture.nativeElement.querySelectorAll('.ProseMirror h1')
+      fixture.nativeElement.querySelectorAll('.ProseMirror h2')
     ).map((heading: HTMLElement) => heading.textContent);
     expect(renderedHeadings).toEqual(['Parental responsibility', 'Other recitals']);
-  });
+    expect(fixture.nativeElement.querySelector('button[aria-label="Bold"]').getAttribute('aria-pressed')).toBe('false');
+    expect(fixture.nativeElement.querySelector('button[aria-label="Heading"]').getAttribute('aria-pressed')).toBe('true');
+  }));
 
-  it('should convert a Word clipboard heading without retaining a redundant bold mark', () => {
+  it('should convert a Word clipboard heading while retaining its explicit bold formatting', () => {
     const wordHtml = `
       <html>
         <head>
@@ -1945,12 +2113,52 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1']);
-    expect(normalisedHtml).not.toContain('<strong>');
+    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1', 'strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1', 'strong']);
     expect(normalisedHtml).not.toContain('<style');
     expect(normalisedHtml).not.toContain('class=');
   });
+
+  it('should retain underline without exposing implicit heading bold as an explicit mark', fakeAsync(() => {
+    const headingText = 'Child arrangements orders warnings';
+    const wordHtml = `
+      <html>
+        <head>
+          <style>
+            p.Heading2 {
+              mso-style-name: "Heading 2";
+              mso-outline-level: 2;
+              font-weight: bold;
+            }
+          </style>
+        </head>
+        <body>
+          <p class="Heading2" style="font-weight: bold;"><span style="text-decoration: underline;">${headingText}</span></p>
+        </body>
+      </html>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+
+    expectTextToHaveAncestorTags(normalisedHtml, headingText, ['h2', 'u']);
+    expect(new DOMParser().parseFromString(normalisedHtml, 'text/html').querySelector('h2 strong, h2 b')).toBeNull();
+
+    component.editor.setContent(normalisedHtml);
+    selectEditorText(headingText);
+    tick();
+    fixture.detectChanges();
+
+    const boldButton = fixture.nativeElement.querySelector('button[aria-label="Bold"]');
+    const underlineButton = fixture.nativeElement.querySelector('button[aria-label="Underline"]');
+    const headingButton = fixture.nativeElement.querySelector('button[aria-label="Heading"]');
+    const headingLevelSelect = fixture.nativeElement.querySelector(
+      `#${component.headingLevelId()}`
+    ) as HTMLSelectElement;
+
+    expect(boldButton.getAttribute('aria-pressed')).toBe('false');
+    expect(underlineButton.getAttribute('aria-pressed')).toBe('true');
+    expect(headingButton.getAttribute('aria-pressed')).toBe('true');
+    expect(headingLevelSelect.value).toBe('2');
+  }));
 
   it('should retain a Word heading identified by its outline level', () => {
     const wordHtml = `
@@ -1969,13 +2177,13 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Contact centre', ['h1']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Contact centre', ['h2']);
     expectTextToHaveAncestorTags(normalisedHtml, 'Such contact is to be supervised at the contact centre.', ['p']);
 
     component.editor.setContent(normalisedHtml);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.ProseMirror h1').textContent).toBe('Contact centre');
+    expect(fixture.nativeElement.querySelector('.ProseMirror h2').textContent).toBe('Contact centre');
   });
 
   it('should infer a Word title from its large font size', () => {
