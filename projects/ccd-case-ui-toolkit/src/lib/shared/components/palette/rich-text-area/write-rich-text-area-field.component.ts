@@ -1226,9 +1226,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private htmlToText(value: string): string {
-    const container = document.createElement('div');
-    container.innerHTML = value || '';
-    return (container.textContent || '').replaceAll('\u00a0', ' ').trim();
+    const documentElement = new DOMParser().parseFromString(value || '', 'text/html');
+    return (documentElement.body.textContent || '').replaceAll('\u00a0', ' ').trim();
   }
 
   private isWordHtml(html: string): boolean {

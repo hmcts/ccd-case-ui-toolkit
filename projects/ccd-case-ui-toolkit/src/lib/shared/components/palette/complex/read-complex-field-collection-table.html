@@ -14,7 +14,7 @@
            (keyup.enter)="sortRowsByColumns(heading)"
            class="sort-widget"
            [attr.aria-label]="'Sort ' + columnsAllLabels[heading].label | rpxTranslate"
-           [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
+        >{{ sortWidget(columnsAllLabels[heading]) }}</a>
       </th>
       <th></th>
     </tr>

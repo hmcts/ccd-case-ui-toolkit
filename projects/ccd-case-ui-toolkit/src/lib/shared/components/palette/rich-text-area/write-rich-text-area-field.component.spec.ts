@@ -95,8 +95,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
   };
 
   const expectTextToHaveAncestorTags = (html: string, text: string, tagNames: string[]): void => {
-    const container = document.createElement('div');
-    container.innerHTML = html;
+    const container = new DOMParser().parseFromString(html, 'text/html').body;
 
     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
     let textNode = walker.nextNode();
@@ -2454,7 +2453,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
       'with whom the child should live;',
       'whether they should spend time with the other parent;',
       'how often;',
-      "the child's education;"
+      'the child\'s education;'
     ]);
     expect(Array.from(romanList.children).map((item) => item.textContent.trim())).toEqual([
       'whether there should be overnight stays;',
