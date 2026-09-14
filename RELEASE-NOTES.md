@@ -1,7 +1,47 @@
 ## RELEASE NOTES
 
-### Version 7.3.85-exui-5069
+### Version 7.3.98-exui-5069
 **EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
+
+### Version 7.3.98
+**EXUI-5063** Staff type-ahead component
+
+### Version 7.3.97
+**EXUI-5153** RTF - Add in option for different heading options
+
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
+
+### Version 7.3.95
+**EXUI-5033** upgrade TK to node 24
+
+### Version 7.3.94
+**EXUI-4951** Package update - uuid - major
+
+### Version 7.3.93
+**EXUI-4937** Package update - minimist - minor
+
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
+
+### Version 7.3.90
+**EXUI-4950** Package update - dompurify - major
+
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
+
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
+
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
+### Version 7.3.86
+**EXUI-5013** Package update - sass
 
 ### Version 7.3.85
 **EXUI-4817** Package update - File-saver - minor

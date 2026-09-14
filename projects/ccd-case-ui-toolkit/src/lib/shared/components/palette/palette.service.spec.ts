@@ -20,6 +20,8 @@ import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.
 import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { ReadStaffUserFieldComponent } from './staff-user/read-staff-user-field.component';
+import { WriteStaffUserFieldComponent } from './staff-user/write-staff-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
@@ -34,6 +36,8 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
+import { ReadRichTextAreaFieldComponent } from './rich-text-area/read-rich-text-area-field.component';
+import { WriteRichTextAreaFieldComponent } from './rich-text-area/write-rich-text-area-field.component';
 import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
 import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
@@ -171,6 +175,14 @@ describe('PaletteService', () => {
       assertComponent('TextArea', true, WriteTextAreaFieldComponent, 'AnID');
     });
 
+    it('should get ReadRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', false, ReadRichTextAreaFieldComponent, 'AnID');
+    });
+
+    it('should get WriteRichTextAreaField component class for RichTextArea input', () => {
+      assertComponent('RichTextArea', true, WriteRichTextAreaFieldComponent, 'AnID');
+    });
+
     it('should get ReadMultiSelectListField component class for MultiSelectList input', () => {
       assertComponent('MultiSelectList', false, ReadMultiSelectListFieldComponent, 'AnID');
     });
@@ -225,6 +237,14 @@ describe('PaletteService', () => {
 
     it('should get WriteJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
       assertComponent('Complex', true, WriteJudicialUserFieldComponent, 'JudicialUser');
+    });
+
+    it('should get ReadStaffUserFieldComponent component class for Complex field with StaffUser complex type', () => {
+      assertComponent('Complex', false, ReadStaffUserFieldComponent, 'StaffUser');
+    });
+
+    it('should get WriteStaffUserFieldComponent component class for Complex field with StaffUser complex type', () => {
+      assertComponent('Complex', true, WriteStaffUserFieldComponent, 'StaffUser');
     });
 
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {

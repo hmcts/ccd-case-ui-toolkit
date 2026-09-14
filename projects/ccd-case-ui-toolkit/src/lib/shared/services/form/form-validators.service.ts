@@ -7,16 +7,15 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FormValidatorsService {
-  private static readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
-    'Date', 'MoneyGBP', 'Label', 'JudicialUser'
-  ];
+  private static readonly CUSTOM_VALIDATED_FIELD_TYPES: FieldTypeEnum[] = ['Date', 'MoneyGBP', 'Label'];
+  private static readonly CUSTOM_VALIDATED_COMPLEX_TYPE_IDS = ['JudicialUser', 'StaffUser'];
   private static readonly DEFAULT_INPUT_TEXT = 'text';
   private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (
       caseField.display_context === Constants.MANDATORY &&
-      FormValidatorsService.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1
+      !FormValidatorsService.isCustomValidatedType(caseField)
     ) {
       const validators = [Validators.required];
       if (caseField.field_type.type === 'Text') {
@@ -34,7 +33,7 @@ export class FormValidatorsService {
         }
       }
 
-      if (caseField.field_type.type === 'TextArea') {
+      if (this.isTextAreaType(caseField.field_type.type)) {
         validators.push(this.emptyValidator());
         validators.push(this.markDownPatternValidator());
       }
@@ -43,7 +42,7 @@ export class FormValidatorsService {
         validators.push(control.validator);
       }
       control.setValidators(validators);
-    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || caseField.field_type.type === 'TextArea')
+    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || this.isTextAreaType(caseField.field_type.type))
       || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
       control.setValidators(this.markDownPatternValidator());
     }
@@ -59,6 +58,12 @@ export class FormValidatorsService {
       return null;
     };
     return validator;
+  }
+
+  private static isCustomValidatedType(caseField: CaseField): boolean {
+    return FormValidatorsService.CUSTOM_VALIDATED_FIELD_TYPES.includes(caseField.field_type.type)
+      || (caseField.field_type.type === 'Complex'
+        && FormValidatorsService.CUSTOM_VALIDATED_COMPLEX_TYPE_IDS.includes(caseField.field_type.id));
   }
 
   public static markDownPatternValidator(): ValidatorFn {
@@ -79,6 +84,10 @@ export class FormValidatorsService {
       const value = control?.value?.toString().trim();
       return (value && (inlineMarkdownPattern.test(value) || referenceBoxPattern.test(value) || this.matchesReferenceUrlDef(value) || autolinkPattern.test(value) || wwwAutolinkPattern.test(value) || this.hasMultiBracket(value as string))) ? { markDownPattern: {} } : null;
     };
+  }
+
+  private static isTextAreaType(fieldType: FieldTypeEnum): boolean {
+    return fieldType === 'TextArea' || fieldType === 'RichTextArea';
   }
 
   // TODO: Strip this out as it's only here for the moment because
