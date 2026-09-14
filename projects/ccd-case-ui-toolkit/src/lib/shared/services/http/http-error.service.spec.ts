@@ -46,7 +46,8 @@ describe('HttpErrorService', () => {
   const NOT_VALID_ERROR_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
       .set('Content-Type', 'application/json'),
-    error: '{notvalidjson}'
+    error: '{notvalidjson}',
+    status: 500
   });
 
   const HTTP_401_RESPONSE = new HttpErrorResponse({
@@ -83,12 +84,87 @@ describe('HttpErrorService', () => {
   });
 
   describe('handle()', () => {
+    for (const contentType of [undefined, '', 'text/html']) {
+      it(`should preserve HTTP 502 with Content-Type ${String(contentType)}`, (done) => {
+        const headers = contentType === undefined ? new HttpHeaders() : new HttpHeaders().set('Content-Type', contentType);
+        const response = new HttpErrorResponse({ headers, status: 502, error: '<html>Bad gateway</html>' });
+        errorService.handle(response).subscribe({
+          next: () => fail('Expected an error'),
+          error: (error: HttpError) => {
+            expect(error instanceof HttpError).toBeTrue();
+            expect(error.status).toBe(502);
+            expect(error.message).toBe(new HttpError().message);
+            expect(error.error).toBe(new HttpError().error);
+            done();
+          }
+        });
+      });
+    }
+
+    it('should preserve HTTP 401 without headers and invoke sign-in', (done) => {
+      errorService.handle(new HttpErrorResponse({ status: 401 })).subscribe({
+        error: (error: HttpError) => {
+          expect(error.status).toBe(401);
+          expect(authService.signIn).toHaveBeenCalledTimes(1);
+          done();
+        }
+      });
+    });
+
+    it('should preserve HTTP 403 without headers without invoking sign-in', (done) => {
+      errorService.handle(new HttpErrorResponse({ status: 403 })).subscribe({
+        error: (error: HttpError) => {
+          expect(error.status).toBe(403);
+          expect(authService.signIn).not.toHaveBeenCalled();
+          done();
+        }
+      });
+    });
+
+    it('should respect disabled sign-in redirection for a headerless HTTP 401', () => {
+      errorService.handle(new HttpErrorResponse({ status: 401 }), false);
+      expect(authService.signIn).not.toHaveBeenCalled();
+    });
+
+    it('should preserve HTTP status when malformed JSON does not provide a structured error', () => {
+      const converted = HttpErrorService.convertToHttpError(new HttpErrorResponse({
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        status: 502,
+        error: '{invalid json}'
+      }));
+      expect(converted.status).toBe(502);
+      expect(converted.message).toBe(new HttpError().message);
+    });
+
+    it('should preserve transport status zero when no HTTP response was received', () => {
+      expect(HttpErrorService.convertToHttpError(new HttpErrorResponse({ status: 0 })).status).toBe(0);
+    });
+
+    it('should retain a JSON message and use HTTP status when the body omits status', () => {
+      const converted = HttpErrorService.convertToHttpError(new HttpErrorResponse({
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        status: 502,
+        error: { message: 'Service unavailable' }
+      }));
+      expect(converted.status).toBe(502);
+      expect(converted.message).toBe('Service unavailable');
+    });
+
+    it('should preserve HTTP status when the JSON error body cannot be mapped', () => {
+      const converted = HttpErrorService.convertToHttpError(new HttpErrorResponse({
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        status: 502,
+        error: { hasOwnProperty: 'invalid' }
+      }));
+      expect(converted.status).toBe(502);
+      expect(converted.message).toBe(new HttpError().message);
+    });
 
     it('should return default error when no error given', (done) => {
       errorService.handle(null)
         .subscribe(
           () => fail('no error'),
-          error => {
+          (error) => {
             expect(error).not.toBeNull();
             expect(error.error).toEqual('Unknown error');
             expect(error.message).toEqual('Sorry, there is a problem with this service. Please try again later.');
@@ -101,7 +177,7 @@ describe('HttpErrorService', () => {
       errorService.handle(VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
-          error => {
+          (error) => {
             expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE));
             done();
           }
@@ -112,7 +188,7 @@ describe('HttpErrorService', () => {
       errorService.handle(VALID_ERROR_RESPONSE_WITH_CHARSET)
         .subscribe(
           () => fail('no error'),
-          error => {
+          (error) => {
             expect(error).toEqual(HttpError.from(VALID_ERROR_RESPONSE_WITH_CHARSET));
             done();
           }
@@ -123,7 +199,7 @@ describe('HttpErrorService', () => {
       errorService.handle(NOT_VALID_ERROR_RESPONSE)
         .subscribe(
           () => fail('no error'),
-          error => {
+          (error) => {
             expect(error).toEqual(HttpError.from(NOT_VALID_ERROR_RESPONSE));
             expect(error.status).toBe(500);
             done();
@@ -140,7 +216,7 @@ describe('HttpErrorService', () => {
       })
         .subscribe(
           () => fail('no error'),
-          error => {
+          (error) => {
             expect(error).toEqual(expectedError);
             done();
           }
