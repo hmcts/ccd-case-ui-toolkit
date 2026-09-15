@@ -7,7 +7,7 @@ import { redo, undo } from 'prosemirror-history';
 import { Fragment, Schema } from 'prosemirror-model';
 import type { DOMOutputSpec, Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
+import { EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -22,6 +22,8 @@ type RichTextHeadingLevel = 1 | 2 | 3;
 interface WordListConversionState {
   listStack: HTMLElement[];
   listParents: Node[];
+  listRunDeclaredLevel: number;
+  listRunVisualLevel: number;
   resetListLevels: Map<string, number>;
   previousListId: string;
 }
@@ -161,6 +163,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       },
       plugins: [
         new Plugin({
+          appendTransaction: (transactions, oldState, newState) =>
+            this.renumberContinuedOrderedLists(transactions, oldState, newState),
           props: {
             handlePaste: (_view, event) => this.handleEditorPaste(event),
             handleDOMEvents: {
@@ -742,6 +746,90 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
       : candidateOrder + candidateList.childCount === adjacentOrder;
   }
 
+  private renumberContinuedOrderedLists(
+    transactions: readonly Transaction[],
+    oldState: EditorState,
+    newState: EditorState
+  ): Transaction | null {
+    if (!transactions.some((transaction) => transaction.docChanged)) {
+      return null;
+    }
+
+    const oldChildren: Array<{ node: ProseMirrorNode; position: number }> = [];
+    let oldPosition = 0;
+    oldState.doc.forEach((node) => {
+      oldChildren.push({ node, position: oldPosition });
+      oldPosition += node.nodeSize;
+    });
+
+    const mapPosition = (position: number): number => transactions.reduce(
+      (mappedPosition, transaction) => transaction.mapping.map(mappedPosition, 1),
+      position
+    );
+    const effectiveOrders = new Map<number, number>();
+    let result: Transaction | null = null;
+
+    oldChildren.forEach(({ node: candidate, position: candidatePosition }, candidateIndex) => {
+      if (candidate.type.name !== 'ordered_list') {
+        return;
+      }
+
+      let previousIndex = candidateIndex - 1;
+      while (previousIndex >= 0 &&
+        this.isOrderedListContinuationSeparator(oldChildren[previousIndex].node, candidate)) {
+        previousIndex--;
+      }
+      if (previousIndex < 0) {
+        return;
+      }
+
+      const previous = oldChildren[previousIndex].node;
+      const previousPosition = oldChildren[previousIndex].position;
+      if (previous.type.name !== 'ordered_list' ||
+        !this.hasMatchingListType(candidate, previous) ||
+        candidate.attrs.indent !== previous.attrs.indent ||
+        !this.isSequentialList(candidate, previous, 1)) {
+        return;
+      }
+
+      const mappedPreviousPosition = mapPosition(previousPosition);
+      const mappedCandidatePosition = mapPosition(candidatePosition);
+      const newPrevious = newState.doc.nodeAt(mappedPreviousPosition);
+      const newCandidate = newState.doc.nodeAt(mappedCandidatePosition);
+      if (!newPrevious || !newCandidate ||
+        newPrevious.type.name !== 'ordered_list' || newCandidate.type.name !== 'ordered_list' ||
+        newPrevious.firstChild?.textContent !== previous.firstChild?.textContent ||
+        newCandidate.firstChild?.textContent !== candidate.firstChild?.textContent ||
+        !this.hasMatchingListType(newCandidate, newPrevious) ||
+        newCandidate.attrs.indent !== newPrevious.attrs.indent) {
+        return;
+      }
+
+      const previousOrder = effectiveOrders.get(previousPosition) ?? (Number(newPrevious.attrs.order) || 1);
+      const expectedOrder = previousOrder + newPrevious.childCount;
+      effectiveOrders.set(candidatePosition, expectedOrder);
+      if (Number(newCandidate.attrs.order) === expectedOrder) {
+        return;
+      }
+
+      result = (result || newState.tr).setNodeMarkup(mappedCandidatePosition, newCandidate.type, {
+        ...newCandidate.attrs,
+        order: expectedOrder
+      });
+    });
+
+    return result;
+  }
+
+  private isOrderedListContinuationSeparator(node: ProseMirrorNode, candidate: ProseMirrorNode): boolean {
+    if (this.isEmptyParagraph(node) || this.isListSectionHeading(node)) {
+      return true;
+    }
+
+    return this.isList(node) &&
+      (Number(node.attrs.indent) || 0) > (Number(candidate.attrs.indent) || 0);
+  }
+
   private hasListContinuation(list: ProseMirrorNode): boolean {
     return list.type.name === 'ordered_list' || Boolean(list.attrs.continuationOrder);
   }
@@ -1049,7 +1137,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
-    return this.normalisePlainTextValue(sanitiseRichTextDocument(documentElement));
+    const sanitisedValue = sanitiseRichTextDocument(documentElement);
+    return this.hasMeaningfulRichTextContent(documentElement)
+      ? this.normalisePlainTextValue(sanitisedValue)
+      : '';
   }
 
   public normaliseRichTextValue(value: string): string {
@@ -1069,7 +1160,17 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
-    return this.normalisePlainTextValue(sanitiseRichTextDocument(documentElement));
+    const sanitisedValue = sanitiseRichTextDocument(documentElement);
+    return this.hasMeaningfulRichTextContent(documentElement)
+      ? this.normalisePlainTextValue(sanitisedValue)
+      : '';
+  }
+
+  private hasMeaningfulRichTextContent(documentElement: Document): boolean {
+    const visibleText = (documentElement.body.textContent || '')
+      .replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
+
+    return visibleText.length > 0 || Boolean(documentElement.body.querySelector('hr'));
   }
 
   public syncAccessibilityLater(): void {
@@ -1204,11 +1305,31 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     this.isNormalisingValue = true;
     try {
-      this.richTextAreaControl.setValue(normalisedValue, { emitEvent: false });
-      this.editor.setContent(normalisedValue || '');
+      this.richTextAreaControl.setValue(normalisedValue, {
+        emitEvent: false,
+        emitModelToViewChange: false
+      });
+      if (normalisedValue || this.editorHasMeaningfulRichTextContent()) {
+        this.editor.setContent(normalisedValue || '');
+      }
     } finally {
       this.isNormalisingValue = false;
     }
+  }
+
+  private editorHasMeaningfulRichTextContent(): boolean {
+    const documentNode = this.editor.view.state.doc;
+    const visibleText = documentNode.textContent.replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
+    let hasHorizontalRule = false;
+    documentNode.descendants((node) => {
+      if (node.type.name === 'horizontal_rule') {
+        hasHorizontalRule = true;
+        return false;
+      }
+      return !hasHorizontalRule;
+    });
+
+    return visibleText.length > 0 || hasHorizontalRule;
   }
 
   private richTextRequiredValidator(): ValidatorFn {
@@ -1991,7 +2112,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     return value
       .replace(/!?\[([^\]]{0,500})\]\(([^)]{0,500})\)/g, (_match: string, text: string, url: string) => text || url)
-      .replace(/!?\[((?:[^[\]\\]|\\.){0,500})\]\s*\[[^\]]{0,100}\]/g, '$1');
+      .replace(/!?\[((?:[^[\]\\]|\\.){0,500})\]\[[^\]]{0,100}\](?!\s*\/)/g, '$1');
   }
 
   private unwrapElement(element: Element): void {
@@ -2013,6 +2134,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     const state: WordListConversionState = {
       listStack: [],
       listParents: [],
+      listRunDeclaredLevel: null,
+      listRunVisualLevel: null,
       resetListLevels: new Map<string, number>(),
       previousListId: null
     };
@@ -2047,6 +2170,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private resetWordListConversionState(state: WordListConversionState): void {
     state.listStack.length = 0;
     state.listParents.length = 0;
+    state.listRunDeclaredLevel = null;
+    state.listRunVisualLevel = null;
     state.resetListLevels.clear();
     state.previousListId = null;
   }
@@ -2054,7 +2179,16 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   private wordListRequestedLevel(paragraph: HTMLElement, listId: string, wordListIndents: number[],
     state: WordListConversionState): number {
     const declaredLevel = this.wordListDeclaredLevel(paragraph);
-    let requestedLevel = this.wordListLevel(paragraph, wordListIndents);
+    const visualLevel = this.wordListVisualLevel(paragraph, wordListIndents);
+    if (state.listRunDeclaredLevel === null || state.listRunVisualLevel === null) {
+      state.listRunDeclaredLevel = declaredLevel;
+      state.listRunVisualLevel = visualLevel;
+    }
+    let requestedLevel = Math.max(
+      1,
+      declaredLevel - state.listRunDeclaredLevel + 1,
+      visualLevel - state.listRunVisualLevel + 1
+    );
     const rememberedResetLevel = declaredLevel === 1 ? state.resetListLevels.get(listId) : null;
 
     if (rememberedResetLevel) {
@@ -2079,7 +2213,8 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
     if (currentList?.tagName.toLowerCase() !== listType || currentList?.getAttribute('type') !== orderedListType ||
       state.listParents[stackIndex] !== listParent) {
-      currentList = this.createWordList(documentElement, paragraph, listType, orderedListType, parentListItem);
+      const rootIndent = level === 1 ? state.listRunVisualLevel - 1 : 0;
+      currentList = this.createWordList(documentElement, paragraph, listType, orderedListType, parentListItem, rootIndent);
       state.listStack[stackIndex] = currentList;
       state.listParents[stackIndex] = listParent;
     }
@@ -2090,15 +2225,18 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   }
 
   private createWordList(documentElement: Document, paragraph: HTMLElement, listType: string,
-    orderedListType: string, parentListItem: Element): HTMLElement {
+    orderedListType: string, parentListItem: Element, rootIndent: number): HTMLElement {
     const list = documentElement.createElement(listType);
-    const listStart = this.wordListStart(paragraph);
+    const listStart = this.wordListStart(paragraph, orderedListType);
 
     if (listType === 'ol' && listStart > 1) {
       list.setAttribute('start', listStart.toString());
     }
     if (orderedListType) {
       list.setAttribute('type', orderedListType);
+    }
+    if (rootIndent > 0) {
+      list.dataset.indent = Math.min(6, rootIndent).toString();
     }
     if (parentListItem) {
       parentListItem.appendChild(list);
@@ -2172,12 +2310,11 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return (markerElement ? markerElement.textContent : paragraph.textContent).trim();
   }
 
-  private wordListLevel(paragraph: HTMLElement, wordListIndents: number[]): number {
-    const declaredLevel = this.wordListDeclaredLevel(paragraph);
+  private wordListVisualLevel(paragraph: HTMLElement, wordListIndents: number[]): number {
     const indent = this.wordListIndent(paragraph);
     const visualLevel = wordListIndents.indexOf(indent) + 1;
 
-    return Math.max(declaredLevel, visualLevel || 1);
+    return visualLevel || 1;
   }
 
   private wordListDeclaredLevel(paragraph: HTMLElement): number {
@@ -2211,10 +2348,22 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return Math.round(indent);
   }
 
-  private wordListStart(paragraph: HTMLElement): number {
-    const match = /^(\d+)[.)]/.exec(this.wordListMarker(paragraph));
+  private wordListStart(paragraph: HTMLElement, orderedListType: string): number {
+    const match = /^\(?([a-z]+|\d+)[.)]/i.exec(this.wordListMarker(paragraph));
+    if (!match) {
+      return 1;
+    }
+    if (/^\d+$/.test(match[1])) {
+      return Number(match[1]);
+    }
+    if (orderedListType === 'a') {
+      return match[1].toLowerCase().split('').reduce(
+        (start, character) => (start * 26) + character.charCodeAt(0) - 96,
+        0
+      );
+    }
 
-    return match ? Number(match[1]) : 1;
+    return 1;
   }
 
   private copyListItemContents(documentElement: Document, paragraph: HTMLElement, listItem: HTMLElement): void {
