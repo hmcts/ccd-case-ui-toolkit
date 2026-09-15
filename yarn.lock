@@ -3319,7 +3319,7 @@ __metadata:
     font-awesome: "npm:^4.6.1"
     gh-pages: "npm:^2.0.0"
     git-message: "npm:^2.0.2"
-    govuk-frontend: "npm:5.13.0"
+    govuk-frontend: "npm:6.4.0"
     gulp: "npm:^4.0.2"
     gulp-inline-ng2-template: "npm:^5.0.1"
     gulp-sass: "npm:^5.1.0"
@@ -12930,10 +12930,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:5.13.0":
-  version: 5.13.0
-  resolution: "govuk-frontend@npm:5.13.0"
-  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
+"govuk-frontend@npm:6.4.0":
+  version: 6.4.0
+  resolution: "govuk-frontend@npm:6.4.0"
+  checksum: 10/e98a24d8e68626154775b5f84478ad12d144c1c4822d539faaf608bb3b60862d4786f6ac5f195893439b38bdb23c8177826768beb9cb793d8f8edb43e74a4e6f
   languageName: node
   linkType: hard
 

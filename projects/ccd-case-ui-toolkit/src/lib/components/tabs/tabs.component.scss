@@ -1,12 +1,12 @@
-@import "govuk-frontend/dist/govuk/base";
-@import "govuk-frontend/dist/govuk/components/tabs/index";
+@use "govuk-frontend/dist/govuk/base" as *;
+@use "govuk-frontend/dist/govuk/components/tabs";
 @import 'components/govuk-toolkit-shim';
 
 .govuk-tabs {
   .govuk-tabs__list {
     @include govuk-clearfix;
     margin-bottom: 0;
-    border-bottom: 1px solid $govuk-border-colour;
+    border-bottom: 1px solid govuk-functional-colour(border);
   }
 
   .govuk-tabs__list-item {
@@ -16,7 +16,7 @@
     margin-left: 0;
     padding: govuk-spacing(2) govuk-spacing(4);
     float: left;
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
     text-align: center;
 
     &::before {
@@ -34,9 +34,9 @@
     padding-right: govuk-spacing(4) - $border-width;
     padding-bottom: govuk-spacing(3) + $border-width;
     padding-left: govuk-spacing(4) - $border-width;
-    border: $border-width solid $govuk-border-colour;
+    border: $border-width solid govuk-functional-colour(border);
     border-bottom: 0;
-    background-color: $govuk-body-background-colour;
+    background-color: govuk-functional-colour(body-background);
 
     .govuk-tabs__tab {
       text-decoration: none;
@@ -61,7 +61,7 @@
   .govuk-tabs__panel {
     @include govuk-responsive-margin(0, "bottom");
     padding: govuk-spacing(6) govuk-spacing(4);
-    border: 1px solid $govuk-border-colour;
+    border: 1px solid govuk-functional-colour(border);
     border-top: 0;
 
     & > :last-child {
