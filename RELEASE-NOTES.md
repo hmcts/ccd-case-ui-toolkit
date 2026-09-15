@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.3.99
+**EXUI-5185** Issue with copy and paste on Rich Text Editor
+**EXUI-5187** Undo/Deleting text in rich text field still sends data
+
 ### Version 7.3.98
 **EXUI-5063** Staff type-ahead component
 
