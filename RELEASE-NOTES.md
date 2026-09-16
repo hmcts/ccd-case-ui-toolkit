@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.3.99-exui-3003-3005-3066
+**EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
+**EXUI-3005** timestamp values displayed in /cases/case-search do not appear to be timezone adjusted
+**EXUI-3066** HALO-23226 Dates/Times: Accept input in local time
+
 ### Version 7.3.99
 **EXUI-5185** Issue with copy and paste on Rich Text Editor
 **EXUI-5187** Undo/Deleting text in rich text field still sends data
