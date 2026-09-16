@@ -5,6 +5,7 @@ import {
   FormControl,
   FormGroup
 } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -34,19 +35,22 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   private readonly genericError = 'There is a problem';
   private readonly specificReasonControlName = 'specificReason';
   public getSpecificAccessError = false;
+  private originalDocumentTitle: string;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly casesService: CasesService,
     private readonly route: ActivatedRoute,
-    private readonly caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier,
+    private readonly titleService: Title
   ) { }
 
   public ngOnInit(): void {
     this.title = SpecificAccessRequestPageText.TITLE;
     this.hint = SpecificAccessRequestPageText.HINT;
     this.caseRefLabel = SpecificAccessRequestPageText.CASE_REF;
+    this.originalDocumentTitle = this.titleService.getTitle();
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, null),
     });
@@ -69,6 +73,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   public onChange(): void {
     this.submitted = false;
+    this.restoreDocumentTitle();
     // Clear the "specific reason" fields manually. This prevents any previous value being retained by
     // the field's FormControl when the field itself is removed from the DOM by *ngIf. (If it is subsequently added back
     // to the DOM by *ngIf, it will appear empty but the associated FormControl still has the previous value.)
@@ -83,6 +88,9 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
         description: SpecificAccessRequestErrors.NO_REASON,
         fieldId: 'specific-reason',
       };
+      this.prefixDocumentTitleWithError();
+    } else {
+      this.restoreDocumentTitle();
     }
 
     // Initiate Specific Access Request
@@ -107,10 +115,24 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
             this.getSpecificAccessError = true;
             this.errorMessage = {
               title: this.genericError,
-              description: 'Sorry, there is a problem with the service; Try again later.'
+              description: 'Sorry, there is a problem with the service; Try again later.',
+              fieldId: 'specific-reason'
             };
+            this.prefixDocumentTitleWithError();
           }
         );
+    }
+  }
+
+  private prefixDocumentTitleWithError(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.originalDocumentTitle}`);
+    }
+  }
+
+  private restoreDocumentTitle(): void {
+    if (this.titleService.getTitle() !== this.originalDocumentTitle) {
+      this.titleService.setTitle(this.originalDocumentTitle);
     }
   }
 

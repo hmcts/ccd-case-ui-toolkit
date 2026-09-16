@@ -1,8 +1,12 @@
-<table *ngIf="caseField.value && caseField.value.length" class="multi-select-list-field-table"
-       [attr.aria-describedby]="'multi selection table' | rpxTranslate">
+<table *ngIf="caseField.value && caseField.value.length" class="multi-select-list-field-table">
+  <caption class="govuk-visually-hidden">{{ 'Multi selection table' | rpxTranslate }}</caption>
+  <thead>
+    <tr>
+      <th scope="col" class="govuk-visually-hidden">{{ 'Value' | rpxTranslate }}</th>
+    </tr>
+  </thead>
   <tbody>
     <tr *ngFor="let value of caseField.value">
-      <th style="display: none;"></th>
       <td><span class="text-16">{{ value | ccdFixedList:caseField.field_type.fixed_list_items | rpxTranslate}}</span></td>
     </tr>
   </tbody>
