@@ -16,7 +16,8 @@ describe('PageValidationService', () => {
   const FORM_GROUP = new FormGroup({
     data: new FormGroup({
       field1: new FormControl('SOME_VALUE'),
-      judicialUserField_judicialUserControl: new FormControl()
+      judicialUserField_judicialUserControl: new FormControl(),
+      staffUserField_staffUserControl: new FormControl()
     })
   });
 
@@ -108,5 +109,17 @@ describe('PageValidationService', () => {
     judicialUserFormControl.setValidators(Validators.required);
     judicialUserFormControl.updateValueAndValidity();
     expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([judicialUserCaseField]);
+  });
+
+  it('should not allow empty StaffUser field when MANDATORY', () => {
+    const staffUserCaseField = aCaseField('staffUserField', 'staffUser1', 'StaffUser', 'MANDATORY', null);
+    staffUserCaseField.field_type.type = 'Complex';
+    wizardPage.case_fields.push(staffUserCaseField);
+    wizardPage.isMultiColumn = () => false;
+    const staffUserFormControl = FORM_GROUP.get('data.staffUserField_staffUserControl');
+    staffUserFormControl.setValidators(Validators.required);
+    staffUserFormControl.updateValueAndValidity();
+
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([staffUserCaseField]);
   });
 });

@@ -144,9 +144,13 @@ describe('QueryManagementService', () => {
       service.setCaseQueriesCollectionData(eventData as any, QueryCreateContext.NEW_QUERY, caseDetails as any);
 
       // resolveFieldId logs the jurisdiction-specific error, and setCaseQueriesCollectionData logs a second message.
-      expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).toBe(
-        'Error: Multiple CaseQueriesCollections are not supported yet for the PUBLICLAW jurisdiction'
-      );
+      expect((console.error as jasmine.Spy).calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({
+        level: 'error',
+        message: 'Multiple CaseQueriesCollections are not supported yet for this jurisdiction.',
+        context: jasmine.objectContaining({
+          jurisdictionId: 'PUBLICLAW'
+        })
+      }));
       expect(service.fieldId).toBeUndefined();
     });
   });

@@ -52,7 +52,6 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
-        console.info('Setting the case into case viewer component as retrieved from XHR request.');
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });

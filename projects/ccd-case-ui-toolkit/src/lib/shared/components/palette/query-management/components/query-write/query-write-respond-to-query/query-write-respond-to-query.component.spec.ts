@@ -139,16 +139,19 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(component.caseDetails).toEqual(CASE_VIEW);
   }));
 
-  it('should log error if caseNotifier emits an error', fakeAsync(() => {
+  it('should log a redacted structured error if caseNotifier emits an error', fakeAsync(() => {
     const errorMessage = 'Error retrieving case details';
-    spyOn(console, 'error');
+    const consoleSpy = spyOn(console, 'error');
 
     mockCaseNotifier.fetchAndRefresh.and.returnValue(throwError(() => errorMessage));
 
     component.ngOnInit();
     tick();
 
-    expect(console.error).toHaveBeenCalledWith('Error retrieving case details:', errorMessage);
+    expect(consoleSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'error',
+      message: 'Error retrieving case details.'
+    }));
   }));
 
   it('should emit value when hasResponded is called', () => {
@@ -189,11 +192,14 @@ describe('QueryWriteRespondToQueryComponent', () => {
     expect(consoleSpy).not.toHaveBeenCalled();
   });
 
-  it('should log error if caseQueriesCollections[0] is undefined', () => {
+  it('should log a redacted structured error if caseQueriesCollections[0] is undefined', () => {
     component.caseQueriesCollections = [undefined as any];
     const consoleSpy = spyOn(console, 'error');
     component.ngOnChanges();
-    expect(consoleSpy).toHaveBeenCalledWith('caseQueriesCollections[0] is undefined!', component.caseQueriesCollections);
+    expect(consoleSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'error',
+      message: 'Case queries collection is undefined.'
+    }));
   });
 
   it('should warn and return if no messageId is found', () => {
@@ -203,7 +209,13 @@ describe('QueryWriteRespondToQueryComponent', () => {
     const warnSpy = spyOn(console, 'warn');
     component.ngOnChanges();
 
-    expect(warnSpy).toHaveBeenCalledWith('No messageId found in route params:', activatedRoute.snapshot.params);
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'No messageId found in route params.',
+      context: jasmine.objectContaining({
+        routeParams: activatedRoute.snapshot.params
+      })
+    }));
   });
 
   it('should filter parent query when responding to a child message', () => {
@@ -248,10 +260,13 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
     component.ngOnChanges();
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      'No matching message found for ID:',
-      unmatchedMessageId
-    );
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'No matching message found for ID.',
+      context: jasmine.objectContaining({
+        messageId: unmatchedMessageId
+      })
+    }));
 
     expect(component.queryListData).toBeUndefined();
     expect(component.queryItem).toBeUndefined();

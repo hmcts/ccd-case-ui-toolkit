@@ -873,12 +873,15 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.fieldId = 'anyField';
     component.qmCaseQueriesCollectionData = { anyField: { partyName: '', roleOnCase: '', caseMessages: [] } };
 
-    spyOn(console, 'error');
+    const errorSpy = spyOn(console, 'error');
     spyOn(window, 'scrollTo');
 
     component.submit();
 
-    expect(console.error).toHaveBeenCalledWith('Error: No task to complete was found');
+    expect(errorSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'error',
+      message: 'No task to complete was found.'
+    }));
 
     // errorMessages should be set with fallback content
     expect(component.errorMessages?.length).toBeGreaterThan(0);

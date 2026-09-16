@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Que
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -31,6 +30,8 @@ type CollectionItem = {
   standalone: false
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+  private static readonly SCROLL_OFFSET_PX = -150;
+
   @Input()
   public caseFields: CaseField[] = [];
 
@@ -45,7 +46,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private collectionItemUidCounter = 0;
 
   constructor(private readonly dialog: MatDialog,
-    private readonly scrollToService: ScrollToService,
     private readonly profileNotifier: ProfileNotifier,
     private readonly cdRef: ChangeDetectorRef
   ) {
@@ -190,15 +190,21 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.cdRef.detectChanges();
 
     if (doScroll) {
-      this.scrollToService.scrollTo({
-        target: `${this.buildIdPrefix(index)}${index}`,
-        duration: 1000,
-        offset: -150,
-      })
-        .subscribe(() => { }, console.error);
+      this.focusLastItem(true);
+      this.scrollToCollectionItem(`${this.buildIdPrefix(index)}${index}`);
+    } else {
+      this.focusLastItem();
+    }
+  }
+
+  private scrollToCollectionItem(targetId: string): void {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
     }
 
-    this.focusLastItem();
+    const targetTop = target.getBoundingClientRect().top + window.pageYOffset + WriteCollectionFieldComponent.SCROLL_OFFSET_PX;
+    window.scrollTo({ top: targetTop, behavior: 'smooth' });
   }
 
   private isCollectionDynamic(): boolean {
@@ -239,7 +245,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  private focusLastItem() {
+  private focusLastItem(preventScroll = false) {
     const root = this.items.last?.nativeElement as HTMLElement | undefined;
     if (!root) {
       return;
@@ -255,7 +261,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     });
 
     if (focusTarget) {
-      focusTarget.focus();
+      focusTarget.focus({ preventScroll });
     }
   }
 

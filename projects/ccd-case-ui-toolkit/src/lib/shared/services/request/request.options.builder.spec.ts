@@ -56,6 +56,29 @@ describe('RequestOptionsBuilder', () => {
       expect(result).toEqual(expected);
     });
 
+    it('should set multiple case criteria values as a list for the same field', () => {
+      const caseCriteria = {
+        'boHandoffReasonList.value.caseHandoffReason': ['ColligendaBona', 'Caveat']
+      };
+      const result = requestOptionsBuilder.buildOptions({}, caseCriteria);
+
+      expect((result.params as HttpParams).get('case.boHandoffReasonList.value.caseHandoffReason'))
+        .toEqual('[ColligendaBona, Caveat]');
+    });
+
+    it('should set multiple values from collection case criteria as a list for the same field', () => {
+      const caseCriteria = {
+        'boHandoffReasonList.value.caseHandoffReason': [
+          { id: '1', value: { caseHandoffReason: 'ColligendaBona' } },
+          { id: '2', value: { caseHandoffReason: 'Caveat' } }
+        ]
+      };
+      const result = requestOptionsBuilder.buildOptions({}, caseCriteria);
+
+      expect((result.params as HttpParams).get('case.boHandoffReasonList.value.caseHandoffReason'))
+        .toEqual('[ColligendaBona, Caveat]');
+    });
+
     // FIXME
     xit('should set all params if present', () => {
       const metaCriteria = {caseState: 'testState'};

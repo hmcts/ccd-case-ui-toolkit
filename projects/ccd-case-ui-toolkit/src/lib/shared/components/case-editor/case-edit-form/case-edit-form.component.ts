@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { ConditionalShowFormDirective } from '../../../directives/conditional-show/conditional-show-form.directive';
 import { FormValueService } from '../../../services/form/form-value.service';
 
 @Component({
@@ -11,6 +12,9 @@ import { FormValueService } from '../../../services/form/form-value.service';
   standalone: false
 })
 export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
+
+  @ViewChildren(ConditionalShowFormDirective)
+  private readonly conditionalShowFormDirectives: QueryList<ConditionalShowFormDirective>;
 
   @Input()
   public fields: CaseField[] = [];
@@ -70,5 +74,10 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   public detectChangesAndEmit(changes) {
     const current = JSON.stringify(this.formValueService.sanitise(changes));
     this.initial !== current ? this.valuesChanged.emit(true) : this.valuesChanged.emit(false);
+  }
+
+  // EXUI-4675 - needed for the race condition caused by the debounce in ConditionalShowFormDirective
+  public syncConditionalShowStates(): void {
+    this.conditionalShowFormDirectives?.forEach(directive => directive.evalAllShowHideConditions());
   }
 }

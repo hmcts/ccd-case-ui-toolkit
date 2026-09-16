@@ -103,6 +103,13 @@ export abstract class AbstractAppConfig {
     return 'prod';
   }
 
+  public getWASupportedRoleCategories(): string[] {
+    return [];
+  }
+
+  public getWASupportedRoleTypes(): string[] {
+    return [];
+  }
 
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
@@ -192,4 +199,6 @@ export class CaseEditorConfig {
   public icp_jurisdictions: string[];
   public events_to_hide: string[];
   public enable_service_specific_multi_followups: string[];
+  public wa_supported_role_categories: string[];
+  public wa_supported_role_types: string[];
 }

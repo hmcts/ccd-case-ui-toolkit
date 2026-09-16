@@ -154,10 +154,13 @@ describe('QueryWriteRaiseQueryComponent', () => {
 
 
   it('should warn and return false when eventData is null in setCaseQueriesCollectionData()', () => {
-    spyOn(console, 'warn');
+    const warnSpy = spyOn(console, 'warn');
     component.eventData = null;
     const result = component.setCaseQueriesCollectionData();
-    expect(console.warn).toHaveBeenCalledWith('Event data not available; skipping collection setup.');
+    expect(warnSpy.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
+      level: 'warn',
+      message: 'Event data not available; skipping collection setup.'
+    }));
     expect(result).toBeFalsy();
   });
 

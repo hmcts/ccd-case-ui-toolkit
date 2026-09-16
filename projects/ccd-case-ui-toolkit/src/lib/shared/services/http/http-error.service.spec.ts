@@ -91,7 +91,7 @@ describe('HttpErrorService', () => {
           error => {
             expect(error).not.toBeNull();
             expect(error.error).toEqual('Unknown error');
-            expect(error.message).toEqual('Something unexpected happened, our technical staff have been automatically notified');
+            expect(error.message).toEqual('Sorry, there is a problem with this service. Please try again later.');
             done();
           }
         );

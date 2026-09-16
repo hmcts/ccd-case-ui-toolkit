@@ -1,4 +1,119 @@
-## RELEASE NOTES-exui-4309
+## RELEASE NOTES
+
+### Version 7.3.99
+**EXUI-5185** Issue with copy and paste on Rich Text Editor
+**EXUI-5187** Undo/Deleting text in rich text field still sends data
+
+### Version 7.3.98
+**EXUI-5063** Staff type-ahead component
+
+### Version 7.3.97
+**EXUI-5153** RTF - Add in option for different heading options
+
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
+
+### Version 7.3.95
+**EXUI-5033** upgrade TK to node 24
+
+### Version 7.3.94
+**EXUI-4951** Package update - uuid - major
+
+### Version 7.3.93
+**EXUI-4937** Package update - minimist - minor
+
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
+
+### Version 7.3.90
+**EXUI-4950** Package update - dompurify - major
+
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
+
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
+
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
+### Version 7.3.86
+**EXUI-5013** Package update - sass
+
+### Version 7.3.85
+**EXUI-4817** Package update - File-saver - minor
+
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
+### Version 7.3.83
+**EXUI-1855** Upgrade jasmine types and fix toolkit tests
+
+### Version 7.3.82
+**EXUI-4949** Package update - Angular - major
+**EXUI-5044** Package update - Angular build tools - major
+
+### Version 7.3.81
+**EXUI-5006** Package update - ngx-markdown - major
+
+### Version 7.3.80
+**POFCC-131** Onboard PCS to Work Allocation
+
+### Version 7.3.79
+**EXUI-5054** Halo IN-0190438 - Collated comments
+
+### Version 7.3.78
+**EXUI-5016** SRT changes
+
+### Version 7.3.77
+**EXUI-4983** Package update-tar-minor
+
+### Version 7.3.76
+**EXUI-4946** Misleading error message
+
+### Version 7.3.75
+**EXUI-4838** Unable to read long string
+**EXUI-2212** Inconsistent error message display for link mark up
+**EXUI-4745** Marked library version update
+**EXUI-4284** Suppressions - @nicky-lenaers/ngx-scroll-to - deprecated
+
+### Version 7.3.74
+**EXUI-4277** Suppressions to packages to update - easier
+
+### Version 7.3.73
+**EXUI-4675** Able to bypass mandatory reasons which expand with radio buttons
+
+### Version 7.3.72
+**EXUI-4803** axios upgrade
+
+### Version 7.3.71
+**EXUI-4669** EndButtonLabel not being applied
+
+### Version 7.3.70
+**EXUI-4802** Wrapper ticket 3 for package upgrades for em-media-viewer
+**POFCC-4826** Wrapper ticket 4 for package upgrades for em-media-viewer
+**POFCC-4851** Wrapper ticket 6 for package upgrades for em-media-viewer
+
+### Version 7.3.69
+**POFCC-75** Incorrect tab position on page load
+**POFCC-225** 'Skip to main content' link missing for case tabs
+**POFCC-214** Case tabs do not refresh after cancelling draft event
+
+### Version 7.3.68
+**EXUI-4589** Package update - config
+
+### Version 7.3.67
+**EXUI-4590** Package update - ngrx & npmpublish update
+
+### Version 7.3.66
+**EXUI-4590** Package update - ngrx
+
+### Version 7.3.65
+**EXUI-4648** Redact Sensitive Information Logged In through Console
 
 ### Version 7.3.64-exui-3003-3005
 **EXUI-3003** FR Notice of Change Timestamp showing as GMT rather than BST
@@ -41,6 +156,9 @@
 
 ### Version 7.3.55
 **EXUI-4442** Datepicker component 'Confirm' button
+
+### Version 7.3.54-exui-4648-rc-1
+**EXUI-4648** Redact Sensitive Information Logged In through Console
 
 ### Version 7.3.54
 **EXUI-4636** Revert CME-220  and EXUI-2111

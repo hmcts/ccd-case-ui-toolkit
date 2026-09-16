@@ -4,6 +4,7 @@ import { AddressValidationConstants } from '../../../commons/address-validation-
 import { FocusElementDirective } from '../../../directives/focus-element';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
+import { StructuredLoggerService } from '../../../services/logging';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
@@ -16,6 +17,8 @@ import { AddressOption } from './address-option.model';
   standalone: false
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
+  private readonly logger = new StructuredLoggerService();
+
   @ViewChild('writeComplexFieldComponent', { static: false })
   public writeComplexFieldComponent: WriteComplexFieldComponent;
 
@@ -81,7 +84,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
           );
         }, (error) => {
           this.loadingAddresses = false;
-          console.log(`An error occurred retrieving addresses for postcode ${postcode}. ${error}`);
+          this.logger.error('An error occurred retrieving addresses for postcode.', { error });
         });
       this.addressList.setValue(undefined);
       this.refocusElement();
