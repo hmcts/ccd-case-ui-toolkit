@@ -202,9 +202,35 @@ describe('QueryManagementService', () => {
 
       expect(result.queryField.partyName).toBe('John Smith');
       expect(result.queryField.caseMessages.length).toBe(1);
+      expect(result.queryField.caseMessages[0].value.isHmctsStaff).toBe('No');
+    });
+
+    it('should persist HMCTS status for a new query created by an HMCTS user', () => {
+      spyOn(service, 'isInternalUser').and.returnValue(true);
+      spyOn(service, 'isJudiciaryUser').and.returnValue(false);
+      service.fieldId = 'queryField';
+      service.caseQueriesCollections = [];
+
+      const formGroup = new FormGroup({
+        subject: new FormControl('Subject'),
+        body: new FormControl('Body'),
+        attachments: new FormControl([]),
+        isHearingRelated: new FormControl(false),
+        hearingDate: new FormControl(null)
+      });
+
+      const result = service.generateCaseQueriesCollectionData(
+        formGroup,
+        QueryCreateContext.NEW_QUERY,
+        null
+      );
+
+      expect(result.queryField.caseMessages[0].value.isHmctsStaff).toBe('Yes');
     });
 
     it('should append to matched collection if message ID matches', () => {
+      spyOn(service, 'isInternalUser').and.returnValue(true);
+      spyOn(service, 'isJudiciaryUser').and.returnValue(false);
       service.fieldId = 'queryField';
       service.caseQueriesCollections = [
         {
@@ -247,6 +273,7 @@ describe('QueryManagementService', () => {
       // ensure original message preserved and new message appended
       expect(result.queryField.caseMessages[0].value.id).toBe('abcd');
       expect(result.queryField.caseMessages[1].value).toBeDefined();
+      expect(result.queryField.caseMessages[1].value.isHmctsStaff).toBe('Yes');
     });
   });
 

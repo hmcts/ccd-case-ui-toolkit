@@ -108,6 +108,29 @@ describe('QueryListItem', () => {
     });
   });
 
+  describe('isLastSubmittedByHmctsStaff', () => {
+    it('should use the parent status when the query has no children', () => {
+      queryListItem.children = [];
+      queryListItem.isHmctsStaff = YES;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should use the last child status when the query has children', () => {
+      queryListItem.isHmctsStaff = YES;
+      queryListItem.children[queryListItem.children.length - 1].isHmctsStaff = NO;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeFalse();
+    });
+
+    it('should identify an HMCTS last submitter independently of the parent', () => {
+      queryListItem.isHmctsStaff = NO;
+      queryListItem.children[queryListItem.children.length - 1].isHmctsStaff = ' yes ';
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+  });
+
   describe('lastSubmittedDate', () => {
     it('should return the date of the lastSubmittedMessage', () => {
       expect(queryListItem.lastSubmittedDate).toEqual(lastSubmittedBy.createdOn);

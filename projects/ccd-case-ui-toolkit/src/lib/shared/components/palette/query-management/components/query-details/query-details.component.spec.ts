@@ -202,6 +202,8 @@ describe('QueryDetailsComponent', () => {
   });
 
   beforeEach(() => {
+    queryListItem.isHmctsStaff = undefined;
+    queryListItem.children.forEach((child) => child.isHmctsStaff = undefined);
     fixture = TestBed.createComponent(QueryDetailsComponent);
     component = fixture.componentInstance;
     component.query = queryListItem;
@@ -235,6 +237,32 @@ describe('QueryDetailsComponent', () => {
     expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Last submitted by');
     expect(columnHeaders[2].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Attachments');
+  });
+
+  it('should use the last submitter status for the HMCTS suffix', () => {
+    component.query.isHmctsStaff = 'Yes';
+    component.query.children[component.query.children.length - 1].isHmctsStaff = 'No';
+    fixture.detectChanges();
+
+    const detailsCells = fixture.debugElement.queryAll(By.css('.query-details-table'))[0].queryAll(By.css('.govuk-table__cell'));
+    expect(detailsCells[0].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
+    expect(detailsCells[1].nativeElement.textContent.trim()).toBe('Name 1');
+  });
+
+  it('should add the HMCTS suffix to an HMCTS caseworker name', () => {
+    component.query.children[0].isHmctsStaff = 'Yes';
+    fixture.detectChanges();
+
+    const responseCells = fixture.debugElement.queryAll(By.css('.query-details-table'))[1].queryAll(By.css('.govuk-table__cell'));
+    expect(responseCells[1].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
+  });
+
+  it('should add the HMCTS suffix to an HMCTS follow-up submitter', () => {
+    component.query.children[1].isHmctsStaff = 'Yes';
+    fixture.detectChanges();
+
+    const followUpCells = fixture.debugElement.queryAll(By.css('.query-details-table'))[2].queryAll(By.css('.govuk-table__cell'));
+    expect(followUpCells[1].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
   });
 
   it('should call toggleLinkVisibility when ngOnChanges is called', () => {

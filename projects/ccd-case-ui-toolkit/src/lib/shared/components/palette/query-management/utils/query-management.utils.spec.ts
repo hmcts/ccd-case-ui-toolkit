@@ -64,6 +64,7 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+      expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
     it('should return case message data for new query for HMCTS staff', () => {
@@ -110,6 +111,7 @@ describe('QueryManagementUtils', () => {
         children: [],
         lastSubmittedMessage: new QueryListItem(),
         lastSubmittedBy: '',
+        isLastSubmittedByHmctsStaff: false,
         lastSubmittedDate: undefined,
         lastResponseBy: '',
         lastResponseDate: undefined,
@@ -136,6 +138,7 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+      expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
     it('should return "Yes" for isClosed when closeQuery is true', () => {
@@ -152,6 +155,7 @@ describe('QueryManagementUtils', () => {
         children: [],
         lastSubmittedMessage: new QueryListItem(),
         lastSubmittedBy: '',
+        isLastSubmittedByHmctsStaff: false,
         lastSubmittedDate: undefined,
         lastResponseBy: '',
         lastResponseDate: undefined,
@@ -166,6 +170,7 @@ describe('QueryManagementUtils', () => {
 
       const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND, 'Yes');
       expect(result.isClosed).toBe('Yes');
+      expect(result.isHmctsStaff).toBe('Yes');
     });
 
     it('should fallback to "id" if uid is not present', () => {
@@ -385,6 +390,7 @@ describe('QueryManagementUtils', () => {
 
         const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP, nonHmctsStaff);
         expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
+        expect(result.isHmctsStaff).toBe('No');
       });
 
       it('should set messageType as undefined if invalid type is passed', () => {

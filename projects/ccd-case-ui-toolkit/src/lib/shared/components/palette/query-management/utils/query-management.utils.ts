@@ -57,13 +57,9 @@ export class QueryManagementUtils {
       hearingDate,
       createdOn: new Date(),
       createdBy: currentUserId,
-      messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
+      messageType: QueryCreateContext.FOLLOWUP, // Default to value new queries will be FOLLOWUP
+      isHmctsStaff: this.normalizeHmctsStaffStatus(isHmctsStaff)
     };
-
-    // Add isHmctsStaff only when the user is HMCTS staff and is permitted to create a new query
-    if (typeof isHmctsStaff === 'string' && isHmctsStaff.trim().toLowerCase() === 'yes') {
-      message.isHmctsStaff = isHmctsStaff;
-    }
 
     return message;
   }
@@ -95,14 +91,9 @@ export class QueryManagementUtils {
       createdBy: currentUserId,
       parentId: queryItem.id,
       isClosed,
-      messageType
+      messageType,
+      isHmctsStaff: this.normalizeHmctsStaffStatus(isHmctsStaff)
     };
-
-    // To be implemented later, once  service have don't their configuration
-    // Add isHmctsStaff when the user is HMCTS staff and responsding to a query
-    // if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
-    //   message.isHmctsStaff = isHmctsStaff;
-    // }
 
     return message;
   }
@@ -118,5 +109,9 @@ export class QueryManagementUtils {
   private static formattedDate(date): string {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     return formattedDate;
+  }
+
+  private static normalizeHmctsStaffStatus(isHmctsStaff: string): string {
+    return typeof isHmctsStaff === 'string' && isHmctsStaff.trim().toLowerCase() === 'yes' ? 'Yes' : 'No';
   }
 }

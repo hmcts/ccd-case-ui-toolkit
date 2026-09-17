@@ -46,6 +46,12 @@ export class QueryListItem implements CaseMessage {
     return this.children[childrenCount - 1].name;
   }
 
+  public get isLastSubmittedByHmctsStaff(): boolean {
+    const childrenCount = this.children.length;
+    const lastSubmittedBy = childrenCount === 0 ? this : this.children[childrenCount - 1];
+    return lastSubmittedBy.isHmctsStaff?.trim().toLowerCase() === 'yes';
+  }
+
   public get lastSubmittedDate(): Date {
     const childrenCount = this.children.length;
     const lastChild = this.children[childrenCount - 1];
