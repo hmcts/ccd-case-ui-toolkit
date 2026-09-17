@@ -4,6 +4,9 @@ import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_V
 @Component({
   selector: 'cut-date-input',
   templateUrl: './date-input.html',
+  styleUrls: [
+    './date-input.component.scss'
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
