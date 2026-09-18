@@ -191,8 +191,12 @@ describe('SearchResultComponent', () => {
 
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);
       appConfig.getPaginationPageSize.and.returnValue(25);
-      caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', ['getHmctsServiceDetailsByCaseType']);
+      caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService', [
+        'getHmctsServiceDetailsByCaseType',
+        'getHmctsServiceDetailsByServiceName'
+      ]);
       caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+      caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
 
       TestBed
         .configureTestingModule({
@@ -273,6 +277,19 @@ describe('SearchResultComponent', () => {
     it('should add resolved HMCTS service ID to search result case fields', () => {
       expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('TEST_CASE_TYPE');
       expect(component.resultView.results[0].columns['PersonFirstName'].hmctsServiceId).toBe('ABA2');
+    });
+
+    it('should fall back to the jurisdiction when the case type has no HMCTS service ID', () => {
+      const result = component.resultView.results[0];
+      result.case_fields['[JURISDICTION]'] = 'CMC';
+      result.case_fields['[CASE_TYPE]'] = 'MoneyClaimCase';
+      caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of([]));
+      caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of([{ service_code: 'AAA6' }] as HmctsServiceDetail[]));
+
+      component['resolveHmctsServiceIdsForResults']();
+
+      expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith('CMC');
+      expect(result.columns['PersonFirstName'].hmctsServiceId).toBe('AAA6');
     });
 
     it('should preserve the metadata flag from search result column definitions', () => {

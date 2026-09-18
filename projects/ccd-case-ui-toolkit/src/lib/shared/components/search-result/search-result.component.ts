@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -340,7 +342,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       }
 
       this.pendingHmctsServiceIdCaseTypes.add(caseTypeId);
-      this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseTypeId).subscribe({
+      this.getHmctsServiceDetails(result, caseTypeId).subscribe({
         next: (serviceDetails: HmctsServiceDetail[]) => {
           const hmctsServiceId = serviceDetails?.find((serviceDetail) => !!serviceDetail.service_code)?.service_code;
 
@@ -353,6 +355,22 @@ export class SearchResultComponent implements OnChanges, OnInit {
         complete: () => this.pendingHmctsServiceIdCaseTypes.delete(caseTypeId)
       });
     });
+  }
+
+  private getHmctsServiceDetails(result: SearchResultViewItem, caseTypeId: string) {
+    return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseTypeId).pipe(
+      catchError(() => of([])),
+      switchMap((serviceDetails: HmctsServiceDetail[]) => {
+        if (serviceDetails?.some((serviceDetail) => !!serviceDetail.service_code)) {
+          return of(serviceDetails);
+        }
+
+        const jurisdictionId = result?.case_fields?.['[JURISDICTION]'];
+        return jurisdictionId
+          ? this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(jurisdictionId).pipe(catchError(() => of([])))
+          : of(serviceDetails);
+      })
+    );
   }
 
   private applyHmctsServiceIdToResultFields(caseTypeId: string, hmctsServiceId: string): void {
