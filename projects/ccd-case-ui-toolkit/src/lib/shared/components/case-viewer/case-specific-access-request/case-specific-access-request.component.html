@@ -58,6 +58,7 @@
             id="specific-reason"
             name="specific-reason"
             rows="8"
+            [attr.aria-describedby]="formGroup.get('specificReason')?.invalid && submitted ? 'specific-reason-error-message' : null"
             formControlName="specificReason">
           </textarea>
         </div>

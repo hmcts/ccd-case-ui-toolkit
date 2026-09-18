@@ -4,7 +4,7 @@
   {{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.' | rpxTranslate}}
 </cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
-  <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': formGroup.invalid && submitted}">
+  <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': formGroup.get('radioSelected')?.invalid && submitted}">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">
@@ -21,14 +21,14 @@
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio" [value]="accessReasons[0].reason"
           data-aria-controls="conditional-reason-0" formControlName="radioSelected" [checked]="accessReasons[0].checked"
-          (change)="onChange()"/>
+          [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null" (change)="onChange()"/>
           <label class="govuk-label govuk-radios__label" for="reason-0">
             {{accessReasons[0].reason | rpxTranslate}}
           </label>
         </div>
         <div id="conditional-reason-0" *ngIf="formGroup.get('radioSelected').value === accessReasons[0].reason"
         class="govuk-radios__conditional">
-          <div class="govuk-form-group">
+          <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': formGroup.get('caseReference')?.invalid && submitted}">
             <label class="govuk-label" for="case-reference">
               {{caseRefLabel}}
             </label>
@@ -37,19 +37,19 @@
             </div>
             <input class="govuk-input govuk-!-width-one-third"
             [ngClass]="{'govuk-input--error': formGroup.get('caseReference').invalid && submitted}" id="case-reference"
-            name="case-reference" type="text" formControlName="caseReference">
+            name="case-reference" type="text" [attr.aria-describedby]="formGroup.get('caseReference')?.invalid && submitted ? 'case-reference-error-message' : null" formControlName="caseReference">
           </div>
         </div>
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="reason-1" name="radioSelected" type="radio" [value]="accessReasons[1].reason"
-          formControlName="radioSelected" [checked]="accessReasons[1].checked" (change)="onChange()"/>
+          formControlName="radioSelected" [checked]="accessReasons[1].checked" [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null" (change)="onChange()"/>
           <label class="govuk-label govuk-radios__label" for="reason-1">
             {{accessReasons[1].reason | rpxTranslate}}
           </label>
         </div>
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="reason-2" name="radioSelected" type="radio" [value]="accessReasons[2].reason"
-          formControlName="radioSelected" [checked]="accessReasons[2].checked" (change)="onChange()"/>
+          formControlName="radioSelected" [checked]="accessReasons[2].checked" [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null" (change)="onChange()"/>
           <label class="govuk-label govuk-radios__label" for="reason-2">
             {{accessReasons[2].reason | rpxTranslate}}
           </label>
@@ -57,19 +57,19 @@
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="reason-3" name="radioSelected" type="radio" [value]="accessReasons[3].reason"
           data-aria-controls="conditional-reason-3" formControlName="radioSelected" [checked]="accessReasons[3].checked"
-          (change)="onChange()"/>
+          [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null" (change)="onChange()"/>
           <label class="govuk-label govuk-radios__label" for="reason-3" id="reason-3-label">
             {{accessReasons[3].reason | rpxTranslate}}
           </label>
         </div>
         <div id="conditional-reason-3" *ngIf="formGroup.get('radioSelected').value === accessReasons[3].reason"
         class="govuk-radios__conditional">
-          <div class="govuk-form-group">
+          <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': formGroup.get('otherReason')?.invalid && submitted}">
             <div id="other-reason-error-message" class="govuk-error-message" *ngIf="formGroup.get('otherReason').invalid && submitted">
               {{errorMessage.description | rpxTranslate}}
             </div>
             <textarea class="govuk-textarea" [ngClass]="{'govuk-textarea--error': formGroup.get('otherReason').invalid && submitted}"
-            id="other-reason" name="other-reason" rows="5" aria-describedby="reason-3-label" formControlName="otherReason"></textarea>
+            id="other-reason" name="other-reason" rows="5" [attr.aria-describedby]="'reason-3-label' + (formGroup.get('otherReason')?.invalid && submitted ? ' other-reason-error-message' : '')" formControlName="otherReason"></textarea>
           </div>
         </div>
       </div>

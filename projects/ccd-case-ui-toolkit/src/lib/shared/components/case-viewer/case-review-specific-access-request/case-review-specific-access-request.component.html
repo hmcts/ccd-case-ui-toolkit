@@ -73,6 +73,7 @@
                 [value]="accessReasons[0].reason"
                 formControlName="radioSelected"
                 [checked]="accessReasons[0].checked"
+                [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-0">
                 {{ accessReasons[0].reason | rpxTranslate }}
@@ -87,6 +88,7 @@
                 [value]="accessReasons[1].reason"
                 formControlName="radioSelected"
                 [checked]="accessReasons[1].checked"
+                [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-1">
                 {{ accessReasons[1].reason | rpxTranslate }}
@@ -101,6 +103,7 @@
                 [value]="accessReasons[2].reason"
                 formControlName="radioSelected"
                 [checked]="accessReasons[2].checked"
+                [attr.aria-describedby]="formGroup.get('radioSelected')?.invalid && submitted ? 'error-message' : null"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-2">
                 {{ accessReasons[2].reason | rpxTranslate }}
