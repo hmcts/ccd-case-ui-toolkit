@@ -275,6 +275,25 @@ describe('SearchResultComponent', () => {
       expect(component.resultView.results[0].columns['PersonFirstName'].hmctsServiceId).toBe('ABA2');
     });
 
+    it('should preserve the metadata flag from search result column definitions', () => {
+      const metadataColumn = {
+        case_field_id: 'CreatedDate',
+        case_field_type: {
+          id: 'DateTime',
+          type: 'DateTime'
+        },
+        label: 'Created date',
+        metadata: true,
+        order: 1
+      } as SearchResultViewColumn;
+      const result = component.resultView.results[0];
+      result.case_fields['CreatedDate'] = '2025-07-26T20:10:05Z';
+
+      const field = component.buildCaseField(metadataColumn, result);
+
+      expect(field.metadata).toBeTrue();
+    });
+
     it('should not render the pagination limit warning ', () => {
       const paginationLimitWarning = de.query(By.css('div.pagination-limit-warning'));
       expect(paginationLimitWarning).toBeFalsy();

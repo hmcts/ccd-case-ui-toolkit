@@ -201,6 +201,24 @@ describe('ReadDateFieldComponent', () => {
       expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
     });
 
+    it('should use local time zone for CCD metadata fields', () => {
+      component.caseField.metadata = true;
+      component.caseField.hmctsServiceId = 'ABA2';
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('local');
+      expect(de.nativeElement.textContent).toEqual(expectedLocalDateTime);
+    });
+
+    it('should keep user-submitted time unchanged for non-metadata fields', () => {
+      component.caseField.metadata = false;
+      component.caseField.hmctsServiceId = 'ABA2';
+      fixture.detectChanges();
+
+      expect(component.timeZone).toBe('utc');
+      expect(de.nativeElement.textContent).toEqual(expectedUtcDateTime);
+    });
+
     it('should fall back to case service ID when a field service ID is unresolved', () => {
       component.caseField.hmctsServiceId = undefined;
       caseViewSubject.next(createCaseView('PROBATE', 'GrantOfRepresentation', 'ABA6'));

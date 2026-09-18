@@ -315,6 +315,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
+      metadata: col.metadata,
       display_context_parameter: col.display_context_parameter,
       display_context: col.display_context,
       hmctsServiceId: this.hmctsServiceIdByCaseType.get(this.getCaseTypeId(result)) || ''

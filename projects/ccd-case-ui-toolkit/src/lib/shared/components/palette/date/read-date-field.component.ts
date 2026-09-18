@@ -11,7 +11,7 @@ import { PaletteValueOrigin } from '../base-field/palette-value-origin.enum';
   standalone: false
 })
 export class ReadDateFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
-  private static readonly SERVICES_RENDERED_IN_LOCAL_TIME = ['ABA2', 'ABA6', 'BBA3']; // [FR, PROBATE, SSCS]
+  private static readonly SERVICES_RENDERED_IN_LOCAL_TIME = ['ABA1', 'ABA2', 'ABA6', 'BBA3', 'AAA6', 'BBA2']; // [DIVORCE, FR, PROBATE, SSCS, MONEY CLAIMS (CIVIL), SPETRIBS]
 
   private caseSubscription: Subscription;
   private caseHmctsServiceId: string;
@@ -41,7 +41,12 @@ export class ReadDateFieldComponent extends AbstractFieldReadComponent implement
 
   private shouldRenderInLocalTime(): boolean {
     return !this.isFormOriginField() &&
+      this.isCcdMetadataField() &&
       ReadDateFieldComponent.SERVICES_RENDERED_IN_LOCAL_TIME.includes(this.getHmctsServiceId());
+  }
+
+  private isCcdMetadataField(): boolean {
+    return this.caseField?.metadata !== false;
   }
 
   private isFormOriginField(): boolean {
