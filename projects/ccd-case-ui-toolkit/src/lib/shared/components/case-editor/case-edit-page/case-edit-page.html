@@ -41,8 +41,7 @@
 </ccd-callback-errors>
 <div class="width-50">
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
-    <fieldset id="fieldset-case-data">
-      <legend style="display: none;"></legend>
+    <div id="fieldset-case-data">
       <!-- single column -->
       <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
                           [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
@@ -59,7 +58,7 @@
                               [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
       </div>
-    </fieldset>
+    </div>
 
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">

@@ -76,7 +76,7 @@
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
-                      <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field) && field.label">
+                      <th [id]="'case-viewer-field-label--' + field.id" scope="row" *ngIf="!isFieldToHaveNoLabel(field) && field.label">
                         <div class="case-viewer-label text-16">
                           {{field.label | rpxTranslate}}</div>
                       </th>
@@ -89,7 +89,7 @@
                       </td>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <td [id]="'case-viewer-field-read--' + field.id">
+                      <td role="rowheader" [attr.aria-label]="(field.label || field.id) | rpxTranslate" [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']" [caseFields]="caseFields"
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
