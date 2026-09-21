@@ -1,9 +1,9 @@
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CaseField, CaseTab, CaseView } from '../../../domain';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../services/case-flag';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
-import { BehaviorSubject, of, throwError } from 'rxjs';
 
 export function getMockCaseNotifier(caseView: CaseView = null): CaseNotifier {
   const cv: CaseView = {
