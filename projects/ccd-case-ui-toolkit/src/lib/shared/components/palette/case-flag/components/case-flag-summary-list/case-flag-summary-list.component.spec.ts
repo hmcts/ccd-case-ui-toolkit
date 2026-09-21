@@ -497,7 +497,7 @@ describe('CaseFlagSummaryListComponent', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
     const changeLinks = nativeElement.querySelectorAll('.govuk-link');
-    // Expected to be five "Change" links, including the status-change reason
+    // Expected to be five "Change" links
     expect(changeLinks.length).toBe(5);
   });
 

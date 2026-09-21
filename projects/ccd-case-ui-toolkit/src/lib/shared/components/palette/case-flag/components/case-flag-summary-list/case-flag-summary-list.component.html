@@ -93,7 +93,7 @@
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="#"
         (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE); $event.preventDefault()">
-        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'reason for status change' | rpxTranslate}}</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{updateFlagStep.STATUS_REASON_LABEL | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
