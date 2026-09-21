@@ -1,0 +1,47 @@
+#!groovy
+
+@Library('Infrastructure@2.4.5') _
+
+def type = 'nodejs'
+def product = 'xui'
+def component = 'ccd-case-ui-toolkit'
+def channel = '#xui-pipeline'
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+withPipeline(type, product, component) {
+  nonServiceApp()
+  disableLegacyDeployment()
+  enableSlackNotifications(channel)
+
+  afterSuccess('checkout') {
+    stage('Playwright browser setup') {
+      yarnBuilder.yarn('playwright install chromium')
+    }
+  }
+
+  afterSuccess('test') {
+    stage('Toolkit Playwright integration tests') {
+      yarnBuilder.yarn('test:playwright:typecheck')
+      yarnBuilder.yarn('test:playwright')
+    }
+  }
+
+  afterAlways('test') {
+    archiveArtifacts(
+      allowEmptyArchive: true,
+      artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**'
+    )
+    junit(
+      allowEmptyResults: true,
+      testResults: 'playwright_tests/test-results/junit.xml'
+    )
+    publishHTML([
+      allowMissing: true,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'playwright_tests/playwright-report',
+      reportFiles: 'index.html',
+      reportName: 'CCD Case UI Toolkit Playwright report'
+    ])
+  }
+}

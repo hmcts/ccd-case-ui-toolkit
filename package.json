@@ -17,6 +17,11 @@
     "access": "public"
   },
   "scripts": {
+    "serve:playwright": "ng serve toolkit-playwright-host --host 127.0.0.1 --port 4300",
+    "test:playwright": "playwright test --config playwright_tests/playwright.config.ts",
+    "test:playwright:typecheck": "tsc -p playwright_tests/tsconfig.json && ngc -p playwright_tests/host/tsconfig.json --noEmit",
+    "lint:playwright": "ESLINT_USE_FLAT_CONFIG=false eslint --config playwright_tests/.eslintrc.cjs \"playwright_tests/**/*.ts\"",
+    "test:fullfunctional": "yarn test:playwright:typecheck && yarn test:playwright",
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
     "build:library": "npm run generate:condition-parser && ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
@@ -97,6 +102,7 @@
     "@angular/compiler-cli": "20.3.27",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.32",
+    "@playwright/test": "1.62.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
