@@ -28,6 +28,7 @@ import {
   SessionStorageService
 } from '../../../services';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { PaletteValueOrigin } from '../../palette';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { aWizardPage } from '../case-edit.spec';
@@ -752,6 +753,18 @@ describe('CaseEditSubmitComponent', () => {
       const result = comp.readOnlySummaryFieldsToDisplayExists();
 
       expect(result).toBeTruthy();
+    });
+
+    it('should pass form origin to summary content fields', () => {
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      caseField.show_summary_content_option = 3;
+      comp.eventTrigger.case_fields = [caseField];
+      comp.showSummaryFields = [caseField];
+
+      fixture.detectChanges();
+
+      const fieldRead = de.query(By.css('table.summary-fields ccd-field-read'));
+      expect(fieldRead.properties.valueOrigin).toBe(PaletteValueOrigin.FORM);
     });
 
     it('should sort case fields with show_summary_content_option', () => {

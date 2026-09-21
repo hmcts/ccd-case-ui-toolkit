@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Optional, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -7,7 +9,9 @@ import {
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
 } from '../../domain';
+import { HmctsServiceDetail } from '../../domain/case-flag';
 import { CaseReferencePipe } from '../../pipes';
+import { CaseFlagRefdataService } from '../../services/case-flag';
 import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
 
 @Component({
@@ -101,6 +105,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   public selectedCases: SearchResultViewItem[] = [];
 
+  private readonly hmctsServiceIdByCaseType: Map<string, string> = new Map<string, string>();
+  private readonly pendingHmctsServiceIdCaseTypes: Set<string> = new Set<string>();
+
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
@@ -108,7 +115,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
     private readonly browserService: BrowserService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    @Optional() private readonly caseFlagRefdataService?: CaseFlagRefdataService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -145,6 +153,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       });
 
       this.hydrateResultView();
+      this.resolveHmctsServiceIdsForResults();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
     }
     if (changes['page']) {
@@ -308,9 +317,74 @@ export class SearchResultComponent implements OnChanges, OnInit {
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
+      metadata: col.metadata,
       display_context_parameter: col.display_context_parameter,
       display_context: col.display_context,
+      hmctsServiceId: this.hmctsServiceIdByCaseType.get(this.getCaseTypeId(result)) || ''
     });
+  }
+
+  private resolveHmctsServiceIdsForResults(): void {
+    this.resultView.results.forEach((result: SearchResultViewItem) => {
+      const caseTypeId = this.getCaseTypeId(result);
+
+      if (!caseTypeId || !this.caseFlagRefdataService) {
+        return;
+      }
+
+      if (this.hmctsServiceIdByCaseType.has(caseTypeId)) {
+        this.applyHmctsServiceIdToResultFields(caseTypeId, this.hmctsServiceIdByCaseType.get(caseTypeId));
+        return;
+      }
+
+      if (this.pendingHmctsServiceIdCaseTypes.has(caseTypeId)) {
+        return;
+      }
+
+      this.pendingHmctsServiceIdCaseTypes.add(caseTypeId);
+      this.getHmctsServiceDetails(result, caseTypeId).subscribe({
+        next: (serviceDetails: HmctsServiceDetail[]) => {
+          const hmctsServiceId = serviceDetails?.find((serviceDetail) => !!serviceDetail.service_code)?.service_code;
+
+          if (hmctsServiceId) {
+            this.hmctsServiceIdByCaseType.set(caseTypeId, hmctsServiceId);
+            this.applyHmctsServiceIdToResultFields(caseTypeId, hmctsServiceId);
+          }
+        },
+        error: () => this.pendingHmctsServiceIdCaseTypes.delete(caseTypeId),
+        complete: () => this.pendingHmctsServiceIdCaseTypes.delete(caseTypeId)
+      });
+    });
+  }
+
+  private getHmctsServiceDetails(result: SearchResultViewItem, caseTypeId: string) {
+    return this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(caseTypeId).pipe(
+      catchError(() => of([])),
+      switchMap((serviceDetails: HmctsServiceDetail[]) => {
+        if (serviceDetails?.some((serviceDetail) => !!serviceDetail.service_code)) {
+          return of(serviceDetails);
+        }
+
+        const jurisdictionId = result?.case_fields?.['[JURISDICTION]'];
+        return jurisdictionId
+          ? this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(jurisdictionId).pipe(catchError(() => of([])))
+          : of(serviceDetails);
+      })
+    );
+  }
+
+  private applyHmctsServiceIdToResultFields(caseTypeId: string, hmctsServiceId: string): void {
+    this.resultView.results
+      .filter((result: SearchResultViewItem) => this.getCaseTypeId(result) === caseTypeId)
+      .forEach((result: SearchResultViewItem) => {
+        Object.keys(result.columns || {}).forEach((columnId: string) => {
+          result.columns[columnId].hmctsServiceId = hmctsServiceId;
+        });
+      });
+  }
+
+  private getCaseTypeId(result: SearchResultViewItem): string {
+    return result?.case_fields?.['[CASE_TYPE]'] || this.caseType?.id;
   }
 
   public getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField {
