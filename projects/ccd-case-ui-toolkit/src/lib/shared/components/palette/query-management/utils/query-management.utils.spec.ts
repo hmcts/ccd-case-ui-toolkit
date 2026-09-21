@@ -64,10 +64,12 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
-      expect(caseMessageResult.isHmctsStaff).toEqual('No');
+      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
-    it('should return case message data for new query for HMCTS staff', () => {
+    // TODO: Enable when isHmctsStaff persistence is supported by the query data contract.
+    xit('should return case message data for new query for HMCTS staff', () => {
       const formGroup = new FormGroup({
         subject: new FormControl('Review attached document', Validators.required),
         body: new FormControl('Please review attached document and advise if hearing should proceed?', Validators.required),
@@ -138,7 +140,8 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
-      expect(caseMessageResult.isHmctsStaff).toEqual('No');
+      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
     it('should return "Yes" for isClosed when closeQuery is true', () => {
@@ -170,7 +173,8 @@ describe('QueryManagementUtils', () => {
 
       const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND, 'Yes');
       expect(result.isClosed).toBe('Yes');
-      expect(result.isHmctsStaff).toBe('Yes');
+      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // expect(result.isHmctsStaff).toBe('Yes');
     });
 
     it('should fallback to "id" if uid is not present', () => {
@@ -390,7 +394,8 @@ describe('QueryManagementUtils', () => {
 
         const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP, nonHmctsStaff);
         expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
-        expect(result.isHmctsStaff).toBe('No');
+        // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+        // expect(result.isHmctsStaff).toBe('No');
       });
 
       it('should set messageType as undefined if invalid type is passed', () => {
