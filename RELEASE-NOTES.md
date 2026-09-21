@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.1-exui-5202
+**EXUI-5202** Manage links Reason for change not shown
+
 ### Version 7.4.1
 **EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
 
