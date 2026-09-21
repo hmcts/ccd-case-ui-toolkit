@@ -57,9 +57,15 @@ export class QueryManagementUtils {
       hearingDate,
       createdOn: new Date(),
       createdBy: currentUserId,
-      messageType: QueryCreateContext.FOLLOWUP, // Default to value new queries will be FOLLOWUP
-      isHmctsStaff: this.normalizeHmctsStaffStatus(isHmctsStaff)
+      messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
     };
+
+    // Add isHmctsStaff only when the user is HMCTS staff and is permitted to create a new query
+    if (typeof isHmctsStaff === 'string' && isHmctsStaff.trim().toLowerCase() === 'yes') {
+      message.isHmctsStaff = this.normalizeHmctsStaffStatus(isHmctsStaff);
+    } else {
+      message.isHmctsStaff = 'No';
+    }
 
     return message;
   }
@@ -91,9 +97,14 @@ export class QueryManagementUtils {
       createdBy: currentUserId,
       parentId: queryItem.id,
       isClosed,
-      messageType,
-      isHmctsStaff: this.normalizeHmctsStaffStatus(isHmctsStaff)
+      messageType
     };
+
+    // To be implemented later, once  service have don't their configuration
+    // Add isHmctsStaff when the user is HMCTS staff and responsding to a query
+    if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
+      message.isHmctsStaff = this.normalizeHmctsStaffStatus(isHmctsStaff);
+    }
 
     return message;
   }

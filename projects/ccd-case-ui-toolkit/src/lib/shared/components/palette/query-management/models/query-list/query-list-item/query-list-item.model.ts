@@ -48,19 +48,20 @@ export class QueryListItem implements CaseMessage {
 
   public get isLastSubmittedByHmctsStaff(): boolean {
     const childrenCount = this.children.length;
-    if (childrenCount === 0) {
-      return this.isHmctsStaff?.trim().toLowerCase() === 'yes';
+    const lastSubmittedBy = childrenCount === 0 ? this : this.children[childrenCount - 1];
+    return QueryListItem.isHmctsStaffUser(lastSubmittedBy);
+  }
+
+  public static isHmctsStaffUser(message: QueryListItem): boolean {
+    if (message.isHmctsStaff?.trim()) {
+      return message.isHmctsStaff.trim().toLowerCase() === 'yes';
     }
 
-    const lastSubmittedBy = this.children[childrenCount - 1];
-    if (lastSubmittedBy.messageType === QueryCreateContext.RESPOND) {
-      return true;
-    }
-    if (lastSubmittedBy.messageType === QueryCreateContext.FOLLOWUP) {
-      return false;
+    if (message.messageType) {
+      return message.messageType === QueryCreateContext.RESPOND;
     }
 
-    return lastSubmittedBy.isHmctsStaff?.trim().toLowerCase() === 'yes';
+    return typeof message.messageIndexInParent === 'number' && message.messageIndexInParent % 2 === 0;
   }
 
   public get lastSubmittedDate(): Date {

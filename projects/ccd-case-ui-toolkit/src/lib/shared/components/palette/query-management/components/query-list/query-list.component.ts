@@ -62,6 +62,10 @@ export class QueryListComponent implements OnChanges {
     this.selectedQuery.emit(query);
   }
 
+  public isHmctsStaffUser(message: QueryListItem): boolean {
+    return QueryListItem.isHmctsStaffUser(message);
+  }
+
   private sort(col: QueryListColumn): void {
     if (col.sortOrder === SortOrder.ASCENDING) {
       this.queryListData.queries.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);

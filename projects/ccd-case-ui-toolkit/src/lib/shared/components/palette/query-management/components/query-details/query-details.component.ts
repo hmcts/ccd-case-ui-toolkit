@@ -57,6 +57,10 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
     return isJudiciaryUser(this.sessionStorageService);
   }
 
+  public isHmctsStaffUser(message: QueryListItem): boolean {
+    return QueryListItem.isHmctsStaffUser(message);
+  }
+
   public ngOnInit(): void {
     this.enableServiceSpecificMultiFollowups = this.abstractConfig.getEnableServiceSpecificMultiFollowups() || [];
 
