@@ -116,16 +116,26 @@ describe('QueryListItem', () => {
       expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
     });
 
-    it('should use the last child status when the query has children', () => {
-      queryListItem.isHmctsStaff = YES;
-      queryListItem.children[queryListItem.children.length - 1].isHmctsStaff = NO;
+    it('should identify a response as submitted by HMCTS staff', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = QueryCreateContext.RESPOND;
+      lastChild.isHmctsStaff = NO;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should identify a follow-up as not submitted by HMCTS staff', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = QueryCreateContext.FOLLOWUP;
+      lastChild.isHmctsStaff = YES;
 
       expect(queryListItem.isLastSubmittedByHmctsStaff).toBeFalse();
     });
 
-    it('should identify an HMCTS last submitter independently of the parent', () => {
-      queryListItem.isHmctsStaff = NO;
-      queryListItem.children[queryListItem.children.length - 1].isHmctsStaff = ' yes ';
+    it('should use the stored status for a legacy child without a message type', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = undefined;
+      lastChild.isHmctsStaff = ' yes ';
 
       expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
     });

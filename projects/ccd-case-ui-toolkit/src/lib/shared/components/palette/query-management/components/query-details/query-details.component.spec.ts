@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { PUI_CASE_MANAGER } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
-import { QueryListItem } from '../../models';
+import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseNotifier } from '../../../../case-editor/services';
@@ -250,19 +250,37 @@ describe('QueryDetailsComponent', () => {
   });
 
   it('should add the HMCTS suffix to an HMCTS caseworker name', () => {
-    component.query.children[0].isHmctsStaff = 'Yes';
+    spyOn(component, 'isInternalUser').and.returnValue(true);
     fixture.detectChanges();
 
     const responseCells = fixture.debugElement.queryAll(By.css('.query-details-table'))[1].queryAll(By.css('.govuk-table__cell'));
     expect(responseCells[1].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
   });
 
-  it('should add the HMCTS suffix to an HMCTS follow-up submitter', () => {
-    component.query.children[1].isHmctsStaff = 'Yes';
+  it('should show the HMCTS caseworker name to judiciary users', () => {
+    spyOn(component, 'isInternalUser').and.returnValue(false);
+    spyOn(component, 'isJudiciaryUser').and.returnValue(true);
+    fixture.detectChanges();
+
+    const responseTable = fixture.debugElement.queryAll(By.css('.query-details-table'))[1];
+    expect(responseTable.nativeElement.textContent).toContain('Caseworker name');
+    expect(responseTable.nativeElement.textContent.replace(/\s+/g, ' ')).toContain('Name 1 - HMCTS');
+  });
+
+  it('should hide the caseworker name from professional users', () => {
+    spyOn(component, 'isInternalUser').and.returnValue(false);
+    spyOn(component, 'isJudiciaryUser').and.returnValue(false);
+    fixture.detectChanges();
+
+    const responseTable = fixture.debugElement.queryAll(By.css('.query-details-table'))[1];
+    expect(responseTable.nativeElement.textContent).not.toContain('Caseworker name');
+  });
+
+  it('should not add the HMCTS suffix to a professional users', () => {
     fixture.detectChanges();
 
     const followUpCells = fixture.debugElement.queryAll(By.css('.query-details-table'))[2].queryAll(By.css('.govuk-table__cell'));
-    expect(followUpCells[1].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
+    expect(followUpCells[1].nativeElement.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1');
   });
 
   it('should call toggleLinkVisibility when ngOnChanges is called', () => {
@@ -332,6 +350,7 @@ describe('QueryDetailsComponent', () => {
 
     it('should emit false and return false if responseStatus is not AWAITING but user is not a caseworker', () => {
       spyOn(component, 'isInternalUser').and.returnValue(false);
+      spyOn(component, 'isJudiciaryUser').and.returnValue(false);
       component.queryResponseStatus = QueryItemResponseStatus.RESPONDED; // Not AWAITING, but user isn't a caseworker
 
       const result = component.hasRespondedToQuery();
@@ -353,12 +372,24 @@ describe('QueryDetailsComponent', () => {
     it('should emit true and return false when user is external and query is awaiting response', () => {
       component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
       spyOn(component, 'isInternalUser').and.returnValue(false);
+      spyOn(component, 'isJudiciaryUser').and.returnValue(false);
 
       const result = component.hasRespondedToQuery();
 
       expect(component.isInternalUser).toHaveBeenCalled();
       expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
       expect(result).toBeFalsy();
+    });
+
+    it('should treat a judiciary user as an HMCTS user', () => {
+      component.queryResponseStatus = QueryItemResponseStatus.RESPONDED;
+      spyOn(component, 'isInternalUser').and.returnValue(false);
+      spyOn(component, 'isJudiciaryUser').and.returnValue(true);
+
+      const result = component.hasRespondedToQuery();
+
+      expect(component.hasResponded.emit).toHaveBeenCalledWith(true);
+      expect(result).toBeTrue();
     });
 
     it('should emit true and return true when queryResponseStatus is CLOSED', () => {
@@ -436,6 +467,7 @@ describe('QueryDetailsComponent', () => {
       ];
 
       spyOn(component, 'isInternalUser').and.returnValue(false);
+      spyOn(component, 'isJudiciaryUser').and.returnValue(false);
 
       const result = component.hasRespondedToQuery();
       expect(result).toBeFalsy();

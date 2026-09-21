@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } 
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SessionStorageService } from '../../../../../services';
-import { isInternalUser } from '../../../../../utils';
+import { isInternalUser, isJudiciaryUser } from '../../../../../utils';
 import { QueryItemResponseStatus } from '../../enums';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { CaseNotifier } from '../../../../case-editor/services/case.notifier';
@@ -51,6 +51,10 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
 
   public isInternalUser(): boolean {
     return isInternalUser(this.sessionStorageService);
+  }
+
+  public isJudiciaryUser(): boolean {
+    return isJudiciaryUser(this.sessionStorageService);
   }
 
   public ngOnInit(): void {
@@ -112,7 +116,7 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
       return false;
     }
 
-    if (this.isInternalUser()) {
+    if (this.isInternalUser() || this.isJudiciaryUser()) {
       if (isAwaiting) {
         this.hasResponded.emit(false);
         return false;
