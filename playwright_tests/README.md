@@ -13,13 +13,13 @@ yarn test:playwright
 
 The test-only Angular host imports PaletteModule and CaseField from the source public entry. It renders the real date container, validators, Angular form and translation dependencies with synthetic data. This lane proves source-component integration; it does not install or validate an npm tarball. Existing Karma/Jasmine and library build commands remain unchanged.
 
-The two date tests cover initial rendering, edited ISO values, partial/cleared mandatory input and correction to valid input. Unexpected browser errors and non-host requests fail the test. There are no backend services, credentials or retries.
+The current browser slice has 12 scenarios grouped by coverage area: `Date fields` and `Mandatory fields`. It covers initial and edited ISO dates, partial/cleared date input, text, number, email, phone, textarea, yes/no, fixed-list, fixed-radio and multi-select binding, plus mandatory error recovery. Unexpected browser errors and non-host requests fail the test. There are no backend services, credentials or retries. New specs should use the same `test.describe` area names so Odhín and JUnit reports remain filterable.
 
 `yarn serve:playwright` serves the host at http://127.0.0.1:4300. The runner starts its own host and rejects an occupied port. Tests use a fresh browser context, en-GB locale and Europe/London timezone.
 
-HTML: `playwright_tests/playwright-report/index.html`. JUnit: `playwright_tests/test-results/junit.xml`. Failure screenshots, video and traces are retained under `playwright_tests/test-results/`. These generated files are ignored by Git.
+JUnit: `playwright_tests/test-results/junit.xml`. Perfetto timeline: `playwright_tests/test-results/perfetto.json`. Failure screenshots, video and traces are retained under `playwright_tests/test-results/`. These generated files are ignored by Git.
 
-Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The native Odhín 1.1.8 reporter matches the XUI reporter baseline, with no background report server. It includes source-host environment and commit metadata, test results and failure details. Its separate output folder prevents reporter cleanup from removing HTML/JUnit evidence. Jenkins archives the entire folder and publishes it as **CCD Case UI Toolkit Odhín report**, alongside native HTML and JUnit.
+Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The toolkit uses the same adaptive progress and fallback-report pattern as the XUI managed-organisations suite. The report adds a Feature Overview derived from `test.describe` areas and a **Perfetto Results** tab linking the generated timeline, while retaining native status-by-file and status-by-project sections. Jenkins archives the Odhín, JUnit, Perfetto and failure evidence; it does not publish the standard Playwright HTML report. If a run is interrupted before Odhín writes its HTML, `scripts/ensure-odhin-report.js` creates an explicit unavailable-report artifact; it does not change the build result.
 
 Calendar validation and programmatic reset are not covered or modified by this slice. It provides no package-consumer guarantee.
 

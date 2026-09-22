@@ -9,10 +9,15 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ['list'],
-    ['html', { outputFolder: './playwright-report', open: 'never' }],
     ['junit', { outputFile: './test-results/junit.xml' }],
-    ['odhin-reports-playwright', {
+    ['./reporters/odhin-progress.reporter.cjs', {
+      enabled: Boolean(process.env.CI),
+      intervalMs: 5000
+    }],
+    ['perfetto', { outputFile: './test-results/perfetto.json' }],
+    ['./reporters/odhin-feature-reporter.cjs', {
       outputFolder: resolve(__dirname, 'odhin-report'),
+      testResultsFolder: resolve(__dirname, 'test-results'),
       indexFilename: 'toolkit-playwright.html',
       title: 'CCD Case UI Toolkit Playwright',
       project: 'CCD Case UI Toolkit',
