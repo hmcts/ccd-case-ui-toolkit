@@ -60,7 +60,7 @@ export class QueryManagementUtils {
       messageType: QueryCreateContext.FOLLOWUP // Default to value new queries will be FOLLOWUP
     };
 
-    // TODO: Enable when isHmctsStaff persistence is supported by the query data contract.
+    // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
     // this.setHmctsStaffStatus(message, isHmctsStaff);
 
     return message;
@@ -96,7 +96,7 @@ export class QueryManagementUtils {
       messageType
     };
 
-    // TODO: Enable when isHmctsStaff persistence is supported by the query data contract.
+    // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
     // this.setHmctsStaffStatus(message, isHmctsStaff);
 
     return message;
@@ -119,7 +119,7 @@ export class QueryManagementUtils {
     return typeof isHmctsStaff === 'string' && isHmctsStaff.trim().toLowerCase() === 'yes' ? 'Yes' : 'No';
   }
 
-  // TODO: Enable when isHmctsStaff persistence is supported by the query data contract.
+  // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
   // private static setHmctsStaffStatus(message: CaseMessage, isHmctsStaff: string): void {
   //   if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
   //     message.isHmctsStaff = this.normalizeHmctsStaffStatus(isHmctsStaff);

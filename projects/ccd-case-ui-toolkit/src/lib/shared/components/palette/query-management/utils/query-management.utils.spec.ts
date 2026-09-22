@@ -64,11 +64,11 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
-      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // TODO HMCTS_QUERY_USER_TYPE: Re-enable when isHmctsStaff persistence is supported by the query data contract.
       // expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
-    // TODO: Enable when isHmctsStaff persistence is supported by the query data contract.
+    // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
     xit('should return case message data for new query for HMCTS staff', () => {
       const formGroup = new FormGroup({
         subject: new FormControl('Review attached document', Validators.required),
@@ -140,7 +140,7 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
-      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // TODO HMCTS_QUERY_USER_TYPE: Re-enable when isHmctsStaff persistence is supported by the query data contract.
       // expect(caseMessageResult.isHmctsStaff).toEqual('No');
     });
 
@@ -173,7 +173,7 @@ describe('QueryManagementUtils', () => {
 
       const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, currentUserDetails, QueryCreateContext.RESPOND, 'Yes');
       expect(result.isClosed).toBe('Yes');
-      // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+      // TODO HMCTS_QUERY_USER_TYPE: Re-enable when isHmctsStaff persistence is supported by the query data contract.
       // expect(result.isHmctsStaff).toBe('Yes');
     });
 
@@ -394,7 +394,7 @@ describe('QueryManagementUtils', () => {
 
         const result = QueryManagementUtils.getRespondOrFollowupQueryData(formGroup, queryItem, user, QueryCreateContext.FOLLOWUP, nonHmctsStaff);
         expect(result.messageType).toBe(QueryCreateContext.FOLLOWUP);
-        // TODO: Re-enable when isHmctsStaff persistence is supported by the query data contract.
+        // TODO HMCTS_QUERY_USER_TYPE: Re-enable when isHmctsStaff persistence is supported by the query data contract.
         // expect(result.isHmctsStaff).toBe('No');
       });
 
