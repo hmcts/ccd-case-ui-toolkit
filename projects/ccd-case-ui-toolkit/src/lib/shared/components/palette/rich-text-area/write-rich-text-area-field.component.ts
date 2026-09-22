@@ -1137,8 +1137,12 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
+    const hasMeaningfulContent = this.hasMeaningfulRichTextContent(documentElement);
+    if (hasMeaningfulContent) {
+      this.preserveDocmosisBlankParagraphs(documentElement);
+    }
     const sanitisedValue = sanitiseRichTextDocument(documentElement);
-    return this.hasMeaningfulRichTextContent(documentElement)
+    return hasMeaningfulContent
       ? this.normalisePlainTextValue(sanitisedValue)
       : '';
   }
@@ -1160,10 +1164,24 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
+    const hasMeaningfulContent = this.hasMeaningfulRichTextContent(documentElement);
+    if (hasMeaningfulContent) {
+      this.preserveDocmosisBlankParagraphs(documentElement);
+    }
     const sanitisedValue = sanitiseRichTextDocument(documentElement);
-    return this.hasMeaningfulRichTextContent(documentElement)
+    return hasMeaningfulContent
       ? this.normalisePlainTextValue(sanitisedValue)
       : '';
+  }
+
+  private preserveDocmosisBlankParagraphs(documentElement: Document): void {
+    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+    paragraphs.forEach((paragraph) => {
+      const visibleText = (paragraph.textContent || '').replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
+      if (!visibleText && !paragraph.querySelector('hr')) {
+        paragraph.textContent = '\u00a0';
+      }
+    });
   }
 
   private hasMeaningfulRichTextContent(documentElement: Document): boolean {
@@ -1309,12 +1327,35 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
         emitEvent: false,
         emitModelToViewChange: false
       });
-      if (normalisedValue || this.editorHasMeaningfulRichTextContent()) {
+      if ((normalisedValue || this.editorHasMeaningfulRichTextContent())
+        && !this.differsOnlyByDocmosisBlankParagraphs(value, normalisedValue)) {
         this.editor.setContent(normalisedValue || '');
       }
     } finally {
       this.isNormalisingValue = false;
     }
+  }
+
+  private differsOnlyByDocmosisBlankParagraphs(value: string, normalisedValue: string): boolean {
+    if (!value || !normalisedValue) {
+      return false;
+    }
+
+    const originalDocument = new DOMParser().parseFromString(value, 'text/html');
+    const normalisedDocument = new DOMParser().parseFromString(normalisedValue, 'text/html');
+    this.clearBlankParagraphs(originalDocument);
+    this.clearBlankParagraphs(normalisedDocument);
+    return originalDocument.body.innerHTML === normalisedDocument.body.innerHTML;
+  }
+
+  private clearBlankParagraphs(documentElement: Document): void {
+    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
+    paragraphs.forEach((paragraph) => {
+      const visibleText = (paragraph.textContent || '').replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
+      if (!visibleText) {
+        paragraph.textContent = '';
+      }
+    });
   }
 
   private editorHasMeaningfulRichTextContent(): boolean {
