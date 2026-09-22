@@ -4,7 +4,6 @@ def call() {
   timeout(time: 60, unit: 'MINUTES') {
     try {
       dir('playwright_tests/test-results') { deleteDir() }
-      dir('playwright_tests/playwright-report') { deleteDir() }
       dir('playwright_tests/odhin-report') { deleteDir() }
       def nodePath
       stage('Toolkit runtime') {
@@ -48,7 +47,7 @@ chmod +x .toolkit-bin/yarn
         // Publication cannot hide the original command failure or turn a failed run green.
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           archiveArtifacts allowEmptyArchive: true,
-            artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**,playwright_tests/odhin-report/**'
+            artifacts: 'playwright_tests/test-results/**,playwright_tests/odhin-report/**'
         }
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           def result = junit allowEmptyResults: false,
@@ -56,16 +55,6 @@ chmod +x .toolkit-bin/yarn
           if (result.totalCount == 0 || result.skipCount > 0 || result.failCount > 0) {
             error('Toolkit Playwright must execute a non-empty suite with no skipped or failed tests')
           }
-        }
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-          publishHTML([
-            allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'playwright_tests/playwright-report',
-            reportFiles: 'index.html',
-            reportName: 'CCD Case UI Toolkit Playwright report'
-          ])
         }
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           publishHTML([

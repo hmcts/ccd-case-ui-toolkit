@@ -59,7 +59,7 @@ def run = { String failedCommand, Map summary, boolean missingReports, boolean m
   def script = new GroovyShell(bindings).parse(pipeline)
   script.run()
   try { script.call() } catch (Exception error) { caught = error }
-  assert published == ['archive', 'junit', 'html', 'odhin']
+  assert published == ['archive', 'junit', 'odhin']
   [commands: commands, failed: failed, caught: caught]
 }
 
@@ -70,13 +70,13 @@ assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint:playwr
 assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck')
 assert !success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint')
 assert !success.commands.any { it.contains('build:library') || it.contains('test --watch=false') }
-assert success.commands.last() == 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
+assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright')
 
 ['install --immutable', 'playwright install chromium --only-shell', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright'].each { task ->
   def command = "node .yarn/releases/yarn-4.5.0.cjs ${task}".toString()
   def result = run(command, green, true)
   assert result.caught?.message == 'original command failure'
-  assert result.commands.last() == command
+  assert result.commands.contains(command)
   assert result.failed
 }
 

@@ -66,6 +66,19 @@ const featureOverview = (features) => {
 </div>`;
 };
 
+const addPerfettoTab = (html, testResultsFolder) => {
+  if (!testResultsFolder || !fs.existsSync(testResultsFolder)) return html;
+  const files = fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name));
+  if (!files.length) return html;
+  const links = files.map((name) => `<a href="../test-results/${escapeHtml(name)}">${escapeHtml(name)}</a>`).join(' · ');
+  const button = `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`;
+  const panel = `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`;
+  return html
+    .replace(/<button class="main-tablinks" onclick="openMainTab\(event, 'TabPerfetto'\)">Perfetto Results<\/button>/g, '')
+    .replace(/(<div class="tab">)/, `$1${button}`)
+    .replace(/<\/body>/, `${panel}</body>`);
+};
+
 class OdhinFeatureReporter {
   constructor(options = {}) {
     this.options = options;
@@ -115,10 +128,15 @@ class OdhinFeatureReporter {
 
     for (const filename of fs.readdirSync(this.options.outputFolder).filter((name) => name.endsWith('.html'))) {
       const file = path.join(this.options.outputFolder, filename);
-      const html = fs.readFileSync(file, 'utf8');
-      if (html.includes('id="odhin-feature-summary"')) continue;
+      let html = fs.readFileSync(file, 'utf8');
+      html = addPerfettoTab(html, this.options.testResultsFolder);
+      if (html.includes('id="odhin-feature-summary"')) {
+        fs.writeFileSync(file, html, 'utf8');
+        continue;
+      }
       const marker = /(<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">\s*Files Summary)/;
-      if (marker.test(html)) fs.writeFileSync(file, html.replace(marker, `${featureOverview(ordered)}\n$1`), 'utf8');
+      if (marker.test(html)) html = html.replace(marker, `${featureOverview(ordered)}\n$1`);
+      fs.writeFileSync(file, html, 'utf8');
     }
   }
 }
