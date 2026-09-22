@@ -22,7 +22,10 @@ def run = { String failedCommand, Map summary, boolean missingReports, boolean m
     },
     sh: { Object command ->
       if (command instanceof Map) {
-        assert command.script.contains('set -euo pipefail')
+        assert command.script.contains('set -eo pipefail')
+        assert command.script.contains('source /opt/nvm/nvm.sh --no-use')
+        assert command.script.contains('nvm install "$node_version"')
+        assert command.script.contains('nvm use "$node_version"')
         return '/opt/node/bin/node\n'
       }
       commands << command

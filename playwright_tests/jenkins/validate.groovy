@@ -1,4 +1,4 @@
-// Infrastructure 2.4.5 withPipeline deploys applications even with nonServiceApp().
+// Keep this test-only pipeline independent from deployment wrappers.
 // This library deliberately uses its agent selection, not its deployment wrapper.
 def call() {
   timeout(time: 60, unit: 'MINUTES') {
@@ -10,11 +10,13 @@ def call() {
       stage('Toolkit runtime') {
         sh 'git rev-parse HEAD'
         nodePath = sh(returnStdout: true, script: '''#!/bin/bash
-set -euo pipefail
+set -eo pipefail
 export NVM_DIR=/home/jenkinsssh/.nvm
-source /opt/nvm/nvm.sh
-nvm install >&2
-nvm which current
+source /opt/nvm/nvm.sh --no-use
+node_version="$(tr -d '[:space:]' < .nvmrc)"
+nvm install "$node_version" >&2
+nvm use "$node_version" >&2
+nvm which "$node_version"
 ''').trim()
       }
       withEnv(["PATH+TOOLKIT_NODE=${pwd()}/.toolkit-bin:${nodePath.substring(0, nodePath.lastIndexOf('/'))}", 'CI=true']) {
