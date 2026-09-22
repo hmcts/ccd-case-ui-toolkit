@@ -4,6 +4,7 @@
   [id]="id"
   role="tabpanel"
   [attr.aria-labelledby]="'tab_' + id"
+  [attr.aria-hidden]="!selected"
 >
   <ng-content></ng-content>
 </div>
