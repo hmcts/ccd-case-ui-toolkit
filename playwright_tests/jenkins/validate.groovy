@@ -1,0 +1,82 @@
+// Infrastructure 2.4.5 withPipeline deploys applications even with nonServiceApp().
+// This library deliberately uses its agent selection, not its deployment wrapper.
+def call() {
+  timeout(time: 60, unit: 'MINUTES') {
+    try {
+      dir('playwright_tests/test-results') { deleteDir() }
+      dir('playwright_tests/playwright-report') { deleteDir() }
+      def nodePath
+      stage('Toolkit runtime') {
+        sh 'git rev-parse HEAD'
+        nodePath = sh(returnStdout: true, script: '''#!/bin/bash
+set -euo pipefail
+export NVM_DIR=/home/jenkinsssh/.nvm
+source /opt/nvm/nvm.sh
+nvm install >&2
+nvm which current
+''').trim()
+      }
+      withEnv(["PATH+TOOLKIT_NODE=${pwd()}/.toolkit-bin:${nodePath.substring(0, nodePath.lastIndexOf('/'))}", 'CI=true']) {
+        stage('Toolkit dependencies') {
+          sh '''#!/bin/bash
+set -euo pipefail
+mkdir -p .toolkit-bin
+printf '#!/bin/sh\nexec node "%s/.yarn/releases/yarn-4.5.0.cjs" "$@"\n' "$PWD" > .toolkit-bin/yarn
+chmod +x .toolkit-bin/yarn
+'''
+          sh 'node --version && node .yarn/releases/yarn-4.5.0.cjs --version'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs install --immutable'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs playwright install chromium'
+        }
+        stage('Toolkit static checks') {
+          sh 'node .yarn/releases/yarn-4.5.0.cjs lint'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs lint:playwright'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck'
+        }
+        stage('Toolkit library build') {
+          sh 'node .yarn/releases/yarn-4.5.0.cjs build:library'
+        }
+        stage('Toolkit unit tests') {
+          sh '''#!/bin/bash
+set -euo pipefail
+export CHROME_BIN="$(node -p 'require("playwright").chromium.executablePath()')"
+node .yarn/releases/yarn-4.5.0.cjs test --watch=false
+'''
+        }
+        stage('Toolkit Playwright integration tests') {
+          lock(resource: "toolkit-playwright-${env.NODE_NAME}-4300") {
+            sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
+          }
+        }
+      }
+    } finally {
+      stage('Toolkit test evidence') {
+        // Publication cannot hide the original command failure or turn a failed run green.
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          archiveArtifacts allowEmptyArchive: true,
+            artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**'
+        }
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          def result = junit allowEmptyResults: false,
+            testResults: 'playwright_tests/test-results/junit.xml'
+          // This reviewed source-host slice contains two contracts; update with suite expansion.
+          if (result.totalCount != 2 || result.skipCount > 0 || result.failCount > 0) {
+            error('Toolkit Playwright must execute both source-host contracts with no skipped or failed tests')
+          }
+        }
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'playwright_tests/playwright-report',
+            reportFiles: 'index.html',
+            reportName: 'CCD Case UI Toolkit Playwright report'
+          ])
+        }
+      }
+    }
+  }
+}
+
+return this

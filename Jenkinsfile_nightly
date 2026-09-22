@@ -1,12 +1,6 @@
 #!groovy
 
-@Library('Infrastructure@2.4.5')
-
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-def type = 'nodejs'
-def product = 'xui'
-def component = 'ccd-case-ui-toolkit'
-def channel = '#xui-pipeline'
+@Library('Infrastructure@2.4.5') _
 
 properties([
   [$class: 'GithubProjectProperty',
@@ -15,42 +9,9 @@ properties([
   pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : [])
 ])
 
-withNightlyPipeline(type, product, component) {
-  disableLegacyDeployment()
-  enableSlackNotifications(channel)
-  enableFullFunctionalTest(60)
+new uk.gov.hmcts.pipeline.TeamConfig(this).setTeamConfigEnv('xui')
 
-  afterSuccess('checkout') {
-    stage('Playwright browser setup') {
-      yarnBuilder.yarn('playwright install chromium')
-    }
-  }
-
-  afterSuccess('build') {
-    stage('Toolkit lint') {
-      yarnBuilder.yarn('lint')
-      yarnBuilder.yarn('lint:playwright')
-    }
-    stage('Toolkit unit tests') {
-      yarnBuilder.yarn('test --watch=false')
-    }
-    stage('Toolkit library build') {
-      yarnBuilder.yarn('build:library')
-    }
-  }
-
-  afterAlways('fullFunctionalTest') {
-    archiveArtifacts allowEmptyArchive: false,
-      artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**'
-    junit allowEmptyResults: false,
-      testResults: 'playwright_tests/test-results/junit.xml'
-    publishHTML([
-      allowMissing: false,
-      alwaysLinkToLastBuild: true,
-      keepAll: true,
-      reportDir: 'playwright_tests/playwright-report',
-      reportFiles: 'index.html',
-      reportName: 'CCD Case UI Toolkit Playwright report'
-    ])
-  }
+node(env.BUILD_AGENT_TYPE) {
+  checkout scm
+  load('playwright_tests/jenkins/validate.groovy').call()
 }

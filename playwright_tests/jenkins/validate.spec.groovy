@@ -1,0 +1,80 @@
+// Run with: groovy playwright_tests/jenkins/validate.spec.groovy
+def pipeline = new File('playwright_tests/jenkins/validate.groovy')
+def run = { String failedCommand, Map summary, boolean missingReports ->
+  def commands = []
+  def published = []
+  def failed = false
+  def caught = null
+  def bindings = new Binding([
+    env: [NODE_NAME: 'xui-agent'],
+    lock: { Map options, Closure body ->
+      assert options.resource == 'toolkit-playwright-xui-agent-4300'
+      body()
+    },
+    timeout: { Map options, Closure body -> body() },
+    stage: { String name, Closure body -> body() },
+    dir: { String path, Closure body -> body() },
+    deleteDir: { -> },
+    pwd: { -> '/workspace' },
+    withEnv: { List values, Closure body ->
+      assert values.contains('CI=true')
+      body()
+    },
+    sh: { Object command ->
+      if (command instanceof Map) {
+        assert command.script.contains('set -euo pipefail')
+        return '/opt/node/bin/node\n'
+      }
+      commands << command
+      if (failedCommand != null && command.contains(failedCommand)) {
+        throw new IllegalStateException('original command failure')
+      }
+    },
+    catchError: { Map options, Closure body ->
+      assert options.buildResult == 'FAILURE'
+      try { body() } catch (Exception ignored) { failed = true }
+    },
+    archiveArtifacts: { Map options -> published << 'archive' },
+    junit: { Map options ->
+      published << 'junit'
+      assert !options.allowEmptyResults
+      if (missingReports) { throw new IllegalStateException('missing JUnit') }
+      summary
+    },
+    publishHTML: { Map options ->
+      published << 'html'
+      assert !options.allowMissing
+      if (missingReports) { throw new IllegalStateException('missing HTML') }
+    },
+    error: { String message -> throw new IllegalStateException(message) }
+  ])
+  def script = new GroovyShell(bindings).parse(pipeline)
+  script.run()
+  try { script.call() } catch (Exception error) { caught = error }
+  assert published == ['archive', 'junit', 'html']
+  [commands: commands, failed: failed, caught: caught]
+}
+
+def green = [totalCount: 2, skipCount: 0, failCount: 0]
+def success = run(null, green, false)
+assert !success.failed && !success.caught
+assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs build:library')
+assert success.commands.any { it.contains('node .yarn/releases/yarn-4.5.0.cjs test --watch=false') }
+assert success.commands.last() == 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
+
+['install --immutable', 'playwright install chromium', 'test --watch=false', 'test:playwright'].each { task ->
+  def command = "node .yarn/releases/yarn-4.5.0.cjs ${task}".toString()
+  def result = run(command, green, true)
+  assert result.caught?.message == 'original command failure'
+  assert result.commands.last().contains(command)
+  assert result.failed
+}
+
+[
+  [totalCount: 0, skipCount: 0, failCount: 0],
+  [totalCount: 1, skipCount: 0, failCount: 0],
+  [totalCount: 2, skipCount: 1, failCount: 0],
+  [totalCount: 2, skipCount: 0, failCount: 1]
+].each { summary -> assert run(null, summary, false).failed }
+assert run(null, green, true).failed
+println 'Pipeline contract checks passed: success, install/browser/unit/test failures, empty/skipped/failed/missing reports'
