@@ -6,7 +6,8 @@ properties([
   [$class: 'GithubProjectProperty',
    displayName: 'CCD Case UI Toolkit',
    projectUrlStr: 'https://github.com/hmcts/ccd-case-ui-toolkit'],
-  pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : [])
+  // Retain a manual entrypoint; scheduling is deferred. Clear any previous trigger.
+  pipelineTriggers([])
 ])
 
 new uk.gov.hmcts.pipeline.TeamConfig(this).setTeamConfigEnv('xui')

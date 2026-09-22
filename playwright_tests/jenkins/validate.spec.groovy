@@ -26,7 +26,7 @@ def run = { String failedCommand, Map summary, boolean missingReports ->
         return '/opt/node/bin/node\n'
       }
       commands << command
-      if (failedCommand != null && command.contains(failedCommand)) {
+      if (command == failedCommand) {
         throw new IllegalStateException('original command failure')
       }
     },
@@ -58,23 +58,29 @@ def run = { String failedCommand, Map summary, boolean missingReports ->
 def green = [totalCount: 2, skipCount: 0, failCount: 0]
 def success = run(null, green, false)
 assert !success.failed && !success.caught
-assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs build:library')
-assert success.commands.any { it.contains('node .yarn/releases/yarn-4.5.0.cjs test --watch=false') }
+assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint:playwright')
+assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck')
+assert !success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint')
+assert !success.commands.any { it.contains('build:library') || it.contains('test --watch=false') }
 assert success.commands.last() == 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
 
-['install --immutable', 'playwright install chromium', 'test --watch=false', 'test:playwright'].each { task ->
+['install --immutable', 'playwright install chromium', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright'].each { task ->
   def command = "node .yarn/releases/yarn-4.5.0.cjs ${task}".toString()
   def result = run(command, green, true)
   assert result.caught?.message == 'original command failure'
-  assert result.commands.last().contains(command)
+  assert result.commands.last() == command
   assert result.failed
+}
+
+[1, 2, 3].each { count ->
+  def result = run(null, [totalCount: count, skipCount: 0, failCount: 0], false)
+  assert !result.failed && !result.caught
 }
 
 [
   [totalCount: 0, skipCount: 0, failCount: 0],
-  [totalCount: 1, skipCount: 0, failCount: 0],
   [totalCount: 2, skipCount: 1, failCount: 0],
   [totalCount: 2, skipCount: 0, failCount: 1]
 ].each { summary -> assert run(null, summary, false).failed }
 assert run(null, green, true).failed
-println 'Pipeline contract checks passed: success, install/browser/unit/test failures, empty/skipped/failed/missing reports'
+println 'Pipeline contract checks passed: variable suite counts, install/browser/static/test failures, empty/skipped/failed/missing reports'

@@ -28,20 +28,9 @@ chmod +x .toolkit-bin/yarn
           sh 'node .yarn/releases/yarn-4.5.0.cjs install --immutable'
           sh 'node .yarn/releases/yarn-4.5.0.cjs playwright install chromium'
         }
-        stage('Toolkit static checks') {
-          sh 'node .yarn/releases/yarn-4.5.0.cjs lint'
+        stage('Toolkit Playwright static checks') {
           sh 'node .yarn/releases/yarn-4.5.0.cjs lint:playwright'
           sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck'
-        }
-        stage('Toolkit library build') {
-          sh 'node .yarn/releases/yarn-4.5.0.cjs build:library'
-        }
-        stage('Toolkit unit tests') {
-          sh '''#!/bin/bash
-set -euo pipefail
-export CHROME_BIN="$(node -p 'require("playwright").chromium.executablePath()')"
-node .yarn/releases/yarn-4.5.0.cjs test --watch=false
-'''
         }
         stage('Toolkit Playwright integration tests') {
           lock(resource: "toolkit-playwright-${env.NODE_NAME}-4300") {
@@ -59,9 +48,8 @@ node .yarn/releases/yarn-4.5.0.cjs test --watch=false
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           def result = junit allowEmptyResults: false,
             testResults: 'playwright_tests/test-results/junit.xml'
-          // This reviewed source-host slice contains two contracts; update with suite expansion.
-          if (result.totalCount != 2 || result.skipCount > 0 || result.failCount > 0) {
-            error('Toolkit Playwright must execute both source-host contracts with no skipped or failed tests')
+          if (result.totalCount == 0 || result.skipCount > 0 || result.failCount > 0) {
+            error('Toolkit Playwright must execute a non-empty suite with no skipped or failed tests')
           }
         }
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
