@@ -1,83 +1,20 @@
-/* global process, require */
+/* global require */
 
-const fs = require('node:fs');
-const path = require('node:path');
 const odhinModule = require('odhin-reports-playwright');
+const { createEmptyFeatureStat, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 
-const escapeHtml = (value) => String(value)
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;')
-  .replace(/'/g, '&#39;');
-
-const percentage = (value, total) => (total ? ((value / total) * 100).toFixed(2) : '0.00');
-
-const duration = (milliseconds) => {
-  const safe = Math.max(0, Math.round(Number(milliseconds) || 0));
-  const hours = Math.floor(safe / 3600000);
-  const minutes = Math.floor((safe % 3600000) / 60000);
-  const seconds = Math.floor((safe % 60000) / 1000);
-  return `${hours}h ${minutes}m ${seconds}s ${safe % 1000}ms`;
-};
-
-const featureFor = (test) => {
+function featureFor(test) {
   const titles = typeof test.titlePath === 'function' ? test.titlePath() : [];
   return titles.length > 1 ? titles[titles.length - 2] : test.title || 'Uncategorised';
-};
+}
 
-const finalStatus = (result, test) => result.status === 'passed' && result.retry > 0 && result.retry === test.retries
-  ? 'flaky'
-  : result.status;
-
-const row = (feature, total) => `<tr>
-  <td class="text-start text-secondary-emphasis" style="border-left: 8px solid ${feature.color};">${escapeHtml(feature.name)}</td>
-  <td class="text-secondary-emphasis">${feature.tests}</td>
-  <td class="text-secondary-emphasis">${duration(feature.durationMs)}</td>
-  <td class="result-status-passed">${feature.passed} (<i>${percentage(feature.passed, feature.tests)}%</i>)</td>
-  <td class="result-status-failed">${feature.failed} (<i>${percentage(feature.failed, feature.tests)}%</i>)</td>
-  <td class="result-status-timedOut">${feature.timedOut} (<i>${percentage(feature.timedOut, feature.tests)}%</i>)</td>
-  <td class="result-status-skipped">${feature.skipped} (<i>${percentage(feature.skipped, feature.tests)}%</i>)</td>
-  <td class="result-status-interrupted">${feature.interrupted} (<i>${percentage(feature.interrupted, feature.tests)}%</i>)</td>
-  <td class="result-status-flaky">${feature.flaky} (<i>${percentage(feature.flaky, feature.tests)}%</i>)</td>
-  <td class="text-secondary-emphasis">${percentage(feature.tests, total)}%</td>
-</tr>`;
-
-const featureOverview = (features) => {
-  const total = features.reduce((sum, feature) => sum + feature.tests, 0);
-  const largest = features[0];
-  const rows = features.map((feature) => row(feature, total)).join('');
-
-  return `<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-feature-summary">
-  <div class="info-box-header">Feature Overview</div>
-  <div class="odhin-table"><div style="overflow-x:auto">
-    <table class="table table-sm mb-0">
-      <thead><tr>
-        <th class="odhin-text-2">Feature</th><th class="odhin-text-2">Tests</th><th class="odhin-text-2">Execution Time</th>
-        <th class="odhin-text-2">Passed</th><th class="odhin-text-2">Failed</th><th class="odhin-text-2">Timed Out</th>
-        <th class="odhin-text-2">Skipped</th><th class="odhin-text-2">Interrupted</th><th class="odhin-text-2">Flaky</th><th class="odhin-text-2">Percentage</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div></div>
-  <div class="p-3 text-secondary-emphasis">${total} tests across ${features.length} features. Largest feature: <strong>${escapeHtml(largest.name)}</strong> (${largest.tests}, ${percentage(largest.tests, total)}%).</div>
-</div>`;
-};
-
-const addPerfettoTab = (html, testResultsFolder) => {
-  if (!testResultsFolder || !fs.existsSync(testResultsFolder)) return html;
-  const files = fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name));
-  if (!files.length) return html;
-  const links = files.map((name) => `<a href="../test-results/${escapeHtml(name)}">${escapeHtml(name)}</a>`).join(' · ');
-  const button = `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`;
-  const panel = `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`;
-  return html
-    .replace(/<button class="main-tablinks" onclick="openMainTab\(event, 'TabPerfetto'\)">Perfetto Results<\/button>/g, '')
-    .replace(/(<div class="tab">)/, `$1${button}`)
-    .replace(/<\/body>/, `${panel}</body>`);
-};
+function statusFor(result, test) {
+  return result.status === 'passed' && result.retry > 0 && result.retry === test.retries
+    ? 'flaky'
+    : result.status;
+}
 
 class OdhinFeatureReporter {
   constructor(options = {}) {
@@ -97,7 +34,17 @@ class OdhinFeatureReporter {
 
   async onEnd(result) {
     await this.inner.onEnd?.(result);
-    this.enhanceReport();
+    const features = new Map();
+    for (const { test, result: testResult } of this.results.values()) {
+      const name = featureFor(test);
+      const feature = features.get(name) ?? createEmptyFeatureStat(name);
+      feature.totalTests += 1;
+      feature.durationMs += testResult.duration || 0;
+      const status = statusFor(testResult, test);
+      if (Object.prototype.hasOwnProperty.call(feature, status)) feature[status] += 1;
+      features.set(name, feature);
+    }
+    enhanceGeneratedReport(this.options.outputFolder, [...features.values()]);
   }
 
   onStdOut(chunk, test, result) {
@@ -106,38 +53,6 @@ class OdhinFeatureReporter {
 
   onStdErr(chunk, test, result) {
     return this.inner.onStdErr?.(chunk, test, result);
-  }
-
-  enhanceReport() {
-    const features = new Map();
-    for (const { test, result } of this.results.values()) {
-      const name = featureFor(test);
-      const current = features.get(name) ?? {
-        name, tests: 0, durationMs: 0, passed: 0, failed: 0, timedOut: 0, skipped: 0, interrupted: 0, flaky: 0,
-        color: `hsl(${[...name].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0) % 360} 68% 52%)`
-      };
-      const status = finalStatus(result, test);
-      current.tests += 1;
-      current.durationMs += result.duration || 0;
-      if (Object.prototype.hasOwnProperty.call(current, status)) current[status] += 1;
-      features.set(name, current);
-    }
-
-    const ordered = [...features.values()].sort((left, right) => right.tests - left.tests || left.name.localeCompare(right.name));
-    if (!ordered.length || !this.options.outputFolder || !fs.existsSync(this.options.outputFolder)) return;
-
-    for (const filename of fs.readdirSync(this.options.outputFolder).filter((name) => name.endsWith('.html'))) {
-      const file = path.join(this.options.outputFolder, filename);
-      let html = fs.readFileSync(file, 'utf8');
-      html = addPerfettoTab(html, this.options.testResultsFolder);
-      if (html.includes('id="odhin-feature-summary"')) {
-        fs.writeFileSync(file, html, 'utf8');
-        continue;
-      }
-      const marker = /(<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">\s*Files Summary)/;
-      if (marker.test(html)) html = html.replace(marker, `${featureOverview(ordered)}\n$1`);
-      fs.writeFileSync(file, html, 'utf8');
-    }
   }
 }
 
