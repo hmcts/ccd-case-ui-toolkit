@@ -13,7 +13,7 @@ yarn test:playwright
 
 The test-only Angular host imports PaletteModule and CaseField from the source public entry. It renders the real date container, validators, Angular form and translation dependencies with synthetic data. This lane proves source-component integration; it does not install or validate an npm tarball. Existing Karma/Jasmine and library build commands remain unchanged.
 
-The two date tests cover initial rendering, edited ISO values, partial/cleared mandatory input and correction to valid input. Unexpected browser errors and non-host requests fail the test. There are no backend services, credentials or retries.
+The current browser slice has 12 scenarios grouped by coverage area: `Date fields` and `Mandatory fields`. It covers initial and edited ISO dates, partial/cleared date input, text, number, email, phone, textarea, yes/no, fixed-list, fixed-radio and multi-select binding, plus mandatory error recovery. Unexpected browser errors and non-host requests fail the test. There are no backend services, credentials or retries. New specs should use the same `test.describe` area names so Odhín, HTML and JUnit reports remain filterable.
 
 `yarn serve:playwright` serves the host at http://127.0.0.1:4300. The runner starts its own host and rejects an occupied port. Tests use a fresh browser context, en-GB locale and Europe/London timezone.
 
