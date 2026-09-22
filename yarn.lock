@@ -3293,7 +3293,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.37-tar-upscale"
+    "@hmcts/media-viewer": "npm:4.2.38"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@types/jasmine": "npm:~5.1.0"
@@ -3368,7 +3368,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.13-tar-upscale-2"
+    rpx-xui-translation: "npm:1.2.14"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -3410,9 +3410,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.37-tar-upscale":
-  version: 4.2.37-tar-upscale
-  resolution: "@hmcts/media-viewer@npm:4.2.37-tar-upscale"
+"@hmcts/media-viewer@npm:4.2.38":
+  version: 4.2.38
+  resolution: "@hmcts/media-viewer@npm:4.2.38"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3433,9 +3433,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/bfd1ada900c3f705962554df45bc3eba4b46c2967f5bb177dbaed8817001704b571b6f0dbb7bbf266bb883b5d0bb4e3ee2d4678bc509efadbf45ba41f344bcb8
+  checksum: 10/57acd063c4d6be3d747cc0211e24936744e393b40ba4fe96a133f71505807a071a5c04b9f705a143178fee4d05e52f2a12ba536e96af2b1bfa91c8a0186661d8
   languageName: node
   linkType: hard
 
@@ -19451,9 +19451,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.13-tar-upscale-2":
-  version: 1.2.13-tar-upscale-2
-  resolution: "rpx-xui-translation@npm:1.2.13-tar-upscale-2"
+"rpx-xui-translation@npm:1.2.14":
+  version: 1.2.14
+  resolution: "rpx-xui-translation@npm:1.2.14"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -19462,7 +19462,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/48c53d794de221544cfb935e67b5f5283e11eb65d222845119cf763fbb59b677bb914040c8e434ac926cfb535e2fe586e48f910ee6368c8693993d41250ebe00
+  checksum: 10/d8721c73290801831070039f803971d343150703dee898e3de52700ad1a3003538ba09f2f7cf58eb4bfad5749d07f9cfcd4e89bf03735d601c7d3e25e706499c
   languageName: node
   linkType: hard
 

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
+
 ### Version 7.4.1
 **EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
 
