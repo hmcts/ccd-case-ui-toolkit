@@ -11,7 +11,7 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: './playwright-report', open: 'never' }],
     ['junit', { outputFile: './test-results/junit.xml' }],
-    ['odhin-reports-playwright', {
+    ['./reporters/odhin-feature-reporter.cjs', {
       outputFolder: resolve(__dirname, 'odhin-report'),
       indexFilename: 'toolkit-playwright.html',
       title: 'CCD Case UI Toolkit Playwright',
