@@ -17319,14 +17319,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-html-to-image@npm:^3.3.0":
-  version: 3.4.0
-  resolution: "node-html-to-image@npm:3.4.0"
-  dependencies:
-    handlebars: "npm:^4.5.3"
-    puppeteer: "npm:^15.3.0"
-    puppeteer-cluster: "npm:^0.23.0"
-  checksum: 10/479303b94de01264ecf5b9eac8a982c4d9430f64b77cb4f5a8b78df77b3822e8ca24ff778bcac7534bff15d4080638e6e5d3cd86dbf571e14ad334675796907b
 "node-gyp@npm:latest":
   version: 13.0.2
   resolution: "node-gyp@npm:13.0.2"
@@ -17344,6 +17336,17 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 10/018ca69386d40576c0ab4bb556dc3ecf40a06a260174a8f5d50da9a592d0a90bd5cf936ca481f19de7ccb7f79dc801d17032d8e2b70963194965a1cc79f8063e
+  languageName: node
+  linkType: hard
+
+"node-html-to-image@npm:^3.3.0":
+  version: 3.4.0
+  resolution: "node-html-to-image@npm:3.4.0"
+  dependencies:
+    handlebars: "npm:^4.5.3"
+    puppeteer: "npm:^15.3.0"
+    puppeteer-cluster: "npm:^0.23.0"
+  checksum: 10/479303b94de01264ecf5b9eac8a982c4d9430f64b77cb4f5a8b78df77b3822e8ca24ff778bcac7534bff15d4080638e6e5d3cd86dbf571e14ad334675796907b
   languageName: node
   linkType: hard
 
