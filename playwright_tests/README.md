@@ -19,7 +19,7 @@ The current browser slice has 12 scenarios grouped by coverage area: `Date field
 
 HTML: `playwright_tests/playwright-report/index.html`. JUnit: `playwright_tests/test-results/junit.xml`. Failure screenshots, video and traces are retained under `playwright_tests/test-results/`. These generated files are ignored by Git.
 
-Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The native Odhín 1.1.8 reporter matches the XUI reporter baseline, with no background report server. It includes source-host environment and commit metadata, test results and failure details. Its separate output folder prevents reporter cleanup from removing HTML/JUnit evidence. Jenkins archives the entire folder and publishes it as **CCD Case UI Toolkit Odhín report**, alongside native HTML and JUnit.
+Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The toolkit uses the same adaptive progress and fallback-report pattern as the XUI managed-organisations suite. The report adds a Feature Overview derived from `test.describe` areas, with counts, duration and outcome percentages, while retaining native status-by-file and status-by-project sections. Its separate output folder prevents reporter cleanup from removing HTML/JUnit evidence. Jenkins archives the entire folder and publishes it as **CCD Case UI Toolkit Odhín report**, alongside native HTML and JUnit. If a run is interrupted before Odhín writes its HTML, `scripts/ensure-odhin-report.js` creates an explicit unavailable-report artifact; it does not change the build result.
 
 Calendar validation and programmatic reset are not covered or modified by this slice. It provides no package-consumer guarantee.
 

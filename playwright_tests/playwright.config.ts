@@ -11,6 +11,10 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: './playwright-report', open: 'never' }],
     ['junit', { outputFile: './test-results/junit.xml' }],
+    ['./reporters/odhin-progress.reporter.cjs', {
+      enabled: Boolean(process.env.CI),
+      intervalMs: 5000
+    }],
     ['./reporters/odhin-feature-reporter.cjs', {
       outputFolder: resolve(__dirname, 'odhin-report'),
       indexFilename: 'toolkit-playwright.html',
