@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolve } from 'node:path';
 
 export default defineConfig({
   testDir: './tests',
@@ -9,7 +10,20 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { outputFolder: './playwright-report', open: 'never' }],
-    ['junit', { outputFile: './test-results/junit.xml' }]
+    ['junit', { outputFile: './test-results/junit.xml' }],
+    ['odhin-reports-playwright', {
+      outputFolder: resolve(__dirname, 'odhin-report'),
+      indexFilename: 'toolkit-playwright.html',
+      title: 'CCD Case UI Toolkit Playwright',
+      project: 'CCD Case UI Toolkit',
+      testFolder: 'playwright_tests',
+      release: process.env.GIT_COMMIT ?? 'local',
+      testEnvironment: `${process.env.CI ? 'CI' : 'local'} | Chromium | source host`,
+      startServer: false,
+      consoleLog: false,
+      consoleError: true,
+      testOutput: 'only-on-failure'
+    }]
   ],
   use: {
     baseURL: 'http://127.0.0.1:4300',

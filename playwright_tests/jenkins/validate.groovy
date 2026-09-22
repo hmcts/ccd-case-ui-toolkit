@@ -5,6 +5,7 @@ def call() {
     try {
       dir('playwright_tests/test-results') { deleteDir() }
       dir('playwright_tests/playwright-report') { deleteDir() }
+      dir('playwright_tests/odhin-report') { deleteDir() }
       def nodePath
       stage('Toolkit runtime') {
         sh 'git rev-parse HEAD'
@@ -26,7 +27,7 @@ chmod +x .toolkit-bin/yarn
 '''
           sh 'node --version && node .yarn/releases/yarn-4.5.0.cjs --version'
           sh 'node .yarn/releases/yarn-4.5.0.cjs install --immutable'
-          sh 'node .yarn/releases/yarn-4.5.0.cjs playwright install chromium'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs playwright install chromium --only-shell'
         }
         stage('Toolkit Playwright static checks') {
           sh 'node .yarn/releases/yarn-4.5.0.cjs lint:playwright'
@@ -43,7 +44,7 @@ chmod +x .toolkit-bin/yarn
         // Publication cannot hide the original command failure or turn a failed run green.
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           archiveArtifacts allowEmptyArchive: true,
-            artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**'
+            artifacts: 'playwright_tests/test-results/**,playwright_tests/playwright-report/**,playwright_tests/odhin-report/**'
         }
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           def result = junit allowEmptyResults: false,
@@ -60,6 +61,16 @@ chmod +x .toolkit-bin/yarn
             reportDir: 'playwright_tests/playwright-report',
             reportFiles: 'index.html',
             reportName: 'CCD Case UI Toolkit Playwright report'
+          ])
+        }
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'playwright_tests/odhin-report',
+            reportFiles: 'toolkit-playwright.html',
+            reportName: 'CCD Case UI Toolkit Odhín report'
           ])
         }
       }

@@ -102,7 +102,7 @@
     "@angular/compiler-cli": "20.3.27",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.32",
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
@@ -151,6 +151,7 @@
     "ng-packagr": "^20.3.0",
     "ng2-mock-component": "^0.1.1",
     "nyc": "^13.0.1",
+    "odhin-reports-playwright": "1.1.8",
     "peggy": "^5.1.0",
     "prism": "^4.1.2",
     "raw-loader": "^0.5.1",
@@ -178,6 +179,11 @@
     "webpack-rxjs-externals": "^2.0.0",
     "webpack-source-map-support": "^2.0.1",
     "yarn": "^1.22.15"
+  },
+  "dependenciesMeta": {
+    "puppeteer": {
+      "built": false
+    }
   },
   "resolutions": {
     "braces": "^3.0.3",

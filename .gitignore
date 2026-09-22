@@ -85,3 +85,4 @@ cptk.sh
 # Playwright browser evidence
 playwright_tests/test-results/
 playwright_tests/playwright-report/
+playwright_tests/odhin-report/

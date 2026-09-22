@@ -1,6 +1,6 @@
 // Run with: groovy playwright_tests/jenkins/validate.spec.groovy
 def pipeline = new File('playwright_tests/jenkins/validate.groovy')
-def run = { String failedCommand, Map summary, boolean missingReports ->
+def run = { String failedCommand, Map summary, boolean missingReports, boolean missingOdhin = false ->
   def commands = []
   def published = []
   def failed = false
@@ -34,7 +34,10 @@ def run = { String failedCommand, Map summary, boolean missingReports ->
       assert options.buildResult == 'FAILURE'
       try { body() } catch (Exception ignored) { failed = true }
     },
-    archiveArtifacts: { Map options -> published << 'archive' },
+    archiveArtifacts: { Map options ->
+      assert options.artifacts.contains('playwright_tests/odhin-report/**')
+      published << 'archive'
+    },
     junit: { Map options ->
       published << 'junit'
       assert !options.allowEmptyResults
@@ -42,16 +45,18 @@ def run = { String failedCommand, Map summary, boolean missingReports ->
       summary
     },
     publishHTML: { Map options ->
-      published << 'html'
+      published << (options.reportDir.endsWith('odhin-report') ? 'odhin' : 'html')
       assert !options.allowMissing
-      if (missingReports) { throw new IllegalStateException('missing HTML') }
+      if (missingReports || (missingOdhin && options.reportDir.endsWith('odhin-report'))) {
+        throw new IllegalStateException('missing HTML report')
+      }
     },
     error: { String message -> throw new IllegalStateException(message) }
   ])
   def script = new GroovyShell(bindings).parse(pipeline)
   script.run()
   try { script.call() } catch (Exception error) { caught = error }
-  assert published == ['archive', 'junit', 'html']
+  assert published == ['archive', 'junit', 'html', 'odhin']
   [commands: commands, failed: failed, caught: caught]
 }
 
@@ -64,7 +69,7 @@ assert !success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint')
 assert !success.commands.any { it.contains('build:library') || it.contains('test --watch=false') }
 assert success.commands.last() == 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
 
-['install --immutable', 'playwright install chromium', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright'].each { task ->
+['install --immutable', 'playwright install chromium --only-shell', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright'].each { task ->
   def command = "node .yarn/releases/yarn-4.5.0.cjs ${task}".toString()
   def result = run(command, green, true)
   assert result.caught?.message == 'original command failure'
@@ -83,4 +88,5 @@ assert success.commands.last() == 'node .yarn/releases/yarn-4.5.0.cjs test:playw
   [totalCount: 2, skipCount: 0, failCount: 1]
 ].each { summary -> assert run(null, summary, false).failed }
 assert run(null, green, true).failed
+assert run(null, green, false, true).failed
 println 'Pipeline contract checks passed: variable suite counts, install/browser/static/test failures, empty/skipped/failed/missing reports'
