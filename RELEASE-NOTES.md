@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
 ### Version 7.4.2
 **EXUI-5213** Package update - tar - resolution - patch
 
