@@ -10,6 +10,6 @@ test.describe('Money fields', () => {
 
     await expect(input).toHaveValue('1250.50');
     await expect(page.getByTestId('money-value')).toHaveText('125050');
-    await expect(input.locator('..').locator('..')).not.toHaveClass(/form-group-error/);
+    await expect(input.locator('xpath=ancestor::div[contains(@class, "form-group")][1]')).not.toHaveClass(/form-group-error/);
   });
 });

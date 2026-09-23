@@ -27,6 +27,7 @@ import { moneyField } from '../mocks/money-field.mock';
       <h2>Mandatory field controls</h2>
       <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
       <output data-testid="money-value">{{ moneyForm.get(money.id)?.value }}</output>
+      <output data-testid="money-status">{{ moneyForm.status }}</output>
       <ccd-write-text-field [caseField]="mandatory.text" [formGroup]="mandatoryForm" />
       <ccd-write-number-field [caseField]="mandatory.number" [formGroup]="mandatoryForm" />
       <ccd-write-email-field [caseField]="mandatory.email" [formGroup]="mandatoryForm" />
