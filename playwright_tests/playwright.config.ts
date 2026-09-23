@@ -1,5 +1,27 @@
 import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
 import { resolve } from 'node:path';
+import { version as packageVersion } from '../package.json';
+
+const resolveBranchName = (): string => {
+  const branch = process.env.CHANGE_BRANCH ?? process.env.GIT_BRANCH ?? process.env.BRANCH_NAME;
+  if (branch) {
+    return branch.replace(/^(?:refs\/heads\/|origin\/)/, '').trim();
+  }
+  try {
+    return execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim() || 'local';
+  } catch {
+    return 'local';
+  }
+};
+
+const resolveTestEnvironment = (): string => {
+  const runContext = process.env.CI ? 'ci' : 'local-run';
+  const cpuCores = cpus().length;
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `local | ${runContext} | workers=1 | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+};
 
 export default defineConfig({
   testDir: './tests',
@@ -22,8 +44,8 @@ export default defineConfig({
       title: 'CCD Case UI Toolkit Playwright',
       project: 'CCD Case UI Toolkit',
       testFolder: 'playwright_tests',
-      release: process.env.GIT_COMMIT ?? 'local',
-      testEnvironment: `${process.env.CI ? 'CI' : 'local'} | Chromium | source host`,
+      release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${packageVersion} | branch=${resolveBranchName()}`,
+      testEnvironment: process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT ?? resolveTestEnvironment(),
       startServer: false,
       consoleLog: false,
       consoleError: true,

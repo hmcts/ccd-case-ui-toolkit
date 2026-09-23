@@ -11,6 +11,7 @@ import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation'
 import { CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { dateField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
+import { moneyField } from '../mocks/money-field.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -24,6 +25,9 @@ import { mandatoryFields } from '../mocks/mandatory-fields.mock';
       <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
 
       <h2>Mandatory field controls</h2>
+      <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
+      <output data-testid="money-value">{{ moneyForm.get(money.id)?.value }}</output>
+      <output data-testid="money-status">{{ moneyForm.status }}</output>
       <ccd-write-text-field [caseField]="mandatory.text" [formGroup]="mandatoryForm" />
       <ccd-write-number-field [caseField]="mandatory.number" [formGroup]="mandatoryForm" />
       <ccd-write-email-field [caseField]="mandatory.email" [formGroup]="mandatoryForm" />
@@ -43,6 +47,8 @@ class ToolkitTestHost {
   readonly mandatory = mandatoryFields;
   readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
   readonly mandatoryForm = new FormGroup({});
+  readonly money = moneyField;
+  readonly moneyForm = new FormGroup({});
 }
 
 bootstrapApplication(ToolkitTestHost, {
