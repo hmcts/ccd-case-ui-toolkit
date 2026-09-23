@@ -1176,18 +1176,10 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
 
   /**
    * Gives intentionally blank paragraphs content so Docmosis preserves them as blank lines.
-   * This runs only when the document has meaningful content, so a completely empty field remains empty.
-   */
+  * This runs only when the document has meaningful content, so a completely empty field remains empty.
+  */
   private preserveDocmosisBlankParagraphs(documentElement: Document): void {
-    const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
-    paragraphs.forEach((paragraph) => {
-      // Ignore standard whitespace (\s), non-breaking spaces (U+00A0), zero-width characters
-      // (U+200B–U+200D), and the byte-order mark (U+FEFF) when checking for visible text.
-      const visibleText = (paragraph.textContent || '').replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
-      if (!visibleText && !paragraph.querySelector('hr')) {
-        paragraph.textContent = '\u00a0';
-      }
-    });
+    this.replaceBlankParagraphContent(documentElement, '\u00a0');
   }
 
   private hasMeaningfulRichTextContent(documentElement: Document): boolean {
@@ -1354,12 +1346,22 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     return originalDocument.body.innerHTML === normalisedDocument.body.innerHTML;
   }
 
+  /**
+   * Canonicalises visually blank paragraphs to <p></p> before comparing two HTML values.
+  * This lets the editor avoid reloading when only the Docmosis blank-line representation changed.
+  */
   private clearBlankParagraphs(documentElement: Document): void {
+    this.replaceBlankParagraphContent(documentElement, '');
+  }
+
+  private replaceBlankParagraphContent(documentElement: Document, replacement: string): void {
     const paragraphs = Array.prototype.slice.call(documentElement.body.querySelectorAll('p')) as HTMLElement[];
     paragraphs.forEach((paragraph) => {
+      // Ignore standard whitespace (\s), non-breaking spaces (U+00A0), zero-width characters
+      // (U+200B–U+200D), and the byte-order mark (U+FEFF) when checking for visible text.
       const visibleText = (paragraph.textContent || '').replace(/[\s\u00a0\u200b-\u200d\ufeff]/g, '');
-      if (!visibleText) {
-        paragraph.textContent = '';
+      if (!visibleText && !paragraph.querySelector('hr')) {
+        paragraph.textContent = replacement;
       }
     });
   }
