@@ -90,7 +90,7 @@ $toolkit-font-stack: "nta", Arial, sans-serif !default;
 
 // --- Core font generator (from _typography.scss) ---
 // Mobile-first: $font-size-640 is the base (mobile), $font-size applies at tablet+
-@mixin _core-font-generator(
+@mixin core-font-generator(
   $font-size: 19px,
   $font-size-640: 16px,
   $font-size-print: 14pt,
@@ -121,21 +121,21 @@ $toolkit-font-stack: "nta", Arial, sans-serif !default;
   $font-size: 24px;
   $font-size-640: 18px;
   $font-size-print: 16pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-19($line-height: math.div(25, 19), $line-height-640: math.div(20, 16), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 19px;
   $font-size-640: 16px;
   $font-size-print: 14pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-16($line-height: math.div(20, 16), $line-height-640: math.div(16, 14), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 16px;
   $font-size-640: 14px;
   $font-size-print: 12pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin bold-24($line-height: math.div(30, 24), $line-height-640: math.div(24, 20), $tabular-numbers: false) {

@@ -1,6 +1,6 @@
 @use "govuk-frontend/dist/govuk/base" as *;
 @use "govuk-frontend/dist/govuk/components/tabs";
-@import 'components/govuk-toolkit-shim';
+@use 'components/govuk-toolkit-shim' as *;
 
 .govuk-tabs {
   .govuk-tabs__list {
