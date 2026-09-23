@@ -12,6 +12,7 @@ import { CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-tool
 import { dateField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
+import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -39,6 +40,13 @@ import { moneyField } from '../mocks/money-field.mock';
       <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
       <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
       <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
+
+      <h2>Collection controls</h2>
+      <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
+      <div data-testid="restricted-collection">
+        <ccd-write-collection-field [caseField]="restrictedNames" [formGroup]="collectionForm" />
+      </div>
+      <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
     </main>
   `
 })
@@ -49,6 +57,9 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
+  readonly names = collectionField;
+  readonly restrictedNames = restrictedCollectionField;
+  readonly collectionForm = new FormGroup({});
 }
 
 bootstrapApplication(ToolkitTestHost, {
