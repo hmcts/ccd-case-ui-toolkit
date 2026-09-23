@@ -136,13 +136,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
     if (Object.keys(collectionItemValue).length > 0) {
       return {
-        checkConditionalShowAgainst: Object.assign({}, collectionItemValue, currentValues),
+        checkConditionalShowAgainst: { ...collectionItemValue, ...currentValues },
         formGroupAvailable: false
       };
     }
 
     return {
-      checkConditionalShowAgainst: Object.assign({}, checkConditionalShowAgainst, currentValues),
+      checkConditionalShowAgainst: { ...checkConditionalShowAgainst, ...currentValues },
       formGroupAvailable: false
     };
   }
@@ -153,7 +153,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
     return {
       // Contexts are local to this render; never copy sibling values into shared form data.
-      checkConditionalShowAgainst: Object.assign({}, checkConditionalShowAgainst, currentValues),
+      checkConditionalShowAgainst: { ...checkConditionalShowAgainst, ...currentValues },
       formGroupAvailable: false
     };
   }
