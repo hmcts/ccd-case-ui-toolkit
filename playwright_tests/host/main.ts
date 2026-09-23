@@ -46,6 +46,7 @@ import { collectionField, restrictedCollectionField } from '../mocks/collection-
       <div data-testid="restricted-collection">
         <ccd-write-collection-field [caseField]="restrictedNames" [formGroup]="collectionForm" />
       </div>
+      <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
       <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
     </main>
   `

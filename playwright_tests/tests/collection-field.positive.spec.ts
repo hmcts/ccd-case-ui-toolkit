@@ -8,6 +8,7 @@ test.describe('Collection fields', () => {
     await page.getByRole('button', { name: 'Add new' }).first().click();
 
     await expect(page.getByRole('button', { name: 'Remove Names' })).toHaveCount(2);
+    await expect(page.getByTestId('restricted-collection').getByRole('button', { name: 'Remove Restricted names' })).toHaveCount(1);
     await expect(page.getByTestId('collection-values')).toContainText('name-1');
     await expect(page.getByTestId('collection-values')).toContainText('Alice');
   });
@@ -30,6 +31,6 @@ test.describe('Collection fields', () => {
     await page.getByRole('button', { name: 'Remove', exact: true }).click();
 
     await expect(page.getByRole('button', { name: 'Remove Names' })).toHaveCount(0);
-    await expect(page.getByTestId('collection-values')).toHaveText(/"names":\s*\[\s*\]/);
+    await expect(page.getByTestId('names-value')).toHaveText('[]');
   });
 });
