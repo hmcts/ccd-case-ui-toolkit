@@ -1,0 +1,10 @@
+#!groovy
+
+@Library('Infrastructure@2.9.0') _
+
+new uk.gov.hmcts.pipeline.TeamConfig(this).setTeamConfigEnv('xui')
+
+node(env.BUILD_AGENT_TYPE) {
+  checkout scm
+  load('playwright_tests/jenkins/validate.groovy').call()
+}
