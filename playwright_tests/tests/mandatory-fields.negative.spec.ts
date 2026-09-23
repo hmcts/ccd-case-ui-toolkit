@@ -44,7 +44,17 @@ test.describe('Mandatory fields', () => {
   test('returns to invalid when a previously completed mandatory control is cleared', async ({ page }) => {
     const input = page.getByRole('textbox', { name: 'Text field' });
     await input.fill('Alice');
-    await expect(page.getByTestId('mandatory-status')).toHaveText('INVALID');
+    await page.getByRole('textbox', { name: 'Number field' }).fill('12');
+    await page.getByRole('textbox', { name: 'Email field' }).fill('alice@example.test');
+    await page.getByRole('textbox', { name: 'Phone field' }).fill('020 7946 0000');
+    await page.getByRole('textbox', { name: 'Text area field' }).fill('Explanation');
+    await page.getByRole('radio', { name: 'Yes', exact: true }).check();
+    await page.getByRole('combobox', { name: 'Fixed list field' }).selectOption({ label: 'One' });
+    await page.getByRole('radio', { name: 'Alpha' }).check();
+    await page.getByRole('checkbox', { name: 'Red' }).check();
+    await page.getByRole('checkbox', { name: 'Blue' }).check();
+
+    await expect(page.getByTestId('mandatory-status')).toHaveText('VALID');
 
     await input.fill('');
     await input.blur();
