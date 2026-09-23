@@ -33,6 +33,7 @@ import { mandatoryFields } from '../mocks/mandatory-fields.mock';
       <ccd-write-fixed-list-field [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
       <ccd-write-fixed-radio-list-field [caseField]="mandatory.fixedRadio" [formGroup]="mandatoryForm" />
       <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
+      <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
       <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
     </main>
   `
