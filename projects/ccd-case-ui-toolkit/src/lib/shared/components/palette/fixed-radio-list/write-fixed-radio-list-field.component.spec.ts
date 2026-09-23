@@ -46,7 +46,7 @@ const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteFixedRadioListFieldComponent', () => {
 
-  const $RADIO = By.css('.form-group input[type="radio"]');
+  const $RADIO = By.css('.govuk-form-group input[type="radio"]');
 
   let fixture: ComponentFixture<WriteFixedRadioListFieldComponent>;
   let component: WriteFixedRadioListFieldComponent;

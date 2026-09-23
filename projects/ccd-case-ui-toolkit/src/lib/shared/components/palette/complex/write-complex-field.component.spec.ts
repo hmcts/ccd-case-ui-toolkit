@@ -23,7 +23,7 @@ const buildFields = (component: WriteComplexFieldComponent) => {
 };
 
 describe('WriteComplexFieldComponent', () => {
-  const $COMPLEX_PANEL = By.css('.form-group');
+  const $COMPLEX_PANEL = By.css('.govuk-form-group');
   const $COMPLEX_PANEL_TITLE = By.css('h2');
   const $COMPLEX_PANEL_VALUES = By.css('ccd-field-write');
 

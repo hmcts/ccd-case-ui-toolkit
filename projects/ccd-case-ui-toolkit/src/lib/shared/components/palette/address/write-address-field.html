@@ -1,25 +1,29 @@
-<div class="form-group" [id]="id()">
+<div class="govuk-form-group" [id]="id()">
   <div *ngIf="!isComplexWithHiddenFields()">
     <h2 class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
 
-    <div class="form-group bottom-30 postcodeLookup" [id]="createElementId('postcodeLookup')" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
-      <label [for]="createElementId('postcodeInput')">
-        <span class="form-label">{{'Enter a UK postcode' | rpxTranslate}}</span>
+    <div class="govuk-form-group bottom-30 postcodeLookup" [id]="createElementId('postcodeLookup')" [ngClass]="{'govuk-form-group--error': missingPostcode}" *ngIf="!isExpanded">
+      <label class="govuk-label" [for]="createElementId('postcodeInput')">
+        {{'Enter a UK postcode' | rpxTranslate}}
       </label>
-      <span class="error-message" *ngIf="missingPostcode">{{errorMessage | rpxTranslate}}</span>
+      <span class="govuk-error-message" *ngIf="missingPostcode">
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{errorMessage | rpxTranslate}}
+      </span>
       <input type="text" [ngClass]="{'govuk-input--error': missingPostcode}"
-      [id]="createElementId('postcodeInput')" name="postcode" class="form-control postcodeinput inline-block" [formControl]="postcode">
-      <button type="button" class="button button-30" (click)="findAddress()" [disabled]="loadingAddresses">
+      [id]="createElementId('postcodeInput')" name="postcode" class="govuk-input postcodeinput inline-block" [formControl]="postcode">
+      <button type="button" class="govuk-button" (click)="findAddress()" [disabled]="loadingAddresses">
         {{(loadingAddresses ? 'Finding addresses...' : 'Find address') | rpxTranslate}}
       </button>
     </div>
 
-    <div class="form-group" *ngIf="addressOptions" id="selectAddress" [ngClass]="{'form-group-error': noAddressSelected}">
-      <label [for]="createElementId('addressList')">
-        <span class="form-label">{{'Select an address' | rpxTranslate}}</span>
+    <div class="govuk-form-group" *ngIf="addressOptions" id="selectAddress" [ngClass]="{'govuk-form-group--error': noAddressSelected}">
+      <label class="govuk-label" [for]="createElementId('addressList')">
+        {{'Select an address' | rpxTranslate}}
       </label>
-      <span class="error-message" *ngIf="noAddressSelected">{{errorMessage | rpxTranslate}}</span>
-      <select class="form-control ccd-dropdown addressList" [id]="createElementId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
+      <span class="govuk-error-message" *ngIf="noAddressSelected">
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{errorMessage | rpxTranslate}}
+      </span>
+      <select class="govuk-select ccd-dropdown addressList" [id]="createElementId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
         <option *ngIf="addressOptions.length === 0" [ngValue]="undefined">
           {{'No address found' | rpxTranslate}}
         </option>

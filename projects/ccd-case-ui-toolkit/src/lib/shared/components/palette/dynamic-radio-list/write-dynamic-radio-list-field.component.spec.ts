@@ -49,7 +49,7 @@ const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteDynamicRadioListFieldComponent', () => {
 
-  const $RADIO = By.css('.form-group input[type="radio"]');
+  const $RADIO = By.css('.govuk-form-group input[type="radio"]');
 
   let fixture: ComponentFixture<WriteDynamicRadioListFieldComponent>;
   let component: WriteDynamicRadioListFieldComponent;

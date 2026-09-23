@@ -251,7 +251,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       return;
     }
 
-    const controls = Array.from(root.querySelectorAll<HTMLElement>('.form-control'));
+    const controls = Array.from(root.querySelectorAll<HTMLElement>(
+      '.govuk-input, .govuk-select, .govuk-textarea, .govuk-checkboxes__input, .govuk-radios__input'
+    ));
     const focusTarget = controls.find(control => {
       if (!(control instanceof HTMLInputElement)) {
         return true;

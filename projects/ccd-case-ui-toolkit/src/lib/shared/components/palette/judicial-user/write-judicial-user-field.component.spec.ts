@@ -520,7 +520,7 @@ describe('WriteJudicialUserFieldComponent', () => {
       required: true
     };
     fixture.detectChanges();
-    const errorMessageElement = fixture.debugElement.query(By.css('.error-message')).nativeElement;
+    const errorMessageElement = fixture.debugElement.query(By.css('.govuk-error-message')).nativeElement;
     expect(errorMessageElement.textContent).toContain('Judicial User is required');
   });
 

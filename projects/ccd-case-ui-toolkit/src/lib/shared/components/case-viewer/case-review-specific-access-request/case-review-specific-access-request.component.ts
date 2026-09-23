@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -30,12 +31,14 @@ export class CaseReviewSpecificAccessRequestComponent
 
   private readonly genericError = 'There is a problem';
   private readonly radioSelectedControlName = 'radioSelected';
+  private originalDocumentTitle: string;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly appConfig: AbstractAppConfig,
+    private readonly titleService: Title
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -51,12 +54,14 @@ export class CaseReviewSpecificAccessRequestComponent
     this.title = ReviewSpecificAccessRequestPageText.TITLE;
     this.hint = ReviewSpecificAccessRequestPageText.HINT;
     this.caseRefLabel = ReviewSpecificAccessRequestPageText.CASE_REF;
+    this.originalDocumentTitle = this.titleService.getTitle();
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required),
     });
   }
 
   public ngOnDestroy(): void {
+    this.restoreDocumentTitle();
     if (this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
@@ -64,6 +69,7 @@ export class CaseReviewSpecificAccessRequestComponent
 
   public onChange(): void {
     this.submitted = false;
+    this.restoreDocumentTitle();
   }
 
   public onSubmit(): void {
@@ -73,7 +79,11 @@ export class CaseReviewSpecificAccessRequestComponent
       this.errorMessage = {
         title: this.genericError,
         description: ReviewSpecificAccessRequestErrors.NO_SELECTION,
+        fieldId: 'reason-0'
       };
+      this.prefixDocumentTitleWithError();
+    } else {
+      this.restoreDocumentTitle();
     }
     // Initiate Review Access Request
     if (this.formGroup.valid) {
@@ -99,7 +109,20 @@ export class CaseReviewSpecificAccessRequestComponent
   }
 
   public onCancel(): void {
+    this.restoreDocumentTitle();
     this.router.navigateByUrl(CaseReviewSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
+  }
+
+  private prefixDocumentTitleWithError(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.originalDocumentTitle}`);
+    }
+  }
+
+  private restoreDocumentTitle(): void {
+    if (this.titleService.getTitle() !== this.originalDocumentTitle) {
+      this.titleService.setTitle(this.originalDocumentTitle);
+    }
   }
 
   // remove once Access management goes live

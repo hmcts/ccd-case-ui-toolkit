@@ -1,5 +1,5 @@
-@import "govuk-frontend/dist/govuk/index";
-@import 'components/govuk-toolkit-shim';
+@use "govuk-frontend/dist/govuk" as *;
+@use 'components/govuk-toolkit-shim' as *;
 
 .query-list {
   &__row {

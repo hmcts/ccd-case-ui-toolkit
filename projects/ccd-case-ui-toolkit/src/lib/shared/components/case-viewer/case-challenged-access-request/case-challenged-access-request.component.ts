@@ -149,6 +149,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public onCancel(): void {
+    this.restoreDocumentTitle();
     this.router.navigateByUrl(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
@@ -165,6 +166,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public ngOnDestroy(): void {
+    this.restoreDocumentTitle();
     if (this.$roleAssignmentResponseSubscription) {
       this.$roleAssignmentResponseSubscription.unsubscribe();
     }

@@ -1,13 +1,13 @@
-<div class="form-group" [ngClass]="{'form-group-error': !textareaControl.valid && textareaControl.dirty}">
+<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !textareaControl.valid && textareaControl.dirty}">
 
-  <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+  <label class="govuk-label" [for]="id()">
+    <ng-container *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</ng-container>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="textareaControl.errors && (textareaControl.dirty || textareaControl.touched)">
-    {{textareaControl.errors | ccdFirstError:caseField.label}}
+  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message" *ngIf="textareaControl.errors && (textareaControl.dirty || textareaControl.touched)">
+    <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{textareaControl.errors | ccdFirstError:caseField.label}}
   </span>
 
-  <textarea (input)="autoGrow($event)" class="form-control bottom-30" [ngClass]="{'govuk-textarea--error': textareaControl.errors && (textareaControl.dirty || textareaControl.touched)}"
+  <textarea (input)="autoGrow($event)" class="govuk-textarea bottom-30" [ngClass]="{'govuk-textarea--error': textareaControl.errors && (textareaControl.dirty || textareaControl.touched)}"
    [id]="id()" rows="3" [formControl]="textareaControl"></textarea>
 </div>

@@ -167,6 +167,9 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorBannerElement.textContent).toContain(
       ReviewSpecificAccessRequestErrors.NO_SELECTION
     );
+    const errorSummaryLink = errorBannerElement.querySelector('a');
+    expect(errorSummaryLink.getAttribute('href')).toBe('#reason-0');
+    expect(fixture.debugElement.nativeElement.querySelector('#reason-0')).not.toBeNull();
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector(
       '.govuk-error-summary__title'
     );

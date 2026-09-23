@@ -1,4 +1,4 @@
-@import '../../typography.scss';
+@use '../../typography.scss' as *;
 
 $black: #000000;
 $white: #FFFFFF;

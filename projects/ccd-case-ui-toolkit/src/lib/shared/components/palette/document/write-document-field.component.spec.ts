@@ -98,8 +98,8 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 describe('WriteDocumentFieldComponent', () => {
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
-  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
-  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+  const $DIALOG_REPLACE_BUTTON = By.css('.govuk-button[title=Replace]');
+  const $DIALOG_CANCEL_BUTTON = By.css('.govuk-button[title=Cancel]');
 
   const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',
@@ -332,7 +332,7 @@ describe('WriteDocumentFieldComponent', () => {
     componentDialog = fixtureDialog.componentInstance;
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
-    const replaceElement = deDialog.query(By.css('.button[title=Replace]'));
+    const replaceElement = deDialog.query(By.css('.govuk-button[title=Replace]'));
     expect(replaceElement).toBeTruthy();
   });
 
@@ -929,8 +929,8 @@ describe('WriteDocumentFieldComponent', () => {
 
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
-  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
-  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+  const $DIALOG_REPLACE_BUTTON = By.css('.govuk-button[title=Replace]');
+  const $DIALOG_CANCEL_BUTTON = By.css('.govuk-button[title=Cancel]');
 
   const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',

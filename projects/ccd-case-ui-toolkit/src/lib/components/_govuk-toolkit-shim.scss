@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 // ============================================================
 // Compatibility shim replacing govuk_frontend_toolkit imports.
 // Values sourced from govuk_frontend_toolkit@9.0.1 source.
@@ -40,9 +42,9 @@ $error-background: #fef7f7 !default;
 
 // --- Measurements (from _measurements.scss) ---
 $gutter: 30px !default;
-$gutter-one-quarter: $gutter / 4 !default;
-$gutter-one-third: $gutter / 3 !default;
-$gutter-half: $gutter / 2 !default;
+$gutter-one-quarter: math.div($gutter, 4) !default;
+$gutter-one-third: math.div($gutter, 3) !default;
+$gutter-half: math.div($gutter, 2) !default;
 $gutter-two-thirds: $gutter - $gutter-one-third !default;
 
 // --- Media query mixin (from _conditionals.scss) ---
@@ -88,12 +90,12 @@ $toolkit-font-stack: "nta", Arial, sans-serif !default;
 
 // --- Core font generator (from _typography.scss) ---
 // Mobile-first: $font-size-640 is the base (mobile), $font-size applies at tablet+
-@mixin _core-font-generator(
+@mixin core-font-generator(
   $font-size: 19px,
   $font-size-640: 16px,
   $font-size-print: 14pt,
-  $line-height: (25 / 19),
-  $line-height-640: (20 / 16),
+  $line-height: math.div(25, 19),
+  $line-height-640: math.div(20, 16),
   $tabular-numbers: false,
   $font-weight: 400
 ) {
@@ -115,36 +117,36 @@ $toolkit-font-stack: "nta", Arial, sans-serif !default;
 }
 
 // Pixel-based typography mixins (from _typography.scss)
-@mixin core-24($line-height: (30 / 24), $line-height-640: (24 / 20), $tabular-numbers: false, $font-weight: 400) {
+@mixin core-24($line-height: math.div(30, 24), $line-height-640: math.div(24, 20), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 24px;
   $font-size-640: 18px;
   $font-size-print: 16pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-@mixin core-19($line-height: (25 / 19), $line-height-640: (20 / 16), $tabular-numbers: false, $font-weight: 400) {
+@mixin core-19($line-height: math.div(25, 19), $line-height-640: math.div(20, 16), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 19px;
   $font-size-640: 16px;
   $font-size-print: 14pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-@mixin core-16($line-height: (20 / 16), $line-height-640: (16 / 14), $tabular-numbers: false, $font-weight: 400) {
+@mixin core-16($line-height: math.div(20, 16), $line-height-640: math.div(16, 14), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 16px;
   $font-size-640: 14px;
   $font-size-print: 12pt;
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+  @include core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-@mixin bold-24($line-height: (30 / 24), $line-height-640: (24 / 20), $tabular-numbers: false) {
+@mixin bold-24($line-height: math.div(30, 24), $line-height-640: math.div(24, 20), $tabular-numbers: false) {
   @include core-24($line-height, $line-height-640, $tabular-numbers: $tabular-numbers, $font-weight: 700);
 }
 
-@mixin bold-19($line-height: (25 / 19), $line-height-640: (20 / 16), $tabular-numbers: false) {
+@mixin bold-19($line-height: math.div(25, 19), $line-height-640: math.div(20, 16), $tabular-numbers: false) {
   @include core-19($line-height, $line-height-640, $tabular-numbers: $tabular-numbers, $font-weight: 700);
 }
 
-@mixin bold-16($line-height: (20 / 16), $line-height-640: (16 / 14), $tabular-numbers: false) {
+@mixin bold-16($line-height: math.div(20, 16), $line-height-640: math.div(16, 14), $tabular-numbers: false) {
   @include core-16($line-height, $line-height-640, $tabular-numbers: $tabular-numbers, $font-weight: 700);
 }
 

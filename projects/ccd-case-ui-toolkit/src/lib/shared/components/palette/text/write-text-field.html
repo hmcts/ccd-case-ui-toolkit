@@ -1,11 +1,11 @@
-<div class="form-group" [ngClass]="{'form-group-error': !!textControl && !textControl.valid && (textControl.dirty || textControl.touched)}">
-  <label [for]="id()" *ngIf="!caseField.hidden">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!textControl && !textControl.valid && (textControl.dirty || textControl.touched)}">
+  <label class="govuk-label" [for]="id()" *ngIf="!caseField.hidden">
+    <ng-container *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</ng-container>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">
-    {{textControl.errors | ccdFirstError:caseField.label}}
+  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">
+    <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{textControl.errors | ccdFirstError:caseField.label}}
   </span>
-  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
+  <input class="govuk-input bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
     [id]="id()" [type]="caseField.hidden ? 'hidden' : 'text'" [formControl]="textControl" (blur)="onBlur($event)">
 </div>
