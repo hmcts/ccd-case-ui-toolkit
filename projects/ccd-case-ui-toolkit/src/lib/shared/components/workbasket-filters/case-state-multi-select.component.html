@@ -1,0 +1,38 @@
+<div class="case-state-multi-select">
+  <button #trigger
+          type="button"
+          class="form-control form-control-3-4 ccd-dropdown case-state-multi-select__trigger"
+          [id]="controlId"
+          [disabled]="disabled"
+          [attr.aria-expanded]="isOpen"
+          [attr.aria-controls]="optionsId"
+          aria-haspopup="true"
+          (click)="togglePanel($event)">
+    <span>{{selectedLabel | rpxTranslate}}</span>
+  </button>
+
+  <div *ngIf="isOpen"
+       class="case-state-multi-select__panel"
+       [id]="optionsId"
+       role="group"
+       [attr.aria-labelledby]="controlId">
+    <fieldset>
+      <legend class="govuk-visually-hidden">{{'State options' | rpxTranslate}}</legend>
+      <div class="govuk-checkboxes govuk-checkboxes--small">
+        <div class="govuk-checkboxes__item" *ngFor="let state of states">
+          <input class="govuk-checkboxes__input"
+                 type="checkbox"
+                 [id]="controlId + '-' + state.id"
+                 [name]="controlId + '-' + state.id"
+                 [checked]="isSelected(state)"
+                 [attr.aria-label]="state.name | rpxTranslate"
+                 (change)="selectState(state, $event)">
+          <label class="govuk-label govuk-checkboxes__label"
+                 [for]="controlId + '-' + state.id">
+            {{state.name | rpxTranslate}}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</div>
