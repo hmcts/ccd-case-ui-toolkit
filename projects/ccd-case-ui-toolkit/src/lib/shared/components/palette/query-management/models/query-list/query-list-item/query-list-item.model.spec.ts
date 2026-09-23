@@ -108,6 +108,63 @@ describe('QueryListItem', () => {
     });
   });
 
+  describe('isLastSubmittedByHmctsStaff', () => {
+    it('should use the parent status when the query has no children', () => {
+      queryListItem.children = [];
+      queryListItem.isHmctsStaff = YES;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should use an explicit non-HMCTS status for a future response', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = QueryCreateContext.RESPOND;
+      lastChild.isHmctsStaff = NO;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeFalse();
+    });
+
+    it('should use an explicit HMCTS status for a future follow-up', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = QueryCreateContext.FOLLOWUP;
+      lastChild.isHmctsStaff = YES;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should use the stored status for a legacy child without a message type', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = undefined;
+      lastChild.isHmctsStaff = ' yes ';
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should infer HMCTS staff for a legacy response with no stored status', () => {
+      const lastChild = queryListItem.children[queryListItem.children.length - 1];
+      lastChild.messageType = QueryCreateContext.RESPOND;
+      lastChild.isHmctsStaff = undefined;
+
+      expect(queryListItem.isLastSubmittedByHmctsStaff).toBeTrue();
+    });
+
+    it('should infer HMCTS staff from an even legacy response index', () => {
+      const legacyResponse = queryListItem.children[0];
+      legacyResponse.messageType = undefined;
+      legacyResponse.isHmctsStaff = undefined;
+
+      expect(QueryListItem.isHmctsStaffUser(legacyResponse)).toBeTrue();
+    });
+
+    it('should infer a non-HMCTS user from an odd legacy follow-up index', () => {
+      const legacyFollowUp = queryListItem.children[1];
+      legacyFollowUp.messageType = undefined;
+      legacyFollowUp.isHmctsStaff = undefined;
+
+      expect(QueryListItem.isHmctsStaffUser(legacyFollowUp)).toBeFalse();
+    });
+  });
+
   describe('lastSubmittedDate', () => {
     it('should return the date of the lastSubmittedMessage', () => {
       expect(queryListItem.lastSubmittedDate).toEqual(lastSubmittedBy.createdOn);

@@ -145,6 +145,27 @@ describe('QueryListComponent', () => {
       expect(new Date(tableCells[4].innerText)).toEqual(firstRowItem.lastResponseDate);
       expect(tableCells[5].innerText).toEqual(firstRowItem.responseStatus);
     });
+
+    it('should add the HMCTS suffix when the last submitter is HMCTS staff', () => {
+      const query = component.queryListData.queries[0];
+      query.isHmctsStaff = 'No';
+      query.children[query.children.length - 1].isHmctsStaff = 'Yes';
+      fixture.detectChanges();
+
+      const lastSubmittedByCell = fixture.nativeElement.querySelectorAll('tbody tr')[0].querySelectorAll('td')[2];
+      expect(lastSubmittedByCell.textContent.replace(/\s+/g, ' ').trim()).toBe('Name 3 - HMCTS');
+    });
+
+    it('should not add the HMCTS suffix when only the original sender is HMCTS staff', () => {
+      const query = component.queryListData.queries[0];
+      query.isHmctsStaff = 'Yes';
+      query.children[query.children.length - 1].isHmctsStaff = 'No';
+      fixture.detectChanges();
+
+      const tableCells = fixture.nativeElement.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+      expect(tableCells[1].textContent.replace(/\s+/g, ' ').trim()).toBe('Name 1 - HMCTS');
+      expect(tableCells[2].textContent.trim()).toBe('Name 3');
+    });
   });
 
   describe('sortTable', () => {
