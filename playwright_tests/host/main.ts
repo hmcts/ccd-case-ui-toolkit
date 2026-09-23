@@ -1,4 +1,4 @@
-import { JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { Component, importProvidersFrom } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -13,10 +13,11 @@ import { dateField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
+import { editorFields } from '../mocks/editor-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
-  imports: [PaletteModule, CaseEditorModule, ReactiveFormsModule, JsonPipe],
+  imports: [CommonModule, PaletteModule, CaseEditorModule, ReactiveFormsModule, JsonPipe],
   template: `
     <main>
       <h1>Toolkit date input</h1>
@@ -48,6 +49,20 @@ import { collectionField, restrictedCollectionField } from '../mocks/collection-
       </div>
       <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
       <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
+
+      <h2>Case edit form validation and state</h2>
+      <ng-container *ngIf="editorPage === 1">
+        <form [formGroup]="editorForm" (ngSubmit)="continueEditor()">
+          <ccd-case-edit-form [fields]="editorFields" [caseFields]="editorFields" [formGroup]="editorForm" />
+          <button type="submit" [disabled]="editorForm.invalid">Continue</button>
+        </form>
+      </ng-container>
+      <ng-container *ngIf="editorPage === 2">
+        <h3>Editor page 2</h3>
+        <output data-testid="editor-optional-value">{{ editorForm.get('editor-optional')?.value }}</output>
+      </ng-container>
+      <output data-testid="editor-page">{{ editorPage }}</output>
+      <output data-testid="editor-values">{{ editorForm.value | json }}</output>
     </main>
   `
 })
@@ -61,6 +76,13 @@ class ToolkitTestHost {
   readonly names = collectionField;
   readonly restrictedNames = restrictedCollectionField;
   readonly collectionForm = new FormGroup({});
+  readonly editorFields = editorFields;
+  readonly editorForm = new FormGroup({});
+  editorPage = 1;
+
+  continueEditor(): void {
+    this.editorPage = 2;
+  }
 }
 
 bootstrapApplication(ToolkitTestHost, {
