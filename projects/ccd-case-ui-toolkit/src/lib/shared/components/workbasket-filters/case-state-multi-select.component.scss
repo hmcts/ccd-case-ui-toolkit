@@ -9,6 +9,18 @@
   margin-bottom: 30px;
 }
 
+.case-state-multi-select__actions {
+  display: flex;
+  gap: 10px;
+  // gap: 21px;
+  margin-bottom: 10px;
+}
+
+.case-state-multi-select__actions .button {
+  margin-bottom: 0;
+  // margin: 0;
+}
+
 .case-state-multi-select__trigger {
   position: relative;
   padding-right: 35px;

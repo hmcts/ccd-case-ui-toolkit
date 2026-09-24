@@ -61,6 +61,53 @@ describe('CaseStateMultiSelectComponent', () => {
     expect(inputs[0].nativeElement.checked).toBeFalse();
   });
 
+  it('selects all states and disables Select All', () => {
+    const emitted: CaseState[][] = [];
+    component.selectedStatesChange.subscribe(selection => {
+      emitted.push(selection);
+      component.selectedStates = selection;
+    });
+
+    const selectAllButton = fixture.debugElement.query(By.css('#wb-case-state-select-all')).nativeElement as HTMLButtonElement;
+    const unselectAllButton = fixture.debugElement.query(By.css('#wb-case-state-unselect-all')).nativeElement as HTMLButtonElement;
+
+    expect(selectAllButton.disabled).toBeFalse();
+    expect(unselectAllButton.disabled).toBeTrue();
+
+    selectAllButton.click();
+    fixture.detectChanges();
+
+    expect(emitted.map(selection => selection.map(state => state.id))).toEqual([['S1', 'S2']]);
+    expect(component.selectedLabel).toBe('2 selected');
+    expect(selectAllButton.disabled).toBeTrue();
+    expect(unselectAllButton.disabled).toBeFalse();
+  });
+
+  it('unselects all states and returns the trigger to Any', () => {
+    component.selectedStates = states;
+    fixture.detectChanges();
+    const emitted: CaseState[][] = [];
+    component.selectedStatesChange.subscribe(selection => {
+      emitted.push(selection);
+      component.selectedStates = selection;
+    });
+
+    const selectAllButton = fixture.debugElement.query(By.css('#wb-case-state-select-all')).nativeElement as HTMLButtonElement;
+    const unselectAllButton = fixture.debugElement.query(By.css('#wb-case-state-unselect-all')).nativeElement as HTMLButtonElement;
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement as HTMLButtonElement;
+
+    expect(selectAllButton.disabled).toBeTrue();
+    expect(unselectAllButton.disabled).toBeFalse();
+
+    unselectAllButton.click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([[]]);
+    expect(trigger.textContent).toContain('Any');
+    expect(selectAllButton.disabled).toBeFalse();
+    expect(unselectAllButton.disabled).toBeTrue();
+  });
+
   it('selects a state when its label is clicked and keeps the panel open', () => {
     const emitted: CaseState[][] = [];
     component.selectedStatesChange.subscribe(selection => {
@@ -126,5 +173,7 @@ describe('CaseStateMultiSelectComponent', () => {
     fixture.debugElement.query(By.css('#wb-case-state')).nativeElement.click();
 
     expect(component.isOpen).toBeFalse();
+    expect((fixture.debugElement.query(By.css('#wb-case-state-select-all')).nativeElement as HTMLButtonElement).disabled).toBeTrue();
+    expect((fixture.debugElement.query(By.css('#wb-case-state-unselect-all')).nativeElement as HTMLButtonElement).disabled).toBeTrue();
   });
 });

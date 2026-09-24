@@ -1,4 +1,21 @@
 <div class="case-state-multi-select">
+  <div class="case-state-multi-select__actions" role="group" [attr.aria-label]="'State selection actions' | rpxTranslate">
+    <button id="wb-case-state-select-all"
+            type="button"
+            class="button button-secondary"
+            [disabled]="isSelectAllDisabled"
+            (click)="selectAll($event)">
+      {{'Select All' | rpxTranslate}}
+    </button>
+    <button id="wb-case-state-unselect-all"
+            type="button"
+            class="button button-secondary"
+            [disabled]="isUnselectAllDisabled"
+            (click)="unselectAll($event)">
+      {{'Unselect All' | rpxTranslate}}
+    </button>
+  </div>
+
   <button #trigger
           type="button"
           class="form-control form-control-3-4 ccd-dropdown case-state-multi-select__trigger"

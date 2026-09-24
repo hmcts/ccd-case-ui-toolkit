@@ -62,6 +62,24 @@ export class CaseStateMultiSelectComponent {
     this.selectedStatesChange.emit(selectedStates);
   }
 
+  public selectAll(event: Event): void {
+    event.stopPropagation();
+    this.selectedStatesChange.emit([...this.states]);
+  }
+
+  public unselectAll(event: Event): void {
+    event.stopPropagation();
+    this.selectedStatesChange.emit([]);
+  }
+
+  public get isSelectAllDisabled(): boolean {
+    return this.disabled || this.states.length === 0 || this.states.every(state => this.isSelected(state));
+  }
+
+  public get isUnselectAllDisabled(): boolean {
+    return this.disabled || this.states.length === 0 || (this.selectedStates || []).length === 0;
+  }
+
   public get selectedLabel(): string {
     const selectedCount = (this.selectedStates || []).length;
     if (selectedCount === 0) {
