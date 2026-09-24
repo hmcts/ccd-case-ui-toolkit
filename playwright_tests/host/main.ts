@@ -10,9 +10,11 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { of } from 'rxjs';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
-import { AlertMessageType, AlertService, CaseEditorModule, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
+import { CasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/cases.service';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
@@ -23,6 +25,11 @@ import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
+import { caseNotifierCases } from '../mocks/case-notifier.mock';
+
+const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
+  getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
+};
 
 @Component({
   selector: 'toolkit-test-host',
@@ -85,6 +92,11 @@ import { fieldFormFields } from '../mocks/field-form.mock';
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
+      <h2>Case notifier state</h2>
+      <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
+      <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
+      <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
+
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
@@ -133,6 +145,7 @@ class ToolkitTestHost {
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
+  caseNotifierState = 'No case selected';
   readonly structured = structuredFields;
   readonly structuredForm = new FormGroup({});
   readonly fieldForm = fieldFormFields;
@@ -147,7 +160,14 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly alertMessageType = AlertMessageType;
 
-  constructor(readonly alertService: AlertService) {}
+  constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
+    this.caseNotifier.caseView.subscribe((caseView) => {
+      const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
+      this.caseNotifierState = caseView.case_id && access
+        ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
+        : 'No case selected';
+    });
+  }
 
   continueEditor(): void {
     this.editorPage = 2;
@@ -160,6 +180,14 @@ class ToolkitTestHost {
   clearCallbackError(): void {
     this.alertService.clear();
   }
+
+  refreshChallengedCase(): void {
+    this.caseNotifier.fetchAndRefresh('challenged').subscribe();
+  }
+
+  refreshStandardCase(): void {
+    this.caseNotifier.fetchAndRefresh('standard').subscribe();
+  }
 }
 
 bootstrapApplication(ToolkitTestHost, {
@@ -169,6 +197,7 @@ bootstrapApplication(ToolkitTestHost, {
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
+    { provide: CasesService, useValue: caseNotifierCasesService },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),

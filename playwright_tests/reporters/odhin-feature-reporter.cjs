@@ -1,13 +1,16 @@
 /* global require */
 
 const odhinModule = require('odhin-reports-playwright');
-const { createEmptyFeatureStat, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
+const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 
 function featureFor(test) {
   const titles = typeof test.titlePath === 'function' ? test.titlePath() : [];
-  return titles.length > 1 ? titles[titles.length - 2] : test.title || 'Uncategorised';
+  const feature = titles.length > 1 ? titles[titles.length - 2] : test.title || 'Uncategorised';
+  return /\.(?:positive|negative)\.spec\.ts$/i.test(feature)
+    ? deriveFeatureName(test.location?.file ?? feature)
+    : feature;
 }
 
 function statusFor(result) {
