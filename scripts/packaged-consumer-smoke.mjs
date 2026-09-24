@@ -29,24 +29,12 @@ function smoke() {
     };
     writeFileSync(join(consumer, 'package.json'), `${JSON.stringify(consumerPackage, null, 2)}\n`);
 
-    try {
-      run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
-    } catch (error) {
-      if (!isPeerResolutionError(error)) {
-        throw error;
-      }
-      console.warn('Normal npm peer resolution failed; running forced-install diagnostics with --legacy-peer-deps.');
-      run('npm', ['install', '--legacy-peer-deps', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
-    }
+    run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
     run('npx', ['ng', 'build'], consumer);
     run('npx', ['playwright', 'test'], consumer);
   } finally {
     rmSync(consumer, { recursive: true, force: true });
   }
-}
-
-export function isPeerResolutionError(error) {
-  return /\bERESOLVE\b/.test(error?.stderr ?? '');
 }
 
 function run(command, args, cwd) {

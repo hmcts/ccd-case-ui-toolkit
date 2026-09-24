@@ -1,11 +1,11 @@
-import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_LEGACY_DATE_LOCALE } from '@angular/material/legacy-core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatFormFieldModule as MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule as MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -47,9 +47,11 @@ describe('DatetimePickerComponent', () => {
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
+        NgxMatDatetimepicker,
+        NgxMatDatepickerInput,
+        NgxMatDatepickerToggle,
+        NgxMatDatepickerActions,
+        NgxMatDatepickerApply,
         NoopAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
@@ -61,9 +63,10 @@ describe('DatetimePickerComponent', () => {
         DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
       ],
       providers: [FormatTranslatorService,
-        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
-        { provide: MAT_LEGACY_DATE_LOCALE, useValue: 'en-GB' },
+        { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         { provide: CaseFieldService, useValue: caseFieldService }
       ]
     })
