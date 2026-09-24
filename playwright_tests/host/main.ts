@@ -16,6 +16,7 @@ import { collectionField, restrictedCollectionField } from '../mocks/collection-
 import { editorFields } from '../mocks/editor-fields.mock';
 import { advancedFields } from '../mocks/advanced-fields.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
+import { structuredFields } from '../mocks/structured-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -55,6 +56,11 @@ import { identityFields } from '../mocks/identity-fields.mock';
       <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
+      <div data-testid="structured-fields"><h2>Structured field controls</h2>
+      <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
+      <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
+      <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
+      <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
       <h2>Identity read-only controls</h2>
       <ccd-read-case-link-field [caseField]="identity.caseLink" />
@@ -98,6 +104,8 @@ class ToolkitTestHost {
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
+  readonly structured = structuredFields;
+  readonly structuredForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
