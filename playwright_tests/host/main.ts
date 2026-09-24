@@ -15,6 +15,7 @@ import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
 import { advancedFields } from '../mocks/advanced-fields.mock';
+import { structuredFields } from '../mocks/structured-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -51,6 +52,9 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
       <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
+      <div data-testid="structured-fields"><h2>Structured field controls</h2>
+      <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
+      <output data-testid="structured-values">{{ structuredForm.value | json }}</output></div>
 
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
@@ -83,6 +87,8 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly structured = structuredFields;
+  readonly structuredForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
