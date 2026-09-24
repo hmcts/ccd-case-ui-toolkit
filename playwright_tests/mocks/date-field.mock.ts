@@ -12,7 +12,7 @@ export const dateTimeField = Object.assign(new CaseField(), {
   id: 'test-date-time',
   label: 'Example date and time',
   display_context: 'MANDATORY',
-  display_context_parameter: '#DATETIMEENTRY(yyyy-MM-dd HH:mm)',
+  display_context_parameter: '#DATETIMEENTRY(dd-MM-yyyy HH:mm)',
   field_type: { id: 'DateTime', type: 'DateTime' },
   value: '2021-04-09T10:30:00.000'
 });

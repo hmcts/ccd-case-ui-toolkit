@@ -12,5 +12,5 @@ test('renders and binds a mandatory date and time field', async ({ page }) => {
 
 test('exposes the configured date-time entry format', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#test-date-time input')).toHaveAttribute('aria-label', /YYYY-MM-DD HH:mm/);
+  await expect(page.locator('#test-date-time input')).toHaveAttribute('aria-label', /DD-MM-YYYY HH:mm/);
 });
