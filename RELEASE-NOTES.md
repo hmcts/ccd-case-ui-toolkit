@@ -1,5 +1,18 @@
 ## RELEASE NOTES
 
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
+
+### Version 7.4.1
+**EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
+
+### Version 7.3.99
+**EXUI-5185** Issue with copy and paste on Rich Text Editor
+**EXUI-5187** Undo/Deleting text in rich text field still sends data
+
 ### Version 7.3.98
 **EXUI-5063** Staff type-ahead component
 
