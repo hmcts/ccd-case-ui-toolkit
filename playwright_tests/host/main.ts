@@ -24,7 +24,7 @@ import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
-import { serviceViewerCases } from '../mocks/service-viewer.mock';
+import { caseNotifierCases } from '../mocks/case-notifier.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -87,10 +87,10 @@ import { serviceViewerCases } from '../mocks/service-viewer.mock';
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
-      <h2>Service-backed viewer state</h2>
+      <h2>Case notifier state</h2>
       <button type="button" (click)="publishChallengedCase()">Publish challenged case</button>
       <button type="button" (click)="publishStandardCase()">Publish standard case</button>
-      <output data-testid="service-viewer-case">{{ serviceViewerCase }}</output>
+      <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
 
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
@@ -140,7 +140,7 @@ class ToolkitTestHost {
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
-  serviceViewerCase = 'No case selected';
+  caseNotifierState = 'No case selected';
   readonly structured = structuredFields;
   readonly structuredForm = new FormGroup({});
   readonly fieldForm = fieldFormFields;
@@ -158,7 +158,7 @@ class ToolkitTestHost {
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
     this.caseNotifier.caseView.subscribe((caseView) => {
       const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
-      this.serviceViewerCase = caseView.case_id && access
+      this.caseNotifierState = caseView.case_id && access
         ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
         : 'No case selected';
     });
@@ -177,11 +177,11 @@ class ToolkitTestHost {
   }
 
   publishChallengedCase(): void {
-    this.caseNotifier.announceCase(serviceViewerCases.challenged);
+    this.caseNotifier.announceCase(caseNotifierCases.challenged);
   }
 
   publishStandardCase(): void {
-    this.caseNotifier.announceCase(serviceViewerCases.standard);
+    this.caseNotifier.announceCase(caseNotifierCases.standard);
   }
 }
 

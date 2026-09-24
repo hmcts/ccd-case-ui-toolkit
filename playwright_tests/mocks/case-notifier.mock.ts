@@ -5,7 +5,7 @@ const caseView = (caseId: string, access: string): CaseView => ({
   metadataFields: [{ id: '[ACCESS_PROCESS]', value: access }]
 } as CaseView);
 
-export const serviceViewerCases = {
+export const caseNotifierCases = {
   challenged: caseView('1111222233334444', 'CHALLENGED'),
   standard: caseView('4444333322221111', 'STANDARD')
 };
