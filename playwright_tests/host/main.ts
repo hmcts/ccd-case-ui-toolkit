@@ -22,6 +22,8 @@ import { CaseFileViewService } from '../../projects/ccd-case-ui-toolkit/src/lib/
 import { LoadingService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/loading/loading.service';
 import { SessionStorageService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/session/session-storage.service';
 import { WindowService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/window/window.service';
+import { CommonDataService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/common-data-service/common-data-service';
+import { LinkedCasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/linked-cases/services';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
@@ -31,7 +33,7 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
-import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
+import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, linkedCasesLauncher, linkedCasesRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
 import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
 import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
@@ -48,11 +50,46 @@ const httpErrorService: Pick<HttpErrorService, 'handle'> = {
 const windowService: Pick<WindowService, 'openOnNewTab'> = {
   openOnNewTab: () => undefined
 };
-const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: { case: launcherRouteCase } } };
+const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: {
+  get case() {
+    return new URLSearchParams(window.location.search).has('linked-cases') ? linkedCasesRouteCase : launcherRouteCase;
+  }
+} } };
 
-const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
-  getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
+const linkedCaseView: any = {
+  case_id: '2222333344445555',
+  case_fields: { caseNameHmctsInternal: 'Linked test case' },
+  case_type: { name: 'Linked case type', description: 'Linked case type', jurisdiction: { description: 'Linked service' } },
+  state: { name: 'Open', description: 'Open' }
 };
+const caseNotifierCasesService = {
+  getCaseViewV2: (caseId: string) => of((caseId === linkedCaseView.case_id ? linkedCaseView : caseNotifierCases[caseId]) as any),
+  getLinkedCases: () => of({ linkedCases: [{
+    caseReference: '3333444455556666',
+    ccdCaseType: 'TestCase',
+    ccdCaseTypeDescription: 'Test case',
+    ccdJurisdiction: 'TEST',
+    state: 'Open',
+    stateDescription: 'Open',
+    caseNameHmctsInternal: 'Incoming linked case',
+    linkDetails: [{ reasons: [{ reasonCode: 'CLRC015' }] }]
+  }] } as any)
+} as Pick<CasesService, 'getCaseViewV2' | 'getLinkedCases'>;
+
+const commonDataService: Pick<CommonDataService, 'getRefData'> = {
+  getRefData: () => of({ list_of_values: [{ key: 'CLRC015', value_en: 'Case consolidated', lov_order: 1 }] } as any)
+};
+
+const linkedCasesService = {
+  serverJurisdictionError: false,
+  isServerReasonCodeError: false,
+  linkCaseReasons: [],
+  linkedCases: [],
+  initialCaseLinks: [],
+  caseFieldValue: [],
+  getCaseName: (caseView: any) => caseView.case_fields?.caseNameHmctsInternal || 'Case name missing',
+  mapLookupIDToValueFromJurisdictions: (_fieldName, value) => value === 'TEST' ? 'Test service' : value
+} as Partial<LinkedCasesService>;
 
 const mandatoryAddressError = new BehaviorSubject(false);
 const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddressesForPostcode'> = {
@@ -102,9 +139,14 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: AddressesService, useValue: addressesService },
     { provide: DocumentManagementService, useValue: documentManagementService },
     { provide: JurisdictionService, useValue: {} },
+    { provide: CommonDataService, useValue: commonDataService },
+    { provide: LinkedCasesService, useValue: linkedCasesService },
     { provide: CaseFileViewService, useValue: caseFileViewService },
     { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
-    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({ roles: ['caseworker-test'], sub: 'caseworker@example.invalid' }) } },
+    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({
+      roles: new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
+      sub: 'caseworker@example.invalid'
+    }) } },
     { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
@@ -170,6 +212,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="caseFlagsLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
+      <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
       </section>
 
@@ -247,6 +290,7 @@ class ToolkitTestHost {
   readonly unsupportedLauncher = unsupportedLauncher;
   readonly caseFlagsLauncher = caseFlagsLauncher;
   readonly queryManagementLauncher = queryManagementLauncher;
+  readonly linkedCasesLauncher = linkedCasesLauncher;
   readonly caseHistory = caseHistoryField;
   readonly orderSummary = orderSummaryField;
   readonly paymentHistory = paymentHistoryField;
@@ -274,6 +318,7 @@ class ToolkitTestHost {
   readonly editorForm = new FormGroup({});
   editorPage = 1;
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
+  readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
   readonly alertMessageType = AlertMessageType;
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
