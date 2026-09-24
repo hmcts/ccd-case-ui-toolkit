@@ -1,0 +1,83 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
+import { CaseState } from '../../domain/definition/case-state.model';
+import { CaseStateMultiSelectComponent } from './case-state-multi-select.component';
+
+describe('CaseStateMultiSelectComponent', () => {
+  let fixture: ComponentFixture<CaseStateMultiSelectComponent>;
+  let component: CaseStateMultiSelectComponent;
+
+  const states: CaseState[] = [
+    { id: 'S1', name: 'State 1', description: '' },
+    { id: 'S2', name: 'State 2', description: '' },
+  ];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [CaseStateMultiSelectComponent, MockRpxTranslatePipe],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CaseStateMultiSelectComponent);
+    component = fixture.componentInstance;
+    component.states = states;
+    fixture.detectChanges();
+  });
+
+  it('displays Any for an empty selection', () => {
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement;
+
+    expect(trigger.textContent).toContain('Any');
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('keeps the panel open and emits each selected state', () => {
+    const emitted: CaseState[][] = [];
+    component.selectedStatesChange.subscribe(selection => {
+      emitted.push(selection);
+      component.selectedStates = selection;
+    });
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement;
+    trigger.click();
+    fixture.detectChanges();
+
+    expect(trigger.getAttribute('aria-controls')).toBe('wb-case-state-options');
+
+    const inputs = fixture.debugElement.queryAll(By.css('#wb-case-state-options input[type="checkbox"]'));
+    inputs[0].nativeElement.click();
+    fixture.detectChanges();
+    inputs[1].nativeElement.click();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#wb-case-state-options'))).toBeTruthy();
+    expect(emitted.map(selection => selection.map(state => state.id))).toEqual([['S1'], ['S1', 'S2']]);
+    expect(inputs[0].nativeElement.checked).toBeTrue();
+    expect(inputs[1].nativeElement.checked).toBeTrue();
+
+    inputs[0].nativeElement.click();
+    fixture.detectChanges();
+
+    expect(emitted[2].map(state => state.id)).toEqual(['S2']);
+    expect(inputs[0].nativeElement.checked).toBeFalse();
+  });
+
+  it('closes on Escape and returns focus to the trigger', () => {
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement;
+    trigger.click();
+    fixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#wb-case-state-options'))).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it('does not open when disabled', () => {
+    component.disabled = true;
+    fixture.detectChanges();
+    fixture.debugElement.query(By.css('#wb-case-state')).nativeElement.click();
+
+    expect(component.isOpen).toBeFalse();
+  });
+});
