@@ -9,5 +9,7 @@ test.describe('Palette dispatch', () => {
     await expect(page.getByTestId('palette-component-launcher-write').getByRole('heading', { name: 'Case file' })).toBeVisible();
     await expect(page.getByTestId('palette-unsupported-read')).toContainText('Field type not supported');
     await expect(page.getByTestId('palette-unsupported-write')).toContainText('Field type not supported');
+    await expect(page.getByTestId('palette-unknown-launcher-read')).toContainText('Field type not supported');
+    await expect(page.getByTestId('palette-unknown-launcher-write')).toContainText('Field type not supported');
   });
 });

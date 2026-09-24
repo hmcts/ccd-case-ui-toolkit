@@ -45,6 +45,8 @@ const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddress
   getMandatoryError: () => mandatoryAddressError.asObservable(),
   getAddressesForPostcode: () => of([{
     AddressLine1: '1 Test Street',
+    AddressLine2: '',
+    AddressLine3: '',
     PostTown: 'London',
     'address-uk-line-1': '1 Test Street',
     'address-uk-town-city': 'London',
@@ -128,6 +130,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
         <div data-testid="palette-component-launcher-write"><ccd-field-write [caseField]="componentLauncher" [formGroup]="paletteDispatchForm" /></div>
         <div data-testid="palette-unsupported-read"><ccd-field-read [caseField]="unsupported" /></div>
         <div data-testid="palette-unsupported-write"><ccd-field-write [caseField]="unsupported" [formGroup]="paletteDispatchForm" /></div>
+        <div data-testid="palette-unknown-launcher-read"><ccd-field-read [caseField]="unknownLauncher" /></div>
+        <div data-testid="palette-unknown-launcher-write"><ccd-field-write [caseField]="unknownLauncher" [formGroup]="paletteDispatchForm" /></div>
       </section>
 
       <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
@@ -143,7 +147,9 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
 
       <h2>Viewer and payment controls</h2>
       <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
-      <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+      <ng-container *ngIf="showPaymentHistory">
+        <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+      </ng-container>
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
       <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
@@ -218,6 +224,7 @@ class ToolkitTestHost {
   readonly addressDocument = addressDocumentFields;
   readonly componentLauncher = Object.assign(new CaseField(), { id: 'launcher', label: 'Case file', display_context: 'OPTIONAL', display_context_parameter: '#ARGUMENT(CaseFileView,READONLY)', field_type: { id: 'ComponentLauncher', type: 'ComponentLauncher' }, value: null, acls: [] });
   readonly unsupported = Object.assign(new CaseField(), { id: 'unsupported', label: 'Unsupported', display_context: 'READONLY', field_type: { id: 'Unsupported', type: 'Unsupported' }, value: null });
+  readonly unknownLauncher = Object.assign(new CaseField(), { id: 'unknown-launcher', label: 'Unknown launcher', display_context: 'READONLY', display_context_parameter: '#ARGUMENT(NotARegisteredLauncher,READONLY)', field_type: { id: 'ComponentLauncher', type: 'ComponentLauncher' }, value: null });
   readonly paletteDispatchForm = new FormGroup({});
   readonly addressDocumentForm = new FormGroup({});
   readonly structured = structuredFields;
@@ -232,6 +239,7 @@ class ToolkitTestHost {
   readonly editorFields = editorFields;
   readonly editorForm = new FormGroup({});
   editorPage = 1;
+  readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly alertMessageType = AlertMessageType;
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {

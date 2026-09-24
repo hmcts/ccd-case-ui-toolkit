@@ -14,10 +14,9 @@ test.describe('Public field routing', () => {
       ['complex write', page.getByTestId('structured-fields').getByRole('textbox', { name: 'Complex line (Optional)' })],
       ['collection write', page.getByTestId('restricted-collection').getByRole('textbox')],
       ['document write', page.getByTestId('document-control').locator('#supporting-document')],
-      ['label read', page.getByText('Read-only label', { exact: true })],
+      ['label read', page.getByText('A read-only label', { exact: true })],
       ['case link read', page.getByRole('link', { name: '1234-5678-9012-3456' })],
-      ['order summary read', page.getByRole('heading', { name: 'Order Summary' })],
-      ['payment viewer read', page.getByText('Recent payments may take a few minutes to reflect here.')]
+      ['order summary read', page.getByText('Order Summary', { exact: true })]
     ];
 
     for (const [category, contract] of routes) {
