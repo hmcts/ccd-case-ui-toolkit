@@ -36,7 +36,12 @@ import { ReferenceIdentityControlsComponent } from './reference-identity-control
 
 const launcherCaseReference = '1111222233334444';
 const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'> = {
-  getCategoriesAndDocuments: (caseReference) => caseReference === launcherCaseReference ? of(categoriesAndDocumentsTestData) : (() => { throw new Error(`Unexpected case reference: ${caseReference}`); })()
+  getCategoriesAndDocuments: (caseReference) => {
+    if (caseReference !== launcherCaseReference) {
+      throw new Error(`Unexpected case reference: ${caseReference}`);
+    }
+    return of(categoriesAndDocumentsTestData);
+  }
 };
 const documentManagementService: Pick<DocumentManagementService, 'getDocumentBinaryUrl' | 'getMediaViewerInfo' | 'isHtmlDocument'> = {
   getDocumentBinaryUrl: (document) => document.document_binary_url,
