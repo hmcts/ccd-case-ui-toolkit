@@ -136,13 +136,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     const collectionItemValue = ReadFieldsFilterPipe.getCollectionItemValue(complexField);
     if (Object.keys(collectionItemValue).length > 0) {
       return {
-        checkConditionalShowAgainst: Object.assign(collectionItemValue, currentValues),
+        checkConditionalShowAgainst: { ...collectionItemValue, ...currentValues },
         formGroupAvailable: false
       };
     }
 
     return {
-      checkConditionalShowAgainst: Object.assign(checkConditionalShowAgainst, currentValues),
+      checkConditionalShowAgainst: { ...checkConditionalShowAgainst, ...currentValues },
       formGroupAvailable: false
     };
   }
@@ -152,7 +152,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     currentValues: object
   ): { checkConditionalShowAgainst: any; formGroupAvailable: boolean } {
     return {
-      checkConditionalShowAgainst: Object.assign(checkConditionalShowAgainst, currentValues),
+      // Contexts are local to this render; never copy sibling values into shared form data.
+      checkConditionalShowAgainst: { ...checkConditionalShowAgainst, ...currentValues },
       formGroupAvailable: false
     };
   }
@@ -174,6 +175,11 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
 
     if (idPrefix !== '') {
+      // A collection item already supplies its own condition values. Do not rely on
+      // its collection's name having been flattened into the root by another render.
+      if (complexField.parent?.field_type?.type === 'Collection') {
+        return { checkConditionalShowAgainst: currentValues, formGroupAvailable: false };
+      }
       return ReadFieldsFilterPipe.resolvePrefixedConditionalShowContext(checkConditionalShowAgainst, currentValues, idPrefix);
     }
 
