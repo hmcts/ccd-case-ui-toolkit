@@ -14,6 +14,7 @@ import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
+import { advancedFields } from '../mocks/advanced-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -41,6 +42,15 @@ import { editorFields } from '../mocks/editor-fields.mock';
       <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
       <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
       <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
+
+      <h2>Advanced field controls</h2>
+      <ccd-write-text-field [caseField]="advanced.postcode" [formGroup]="advancedForm" />
+      <ccd-write-rich-text-area-field [caseField]="advanced.richText" [formGroup]="advancedForm" />
+      <ccd-write-dynamic-list-field [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
+      <ccd-write-dynamic-radio-list-field [caseField]="advanced.dynamicRadio" [formGroup]="advancedForm" />
+      <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
+      <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
+      <output data-testid="advanced-status">{{ advancedForm.status }}</output>
 
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
@@ -71,6 +81,8 @@ class ToolkitTestHost {
   readonly mandatory = mandatoryFields;
   readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
   readonly mandatoryForm = new FormGroup({});
+  readonly advanced = advancedFields;
+  readonly advancedForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
