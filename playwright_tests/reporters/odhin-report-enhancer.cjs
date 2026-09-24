@@ -29,7 +29,10 @@ function deriveFeatureName(filePath) {
   }
 
   const baseName = normalized.split('/').pop() ?? normalized;
-  return baseName.replace(/\.[^.]+$/, '');
+  return baseName
+    .replace(/\.(?:positive|negative)\.spec\.ts$/i, '')
+    .replace(/\.spec\.ts$/i, '')
+    .replace(/\.[^.]+$/, '');
 }
 
 function createEmptyFeatureStat(name) {

@@ -1,6 +1,9 @@
 const assert = require('node:assert/strict');
 const { parse } = require('node-html-parser');
-const { enhanceDashboardHtml, createEmptyFeatureStat } = require('../odhin-report-enhancer.cjs');
+const { deriveFeatureName, enhanceDashboardHtml, createEmptyFeatureStat } = require('../odhin-report-enhancer.cjs');
+
+assert.equal(deriveFeatureName('/repo/playwright_tests/tests/advanced-fields.positive.spec.ts'), 'advanced-fields');
+assert.equal(deriveFeatureName('/repo/playwright_tests/tests/advanced-fields.negative.spec.ts'), 'advanced-fields');
 
 const html = `<html><head><meta name="viewport" content="user-scalable=no"></head><body>
 <div class="tab"></div><div id="TabDashboard"><div><div class="row">
