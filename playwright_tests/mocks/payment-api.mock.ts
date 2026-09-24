@@ -5,4 +5,4 @@ export const paymentApiResponses: Record<string, unknown> = {
   '/?ccdCaseNumber=1111222233334444': { refund_list: [] }
 };
 
-export const paymentUser = { roles: ['caseworker'] };
+export const paymentUser = { roles: 'caseworker', sub: 'caseworker@example.invalid' };

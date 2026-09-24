@@ -3,7 +3,7 @@ import { test } from '../fixtures/browser';
 
 test.describe('viewer and payment components', () => {
   test('renders order summary values and payment warning', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?payment-history');
     await expect(page.getByText('Order Summary')).toBeVisible();
     await expect(page.locator('table[aria-describedby="order summary table"]')).toBeVisible();
     await expect(page.getByText('Application fee')).toBeVisible();
