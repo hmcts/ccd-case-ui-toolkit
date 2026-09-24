@@ -1,12 +1,22 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures/browser';
 
+type AngularDebugApi = {
+  getComponent: (element: Element) => { CCD_CASE_NUMBER?: string, LOGGEDINUSERROLES?: string[] } | null;
+};
+
 test.describe('launcher and mini-application components', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('**/assets/**', (route) => route.fulfill({
+    await Promise.all([
+      '**/assets/fonts/**',
+      '**/assets/images/folder*.png',
+      '**/assets/images/icon-search-black.svg',
+      '**/assets/img/case-file-view/**',
+      '**/assets/img/sort/sort-arrows.svg'
+    ].map((url) => page.route(url, (route) => route.fulfill({
       contentType: 'image/svg+xml',
       body: '<svg xmlns="http://www.w3.org/2000/svg" />'
-    }));
+    }))));
   });
 
   test('loads a service-faked case file for the routed case and expands its document tree', async ({ page }) => {
@@ -37,6 +47,14 @@ test.describe('launcher and mini-application components', () => {
 
     const payment = page.locator('ccd-ways-to-pay-field ccpay-payment-lib');
     await expect(payment).toHaveCount(1);
+    await expect.poll(() => payment.evaluate((element) => {
+      const component = (window as Window & { ng?: AngularDebugApi }).ng?.getComponent(element);
+      return component?.CCD_CASE_NUMBER;
+    })).toBe('1111222233334444');
+    await expect.poll(() => payment.evaluate((element) => {
+      const component = (window as Window & { ng?: AngularDebugApi }).ng?.getComponent(element);
+      return component?.LOGGEDINUSERROLES;
+    })).toEqual(['caseworker-test']);
     await expect(payment.getByRole('heading', { name: 'If you are expecting to pay and are not able to see a service request,' })).toBeVisible();
     await expect(payment.getByText('No refunds recorded')).toBeVisible();
     await expect(page.getByText('Field type not supported')).toHaveCount(1);
