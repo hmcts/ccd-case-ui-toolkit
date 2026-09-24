@@ -17,7 +17,10 @@ test.describe('launcher and mini-application components', () => {
 
     await expect(page.getByRole('heading', { name: 'Case flags' })).toBeVisible();
     await expect(page.getByText('Reasonable adjustment')).toBeVisible();
-    await expect(page.getByText('Evidence request')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Evidence request' })).toBeVisible();
+    await page.getByRole('button', { name: 'Evidence request' }).click();
+    await expect(page.getByRole('heading', { name: 'Query details' })).toBeVisible();
+    await expect(page.getByText('Please provide evidence')).toBeVisible();
     await page.getByText('Case created', { exact: true }).click();
     await expect(page.locator('.EventLog-DetailsPanel')).toContainText('Case created');
   });
