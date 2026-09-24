@@ -10,11 +10,15 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { PaletteService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/palette.service';
 import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
 import { CasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/cases.service';
+import { AddressesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/addresses/addresses.service';
+import { DocumentManagementService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service';
+import { JurisdictionService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/jurisdiction/jurisdiction.service';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
@@ -27,13 +31,36 @@ import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
+import { addressDocumentFields } from '../mocks/address-document.mock';
 
 const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
   getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
 };
 
+const mandatoryAddressError = new BehaviorSubject(false);
+const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddressesForPostcode'> = {
+  getMandatoryError: () => mandatoryAddressError.asObservable(),
+  getAddressesForPostcode: () => of([{ AddressLine1: '1 Test Street', AddressLine2: '', AddressLine3: '', PostTown: 'London', County: '', PostCode: 'SW1A 1AA', Country: 'United Kingdom' } as any])
+};
+
+const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo' | 'isDocumentSecureModeEnabled' | 'uploadFile' | 'getDocumentBinaryUrl' | 'isHtmlDocument' | 'getMediaViewerInfo'> = {
+  parseCaseInfo: () => null,
+  isDocumentSecureModeEnabled: () => false,
+  uploadFile: (data: FormData) => data.get('files')?.toString().includes('fail.pdf')
+    ? throwError(() => ({ status: 502 }))
+    : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
+  getDocumentBinaryUrl: (value: any) => value.document_binary_url,
+  isHtmlDocument: () => false,
+  getMediaViewerInfo: () => '{}'
+};
+
 @Component({
   selector: 'toolkit-test-host',
+  providers: [
+    { provide: AddressesService, useValue: addressesService },
+    { provide: DocumentManagementService, useValue: documentManagementService },
+    { provide: JurisdictionService, useValue: {} }
+  ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
   template: `
     <main>
@@ -70,6 +97,18 @@ const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
       <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
+      <section data-testid="palette-dispatch"><h2>Palette dispatch</h2>
+        <output data-testid="palette-component-launcher-read">{{ componentName(componentLauncher, false) }}</output>
+        <output data-testid="palette-component-launcher-write">{{ componentName(componentLauncher, true) }}</output>
+        <output data-testid="palette-unsupported">{{ componentName(unsupported, false) }}</output>
+      </section>
+
+      <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
+      <ccd-field-write [caseField]="addressDocument.uk" [formGroup]="addressDocumentForm" />
+      <ccd-field-write [caseField]="addressDocument.global" [formGroup]="addressDocumentForm" />
+      <ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" />
+      <output data-testid="address-document-values">{{ addressDocumentForm.value | json }}</output></div>
+
       <div data-testid="structured-fields"><h2>Structured field controls</h2>
       <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
       <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
@@ -150,6 +189,10 @@ class ToolkitTestHost {
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
   caseNotifierState = 'No case selected';
+  readonly addressDocument = addressDocumentFields;
+  readonly componentLauncher = Object.assign(new CaseField(), { id: 'launcher', label: 'Case file', display_context: 'OPTIONAL', display_context_parameter: '#ARGUMENT(CaseFileView,READONLY)', field_type: { id: 'ComponentLauncher', type: 'ComponentLauncher' }, value: null, acls: [] });
+  readonly unsupported = Object.assign(new CaseField(), { id: 'unsupported', label: 'Unsupported', display_context: 'READONLY', field_type: { id: 'Unsupported', type: 'Unsupported' }, value: null });
+  readonly addressDocumentForm = new FormGroup({});
   readonly structured = structuredFields;
   readonly structuredForm = new FormGroup({});
   readonly fieldForm = fieldFormFields;
@@ -164,13 +207,17 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly alertMessageType = AlertMessageType;
 
-  constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
+  constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier, private readonly paletteService: PaletteService) {
     this.caseNotifier.caseView.subscribe((caseView) => {
       const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
       this.caseNotifierState = caseView.case_id && access
         ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
         : 'No case selected';
     });
+  }
+
+  componentName(caseField: CaseField, write: boolean): string {
+    return this.paletteService.getFieldComponentClass(caseField, write).name;
   }
 
   continueEditor(): void {
