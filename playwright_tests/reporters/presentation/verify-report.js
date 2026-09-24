@@ -96,7 +96,7 @@ async page => {
   if (!await page.locator('#test-list-table_info').textContent().then(text => text.includes(`of ${expectedTotal} entries`))) {
     throw new Error('Clear did not restore all tests');
   }
-  await page.locator('.test-detail-link').first().focus();
+  await page.locator('#test-list-table .test-detail-link').first().focus();
   await page.keyboard.press('Enter');
   await page.locator('.modal.show').waitFor();
   await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
@@ -108,7 +108,7 @@ async page => {
   await page.locator('.modal.show').getByRole('button', { name: '← Back to tests', exact: true }).click();
   await page.locator('.modal.show').waitFor({ state: 'hidden' });
   await page.waitForFunction(() => document.activeElement?.classList.contains('test-detail-link'));
-  await page.locator('.test-detail-link').first().press('Enter');
+  await page.locator('#test-list-table .test-detail-link').first().press('Enter');
   await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
   await page.keyboard.press('Escape');
   await page.locator('.modal.show').waitFor({ state: 'hidden' });
@@ -118,6 +118,21 @@ async page => {
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole('button', { name: 'Dashboard', exact: true }).click();
+  if (await page.getByText('Status by test file', { exact: true }).count()) throw new Error('Redundant file panel remains');
+  const featureToggle = page.locator('.feature-toggle').first();
+  await featureToggle.click();
+  const expanded = page.locator('.feature-tests:not([hidden])');
+  if (!await expanded.locator('li').count()) throw new Error('Expanded feature has no tests');
+  await page.evaluate(() => $('#test-list-table').DataTable().page.len(10).draw());
+  await expanded.getByRole('button', { name: 'View steps', exact: true }).last().click();
+  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
+  await page.locator('.modal.show').getByRole('button', { name: '← Back to tests', exact: true }).click();
+  await page.waitForFunction(() => document.activeElement?.classList.contains('test-detail-link'));
+  if (!await page.getByLabel('Feature', { exact: true }).inputValue()) throw new Error('Feature context not retained');
+  await page.evaluate(() => $('#test-list-table').DataTable().page.len(100).draw());
+  await page.getByRole('button', { name: 'Dashboard', exact: true }).click();
+  await featureToggle.click();
+  if (await page.locator('.feature-tests:not([hidden])').count()) throw new Error('Feature did not collapse');
   await page.locator('#odhin-feature-summary .report-drilldown').first().click();
   if (!await page.getByLabel('Feature', { exact: true }).inputValue()) throw new Error('Feature drill-down failed');
   await page.getByRole('button', { name: 'Dashboard', exact: true }).click();

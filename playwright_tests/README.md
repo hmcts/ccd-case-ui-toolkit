@@ -46,3 +46,7 @@ The browser check covers desktop/mobile layout, pointer and keyboard resizing, c
 Test details include **Back to tests**, **Previous test**, and **Next test**. Navigation follows the current filters and sort order across pages; returning restores the current test in the list. Escape also closes details.
 
 The Tests tab defaults to **100 results per page**; use the page-size selector to change it.
+
+Expand a feature name in Feature Overview to inspect its tests, statuses and timings. Select a test to open details, or select the feature test count to filter the Tests tab. This replaces the separate Status by test file panel.
+
+Expanded tests remain compact: test name, status, duration and a direct View steps link. Full metadata remains in test details.

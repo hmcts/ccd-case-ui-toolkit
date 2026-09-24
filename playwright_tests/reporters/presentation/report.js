@@ -29,6 +29,7 @@
     });
   });
   document.querySelector('.tab').append(density, reset);
+  [...dashboard.children].find(panel => panel.querySelector('.info-box-header')?.textContent.trim() === 'Status by test file')?.remove();
   const cards = [...dashboard.children];
   cards.forEach((column, index) => {
     column.classList.add('report-panel');
@@ -280,8 +281,56 @@ $(document).ready(() => {
     });
     cell.replaceChildren(button);
   };
-  document.querySelectorAll('#odhin-feature-summary tbody tr').forEach(row => {
-    drillDown(row.cells[0], 'Feature', row.cells[0].textContent.trim());
+  const featureColumn = table.columns().header().toArray().findIndex(header => header.textContent.trim() === 'Feature');
+  document.querySelectorAll('#odhin-feature-summary tbody tr').forEach((row, index) => {
+    const name = row.cells[0].textContent.trim();
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'feature-toggle';
+    toggle.textContent = name;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', `feature-tests-${index}`);
+    row.cells[0].replaceChildren(toggle);
+    drillDown(row.cells[1], 'Feature', name);
+    const details = document.createElement('tr');
+    details.id = `feature-tests-${index}`;
+    details.hidden = true;
+    details.className = 'feature-tests';
+    const cell = details.insertCell();
+    cell.colSpan = row.cells.length;
+    const list = document.createElement('ul');
+    list.setAttribute('aria-label', `${name} tests`);
+    table.rows().nodes().toArray().filter(test => test.cells[featureColumn].textContent.trim() === name).forEach(test => {
+      const item = document.createElement('li');
+      const link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'test-detail-link';
+      link.textContent = test.cells[0].textContent.trim();
+      link.setAttribute('aria-haspopup', 'dialog');
+      const modal = document.getElementById(test.dataset.bsTarget.slice(1));
+      const openDetails = tab => {
+        row.cells[1].querySelector('button').click();
+        tab?.click();
+        bootstrap.Modal.getOrCreateInstance(modal).show();
+      };
+      link.addEventListener('click', () => openDetails());
+      const context = document.createElement('span');
+      context.className = 'feature-test-summary';
+      context.textContent = `${test.cells[1].textContent.trim()} · ${test.cells[2].textContent.trim()}`;
+      const steps = document.createElement('button');
+      steps.type = 'button';
+      steps.className = 'feature-test-steps';
+      steps.textContent = 'View steps';
+      steps.addEventListener('click', () => openDetails([...modal.querySelectorAll('.result-tab-header button')].find(tab => tab.textContent.trim() === 'Steps')));
+      item.append(link, context, steps);
+      list.append(item);
+    });
+    cell.append(list);
+    row.after(details);
+    toggle.addEventListener('click', () => {
+      details.hidden = !details.hidden;
+      toggle.setAttribute('aria-expanded', String(!details.hidden));
+    });
     const share = row.cells[row.cells.length - 1];
     share.classList.add('feature-share');
     share.style.setProperty('--feature-share', `${Math.min(100, Math.max(0, parseFloat(share.textContent) || 0))}%`);
