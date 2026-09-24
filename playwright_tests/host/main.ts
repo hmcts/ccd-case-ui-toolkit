@@ -1,3 +1,6 @@
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { AbstractAppConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app.config';
+import { AppMockConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app-config.mock';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { Component, importProvidersFrom } from '@angular/core';
@@ -151,10 +154,12 @@ class ToolkitTestHost {
 bootstrapApplication(ToolkitTestHost, {
   providers: [
     provideHttpClient(),
+    { provide: AbstractAppConfig, useClass: AppMockConfig },
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
     importProvidersFrom(
+      PaymentLibModule,
       StoreModule.forRoot({}),
       EffectsModule.forRoot([]),
       RpxTranslationModule.forRoot(new RpxTranslationConfig())

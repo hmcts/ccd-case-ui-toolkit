@@ -8,5 +8,5 @@ export const orderSummaryField = Object.assign(new CaseField(), {
 
 export const paymentHistoryField = Object.assign(new CaseField(), {
   id: 'payment-history', label: 'Payment history', display_context: 'READONLY',
-  field_type: { id: 'PaymentHistory', type: 'PaymentHistory' }, value: null
+  field_type: { id: 'CasePaymentHistoryViewer', type: 'CasePaymentHistoryViewer' }, value: null
 });
