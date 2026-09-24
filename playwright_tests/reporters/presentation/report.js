@@ -103,6 +103,9 @@
     const total = ['passed', 'failed', 'timedOut', 'skipped', 'interrupted', 'flaky']
       .reduce((sum, status) => sum + count(status), 0);
     const attention = count('failed') + count('timedOut') + count('interrupted') + count('flaky');
+    if (total > 0 && passed === total) {
+      summary.querySelector('#chart-status').closest('table').parentElement.classList.add('report-redundant-chart');
+    }
     const duration = cards[0]?.querySelector('tr:last-child td')?.textContent.trim() || '—';
     const metrics = document.createElement('section');
     metrics.className = 'report-metrics';
@@ -125,6 +128,13 @@
     });
     dashboard.before(metrics);
   }
+
+  // Decorate only dashboard status totals; keep native text for charts and filtering.
+  document.querySelectorAll('#TabDashboard td[class*="result-status-"], #TabDashboard td[class*="chart-status-"]').forEach(cell => {
+    if (!/^0(?:\s*\(0(?:\.0+)?%\)|(?:\.0+)?%)?$/.test(cell.textContent.trim())) return;
+    cell.classList.add('report-zero');
+    cell.setAttribute('aria-label', cell.textContent.trim());
+  });
 
   // Make native div-based controls operable with the keyboard without replacing their handlers.
   [['#theme-toggle', 'Toggle colour theme'], ['.modal-info-btn', 'About this report']].forEach(([selector, label]) => {
@@ -159,6 +169,7 @@
 // Use the existing DataTables instance so filters compose with search, sorting and pagination.
 $(document).ready(() => {
   const table = $('#test-list-table').DataTable();
+  $('#test-list-table').wrap('<div class="report-test-scroll" role="region" aria-label="Scrollable test results" tabindex="0"></div>');
   table.page.len(100).draw();
   // Keep detail navigation inside the filtered, sorted result set, including other pages.
   table.rows().nodes().toArray().forEach(row => {
@@ -169,7 +180,7 @@ $(document).ready(() => {
     navigation.setAttribute('aria-label', 'Test navigation');
     const back = document.createElement('button');
     back.type = 'button';
-    back.textContent = '← Back to tests';
+    back.textContent = '← Back to filtered results';
     back.dataset.bsDismiss = 'modal';
     const position = document.createElement('span');
     position.setAttribute('aria-live', 'polite');

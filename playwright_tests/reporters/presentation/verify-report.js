@@ -99,17 +99,17 @@ async page => {
   await page.locator('#test-list-table .test-detail-link').first().focus();
   await page.keyboard.press('Enter');
   await page.locator('.modal.show').waitFor();
-  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
+  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to filtered results');
   const firstDetail = await page.locator('.modal.show').getAttribute('id');
   await page.locator('.modal.show').getByRole('button', { name: 'Next test →', exact: true }).click();
-  await page.waitForFunction(id => document.querySelector('.modal.show')?.id !== id && document.activeElement?.textContent === '← Back to tests', firstDetail);
+  await page.waitForFunction(id => document.querySelector('.modal.show')?.id !== id && document.activeElement?.textContent === '← Back to filtered results', firstDetail);
   await page.locator('.modal.show').getByRole('button', { name: '← Previous test', exact: true }).click();
-  await page.waitForFunction(id => document.querySelector('.modal.show')?.id === id && document.activeElement?.textContent === '← Back to tests', firstDetail);
-  await page.locator('.modal.show').getByRole('button', { name: '← Back to tests', exact: true }).click();
+  await page.waitForFunction(id => document.querySelector('.modal.show')?.id === id && document.activeElement?.textContent === '← Back to filtered results', firstDetail);
+  await page.locator('.modal.show').getByRole('button', { name: '← Back to filtered results', exact: true }).click();
   await page.locator('.modal.show').waitFor({ state: 'hidden' });
   await page.waitForFunction(() => document.activeElement?.classList.contains('test-detail-link'));
   await page.locator('#test-list-table .test-detail-link').first().press('Enter');
-  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
+  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to filtered results');
   await page.keyboard.press('Escape');
   await page.locator('.modal.show').waitFor({ state: 'hidden' });
   for (const width of [1440, 390, 320]) {
@@ -125,8 +125,8 @@ async page => {
   if (!await expanded.locator('li').count()) throw new Error('Expanded feature has no tests');
   await page.evaluate(() => $('#test-list-table').DataTable().page.len(10).draw());
   await expanded.getByRole('button', { name: 'View steps', exact: true }).last().click();
-  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to tests');
-  await page.locator('.modal.show').getByRole('button', { name: '← Back to tests', exact: true }).click();
+  await page.waitForFunction(() => document.activeElement?.textContent === '← Back to filtered results');
+  await page.locator('.modal.show').getByRole('button', { name: '← Back to filtered results', exact: true }).click();
   await page.waitForFunction(() => document.activeElement?.classList.contains('test-detail-link'));
   if (!await page.getByLabel('Feature', { exact: true }).inputValue()) throw new Error('Feature context not retained');
   await page.evaluate(() => $('#test-list-table').DataTable().page.len(100).draw());
