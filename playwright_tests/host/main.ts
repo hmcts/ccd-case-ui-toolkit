@@ -10,6 +10,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { of } from 'rxjs';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
@@ -25,6 +26,10 @@ import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
+
+const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
+  getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
+};
 
 @Component({
   selector: 'toolkit-test-host',
@@ -88,8 +93,8 @@ import { caseNotifierCases } from '../mocks/case-notifier.mock';
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
       <h2>Case notifier state</h2>
-      <button type="button" (click)="publishChallengedCase()">Publish challenged case</button>
-      <button type="button" (click)="publishStandardCase()">Publish standard case</button>
+      <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
+      <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
       <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
 
       <h2>Collection controls</h2>
@@ -176,12 +181,12 @@ class ToolkitTestHost {
     this.alertService.clear();
   }
 
-  publishChallengedCase(): void {
-    this.caseNotifier.announceCase(caseNotifierCases.challenged);
+  refreshChallengedCase(): void {
+    this.caseNotifier.fetchAndRefresh('challenged').subscribe();
   }
 
-  publishStandardCase(): void {
-    this.caseNotifier.announceCase(caseNotifierCases.standard);
+  refreshStandardCase(): void {
+    this.caseNotifier.fetchAndRefresh('standard').subscribe();
   }
 }
 
@@ -192,7 +197,7 @@ bootstrapApplication(ToolkitTestHost, {
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
-    { provide: CasesService, useValue: {} },
+    { provide: CasesService, useValue: caseNotifierCasesService },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),
