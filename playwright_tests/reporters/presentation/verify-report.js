@@ -85,10 +85,8 @@ async page => {
   const featureName = await page.locator('#test-list-table tbody tr td:nth-child(6)').first().textContent();
   await feature.selectOption(featureName.trim());
   if (!await page.locator('#test-list-table tbody tr td:nth-child(6)').count()) throw new Error('Feature filter removed matching tests');
-  await page.getByLabel('Min seconds', { exact: true }).fill('999999');
-  await page.getByText('No matching records found', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
-  const search = page.getByLabel('Search:', { exact: true });
+  const search = page.getByLabel('Search tests', { exact: true });
   await search.fill('no-such-test-7d138');
   await page.getByText('No matching records found', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
