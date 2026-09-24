@@ -1361,6 +1361,28 @@ describe('with no defaults', () => {
     expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
   }));
 
+  it('should reset the state filter to Any when the current route has a saved state', fakeAsync(() => {
+    activatedRoute.snapshot.queryParams = {
+      [WorkbasketFiltersComponent.PARAM_JURISDICTION]: JURISDICTION_ONE.id,
+      [WorkbasketFiltersComponent.PARAM_CASE_TYPE]: CASE_TYPES_1[0].id,
+      [WorkbasketFiltersComponent.PARAM_CASE_STATE]: CASE_TYPES_1[0].states[0].id
+    };
+    component.selected.jurisdiction = JURISDICTION_ONE;
+    component.onJurisdictionIdChange();
+    component.selected.caseType = CASE_TYPES_1[0];
+    component.onCaseTypeIdChange();
+    component.selected.caseState = [CASE_TYPES_1[0].states[0]];
+    fixture.detectChanges();
+
+    component.reset();
+    tick(500);
+    fixture.detectChanges();
+
+    expect(component.selected.caseState).toEqual([]);
+    expect(de.query(By.css('#wb-case-state')).nativeElement.textContent).toContain('Any');
+    expect(workbasketHandler.applyFilters.calls.mostRecent().args[0].queryParams['case-state']).toBeUndefined();
+  }));
+
   it('should call scrollTo when scrollToTop is called', () => {
     // Mock the current scroll position as 100
     Object.defineProperty(document.documentElement, 'scrollTop', { value: 100, writable: true });

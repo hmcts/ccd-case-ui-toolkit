@@ -308,7 +308,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Try to initialise filters based on query parameters or workbasket defaults.
    * Query parameters, when available, take precedence over workbasket defaults.
    */
-  private initFilters(init: boolean) {
+  private initFilters(init: boolean, resetCaseState = false) {
     const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
@@ -323,7 +323,9 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
         if (this.selected.caseType) {
           this.onCaseTypeIdChange(false);
-          this.selected.caseState = this.selectCaseStates(this.selected.caseType, routeSnapshot);
+          this.selected.caseState = resetCaseState
+            ? []
+            : this.selectCaseStates(this.selected.caseType, routeSnapshot);
         }
         this.workbasketDefaults = true;
       }
@@ -378,7 +380,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.workbasketDefaults = false;
     this.selected.jurisdiction = null;
     this.initialised = false;
-    this.initFilters(true);
+    this.initFilters(true, true);
   }
 
   private clearWorkbasketInputs() {
