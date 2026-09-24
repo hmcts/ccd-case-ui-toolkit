@@ -544,11 +544,13 @@ function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
     const perfettoFiles = testResultsFolder
       ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
       : [];
-    const artifactBaseUrl = (process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || process.env.BUILD_URL)?.trim().replace(/\/$/, '');
-    const perfettoHrefPrefix = artifactBaseUrl && testResultsFolder
-      ? `${artifactBaseUrl}/artifact/${path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/')}`
-      : testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
-    const nextHtml = enhanceDashboardHtml(currentHtml, featureStats, perfettoFiles, perfettoHrefPrefix, testMetadata);
+    // Jenkins publishes HTML on a separate resource origin; keep fetches within that report.
+    if (perfettoFiles.length) {
+      const publishedFolder = path.join(outputFolder, 'perfetto');
+      fs.mkdirSync(publishedFolder, { recursive: true });
+      perfettoFiles.forEach(name => fs.copyFileSync(path.join(testResultsFolder, name), path.join(publishedFolder, name)));
+    }
+    const nextHtml = enhanceDashboardHtml(currentHtml, featureStats, perfettoFiles, 'perfetto', testMetadata);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }

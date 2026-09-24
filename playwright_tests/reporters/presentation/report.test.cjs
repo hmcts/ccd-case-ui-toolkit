@@ -34,3 +34,44 @@ assert.equal(report.querySelectorAll('#test-list-table thead th').length, report
 const empty = parse(enhanceDashboardHtml(html, []));
 assert.ok(empty.querySelector('#toolkit-report-ui'), 'Empty runs retain the presentation');
 console.log('Report generation checks passed: features, Perfetto, duplicate titles, retry metadata, escaping and empty runs.');
+
+// Jenkins serves published HTML on its resource domain, separate from BUILD_URL.
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { enhanceGeneratedReport } = require('../odhin-report-enhancer.cjs');
+const root = fs.mkdtempSync(path.join(os.tmpdir(), 'toolkit-perfetto-publication-'));
+const previousBuildUrl = process.env.BUILD_URL;
+process.env.BUILD_URL = 'https://build.example/job/toolkit/2/';
+try {
+  for (const nested of [false, true]) {
+    const base = path.join(root, nested ? 'nested' : 'sibling');
+    const output = path.join(base, 'odhin-report');
+    const results = path.join(nested ? output : base, 'test-results');
+    fs.mkdirSync(output, { recursive: true });
+    fs.mkdirSync(results, { recursive: true });
+    fs.writeFileSync(path.join(output, 'index.html'), html);
+    const files = ['perfetto.json', 'perfetto-worker 1.json'];
+    const bytes = Buffer.from('{"traceEvents":[{"name":"synthetic","ph":"X","ts":0,"dur":1,"pid":1,"tid":1}]}');
+    files.forEach(name => fs.writeFileSync(path.join(results, name), bytes));
+    enhanceGeneratedReport(output, features);
+    enhanceGeneratedReport(output, features);
+    const published = parse(fs.readFileSync(path.join(output, 'index.html'), 'utf8'));
+    const links = published.querySelectorAll('#TabPerfetto a[download]');
+    assert.equal(links.length, files.length);
+    links.forEach(link => {
+      const name = link.getAttribute('download');
+      assert.equal(link.getAttribute('href'), `perfetto/${encodeURIComponent(name)}`);
+      assert.deepEqual(fs.readFileSync(path.join(output, 'perfetto', name)), bytes);
+      assert.deepEqual(fs.readFileSync(path.join(results, name)), bytes, 'Original artifact remains available');
+      const resolved = new URL(link.getAttribute('href'), 'https://static-build.example/static-files/scoped-report/index.html');
+      assert.equal(resolved.origin, 'https://static-build.example');
+      assert.ok(resolved.pathname.startsWith('/static-files/scoped-report/perfetto/'));
+    });
+  }
+} finally {
+  if (previousBuildUrl === undefined) delete process.env.BUILD_URL;
+  else process.env.BUILD_URL = previousBuildUrl;
+  fs.rmSync(root, { recursive: true, force: true });
+}
+console.log('Perfetto publication checks passed: report-local bytes, resource-domain URLs, nested output and repeat generation.');
