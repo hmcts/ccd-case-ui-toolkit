@@ -22,6 +22,7 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
+import { fieldFormFields } from '../mocks/field-form.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -70,6 +71,14 @@ import { structuredFields } from '../mocks/structured-fields.mock';
       <h2>Viewer and payment controls</h2>
       <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+      <div data-testid="field-form-fields"><h2>Field form controls</h2>
+      <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
+      <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
+      <ccd-field-read [caseField]="fieldForm.readOnly" [formGroup]="fieldFormGroup" />
+      </div>
+      <output data-testid="field-form-values">{{ fieldFormGroup.value | json }}</output>
+      <output data-testid="field-form-status">{{ fieldFormGroup.status }}</output>
+
       <h2>Identity read-only controls</h2>
       <ccd-read-case-link-field [caseField]="identity.caseLink" />
       <ccd-label-field [caseField]="identity.label" [caseFields]="[]" />
@@ -126,6 +135,8 @@ class ToolkitTestHost {
   readonly identityForm = new FormGroup({});
   readonly structured = structuredFields;
   readonly structuredForm = new FormGroup({});
+  readonly fieldForm = fieldFormFields;
+  readonly fieldFormGroup = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
