@@ -303,7 +303,16 @@ function injectDataTableDefaults(root) {
           return;
         }
 
-        jq(this).DataTable().page.len(defaultPageLength).draw(false);
+        var table = jq(this).DataTable();
+        table.page.len(defaultPageLength).draw(false);
+        if (this.id !== 'test-list-table' || jq(this).prev('.odhin-status-filter').length) {
+          return;
+        }
+        var filter = jq('<label class=\"odhin-status-filter me-2\">Status <select><option value=\"\">All</option><option>passed</option><option>failed</option><option>timedOut</option><option>skipped</option><option>interrupted</option><option>flaky</option></select></label>');
+        filter.find('select').on('change', function () {
+          table.column(1).search(this.value).draw();
+        });
+        jq(this).before(filter);
       });
 
       return true;
