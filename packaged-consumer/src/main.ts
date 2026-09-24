@@ -1,3 +1,4 @@
+import 'zone.js';
 import { Component, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HeadersModule } from '@hmcts/ccd-case-ui-toolkit';
