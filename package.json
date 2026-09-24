@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.3",
+  "version": "7.4.4",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -65,7 +65,7 @@
     "@angular/upgrade": "20.3.31",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.22",
-    "@hmcts/media-viewer": "4.2.38",
+    "@hmcts/media-viewer": "4.2.39",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "file-saver": "^2.0.5",
@@ -83,7 +83,7 @@
     "prosemirror-history": "1.5.0",
     "prosemirror-model": "1.25.11",
     "prosemirror-schema-list": "1.5.1",
-    "rpx-xui-translation": "1.2.14",
+    "rpx-xui-translation": "1.2.15",
     "rxjs": "^7.8.2",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.13.8",
