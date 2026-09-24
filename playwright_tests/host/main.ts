@@ -26,6 +26,7 @@ import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
+import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 
 const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
   getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
@@ -33,7 +34,7 @@ const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
 
 @Component({
   selector: 'toolkit-test-host',
-  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
   template: `
     <main>
       <h1>Toolkit date input</h1>
@@ -91,6 +92,9 @@ const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
       <ccd-label-field [caseField]="identity.label" [caseFields]="[]" />
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
+
+      <h2>Reference identity controls</h2>
+      <toolkit-reference-identity-controls />
 
       <h2>Case notifier state</h2>
       <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
