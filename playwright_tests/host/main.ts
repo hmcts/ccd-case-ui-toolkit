@@ -54,7 +54,9 @@ import { structuredFields } from '../mocks/structured-fields.mock';
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
       <div data-testid="structured-fields"><h2>Structured field controls</h2>
       <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
-      <output data-testid="structured-values">{{ structuredForm.value | json }}</output></div>
+      <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
+      <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
+      <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
