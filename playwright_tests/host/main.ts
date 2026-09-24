@@ -8,13 +8,14 @@ import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
-import { CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { CaseEditorModule, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
 import { advancedFields } from '../mocks/advanced-fields.mock';
+import { identityFields } from '../mocks/identity-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -55,6 +56,12 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
 
+      <h2>Identity read-only controls</h2>
+      <ccd-read-case-link-field [caseField]="identity.caseLink" />
+      <ccd-label-field [caseField]="identity.label" [caseFields]="identityCaseFields" />
+      <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
+      <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
+
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
@@ -88,6 +95,10 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly identity = identityFields;
+  readonly identityCaseFields = Object.values(identityFields);
+  readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
+  readonly identityForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
