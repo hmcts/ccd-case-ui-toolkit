@@ -7,7 +7,7 @@ import { Component, importProvidersFrom } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { of } from 'rxjs';
@@ -24,16 +24,18 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
-import { caseFileLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
+import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
 import { CaseFileViewService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/case-file-view/case-file-view.service';
 import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 
+const launcherCaseReference = '1111222233334444';
 const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'> = {
-  getCategoriesAndDocuments: () => of(categoriesAndDocumentsTestData)
+  getCategoriesAndDocuments: (caseReference) => caseReference === launcherCaseReference ? of(categoriesAndDocumentsTestData) : (() => { throw new Error(`Unexpected case reference: ${caseReference}`); })()
 };
+const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: { case: launcherRouteCase } } };
 
 const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
   getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
@@ -87,6 +89,9 @@ const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
       <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="caseFlagsLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
 
       <h2>Viewer and payment controls</h2>
       <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
@@ -158,9 +163,12 @@ class ToolkitTestHost {
   readonly caseFileLauncher = caseFileLauncher;
   readonly waysToPay = waysToPayField;
   readonly unsupportedLauncher = unsupportedLauncher;
+  readonly caseFlagsLauncher = caseFlagsLauncher;
+  readonly queryManagementLauncher = queryManagementLauncher;
+  readonly caseHistory = caseHistoryField;
   readonly orderSummary = orderSummaryField;
   readonly paymentHistory = paymentHistoryField;
-  readonly caseReference = '1111222233334444';
+  readonly caseReference = launcherCaseReference;
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
@@ -215,6 +223,7 @@ bootstrapApplication(ToolkitTestHost, {
     { provide: AbstractAppConfig, useClass: AppMockConfig },
     provideNoopAnimations(),
     provideRouter([]),
+    { provide: ActivatedRoute, useValue: launcherRoute },
     AlertService,
     { provide: CasesService, useValue: caseNotifierCasesService },
     { provide: CaseFileViewService, useValue: caseFileViewService },
