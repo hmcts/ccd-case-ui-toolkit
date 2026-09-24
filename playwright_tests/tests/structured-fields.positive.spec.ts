@@ -8,9 +8,11 @@ test.describe('Structured fields', () => {
     await page.getByRole('textbox', { name: 'Complex line' }).fill('Complex value');
     await page.getByRole('textbox', { name: 'City' }).fill('London');
     await page.getByRole('textbox', { name: 'Country' }).fill('UK');
-    await expect(page.getByTestId('structured-values')).toContainText('Complex value');
-    await expect(page.getByTestId('structured-values')).toContainText('London');
-    await expect(page.getByTestId('structured-values')).toContainText('UK');
+    const values = page.getByTestId('structured-values');
+    await expect(values).toContainText('"complex-line": "Complex value"');
+    await expect(values).toContainText('"complex-address": {');
+    await expect(values).toContainText('"complex-city": "London"');
+    await expect(values).toContainText('"complex-country": "UK"');
   });
 
   test('validates a mandatory nested complex field', async ({ page }) => {
