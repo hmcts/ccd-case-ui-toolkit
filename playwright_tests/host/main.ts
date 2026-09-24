@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
-import { dateField } from '../mocks/date-field.mock';
+import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
@@ -25,6 +25,9 @@ import { editorFields } from '../mocks/editor-fields.mock';
       <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
       <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
       <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
+      <ccd-write-date-container-field [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
+      <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
+      <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
 
       <h2>Mandatory field controls</h2>
       <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
@@ -68,8 +71,10 @@ import { editorFields } from '../mocks/editor-fields.mock';
 })
 class ToolkitTestHost {
   readonly field = dateField;
+  readonly dateTimeField = dateTimeField;
   readonly mandatory = mandatoryFields;
   readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
+  readonly dateTimeForm = new FormGroup({ [dateTimeField.id]: new FormControl(dateTimeField.value) });
   readonly mandatoryForm = new FormGroup({});
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
