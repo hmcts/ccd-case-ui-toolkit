@@ -32,7 +32,7 @@ test.describe('Mandatory fields', () => {
     await email.fill('alice@example.test');
     await phone.fill('020 7946 0000');
     await textArea.fill('Explanation');
-    await page.getByRole('radio', { name: 'Yes', exact: true }).check();
+    await page.getByRole('group', { name: 'Yes or no field' }).getByRole('radio', { name: 'Yes', exact: true }).check();
     await fixedList.selectOption({ label: 'One' });
     await page.getByRole('radio', { name: 'Alpha' }).check();
     await page.getByRole('checkbox', { name: 'Red' }).check();
@@ -48,7 +48,7 @@ test.describe('Mandatory fields', () => {
     await page.getByRole('textbox', { name: 'Email field' }).fill('alice@example.test');
     await page.getByRole('textbox', { name: 'Phone field' }).fill('020 7946 0000');
     await page.getByRole('textbox', { name: 'Text area field' }).fill('Explanation');
-    await page.getByRole('radio', { name: 'Yes', exact: true }).check();
+    await page.getByRole('group', { name: 'Yes or no field' }).getByRole('radio', { name: 'Yes', exact: true }).check();
     await page.getByRole('combobox', { name: 'Fixed list field' }).selectOption({ label: 'One' });
     await page.getByRole('radio', { name: 'Alpha' }).check();
     await page.getByRole('checkbox', { name: 'Red' }).check();
