@@ -235,3 +235,6 @@ html, body#body-content {
 .perfetto-file a, .perfetto-open { border: 1px solid var(--report-line); border-radius: 8px; padding: 10px 16px; background: var(--report-surface); color: var(--report-accent); font: inherit; cursor: pointer; }
 .perfetto-open { background: var(--report-accent); color: var(--report-surface); }
 .perfetto-status { flex-basis: 100%; color: var(--report-muted); }
+
+.trace-open { display: inline-block; margin: 8px 12px; border: 1px solid var(--report-line); border-radius: 8px; padding: 10px 16px; color: var(--report-accent); background: var(--report-surface); }
+.trace-help { margin: 12px; color: var(--report-muted); }

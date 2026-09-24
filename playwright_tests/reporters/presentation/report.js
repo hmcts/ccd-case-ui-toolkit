@@ -361,6 +361,37 @@ $(document).ready(() => {
   document.querySelector('#theme-toggle')?.addEventListener('click', styleCharts);
 });
 
+// Trace Viewer loads HTTP(S) URLs directly; local and embedded traces need file selection.
+document.querySelectorAll('[id^="TabTrace-"]').forEach(panel => {
+  const download = panel.querySelector('a.download-btn[download]');
+  const note = document.createElement('p');
+  note.className = 'trace-help';
+  if (!download) {
+    note.textContent = 'No trace was retained for this test.';
+    panel.append(note);
+    return;
+  }
+  const viewer = new URL('https://trace.playwright.dev/');
+  const trace = new URL(download.href, document.baseURI);
+  const remote = ['http:', 'https:'].includes(trace.protocol);
+  if (remote) viewer.searchParams.set('trace', trace.href);
+  // Replace an upstream viewer action if present, retaining the native download.
+  panel.querySelectorAll('a:not([download])').forEach(link => {
+    if (link.textContent.trim() === 'View Trace') link.remove();
+  });
+  const open = document.createElement('a');
+  open.className = 'trace-open';
+  open.textContent = 'Open in Playwright Trace Viewer';
+  open.href = viewer.href;
+  open.target = '_blank';
+  open.rel = 'noopener noreferrer';
+  download.after(open);
+  note.textContent = remote
+    ? 'If authentication or CORS prevents loading, download the trace and select it in the viewer.'
+    : 'Download the trace, then select the downloaded file in the viewer.';
+  download.parentElement.append(note);
+});
+
 // Perfetto's documented PING/PONG handshake avoids a race while its new tab loads.
 document.querySelectorAll('.perfetto-open').forEach(button => {
   button.addEventListener('click', async () => {
