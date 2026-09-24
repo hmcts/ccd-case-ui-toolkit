@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { Component, importProvidersFrom } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,8 @@ import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
-import { CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { AlertMessageType, AlertService, CaseEditorModule, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
@@ -18,7 +19,7 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 
 @Component({
   selector: 'toolkit-test-host',
-  imports: [CommonModule, PaletteModule, CaseEditorModule, ReactiveFormsModule, JsonPipe],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe],
   template: `
     <main>
       <h1>Toolkit date input</h1>
@@ -76,6 +77,14 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
       </ng-container>
       <output data-testid="editor-page">{{ editorPage }}</output>
       <output data-testid="editor-values">{{ editorForm.value | json }}</output>
+
+      <h2>Callback error handling</h2>
+      <button type="button" (click)="showCallbackError()">Simulate callback error</button>
+      <ng-container *ngIf="alertService.errors | async as callbackError">
+        <cut-alert [type]="alertMessageType.ERROR" data-testid="callback-error">
+          {{ callbackError.message }}
+        </cut-alert>
+      </ng-container>
     </main>
   `
 })
@@ -96,9 +105,16 @@ class ToolkitTestHost {
   readonly editorFields = editorFields;
   readonly editorForm = new FormGroup({});
   editorPage = 1;
+  readonly alertMessageType = AlertMessageType;
+
+  constructor(readonly alertService: AlertService) {}
 
   continueEditor(): void {
     this.editorPage = 2;
+  }
+
+  showCallbackError(): void {
+    this.alertService.error({ phrase: 'The callback failed. Please try again.' });
   }
 }
 
@@ -107,6 +123,7 @@ bootstrapApplication(ToolkitTestHost, {
     provideHttpClient(),
     provideNoopAnimations(),
     provideRouter([]),
+    AlertService,
     importProvidersFrom(
       StoreModule.forRoot({}),
       EffectsModule.forRoot([]),
