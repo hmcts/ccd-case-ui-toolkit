@@ -5,6 +5,8 @@ const field = (id: string, type: string, label: string, value: any, display_cont
 });
 
 export const identityFields = {
-  caseLink: field('identity-case-link', 'CaseLink', 'Linked case', { CaseReference: '1234567890123456' }),
+  caseLink: Object.assign(field('identity-case-link', 'CaseLink', 'Linked case', { CaseReference: '1234567890123456' }), {
+    field_type: { id: 'CaseLink', type: 'Complex' }
+  }),
   label: field('identity-label', 'Label', 'A read-only label', 'Read-only label')
 };

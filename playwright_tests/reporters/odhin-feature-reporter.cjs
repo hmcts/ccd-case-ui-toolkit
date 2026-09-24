@@ -59,6 +59,10 @@ class OdhinFeatureReporter {
     enhanceGeneratedReport(this.options.outputFolder, [...features.values()], this.testMetadata);
   }
 
+  async onExit() {
+    return this.inner.onExit?.();
+  }
+
   onStdOut(chunk, test, result) {
     return this.inner.onStdOut?.(chunk, test, result);
   }
