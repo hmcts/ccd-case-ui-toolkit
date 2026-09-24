@@ -360,3 +360,54 @@ $(document).ready(() => {
   styleCharts();
   document.querySelector('#theme-toggle')?.addEventListener('click', styleCharts);
 });
+
+// Perfetto's documented PING/PONG handshake avoids a race while its new tab loads.
+document.querySelectorAll('.perfetto-open').forEach(button => {
+  button.addEventListener('click', async () => {
+    const origin = 'https://ui.perfetto.dev';
+    const file = button.closest('.perfetto-file');
+    const download = file.querySelector('a[download]');
+    const status = file.querySelector('.perfetto-status');
+    const popup = window.open(origin, '_blank');
+    if (!popup) {
+      status.textContent = 'Allow pop-ups to open Perfetto, or use Download JSON.';
+      return;
+    }
+    button.disabled = true;
+    status.textContent = 'Opening timeline…';
+    const controller = new AbortController();
+    let onMessage;
+    let interval;
+    let timeout;
+    try {
+      const ready = new Promise((resolve, reject) => {
+        onMessage = event => {
+          if (event.origin === origin && event.source === popup && event.data === 'PONG') resolve();
+        };
+        window.addEventListener('message', onMessage);
+        interval = setInterval(() => {
+          if (popup.closed) reject(new Error('Perfetto was closed.'));
+          else popup.postMessage('PING', origin);
+        }, 250);
+        timeout = setTimeout(() => reject(new Error('Perfetto did not respond.')), 30_000);
+      });
+      const [buffer] = await Promise.all([
+        fetch(download.href, { signal: controller.signal }).then(response => {
+          if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
+          return response.arrayBuffer();
+        }),
+        ready
+      ]);
+      popup.postMessage({ perfetto: { buffer, title: download.download, fileName: download.download } }, origin);
+      status.textContent = 'Timeline sent to Perfetto. Continue in the new tab.';
+    } catch (error) {
+      status.textContent = `${error.message} Use Download JSON, then open the file in Perfetto.`;
+    } finally {
+      controller.abort();
+      clearInterval(interval);
+      clearTimeout(timeout);
+      window.removeEventListener('message', onMessage);
+      button.disabled = false;
+    }
+  });
+});

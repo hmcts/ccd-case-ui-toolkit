@@ -229,3 +229,9 @@ html, body#body-content {
 #body-content .feature-tests li { display: grid; grid-template-columns: minmax(220px, 1fr) auto auto; align-items: center; gap: 16px; padding: 10px 12px; }
 .feature-test-steps { border: 1px solid var(--report-line); border-radius: 6px; padding: 4px 10px; background: var(--report-surface); color: var(--report-accent); font: inherit; cursor: pointer; }
 @media (max-width: 650px) { #body-content .feature-tests li { grid-template-columns: 1fr; gap: 6px; } .feature-test-steps { justify-self: start; } }
+
+.perfetto-file { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 20px; text-align: left; }
+.perfetto-file strong { margin-right: auto; }
+.perfetto-file a, .perfetto-open { border: 1px solid var(--report-line); border-radius: 8px; padding: 10px 16px; background: var(--report-surface); color: var(--report-accent); font: inherit; cursor: pointer; }
+.perfetto-open { background: var(--report-accent); color: var(--report-surface); }
+.perfetto-status { flex-basis: 100%; color: var(--report-muted); }

@@ -514,15 +514,15 @@ function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-re
   root.querySelector('#TabPerfetto')?.remove();
   root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
   const links = perfettoFiles
-    .map((fileName) => `<a href="${perfettoHrefPrefix}/${fileName}">${escapeHtml(fileName)}</a>`)
-    .join(' · ');
+    .map((fileName) => `<div class="perfetto-file"><strong>${escapeHtml(fileName)}</strong><a href="${escapeHtml(perfettoHrefPrefix)}/${encodeURIComponent(fileName)}" download="${escapeHtml(fileName)}">Download JSON</a><button type="button" class="perfetto-open">Open in Perfetto ↗</button><span class="perfetto-status" role="status"></span></div>`)
+    .join('');
   root.querySelector('.tab')?.insertAdjacentHTML(
     'beforeend',
     `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
   );
   root.querySelector('body')?.insertAdjacentHTML(
     'beforeend',
-    `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`
+    `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><div id="odhin-perfetto-link">${links}</div></div></div></div></div></div>`
   );
 }
 

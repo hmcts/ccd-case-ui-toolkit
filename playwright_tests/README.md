@@ -50,3 +50,5 @@ The Tests tab defaults to **100 results per page**; use the page-size selector t
 Expand a feature name in Feature Overview to inspect its tests, statuses and timings. Select a test to open details, or select the feature test count to filter the Tests tab. This replaces the separate Status by test file panel.
 
 Expanded tests remain compact: test name, status, duration and a direct View steps link. Full metadata remains in test details.
+
+Perfetto Results provides **Download JSON** and **Open in Perfetto**. The latter opens ui.perfetto.dev in a new tab and passes the trace using its documented browser messaging API. Allow pop-ups; if local-file access, network restrictions or Jenkins CSP prevent it, download the JSON and open it manually in Perfetto.

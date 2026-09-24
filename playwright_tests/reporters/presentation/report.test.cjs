@@ -19,6 +19,8 @@ const metadata = [
 const report = parse(enhanceDashboardHtml(html, features, ['perfetto.json'], '../test-results', metadata));
 assert.ok(report.querySelector('#odhin-feature-summary'), 'Feature Overview must survive');
 assert.ok(report.querySelector('#TabPerfetto'), 'Perfetto must survive');
+assert.equal(report.querySelector('#TabPerfetto a').getAttribute('download'), 'perfetto.json');
+assert.ok(report.querySelector('#TabPerfetto .perfetto-open'));
 assert.ok(report.querySelector('#toolkit-report-theme'));
 assert.ok(report.querySelector('#toolkit-report-ui'));
 assert.equal(report.querySelector('meta[name="viewport"]').getAttribute('content'), 'width=device-width, initial-scale=1');
