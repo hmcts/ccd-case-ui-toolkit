@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.4
+**EXUI-5161** Library Packages Version Alignment - runtime
+
 ### Version 7.4.3
 **EXUI-5233** RTF carriage returns are not being interpreted properly
 
