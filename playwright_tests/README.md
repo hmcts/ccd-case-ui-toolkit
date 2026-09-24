@@ -50,3 +50,11 @@ The Tests tab defaults to **100 results per page**; use the page-size selector t
 Expand a feature name in Feature Overview to inspect its tests, statuses and timings. Select a test to open details, or select the feature test count to filter the Tests tab. This replaces the separate Status by test file panel.
 
 Expanded tests remain compact: test name, status, duration and a direct View steps link. Full metadata remains in test details.
+
+Perfetto Results provides **Download JSON** and **Open in Perfetto**. The latter opens ui.perfetto.dev in a new tab and passes the trace using its documented browser messaging API. Allow pop-ups; if local-file access, network restrictions or Jenkins CSP prevent it, download the JSON and open it manually in Perfetto.
+
+Each retained test trace keeps **Download Trace** and adds **Open in Playwright Trace Viewer** in a new tab. HTTP(S) reports pass the trace URL to trace.playwright.dev; the artifact host must permit CORS and access without the report’s login session. If loading fails, download the trace and select it in the viewer. Local-file and embedded reports open the viewer for manual file selection. Tests without a retained trace do not gain a viewer link. Run `node playwright_tests/reporters/presentation/trace.test.cjs` to check these link contracts.
+
+For a browser check, generate the synthetic suite with `--trace on`, serve the report over HTTP, then run `playwright-cli run-code --filename=playwright_tests/reporters/presentation/verify-trace.js`. The check downloads the real generated trace and verifies new-tab navigation and mobile layout; it intercepts the external viewer page, so it does not claim remote CORS or authentication compatibility.
+
+Perfetto JSON files are copied into the report’s `perfetto/` directory before publication. Download and Open in Perfetto use relative URLs so Jenkins resource-domain reports can fetch them without cross-origin access; the original test-result artifacts are retained.

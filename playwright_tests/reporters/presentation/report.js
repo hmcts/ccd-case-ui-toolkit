@@ -360,3 +360,85 @@ $(document).ready(() => {
   styleCharts();
   document.querySelector('#theme-toggle')?.addEventListener('click', styleCharts);
 });
+
+// Trace Viewer loads HTTP(S) URLs directly; local and embedded traces need file selection.
+document.querySelectorAll('[id^="TabTrace-"]').forEach(panel => {
+  const download = panel.querySelector('a.download-btn[download]');
+  const note = document.createElement('p');
+  note.className = 'trace-help';
+  if (!download) {
+    note.textContent = 'No trace was retained for this test.';
+    panel.append(note);
+    return;
+  }
+  const viewer = new URL('https://trace.playwright.dev/');
+  const trace = new URL(download.href, document.baseURI);
+  const remote = ['http:', 'https:'].includes(trace.protocol);
+  if (remote) viewer.searchParams.set('trace', trace.href);
+  // Replace an upstream viewer action if present, retaining the native download.
+  panel.querySelectorAll('a:not([download])').forEach(link => {
+    if (link.textContent.trim() === 'View Trace') link.remove();
+  });
+  const open = document.createElement('a');
+  open.className = 'trace-open';
+  open.textContent = 'Open in Playwright Trace Viewer';
+  open.href = viewer.href;
+  open.target = '_blank';
+  open.rel = 'noopener noreferrer';
+  download.after(open);
+  note.textContent = remote
+    ? 'If authentication or CORS prevents loading, download the trace and select it in the viewer.'
+    : 'Download the trace, then select the downloaded file in the viewer.';
+  download.parentElement.append(note);
+});
+
+// Perfetto's documented PING/PONG handshake avoids a race while its new tab loads.
+document.querySelectorAll('.perfetto-open').forEach(button => {
+  button.addEventListener('click', async () => {
+    const origin = 'https://ui.perfetto.dev';
+    const file = button.closest('.perfetto-file');
+    const download = file.querySelector('a[download]');
+    const status = file.querySelector('.perfetto-status');
+    const popup = window.open(origin, '_blank');
+    if (!popup) {
+      status.textContent = 'Allow pop-ups to open Perfetto, or use Download JSON.';
+      return;
+    }
+    button.disabled = true;
+    status.textContent = 'Opening timeline…';
+    const controller = new AbortController();
+    let onMessage;
+    let interval;
+    let timeout;
+    try {
+      const ready = new Promise((resolve, reject) => {
+        onMessage = event => {
+          if (event.origin === origin && event.source === popup && event.data === 'PONG') resolve();
+        };
+        window.addEventListener('message', onMessage);
+        interval = setInterval(() => {
+          if (popup.closed) reject(new Error('Perfetto was closed.'));
+          else popup.postMessage('PING', origin);
+        }, 250);
+        timeout = setTimeout(() => reject(new Error('Perfetto did not respond.')), 30_000);
+      });
+      const [buffer] = await Promise.all([
+        fetch(download.href, { signal: controller.signal }).then(response => {
+          if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
+          return response.arrayBuffer();
+        }),
+        ready
+      ]);
+      popup.postMessage({ perfetto: { buffer, title: download.download, fileName: download.download } }, origin);
+      status.textContent = 'Timeline sent to Perfetto. Continue in the new tab.';
+    } catch (error) {
+      status.textContent = `${error.message} Use Download JSON, then open the file in Perfetto.`;
+    } finally {
+      controller.abort();
+      clearInterval(interval);
+      clearTimeout(timeout);
+      window.removeEventListener('message', onMessage);
+      button.disabled = false;
+    }
+  });
+});
