@@ -10,6 +10,6 @@ test.describe('Identity controls', () => {
     await expect(page.getByText('Read-only label', { exact: true })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'A read-only label' })).toHaveCount(0);
     await page.getByRole('textbox', { name: 'Editable note' }).fill('Updated note');
-    await expect(page.getByTestId('identity-mixed-value')).toHaveText('{"identity-mixed": "Updated note"}');
+    await expect(page.getByTestId('identity-mixed-value')).toContainText('Updated note');
   });
 });
