@@ -61,6 +61,53 @@ describe('CaseStateMultiSelectComponent', () => {
     expect(inputs[0].nativeElement.checked).toBeFalse();
   });
 
+  it('selects a state when its label is clicked and keeps the panel open', () => {
+    const emitted: CaseState[][] = [];
+    component.selectedStatesChange.subscribe(selection => {
+      emitted.push(selection);
+      component.selectedStates = selection;
+    });
+
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement;
+    trigger.click();
+    fixture.detectChanges();
+    trigger.focus();
+
+    const label = fixture.debugElement.query(By.css('label[for="wb-case-state-S1"]')).nativeElement;
+    label.click();
+    fixture.detectChanges();
+
+    expect(emitted.map(selection => selection.map(state => state.id))).toEqual([['S1']]);
+    expect(component.isSelected(states[0])).toBeTrue();
+    expect(fixture.debugElement.query(By.css('#wb-case-state-options'))).toBeTruthy();
+  });
+
+  it('keeps the panel open when a real pointer click starts on a label', () => {
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement as HTMLButtonElement;
+    trigger.click();
+    fixture.detectChanges();
+    trigger.focus();
+
+    const label = fixture.debugElement.query(By.css('label[for="wb-case-state-S1"]')).nativeElement as HTMLLabelElement;
+    label.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    trigger.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#wb-case-state-options'))).toBeTruthy();
+  });
+
+  it('closes immediately when focus moves outside the control', () => {
+    const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement as HTMLButtonElement;
+    trigger.click();
+    fixture.detectChanges();
+    trigger.focus();
+
+    trigger.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#wb-case-state-options'))).toBeNull();
+  });
+
   it('closes on Escape and returns focus to the trigger', () => {
     const trigger = fixture.debugElement.query(By.css('#wb-case-state')).nativeElement;
     trigger.click();

@@ -28,6 +28,8 @@ export class CaseStateMultiSelectComponent {
   public readonly controlId = 'wb-case-state';
   public readonly optionsId = 'wb-case-state-options';
 
+  private pointerDownInside = false;
+
   public togglePanel(event?: Event): void {
     event?.stopPropagation();
     if (this.disabled) {
@@ -83,10 +85,25 @@ export class CaseStateMultiSelectComponent {
     this.closePanel(true);
   }
 
+  @HostListener('pointerdown', ['$event'])
+  public onPointerDown(event: PointerEvent): void {
+    if (this.isOpen && this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.pointerDownInside = true;
+    }
+  }
+
+  @HostListener('document:pointerup')
+  public onDocumentPointerUp(): void {
+    this.pointerDownInside = false;
+  }
+
   @HostListener('focusout', ['$event'])
   public onFocusOut(event: FocusEvent): void {
     const nextFocusedElement = event.relatedTarget as Node;
     if (!nextFocusedElement || !this.elementRef.nativeElement.contains(nextFocusedElement)) {
+      if (this.pointerDownInside) {
+        return;
+      }
       this.closePanel();
     }
   }
