@@ -7,7 +7,7 @@ const options = [
 
 const dynamic = (id: string, type: string) => Object.assign(new CaseField(), {
   id, label: id, display_context: 'MANDATORY',
-  field_type: { id: type, type, fixed_list_items: options }, value: null
+  field_type: { id: type, type, fixed_list_items: options }, list_items: options, value: null
 });
 
 export const advancedFields = {
