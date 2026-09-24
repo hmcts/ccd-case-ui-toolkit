@@ -1,3 +1,6 @@
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { AbstractAppConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app.config';
+import { AppMockConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app-config.mock';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { Component, importProvidersFrom } from '@angular/core';
@@ -16,6 +19,7 @@ import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
 import { advancedFields } from '../mocks/advanced-fields.mock';
+import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 
@@ -63,6 +67,9 @@ import { structuredFields } from '../mocks/structured-fields.mock';
       <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
+      <h2>Viewer and payment controls</h2>
+      <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
       <h2>Identity read-only controls</h2>
       <ccd-read-case-link-field [caseField]="identity.caseLink" />
       <ccd-label-field [caseField]="identity.label" [caseFields]="[]" />
@@ -111,6 +118,9 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly orderSummary = orderSummaryField;
+  readonly paymentHistory = paymentHistoryField;
+  readonly caseReference = '1111222233334444';
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
@@ -144,10 +154,12 @@ class ToolkitTestHost {
 bootstrapApplication(ToolkitTestHost, {
   providers: [
     provideHttpClient(),
+    { provide: AbstractAppConfig, useClass: AppMockConfig },
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
     importProvidersFrom(
+      PaymentLibModule,
       StoreModule.forRoot({}),
       EffectsModule.forRoot([]),
       RpxTranslationModule.forRoot(new RpxTranslationConfig())

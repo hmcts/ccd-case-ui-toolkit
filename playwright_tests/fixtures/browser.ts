@@ -1,4 +1,5 @@
 import { expect, test as base } from '@playwright/test';
+import { paymentApiResponses, paymentUser } from '../mocks/payment-api.mock';
 
 export const test = base.extend<{ browserDiagnostics: void }>({
   browserDiagnostics: [async ({ page, baseURL }, use) => {
@@ -6,6 +7,9 @@ export const test = base.extend<{ browserDiagnostics: void }>({
       throw new Error('The toolkit host baseURL must be configured');
     }
     const origin = new URL(baseURL).origin;
+    await page.addInitScript((user) => {
+      sessionStorage.setItem('userDetails', JSON.stringify(user));
+    }, paymentUser);
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => {
@@ -15,8 +19,14 @@ export const test = base.extend<{ browserDiagnostics: void }>({
     });
     await page.route('**/*', async (route) => {
       const request = route.request();
+      const url = new URL(request.url());
+      const paymentResponse = paymentApiResponses[url.pathname + url.search];
+      if (url.origin === origin && request.method() === 'GET' && paymentResponse) {
+        await route.fulfill({ json: paymentResponse });
+        return;
+      }
       const hostResource = ['document', 'script', 'stylesheet', 'image', 'font'].includes(request.resourceType());
-      if (new URL(request.url()).origin !== origin || !hostResource) {
+      if (url.origin !== origin || !hostResource) {
         errors.push(`Unexpected request: ${route.request().url()}`);
         await route.abort();
       } else {
