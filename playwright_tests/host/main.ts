@@ -58,7 +58,7 @@ import { identityFields } from '../mocks/identity-fields.mock';
 
       <h2>Identity read-only controls</h2>
       <ccd-read-case-link-field [caseField]="identity.caseLink" />
-      <ccd-label-field [caseField]="identity.label" [caseFields]="identityCaseFields" />
+      <ccd-label-field [caseField]="identity.label" [caseFields]="[]" />
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
@@ -96,7 +96,6 @@ class ToolkitTestHost {
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
   readonly identity = identityFields;
-  readonly identityCaseFields = Object.values(identityFields);
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
   readonly money = moneyField;
