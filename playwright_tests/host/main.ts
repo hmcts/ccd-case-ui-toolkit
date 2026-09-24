@@ -48,9 +48,9 @@ const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddress
     AddressLine2: '',
     AddressLine3: '',
     PostTown: 'London',
-    'address-uk-line-1': '1 Test Street',
-    'address-uk-town-city': 'London',
-    'address-uk-country': 'United Kingdom'
+    County: '',
+    PostCode: 'SW1A 1AA',
+    Country: 'United Kingdom'
   } as any])
 };
 
@@ -85,7 +85,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: JurisdictionService, useValue: {} },
     { provide: CaseFileViewService, useValue: caseFileViewService },
     { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
-    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({ roles: [] }) } },
+    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({ roles: 'caseworker', sub: 'caseworker@example.invalid' }) } },
     { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],

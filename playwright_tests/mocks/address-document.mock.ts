@@ -15,7 +15,7 @@ const address = (id: string, label: string, type: 'AddressUK' | 'AddressGlobalUK
   field_type: {
     id: type,
     type: 'Complex',
-    complex_fields: [text(`${id}-line-1`, 'Address line 1'), text(`${id}-town-city`, 'Town or city'), text(`${id}-country`, 'Country')]
+    complex_fields: [text('AddressLine1', 'Address line 1'), text('AddressLine2', 'Address line 2'), text('AddressLine3', 'Address line 3'), text('PostTown', 'Town or city'), text('County', 'County'), text('PostCode', 'Postcode'), text('Country', 'Country')]
   },
   value: null
 });

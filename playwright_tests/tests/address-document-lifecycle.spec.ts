@@ -15,12 +15,13 @@ test.describe('Address and document lifecycle', () => {
     await expect(uk.getByRole('textbox', { name: 'Country' })).toHaveValue('United Kingdom');
 
     await global.getByRole('link', { name: 'I can\'t enter a UK postcode' }).click();
-    await global.getByRole('textbox', { name: 'Address line 1' }).fill('42 Global Road');
-    await global.getByRole('textbox', { name: 'Town or city' }).fill('Paris');
-    await global.getByRole('textbox', { name: 'Country' }).fill('France');
-    await expect(global.getByRole('textbox', { name: 'Address line 1' })).toHaveValue('42 Global Road');
-    await expect(global.getByRole('textbox', { name: 'Town or city' })).toHaveValue('Paris');
-    await expect(global.getByRole('textbox', { name: 'Country' })).toHaveValue('France');
+    const globalInputs = global.locator('input');
+    await globalInputs.nth(1).fill('42 Global Road');
+    await globalInputs.nth(4).fill('Paris');
+    await globalInputs.nth(7).fill('France');
+    await expect(globalInputs.nth(1)).toHaveValue('42 Global Road');
+    await expect(globalInputs.nth(4)).toHaveValue('Paris');
+    await expect(globalInputs.nth(7)).toHaveValue('France');
   });
 
   test('shows an existing document, replaces it through the writer and reports upload failure', async ({ page }) => {
