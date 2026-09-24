@@ -24,9 +24,16 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
+import { caseFileLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
+import { CaseFileViewService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/case-file-view/case-file-view.service';
+import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
+
+const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'> = {
+  getCategoriesAndDocuments: () => of(categoriesAndDocumentsTestData)
+};
 
 const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
   getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
@@ -75,6 +82,11 @@ const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
       <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
       <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
+
+      <h2>Launcher and mini-application controls</h2>
+      <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
 
       <h2>Viewer and payment controls</h2>
       <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
@@ -143,6 +155,9 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly caseFileLauncher = caseFileLauncher;
+  readonly waysToPay = waysToPayField;
+  readonly unsupportedLauncher = unsupportedLauncher;
   readonly orderSummary = orderSummaryField;
   readonly paymentHistory = paymentHistoryField;
   readonly caseReference = '1111222233334444';
@@ -202,6 +217,7 @@ bootstrapApplication(ToolkitTestHost, {
     provideRouter([]),
     AlertService,
     { provide: CasesService, useValue: caseNotifierCasesService },
+    { provide: CaseFileViewService, useValue: caseFileViewService },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),
