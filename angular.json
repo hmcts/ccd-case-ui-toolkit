@@ -110,6 +110,34 @@
         }
       }
     },
+    "toolkit-playwright-host": {
+      "root": "playwright_tests/host",
+      "sourceRoot": "playwright_tests/host",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "tmp/playwright-host",
+            "index": "playwright_tests/host/index.html",
+            "browser": "playwright_tests/host/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "playwright_tests/host/tsconfig.json",
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
+            },
+            "optimization": false,
+            "sourceMap": true
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "toolkit-playwright-host:build"
+          }
+        }
+      }
+    },
     "ccd-case-ui-toolkit-lib": {
       "root": "projects/ccd-case-ui-toolkit",
       "sourceRoot": "projects/ccd-case-ui-toolkit/src",

@@ -17,6 +17,12 @@
     "access": "public"
   },
   "scripts": {
+    "serve:playwright": "ng serve toolkit-playwright-host --host 127.0.0.1 --port 4300",
+    "test:playwright": "playwright test --config playwright_tests/playwright.config.ts",
+    "test:playwright:typecheck": "tsc -p playwright_tests/tsconfig.json && ngc -p playwright_tests/host/tsconfig.json --noEmit",
+    "lint:playwright": "ESLINT_USE_FLAT_CONFIG=false eslint --config playwright_tests/.eslintrc.cjs \"playwright_tests/**/*.ts\"",
+    "lint:playwright:reporting": "node --check playwright_tests/reporters/odhin-feature-reporter.cjs && node --check playwright_tests/reporters/odhin-report-enhancer.cjs && node --check playwright_tests/reporters/odhin-progress.reporter.cjs && node --check scripts/ensure-odhin-report.js",
+    "test:fullfunctional": "yarn test:playwright:typecheck && yarn test:playwright",
     "prepare": "yarn install && yarn build",
     "build": "npm run build:library",
     "build:library": "npm run generate:condition-parser && ng build ccd-case-ui-toolkit-lib && node ./scripts/sync-dist-package.mjs",
@@ -97,6 +103,7 @@
     "@angular/compiler-cli": "20.3.27",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.32",
+    "@playwright/test": "1.63.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
@@ -144,7 +151,9 @@
     "ng-mocks": "^14.12.2",
     "ng-packagr": "^20.3.0",
     "ng2-mock-component": "^0.1.1",
+    "node-html-parser": "^6.1.5",
     "nyc": "^13.0.1",
+    "odhin-reports-playwright": "1.1.8",
     "peggy": "^5.1.0",
     "prism": "^4.1.2",
     "raw-loader": "^0.5.1",
@@ -172,6 +181,11 @@
     "webpack-rxjs-externals": "^2.0.0",
     "webpack-source-map-support": "^2.0.1",
     "yarn": "^1.22.15"
+  },
+  "dependenciesMeta": {
+    "puppeteer": {
+      "built": false
+    }
   },
   "resolutions": {
     "braces": "^3.0.3",
