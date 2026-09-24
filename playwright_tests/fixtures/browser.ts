@@ -25,6 +25,10 @@ export const test = base.extend<{ browserDiagnostics: void }>({
         await route.fulfill({ json: paymentResponse });
         return;
       }
+      if (url.origin === origin && url.pathname.startsWith('/assets/')) {
+        await route.fulfill({ status: 204 });
+        return;
+      }
       const hostResource = ['document', 'script', 'stylesheet', 'image', 'font'].includes(request.resourceType());
       if (url.origin !== origin || !hostResource) {
         errors.push(`Unexpected request: ${route.request().url()}`);
