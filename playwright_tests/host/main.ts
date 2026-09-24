@@ -11,8 +11,9 @@ import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
-import { AlertMessageType, AlertService, CaseEditorModule, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
+import { CasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/cases.service';
 import { dateField, dateTimeField } from '../mocks/date-field.mock';
 import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
@@ -23,6 +24,7 @@ import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
+import { serviceViewerCases } from '../mocks/service-viewer.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -85,6 +87,11 @@ import { fieldFormFields } from '../mocks/field-form.mock';
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
+      <h2>Service-backed viewer state</h2>
+      <button type="button" (click)="publishChallengedCase()">Publish challenged case</button>
+      <button type="button" (click)="publishStandardCase()">Publish standard case</button>
+      <output data-testid="service-viewer-case">{{ serviceViewerCase }}</output>
+
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
@@ -133,6 +140,7 @@ class ToolkitTestHost {
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
+  serviceViewerCase = 'No case selected';
   readonly structured = structuredFields;
   readonly structuredForm = new FormGroup({});
   readonly fieldForm = fieldFormFields;
@@ -147,7 +155,14 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly alertMessageType = AlertMessageType;
 
-  constructor(readonly alertService: AlertService) {}
+  constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
+    this.caseNotifier.caseView.subscribe((caseView) => {
+      const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
+      this.serviceViewerCase = caseView.case_id && access
+        ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
+        : 'No case selected';
+    });
+  }
 
   continueEditor(): void {
     this.editorPage = 2;
@@ -160,6 +175,14 @@ class ToolkitTestHost {
   clearCallbackError(): void {
     this.alertService.clear();
   }
+
+  publishChallengedCase(): void {
+    this.caseNotifier.announceCase(serviceViewerCases.challenged);
+  }
+
+  publishStandardCase(): void {
+    this.caseNotifier.announceCase(serviceViewerCases.standard);
+  }
 }
 
 bootstrapApplication(ToolkitTestHost, {
@@ -169,6 +192,7 @@ bootstrapApplication(ToolkitTestHost, {
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
+    { provide: CasesService, useValue: {} },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),
