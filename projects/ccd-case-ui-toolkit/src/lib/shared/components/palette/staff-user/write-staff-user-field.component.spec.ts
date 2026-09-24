@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule as MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CaseworkerService } from '../../case-editor/services/case-worker.service';
 import {
