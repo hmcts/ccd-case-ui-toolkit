@@ -12,5 +12,8 @@ test.describe('Callback errors', () => {
     await expect(error).toBeVisible();
     await expect(error).toContainText('The callback failed. Please try again.');
     await expect(error.locator('.hmcts-banner')).toHaveClass(/hmcts-banner--warning/);
+
+    await page.getByRole('button', { name: 'Clear callback error' }).click();
+    await expect(error).toHaveCount(0);
   });
 });

@@ -80,6 +80,7 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 
       <h2>Callback error handling</h2>
       <button type="button" (click)="showCallbackError()">Simulate callback error</button>
+      <button type="button" (click)="clearCallbackError()">Clear callback error</button>
       <ng-container *ngIf="alertService.errors | async as callbackError">
         <cut-alert [type]="alertMessageType.ERROR" data-testid="callback-error">
           {{ callbackError.message }}
@@ -115,6 +116,10 @@ class ToolkitTestHost {
 
   showCallbackError(): void {
     this.alertService.error({ phrase: 'The callback failed. Please try again.' });
+  }
+
+  clearCallbackError(): void {
+    this.alertService.clear();
   }
 }
 
