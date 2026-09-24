@@ -37,7 +37,7 @@ chmod +x .toolkit-bin/yarn
         }
         stage('Toolkit Playwright integration tests') {
           lock(resource: "toolkit-playwright-${env.NODE_NAME}-4300") {
-            sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright'
+            sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright --workers=7'
           }
         }
       }

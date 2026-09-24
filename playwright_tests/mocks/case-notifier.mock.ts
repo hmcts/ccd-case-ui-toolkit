@@ -1,4 +1,5 @@
 import { CaseView } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { launcherRouteCase } from './launchers.mock';
 
 const caseView = (caseId: string, access: string): CaseView => ({
   case_id: caseId,
@@ -20,6 +21,7 @@ const caseView = (caseId: string, access: string): CaseView => ({
 } as CaseView);
 
 export const caseNotifierCases: Record<string, CaseView> = {
-  challenged: caseView('1111222233334444', 'CHALLENGED'),
+  challenged: caseView('2222333344445555', 'CHALLENGED'),
+  '1111222233334444': Object.assign(caseView('1111222233334444', 'STANDARD'), launcherRouteCase),
   standard: caseView('4444333322221111', 'STANDARD')
 };

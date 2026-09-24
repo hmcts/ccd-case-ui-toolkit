@@ -7,7 +7,7 @@ import { Component, importProvidersFrom } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { BehaviorSubject, of, throwError } from 'rxjs';
@@ -31,10 +31,24 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
+import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
+import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
+import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 import { addressDocumentFields } from '../mocks/address-document.mock';
+
+const launcherCaseReference = '1111222233334444';
+const httpErrorService: Pick<HttpErrorService, 'handle'> = {
+  handle: () => {
+    throw new Error('The launcher test host does not make HTTP requests');
+  }
+};
+const windowService: Pick<WindowService, 'openOnNewTab'> = {
+  openOnNewTab: () => undefined
+};
+const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: { case: launcherRouteCase } } };
 
 const caseNotifierCasesService: Pick<CasesService, 'getCaseViewV2'> = {
   getCaseViewV2: (caseId) => of(caseNotifierCases[caseId])
@@ -55,7 +69,12 @@ const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddress
 };
 
 const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments' | 'updateDocumentCategory'> = {
-  getCategoriesAndDocuments: () => of({ case_version: 1, categories: [] } as any),
+  getCategoriesAndDocuments: (caseReference) => {
+    if (caseReference === launcherCaseReference) {
+      return of(categoriesAndDocumentsTestData);
+    }
+    return of({ case_version: 1, categories: [] } as any);
+  },
   updateDocumentCategory: () => of(null)
 };
 
@@ -85,7 +104,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: JurisdictionService, useValue: {} },
     { provide: CaseFileViewService, useValue: caseFileViewService },
     { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
-    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({ roles: 'caseworker', sub: 'caseworker@example.invalid' }) } },
+    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({ roles: ['caseworker-test'], sub: 'caseworker@example.invalid' }) } },
     { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
@@ -145,11 +164,20 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
-      <h2>Viewer and payment controls</h2>
+      <section data-testid="launcher-mini-app-controls"><h2>Launcher and mini-application controls</h2>
+      <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="caseFlagsLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
+      </section>
+
+      <section data-testid="viewer-payment-controls"><h2>Viewer and payment controls</h2>
       <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
       <ng-container *ngIf="showPaymentHistory">
         <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
-      </ng-container>
+      </ng-container></section>
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
       <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
@@ -214,9 +242,15 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly caseFileLauncher = caseFileLauncher;
+  readonly waysToPay = waysToPayField;
+  readonly unsupportedLauncher = unsupportedLauncher;
+  readonly caseFlagsLauncher = caseFlagsLauncher;
+  readonly queryManagementLauncher = queryManagementLauncher;
+  readonly caseHistory = caseHistoryField;
   readonly orderSummary = orderSummaryField;
   readonly paymentHistory = paymentHistoryField;
-  readonly caseReference = '1111222233334444';
+  readonly caseReference = launcherCaseReference;
   readonly identity = identityFields;
   readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
   readonly identityForm = new FormGroup({});
@@ -244,6 +278,9 @@ class ToolkitTestHost {
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
     this.caseNotifier.caseView.subscribe((caseView) => {
+      if (caseView.case_id === launcherCaseReference) {
+        return;
+      }
       const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
       this.caseNotifierState = caseView.case_id && access
         ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
@@ -278,8 +315,13 @@ bootstrapApplication(ToolkitTestHost, {
     { provide: AbstractAppConfig, useValue: testAppConfig },
     provideNoopAnimations(),
     provideRouter([]),
+    { provide: ActivatedRoute, useValue: launcherRoute },
     AlertService,
     { provide: CasesService, useValue: caseNotifierCasesService },
+    { provide: CaseFileViewService, useValue: caseFileViewService },
+    { provide: DocumentManagementService, useValue: documentManagementService },
+    { provide: WindowService, useValue: windowService },
+    { provide: HttpErrorService, useValue: httpErrorService },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),
