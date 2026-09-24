@@ -10,17 +10,19 @@ function featureFor(test) {
   return titles.length > 1 ? titles[titles.length - 2] : test.title || 'Uncategorised';
 }
 
-function statusFor(result, test) {
-  return result.status === 'passed' && result.retry > 0 && result.retry === test.retries
+function statusFor(result) {
+  return result.status === 'passed' && result.retry > 0
     ? 'flaky'
     : result.status;
 }
 
 class OdhinFeatureReporter {
   constructor(options = {}) {
+    options = { ...options, testListColumns: ['PROJECT', 'FILE'] };
     this.options = options;
     this.inner = new OdhinReporter(options);
     this.results = new Map();
+    this.testMetadata = [];
   }
 
   async onBegin(config, suite) {
@@ -28,6 +30,13 @@ class OdhinFeatureReporter {
   }
 
   async onTestEnd(test, result) {
+    this.testMetadata.push({
+      target: `#${test.id}-${result.retry}`,
+      feature: featureFor(test),
+      tags: test.tags ?? [],
+      durationMs: result.duration || 0,
+      retry: result.retry
+    });
     this.results.set(test.id, { test, result: { ...result } });
     return this.inner.onTestEnd?.(test, result);
   }
@@ -40,11 +49,11 @@ class OdhinFeatureReporter {
       const feature = features.get(name) ?? createEmptyFeatureStat(name);
       feature.totalTests += 1;
       feature.durationMs += testResult.duration || 0;
-      const status = statusFor(testResult, test);
+      const status = statusFor(testResult);
       if (Object.prototype.hasOwnProperty.call(feature, status)) feature[status] += 1;
       features.set(name, feature);
     }
-    enhanceGeneratedReport(this.options.outputFolder, [...features.values()]);
+    enhanceGeneratedReport(this.options.outputFolder, [...features.values()], this.testMetadata);
   }
 
   onStdOut(chunk, test, result) {

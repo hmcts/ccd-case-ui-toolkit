@@ -343,44 +343,6 @@ function injectDataTableDefaults(root) {
   );
 }
 
-function dashboardBlockTitle(column) {
-  return column.querySelector('.info-box-header')?.text.trim() ?? '';
-}
-
-function rebalanceTopDashboardColumns(root) {
-  const columns = root.querySelectorAll('.col-12.col-xl-6');
-  const runInfoColumn = columns.find((column) => dashboardBlockTitle(column) === 'Run info');
-  const globalSummaryColumn = columns.find((column) => dashboardBlockTitle(column) === 'Global Summary');
-  const featureOverviewColumn = columns.find((column) => dashboardBlockTitle(column) === 'Feature Overview');
-  const projectsSummaryColumn = columns.find((column) => dashboardBlockTitle(column) === 'Projects Summary');
-
-  if (!runInfoColumn || !globalSummaryColumn || !featureOverviewColumn || !projectsSummaryColumn) {
-    return;
-  }
-
-  const parent = runInfoColumn.parentNode;
-  if (
-    !parent ||
-    parent !== globalSummaryColumn.parentNode ||
-    parent !== featureOverviewColumn.parentNode ||
-    parent !== projectsSummaryColumn.parentNode
-  ) {
-    return;
-  }
-
-  const leftStack = parse(
-    `<div class="col-12 col-xl-6 odhin-dashboard-stack">${runInfoColumn.innerHTML}${featureOverviewColumn.innerHTML}</div>`
-  );
-  const rightStack = parse(
-    `<div class="col-12 col-xl-6 odhin-dashboard-stack">${globalSummaryColumn.innerHTML}${projectsSummaryColumn.innerHTML}</div>`
-  );
-
-  runInfoColumn.replaceWith(leftStack);
-  globalSummaryColumn.replaceWith(rightStack);
-  featureOverviewColumn.remove();
-  projectsSummaryColumn.remove();
-}
-
 function buildFeatureOverviewBlock(featureStats) {
   const totalTests = featureStats.reduce((sum, feature) => sum + feature.totalTests, 0);
   const topFeature = featureStats[0];
@@ -512,25 +474,38 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
-function enhanceDashboardHtml(html, featureStats, perfettoFiles = [], perfettoHrefPrefix = '../test-results') {
+function enhanceDashboardHtml(html, featureStats, perfettoFiles = [], perfettoHrefPrefix = '../test-results', testMetadata = []) {
   const normalizedStats = normalizeFeatureStats(featureStats);
   const root = parse(html);
 
   injectEnhancerStyles(root);
-  if (!normalizedStats.length && !perfettoFiles.length) {
-    return root.toString();
-  }
 
   if (normalizedStats.length) {
     replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
     removeDuplicateFeatureStatusBlock(root);
-    rebalanceTopDashboardColumns(root);
     stripLegacyFileChartArtifacts(root);
   }
   if (perfettoFiles.length) {
     injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
   }
 
+  const table = root.querySelector('#test-list-table');
+  if (table && testMetadata.length) {
+    const metadata = new Map(testMetadata.map(test => [test.target, test]));
+    table.querySelectorAll('thead tr, tfoot tr').forEach(row => {
+      row.insertAdjacentHTML('beforeend', '<th>Feature</th><th>Tags</th><th>Attempt</th>');
+    });
+    table.querySelectorAll('tbody tr').forEach(row => {
+      const test = metadata.get(row.getAttribute('data-bs-target'));
+      row.setAttribute('data-duration-ms', String(test?.durationMs ?? 0));
+      row.insertAdjacentHTML('beforeend', `<td>${escapeHtml(test?.feature ?? 'Uncategorised')}</td><td>${escapeHtml((test?.tags ?? []).join(', '))}</td><td>${(test?.retry ?? 0) + 1}</td>`);
+    });
+  }
+  root.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1');
+  const css = fs.readFileSync(path.join(__dirname, 'presentation/report.css'), 'utf8');
+  const script = fs.readFileSync(path.join(__dirname, 'presentation/report.js'), 'utf8');
+  root.querySelector('head')?.insertAdjacentHTML('beforeend', `<style id="toolkit-report-theme">${css}</style>`);
+  root.querySelector('body')?.insertAdjacentHTML('beforeend', `<script id="toolkit-report-ui">${script}</script>`);
   return root.toString();
 }
 
@@ -551,7 +526,7 @@ function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-re
   );
 }
 
-function enhanceGeneratedReport(outputFolder, featureStats) {
+function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
   if (!outputFolder || !fs.existsSync(outputFolder)) {
     return;
   }
@@ -573,7 +548,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     const perfettoHrefPrefix = artifactBaseUrl && testResultsFolder
       ? `${artifactBaseUrl}/artifact/${path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/')}`
       : testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
-    const nextHtml = enhanceDashboardHtml(currentHtml, featureStats, perfettoFiles, perfettoHrefPrefix);
+    const nextHtml = enhanceDashboardHtml(currentHtml, featureStats, perfettoFiles, perfettoHrefPrefix, testMetadata);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }

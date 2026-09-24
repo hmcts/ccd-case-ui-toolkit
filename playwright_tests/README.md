@@ -19,7 +19,7 @@ The current browser slice has 12 scenarios grouped by coverage area: `Date field
 
 JUnit: `playwright_tests/test-results/junit.xml`. Perfetto timeline: `playwright_tests/test-results/perfetto.json`. Failure screenshots, video and traces are retained under `playwright_tests/test-results/`. These generated files are ignored by Git.
 
-Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The toolkit uses the same adaptive progress and fallback-report pattern as the XUI managed-organisations suite. The report adds a Feature Overview derived from `test.describe` areas and a **Perfetto Results** tab linking the generated timeline, while retaining native status-by-file and status-by-project sections. Jenkins archives the Odhín, JUnit, Perfetto and failure evidence; it does not publish the standard Playwright HTML report. If a run is interrupted before Odhín writes its HTML, `scripts/ensure-odhin-report.js` creates an explicit unavailable-report artifact; it does not change the build result.
+Odhín: `playwright_tests/odhin-report/toolkit-playwright.html`. The toolkit uses the same adaptive progress and fallback-report pattern as the XUI managed-organisations suite. The report adds a Feature Overview derived from `test.describe` areas and a **Perfetto Results** tab linking the generated timeline, while retaining native status-by-file and status-by-project sections. The dashboard uses the available browser width. Drag a card’s bottom-right handle to resize it; neighbouring cards reflow. Arrow keys resize a focused handle and Home restores that card. **Reset layout** restores every card, and **Compact view** switches spacing. Feature and status labels open the corresponding filtered tests. The Tests tab combines status, feature, file, project, tags, attempt and duration filters with text search. **Clear filters** resets them together. Layout changes last until the report is reloaded. Jenkins archives the Odhín, JUnit, Perfetto and failure evidence; it does not publish the standard Playwright HTML report. If a run is interrupted before Odhín writes its HTML, `scripts/ensure-odhin-report.js` creates an explicit unavailable-report artifact; it does not change the build result.
 
 Calendar validation and programmatic reset are not covered or modified by this slice. It provides no package-consumer guarantee.
 
@@ -32,3 +32,21 @@ GitHub Actions retains product lint, the library build, Karma/Jasmine coverage a
 `Jenkinsfile_CNP` is the PR/master entrypoint. `Jenkinsfile_nightly` remains available for manual execution, with scheduling deferred and existing triggers cleared when it runs. Both use the same Playwright-only validation pipeline and XUI agent selection. Jenkins registration is managed separately through infrastructure configuration; committing these files does not prove that a job is active. Neither entrypoint deploys or publishes the library.
 
 Jenkins rejects empty suites, skipped or failed tests, and missing reports. The suite size may grow without a pipeline edit. Review test selection when changing coverage: a non-empty result does not prove that every intended contract was selected.
+
+### Report UI checks
+
+Run `node playwright_tests/reporters/presentation/report.test.cjs` for generation/metadata checks. Open a freshly generated report through a local HTTP server in Playwright CLI, then run:
+
+```sh
+playwright-cli run-code --filename=playwright_tests/reporters/presentation/verify-report.js
+```
+
+The browser check covers desktop/mobile layout, pointer and keyboard resizing, colour themes, filters, feature/status drill-down, test details and the Perfetto artifact link. It uses temporary chart states to verify status colours and leaves the saved report unchanged.
+
+Test details include **Back to tests**, **Previous test**, and **Next test**. Navigation follows the current filters and sort order across pages; returning restores the current test in the list. Escape also closes details.
+
+The Tests tab defaults to **100 results per page**; use the page-size selector to change it.
+
+Expand a feature name in Feature Overview to inspect its tests, statuses and timings. Select a test to open details, or select the feature test count to filter the Tests tab. This replaces the separate Status by test file panel.
+
+Expanded tests remain compact: test name, status, duration and a direct View steps link. Full metadata remains in test details.
