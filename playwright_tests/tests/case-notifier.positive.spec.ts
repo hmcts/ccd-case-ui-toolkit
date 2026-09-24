@@ -7,7 +7,7 @@ test.describe('Case notifier refresh', () => {
 
     await expect(page.getByTestId('case-notifier-state')).toHaveText('No case selected');
     await page.getByRole('button', { name: 'Refresh challenged case' }).click();
-    await expect(page.getByTestId('case-notifier-state')).toHaveText('1111-2222-3333-4444: CHALLENGED');
+    await expect(page.getByTestId('case-notifier-state')).toHaveText('2222-3333-4444-5555: CHALLENGED');
     await page.getByRole('button', { name: 'Refresh standard case' }).click();
     await expect(page.getByTestId('case-notifier-state')).toHaveText('4444-3333-2222-1111: STANDARD');
   });
