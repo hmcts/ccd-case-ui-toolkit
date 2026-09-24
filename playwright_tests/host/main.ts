@@ -57,6 +57,13 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
   updateDocumentCategory: () => of(null)
 };
 
+const testAppConfig = Object.assign(new AppMockConfig(), {
+  getPaymentsUrl: () => window.location.origin,
+  getPayBulkScanBaseUrl: () => window.location.origin,
+  getRefundsUrl: () => window.location.origin,
+  getNotificationUrl: () => window.location.origin
+});
+
 const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo' | 'isDocumentSecureModeEnabled' | 'uploadFile' | 'getDocumentBinaryUrl' | 'isHtmlDocument' | 'getMediaViewerInfo'> = {
   parseCaseInfo: () => null,
   isDocumentSecureModeEnabled: () => false,
@@ -83,11 +90,11 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
   template: `
     <main>
       <h1>Toolkit date input</h1>
-      <ccd-write-date-container-field [caseField]="field" [formGroup]="dateForm" />
+      <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
       <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
       <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
       <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
-      <ccd-write-date-container-field [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
+      <ccd-field-write [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
       <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
       <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
 
@@ -101,7 +108,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ccd-write-phone-uk-field [caseField]="mandatory.phone" [formGroup]="mandatoryForm" />
       <ccd-write-text-area-field [caseField]="mandatory.textArea" [formGroup]="mandatoryForm" />
       <ccd-write-yes-no-field [caseField]="mandatory.yesNo" [formGroup]="mandatoryForm" />
-      <ccd-write-fixed-list-field [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
+      <ccd-field-write [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
       <ccd-write-fixed-radio-list-field [caseField]="mandatory.fixedRadio" [formGroup]="mandatoryForm" />
       <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
       <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
@@ -110,7 +117,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <section data-testid="advanced-fields"><h2>Advanced field controls</h2>
       <ccd-write-text-field [caseField]="advanced.postcode" [formGroup]="advancedForm" />
       <ccd-write-rich-text-area-field [caseField]="advanced.richText" [formGroup]="advancedForm" />
-      <ccd-write-dynamic-list-field [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
+      <ccd-field-write [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
       <ccd-write-dynamic-radio-list-field [caseField]="advanced.dynamicRadio" [formGroup]="advancedForm" />
       <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
@@ -135,7 +142,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
       <h2>Viewer and payment controls</h2>
-      <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
@@ -146,8 +153,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="field-form-status">{{ fieldFormGroup.status }}</output>
 
       <h2>Identity read-only controls</h2>
-      <ccd-read-case-link-field [caseField]="identity.caseLink" />
-      <ccd-label-field [caseField]="identity.label" [caseFields]="[]" />
+      <ccd-field-read [caseField]="identity.caseLink" />
+      <ccd-field-read [caseField]="identity.label" [caseFields]="[]" />
       <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
       <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
 
@@ -160,9 +167,9 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
 
       <h2>Collection controls</h2>
-      <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
+      <ccd-field-write [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
-        <ccd-write-collection-field [caseField]="restrictedNames" [formGroup]="collectionForm" />
+        <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
       </div>
       <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
       <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
@@ -260,7 +267,7 @@ class ToolkitTestHost {
 bootstrapApplication(ToolkitTestHost, {
   providers: [
     provideHttpClient(),
-    { provide: AbstractAppConfig, useClass: AppMockConfig },
+    { provide: AbstractAppConfig, useValue: testAppConfig },
     provideNoopAnimations(),
     provideRouter([]),
     AlertService,
