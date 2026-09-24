@@ -23,7 +23,12 @@ try {
   };
   writeFileSync(join(consumer, 'package.json'), `${JSON.stringify(consumerPackage, null, 2)}\n`);
 
-  run('npm', ['install', '--legacy-peer-deps', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
+  try {
+    run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
+  } catch {
+    console.warn('Normal npm peer resolution failed; running forced-install diagnostics with --legacy-peer-deps.');
+    run('npm', ['install', '--legacy-peer-deps', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
+  }
   run('npx', ['ng', 'build'], consumer);
   run('npx', ['playwright', 'test'], consumer);
 } finally {
