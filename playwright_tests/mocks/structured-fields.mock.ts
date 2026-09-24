@@ -9,6 +9,12 @@ const structured = (id: string, label: string, type: string, fields: CaseField[]
 });
 
 export const structuredFields = {
-  complex: structured('structured-complex', 'Complex field', 'Complex', [text('complex-line', 'Complex line')]),
+  complex: structured('structured-complex', 'Complex field', 'Complex', [
+    text('complex-line', 'Complex line'),
+    structured('complex-address', 'Nested address', 'Complex', [
+      text('complex-city', 'City'),
+      text('complex-country', 'Country')
+    ])
+  ]),
   requiredComplex: structured('required-complex', 'Required complex field', 'Complex', [text('required-line', 'Required line', 'MANDATORY')])
 };
