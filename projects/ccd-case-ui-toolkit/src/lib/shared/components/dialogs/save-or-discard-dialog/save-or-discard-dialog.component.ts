@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialogRef as MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'ccd-save-or-discard-dialog',

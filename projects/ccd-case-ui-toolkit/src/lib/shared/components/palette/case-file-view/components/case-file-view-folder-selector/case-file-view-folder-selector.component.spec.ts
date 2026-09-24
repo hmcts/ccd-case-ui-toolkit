@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef as MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view-folder-selector.component';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 

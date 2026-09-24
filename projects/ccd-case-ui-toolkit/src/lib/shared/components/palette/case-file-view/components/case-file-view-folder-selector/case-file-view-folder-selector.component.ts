@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MatDialogRef as MatDialogRef , MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
 
