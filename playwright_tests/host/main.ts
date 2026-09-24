@@ -15,6 +15,7 @@ import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
 import { advancedFields } from '../mocks/advanced-fields.mock';
+import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 
 @Component({
   selector: 'toolkit-test-host',
@@ -55,6 +56,10 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
       <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
       <output data-testid="advanced-status">{{ advancedForm.status }}</output>
 
+      <h2>Viewer and payment controls</h2>
+      <ccd-read-order-summary-field [caseField]="orderSummary" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+
       <h2>Collection controls</h2>
       <ccd-write-collection-field [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
@@ -88,6 +93,9 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
+  readonly orderSummary = orderSummaryField;
+  readonly paymentHistory = paymentHistoryField;
+  readonly caseReference = '1111222233334444';
   readonly money = moneyField;
   readonly moneyForm = new FormGroup({});
   readonly names = collectionField;
