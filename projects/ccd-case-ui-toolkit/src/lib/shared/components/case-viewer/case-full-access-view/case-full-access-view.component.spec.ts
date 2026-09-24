@@ -1382,16 +1382,16 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   }));
 
   it('should render two prepended tabs', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = d.query(By.css('.mat-mdc-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(6);
   });
 
   it('should display "Tasks" tab as the first tab', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = d.query(By.css('.mat-mdc-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
+    expect((tasksTab.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Tasks');
   });
 });
 
@@ -1531,11 +1531,11 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   }));
 
   it('should render appended tabs hearings', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = d.query(By.css('.mat-mdc-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(7);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    expect((hearingsTab.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Hearings');
   });
 
   it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
@@ -1827,7 +1827,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
-    const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
+    const caseFlagsTab = d.nativeElement.querySelector('.mat-mdc-tab-labels').children[5] as HTMLElement;
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
     // Click the "View case flags" link and check the Case Flags tab is now active
     viewCaseFlagsLink.click();
@@ -1989,11 +1989,11 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   }));
 
   it('should render 1st order of tabs', () => {
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-mdc-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(4);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
+    expect((hearingsTab.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('History');
   });
 });
 
@@ -2161,18 +2161,18 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   it('should display overview tab by default', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     componentFixture.detectChanges();
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-mdc-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab0.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
+    expect((tasksTab0.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Tasks');
     const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab1.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
+    expect((tasksTab1.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Roles and access');
     const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((tasksTab2.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Overview');
+    expect((tasksTab2.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Overview');
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((tasksTab3.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case notes');
+    expect((tasksTab3.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Case notes');
     const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
-    expect((tasksTab4.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    expect((tasksTab4.querySelector('.mdc-tab__text-label') as HTMLElement).innerText).toBe('Hearings');
   });
 
   it('should add prepended & appended tabs to the existing tab list', () => {

@@ -231,7 +231,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const languageSelectionPanel = document.querySelector('.mat-autocomplete-panel-extend');
     // The language selection panel will still be defined but it should be hidden
     expect(languageSelectionPanel).toBeTruthy();
-    expect(languageSelectionPanel.getAttribute('class')).toContain('mat-autocomplete-hidden');
+    expect(languageSelectionPanel.getAttribute('class')).toContain('mat-mdc-autocomplete-hidden');
     const matOptions = document.querySelectorAll('mat-option');
     expect(matOptions.length).toBe(0);
   });
