@@ -6,6 +6,7 @@
 .case-state-multi-select {
   position: relative;
   width: 100%;
+  margin-bottom: 30px;
 }
 
 .case-state-multi-select__trigger {
@@ -15,12 +16,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 0;
 }
 
 .case-state-multi-select__panel {
   position: absolute;
   z-index: 1000;
-  top: calc(100% + 2px);
+  top: 100%;
   left: 0;
   width: 100%;
   max-height: 500px;
