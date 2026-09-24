@@ -26,6 +26,9 @@ import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
 import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
 import { CaseFileViewService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/case-file-view/case-file-view.service';
+import { DocumentManagementService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service';
+import { WindowService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/window/window.service';
+import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
 import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
@@ -34,6 +37,19 @@ import { ReferenceIdentityControlsComponent } from './reference-identity-control
 const launcherCaseReference = '1111222233334444';
 const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'> = {
   getCategoriesAndDocuments: (caseReference) => caseReference === launcherCaseReference ? of(categoriesAndDocumentsTestData) : (() => { throw new Error(`Unexpected case reference: ${caseReference}`); })()
+};
+const documentManagementService: Pick<DocumentManagementService, 'getDocumentBinaryUrl' | 'getMediaViewerInfo' | 'isHtmlDocument'> = {
+  getDocumentBinaryUrl: (document) => document.document_binary_url,
+  getMediaViewerInfo: (document) => JSON.stringify(document),
+  isHtmlDocument: () => false
+};
+const windowService: Pick<WindowService, 'openOnNewTab'> = {
+  openOnNewTab: () => undefined
+};
+const httpErrorService: Pick<HttpErrorService, 'handle'> = {
+  handle: () => {
+    throw new Error('The launcher test host does not make HTTP requests');
+  }
 };
 const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: { case: launcherRouteCase } } };
 
@@ -189,6 +205,9 @@ class ToolkitTestHost {
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
     this.caseNotifier.caseView.subscribe((caseView) => {
+      if (caseView.case_id === launcherCaseReference) {
+        return;
+      }
       const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
       this.caseNotifierState = caseView.case_id && access
         ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
@@ -227,6 +246,9 @@ bootstrapApplication(ToolkitTestHost, {
     AlertService,
     { provide: CasesService, useValue: caseNotifierCasesService },
     { provide: CaseFileViewService, useValue: caseFileViewService },
+    { provide: DocumentManagementService, useValue: documentManagementService },
+    { provide: WindowService, useValue: windowService },
+    { provide: HttpErrorService, useValue: httpErrorService },
     importProvidersFrom(
       PaymentLibModule,
       StoreModule.forRoot({}),
