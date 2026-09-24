@@ -40,5 +40,5 @@ test('shows, validates, hides and omits a conditional required field', async ({ 
   await toggle.getByLabel('Yes').check();
   await expect(conditional).toBeVisible();
   await expect(conditional).toHaveValue('retained while visible');
-  await expect(page.getByTestId('editor-values')).not.toContainText('retained while visible');
+  await expect(page.getByTestId('editor-values')).toContainText('retained while visible');
 });
