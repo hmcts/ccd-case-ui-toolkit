@@ -64,7 +64,7 @@ test.describe('launcher and mini-application components', () => {
     await launcherControls.getByLabel('Lager history.html').click();
 
     await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(0);
-    await expect(launcherControls.getByLabel('Lager history.html')).toBeVisible();
+    await expect(page.getByTestId('opened-window-url')).toHaveText('https://document.example/documents/lager/history.html');
   });
 
   test('shows a category update failure and withholds move permission without update ACL', async ({ page }) => {

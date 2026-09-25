@@ -61,8 +61,11 @@ const httpErrorService: Pick<HttpErrorService, 'handle'> = {
     throw new Error('The launcher test host does not make HTTP requests');
   }
 };
+let openedWindowUrl = '';
 const windowService: Pick<WindowService, 'openOnNewTab'> = {
-  openOnNewTab: () => undefined
+  openOnNewTab: (url: string) => {
+    openedWindowUrl = url;
+  }
 };
 const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: {
   get case() {
@@ -196,7 +199,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
           : new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
       sub: 'caseworker@example.invalid'
     }) } },
-    { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
+    { provide: WindowService, useValue: windowService }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
   template: `
@@ -263,6 +266,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
       <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
+      <output data-testid="opened-window-url">{{ openedWindowUrl }}</output>
       </section>
 
       <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
@@ -383,6 +387,9 @@ class ToolkitTestHost {
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
   readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
   readonly alertMessageType = AlertMessageType;
+  get openedWindowUrl(): string {
+    return openedWindowUrl;
+  }
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
     this.caseNotifier.caseView.subscribe((caseView) => {
