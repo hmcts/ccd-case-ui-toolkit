@@ -176,7 +176,9 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: CaseFileViewService, useValue: caseFileViewService },
     { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
     { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({
-      roles: new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
+      roles: new URLSearchParams(window.location.search).has('judiciary-user')
+        ? ['judiciary']
+        : new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
       sub: 'caseworker@example.invalid'
     }) } },
     { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
@@ -322,6 +324,7 @@ class ToolkitTestHost {
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
   readonly caseFileLauncher = caseFileLauncher;
+
   readonly waysToPay = waysToPayField;
   readonly unsupportedLauncher = unsupportedLauncher;
   readonly caseFlagsLauncher = caseFlagsLauncher;
