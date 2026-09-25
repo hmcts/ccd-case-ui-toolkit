@@ -73,7 +73,7 @@ export class CaseStateMultiSelectComponent {
   }
 
   public get isSelectAllDisabled(): boolean {
-    return this.disabled || this.states.length === 0 || this.states.every(state => this.isSelected(state));
+    return this.disabled || this.states.every(state => this.isSelected(state));
   }
 
   public get isUnselectAllDisabled(): boolean {
