@@ -101,6 +101,7 @@ function collectDiagnostics() {
   const candidates = [
     'functional-output/tests/playwright-diagnostics/failure-data',
     'functional-output/tests/playwright-integration/load-profile',
+    'playwright_tests/test-results',
     'test-results',
   ];
 

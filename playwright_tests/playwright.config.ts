@@ -20,7 +20,7 @@ const resolveTestEnvironment = (): string => {
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const cpuCores = cpus().length;
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
-  return `local | ${runContext} | workers=1 | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  return `local | ${runContext} | workers=7 | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
 
 export default defineConfig({
@@ -28,7 +28,8 @@ export default defineConfig({
   outputDir: './test-results',
   forbidOnly: !!process.env.CI,
   retries: 0,
-  workers: 1,
+  fullyParallel: true,
+  workers: 7,
   reporter: [
     ['list'],
     ['junit', { outputFile: './test-results/junit.xml' }],
@@ -58,7 +59,7 @@ export default defineConfig({
     timezoneId: 'Europe/London',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'off'
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
