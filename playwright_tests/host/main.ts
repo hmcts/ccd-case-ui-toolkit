@@ -140,7 +140,9 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
     }
     return of({ case_version: 1, categories: [] } as any);
   },
-  updateDocumentCategory: () => of(null)
+  updateDocumentCategory: () => new URLSearchParams(window.location.search).has('case-file-move-failure')
+    ? throwError(() => ({ status: 503 }))
+    : of(null)
 };
 
 const testAppConfig = Object.assign(new AppMockConfig(), {
@@ -162,7 +164,11 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
   getDocumentBinaryUrl: (value: any) => value.document_binary_url,
   isHtmlDocument: () => false,
-  getMediaViewerInfo: () => '{}'
+  getMediaViewerInfo: () => JSON.stringify({
+    document_binary_url: 'https://document.example/documents/lager/binary',
+    document_filename: 'lager-encyclopedia.pdf',
+    content_type: 'application/pdf'
+  })
 };
 
 @Component({
@@ -176,7 +182,11 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: CaseFileViewService, useValue: caseFileViewService },
     { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
     { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({
-      roles: new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
+      roles: new URLSearchParams(window.location.search).has('anonymous')
+        ? []
+        : new URLSearchParams(window.location.search).has('judiciary-user')
+          ? ['judiciary']
+          : new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
       sub: 'caseworker@example.invalid'
     }) } },
     { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
@@ -321,7 +331,12 @@ class ToolkitTestHost {
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
-  readonly caseFileLauncher = caseFileLauncher;
+  readonly caseFileLauncher = Object.assign(new CaseField(), caseFileLauncher, {
+    acls: new URLSearchParams(window.location.search).has('case-file-edit')
+      ? [{ role: 'caseworker-test', update: true }]
+      : []
+  });
+
   readonly waysToPay = waysToPayField;
   readonly unsupportedLauncher = unsupportedLauncher;
   readonly caseFlagsLauncher = caseFlagsLauncher;

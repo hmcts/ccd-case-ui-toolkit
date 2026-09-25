@@ -13,5 +13,6 @@ test.describe('viewer and payment components', () => {
     await expect(viewerPayment.getByText('Recent payments may take a few minutes to reflect here.')).toBeVisible();
     await expect(viewerPayment.getByText('Payments', { exact: true })).toBeVisible();
     await expect(viewerPayment.getByText('No payments recorded')).toBeVisible();
+    await expect(viewerPayment.locator('ccpay-payment-lib')).toHaveCount(1);
   });
 });

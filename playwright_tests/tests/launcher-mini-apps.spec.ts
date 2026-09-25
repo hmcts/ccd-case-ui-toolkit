@@ -35,6 +35,48 @@ test.describe('launcher and mini-application components', () => {
     await expect(launcherControls.getByLabel('Lager encyclopedia')).toBeVisible();
   });
 
+  test('opens a document in the media viewer and exposes document actions', async ({ page }) => {
+    await page.route('https://document.example/documents/lager/binary', (route) => route.fulfill({
+      status: 200,
+      contentType: 'application/pdf',
+      body: '%PDF-1.4 test document'
+    }));
+    await page.goto('/');
+
+    const launcherControls = page.getByTestId('launcher-mini-app-controls');
+    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByLabel('Lager encyclopedia').click();
+    await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(1);
+
+    const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
+    await documentActions.getByRole('button', { name: 'More document options' }).click();
+    const documentMenu = page.locator('.overlay-menu');
+    await expect(documentMenu.getByText('Open in a new tab', { exact: true })).toBeVisible();
+    await expect(documentMenu.getByText('Download', { exact: true })).toBeVisible();
+    await expect(documentMenu.getByText('Print', { exact: true })).toBeVisible();
+  });
+
+  test('shows a category update failure and withholds move permission without update ACL', async ({ page }) => {
+    await page.goto('/?case-file-edit&case-file-move-failure');
+
+    const launcherControls = page.getByTestId('launcher-mini-app-controls');
+    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
+    await documentActions.getByRole('button', { name: 'More document options' }).click();
+    await expect(page.getByText('Change folder', { exact: true })).toBeVisible();
+    await page.getByText('Change folder', { exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await page.getByRole('radio', { name: 'Folder icon Wines' }).last().check();
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByText('We couldn\'t move the document. Please try again.', { exact: true })).toBeVisible();
+
+    await page.goto('/');
+    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.locator('ccd-case-file-view-folder-document-actions').first()
+      .getByRole('button', { name: 'More document options' }).click();
+    await expect(page.getByText('Change folder', { exact: true })).toHaveCount(0);
+  });
+
   test('renders launcher data and supports history interaction', async ({ page }) => {
     await page.goto('/');
 
@@ -58,5 +100,11 @@ test.describe('launcher and mini-application components', () => {
     await expect(payment.getByRole('heading', { name: 'If you are expecting to pay and are not able to see a service request,' })).toBeVisible();
     await expect(payment.getByText('No refunds recorded')).toBeVisible();
     await expect(page.getByTestId('launcher-mini-app-controls').getByText('Field type not supported')).toHaveCount(1);
+  });
+
+  test('does not initialise WaysToPay when the consumer has no payment roles', async ({ page }) => {
+    await page.goto('/?anonymous');
+
+    await expect(page.locator('ccd-ways-to-pay-field ccpay-payment-lib')).toHaveCount(0);
   });
 });
