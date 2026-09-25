@@ -52,6 +52,9 @@ import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/sha
 import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
+import { FlagWriterControlsComponent } from './flag-writer-controls.component';
+import { LinkedCaseWriterControlsComponent } from './linked-case-writer-controls.component';
+import { QueryWriterControlsComponent } from './query-writer-controls.component';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 import { addressDocumentFields } from '../mocks/address-document.mock';
 
@@ -215,9 +218,12 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     }) } },
     { provide: WindowService, useValue: windowService }
   ],
-  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
   template: `
     <main>
+      <toolkit-flag-writer *ngIf="showFlagWriter" />
+      <toolkit-linked-case-writer *ngIf="showLinkedWriter" />
+      <toolkit-query-writer-controls *ngIf="showQueryWriter" />
       <h1>Toolkit date input</h1>
       <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
       <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
@@ -399,6 +405,9 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
+  readonly showFlagWriter = new URLSearchParams(window.location.search).has('flags-write');
+  readonly showLinkedWriter = new URLSearchParams(window.location.search).has('linked-write');
+  readonly showQueryWriter = new URLSearchParams(window.location.search).has('query-write');
   readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
   readonly alertMessageType = AlertMessageType;
   get openedWindowUrl(): string {
