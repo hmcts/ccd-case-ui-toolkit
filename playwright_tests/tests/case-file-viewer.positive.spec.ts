@@ -34,7 +34,7 @@ test.describe('Case File Viewer document actions', () => {
 
     const downloadPromise = page.waitForEvent('download');
     await page.getByText('Download', { exact: true }).click();
-    await expect((await downloadPromise).suggestedFilename()).toBe('Lager encyclopedia');
+    await expect((await downloadPromise).suggestedFilename()).toBe('Lager encyclopedia.html');
 
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     const printPopupPromise = page.waitForEvent('popup');
