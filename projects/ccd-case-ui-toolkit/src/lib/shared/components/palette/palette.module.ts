@@ -1,15 +1,15 @@
-import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, NgModule, Provider, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MAT_DATE_LOCALE as MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MAT_LEGACY_DATE_LOCALE as MAT_DATE_LOCALE } from '@angular/material/legacy-core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
@@ -309,11 +309,9 @@ const PALETTE_COMPONENTS = [
     LabelSubstitutorModule,
     TranslatedMarkdownModule,
     MarkdownModule.forChild(),
-    NgxMatDatetimepicker,
-    NgxMatDatepickerInput,
-    NgxMatDatepickerToggle,
-    NgxMatDatepickerActions,
-    NgxMatDatepickerApply,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -356,11 +354,9 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
-    NgxMatDatetimepicker,
-    NgxMatDatepickerInput,
-    NgxMatDatepickerToggle,
-    NgxMatDatepickerActions,
-    NgxMatDatepickerApply,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    NgxMatTimepickerModule,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,

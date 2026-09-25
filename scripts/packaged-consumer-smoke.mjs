@@ -29,7 +29,13 @@ function smoke() {
     };
     writeFileSync(join(consumer, 'package.json'), `${JSON.stringify(consumerPackage, null, 2)}\n`);
 
-    run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
+    if (process.argv.includes('--strict-peer-deps')) {
+      run('npm', ['install', '--strict-peer-deps', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumer);
+    } else {
+      // Match WebApp's normal Yarn policy; strict npm peer acceptance remains a separate check.
+      writeFileSync(join(consumer, '.yarnrc.yml'), 'nodeLinker: node-modules\nenableScripts: false\nenableImmutableInstalls: false\n');
+      process.stdout.write(run(process.execPath, [join(root, '.yarn/releases/yarn-4.5.0.cjs'), 'install'], consumer));
+    }
     run('npx', ['ng', 'build'], consumer);
     run('npx', ['playwright', 'test'], consumer);
   } finally {

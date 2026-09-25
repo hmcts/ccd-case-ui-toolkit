@@ -56,6 +56,17 @@ test.describe('launcher and mini-application components', () => {
     await expect(documentMenu.getByText('Print', { exact: true })).toBeVisible();
   });
 
+  test('opens HTML documents directly instead of mounting the media viewer', async ({ page }) => {
+    await page.goto('/?case-file=html');
+
+    const launcherControls = page.getByTestId('launcher-mini-app-controls');
+    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByLabel('Lager history.html').click();
+
+    await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(0);
+    await expect(page.getByTestId('opened-window-url')).toHaveText('https://document.example/documents/lager/history.html');
+  });
+
   test('shows a category update failure and withholds move permission without update ACL', async ({ page }) => {
     await page.goto('/?case-file-edit&case-file-move-failure');
 
