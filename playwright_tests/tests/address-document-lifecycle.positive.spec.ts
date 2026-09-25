@@ -13,6 +13,7 @@ test.describe('Address and document lifecycle', () => {
     await expect(uk.getByRole('textbox', { name: 'Address line 1' })).toHaveValue('1 Test Street');
     await expect(uk.getByRole('textbox', { name: 'Town or city' })).toHaveValue('London');
     await expect(uk.getByRole('textbox', { name: 'Country' })).toHaveValue('United Kingdom');
+    await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['address-uk']).toMatchObject({ AddressLine1: '1 Test Street', PostTown: 'London', PostCode: 'SW1A 1AA', Country: 'United Kingdom' });
 
     await global.getByRole('link', { name: 'I can\'t enter a UK postcode' }).click();
     const globalInputs = global.locator('input');
@@ -31,16 +32,32 @@ test.describe('Address and document lifecycle', () => {
 
     await upload.setInputFiles({ name: 'uploaded.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
     await expect(page.getByRole('button', { name: 'uploaded.pdf' })).toBeVisible();
+    await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['supporting-document']).toEqual({
+      document_url: 'https://document.example/documents/uploaded',
+      document_binary_url: 'https://document.example/documents/uploaded/binary',
+      document_filename: 'uploaded.pdf'
+    });
 
     await upload.setInputFiles({ name: 'fail.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
     await expect(page.getByRole('alert')).toHaveText('Document upload facility is not available at the moment');
+    await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['supporting-document']).toEqual({
+      document_url: 'https://document.example/documents/uploaded',
+      document_binary_url: 'https://document.example/documents/uploaded/binary',
+      document_filename: 'uploaded.pdf'
+    });
+    await upload.setInputFiles({ name: 'uploaded.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'uploaded.pdf' })).toBeVisible();
   });
 
-  test('reports a parsed secure-document upload error', async ({ page }) => {
-    await page.goto('/?secure-document-error');
-    const upload = page.getByTestId('document-control').locator('#supporting-document');
-
-    await upload.setInputFiles({ name: 'secure.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
-    await expect(page.getByRole('alert')).toHaveText('Secure upload rejected');
+  test('binds the secure document hash with its URLs and filename', async ({ page }) => {
+    await page.goto('/?secure-document');
+    await page.getByTestId('document-control').locator('#supporting-document').setInputFiles({ name: 'secure.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
+    await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['supporting-document']).toEqual({
+      document_url: 'https://document.example/documents/secure',
+      document_binary_url: 'https://document.example/documents/secure/binary',
+      document_filename: 'secure.pdf',
+      document_hash: 'secure-hash'
+    });
   });
 });

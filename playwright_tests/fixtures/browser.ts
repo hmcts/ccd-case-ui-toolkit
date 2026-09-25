@@ -1,8 +1,9 @@
 import { expect, test as base } from '@playwright/test';
 import { paymentApiResponses, paymentUser } from '../mocks/payment-api.mock';
 
-export const test = base.extend<{ browserDiagnostics: void }>({
-  browserDiagnostics: [async ({ page, baseURL }, use) => {
+export const test = base.extend<{ browserDiagnostics: void; expectedConsoleErrors: string[] }>({
+  expectedConsoleErrors: [[], { option: true }],
+  browserDiagnostics: [async ({ page, baseURL, expectedConsoleErrors }, use) => {
     if (!baseURL) {
       throw new Error('The toolkit host baseURL must be configured');
     }
@@ -11,10 +12,16 @@ export const test = base.extend<{ browserDiagnostics: void }>({
       sessionStorage.setItem('userDetails', JSON.stringify(user));
     }, paymentUser);
     const errors: string[] = [];
+    const expectedErrors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => {
       if (message.type() === 'error') {
-        errors.push(message.text());
+        const expected = expectedConsoleErrors.find((text) => message.text().includes(text));
+        if (expected) {
+          expectedErrors.push(expected);
+        } else {
+          errors.push(message.text());
+        }
       }
     });
     await page.route('**/*', async (route) => {
@@ -38,6 +45,7 @@ export const test = base.extend<{ browserDiagnostics: void }>({
       }
     });
     await use();
+    expect(expectedErrors).toEqual(expectedConsoleErrors);
     expect(errors, 'Browser errors and unexpected requests').toEqual([]);
   }, { auto: true }]
 });
