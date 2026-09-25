@@ -86,3 +86,5 @@ cptk.sh
 playwright_tests/test-results/
 playwright_tests/playwright-report/
 playwright_tests/odhin-report/
+
+/packaged-consumer-results/
