@@ -1,7 +1,4 @@
-@import 'govuk_frontend_toolkit/stylesheets/_shims';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'govuk_frontend_toolkit/stylesheets/_measurements';
-@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+@import 'components/govuk-toolkit-shim';
 
 $blue_table: #005ea5;
 $black: #231F20;

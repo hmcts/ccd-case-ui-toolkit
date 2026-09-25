@@ -32,6 +32,7 @@
             "preserveSymlinks": true,
             "stylePreprocessorOptions": {
               "includePaths": [
+                "projects/ccd-case-ui-toolkit/src/lib",
                 "node_modules"
               ]
             }
@@ -124,7 +125,10 @@
             "polyfills": ["zone.js"],
             "tsConfig": "playwright_tests/host/tsconfig.json",
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules"]
+              "includePaths": [
+                "projects/ccd-case-ui-toolkit/src/lib",
+                "node_modules"
+              ]
             },
             "optimization": false,
             "sourceMap": true
@@ -167,7 +171,13 @@
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
             "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
-            "codeCoverage": true
+            "codeCoverage": true,
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/ccd-case-ui-toolkit/src/lib",
+                "node_modules"
+              ]
+            }
           }
         },
         "lint": {

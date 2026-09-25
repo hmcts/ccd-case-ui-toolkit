@@ -50,8 +50,6 @@
         <button
           type="button"
           class="node case-file__node"
-          role="treeitem"
-          aria-expanded="false"
           [attr.aria-label]="node.name"
           (click)="selectedNodeItem = node; clickedDocument.emit(node)"
           [class.node--selected]="selectedNodeItem?.name === node.name">
@@ -87,7 +85,6 @@
           type="button"
           class="node"
           cdkTreeNodeToggle
-          role="treeitem"
           [attr.aria-expanded]="nestedTreeControl.isExpanded(node)"
           [attr.aria-label]="node.name + ' folder, ' + node.childDocumentCount + ' documents'">
           <div class="node__icon" aria-hidden="true">

@@ -619,6 +619,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
+  public demoteCaseTitleHeadingLevel(title: string): string {
+    return title ? title.replace(/^#(?!#)(\s+)/, '##$1') : title;
+  }
+
   public getCancelText(): string {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
