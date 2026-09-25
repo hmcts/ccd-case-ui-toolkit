@@ -49,7 +49,7 @@ import {
   waysToPayField
 } from '../mocks/launchers.mock';
 import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
-import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
+import { caseFileViewService } from '../mocks/case-file-service.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
@@ -129,46 +129,6 @@ const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddress
   } as any])
 };
 
-const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments' | 'updateDocumentCategory'> = {
-  getCategoriesAndDocuments: (caseReference) => {
-    const scenario = new URLSearchParams(window.location.search).get('case-file');
-    if (scenario === 'unavailable') {
-      return throwError(() => ({ status: 503 }));
-    }
-    if (scenario === 'empty') {
-      return of({ case_version: 1, categories: [] } as any);
-    }
-    if (caseReference === launcherCaseReference) {
-      if (scenario === 'actions') {
-        const actionData = structuredClone(categoriesAndDocumentsTestData);
-        actionData.categories[0].documents.forEach((document) => {
-          document.document_binary_url = `http://127.0.0.1:4300${document.document_binary_url}`;
-        });
-        return of(actionData);
-      }
-      if (scenario === 'html') {
-        const htmlDocumentData = structuredClone(categoriesAndDocumentsTestData);
-        htmlDocumentData.categories[0].documents[0].document_binary_url = 'https://document.example/documents/lager/history.html';
-        htmlDocumentData.categories[0].documents[0].document_filename = 'Lager history.html';
-        htmlDocumentData.categories[0].documents[0].content_type = 'text/html';
-        return of(htmlDocumentData);
-      }
-      return of(categoriesAndDocumentsTestData);
-    }
-    return of({ case_version: 1, categories: [] } as any);
-  },
-  updateDocumentCategory: () => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('case-file-move-failure')) {
-      return throwError(() => ({ status: 503 }));
-    }
-    if (params.has('case-file-move-success')) {
-      return of({ response: true } as any);
-    }
-    return of(null);
-  }
-};
-
 const testAppConfig = Object.assign(new AppMockConfig(), {
   getPaymentsUrl: () => window.location.origin,
   getPayBulkScanBaseUrl: () => window.location.origin,
@@ -191,7 +151,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
   getMediaViewerInfo: () => JSON.stringify({
     document_binary_url: 'https://document.example/documents/lager/binary',
     document_filename: 'lager-encyclopedia.pdf',
-    content_type: 'application/pdf'
+    content_type: 'pdf'
   })
 };
 
@@ -218,6 +178,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
   template: `
     <main>
+      <ng-container *ngIf="hostArea !== 'miniapps'">
       <h1>Toolkit date input</h1>
       <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
       <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
@@ -272,6 +233,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
+      </ng-container>
+      <ng-container *ngIf="hostArea !== 'fields'">
       <section data-testid="launcher-mini-app-controls"><h2>Launcher and mini-application controls</h2>
       <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
@@ -292,6 +255,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ng-container *ngIf="showPaymentHistory">
         <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
       </ng-container></section>
+      </ng-container>
+      <ng-container *ngIf="hostArea !== 'miniapps'">
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
       <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
@@ -344,10 +309,12 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
           {{ callbackError.message }}
         </cut-alert>
       </ng-container>
+      </ng-container>
     </main>
   `
 })
 class ToolkitTestHost {
+  readonly hostArea = new URLSearchParams(window.location.search).get('host');
   readonly field = dateField;
   readonly dateTimeField = dateTimeField;
   readonly mandatory = mandatoryFields;

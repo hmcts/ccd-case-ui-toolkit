@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +13,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 function smoke() {
   const consumer = mkdtempSync(join(tmpdir(), 'ccd-case-ui-toolkit-consumer-'));
+  const evidence = join(root, 'packaged-consumer-results');
+  rmSync(evidence, { recursive: true, force: true });
+  mkdirSync(evidence, { recursive: true });
   try {
     const packageJson = JSON.parse(readFileSync(join(dist, 'package.json'), 'utf8'));
     if (packageJson.name !== '@hmcts/ccd-case-ui-toolkit') {
@@ -36,10 +39,18 @@ function smoke() {
       writeFileSync(join(consumer, '.yarnrc.yml'), 'nodeLinker: node-modules\nenableScripts: false\nenableImmutableInstalls: false\n');
       process.stdout.write(run(process.execPath, [join(root, '.yarn/releases/yarn-4.5.0.cjs'), 'install'], consumer));
     }
-    run('npx', ['ng', 'build'], consumer);
-    run('npx', ['playwright', 'test'], consumer);
+    process.stdout.write(run('npx', ['ng', 'build'], consumer));
+    process.stdout.write(run('npx', ['playwright', 'test'], consumer));
   } finally {
-    rmSync(consumer, { recursive: true, force: true });
+    try {
+      retainConsumerEvidence(consumer, evidence);
+    } catch (error) {
+      // Retention failure must fail a green run without replacing its original exception.
+      process.stderr.write(`Could not retain packaged-consumer evidence: ${error.message}\n`);
+      process.exitCode = 1;
+    } finally {
+      rmSync(consumer, { recursive: true, force: true });
+    }
   }
 }
 
@@ -55,5 +66,16 @@ function run(command, args, cwd) {
     process.stdout.write(error.stdout ?? '');
     process.stderr.write(error.stderr ?? '');
     throw error;
+  }
+}
+
+export function retainConsumerEvidence(consumer, evidence) {
+  for (const directory of ['test-results', 'playwright-report']) {
+    if (existsSync(join(consumer, directory))) {
+      cpSync(join(consumer, directory), join(evidence, directory), {
+        recursive: true,
+        filter: (source) => !source.endsWith('.webm') && !source.endsWith('.mp4')
+      });
+    }
   }
 }
