@@ -28,3 +28,23 @@ test('enters rich text content', async ({ page }) => {
   await editor.fill('Rich text value');
   await expect(page.getByTestId('advanced-values')).toContainText('Rich text value');
 });
+
+for (const source of ['formatted', 'explicit']) {
+  test(`preserves ${source} dynamic multi-select values through editing`, async ({ page }) => {
+    await page.goto(`/?dynamic-multi=${source}`);
+    const controls = page.getByTestId('advanced-fields');
+    const values = page.getByTestId('advanced-values');
+    const one = controls.getByRole('checkbox', { name: 'One', exact: true });
+    const two = controls.getByRole('checkbox', { name: 'Two', exact: true });
+    const initialCode = source === 'formatted' ? 'one' : 'two';
+    const initialLabel = source === 'formatted' ? 'One' : 'Two';
+    await expect(controls.getByRole('checkbox', { name: initialLabel, exact: true })).toBeChecked();
+    await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic multi']).toEqual([{ code: initialCode, label: initialLabel }]);
+    await one.setChecked(false);
+    await two.setChecked(false);
+    await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic multi']).toEqual([]);
+    await one.check();
+    await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic multi']).toEqual([{ code: 'one', label: 'One' }]);
+    await expect(two).not.toBeChecked();
+  });
+}
