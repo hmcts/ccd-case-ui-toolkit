@@ -390,6 +390,18 @@ describe('SearchResultComponent', () => {
       });
     });
 
+    it('should preserve all selected case states when changing page', () => {
+      const secondState = { id: 'Submitted', name: 'Submitted', description: '' } as CaseState;
+      component.caseState = [CASE_STATE, secondState];
+
+      component.goToPage(3);
+
+      expect(searchHandler.applyFilters).toHaveBeenCalledWith(jasmine.objectContaining({
+        selected: jasmine.objectContaining({ caseState: [CASE_STATE, secondState] }),
+        queryParams: jasmine.objectContaining({ 'case-state': `${CASE_STATE.id},${secondState.id}` }),
+      }));
+    });
+
     it('should replace the caseLink url placeholders with a valid data', () => {
       const id = 'ID001';
       const url = component.prepareCaseLinkUrl(id);

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.4-exui-2855
+**EXUI-2855** Search filters for closed cases
+
 ### Version 7.4.4
 **EXUI-5161** Library Packages Version Alignment - runtime
 
