@@ -31,6 +31,14 @@ describe('CaseStateMultiSelectComponent', () => {
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
   });
 
+  it('uses a labelled fieldset for the state selection actions', () => {
+    const actions = fixture.debugElement.query(By.css('fieldset.case-state-multi-select__actions')).nativeElement as HTMLFieldSetElement;
+    const legend = actions.querySelector('legend');
+
+    expect(legend?.textContent).toContain('State selection actions');
+    expect(actions.getAttribute('role')).toBeNull();
+  });
+
   it('keeps the panel open and emits each selected state', () => {
     const emitted: CaseState[][] = [];
     component.selectedStatesChange.subscribe(selection => {

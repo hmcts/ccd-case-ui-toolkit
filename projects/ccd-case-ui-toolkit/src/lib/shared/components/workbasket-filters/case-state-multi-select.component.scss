@@ -11,14 +11,15 @@
 
 .case-state-multi-select__actions {
   display: flex;
-  gap: 10px;
-  // gap: 21px;
+  gap: 15px;
   margin-bottom: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
 }
 
 .case-state-multi-select__actions .button {
-  margin-bottom: 0;
-  // margin: 0;
+  margin: 0;
 }
 
 .case-state-multi-select__trigger {

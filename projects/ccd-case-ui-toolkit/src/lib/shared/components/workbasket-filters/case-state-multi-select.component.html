@@ -1,5 +1,6 @@
 <div class="case-state-multi-select">
-  <div class="case-state-multi-select__actions" role="group" [attr.aria-label]="'State selection actions' | rpxTranslate">
+  <fieldset class="case-state-multi-select__actions">
+    <legend class="govuk-visually-hidden">{{'State selection actions' | rpxTranslate}}</legend>
     <button id="wb-case-state-select-all"
             type="button"
             class="button button-secondary"
@@ -14,7 +15,7 @@
             (click)="unselectAll($event)">
       {{'Unselect All' | rpxTranslate}}
     </button>
-  </div>
+  </fieldset>
 
   <button #trigger
           type="button"
@@ -30,9 +31,7 @@
 
   <div *ngIf="isOpen"
        class="case-state-multi-select__panel"
-       [id]="optionsId"
-       role="group"
-       [attr.aria-labelledby]="controlId">
+       [id]="optionsId">
     <fieldset>
       <legend class="govuk-visually-hidden">{{'State options' | rpxTranslate}}</legend>
       <div class="govuk-checkboxes govuk-checkboxes--small">
