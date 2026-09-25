@@ -30,6 +30,14 @@ export const caseFlagsLauncher = Object.assign(new CaseField(), {
   id: 'case-flags-launcher', label: 'Case flags', display_context: 'READONLY',
   display_context_parameter: '#ARGUMENT(READ)', field_type: { id: 'FlagLauncher', type: 'FlagLauncher' }, value: null
 });
+export const caseFlagsWorkflowInternalLauncher = Object.assign(new CaseField(), {
+  id: 'case-flags-workflow', label: 'Case flags workflow', display_context: 'READONLY',
+  display_context_parameter: '#ARGUMENT(READ)', field_type: { id: 'FlagLauncher', type: 'FlagLauncher' }, value: null
+});
+export const caseFlagsWorkflowExternalLauncher = Object.assign(new CaseField(), {
+  ...caseFlagsWorkflowInternalLauncher,
+  display_context_parameter: '#ARGUMENT(READ,EXTERNAL)'
+});
 
 export const queryManagementLauncher = launcher('query-management-launcher', 'QueryManagement');
 export const linkedCasesLauncher = launcher('linked-cases-launcher', 'LinkedCases');
@@ -77,4 +85,69 @@ export const linkedCasesRouteCase = {
     ...tab,
     fields: [...tab.fields, linkedCasesLauncher, linkedCasesField]
   }))
+};
+
+const flagDetail = (id: string, name: string, flagComment: string, status: string, created: string) => ({
+  id,
+  value: {
+    name,
+    flagComment,
+    flagCode: id,
+    hearingRelevant: 'No',
+    status,
+    dateTimeCreated: created,
+    dateTimeModified: created,
+    path: [{ id, value: name }]
+  }
+});
+
+const flagsField = (id: string, value: any) => Object.assign(new CaseField(), {
+  id,
+  display_context: 'READONLY',
+  field_type: { id: 'Flags', type: 'Complex' },
+  value
+});
+
+const caseFlagsWorkflowInternalFields = [
+  caseFlagsWorkflowInternalLauncher,
+  flagsField('witnessInternalFlags', {
+    partyName: 'Witness One',
+    roleOnCase: 'Witness',
+    groupId: 'witness-one',
+    details: [flagDetail('PF0021', 'Potentially violent person', 'Use secure waiting room', 'Active', '2025-01-03T10:00:00.000')]
+  }),
+  flagsField('witnessExternalFlags', {
+    partyName: 'Witness One',
+    roleOnCase: 'Witness',
+    groupId: 'witness-one',
+    details: [flagDetail('RA0001', 'Reasonable adjustment', 'Needs step-free access', 'Requested', '2025-01-02T10:00:00.000')]
+  }),
+  flagsField('caseFlags', {
+    details: [flagDetail('CASE001', 'Case-level flag', 'Judge review required', 'Inactive', '2025-01-01T10:00:00.000')]
+  })
+];
+
+export const caseFlagsWorkflowInternalRouteCase = {
+  ...launcherRouteCase,
+  tabs: [...launcherRouteCase.tabs, { id: 'case-flags', label: 'Case flags', fields: caseFlagsWorkflowInternalFields }]
+};
+
+export const caseFlagsWorkflowExternalRouteCase = {
+  ...launcherRouteCase,
+  tabs: [...launcherRouteCase.tabs, {
+    id: 'case-flags',
+    label: 'Case flags',
+    fields: [
+      caseFlagsWorkflowExternalLauncher,
+      flagsField('witnessExternalFlags', {
+        partyName: 'Witness One',
+        roleOnCase: 'Witness',
+        groupId: 'witness-one',
+        details: [flagDetail('RA0001', 'Reasonable adjustment', 'Needs step-free access', 'Requested', '2025-01-02T10:00:00.000')]
+      }),
+      flagsField('caseFlags', {
+        details: [flagDetail('CASE001', 'Case-level flag', 'Judge review required', 'Inactive', '2025-01-01T10:00:00.000')]
+      })
+    ]
+  }]
 };

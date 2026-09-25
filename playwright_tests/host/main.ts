@@ -33,7 +33,21 @@ import { advancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
-import { caseFileLauncher, caseFlagsLauncher, caseHistoryField, launcherRouteCase, linkedCasesLauncher, linkedCasesRouteCase, queryManagementLauncher, unsupportedLauncher, waysToPayField } from '../mocks/launchers.mock';
+import {
+  caseFileLauncher,
+  caseFlagsLauncher,
+  caseFlagsWorkflowExternalLauncher,
+  caseFlagsWorkflowExternalRouteCase,
+  caseFlagsWorkflowInternalLauncher,
+  caseFlagsWorkflowInternalRouteCase,
+  caseHistoryField,
+  launcherRouteCase,
+  linkedCasesLauncher,
+  linkedCasesRouteCase,
+  queryManagementLauncher,
+  unsupportedLauncher,
+  waysToPayField
+} from '../mocks/launchers.mock';
 import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
 import { categoriesAndDocumentsTestData } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/case-file-view/test-data/categories-and-documents-test-data';
 import { fieldFormFields } from '../mocks/field-form.mock';
@@ -52,7 +66,14 @@ const windowService: Pick<WindowService, 'openOnNewTab'> = {
 };
 const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: {
   get case() {
-    return new URLSearchParams(window.location.search).has('linked-cases') ? linkedCasesRouteCase : launcherRouteCase;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('case-flags') === 'internal') {
+      return caseFlagsWorkflowInternalRouteCase;
+    }
+    if (searchParams.get('case-flags') === 'external') {
+      return caseFlagsWorkflowExternalRouteCase;
+    }
+    return searchParams.has('linked-cases') ? linkedCasesRouteCase : launcherRouteCase;
   }
 } } };
 
@@ -227,6 +248,10 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
       </section>
 
+      <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
+      <ccd-field-read [caseField]="caseFlagsWorkflow" [caseReference]="caseReference" />
+      </section>
+
       <section data-testid="viewer-payment-controls"><h2>Viewer and payment controls</h2>
       <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
       <ng-container *ngIf="showPaymentHistory">
@@ -300,6 +325,10 @@ class ToolkitTestHost {
   readonly waysToPay = waysToPayField;
   readonly unsupportedLauncher = unsupportedLauncher;
   readonly caseFlagsLauncher = caseFlagsLauncher;
+  readonly caseFlagsWorkflow = new URLSearchParams(window.location.search).get('case-flags') === 'external'
+    ? caseFlagsWorkflowExternalLauncher
+    : caseFlagsWorkflowInternalLauncher;
+
   readonly queryManagementLauncher = queryManagementLauncher;
   readonly linkedCasesLauncher = linkedCasesLauncher;
   readonly caseHistory = caseHistoryField;
@@ -330,6 +359,7 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
+  readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
   readonly alertMessageType = AlertMessageType;
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
