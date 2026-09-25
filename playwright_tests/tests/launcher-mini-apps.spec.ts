@@ -41,8 +41,8 @@ test.describe('launcher and mini-application components', () => {
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
     await expect(launcherControls.getByRole('heading', { name: 'Case flags' })).toBeVisible();
     await expect(page.getByText('Reasonable adjustment')).toBeVisible();
-    await expect(launcherControls.getByRole('button', { name: 'Evidence request' })).toBeVisible();
-    await launcherControls.getByRole('button', { name: 'Evidence request' }).click();
+    await expect(launcherControls.getByRole('button', { name: 'Evidence request', exact: true })).toBeVisible();
+    await launcherControls.getByRole('button', { name: 'Evidence request', exact: true }).click();
     await expect(launcherControls.locator('table[aria-describedby="Details of the query"]')).toBeVisible();
     await expect(page.getByText('Please provide evidence')).toBeVisible();
     await page.getByRole('row', { name: /you are on event Case created row/ }).click();
