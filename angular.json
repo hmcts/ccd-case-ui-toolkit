@@ -125,7 +125,10 @@
             "polyfills": ["zone.js"],
             "tsConfig": "playwright_tests/host/tsconfig.json",
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules"]
+              "includePaths": [
+                "projects/ccd-case-ui-toolkit/src/lib",
+                "node_modules"
+              ]
             },
             "optimization": false,
             "sourceMap": true
