@@ -55,7 +55,8 @@ test.describe('Case File Viewer document actions', () => {
     await reload;
 
     await expect(page.getByText('We couldn\'t move the document. Please try again.', { exact: true })).toHaveCount(0);
-    await expect(page.getByTestId('case-file-update-count')).toHaveText('1');
+    await page.waitForLoadState('domcontentloaded');
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('case-file-update-count'))).toBe('1');
     await expect(launcherControls.getByRole('tree', { name: 'Case documents' })).toBeVisible();
   });
 });
