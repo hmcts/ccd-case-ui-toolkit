@@ -1,5 +1,5 @@
 import { ElementRef, Component, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
-import { CaseState } from '../../domain/definition/case-state.model';
+import { CaseState } from '../../../domain/definition/case-state.model';
 
 @Component({
   selector: 'ccd-case-state-multi-select',

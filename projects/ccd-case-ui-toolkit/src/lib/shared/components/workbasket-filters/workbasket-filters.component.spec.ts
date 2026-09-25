@@ -18,7 +18,7 @@ import { WorkbasketInputFilterService } from '../../services/workbasket/workbask
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
-import { CaseStateMultiSelectComponent } from './case-state-multi-select.component';
+import { CaseStateMultiSelectComponent } from './case-state-multi-select/case-state-multi-select.component';
 
 import createSpyObj = jasmine.createSpyObj;
 

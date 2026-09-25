@@ -9,7 +9,7 @@ import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { PaletteModule } from '../palette/palette.module';
-import { CaseStateMultiSelectComponent } from './case-state-multi-select.component';
+import { CaseStateMultiSelectComponent } from './case-state-multi-select/case-state-multi-select.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 @NgModule({
     imports: [

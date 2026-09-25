@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
-import { CaseState } from '../../domain/definition/case-state.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseState } from '../../../domain/definition/case-state.model';
 import { CaseStateMultiSelectComponent } from './case-state-multi-select.component';
 
 describe('CaseStateMultiSelectComponent', () => {
