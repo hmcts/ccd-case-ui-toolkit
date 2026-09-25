@@ -50,9 +50,10 @@ test.describe('Case File Viewer document actions', () => {
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     await page.getByText('Change folder', { exact: true }).click();
     await page.getByRole('radio', { name: 'Folder icon Wines' }).last().check();
-    const reload = page.waitForEvent('framenavigated');
+    const reload = page.waitForEvent('framenavigated', (frame) => frame === page.mainFrame());
     await page.getByRole('button', { name: 'Save' }).click();
     await reload;
+    await page.waitForLoadState('load');
 
     await expect(page.getByText('We couldn\'t move the document. Please try again.', { exact: true })).toHaveCount(0);
     await expect(launcherControls.getByRole('tree', { name: 'Case documents' })).toBeVisible();
