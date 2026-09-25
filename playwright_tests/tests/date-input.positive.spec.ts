@@ -3,7 +3,8 @@ import { test } from '../fixtures/browser';
 
 test.describe('Date fields', () => {
   test('renders the form value and propagates an edited ISO date', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?host=fields');
+    await expect(page.getByTestId('launcher-mini-app-controls')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Toolkit date input' })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Day', exact: true })).toHaveValue('09');
     await expect(page.getByRole('textbox', { name: 'Month', exact: true })).toHaveValue('04');
