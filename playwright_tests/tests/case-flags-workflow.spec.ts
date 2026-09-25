@@ -21,5 +21,6 @@ test.describe('case flags workflow', () => {
     await expect(caseFlags.getByText('Needs step-free access')).toBeVisible();
     await expect(caseFlags.getByText('Case-level flag')).toHaveCount(0);
     await expect(caseFlags.getByText('Judge review required')).toHaveCount(0);
+    await expect(caseFlags.getByRole('button', { name: /change/i })).toHaveCount(0);
   });
 });

@@ -24,5 +24,15 @@ test.describe('Query Management workflow', () => {
     await expect(launchers.locator('table[aria-describedby="Response of the query"]')).toBeVisible();
     await expect(launchers.getByRole('row', { name: /Caseworker name/ })).toHaveCount(0);
     await expect(launchers.getByText('Evidence received', { exact: true })).toBeVisible();
+    await expect(launchers.getByRole('button', { name: 'Ask a follow-up question' })).toBeVisible();
+  });
+
+  test('does not offer follow-up actions to internal users for a closed query', async ({ page }) => {
+    await page.goto('/');
+
+    const launchers = page.getByTestId('launcher-mini-app-controls');
+    await launchers.getByRole('button', { name: 'Closed evidence request' }).click();
+    await expect(launchers.getByText('This query has been closed by HMCTS staff.', { exact: true })).toBeVisible();
+    await expect(launchers.getByRole('button', { name: 'Ask a follow-up question' })).toHaveCount(0);
   });
 });
