@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.3.79-govuk5-v3",
+  "version": "7.3.79-govuk5-v5",
   "peerDependencies": {
     "@angular/animations": "^20.3.27",
     "@angular/cdk": "20.2.14",
