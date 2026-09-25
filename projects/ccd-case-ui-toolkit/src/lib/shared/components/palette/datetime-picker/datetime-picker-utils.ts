@@ -1,6 +1,6 @@
-import { MatDateFormats } from '@angular/material/core';
+import { NgxMatDateFormats } from '@angular-material-components/datetime-picker';
 
-export const CUSTOM_MOMENT_FORMATS: MatDateFormats = {
+export const CUSTOM_MOMENT_FORMATS: NgxMatDateFormats = {
   parse: {
     dateInput: 'DD-MM-YYYY HH:mm:ss'
   },
