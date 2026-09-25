@@ -25,6 +25,14 @@ Source-host checks do not establish installed-package compatibility. The separat
 
 Yarn disables the unused Puppeteer install hook brought in by Odhín; Playwright installs the only browser this suite needs.
 
+## Practical completion boundary
+
+[The coverage baseline](COVERAGE.md) maps browser contracts to executable specs and names remaining component, dependency and consuming-application work. Completion of the Playwright foundation means a reproducible source-host lane, a separate installed-package smoke lane, useful positive/negative assertions, and failure diagnostics. It does not mean every toolkit behaviour is tested or that Karma/Jasmine can be retired.
+
+Run a focused feature with `yarn test:playwright payment-contract` or `yarn test:playwright advanced-fields`; run the full suite before pushing. Use `yarn test:packaged-consumer` to build and test the installed tarball separately. Keep ports 4300 and 4301 free. Retain focused-run reports before running another command, which overwrites them.
+
+In a Git worktree, the existing `git-message` postinstall may fail because `.git` is a file rather than a directory. `yarn install --immutable --mode=skip-build` links dependencies without install hooks; this is not proof that those hooks work. Use the normal immutable install in a regular checkout, and run the explicit lint, typecheck, browser and package checks after the worktree fallback.
+
 ## CI ownership
 
 GitHub Actions retains product lint, the library build, Karma/Jasmine coverage and package publishing. Jenkins adds the scoped Playwright lint and typecheck, Chromium source-host tests, and Odhín/JUnit/failure artifacts. The source host builds directly from source; it does not require a prior library build or `dist` output. CI installs only Chromium's headless shell rather than unused headed browsers. Seven workers, full parallelism and zero retries exercise isolated browser contexts. Videos are disabled.

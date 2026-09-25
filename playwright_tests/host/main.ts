@@ -30,7 +30,7 @@ import { mandatoryFields } from '../mocks/mandatory-fields.mock';
 import { moneyField } from '../mocks/money-field.mock';
 import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
 import { editorFields } from '../mocks/editor-fields.mock';
-import { advancedFields } from '../mocks/advanced-fields.mock';
+import { advancedFields, persistedAdvancedFields } from '../mocks/advanced-fields.mock';
 import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
 import { identityFields } from '../mocks/identity-fields.mock';
 import { structuredFields } from '../mocks/structured-fields.mock';
@@ -321,7 +321,10 @@ class ToolkitTestHost {
   readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
   readonly dateTimeForm = new FormGroup({});
   readonly mandatoryForm = new FormGroup({});
-  readonly advanced = advancedFields;
+  readonly advanced = new URLSearchParams(window.location.search).has('dynamic-multi')
+    ? persistedAdvancedFields(new URLSearchParams(window.location.search).get('dynamic-multi'))
+    : advancedFields;
+
   readonly advancedForm = new FormGroup({});
   readonly caseFileLauncher = Object.assign(new CaseField(), caseFileLauncher, {
     acls: new URLSearchParams(window.location.search).has('case-file-edit')

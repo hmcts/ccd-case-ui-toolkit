@@ -13,3 +13,11 @@ export const populatedPaymentGroups = {
     date_created: '2025-01-02T10:00:00.000Z', payment_allocation: []
   }] }]
 };
+
+export const unpaidServiceRequest = {
+  payment_groups: [{
+    payment_group_reference: 'SR-001', service_request_status: 'Not paid',
+    date_created: '2025-01-02T10:00:00.000Z', payments: [], remissions: [],
+    fees: [{ code: 'FEE0001', calculated_amount: 125.5, amount_due: 125.5, over_payment: 0 }]
+  }]
+};
