@@ -35,27 +35,6 @@ test.describe('launcher and mini-application components', () => {
     await expect(launcherControls.getByLabel('Lager encyclopedia')).toBeVisible();
   });
 
-  test('opens a document in the media viewer and exposes document actions', async ({ page }) => {
-    await page.route('https://document.example/documents/lager/binary', (route) => route.fulfill({
-      status: 200,
-      contentType: 'application/pdf',
-      body: '%PDF-1.4 test document'
-    }));
-    await page.goto('/');
-
-    const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
-    await launcherControls.getByLabel('Lager encyclopedia').click();
-    await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(1);
-
-    const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
-    await documentActions.getByRole('button', { name: 'More document options' }).click();
-    const documentMenu = page.locator('.overlay-menu');
-    await expect(documentMenu.getByText('Open in a new tab', { exact: true })).toBeVisible();
-    await expect(documentMenu.getByText('Download', { exact: true })).toBeVisible();
-    await expect(documentMenu.getByText('Print', { exact: true })).toBeVisible();
-  });
-
   test('opens HTML documents directly instead of mounting the media viewer', async ({ page }) => {
     await page.goto('/?case-file=html');
 

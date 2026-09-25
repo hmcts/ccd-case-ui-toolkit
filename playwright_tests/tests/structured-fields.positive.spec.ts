@@ -22,5 +22,11 @@ test.describe('Structured fields', () => {
     await required.fill('Required value');
     await expect(page.getByTestId('structured-status')).toHaveText('VALID');
     await expect(page.getByTestId('structured-values')).toContainText('Required value');
+    await required.fill('');
+    await required.blur();
+    await expect(page.getByTestId('structured-status')).toHaveText('INVALID');
+    await required.fill('Corrected value');
+    await expect(page.getByTestId('structured-status')).toHaveText('VALID');
+    await expect(page.getByTestId('structured-values')).toContainText('Corrected value');
   });
 });

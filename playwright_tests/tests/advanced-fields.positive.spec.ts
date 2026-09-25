@@ -13,6 +13,13 @@ test('binds postcode and dynamic list controls', async ({ page }) => {
   await expect(values).toContainText('"Dynamic list": "two"');
   await expect(values).toContainText('"Dynamic radio": "two"');
   await expect(values).toContainText('"code": "one"');
+  await advancedFields.getByRole('checkbox', { name: 'Two', exact: true }).check();
+  await advancedFields.getByRole('checkbox', { name: 'One', exact: true }).uncheck();
+  await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic multi']).toEqual([{ code: 'two', label: 'Two' }]);
+  await advancedFields.getByRole('checkbox', { name: 'Two', exact: true }).uncheck();
+  await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic multi']).toEqual([]);
+  await advancedFields.getByRole('radio', { name: 'One', exact: true }).check();
+  await expect.poll(async () => JSON.parse(await values.innerText())['Dynamic radio']).toBe('one');
 });
 
 test('enters rich text content', async ({ page }) => {
