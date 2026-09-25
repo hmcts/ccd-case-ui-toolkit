@@ -163,10 +163,9 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
       return throwError(() => ({ status: 503 }));
     }
     if (params.has('case-file-move-success')) {
-      const updateCount = Number(window.localStorage.getItem('case-file-update-count') ?? '0') + 1;
-      window.localStorage.setItem('case-file-update-count', String(updateCount));
+      return of({ response: true } as any);
     }
-    return params.has('case-file-move-success') ? of({ response: true } as any) : of(null);
+    return of(null);
   }
 };
 
@@ -282,7 +281,6 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
       <output data-testid="opened-window-url">{{ openedWindowUrl }}</output>
-      <output data-testid="case-file-update-count">{{ caseFileUpdateCount }}</output>
       </section>
 
       <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
@@ -402,7 +400,6 @@ class ToolkitTestHost {
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
   readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
-  readonly caseFileUpdateCount = Number(window.localStorage.getItem('case-file-update-count') ?? '0');
   readonly alertMessageType = AlertMessageType;
   get openedWindowUrl(): string {
     return openedWindowUrl;
