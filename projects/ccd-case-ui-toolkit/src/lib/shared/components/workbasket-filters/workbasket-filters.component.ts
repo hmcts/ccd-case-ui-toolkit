@@ -341,7 +341,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (caseType) {
       const selectedCaseStateIds = this.selectCaseStateIdsFromQueryOrDefaults(
         routeSnapshot,
-        (this.defaults && this.defaults.state_id)
+        this.defaults?.state_id
       );
       caseStates = (this.selectedCaseTypeStates || caseType.states || [])
         .filter(state => selectedCaseStateIds.includes(state.id));
