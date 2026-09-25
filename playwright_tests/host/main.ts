@@ -10,11 +10,12 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
 import { CasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/cases.service';
+import { addressesService } from '../mocks/address-service.mock';
 import { AddressesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/addresses/addresses.service';
 import { DocumentManagementService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service';
 import { JurisdictionService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/jurisdiction/jurisdiction.service';
@@ -115,20 +116,6 @@ const linkedCasesService = {
   mapLookupIDToValueFromJurisdictions: (_fieldName, value) => value === 'TEST' ? 'Test service' : value
 } as Partial<LinkedCasesService>;
 
-const mandatoryAddressError = new BehaviorSubject(false);
-const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddressesForPostcode'> = {
-  getMandatoryError: () => mandatoryAddressError.asObservable(),
-  getAddressesForPostcode: () => of([{
-    AddressLine1: '1 Test Street',
-    AddressLine2: '',
-    AddressLine3: '',
-    PostTown: 'London',
-    County: '',
-    PostCode: 'SW1A 1AA',
-    Country: 'United Kingdom'
-  } as any])
-};
-
 const testAppConfig = Object.assign(new AppMockConfig(), {
   getPaymentsUrl: () => window.location.origin,
   getPayBulkScanBaseUrl: () => window.location.origin,
@@ -137,15 +124,17 @@ const testAppConfig = Object.assign(new AppMockConfig(), {
 });
 
 const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo' | 'isDocumentSecureModeEnabled' | 'uploadFile' | 'getDocumentBinaryUrl' | 'isHtmlDocument' | 'getMediaViewerInfo'> = {
-  parseCaseInfo: () => new URLSearchParams(window.location.search).has('secure-document-error')
+  parseCaseInfo: () => new URLSearchParams(window.location.search).has('secure-document-error') || new URLSearchParams(window.location.search).has('secure-document')
     ? { caseType: 'TestCase', jurisdiction: 'TEST', caseId: launcherCaseReference }
     : null,
-  isDocumentSecureModeEnabled: () => new URLSearchParams(window.location.search).has('secure-document-error'),
+  isDocumentSecureModeEnabled: () => new URLSearchParams(window.location.search).has('secure-document-error') || new URLSearchParams(window.location.search).has('secure-document'),
   uploadFile: (data: FormData) => new URLSearchParams(window.location.search).has('secure-document-error')
     ? throwError(() => ({ status: 500, error: 'secure service: {"error":"Secure upload rejected"}<EOL>.' }))
     : (data.get('files') as File | null)?.name === 'fail.pdf'
       ? throwError(() => ({ status: 502 }))
-      : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
+      : new URLSearchParams(window.location.search).has('secure-document')
+        ? of({ documents: [{ _links: { self: { href: 'https://document.example/documents/secure' }, binary: { href: 'https://document.example/documents/secure/binary' } }, originalDocumentName: 'secure.pdf', hashToken: 'secure-hash' }] } as any)
+        : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
   getDocumentBinaryUrl: (value: any) => value.document_binary_url,
   isHtmlDocument: (value: any) => new URLSearchParams(window.location.search).has('case-file-html') || value?.content_type === 'text/html',
   getMediaViewerInfo: () => JSON.stringify({
@@ -225,7 +214,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
       <section data-testid="address-uk-control"><ccd-field-write [caseField]="addressDocument.uk" [formGroup]="addressDocumentForm" /></section>
       <section data-testid="address-global-control"><ccd-field-write [caseField]="addressDocument.global" [formGroup]="addressDocumentForm" /></section>
-      <section data-testid="document-control"><ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" /></section></div>
+      <section data-testid="document-control"><ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" /></section>
+      <output data-testid="address-document-values">{{ addressDocumentForm.value | json }}</output></div>
 
       <div data-testid="structured-fields"><h2>Structured field controls</h2>
       <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
@@ -319,7 +309,7 @@ class ToolkitTestHost {
   readonly dateTimeField = dateTimeField;
   readonly mandatory = mandatoryFields;
   readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
-  readonly dateTimeForm = new FormGroup({ [dateTimeField.id]: new FormControl(dateTimeField.value) });
+  readonly dateTimeForm = new FormGroup({});
   readonly mandatoryForm = new FormGroup({});
   readonly advanced = advancedFields;
   readonly advancedForm = new FormGroup({});
