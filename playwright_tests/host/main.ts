@@ -136,6 +136,13 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
       return of({ case_version: 1, categories: [] } as any);
     }
     if (caseReference === launcherCaseReference) {
+      if (scenario === 'html') {
+        const htmlDocumentData = structuredClone(categoriesAndDocumentsTestData);
+        htmlDocumentData.categories[0].documents[0].document_binary_url = 'https://document.example/documents/lager/history.html';
+        htmlDocumentData.categories[0].documents[0].document_filename = 'Lager history.html';
+        htmlDocumentData.categories[0].documents[0].content_type = 'text/html';
+        return of(htmlDocumentData);
+      }
       return of(categoriesAndDocumentsTestData);
     }
     return of({ case_version: 1, categories: [] } as any);
@@ -163,7 +170,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       ? throwError(() => ({ status: 502 }))
       : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
   getDocumentBinaryUrl: (value: any) => value.document_binary_url,
-  isHtmlDocument: () => false,
+  isHtmlDocument: (value: any) => new URLSearchParams(window.location.search).has('case-file-html') || value?.content_type === 'text/html',
   getMediaViewerInfo: () => JSON.stringify({
     document_binary_url: 'https://document.example/documents/lager/binary',
     document_filename: 'lager-encyclopedia.pdf',
