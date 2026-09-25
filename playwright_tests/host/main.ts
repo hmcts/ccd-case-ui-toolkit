@@ -53,6 +53,9 @@ import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/sha
 import { caseFileViewService } from '../mocks/case-file-service.mock';
 import { fieldFormFields } from '../mocks/field-form.mock';
 import { caseNotifierCases } from '../mocks/case-notifier.mock';
+import { FlagWriterControlsComponent } from './flag-writer-controls.component';
+import { LinkedCaseWriterControlsComponent } from './linked-case-writer-controls.component';
+import { QueryWriterControlsComponent } from './query-writer-controls.component';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 import { addressDocumentFields } from '../mocks/address-document.mock';
 
@@ -88,7 +91,9 @@ const linkedCaseView: any = {
   state: { name: 'Open', description: 'Open' }
 };
 const caseNotifierCasesService = {
-  getCaseViewV2: (caseId: string) => of((caseId === linkedCaseView.case_id ? linkedCaseView : caseNotifierCases[caseId]) as any),
+  getCaseViewV2: (caseId: string) => caseId === 'unavailable'
+    ? throwError(() => ({ status: 503 }))
+    : of((caseId === linkedCaseView.case_id ? linkedCaseView : caseNotifierCases[caseId]) as any),
   getLinkedCases: () => of({ linkedCases: [{
     caseReference: '3333444455556666',
     ccdCaseType: 'TestCase',
@@ -164,9 +169,12 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     }) } },
     { provide: WindowService, useValue: windowService }
   ],
-  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
   template: `
     <main>
+      <toolkit-flag-writer *ngIf="showFlagWriter" />
+      <toolkit-linked-case-writer *ngIf="showLinkedWriter" />
+      <toolkit-query-writer-controls *ngIf="showQueryWriter" />
       <ng-container *ngIf="hostArea !== 'miniapps'">
       <h1>Toolkit date input</h1>
       <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
@@ -267,6 +275,8 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <h2>Case notifier state</h2>
       <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
       <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
+      <button type="button" (click)="refreshUnavailableCase()">Refresh unavailable case</button>
+      <output data-testid="case-notifier-error">{{ caseNotifierError }}</output>
       <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
 
       <h2>Collection controls</h2>
@@ -356,6 +366,9 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
+  readonly showFlagWriter = new URLSearchParams(window.location.search).has('flags-write');
+  readonly showLinkedWriter = new URLSearchParams(window.location.search).has('linked-write');
+  readonly showQueryWriter = new URLSearchParams(window.location.search).has('query-write');
   readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
   readonly alertMessageType = AlertMessageType;
   get openedWindowUrl(): string {
@@ -384,6 +397,16 @@ class ToolkitTestHost {
 
   clearCallbackError(): void {
     this.alertService.clear();
+  }
+
+  caseNotifierError = '';
+
+  refreshUnavailableCase(): void {
+    this.caseNotifier.fetchAndRefresh('unavailable').subscribe({
+      error: (error: { status: number }) => {
+        this.caseNotifierError = String(error.status);
+      }
+    });
   }
 
   refreshChallengedCase(): void {
