@@ -5,8 +5,8 @@
     "start": "ng serve --host 127.0.0.1 --port 4301"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "20.3.24",
-    "@angular/cli": "20.3.24",
+    "@angular-devkit/build-angular": "20.3.37",
+    "@angular/cli": "20.3.37",
     "@angular/compiler-cli": "^20.3.27",
     "@playwright/test": "1.63.0",
     "typescript": "5.9.2"
