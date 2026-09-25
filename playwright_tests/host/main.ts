@@ -139,6 +139,13 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
       return of({ case_version: 1, categories: [] } as any);
     }
     if (caseReference === launcherCaseReference) {
+      if (scenario === 'actions') {
+        const actionData = structuredClone(categoriesAndDocumentsTestData);
+        actionData.categories[0].documents.forEach((document) => {
+          document.document_binary_url = `http://127.0.0.1:4300${document.document_binary_url}`;
+        });
+        return of(actionData);
+      }
       if (scenario === 'html') {
         const htmlDocumentData = structuredClone(categoriesAndDocumentsTestData);
         htmlDocumentData.categories[0].documents[0].document_binary_url = 'https://document.example/documents/lager/history.html';
@@ -150,9 +157,13 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
     }
     return of({ case_version: 1, categories: [] } as any);
   },
-  updateDocumentCategory: () => new URLSearchParams(window.location.search).has('case-file-move-failure')
-    ? throwError(() => ({ status: 503 }))
-    : of(null)
+  updateDocumentCategory: () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('case-file-move-failure')) {
+      return throwError(() => ({ status: 503 }));
+    }
+    return params.has('case-file-move-success') ? of({ response: true } as any) : of(null);
+  }
 };
 
 const testAppConfig = Object.assign(new AppMockConfig(), {
