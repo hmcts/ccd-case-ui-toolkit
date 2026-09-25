@@ -61,8 +61,11 @@ const httpErrorService: Pick<HttpErrorService, 'handle'> = {
     throw new Error('The launcher test host does not make HTTP requests');
   }
 };
+let openedWindowUrl = '';
 const windowService: Pick<WindowService, 'openOnNewTab'> = {
-  openOnNewTab: () => undefined
+  openOnNewTab: (url: string) => {
+    openedWindowUrl = url;
+  }
 };
 const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: {
   get case() {
@@ -136,6 +139,13 @@ const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments'
       return of({ case_version: 1, categories: [] } as any);
     }
     if (caseReference === launcherCaseReference) {
+      if (scenario === 'html') {
+        const htmlDocumentData = structuredClone(categoriesAndDocumentsTestData);
+        htmlDocumentData.categories[0].documents[0].document_binary_url = 'https://document.example/documents/lager/history.html';
+        htmlDocumentData.categories[0].documents[0].document_filename = 'Lager history.html';
+        htmlDocumentData.categories[0].documents[0].content_type = 'text/html';
+        return of(htmlDocumentData);
+      }
       return of(categoriesAndDocumentsTestData);
     }
     return of({ case_version: 1, categories: [] } as any);
@@ -163,7 +173,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       ? throwError(() => ({ status: 502 }))
       : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
   getDocumentBinaryUrl: (value: any) => value.document_binary_url,
-  isHtmlDocument: () => false,
+  isHtmlDocument: (value: any) => new URLSearchParams(window.location.search).has('case-file-html') || value?.content_type === 'text/html',
   getMediaViewerInfo: () => JSON.stringify({
     document_binary_url: 'https://document.example/documents/lager/binary',
     document_filename: 'lager-encyclopedia.pdf',
@@ -189,7 +199,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
           : new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
       sub: 'caseworker@example.invalid'
     }) } },
-    { provide: WindowService, useValue: { openOnNewTab: () => undefined } }
+    { provide: WindowService, useValue: windowService }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent],
   template: `
@@ -256,6 +266,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
       <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
+      <output data-testid="opened-window-url">{{ openedWindowUrl }}</output>
       </section>
 
       <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
@@ -376,6 +387,9 @@ class ToolkitTestHost {
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
   readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
   readonly alertMessageType = AlertMessageType;
+  get openedWindowUrl(): string {
+    return openedWindowUrl;
+  }
 
   constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
     this.caseNotifier.caseView.subscribe((caseView) => {
