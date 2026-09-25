@@ -107,6 +107,13 @@ const addressesService: Pick<AddressesService, 'getMandatoryError' | 'getAddress
 
 const caseFileViewService: Pick<CaseFileViewService, 'getCategoriesAndDocuments' | 'updateDocumentCategory'> = {
   getCategoriesAndDocuments: (caseReference) => {
+    const scenario = new URLSearchParams(window.location.search).get('case-file');
+    if (scenario === 'unavailable') {
+      return throwError(() => ({ status: 503 }));
+    }
+    if (scenario === 'empty') {
+      return of({ case_version: 1, categories: [] } as any);
+    }
     if (caseReference === launcherCaseReference) {
       return of(categoriesAndDocumentsTestData);
     }
@@ -123,11 +130,15 @@ const testAppConfig = Object.assign(new AppMockConfig(), {
 });
 
 const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo' | 'isDocumentSecureModeEnabled' | 'uploadFile' | 'getDocumentBinaryUrl' | 'isHtmlDocument' | 'getMediaViewerInfo'> = {
-  parseCaseInfo: () => null,
-  isDocumentSecureModeEnabled: () => false,
-  uploadFile: (data: FormData) => (data.get('files') as File | null)?.name === 'fail.pdf'
-    ? throwError(() => ({ status: 502 }))
-    : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
+  parseCaseInfo: () => new URLSearchParams(window.location.search).has('secure-document-error')
+    ? { caseType: 'TestCase', jurisdiction: 'TEST', caseId: launcherCaseReference }
+    : null,
+  isDocumentSecureModeEnabled: () => new URLSearchParams(window.location.search).has('secure-document-error'),
+  uploadFile: (data: FormData) => new URLSearchParams(window.location.search).has('secure-document-error')
+    ? throwError(() => ({ status: 500, error: 'secure service: {"error":"Secure upload rejected"}<EOL>.' }))
+    : (data.get('files') as File | null)?.name === 'fail.pdf'
+      ? throwError(() => ({ status: 502 }))
+      : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
   getDocumentBinaryUrl: (value: any) => value.document_binary_url,
   isHtmlDocument: () => false,
   getMediaViewerInfo: () => '{}'

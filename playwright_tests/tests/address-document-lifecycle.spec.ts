@@ -35,4 +35,12 @@ test.describe('Address and document lifecycle', () => {
     await upload.setInputFiles({ name: 'fail.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
     await expect(page.getByRole('alert')).toHaveText('Document upload facility is not available at the moment');
   });
+
+  test('reports a parsed secure-document upload error', async ({ page }) => {
+    await page.goto('/?secure-document-error');
+    const upload = page.getByTestId('document-control').locator('#supporting-document');
+
+    await upload.setInputFiles({ name: 'secure.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
+    await expect(page.getByRole('alert')).toHaveText('Secure upload rejected');
+  });
 });
