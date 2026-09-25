@@ -29,7 +29,8 @@
     <span>{{selectedLabel | rpxTranslate}}</span>
   </button>
 
-  <div *ngIf="isOpen"
+  <div #optionsPanel
+       *ngIf="isOpen"
        class="case-state-multi-select__panel"
        [id]="optionsId">
     <fieldset>

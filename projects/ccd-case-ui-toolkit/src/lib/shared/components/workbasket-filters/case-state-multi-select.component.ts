@@ -23,6 +23,9 @@ export class CaseStateMultiSelectComponent {
   @ViewChild('trigger')
   public trigger: ElementRef<HTMLButtonElement>;
 
+  @ViewChild('optionsPanel')
+  public optionsPanel: ElementRef<HTMLElement>;
+
   public isOpen = false;
 
   public readonly controlId = 'wb-case-state';
@@ -93,7 +96,7 @@ export class CaseStateMultiSelectComponent {
 
   @HostListener('document:click', ['$event'])
   public onDocumentClick(event: Event): void {
-    if (this.isOpen && !this.elementRef.nativeElement.contains(event.target as Node)) {
+    if (this.isOpen && !this.isInteractiveTarget(event.target)) {
       this.closePanel();
     }
   }
@@ -105,9 +108,7 @@ export class CaseStateMultiSelectComponent {
 
   @HostListener('pointerdown', ['$event'])
   public onPointerDown(event: PointerEvent): void {
-    if (this.isOpen && this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.pointerDownInside = true;
-    }
+    this.pointerDownInside = this.isOpen && this.isInteractiveTarget(event.target);
   }
 
   @HostListener('document:pointerup')
@@ -124,6 +125,19 @@ export class CaseStateMultiSelectComponent {
       }
       this.closePanel();
     }
+  }
+
+  private isInteractiveTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof Node)) {
+      return false;
+    }
+
+    if (this.trigger?.nativeElement.contains(target) || this.optionsPanel?.nativeElement.contains(target)) {
+      return true;
+    }
+
+    const actionButtons = this.elementRef.nativeElement.querySelectorAll('.case-state-multi-select__actions button');
+    return Array.from(actionButtons).some(button => button.contains(target));
   }
 
   constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
