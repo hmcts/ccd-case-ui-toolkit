@@ -34,7 +34,7 @@ test.describe('Case File Viewer document actions', () => {
 
     const downloadPromise = page.waitForEvent('download');
     await page.getByText('Download', { exact: true }).click();
-    await expect((await downloadPromise).suggestedFilename()).toMatch(/^Lager encyclopedia(?:\.html)?$/);
+    await expect((await downloadPromise).suggestedFilename()).toBe('Lager encyclopedia');
 
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     const printPopupPromise = page.waitForEvent('popup');
@@ -55,6 +55,7 @@ test.describe('Case File Viewer document actions', () => {
     await reload;
 
     await expect(page.getByText('We couldn\'t move the document. Please try again.', { exact: true })).toHaveCount(0);
+    await expect(page.getByTestId('case-file-update-count')).toHaveText('1');
     await expect(launcherControls.getByRole('tree', { name: 'Case documents' })).toBeVisible();
   });
 });
