@@ -17,3 +17,12 @@ export const advancedFields = {
   dynamicRadio: dynamic('Dynamic radio', 'DynamicRadioList'),
   dynamicMulti: dynamic('Dynamic multi', 'DynamicMultiSelectList')
 };
+
+export const persistedAdvancedFields = (source: string | null) => ({
+  ...advancedFields,
+  dynamicMulti: Object.assign(new CaseField(), advancedFields.dynamicMulti, {
+    list_items: [],
+    value: source === 'explicit' ? [options[1]] : null,
+    formatted_value: { list_items: options, value: [options[0]] }
+  })
+});

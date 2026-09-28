@@ -26,11 +26,22 @@ jobs:
       - run: yarn install
       - run: yarn test:audit
       - run: yarn lint
+      - run: yarn lint:playwright && yarn test:playwright:typecheck && yarn lint:playwright:reporting
+      - name: Verify Jenkins publication contract
+        run: |
+          sudo apt-get update && sudo apt-get install -y groovy
+          groovy playwright_tests/jenkins/validate.spec.groovy
       - run: yarn build
       - name: Install Chromium for packaged-consumer smoke
         run: npx playwright install --with-deps chromium
       - name: Verify packaged consumer
         run: yarn test:packaged-consumer
+      - name: Retain packaged-consumer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: packaged-consumer-results
+          path: packaged-consumer-results
       - name: Create code coverage report
         run: yarn test
       - name: Change Report Path
