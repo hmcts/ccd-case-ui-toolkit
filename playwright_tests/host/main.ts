@@ -56,6 +56,9 @@ import { caseNotifierCases } from '../mocks/case-notifier.mock';
 import { FlagWriterControlsComponent } from './flag-writer-controls.component';
 import { LinkedCaseWriterControlsComponent } from './linked-case-writer-controls.component';
 import { QueryWriterControlsComponent } from './query-writer-controls.component';
+import { WorkflowContractControlsComponent } from './workflow-contract-controls.component';
+import { IdentityWriterControlsComponent } from './identity-writer-controls.component';
+import { FieldBoundaryControlsComponent } from './field-boundary-controls.component';
 import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
 import { addressDocumentFields } from '../mocks/address-document.mock';
 
@@ -169,13 +172,16 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     }) } },
     { provide: WindowService, useValue: windowService }
   ],
-  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, WorkflowContractControlsComponent, IdentityWriterControlsComponent, FieldBoundaryControlsComponent, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
   template: `
     <main>
+      <toolkit-workflow-contract-controls *ngIf="showWorkflowContract" />
+      <toolkit-identity-writer-controls *ngIf="showIdentityWriter" />
+      <toolkit-field-boundary-controls *ngIf="hostArea === 'field-boundaries'" />
       <toolkit-flag-writer *ngIf="showFlagWriter" />
       <toolkit-linked-case-writer *ngIf="showLinkedWriter" />
       <toolkit-query-writer-controls *ngIf="showQueryWriter" />
-      <ng-container *ngIf="hostArea !== 'miniapps'">
+      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
       <h1>Toolkit date input</h1>
       <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
       <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
@@ -232,7 +238,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
 
       </ng-container>
-      <ng-container *ngIf="hostArea !== 'fields'">
+      <ng-container *ngIf="hostArea !== 'fields' && !showContractHost">
       <section data-testid="launcher-mini-app-controls"><h2>Launcher and mini-application controls</h2>
       <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
@@ -254,7 +260,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
         <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
       </ng-container></section>
       </ng-container>
-      <ng-container *ngIf="hostArea !== 'miniapps'">
+      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
       <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
@@ -280,7 +286,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
       <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
 
       <h2>Collection controls</h2>
-      <ccd-field-write [caseField]="names" [formGroup]="collectionForm" />
+      <ccd-field-write data-testid="editable-collection" [caseField]="names" [formGroup]="collectionForm" />
       <div data-testid="restricted-collection">
         <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
       </div>
@@ -369,6 +375,9 @@ class ToolkitTestHost {
   editorPage = 1;
   readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
   readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
+  readonly showWorkflowContract = new URLSearchParams(window.location.search).has('workflow-contract');
+  readonly showIdentityWriter = new URLSearchParams(window.location.search).has('identity-write');
+  readonly showContractHost = this.showWorkflowContract || this.showIdentityWriter || this.hostArea === 'field-boundaries';
   readonly showFlagWriter = new URLSearchParams(window.location.search).has('flags-write');
   readonly showLinkedWriter = new URLSearchParams(window.location.search).has('linked-write');
   readonly showQueryWriter = new URLSearchParams(window.location.search).has('query-write');
