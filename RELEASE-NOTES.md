@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.4.4-exui-2855
+### Version 7.4.4-exui-2855-1
 **EXUI-2855** Search filters for closed cases
 
 ### Version 7.4.4

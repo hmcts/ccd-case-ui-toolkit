@@ -33,6 +33,8 @@ export class CaseStateMultiSelectComponent {
 
   private pointerDownInside = false;
 
+  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
+
   public togglePanel(event?: Event): void {
     event?.stopPropagation();
     if (this.disabled) {
@@ -139,6 +141,4 @@ export class CaseStateMultiSelectComponent {
     const actionButtons = this.elementRef.nativeElement.querySelectorAll('.case-state-multi-select__actions button');
     return Array.from(actionButtons).some(button => button.contains(target));
   }
-
-  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 }
