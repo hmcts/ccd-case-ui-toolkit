@@ -3175,6 +3175,46 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional
     expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(0);
   }));
 
+  it('organiseTabPosition should pre-select the tab marked with defaultFocus', fakeAsync(() => {
+    const caseView = clone(CASE_VIEW);
+    caseView.case_type.id = 'TestAddressBookCase';
+    caseView.tabs = [
+      { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: '' },
+      { id: 'summary', label: 'Summary', order: 2, fields: [], show_condition: '', defaultFocus: true },
+      { id: 'history', label: 'History', order: 3, fields: [], show_condition: '' }
+    ] as any;
+    caseViewerComponent.caseDetails = caseView;
+    componentFixture.detectChanges();
+
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1234567890123456');
+
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: {
+        toArray: () => [
+          { textLabel: 'Overview', position: 0 },
+          { textLabel: 'Summary', position: 1 },
+          { textLabel: 'History', position: 2 }
+        ],
+        find: (fn: any) => [
+          { textLabel: 'Overview', position: 0 },
+          { textLabel: 'Summary', position: 1 },
+          { textLabel: 'History', position: 2 }
+        ].find(fn)
+      },
+      selectedIndex: 0
+    } as any;
+
+    (router.navigate as jasmine.Spy).calls.reset();
+    caseViewerComponent.organiseTabPosition();
+    tick();
+
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['cases', 'case-details', 'TEST', 'TestAddressBookCase', '1234567890123456'],
+      { fragment: 'Summary' }
+    );
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(1);
+  }));
+
   it('tabChanged should route to appended/prepended tabs using id from view container', () => {
     componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
 
