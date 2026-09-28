@@ -38,7 +38,7 @@ These additions use real toolkit components with deterministic service inputs. P
 | `field-boundary.positive.spec.ts` / `field-boundary.negative.spec.ts` | Public read dispatch: positive/zero/negative money, leap-day/date-time formatting, dynamic selection labels, rich-text structure and sanitization, literal text, preserved line breaks and empty/invalid values. |
 | Existing address, collection and structured-field specs | Complete global-address payload; removal preserves the remaining collection item's value and identity; clearing a nested city preserves its sibling country and parent value. |
 
-Known organisation-search limitation: pasting the first unmatched query (one input event) does not display the no-results banner. The typed-query test uses real keyboard events and proves that specific interaction; it does not cover or fix the paste defect. Keep this distinction when assessing autocomplete coverage.
+Known organisation-search limitation: pasting the first unmatched query (one input event) does not display the no-results banner. The typed-query test uses real keyboard events and proves that specific interaction; it does not cover or fix the paste defect. Track the paste path as a product defect before adding a passing browser contract, because this closure PR intentionally changes no toolkit production code. Keep this distinction when assessing autocomplete coverage.
 
 ## Remaining assurance boundaries
 
@@ -46,6 +46,7 @@ Known organisation-search limitation: pasting the first unmatched query (one inp
 - Payment error handling remains an explicit unresolved dependency gap. Empty-state tests do not prove service-failure handling.
 - Karma/Jasmine remains the unit-test lane. Nothing here authorizes retiring its tests.
 - `yarn test:packaged-consumer` is the separate built-tarball integration gate. Source-host browser results cannot substitute for it.
+- `node scripts/coverage-inventory.test.mjs` guards this inventory against unclassified browser specs and keeps the unresolved organisation, payment, packaged-consumer and document-security boundaries visible.
 - Only a tracked TypeScript configuration remains under `e2e/` in the inspected checkout; no executable legacy scenarios were identified there. Do not infer historic scenario parity or a migration percentage from that absence.
 
 ## Known payment dependency failure boundary
