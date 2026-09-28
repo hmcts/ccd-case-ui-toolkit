@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../fixtures/browser';
 
 test.describe('Collection fields', () => {
   test('adds a new item and preserves collection identity', async ({ page }) => {
@@ -32,5 +33,18 @@ test.describe('Collection fields', () => {
 
     await expect(page.getByRole('button', { name: 'Remove Names' })).toHaveCount(0);
     await expect(page.getByTestId('names-value')).toHaveText('[]');
+  });
+  test('edits and removes a new item without changing the retained or restricted collection', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Add new', exact: true }).first().click();
+    await page.getByTestId('editable-collection').getByRole('textbox').nth(1).fill('Bob');
+    await expect.poll(async () => JSON.parse(await page.getByTestId('names-value').innerText()).map((item: { value: string }) => item.value)).toEqual(['Alice', 'Bob']);
+    await page.getByTestId('editable-collection').getByRole('button', { name: 'Remove Names 2', exact: true }).click();
+    await page.getByRole('button', { name: 'Remove', exact: true }).click();
+
+    await expect.poll(async () => JSON.parse(await page.getByTestId('collection-values').innerText())).toEqual({
+      names: [{ id: 'name-1', value: 'Alice' }],
+      restrictedNames: [{ id: 'name-1', value: 'Alice' }]
+    });
   });
 });

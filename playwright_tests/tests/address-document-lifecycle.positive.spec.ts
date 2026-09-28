@@ -16,13 +16,13 @@ test.describe('Address and document lifecycle', () => {
     await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['address-uk']).toMatchObject({ AddressLine1: '1 Test Street', PostTown: 'London', PostCode: 'SW1A 1AA', Country: 'United Kingdom' });
 
     await global.getByRole('link', { name: 'I can\'t enter a UK postcode' }).click();
-    const globalInputs = global.locator('input');
-    await globalInputs.nth(1).fill('42 Global Road');
-    await globalInputs.nth(4).fill('Paris');
-    await globalInputs.nth(7).fill('France');
-    await expect(globalInputs.nth(1)).toHaveValue('42 Global Road');
-    await expect(globalInputs.nth(4)).toHaveValue('Paris');
-    await expect(globalInputs.nth(7)).toHaveValue('France');
+    await global.locator('input[id="_detailAddressLine1"]').fill('42 Global Road');
+    await global.locator('input[id="_detailPostTown"]').fill('Paris');
+    await global.locator('input[id="_detailCountry"]').fill('France');
+    await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['address-global']).toEqual({
+      AddressLine1: '42 Global Road', AddressLine2: '', AddressLine3: '',
+      PostTown: 'Paris', County: '', PostCode: '', Country: 'France'
+    });
   });
 
   test('shows an existing document, replaces it through the writer and reports upload failure', async ({ page }) => {
