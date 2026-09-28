@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
 import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
@@ -49,7 +49,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisations$ = this.organisationService.getActiveOrganisations();
 
     this.searchOrgTextFormControl = new FormControl('');
-    this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges;
+    this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges.pipe(startWith(this.searchOrgTextFormControl.value));
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;

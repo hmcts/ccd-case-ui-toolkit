@@ -63,7 +63,7 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'yarn serve:playwright',
+    command: '../node_modules/.bin/ng serve toolkit-playwright-host --host 127.0.0.1 --port 4300',
     url: 'http://127.0.0.1:4300',
     reuseExistingServer: false
   }
