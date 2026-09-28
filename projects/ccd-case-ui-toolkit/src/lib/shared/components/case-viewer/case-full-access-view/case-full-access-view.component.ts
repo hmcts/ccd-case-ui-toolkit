@@ -303,7 +303,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     let hashValue = url.substring(url.indexOf('#') + 1);
     const hasHash = url.includes('#');
     const isSpecialTabPath = url.includes('roles-and-access') || url.includes('tasks') || url.includes('hearings');
-    if (!hasHash && !isSpecialTabPath) {
+    // TODO: Remove defaultFocusDemo once QA'd
+    const defaultFocusDemo = url.includes('default-focus-demo');
+    if (defaultFocusDemo) {
+      this.caseDetails.tabs[Number(url.substring(url.indexOf('default-focus-demo-')+19))].defaultFocus = true;
+    }
+    if (defaultFocusDemo || (!hasHash && !isSpecialTabPath)) {
       const paths = url.split('/');
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
@@ -326,10 +331,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           this.selectTabByLabel(foundTab.label);
         });
       } else {
-        this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
+        this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
+        // Presuming default focus only set for one tab here - multiple tabs with default focus are not handled as is a contradiction
+        let preSelectTab: CaseTab | null = this.caseDetails.tabs.find((tab) => tab.defaultFocus === true) ?? null;
+        // Attempt to pre-select the tab based on the preferred label for the current case type
         const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
-        let preSelectTab: CaseTab = null;
-        if (preferredLabel) {
+        // If no tab has default focus, attempt to use the preferred label for the current case type
+        if (!preSelectTab && preferredLabel) {
           preSelectTab = this.caseDetails.tabs.find((tab) => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
         }
 
