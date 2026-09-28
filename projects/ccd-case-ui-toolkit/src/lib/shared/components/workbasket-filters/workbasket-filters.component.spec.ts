@@ -18,6 +18,7 @@ import { WorkbasketInputFilterService } from '../../services/workbasket/workbask
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
+import { CaseStateMultiSelectComponent } from './case-state-multi-select/case-state-multi-select.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -215,6 +216,7 @@ describe('Clear localStorage for workbasket filters', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -284,6 +286,7 @@ describe('with defaults', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -327,7 +330,7 @@ describe('with defaults', () => {
   it('should disable the button', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = null;
-    component.selected.caseState = null;
+    component.selected.caseState = [];
 
     fixture.detectChanges();
     const button = de.query($APPLY_BUTTON);
@@ -337,7 +340,7 @@ describe('with defaults', () => {
   it('should have an Apply button disabled when case type is not set', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = null;
-    component.selected.caseState = null;
+    component.selected.caseState = [];
     fixture.detectChanges();
 
     const button = de.query($APPLY_BUTTON);
@@ -412,37 +415,29 @@ describe('with defaults', () => {
   it('should initialise case state selector with states from selected case type', () => {
     const selector = de.query(By.css('#wb-case-state'));
 
-    expect(selector.children.length).toEqual(3);
-
-    const cs1 = selector.children[0];
-    expect(cs1.nativeElement.textContent).toEqual('Any');
-
-    const cs2 = selector.children[1];
-    expect(cs2.nativeElement.textContent).toEqual(DEFAULT_CASE_TYPE.states[0].name);
-
-    const cs3 = selector.children[2];
-    expect(cs3.nativeElement.textContent).toEqual(DEFAULT_CASE_STATE.name);
+    expect(component.selectedCaseTypeStates.length).toEqual(2);
+    expect(selector.nativeElement.textContent).toContain(DEFAULT_CASE_STATE.name);
     expect(orderService.sortAsc).toHaveBeenCalled();
   });
 
   it('should initially select case state based on default', () => {
     const selector = de.query(By.css('#wb-case-state'));
 
-    expect(selector.nativeElement.selectedIndex).toEqual(2);
-    expect(component.selected.caseState).toBe(DEFAULT_CASE_TYPE.states[1]);
+    expect(selector.nativeElement.textContent).toContain(DEFAULT_CASE_STATE.name);
+    expect(component.selected.caseState).toEqual([DEFAULT_CASE_TYPE.states[1]]);
     expect(orderService.sortAsc).toHaveBeenCalled();
   });
 
   it('should update selected case state', waitForAsync(() => {
-    component.selected.caseState = DEFAULT_CASE_TYPE.states[0];
+    component.selected.caseState = [DEFAULT_CASE_TYPE.states[0]];
     fixture.detectChanges();
 
     fixture
       .whenStable()
       .then(() => {
         const selector = de.query(By.css('#wb-case-state'));
-        expect(selector.nativeElement.selectedIndex).toEqual(1);
-        expect(component.selected.caseState).toBe(DEFAULT_CASE_TYPE.states[0]);
+        expect(selector.nativeElement.textContent).toContain(DEFAULT_CASE_TYPE.states[0].name);
+        expect(component.selected.caseState).toEqual([DEFAULT_CASE_TYPE.states[0]]);
       });
   }));
 
@@ -451,7 +446,7 @@ describe('with defaults', () => {
       selected: {
         jurisdiction: JURISDICTION_2,
         caseType: DEFAULT_CASE_TYPE,
-        caseState: DEFAULT_CASE_STATE,
+        caseState: [DEFAULT_CASE_STATE],
         init: false,
         page: 1,
         formGroup: null,
@@ -478,7 +473,7 @@ describe('with defaults', () => {
         selected: {
           jurisdiction: JURISDICTION_2,
           caseType: DEFAULT_CASE_TYPE,
-          caseState: DEFAULT_CASE_STATE,
+          caseState: [DEFAULT_CASE_STATE],
           init: true,
           page: 1,
           formGroup: null,
@@ -494,7 +489,7 @@ describe('with defaults', () => {
   it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = null;
-    component.selected.caseState = null;
+    component.selected.caseState = [];
 
     const formValue = {};
     windowService.getLocalStorage.and.returnValue(formValue);
@@ -536,11 +531,12 @@ describe('with defaults', () => {
   it('should update search input when case type is reset', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
-    component.selected.caseState = CASE_TYPES_2[1].states[0];
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([]));
 
     component.onCaseTypeIdChange();
     expect(workbasketInputFilterService.getWorkbasketInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[1].id);
+    expect(component.selected.caseState).toEqual([]);
   });
 
   it('should clear stored dynamic filter values when case type changes', () => {
@@ -554,16 +550,18 @@ describe('with defaults', () => {
 
   it('should clear stored dynamic filter values when jurisdiction changes', () => {
     component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
 
     component.onJurisdictionIdChange();
 
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    expect(component.selected.caseState).toEqual([]);
   });
 
   it('should ignore error and reset input fields', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
-    component.selected.caseState = CASE_TYPES_2[1].states[0];
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(throwError(new Error('Response expired')));
 
     component.onCaseTypeIdChange();
@@ -581,7 +579,7 @@ describe('with defaults', () => {
   it('should render an input for each defined search input', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
-    component.selected.caseState = CASE_TYPES_2[1].states[0];
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
@@ -594,7 +592,7 @@ describe('with defaults', () => {
   it('should render a valid search input field component', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
-    component.selected.caseState = CASE_TYPES_2[1].states[0];
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
 
     const expectedInput = TEST_WORKBASKET_INPUTS[0];
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([expectedInput]));
@@ -616,7 +614,7 @@ describe('with defaults', () => {
   it('should render a valid search input field component when path is defined', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
-    component.selected.caseState = CASE_TYPES_2[1].states[0];
+    component.selected.caseState = [CASE_TYPES_2[1].states[0]];
 
     const complexFieldSearchInput = TEST_WORKBASKET_INPUTS[2];
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(of([complexFieldSearchInput]));
@@ -643,7 +641,7 @@ describe('with defaults', () => {
     component.formGroup = formGroup;
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    component.selected.caseState = DEFAULT_CASE_STATE;
+    component.selected.caseState = [DEFAULT_CASE_STATE];
 
     workbasketHandler.applyFilters.calls.reset();
 
@@ -665,6 +663,24 @@ describe('with defaults', () => {
     });
   });
 
+  it('should submit all selected case states when apply button is clicked', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[1];
+    component.selected.caseState = CASE_TYPES_2[1].states;
+
+    workbasketHandler.applyFilters.calls.reset();
+    component.apply(false);
+
+    expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
+      selected: component.selected,
+      queryParams: {
+        jurisdiction: JURISDICTION_2.id,
+        'case-type': CASE_TYPES_2[1].id,
+        'case-state': 'S1,S2'
+      }
+    });
+  });
+
   it('should remove any "_judicialUserControl"-suffixed FormControl values from the FormGroup value to be stored locally', () => {
     const control = new FormControl('test');
     const judicialUserControl = new FormControl('judicialUser1');
@@ -676,7 +692,7 @@ describe('with defaults', () => {
     component.formGroup = formGroup;
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    component.selected.caseState = DEFAULT_CASE_STATE;
+    component.selected.caseState = [DEFAULT_CASE_STATE];
 
     workbasketHandler.applyFilters.calls.reset();
 
@@ -751,6 +767,7 @@ describe('with defaults and CRUD', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -820,8 +837,8 @@ describe('with defaults and CRUD', () => {
     component.selected.caseType = CRUD_FILTERED_CASE_TYPES[0];
     const selector = de.query(By.css('#wb-case-state'));
     component.defaults.state_id = CRUD_FILTERED_CASE_TYPES[0].states[0].id;
-    expect(selector.nativeElement.selectedIndex).toEqual(0);
-    expect(component.selected.caseState).toEqual(null);
+    expect(selector.nativeElement.textContent).toContain('Any');
+    expect(component.selected.caseState).toEqual([]);
   });
 });
 
@@ -853,6 +870,7 @@ describe('with defaults and CRUD and empty case types', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -930,6 +948,7 @@ describe('with defaults and CRUD and type with empty case states', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -986,7 +1005,7 @@ describe('with query parameters', () => {
   const QUERY_PARAMS = {
     [WorkbasketFiltersComponent.PARAM_JURISDICTION]: 'J1',
     [WorkbasketFiltersComponent.PARAM_CASE_TYPE]: 'CT0',
-    [WorkbasketFiltersComponent.PARAM_CASE_STATE]: 'S02'
+    [WorkbasketFiltersComponent.PARAM_CASE_STATE]: 'S01,S02'
   };
 
   beforeEach(async () => {
@@ -1014,6 +1033,7 @@ describe('with query parameters', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -1062,7 +1082,17 @@ describe('with query parameters', () => {
   });
 
   it('should initially select case state based on query parameter', () => {
-    expect(component.selected.caseState).toBe(CASE_TYPES_1[0].states[1]);
+    expect(component.selected.caseState).toEqual(CASE_TYPES_1[0].states);
+  });
+
+  it('should restore a single case state query parameter as an array', () => {
+    const selectedStates = (component as any).selectCaseStates(CASE_TYPES_1[0], {
+      queryParams: {
+        [WorkbasketFiltersComponent.PARAM_CASE_STATE]: 'S02'
+      }
+    });
+
+    expect(selectedStates).toEqual([CASE_TYPES_1[0].states[1]]);
   });
 
 });
@@ -1101,6 +1131,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -1146,7 +1177,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     tick(); // Simulate the passage of time to trigger subscriptions
     expect(component.selected.jurisdiction).toEqual(JURISDICTION_3);
     expect(component.selected.caseType).toEqual(CASE_TYPES_1[0]);
-    expect(component.selected.caseState).toBeUndefined();
+    expect(component.selected.caseState).toEqual([]);
   }));
 });
 
@@ -1186,6 +1217,7 @@ describe('with no defaults', () => {
           ConditionalShowModule
         ],
         declarations: [
+          CaseStateMultiSelectComponent,
           WorkbasketFiltersComponent,
           FieldWriteComponent,
           MockRpxTranslatePipe
@@ -1223,7 +1255,7 @@ describe('with no defaults', () => {
   it('should have disabled button', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = null;
-    component.selected.caseState = null;
+    component.selected.caseState = [];
 
     fixture.detectChanges();
     const button = de.query($APPLY_BUTTON);
@@ -1283,8 +1315,8 @@ describe('with no defaults', () => {
 
         selector = de.query(By.css('#wb-case-state'));
 
-        expect(selector.children.length).toEqual(3);
-        expect(selector.nativeElement.selectedIndex).toEqual(0);
+        expect(selector.nativeElement.textContent).toContain('Any');
+        expect(component.selected.caseState).toEqual([]);
       });
   });
 
@@ -1294,7 +1326,7 @@ describe('with no defaults', () => {
     component.onJurisdictionIdChange();
     component.selected.caseType = CASE_TYPES_1[0];
     component.onCaseTypeIdChange();
-    component.selected.caseState = CASE_TYPES_1[0].states[0];
+    component.selected.caseState = [CASE_TYPES_1[0].states[0]];
     fixture.detectChanges();
     tick();
     fixture.detectChanges();
@@ -1303,7 +1335,7 @@ describe('with no defaults', () => {
     selector = de.query(By.css('#wb-case-type'));
     expect(selector.nativeElement.selectedIndex).toEqual(1);
     selector = de.query(By.css('#wb-case-state'));
-    expect(selector.nativeElement.selectedIndex).toEqual(1);
+    expect(selector.nativeElement.textContent).toContain(CASE_TYPES_1[0].states[0].name);
 
     spyOn(component, 'apply').and.callThrough();
     component.reset();
@@ -1320,13 +1352,35 @@ describe('with no defaults', () => {
     expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
     expect(selector.nativeElement.selectedIndex).toEqual(0);
     selector = de.query(By.css('#wb-case-state'));
-    expect(selector.children[0].nativeElement.textContent).toEqual('Any');
-    expect(selector.nativeElement.selectedIndex).toEqual(0);
+    expect(selector.nativeElement.textContent).toContain('Any');
+    expect(component.selected.caseState).toEqual([]);
 
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
     expect(windowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');
     expect(component.apply).toHaveBeenCalledWith(true);
     expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
+  }));
+
+  it('should reset the state filter to Any when the current route has a saved state', fakeAsync(() => {
+    activatedRoute.snapshot.queryParams = {
+      [WorkbasketFiltersComponent.PARAM_JURISDICTION]: JURISDICTION_ONE.id,
+      [WorkbasketFiltersComponent.PARAM_CASE_TYPE]: CASE_TYPES_1[0].id,
+      [WorkbasketFiltersComponent.PARAM_CASE_STATE]: CASE_TYPES_1[0].states[0].id
+    };
+    component.selected.jurisdiction = JURISDICTION_ONE;
+    component.onJurisdictionIdChange();
+    component.selected.caseType = CASE_TYPES_1[0];
+    component.onCaseTypeIdChange();
+    component.selected.caseState = [CASE_TYPES_1[0].states[0]];
+    fixture.detectChanges();
+
+    component.reset();
+    tick(500);
+    fixture.detectChanges();
+
+    expect(component.selected.caseState).toEqual([]);
+    expect(de.query(By.css('#wb-case-state')).nativeElement.textContent).toContain('Any');
+    expect(workbasketHandler.applyFilters.calls.mostRecent().args[0].queryParams['case-state']).toBeUndefined();
   }));
 
   it('should call scrollTo when scrollToTop is called', () => {

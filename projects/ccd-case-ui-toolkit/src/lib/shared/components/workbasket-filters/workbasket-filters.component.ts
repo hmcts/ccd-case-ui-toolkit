@@ -54,7 +54,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     init?: boolean,
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
-    caseState?: CaseState,
+    caseState?: CaseState[],
     formGroup?: FormGroup,
     page?: number,
     metadataFields?: string[]
@@ -100,7 +100,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       jurisdiction: null,
       caseType: null,
       formGroup: null,
-      caseState: undefined,
+      caseState: [],
       page: 1,
       metadataFields: []
     };
@@ -130,8 +130,8 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseType) {
       queryParams[WorkbasketFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
     }
-    if (this.selected.caseState) {
-      queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+    if (this.selected.caseState && this.selected.caseState.length > 0) {
+      queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.map(state => state.id).join(',');
     }
     // without explicitly preserving alerts any message on the page
     // would be cleared out because of this initial navigation.
@@ -203,7 +203,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selected.caseType = null;
       }
 
-      this.selected.caseState = null;
+      this.selected.caseState = [];
       this.clearWorkbasketInputs();
 
       if (!this.isApplyButtonDisabled()) {
@@ -221,7 +221,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
-      this.selected.caseState = null;
+      this.selected.caseState = [];
       this.formGroup = new FormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
@@ -308,7 +308,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Try to initialise filters based on query parameters or workbasket defaults.
    * Query parameters, when available, take precedence over workbasket defaults.
    */
-  private initFilters(init: boolean) {
+  private initFilters(init: boolean, resetCaseState = false) {
     const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
@@ -323,7 +323,9 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
         if (this.selected.caseType) {
           this.onCaseTypeIdChange(false);
-          this.selected.caseState = this.selectCaseState(this.selected.caseType, routeSnapshot);
+          this.selected.caseState = resetCaseState
+            ? []
+            : this.selectCaseStates(this.selected.caseType, routeSnapshot);
         }
         this.workbasketDefaults = true;
       }
@@ -334,17 +336,28 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.apply(init);
   }
 
-  private selectCaseState(caseType: CaseTypeLite, routeSnapshot: ActivatedRouteSnapshot): CaseState {
-    let caseState;
+  private selectCaseStates(caseType: CaseTypeLite, routeSnapshot: ActivatedRouteSnapshot): CaseState[] {
+    let caseStates: CaseState[] = [];
     if (caseType) {
-      const selectedCaseStateId = this.selectCaseStateIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.state_id));
-      caseState = caseType.states.find(ct => selectedCaseStateId === ct.id);
+      const selectedCaseStateIds = this.selectCaseStateIdsFromQueryOrDefaults(
+        routeSnapshot,
+        this.defaults?.state_id
+      );
+      caseStates = (this.selectedCaseTypeStates || caseType.states || [])
+        .filter(state => selectedCaseStateIds.includes(state.id));
     }
-    return caseState ? caseState : null;
+    return caseStates;
   }
 
-  private selectCaseStateIdFromQueryOrDefaults(routeSnapshot: ActivatedRouteSnapshot, defaultCaseStateId: string): string {
-    return routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE] || defaultCaseStateId;
+  private selectCaseStateIdsFromQueryOrDefaults(routeSnapshot: ActivatedRouteSnapshot, defaultCaseStateId: string): string[] {
+    const queryState = routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_CASE_STATE];
+    const stateValue = queryState || defaultCaseStateId;
+    if (!stateValue) {
+      return [];
+    }
+    return (Array.isArray(stateValue) ? stateValue : String(stateValue).split(','))
+      .map(stateId => String(stateId).trim())
+      .filter(Boolean);
   }
 
   private selectCaseType(selected: any, caseTypes: CaseTypeLite[], routeSnapshot: ActivatedRouteSnapshot): CaseTypeLite {
@@ -367,7 +380,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.workbasketDefaults = false;
     this.selected.jurisdiction = null;
     this.initialised = false;
-    this.initFilters(true);
+    this.initFilters(true, true);
   }
 
   private clearWorkbasketInputs() {
@@ -381,7 +394,7 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   private resetCaseState() {
     this.defaults.state_id = null;
-    this.selected.caseState = null;
+    this.selected.caseState = [];
     this.selectedCaseTypeStates = null;
   }
 
