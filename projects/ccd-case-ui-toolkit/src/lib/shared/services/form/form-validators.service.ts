@@ -71,7 +71,7 @@ export class FormValidatorsService {
     const inlineMarkdownPattern = /(?:!?\[[^\]]{0,500}\]\([^)]{0,500}\)|<(?:img\b[^>]{0,500}>|a\b[^>]{0,500}>[\s\S]*?<\/a>))/i;
 
     // Matches: [text][id], ![alt][id], and the collapsed form [text][]
-    const referenceBoxPattern = /(!)?\[((?:[^[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
+    const referenceBoxPattern = /(!)?\[((?:[^[\]\\]|\\.){0,500})\]\[([^\]]{0,100})\](?!\s*\/)/;
 
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;
