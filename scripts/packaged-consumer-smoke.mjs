@@ -56,10 +56,11 @@ function smoke() {
 
 function run(command, args, cwd) {
   try {
+    const { YARN_RC_FILENAME, ...env } = process.env;
     return execFileSync(command, args, {
       cwd,
       encoding: 'utf8',
-      env: { ...process.env, npm_config_cache: join(tmpdir(), 'ccd-case-ui-toolkit-npm-cache') },
+      env: { ...env, npm_config_cache: join(tmpdir(), 'ccd-case-ui-toolkit-npm-cache') },
       stdio: ['ignore', 'pipe', 'pipe']
     });
   } catch (error) {

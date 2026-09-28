@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
 import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
@@ -37,6 +37,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public searchOrgValue$: Observable<string>;
   public simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
   public selectedOrg$: Observable<SimpleOrganisationModel>;
+  public showNoResultsMessage = false;
 
   constructor(private readonly organisationService: OrganisationService,
     private readonly organisationConverter: OrganisationConverter,
@@ -82,13 +83,15 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   public onSearchOrg(orgSearchText: string): void {
+    this.showNoResultsMessage = false;
     if (orgSearchText && orgSearchText.length >= 2) {
       const lowerOrgSearchText = orgSearchText.toLowerCase();
       this.simpleOrganisations$ = this.organisations$.pipe(
-        switchMap(organisations => of(
-          this.searchOrg(organisations, lowerOrgSearchText)
-        )
-        )
+        map(organisations => this.searchOrg(organisations, lowerOrgSearchText)),
+        map(organisations => {
+          this.showNoResultsMessage = organisations.length === 0 && orgSearchText.length > 2;
+          return organisations;
+        })
       );
     } else {
       this.simpleOrganisations$ = of([]);
@@ -147,6 +150,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.organisationNameFormControl.reset();
     this.selectedOrg$ = of(WriteOrganisationFieldComponent.EMPTY_SIMPLE_ORG);
     this.simpleOrganisations$ = of([]);
+    this.showNoResultsMessage = false;
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.enable();
     this.caseField.value = { OrganisationID: null, OrganisationName: null };

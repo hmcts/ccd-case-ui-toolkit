@@ -52,7 +52,7 @@
             </tr>
           </tbody>
         </table>
-        <div *ngIf="(simpleOrganisations$ | async)?.length === 0 && (searchOrgValue$ | async)?.length > 2">
+        <div *ngIf="showNoResultsMessage">
           <div class="no-result-message">
             {{'No results found.' | rpxTranslate}}
           </div>

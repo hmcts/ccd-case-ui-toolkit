@@ -33,11 +33,17 @@ chmod +x .toolkit-bin/yarn
         stage('Toolkit Playwright static checks') {
           sh 'node .yarn/releases/yarn-4.5.0.cjs lint:playwright'
           sh 'node .yarn/releases/yarn-4.5.0.cjs lint:playwright:reporting'
+          sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright:coverage'
           sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck'
         }
         stage('Toolkit Playwright integration tests') {
           lock(resource: "toolkit-playwright-${env.NODE_NAME}-4300") {
             sh 'node .yarn/releases/yarn-4.5.0.cjs test:playwright --workers=7'
+          }
+        }
+        stage('Toolkit packaged consumer smoke') {
+          lock(resource: "toolkit-packaged-consumer-${env.NODE_NAME}-4301") {
+            sh 'node .yarn/releases/yarn-4.5.0.cjs test:packaged-consumer'
           }
         }
       }
@@ -49,7 +55,7 @@ chmod +x .toolkit-bin/yarn
         // Publication cannot hide the original command failure or turn a failed run green.
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           archiveArtifacts allowEmptyArchive: true,
-            artifacts: 'playwright_tests/test-results/**,playwright_tests/odhin-report/**'
+            artifacts: 'playwright_tests/test-results/**,playwright_tests/odhin-report/**,packaged-consumer-results/**'
         }
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           def result = junit allowEmptyResults: false,

@@ -29,6 +29,14 @@ test.describe('Identity writers', () => {
     await expect(page.getByTestId('identity-org-payload')).toContainText('ORG-A');
   });
 
+  test('pasting an unmatched organisation shows no results and keeps an empty payload', async ({ page }) => {
+    const host = page.getByTestId('identity-writer-controls');
+    await host.locator('#search-org-text').fill('pasted missing organisation');
+    await expect(host.getByText('No results found.', { exact: true })).toBeVisible();
+    await expect(host.getByRole('link', { name: 'Select', exact: true })).toHaveCount(0);
+    await expect(page.getByTestId('identity-org-payload')).toHaveText(JSON.stringify({ 'writer-org': { OrganisationID: null, OrganisationName: null } }, null, 2));
+  });
+
   test('reports unavailable organisation data without allowing a selection', async ({ page }) => {
     await page.goto('/?identity-write=true&identity-org=unavailable');
     const host = page.getByTestId('identity-writer-controls');

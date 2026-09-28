@@ -38,7 +38,7 @@ These additions use real toolkit components with deterministic service inputs. P
 | `field-boundary.positive.spec.ts` / `field-boundary.negative.spec.ts` | Public read dispatch: positive/zero/negative money, leap-day/date-time formatting, dynamic selection labels, rich-text structure and sanitization, literal text, preserved line breaks and empty/invalid values. |
 | Existing address, collection and structured-field specs | Complete global-address payload; removal preserves the remaining collection item's value and identity; clearing a nested city preserves its sibling country and parent value. |
 
-Known organisation-search limitation: pasting the first unmatched query (one input event) does not display the no-results banner. The typed-query test uses real keyboard events and proves that specific interaction; it does not cover or fix the paste defect. Keep this distinction when assessing autocomplete coverage.
+Coverage classifications are guarded by `playwright_tests/coverage-classification.json` and `yarn test:playwright:coverage`; add a classification when introducing a palette entry so this matrix does not silently drift.
 
 ## Remaining assurance boundaries
 
