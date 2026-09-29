@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Constants } from '../../../commons/constants';
@@ -16,6 +17,8 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
   standalone: false
 })
 export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent implements OnInit, OnDestroy {
+
+  @ViewChild(MatAutocompleteTrigger) public autocompleteTrigger: MatAutocompleteTrigger;
 
   public readonly minSearchCharacters = 2;
 
@@ -136,13 +139,13 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
       : undefined;
   }
 
-  public onSelectionChange(event: any): void {
-    // The event.source.value property is a JudicialUserModel object instance; use this to update both the caseField
+  public onSelectionChange(event: MatAutocompleteSelectedEvent): void {
+    // The selected option value is a JudicialUserModel object instance; use this to update both the caseField
     // value and the values of the two FormControls for the idamId and personalCode properties of the JudicialUser
     // complex field type (these values will appear in the data payload for validation and submission)
     this.caseField.value = {
-      idamId: event.source.value.idamId,
-      personalCode: event.source.value.personalCode
+      idamId: event.option.value.idamId,
+      personalCode: event.option.value.personalCode
     };
     this.complexGroup.get('idamId')?.setValue(this.caseField.value.idamId);
     this.complexGroup.get('personalCode')?.setValue(this.caseField.value.personalCode);
@@ -150,6 +153,10 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   }
 
   public onBlur(event: any): void {
+    if (this.autocompleteTrigger?.panelOpen) {
+      return;
+    }
+
     // If the user types into the JudicialUser field but doesn't select a value from the autocomplete list, reset the
     // FormControl value to null to ensure it fails validation (can check the event.relatedTarget property)
     if (event.relatedTarget?.role !== 'option' && !this.judicialUserSelected) {
@@ -165,6 +172,10 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
       this.complexGroup.get('idamId')?.setValue(null);
       this.complexGroup.get('personalCode')?.setValue(null);
     }
+  }
+
+  public onAutocompleteClosed(): void {
+    this.onBlur({ relatedTarget: null });
   }
 
   public setupValidation(): void {

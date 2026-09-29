@@ -392,10 +392,10 @@ describe('WriteJudicialUserFieldComponent', () => {
 
   it('should set the caseField value and FormControl values when a judicial user is selected', () => {
     component.onSelectionChange({
-      source: {
+      option: {
         value: JUDICIAL_USERS[1]
       }
-    });
+    } as any);
     expect(component.caseField.value).toEqual({
       idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
       personalCode: 'p1000001'
@@ -474,10 +474,10 @@ describe('WriteJudicialUserFieldComponent', () => {
   it('should not clear the field if the user searches for a judicial user, makes no selection but did previously', async () => {
     // Simulate the user having made a selection already
     component.onSelectionChange({
-      source: {
+      option: {
         value: JUDICIAL_USERS[1]
       }
-    });
+    } as any);
     expect(component.judicialUserSelected).toBe(true);
     const judicialUserField = component.judicialUserControl;
     spyOn(judicialUserField, 'setValue').and.callThrough();
