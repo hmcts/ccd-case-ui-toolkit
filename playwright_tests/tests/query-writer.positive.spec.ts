@@ -10,7 +10,7 @@ test.describe('Query Management emitted data', () => {
     await writer.getByRole('button', { name: 'Emit query data' }).click();
     await expect.poll(async () => JSON.parse(await writer.getByTestId('query-writer-payload').innerText())).toMatchObject({
       CaseQueriesCollection: { caseMessages: [{ value: { subject: 'New evidence', body: 'Please review the evidence',
-        createdBy: 'writer-user', name: 'Test Writer', isHearingRelated: 'No', isHmctsStaff: 'Yes', attachments: [] } }, {}] }
+        createdBy: 'writer-user', name: 'Test Writer', isHearingRelated: 'No', attachments: [] } }, {}] }
     });
   });
 
