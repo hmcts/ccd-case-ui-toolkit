@@ -157,6 +157,14 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
       return;
     }
 
+    this.updateValueAfterBlur(event);
+  }
+
+  public onAutocompleteClosed(): void {
+    this.updateValueAfterBlur({ relatedTarget: null });
+  }
+
+  private updateValueAfterBlur(event: any): void {
     // If the user types into the JudicialUser field but doesn't select a value from the autocomplete list, reset the
     // FormControl value to null to ensure it fails validation (can check the event.relatedTarget property)
     if (event.relatedTarget?.role !== 'option' && !this.judicialUserSelected) {
@@ -172,10 +180,6 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
       this.complexGroup.get('idamId')?.setValue(null);
       this.complexGroup.get('personalCode')?.setValue(null);
     }
-  }
-
-  public onAutocompleteClosed(): void {
-    this.onBlur({ relatedTarget: null });
   }
 
   public setupValidation(): void {

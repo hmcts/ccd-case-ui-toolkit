@@ -44,7 +44,7 @@ test.describe('Identity writers', () => {
       const input = page.getByLabel(label);
       await input.fill('Nobody');
       await expect(page.getByRole('option', { name: 'No results found', exact: true })).toBeVisible();
-      await input.press('Tab');
+      await page.getByLabel('Related case reference').click();
       await expect(input).toHaveValue('');
       await expect(page.getByTestId(`identity-${identity}-valid`)).toHaveText('false');
       await expect(page.getByTestId(`identity-${identity}-payload`)).toHaveText(JSON.stringify(identity === 'judge' ? { idamId: null, personalCode: null } : { idamId: null }, null, 2));

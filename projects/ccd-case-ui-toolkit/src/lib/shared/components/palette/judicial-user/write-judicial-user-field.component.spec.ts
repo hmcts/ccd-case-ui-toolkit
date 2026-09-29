@@ -203,7 +203,7 @@ describe('WriteJudicialUserFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteJudicialUserFieldComponent);
     component = fixture.componentInstance;
-    component.caseField = CASE_FIELD;
+    component.caseField = { ...CASE_FIELD, value: { ...VALUE } } as CaseField;
     component.formGroup = new FormGroup({});
 
     loadJudicialUserSpy = spyOn(component, 'loadJudicialUser').and.callThrough();
@@ -253,7 +253,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     spyOn(idamIdField, 'clearValidators').and.callThrough();
     spyOn(personalCodeField, 'clearValidators').and.callThrough();
     spyOn(judicialUserField, 'setValidators').and.callThrough();
-    CASE_FIELD.display_context = Constants.MANDATORY;
+    component.caseField.display_context = Constants.MANDATORY;
     component.setupValidation();
     expect(idamIdField.clearValidators).toHaveBeenCalled();
     expect(personalCodeField.clearValidators).toHaveBeenCalled();
@@ -468,6 +468,19 @@ describe('WriteJudicialUserFieldComponent', () => {
     const autocompleteOptions = getAutocompleteOptions();
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins (jacky.collins@judicial.com)');
     selectedJudicial.dispatchEvent(new InputEvent('blur'));
+    expect(judicialUserField.setValue).toHaveBeenCalledWith(null);
+  });
+
+  it('should defer clearing an unselected value until the autocomplete closes', () => {
+    const judicialUserField = component.judicialUserControl;
+    judicialUserField.setValue('Nobody');
+    spyOn(judicialUserField, 'setValue').and.callThrough();
+    component.autocompleteTrigger = { panelOpen: true } as any;
+
+    component.onBlur({ relatedTarget: null });
+    expect(judicialUserField.setValue).not.toHaveBeenCalledWith(null);
+
+    component.onAutocompleteClosed();
     expect(judicialUserField.setValue).toHaveBeenCalledWith(null);
   });
 

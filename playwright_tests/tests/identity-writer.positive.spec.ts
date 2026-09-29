@@ -37,7 +37,7 @@ test.describe('Identity writers', () => {
     await expect(page.getByTestId('identity-judge-payload')).toHaveText(JSON.stringify({ idamId: 'judge-user', personalCode: 'J002' }, null, 2));
     await expect(page.getByTestId('identity-judge-valid')).toHaveText('true');
     await input.fill('');
-    await input.press('Tab');
+    await page.getByLabel('Related case reference').click();
     await expect(page.getByTestId('identity-judge-payload')).toHaveText(JSON.stringify({ idamId: null, personalCode: null }, null, 2));
     await expect(page.getByTestId('identity-judge-valid')).toHaveText('false');
   });
@@ -51,7 +51,7 @@ test.describe('Identity writers', () => {
     await expect(page.getByTestId('identity-staff-payload')).toHaveText(JSON.stringify({ idamId: 'shared-user' }, null, 2));
     await expect(page.getByTestId('identity-staff-valid')).toHaveText('true');
     await input.fill('');
-    await input.press('Tab');
+    await page.getByLabel('Related case reference').click();
     await expect(page.getByTestId('identity-staff-payload')).toHaveText(JSON.stringify({ idamId: null }, null, 2));
     await expect(page.getByTestId('identity-staff-valid')).toHaveText('false');
   });
