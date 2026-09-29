@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.2-CME-1008-dart-sass",
+  "version": "7.4.4-CME-1008-dart-sass",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^20.0.0",
     "@ngxmc/datetime-picker": "20.1.0",
@@ -33,7 +33,9 @@
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
-    "zone.js": "^0.15.1"
+    "zone.js": "^0.15.1",
+    "class-transformer": "^0.5.1",
+    "lodash": "^4.17.22"
   },
   "engines": {
     "node": ">=24.18.0"
