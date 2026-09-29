@@ -3,7 +3,15 @@
   "compilerOptions": {
     "noEmit": true,
     "strict": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["playwright.config.ts", "tests/**/*.ts", "fixtures/**/*.ts"]
+  "include": [
+    "playwright.config.ts",
+    "tests/**/*.ts",
+    "fixtures/**/*.ts",
+    "../packaged-consumer/playwright.config.ts",
+    "../packaged-consumer/tests/**/*.ts"
+  ]
 }

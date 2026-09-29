@@ -119,6 +119,8 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "tmp/playwright-host",
+            "styles": ["node_modules/@hmcts/media-viewer/assets/sass/pdf-viewer.scss", "node_modules/@hmcts/media-viewer/assets/pdfjs/pdf_viewer.css"],
+            "assets": [{ "glob": "*", "input": "playwright_tests/mocks/documents", "output": "test" }, { "glob": "pdf.worker.min.mjs", "input": "node_modules/@hmcts/media-viewer/assets/build", "output": "assets/build" }],
             "index": "playwright_tests/host/index.html",
             "browser": "playwright_tests/host/main.ts",
             "polyfills": ["zone.js"],

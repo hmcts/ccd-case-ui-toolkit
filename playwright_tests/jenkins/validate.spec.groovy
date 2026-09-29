@@ -70,9 +70,9 @@ assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint:playwr
 assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright:typecheck')
 assert !success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs lint')
 assert !success.commands.any { it.contains('build:library') || it.contains('test --watch=false') }
-assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright')
+assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwright --workers=7')
 
-['install --immutable', 'playwright install chromium --only-shell', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright'].each { task ->
+['install --immutable', 'playwright install chromium --only-shell', 'lint:playwright', 'test:playwright:typecheck', 'test:playwright --workers=7'].each { task ->
   def command = "node .yarn/releases/yarn-4.5.0.cjs ${task}".toString()
   def result = run(command, green, true)
   assert result.caught?.message == 'original command failure'
@@ -93,3 +93,8 @@ assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwr
 assert run(null, green, true).failed
 assert run(null, green, false, true).failed
 println 'Pipeline contract checks passed: variable suite counts, install/browser/static/test failures, empty/skipped/failed/missing reports'
+
+def fallback = 'node scripts/ensure-odhin-report.js --report-dir playwright_tests/odhin-report --report-file toolkit-playwright.html --suite-name "CCD Case UI Toolkit Playwright"'
+def fallbackFailure = run(fallback, green, false)
+assert fallbackFailure.failed && !fallbackFailure.caught
+println 'Fallback failure retains all publication steps'
