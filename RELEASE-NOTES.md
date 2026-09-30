@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.4-exui-4988
+**EXUI-4988** Suppressions - rimraf - major
+
 ### Version 7.4.4
 **EXUI-5161** Library Packages Version Alignment - runtime
 
