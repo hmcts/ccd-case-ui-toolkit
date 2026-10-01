@@ -3224,8 +3224,8 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/ccpay-web-component": "npm:6.5.27-cme-1118-v1"
+    "@hmcts/media-viewer": "npm:4.2.39-CME-776-dart-angular-20"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@ngxmc/datetime-picker": "npm:20.1.0"
@@ -3336,9 +3336,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.22":
-  version: 6.5.22
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.22"
+"@hmcts/ccpay-web-component@npm:6.5.27-cme-1118-v1":
+  version: 6.5.27-cme-1118-v1
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.27-cme-1118-v1"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3346,13 +3346,13 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/532536dcf2ac3bdfda4ca1e352bc9fe88e5c72b46aac9b37746f2926f86f9d553bba9454c2403fd0ba6edec6380ad614709fb91296d8eeeb1823d4ceef098d58
+  checksum: 10/111562f914e7ef1664a6909ea3d8d4bf2a73ec2d908a3f62ce9a0cb4f8b769dc9ceab8af3459f7c71f304e4ba09124ba9bdb87e51492c8aeb567e5dc6c8f6560
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.39":
-  version: 4.2.39
-  resolution: "@hmcts/media-viewer@npm:4.2.39"
+"@hmcts/media-viewer@npm:4.2.39-CME-776-dart-angular-20":
+  version: 4.2.39-CME-776-dart-angular-20
+  resolution: "@hmcts/media-viewer@npm:4.2.39-CME-776-dart-angular-20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3363,7 +3363,7 @@ __metadata:
     uuid: "npm:^11.1.1"
   peerDependencies:
     "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
+    "@angular/cdk": ^20.0.0
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
@@ -3375,7 +3375,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
+  checksum: 10/d4adc7fb801523abd7242edf9fb391c253536949459a2fdb279c8bf9921136339c65abca69ce4beb364a23f5d4e805463aa1432b242b03cb67dee572808f3cc8
   languageName: node
   linkType: hard
 

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.4-CME-1008-dart-sass-4",
+  "version": "7.4.4-CME-1008-dart-sass-5",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -66,8 +66,8 @@
     "@angular/router": "20.3.31",
     "@angular/upgrade": "20.3.31",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccpay-web-component": "6.5.22",
-    "@hmcts/media-viewer": "4.2.39",
+    "@hmcts/ccpay-web-component": "6.5.27-cme-1118-v1",
+    "@hmcts/media-viewer": "4.2.39-CME-776-dart-angular-20",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@ngxmc/datetime-picker": "20.1.0",
