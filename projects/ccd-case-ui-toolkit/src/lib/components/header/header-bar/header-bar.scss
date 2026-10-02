@@ -1,7 +1,7 @@
-@import '../../typography.scss';
-@import 'govuk_frontend_toolkit/stylesheets/_shims';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'govuk_frontend_toolkit/stylesheets/_measurements';
+@use '../../typography.scss' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_shims' as *;
+@use 'govuk_frontend_toolkit/stylesheets/_conditionals' as conditionals;
+@use 'govuk_frontend_toolkit/stylesheets/_measurements' as *;
 
 $black: #000000;
 $white: #FFFFFF;
@@ -20,7 +20,7 @@ $header-background-color: $black;
     color: $white;
     @include vertical-align;
 
-    @include media(desktop){
+    @include conditionals.media(desktop){
       width: 50%;
     }
     @media screen and (max-width: 379px) {
@@ -41,7 +41,7 @@ $header-background-color: $black;
     color: $white;
     @include vertical-align;
 
-    @include media(desktop){
+    @include conditionals.media(desktop){
       width: 50%;
     }
 
