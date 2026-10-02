@@ -229,16 +229,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    * This builds the form with data from the previous pages
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
-  public toPreviousPage(): void {
+  public async toPreviousPage(): Promise<void> {
     this.clearValidationErrors();
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
-    this.previous();
-    if (this.getPageNumber() !== undefined){
-      this.previousStep();
+    try {
+      await this.previous();
+      if (this.getPageNumber() !== undefined) {
+        this.previousStep();
+      }
+    } catch (error) {
+      this.handleError(error);
+    } finally {
+      this.focusService.focus();
     }
-    this.focusService.focus();
   }
 
   // Adding validation message to show it as Error Summary
@@ -441,8 +446,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             this.updateFormData(jsonData as CaseEventData);
           }
           this.saveDraft();
-          this.next();
-        }, error => {
+          void this.next().catch((error) => this.handleError(error));
+        }, (error) => {
           this.handleError(error);
         });
       CaseEditPageComponent.scrollToTop();
