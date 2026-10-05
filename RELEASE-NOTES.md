@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
-### Version 7.4.1-exui-5202
+### Version 7.4.4-exui-5202
 **EXUI-5202** Manage links Reason for change not shown
+
+### Version 7.4.4
+**EXUI-5161** Library Packages Version Alignment - runtime
+
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
 
 ### Version 7.4.1
 **EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
