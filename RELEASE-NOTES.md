@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.5
+**EXUI-5255** SRT Release - Gov.uk upgrade and hearings refactoring
+
 ### Version 7.4.4
 **EXUI-5161** Library Packages Version Alignment - runtime
 
