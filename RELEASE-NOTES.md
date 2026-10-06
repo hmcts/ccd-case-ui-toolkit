@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.6
+**EXUI-5304** StaffUser type ahead event element label not being shown
+
 ### Version 7.4.5
 **EXUI-5255** SRT Release - Gov.uk upgrade and hearings refactoring
 
