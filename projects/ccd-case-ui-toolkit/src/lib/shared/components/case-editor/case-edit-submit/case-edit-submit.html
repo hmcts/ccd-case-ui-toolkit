@@ -82,26 +82,26 @@
         </table>
       </ng-container>
       <ng-container *ngIf="showEventNotes()">
-        <fieldset id="fieldset-event" formGroupName="event">
+        <fieldset id="fieldset-event" class="govuk-fieldset" formGroupName="event">
           <legend style="display: none;"></legend>
-          <div class="form-group" [ngClass]="{'form-group-error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
-            <label for="field-trigger-summary" class="form-label">
+          <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
+            <label for="field-trigger-summary" class="govuk-label">
               Event summary (optional)
-              <span class="form-hint">A few words describing the purpose of the event.</span>
+              <div class="govuk-hint">A few words describing the purpose of the event.</div>
             </label>
-            <span class="error-message" *ngIf="summary?.errors && (summary.dirty || summary.touched)">
-              {{summary.errors | ccdFirstError: eventSummaryLabel | rpxTranslate}}
+            <span class="govuk-error-message" *ngIf="summary?.errors && (summary.dirty || summary.touched)">
+              <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{summary.errors | ccdFirstError: eventSummaryLabel | rpxTranslate}}
             </span>
-            <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50"
+            <input type="text" id="field-trigger-summary" class="govuk-input bottom-30 width-50"
               [ngClass]="{'govuk-input--error': summary?.errors && (summary.dirty || summary.touched)}" formControlName="summary" maxlength="1024">
           </div>
-          <div class="form-group" [ngClass]="{'form-group-error': !!description && !description.valid && (description.dirty || description.touched)}">
-            <label for="field-trigger-description" class="form-label">Event description (optional)</label>
-            <span class="error-message" *ngIf="description?.errors && (description.dirty || description.touched)">
-              {{description.errors | ccdFirstError: eventDescriptionLabel | rpxTranslate}}
+          <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!description && !description.valid && (description.dirty || description.touched)}">
+            <label for="field-trigger-description" class="govuk-label">Event description (optional)</label>
+            <span class="govuk-error-message" *ngIf="description?.errors && (description.dirty || description.touched)">
+              <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{description.errors | ccdFirstError: eventDescriptionLabel | rpxTranslate}}
             </span>
-            <textarea id="field-trigger-description" class="form-control bottom-30 width-50" formControlName="description"
-              [ngClass]="{'govuk-input--error': description?.errors && (description.dirty || description.touched)}" maxlength="65536"></textarea>
+            <textarea id="field-trigger-description" class="govuk-textarea bottom-30 width-50" formControlName="description"
+              [ngClass]="{'govuk-textarea--error': description?.errors && (description.dirty || description.touched)}" maxlength="65536"></textarea>
           </div>
         </fieldset>
       </ng-container>
@@ -110,11 +110,11 @@
       [eventCompletionParams]="caseEdit.eventCompletionParams"
       (eventCanBeCompleted)="onEventCanBeCompleted($event)">
     </ccd-case-event-completion>
-    <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
+    <div class="govuk-button-group">
+      <button class="govuk-button govuk-button--secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
         {{'Previous' | rpxTranslate}}
       </button>
-      <button type="submit" [disabled]="isDisabled" class="button">
+      <button type="submit" [disabled]="isDisabled" class="govuk-button">
         {{triggerText | rpxTranslate}}
       </button>
     </div>

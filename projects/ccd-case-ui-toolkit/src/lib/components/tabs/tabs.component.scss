@@ -1,92 +1,75 @@
-@import 'components/govuk-toolkit-shim';
+@use "govuk-frontend/dist/govuk/base" as *;
+@use "govuk-frontend/dist/govuk/components/tabs";
+@use 'components/govuk-toolkit-shim' as *;
 
-/*
-Tabs
-*/
+.govuk-tabs {
+  .govuk-tabs__list {
+    @include govuk-clearfix;
+    margin-bottom: 0;
+    border-bottom: 1px solid govuk-functional-colour(border);
+  }
 
-$module: "tabs";
+  .govuk-tabs__list-item {
+    position: relative;
+    margin-right: govuk-spacing(1);
+    margin-bottom: 0;
+    margin-left: 0;
+    padding: govuk-spacing(2) govuk-spacing(4);
+    float: left;
+    background-color: govuk-colour("black", $variant: "tint-95");
+    text-align: center;
 
-.#{$module} {
-
-  // global treatment
-  &-toggle {
-    display: block;
-    padding-right: 15px;
-    padding-left: 15px;
-    padding-top: 10px;
-    padding-bottom: 3px;
-    margin-bottom: 8px;
-
-    &[aria-selected=true] {
-      color: $text-colour;
-      text-decoration: none;
-      border-bottom: none;
-    }
-
-    a {
-      color: #005ea5;
+    &::before {
+      content: none;
     }
   }
 
-  // mobile
-  @include media (mobile) {
-    &-list {
-      border-bottom: 1px solid $border-colour;
-      margin-left: - 15px;
-      margin-right: - 15px;
-    }
+  .govuk-tabs__list-item--selected {
+    $border-width: 1px;
 
-    &-toggle {
-      border-top: 1px solid $border-colour;
+    position: relative;
+    margin-top: govuk-spacing(-1);
+    margin-bottom: -$border-width;
+    padding-top: govuk-spacing(3) - $border-width;
+    padding-right: govuk-spacing(4) - $border-width;
+    padding-bottom: govuk-spacing(3) + $border-width;
+    padding-left: govuk-spacing(4) - $border-width;
+    border: $border-width solid govuk-functional-colour(border);
+    border-bottom: 0;
+    background-color: govuk-functional-colour(body-background);
 
-      &:focus {
-        color: $text-colour;
-        outline: none;
-      }
+    .govuk-tabs__tab {
+      text-decoration: none;
     }
   }
 
-  // tablet and above
-  @include media(tablet) {
-    &-panel {
-      border-top: 1px solid $border-colour;
-      clear: both;
-      overflow: hidden;
+  .govuk-tabs__tab {
+    @include govuk-link-style-text;
+    margin-bottom: 0;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
     }
+  }
 
-    &-list {
-      float: left;
+  .govuk-tabs__panel {
+    @include govuk-responsive-margin(0, "bottom");
+    padding: govuk-spacing(6) govuk-spacing(4);
+    border: 1px solid govuk-functional-colour(border);
+    border-top: 0;
 
-      &-item {
-        float: left;
-        position: relative; bottom: -1px;
-        padding-top: 10px;
-      }
+    & > :last-child {
+      margin-bottom: 0;
     }
+  }
 
-    &-toggle {
-      background-color: $grey-3;
-      border: 1px solid transparent;
-      float: left;
-      margin-top: 0px;
-      margin-bottom: 0px;
-      margin-right: 6px;
-      margin-left: 0px;
-      text-decoration: none;
-
-      &:visited {
-        color: #005ea5;
-      }
-
-      &-selected,
-      &[aria-selected=true] {
-        background-color: $white;
-        border-bottom: 0px;
-        border-color: $grey-2;
-        padding-bottom: 11px;
-        margin-bottom: 0px;
-        color: $text-colour;
-      }
-    }
+  .govuk-tabs__panel--hidden {
+    display: none;
   }
 }

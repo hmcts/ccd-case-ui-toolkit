@@ -58,7 +58,7 @@ const VALUES = [
 const $WRITE_FIELDS = By.css('ccd-field-write');
 const $ADD_BUTTON_TOP = By.css('.write-collection-add-item__top');
 const $ADD_BUTTON_BOTTOM = By.css('.write-collection-add-item__bottom');
-const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
+const $REMOVE_BUTTONS = By.css('.collection-title .govuk-button.govuk-button--secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
@@ -349,10 +349,10 @@ describe('WriteCollectionFieldComponent', () => {
 
     const radio = document.createElement('input');
     radio.type = 'radio';
-    radio.className = 'form-control';
+    radio.className = 'govuk-radios__input';
     const text = document.createElement('input');
     text.type = 'text';
-    text.className = 'form-control';
+    text.className = 'govuk-input';
     root.appendChild(radio);
     root.appendChild(text);
 
@@ -370,10 +370,10 @@ describe('WriteCollectionFieldComponent', () => {
     expect(root).toBeTruthy();
 
     const select = document.createElement('select');
-    select.className = 'form-control';
+    select.className = 'govuk-select';
     const input = document.createElement('input');
     input.type = 'text';
-    input.className = 'form-control';
+    input.className = 'govuk-input';
     root.appendChild(select);
     root.appendChild(input);
 

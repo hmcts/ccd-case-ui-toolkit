@@ -1,4 +1,5 @@
-@import '../../typography';
+@use "sass:math";
+@use '../../typography' as *;
 
 @mixin phase-banner() {
   padding-top: 10px;
@@ -33,7 +34,7 @@
   margin: 0 8px 0 0;
   padding: 2px 5px 0;
 
-  @include bold-12pt($line-height: 20 / 16);
+  @include bold-12pt($line-height: math.div(20, 16));
   text-transform: uppercase;
   letter-spacing: 1px;
   text-decoration: none;

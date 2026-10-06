@@ -1,9 +1,15 @@
-<div class="tabs">
+<div class="govuk-tabs" data-module="govuk-tabs">
 
-  <ul class="tabs-list" role="list">
-    <li class="tabs-list-item" *ngFor="let panel of panels">
+  <ul class="govuk-tabs__list" role="tablist">
+    <li
+      class="govuk-tabs__list-item"
+      [class.govuk-tabs__list-item--selected]="panel.selected"
+      role="presentation"
+      *ngFor="let panel of panels"
+    >
       <a
-        class="tabs-toggle"
+        class="govuk-tabs__tab"
+        [id]="'tab_' + panel.id"
         [routerLink]="['.']"
         [fragment]="panel.id"
         role="tab"
@@ -11,16 +17,11 @@
         [attr.aria-controls]="panel.id"
         [attr.aria-selected]="panel.selected"
         tabindex="0"
-        [ngClass]="{
-          'tabs-toggle-selected': panel.selected
-        }"
         #tab
       >{{panel.title | rpxTranslate}}</a>
     </li>
   </ul>
 
-  <div class="tabs-content">
-    <ng-content></ng-content>
-  </div>
+  <ng-content></ng-content>
 
 </div>

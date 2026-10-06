@@ -1,4 +1,5 @@
-@import 'components/govuk-toolkit-shim';
+@use "sass:math";
+@use 'components/govuk-toolkit-shim' as *;
 
 #case-timeline {
   a {
@@ -25,7 +26,7 @@
       background-color: $highlight-colour;
 
       td:first-child {
-        padding-left: $leftPadding - $borderWidth / 2;
+        padding-left: $leftPadding - math.div($borderWidth, 2);
       }
     }
 
@@ -37,7 +38,7 @@
       cursor: hand;
 
       td:first-child {
-        padding-left: $leftPadding - $borderWidth / 2;
+        padding-left: $leftPadding - math.div($borderWidth, 2);
       }
     }
     .event-link {

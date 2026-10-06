@@ -110,8 +110,8 @@ describe('PaginationComponent:', () => {
       .filter(el => (el.nativeElement as HTMLLIElement).classList.contains('small-screen') === false)
       .map((el: DebugElement) => el.nativeElement);
 
-    expect(listItems[2].classList.contains('ellipsis')).toBe(true);
-    expect(listItems[8].classList.contains('ellipsis')).toBe(true);
+    expect(listItems[1].classList.contains('govuk-pagination__item--ellipsis')).toBe(true);
+    expect(listItems[7].classList.contains('govuk-pagination__item--ellipsis')).toBe(true);
   }));
 
   it('should update links when collection size changes', fakeAsync(() => {
@@ -150,7 +150,7 @@ describe('PaginationComponent:', () => {
       instance.config.currentPage = '2' as any;
       fixture.detectChanges();
 
-      const current: DebugElement = fixture.debugElement.query(By.css('.current'));
+      const current: DebugElement = fixture.debugElement.query(By.css('.govuk-pagination__item--current'));
 
       expect(current).not.toBeNull();
       expect(current.nativeElement.innerText).toContain('2');
@@ -236,7 +236,7 @@ describe('PaginationComponent:', () => {
     expect(controlsDirectives[0].getCurrent()).toBe(1);
     expect(controlsDirectives[1].getCurrent()).toBe(1);
 
-    controls[0].nativeElement.querySelector('.pagination-next a').click();
+    controls[0].nativeElement.querySelector('.govuk-pagination__next a').click();
     tick();
     fixture.detectChanges();
 
@@ -327,13 +327,12 @@ describe('PaginationComponent:', () => {
       const expected = `${TEST_LABEL} page`;
       fixture.detectChanges();
 
-      const prevSpan = fixture.debugElement.query(By.css('.pagination-previous > span')).nativeElement;
-      expect(prevSpan.innerText.replace(/\n/, ' ')).toContain(expected);
+      expect(fixture.debugElement.query(By.css('.govuk-pagination__prev'))).toBeNull();
 
       instance.config.currentPage = 2;
       fixture.detectChanges();
 
-      const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
+      const prevA = fixture.debugElement.query(By.css('.govuk-pagination__prev > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(expected);
       expect(prevA.getAttribute('aria-label')).toBe('Previous page');
     }));
@@ -349,15 +348,14 @@ describe('PaginationComponent:', () => {
       const expected = `${TEST_LABEL} page`;
       fixture.detectChanges();
 
-      const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
+      const nextA = fixture.debugElement.query(By.css('.govuk-pagination__next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(expected);
       expect(nextA.getAttribute('aria-label')).toBe('Next page');
 
       instance.config.currentPage = 10;
       fixture.detectChanges();
 
-      const nextSpan = fixture.debugElement.query(By.css('.pagination-next > span')).nativeElement;
-      expect(nextSpan.innerText.replace(/\n/, '')).toContain(expected);
+      expect(fixture.debugElement.query(By.css('.govuk-pagination__next'))).toBeNull();
     }));
 
     it('screenReaderPaginationLabel should bind in correct locations', fakeAsync(() => {
@@ -369,7 +367,7 @@ describe('PaginationComponent:', () => {
       const fixture = TestBed.createComponent(ComponentTestComponent);
       fixture.detectChanges();
 
-      const paginationUl = fixture.debugElement.query(By.css('ul.ngx-pagination')).nativeElement;
+      const paginationUl = fixture.debugElement.query(By.css('ul.govuk-pagination__list')).nativeElement;
       expect(paginationUl.getAttribute('aria-label')).toBe(TEST_LABEL);
     }));
 
@@ -385,15 +383,15 @@ describe('PaginationComponent:', () => {
 
       fixture.detectChanges();
 
-      const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
+      const prevA = fixture.debugElement.query(By.css('.govuk-pagination__prev > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(`Previous ${TEST_LABEL}`);
       expect(prevA.getAttribute('aria-label')).toBe(`Previous page`);
 
-      const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
+      const nextA = fixture.debugElement.query(By.css('.govuk-pagination__next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(`Next ${TEST_LABEL}`);
       expect(nextA.getAttribute('aria-label')).toBe(`Next page`);
 
-      const pageA = fixture.debugElement.queryAll(By.css('.ngx-pagination li > a'))[1].nativeElement;
+      const pageA = fixture.debugElement.queryAll(By.css('.govuk-pagination__list li > a'))[0].nativeElement;
       expect(pageA.innerText.replace(/\n/, ' ')).toContain(`${TEST_LABEL} 1`);
     }));
 
@@ -407,7 +405,7 @@ describe('PaginationComponent:', () => {
 
       fixture.detectChanges();
 
-      const currentPage = fixture.debugElement.query(By.css('.ngx-pagination li.current .show-for-sr')).nativeElement;
+      const currentPage = fixture.debugElement.query(By.css('.govuk-pagination__item--current .show-for-sr')).nativeElement;
       expect(currentPage.innerText).toContain(`${TEST_LABEL}`);
     }));
   });

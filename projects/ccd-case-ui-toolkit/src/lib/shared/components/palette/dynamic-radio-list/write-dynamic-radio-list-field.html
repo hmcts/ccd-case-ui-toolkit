@@ -1,21 +1,23 @@
-<div class="form-group bottom-30"
-    [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
-  <fieldset>
+<div class="govuk-form-group bottom-30"
+    [ngClass]="{'govuk-form-group--error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
+  <fieldset class="govuk-fieldset">
     <legend style="display: none;"></legend>
-    <label [for]="id()">
-        <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
-        <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-        <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</span>
-        <span class="error-message"
-            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{(dynamicRadioListControl.errors |
-            ccdFirstError)}}</span>
+    <label class="govuk-label" [for]="id()">
+        <ng-container *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</ng-container>
+        <ng-container *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</ng-container>
     </label>
+    <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+    <span class="govuk-error-message"
+        *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty"><span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{(dynamicRadioListControl.errors |
+        ccdFirstError)}}</span>
 
-    <ng-container>
-      <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
-        <input class="form-control" [id]="createElementId(radioButton.code)" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
-        <label class="form-label" [for]="createElementId(radioButton.code)">{{radioButton.label | rpxTranslate}}</label>
-      </div>
-    </ng-container>
+    <div class="govuk-radios">
+      <ng-container *ngFor="let radioButton of caseField.list_items">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" [id]="createElementId(radioButton.code)" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
+          <label class="govuk-label govuk-radios__label" [for]="createElementId(radioButton.code)">{{radioButton.label | rpxTranslate}}</label>
+        </div>
+      </ng-container>
+    </div>
   </fieldset>
 </div>

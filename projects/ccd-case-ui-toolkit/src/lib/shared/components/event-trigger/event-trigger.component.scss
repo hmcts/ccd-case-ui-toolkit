@@ -1,4 +1,4 @@
-@import 'components/govuk-toolkit-shim';
+@use 'components/govuk-toolkit-shim' as *;
 
 .event-trigger {
   width: auto;
@@ -6,14 +6,14 @@
   margin-top: 40px;
   margin-bottom: 20px;
 
-  .form-group {
+  .govuk-form-group {
     margin-top: 3px;
     margin-right: 10px;
     margin-bottom: 0;
     float: left;
     text-align: right;
     width: 325px;
-    .form-label {
+    .govuk-label {
       float: left;
       margin-top: 5px;
     }

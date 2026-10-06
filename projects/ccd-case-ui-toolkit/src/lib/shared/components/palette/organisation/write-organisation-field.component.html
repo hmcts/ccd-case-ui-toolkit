@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="organisationFormGroup">
+<div class="govuk-form-group" [formGroup]="organisationFormGroup">
   <fieldset *ngIf="(organisations$ | async)?.length === 0" class="govuk-fieldset">
     <legend style="display: none;"></legend>
     <div class="hmcts-banner">
@@ -28,7 +28,7 @@
           {{'You can only search for organisations already registered with MyHMCTS. For example, you can search by organisation name or address.' | rpxTranslate}}
         </span>
       </label>
-      <input id="search-org-text" class="form-control" type="text" [formControl]="searchOrgTextFormControl"/>
+      <input id="search-org-text" class="govuk-input" type="text" [formControl]="searchOrgTextFormControl"/>
     </div>
     <div class="govuk-form-group">
       <label class="govuk-label" for="organisation-table">

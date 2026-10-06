@@ -1,41 +1,49 @@
 <pagination-template #p="paginationApi" [id]="id" [maxSize]="maxSize" (pageChange)="pageChange.emit($event)"
   (pageBoundsCorrection)="pageBoundsCorrection.emit($event)">
-  <nav role="navigation" [attr.aria-label]="'Pagination' | rpxTranslate">
-    <ul class="ngx-pagination" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate"
-      [class.responsive]="responsive" *ngIf="!(autoHide && p.pages.length <= 1)">
-      <li class="pagination-previous" [class.disabled]="p.isFirstPage()" *ngIf="directionLinks">
-        <a tabindex="0" *ngIf="1 < p.getCurrent()" (keyup.enter)="p.previous()" (click)="p.previous()"
-          [attr.aria-label]="'Previous page' | rpxTranslate">
-          {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </a>
-        <span *ngIf="p.isFirstPage()" [attr.aria-label]="'Previous page' | rpxTranslate">
+  <nav class="govuk-pagination" [class.responsive]="responsive" role="navigation" [attr.aria-label]="'Pagination' | rpxTranslate"
+    *ngIf="!(autoHide && p.pages.length <= 1)">
+    <div class="govuk-pagination__prev" *ngIf="directionLinks && 1 < p.getCurrent()">
+      <a class="govuk-link govuk-pagination__link" tabindex="0" (keyup.enter)="p.previous()" (click)="p.previous()"
+        [attr.aria-label]="'Previous page' | rpxTranslate">
+        <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+          <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+        </svg>
+        <span class="govuk-pagination__link-title">
           {{ previousLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
         </span>
-      </li>
-      <li class="small-screen">
+      </a>
+    </div>
+
+    <ul class="govuk-pagination__list" [attr.aria-label]="screenReaderPaginationLabel | rpxTranslate">
+      <li class="govuk-pagination__item small-screen">
         {{ p.getCurrent() }} / {{ p.getLastPage() }}
       </li>
-      <li [class.current]="p.getCurrent() === page.value" [class.ellipsis]="page.label === '...'"
+      <li class="govuk-pagination__item" [class.govuk-pagination__item--current]="p.getCurrent() === page.value"
+        [class.govuk-pagination__item--ellipsis]="page.label === '...'"
         *ngFor="let page of p.pages">
-        <a tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)"
-          *ngIf="p.getCurrent() !== page.value" [attr.aria-label]="(page.label === '...') ? ('Change pagination range' | rpxTranslate) : ('Page ' | rpxTranslate) + (page.label | number:'')">
+        <a class="govuk-link govuk-pagination__link" tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)"
+          *ngIf="p.getCurrent() !== page.value"
+          [attr.aria-label]="(page.label === '...') ? ('Change pagination range' | rpxTranslate) : ('Page ' | rpxTranslate) + (page.label | number:'')">
           <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }} </span>
           <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
         </a>
-        <a tabindex="0" *ngIf="p.getCurrent() === page.value">
+        <a class="govuk-link govuk-pagination__link" tabindex="0" *ngIf="p.getCurrent() === page.value" [attr.aria-current]="'page'">
           <span class="show-for-sr" [attr.current]="page" [attr.aria-label]="screenReaderCurrentLabel">{{ screenReaderCurrentLabel | rpxTranslate }} </span>
           <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
         </a>
       </li>
-      <li class="pagination-next" [class.disabled]="p.isLastPage()" *ngIf="directionLinks">
-        <a tabindex="0" *ngIf="!p.isLastPage()" (keyup.enter)="p.next()" (click)="p.next()"
-          [attr.aria-label]="'Next page' | rpxTranslate">
-          {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
-        </a>
-        <span *ngIf="p.isLastPage()">
+    </ul>
+
+    <div class="govuk-pagination__next" *ngIf="directionLinks && !p.isLastPage()">
+      <a class="govuk-link govuk-pagination__link" tabindex="0" (keyup.enter)="p.next()" (click)="p.next()"
+        [attr.aria-label]="'Next page' | rpxTranslate">
+        <span class="govuk-pagination__link-title">
           {{ nextLabel | rpxTranslate }} <span class="show-for-sr">{{ screenReaderPageLabel | rpxTranslate }}</span>
         </span>
-      </li>
-    </ul>
+        <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+          <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+        </svg>
+      </a>
+    </div>
   </nav>
 </pagination-template>

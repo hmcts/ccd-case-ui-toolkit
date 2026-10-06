@@ -7,7 +7,7 @@
 </cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"
-    [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
+    [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">

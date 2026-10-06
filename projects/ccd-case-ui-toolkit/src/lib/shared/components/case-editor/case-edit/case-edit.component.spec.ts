@@ -1834,7 +1834,7 @@ describe('CaseEditComponent', () => {
       component.isRefreshModalVisible = true;
       fixture.detectChanges();
 
-      const okBtn = nativeEl.querySelector('.refresh-modal .button') as HTMLButtonElement;
+      const okBtn = nativeEl.querySelector('.refresh-modal .govuk-button') as HTMLButtonElement;
       expect(okBtn).toBeTruthy();
 
       okBtn.click();

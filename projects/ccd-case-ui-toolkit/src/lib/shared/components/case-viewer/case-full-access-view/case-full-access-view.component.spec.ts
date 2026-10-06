@@ -365,12 +365,12 @@ const $FIRST_TAB_HEADER = By.css('mat-tab-group>mat-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('mat-tab-group>mat-tab:not(:first-child)');
 const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#NameTab');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
-const $ERROR_SUMMARY = By.css('.error-summary');
-const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
+const $ERROR_SUMMARY = By.css('#case-full-access-error-summary');
+const $ERROR_HEADING_GENERIC = By.css('.govuk-error-summary__title');
 const $ERROR_MESSAGE_GENERIC = By.css('.govuk-error-summary__body>p:first-child');
-const $ERROR_HEADING_SPECIFIC = By.css('.error-summary>h2:first-child');
-const $ERROR_MESSAGE_SPECIFIC = By.css('.error-summary>p:nth-child(2)');
-const $CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
+const $ERROR_HEADING_SPECIFIC = By.css('.govuk-error-summary__title');
+const $ERROR_MESSAGE_SPECIFIC = By.css('.govuk-error-summary__body>p:first-child');
+const $CALLBACK_DATA_FIELD_ERROR_LIST = By.css('#case-full-access-error-summary .govuk-error-summary__list');
 const $FIRST_FIELD_ERROR = By.css('li:first-child');
 const $SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
 
@@ -582,8 +582,8 @@ const WORK_ALLOCATION_CASE_VIEW = {
   events: EVENTS,
   metadataFields: METADATA,
 };
-const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
-const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
+const $DIALOG_DELETE_BUTTON = By.css('.govuk-button[title=Delete]');
+const $DIALOG_CANCEL_BUTTON = By.css('.govuk-button[title=Cancel]');
 const DIALOG_CONFIG = new MatDialogConfig();
 const CASE_FLAGS_READ_EXTERNAL_MODE = '#ARGUMENT(READ,EXTERNAL)';
 

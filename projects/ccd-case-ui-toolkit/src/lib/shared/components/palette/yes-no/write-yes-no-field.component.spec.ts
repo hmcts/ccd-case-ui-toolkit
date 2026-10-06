@@ -30,7 +30,7 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteYesNoFieldComponent', () => {
-  const $INPUT = By.css('.form-group input');
+  const $INPUT = By.css('.govuk-form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
   const inputComponentMock: any = MockComponent({

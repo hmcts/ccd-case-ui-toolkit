@@ -345,7 +345,7 @@ describe('ManageCaseFlagsComponent', () => {
     });
     fixture.detectChanges();
     // The "Next" button should not be present if the error condition has been set
-    const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.button');
+    const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.govuk-button');
     expect(nextButtonElement).toBeNull();
   });
 

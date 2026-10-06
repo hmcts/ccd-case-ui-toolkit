@@ -1,12 +1,12 @@
-<div class="form-group bottom-30" [id]="id()" [ngClass]="{'form-group-error': dateControl && !dateControl.valid && (dateControl.dirty || dateControl.touched)}">
+<div class="govuk-form-group bottom-30" [id]="id()" [ngClass]="{'govuk-form-group--error': dateControl && !dateControl.valid && (dateControl.dirty || dateControl.touched)}">
 
-  <fieldset>
-    <legend>
-      <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend">
+      <ng-container *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</ng-container>
     </legend>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-    <span class="error-message" *ngIf="dateControl && dateControl.errors && (dateControl.dirty || dateControl.touched)">
-      {{(dateControl.errors | ccdFirstError:caseField.label)}}
+    <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+    <span class="govuk-error-message" *ngIf="dateControl && dateControl.errors && (dateControl.dirty || dateControl.touched)">
+      <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{(dateControl.errors | ccdFirstError:caseField.label)}}
     </span>
     <cut-date-input [id]="getId()"
                     [isDateTime]="isDateTime()"

@@ -137,11 +137,13 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public onCancel(): void {
+    this.restoreDocumentTitle();
     // Navigate to the page before previous one (should be Search Results or Case List page, for example)
     this.router.navigateByUrl(CaseSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   public ngOnDestroy(): void {
+    this.restoreDocumentTitle();
     if (this.$roleAssignmentResponseSubscription) {
       this.$roleAssignmentResponseSubscription.unsubscribe();
     }
