@@ -111,6 +111,39 @@
         }
       }
     },
+    "toolkit-playwright-host": {
+      "root": "playwright_tests/host",
+      "sourceRoot": "playwright_tests/host",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "tmp/playwright-host",
+            "styles": ["node_modules/@hmcts/media-viewer/assets/sass/pdf-viewer.scss", "node_modules/@hmcts/media-viewer/assets/pdfjs/pdf_viewer.css"],
+            "assets": [{ "glob": "*", "input": "playwright_tests/mocks/documents", "output": "test" }, { "glob": "pdf.worker.min.mjs", "input": "node_modules/@hmcts/media-viewer/assets/build", "output": "assets/build" }],
+            "index": "playwright_tests/host/index.html",
+            "browser": "playwright_tests/host/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "playwright_tests/host/tsconfig.json",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/ccd-case-ui-toolkit/src/lib",
+                "node_modules"
+              ]
+            },
+            "optimization": false,
+            "sourceMap": true
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "toolkit-playwright-host:build"
+          }
+        }
+      }
+    },
     "ccd-case-ui-toolkit-lib": {
       "root": "projects/ccd-case-ui-toolkit",
       "sourceRoot": "projects/ccd-case-ui-toolkit/src",
