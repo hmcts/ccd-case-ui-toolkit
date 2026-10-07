@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.7",
+  "version": "7.4.8-cve-update",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -22,7 +22,7 @@
     "test:playwright:typecheck": "tsc -p playwright_tests/tsconfig.json && ngc -p playwright_tests/host/tsconfig.json --noEmit",
     "test:packaged-consumer": "node --test scripts/webapp-material-contract.test.mjs && npm run build && node scripts/packaged-consumer-smoke.mjs",
     "test:packaged-consumer:strict": "npm run build && node scripts/packaged-consumer-smoke.mjs --strict-peer-deps",
-    "lint:playwright": "ESLINT_USE_FLAT_CONFIG=false eslint --config playwright_tests/.eslintrc.cjs \"playwright_tests/**/*.ts\" \"packaged-consumer/tests/**/*.ts\" \"packaged-consumer/playwright.config.ts\"",
+    "lint:playwright": "eslint \"playwright_tests/**/*.ts\" \"packaged-consumer/tests/**/*.ts\" \"packaged-consumer/playwright.config.ts\"",
     "lint:playwright:reporting": "node --check playwright_tests/reporters/odhin-feature-reporter.cjs && node --check playwright_tests/reporters/odhin-report-enhancer.cjs && node --check playwright_tests/reporters/odhin-progress.reporter.cjs && node --check scripts/ensure-odhin-report.js && node --check playwright_tests/reporters/presentation/report.js && node --test playwright_tests/reporters/presentation/*.test.cjs playwright_tests/fixtures/*.test.cjs scripts/*.test.mjs",
     "test:fullfunctional": "yarn test:playwright:typecheck && yarn test:playwright",
     "prepare": "yarn build && husky",
@@ -83,7 +83,7 @@
     "ngx-pagination": "^6.0.3",
     "prosemirror-commands": "1.7.1",
     "prosemirror-history": "1.5.0",
-    "prosemirror-model": "1.25.11",
+    "prosemirror-model": "1.25.12",
     "prosemirror-schema-list": "1.5.1",
     "rpx-xui-translation": "1.2.15",
     "rxjs": "^7.8.2",
@@ -105,7 +105,10 @@
     "@angular/compiler-cli": "20.3.31",
     "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.32",
+    "@eslint/eslintrc": "^3.3.7",
+    "@eslint/js": "^10.0.0",
     "@playwright/test": "1.63.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "@types/underscore": "^1.11.4",
@@ -122,7 +125,7 @@
     "core-js": "^3.49.0",
     "css-loader": "^6.7.1",
     "del": "^3.0.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.12.0",
     "exceljs": "^4.4.0",
     "expect": "^23.0.0",
     "font-awesome": "^4.6.1",
@@ -190,6 +193,7 @@
     }
   },
   "resolutions": {
+    "prosemirror-model": "1.25.12",
     "braces": "^3.0.3",
     "dompurify": "^3.4.13",
     "dot-prop": "^5.1.1",
