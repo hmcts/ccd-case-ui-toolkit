@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.4.5-exui-5202-rc-1
+### Version 7.4.7
 **EXUI-5202** Manage links Reason for change not shown
 
 ### Version 7.4.6
