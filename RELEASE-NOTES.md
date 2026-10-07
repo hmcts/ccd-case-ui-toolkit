@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Versiion 7.4.8
+**EXUI-5168** Callback error message incorrect heading level
+
 ### Version 7.4.7
 **EXUI-5202** Manage links Reason for change not shown
 
