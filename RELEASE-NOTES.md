@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.7
+**EXUI-5202** Manage links Reason for change not shown
+
 ### Version 7.4.6
 **EXUI-5304** StaffUser type ahead event element label not being shown
 
