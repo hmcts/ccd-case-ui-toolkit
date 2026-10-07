@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.7-cve-update",
+  "version": "7.4.8-cve-update",
   "engines": {
     "node": ">=24.18.0"
   },
