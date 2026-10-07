@@ -30,6 +30,7 @@ describe('CallbackErrorsComponent', () => {
   };
 
   const $ERROR_SUMMARY = By.css('.error-summary');
+  const $ERROR_SUMMARY_HEADING = By.css('h2.error-summary-heading');
   const $ERROR_MESSAGES = By.css('#errors');
   const $WARNING_MESSAGES = By.css('#warnings');
 
@@ -106,6 +107,7 @@ describe('CallbackErrorsComponent', () => {
 
     const error = de.query($ERROR_SUMMARY);
     expect(error).toBeTruthy();
+    expect(error.query($ERROR_SUMMARY_HEADING)).toBeTruthy();
 
     const warningMessages = error.query($WARNING_MESSAGES);
     expect(text(warningMessages.children[0])).toBe(VALID_WARNING.callbackWarnings[0]);
@@ -118,6 +120,7 @@ describe('CallbackErrorsComponent', () => {
 
     const error = de.query($ERROR_SUMMARY);
     expect(error).toBeTruthy();
+    expect(error.query($ERROR_SUMMARY_HEADING)).toBeTruthy();
 
     const errorMessages = error.query($ERROR_MESSAGES);
     expect(text(errorMessages.children[0])).toBe(VALID_ERROR.callbackErrors[0]);
