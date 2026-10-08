@@ -41,8 +41,9 @@ test.describe('Mandatory fields', () => {
   });
 
   test('selects both Yes and No radio values', async ({ page }) => {
-    const yes = page.getByRole('radio', { name: 'Yes', exact: true });
-    const no = page.getByRole('radio', { name: 'No', exact: true });
+    const yesNo = page.getByRole('group', { name: 'Yes or no field' });
+    const yes = yesNo.getByRole('radio', { name: 'Yes', exact: true });
+    const no = yesNo.getByRole('radio', { name: 'No', exact: true });
     await yes.check();
     await expect(yes).toBeChecked();
     await expect(page.getByTestId('mandatory-values')).toContainText('"mandatory-yes-no": "Yes"');

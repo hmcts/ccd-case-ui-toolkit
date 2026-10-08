@@ -1676,6 +1676,22 @@ describe('CaseEditPageComponent - all other tests', () => {
       const title = comp.getCaseTitle();
       expect(title).toEqual('# 1234567812345678: test');
     });
+
+    it('should demote a level 1 markdown heading in the case title to level 2', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('# 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title that is already below level 1', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('## 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title with no markdown heading', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('1234567812345678: test')).toEqual('1234567812345678: test');
+    });
+
+    it('should return an empty/falsy case title unchanged', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('')).toEqual('');
+    });
   });
 
   describe('submit the form', () => {
