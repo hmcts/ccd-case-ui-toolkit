@@ -1,32 +1,30 @@
-<table tabindex="0" class="EventLogDetails">
-  <caption><h2 class="heading-h2">{{'Details' | rpxTranslate}}</h2></caption>
-  <tbody tabindex="0" aria-live="polite">
-    <tr>
-      <th><span class="text-16">{{'Date' | rpxTranslate}}</span></th>
-      <td>
-        <div class="tooltip text-16">{{event.timestamp | ccdDate : 'local'}}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <th><span class="text-16">{{'Author' | rpxTranslate}}</span></th>
-      <td><span class="text-16">{{event.user_first_name | titlecase}} {{event.user_last_name | uppercase}}</span></td>
-    </tr>
-    <tr>
-      <th><span class="text-16">{{'End state' | rpxTranslate}}</span></th>
-      <td><span class="text-16">{{event.state_name}}</span></td>
-    </tr>
-    <tr>
-      <th><span class="text-16">{{'Event' | rpxTranslate}}</span></th>
-      <td><span class="text-16">{{event.event_name}}</span></td>
-    </tr>
-    <tr>
-      <th><span class="text-16">{{'Summary' | rpxTranslate}}</span></th>
-      <td><span class="text-16">{{event.summary | ccdDash}}</span></td>
-    </tr>
-    <tr>
-      <th><span class="text-16">{{'Comment' | rpxTranslate}}</span></th>
-      <td><span class="text-16">{{event.comment | ccdDash}}</span></td>
-    </tr>
-  </tbody>
-</table>
+<h2 class="heading-h2">{{'Details' | rpxTranslate}}</h2>
+<dl class="govuk-summary-list govuk-summary-list--no-border EventLogDetails" aria-live="polite">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'Date' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value">
+      <div class="tooltip text-16">{{event.timestamp | ccdDate : 'local'}}
+      </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'Author' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value"><span class="text-16">{{event.user_first_name | titlecase}} {{event.user_last_name | uppercase}}</span></dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'End state' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value"><span class="text-16">{{event.state_name}}</span></dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'Event' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value"><span class="text-16">{{event.event_name}}</span></dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'Summary' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value"><span class="text-16">{{event.summary | ccdDash}}</span></dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><span class="text-16">{{'Comment' | rpxTranslate}}</span></dt>
+    <dd class="govuk-summary-list__value"><span class="text-16">{{event.comment | ccdDash}}</span></dd>
+  </div>
+</dl>

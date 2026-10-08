@@ -32,6 +32,11 @@ a:hover {
   color: $blue_table;
 }
 
+// Contains the floated .pagination-top so the table starts below the summary line
+.search-result-summary {
+  display: flow-root;
+}
+
 .search-result-reset-link {
   padding-right: 15px;
   padding-left: 15px;

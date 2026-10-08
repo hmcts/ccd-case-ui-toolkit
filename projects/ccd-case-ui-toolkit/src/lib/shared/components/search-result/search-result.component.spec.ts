@@ -247,12 +247,26 @@ describe('SearchResultComponent', () => {
     it('should render a table <thead> and <tbody>', () => {
       const table = de.query(By.css('div>table'));
       expect(table.nativeElement.tagName).toBe('TABLE');
-      expect(table.children.length).toBe(3);
+      expect(table.children.length).toBe(2);
       const thead = de.query(By.css('div>table>thead'));
       expect(thead.nativeElement.tagName).toBe('THEAD');
       expect(thead.children.length).toBe(1);
       const tbody = de.query(By.css('div>table>tbody'));
       expect(tbody.nativeElement.tagName).toBe('TBODY');
+    });
+
+    it('should keep the heading, results summary and reset link outside the table and name the table by the heading', () => {
+      const table = de.query(By.css('table'));
+      expect(table.query(By.css('caption'))).toBeNull();
+      expect(table.query(By.css('h2, .pagination-top, .reset-selection'))).toBeNull();
+
+      const heading = de.query(By.css('h2#search-result-heading__text'));
+      expect(heading).toBeTruthy();
+      expect(table.nativeElement.getAttribute('aria-labelledby')).toBe('search-result-heading__text');
+
+      const summary = de.query(By.css('.search-result-summary'));
+      expect(heading.nativeElement.compareDocumentPosition(summary.nativeElement) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(summary.nativeElement.compareDocumentPosition(table.nativeElement) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
     it('should render pagination controls if results and metadata not empty', () => {

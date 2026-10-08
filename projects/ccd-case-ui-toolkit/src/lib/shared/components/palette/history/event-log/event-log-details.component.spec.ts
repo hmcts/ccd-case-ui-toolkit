@@ -47,18 +47,18 @@ describe('EventLogDetails', () => {
     }
   };
 
-  const $TABLE_ROWS = By.css('table>tbody>tr');
+  const $LIST_ROWS = By.css('dl>div');
 
   const expectRow = (row: DebugElement) => {
     return {
       toEqual: (label: string, value: string) => {
         const actualLabel = row
-          .query(By.css('th'))
+          .query(By.css('dt'))
           .nativeElement
           .textContent
           .trim();
         const actualValue = row
-          .query(By.css('td'))
+          .query(By.css('dd'))
           .nativeElement
           .textContent
           .trim();
@@ -67,12 +67,12 @@ describe('EventLogDetails', () => {
       },
       toNotEqual: (label: string, value: string) => {
         const actualLabel = row
-          .query(By.css('th'))
+          .query(By.css('dt'))
           .nativeElement
           .textContent
           .trim();
         const actualValue = row
-          .query(By.css('td'))
+          .query(By.css('dd'))
           .nativeElement
           .textContent
           .trim();
@@ -109,8 +109,11 @@ describe('EventLogDetails', () => {
     fixture.detectChanges();
   }));
 
-  it('should render a table with the case details', () => {
-    const rows = de.queryAll($TABLE_ROWS);
+  it('should render a description list with the case details', () => {
+    expect(de.query(By.css('table'))).toBeNull();
+    expect(de.query(By.css('h2')).nativeElement.textContent.trim()).toBe('Details');
+
+    const rows = de.queryAll($LIST_ROWS);
 
     expect(rows.length).toBe(6);
 
@@ -127,7 +130,7 @@ describe('EventLogDetails', () => {
     component.event = EVENT_WITH_EMPTY_SUMMARY_AND_COMMENT;
     fixture.detectChanges();
 
-    const rows = de.queryAll($TABLE_ROWS);
+    const rows = de.queryAll($LIST_ROWS);
 
     expect(rows.length).toBe(6);
 
