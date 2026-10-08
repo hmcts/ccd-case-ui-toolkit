@@ -5,8 +5,7 @@ import {
   CaseFlagCheckYourAnswersPageStep,
   CaseFlagDisplayContextParameter,
   CaseFlagFieldState,
-  CaseFlagSummaryListDisplayMode,
-  UpdateFlagStep
+  CaseFlagSummaryListDisplayMode
 } from '../../enums';
 
 @Component({
@@ -33,9 +32,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public displayMode = CaseFlagSummaryListDisplayMode;
   public flagTypeHeaderText: string;
   public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
-  public updateFlagStep = UpdateFlagStep;
   public is2Point1Enabled = false;
-  public is2Point1Update = false;
   public externalUserUpdate = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
@@ -55,7 +52,6 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
       this.is2Point1Enabled = this.getDisplayContextParameter2Point1Enabled();
-      this.is2Point1Update = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
       this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     }
   }
