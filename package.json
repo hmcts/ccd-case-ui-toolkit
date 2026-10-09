@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.9",
+  "version": "7.4.10-glob-cve",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -190,11 +190,14 @@
     }
   },
   "resolutions": {
+    "archiver-utils@npm:^2.1.0": "npm:5.0.2",
+    "archiver-utils@npm:^3.0.4": "npm:5.0.2",
     "braces": "^3.0.3",
     "dompurify": "^3.4.13",
     "dot-prop": "^5.1.1",
     "elliptic": "6.5.4",
     "graceful-fs": "^4.2.3",
+    "glob@npm:^10.0.0": "npm:13.0.0",
     "handlebars": "^4.7.7",
     "socket.io-parser": "4.2.7",
     "https-proxy-agent": "^2.2.3",
