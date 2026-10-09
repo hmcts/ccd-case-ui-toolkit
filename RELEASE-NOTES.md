@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.96-exui-5098
+**EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
 ### Version 7.4.9
 **EXUI-4988** Suppressions - rimraf - major
 

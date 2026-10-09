@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Optional, Output } from '@angular/core';
+import { ProfileNotifier } from '../../../shared/services/profile/profile.notifier';
+import { ProfileService } from '../../../shared/services/profile/profile.service';
 
 @Component({
   selector: 'cut-header-bar',
@@ -7,6 +9,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: false
 })
 export class HeaderBarComponent {
+
+  constructor(
+    @Optional() private readonly profileService: ProfileService,
+    @Optional() private readonly profileNotifier: ProfileNotifier
+  ) {}
 
   @Input()
   public title: string;
@@ -21,6 +28,8 @@ export class HeaderBarComponent {
   private readonly signOutRequest: EventEmitter<any> = new EventEmitter();
 
   public signOut() {
+    this.profileService?.clearProfileCache();
+    this.profileNotifier?.clearProfile();
     this.signOutRequest.emit();
   }
 }

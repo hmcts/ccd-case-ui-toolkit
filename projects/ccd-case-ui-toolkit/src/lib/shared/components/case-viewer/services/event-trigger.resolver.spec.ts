@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -68,7 +69,6 @@ describe('EventTriggerResolver', () => {
   };
 
   const PROFILE_OBS: Observable<Profile> = of(PROFILE);
-  const PROFILE_CACHED: Profile = PROFILE;
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
@@ -264,37 +264,6 @@ describe('EventTriggerResolver', () => {
   });
 
 
-  it('should return cached profile without making API call', () => {
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    eventTriggerResolver['cachedProfile'] = PROFILE_CACHED;
-    profileService.get.and.returnValue(PROFILE_OBS);
-
-    eventTriggerResolver
-      .resolve(route)
-      .then(caseData => {
-        expect(caseData).toEqual(EVENT_TRIGGER);
-      });
-
-    expect(profileService.get).not.toHaveBeenCalledWith();
-    expect(casesService.getEventTrigger).toHaveBeenCalled();
-    expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
-  });
-
-  it('should make Profile API call and cached profile', () => {
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    profileService.get.and.returnValue(PROFILE_OBS);
-
-    eventTriggerResolver
-      .resolve(route)
-      .then(caseData => {
-        expect(caseData).toEqual(EVENT_TRIGGER);
-      });
-
-    expect(profileService.get).toHaveBeenCalledWith();
-    expect(casesService.getEventTrigger).toHaveBeenCalled();
-    expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
-  });
-
   it('should redirect and return null if jurisdiction or caseType are missing and caseInfo is incomplete', async () => {
     route.parent.paramMap.get.and.callFake(key => {
       switch (key) {
@@ -389,21 +358,27 @@ describe('EventTriggerResolver', () => {
     await eventTriggerResolver.resolve(route);
   });
 
-  it('should call profileNotifier.announceProfile with cachedProfile', async () => {
-    eventTriggerResolver['cachedProfile'] = PROFILE;
+  it('should call profileNotifier.announceProfile with the resolved profile', async () => {
     spyOn(profileNotifier, 'announceProfile');
+    profileService.get.and.returnValue(of(PROFILE));
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     await eventTriggerResolver.resolve(route);
     expect(profileNotifier.announceProfile).toHaveBeenCalledWith(PROFILE);
   });
 
   it('should call profileNotifier.announceProfile after profileService.get', async () => {
-    eventTriggerResolver['cachedProfile'] = undefined;
     spyOn(profileNotifier, 'announceProfile');
     profileService.get.and.returnValue(of(PROFILE));
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
     await eventTriggerResolver.resolve(route);
     expect(profileNotifier.announceProfile).toHaveBeenCalledWith(PROFILE);
+  });
+
+  it('should stop resolving when the profile cannot be loaded', async () => {
+    profileService.get.and.returnValue(throwError(ERROR));
+    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
+
+    await expectAsync(eventTriggerResolver.resolve(route)).toBeRejectedWith(ERROR);
   });
 
   it('should handle error in getAndCacheEventTrigger and propagate error', async () => {
