@@ -473,6 +473,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       && caseField.display_context_parameter === '#ARGUMENT(CaseFileView)';
   }
 
+  public hasFieldLabel(caseField: CaseField): boolean {
+    return !this.isFieldToHaveNoLabel(caseField) && !!caseField.label;
+  }
+
   private init(): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails?.tabs);

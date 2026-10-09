@@ -953,6 +953,16 @@ it('should set case view tab based on navigation end event', () => {
     });
   });
 
+  it('should only treat fields with a displayable label as labelled', () => {
+    const field = (label: string, type = 'Text', param?: string) =>
+      ({ label, field_type: { type }, display_context_parameter: param } as unknown as CaseField);
+
+    expect(component.hasFieldLabel(field('Applicant name'))).toBe(true);
+    expect(component.hasFieldLabel(field(''))).toBe(false);
+    expect(component.hasFieldLabel(field(undefined))).toBe(false);
+    expect(component.hasFieldLabel(field('Case file', 'ComponentLauncher', '#ARGUMENT(CaseFileView)'))).toBe(false);
+  });
+
   it('should handle route changes and set case view tab', () => {
     spyOn<any>(component, 'checkRouteAndSetCaseViewTab');
     component.ngOnInit();
