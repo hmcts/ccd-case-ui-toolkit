@@ -1,8 +1,5 @@
 ## RELEASE NOTES
 
-### Version 7.4.9
-**EXUI-4988** Suppressions - rimraf - major
-
 ### Version 7.4.8
 **EXUI-3425** Redaction incomplete
 **EXUI-3426** Redaction selection breaks
