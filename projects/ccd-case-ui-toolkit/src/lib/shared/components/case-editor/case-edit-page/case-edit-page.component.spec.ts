@@ -1676,6 +1676,22 @@ describe('CaseEditPageComponent - all other tests', () => {
       const title = comp.getCaseTitle();
       expect(title).toEqual('# 1234567812345678: test');
     });
+
+    it('should demote a level 1 markdown heading in the case title to level 2', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('# 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title that is already below level 1', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('## 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title with no markdown heading', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('1234567812345678: test')).toEqual('1234567812345678: test');
+    });
+
+    it('should return an empty/falsy case title unchanged', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('')).toEqual('');
+    });
   });
 
   describe('submit the form', () => {
@@ -1818,6 +1834,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           createCaseField('field1', 'field1Value'),
           aCaseField('judicialUserField1', 'judicialUser1', 'JudicialUser', 'OPTIONAL', null),
           aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
+          aCaseField('staffUserField', 'staffUser', 'StaffUser', 'OPTIONAL', null),
         ],
         false,
         0,
@@ -1829,6 +1846,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         'judicialUserField1_judicialUserControl', new FormControl('Judicial User'));
       (FORM_GROUP.get('data') as FormGroup).setControl(
         'judicialUserField2_judicialUserControl', new FormControl('Judicial User 2'));
+      (FORM_GROUP.get('data') as FormGroup).setControl(
+        'staffUserField_staffUserControl', new FormControl('Staff User'));
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
 
@@ -1877,14 +1896,14 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(comp.caseEdit.error).toBeNull();
         expect(comp.caseEdit.ignoreWarning).toBe(false);
 
-        // Both JudicialUser FormControls should have been removed from the editForm FormGroup, leaving just one
-        // FormControl
+        // Autocomplete user FormControls should have been removed, leaving just the case-data FormControl.
         const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
         const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
         expect(formControlKeys.length).toBe(1);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(false);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(false);
+        expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(false);
       });
     });
 
@@ -1914,14 +1933,15 @@ describe('CaseEditPageComponent - all other tests', () => {
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should retain all autocomplete user FormControls because
       // their removal is not triggered
       const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
       const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
-      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.length).toBe(4);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(true);
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
@@ -1967,14 +1987,15 @@ describe('CaseEditPageComponent - all other tests', () => {
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should retain all autocomplete user FormControls because
       // their removal is not triggered
       const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
       const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
-      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.length).toBe(4);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(true);
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {
@@ -3013,6 +3034,32 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
       expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
+    });
+
+    it('should validate StaffUser field and set error message on component', () => {
+      (F_GROUP.get('data') as FormGroup).addControl(
+        'staffUserField_staffUserControl', new FormControl(null, Validators.required));
+      F_GROUP.get('data.staffUserField_staffUserControl')['component'] = {};
+      const staffUserField = aCaseField(
+        'staffUserField',
+        'staffUser1',
+        'StaffUser',
+        'MANDATORY',
+        1,
+        null,
+        false,
+        false
+      );
+      staffUserField.field_type.type = 'Complex';
+      wizardPage.case_fields.push(staffUserField);
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(F_GROUP.get('data.staffUserField_staffUserControl')['component'].errors).toEqual({ required: true });
     });
   });
 

@@ -3,6 +3,9 @@
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </div>
   <span [id]="hintId()" class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
+  <span [id]="keyboardInstructionsId()" class="ccd-rich-text-area__keyboard-instructions">
+    Press Escape to move from the editor to the formatting toolbar.
+  </span>
   <span [id]="errorId()" class="error-message" *ngIf="isInvalid()">
     {{richTextAreaControl.errors | ccdFirstError:caseField.label}}
   </span>
@@ -11,17 +14,22 @@
     #editorHost
     class="ccd-rich-text-area__editor"
     [ngClass]="{'ccd-rich-text-area__editor--error': isInvalid()}"
-    (click)="syncAccessibilityLater()"
+    (click)="onEditorClick()"
     (keydown)="onEditorKeyDown($event)"
     (keyup)="syncAccessibilityLater()"
     (paste)="onPaste($event)">
     <div
       class="ccd-rich-text-area__toolbar"
       role="toolbar"
-      [attr.aria-label]="toolbarLabel()">
-      <button
+      aria-orientation="horizontal"
+      [attr.aria-label]="toolbarLabel()"
+      (focusin)="onToolbarFocusIn($event)"
+      (keydown)="onToolbarKeyDown($event)">
+      <div class="ccd-rich-text-area__toolbar-group" role="group" aria-label="History">
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="0"
         aria-label="Undo"
         title="Undo"
         aria-keyshortcuts="Control+Z"
@@ -30,10 +38,11 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="-1"
         aria-label="Redo"
         title="Redo"
         aria-keyshortcuts="Control+Y"
@@ -42,11 +51,14 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"></path>
         </svg>
-      </button>
+        </button>
+      </div>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
-      <button
+      <div class="ccd-rich-text-area__toolbar-group" role="group" aria-label="Text formatting">
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--bold"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('bold')}"
         [attr.aria-pressed]="isToolbarCommandActive('bold')"
         aria-label="Bold"
@@ -57,10 +69,11 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5S13.83 9.5 13 9.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--italic"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('italic')}"
         [attr.aria-pressed]="isToolbarCommandActive('italic')"
         aria-label="Italic"
@@ -71,10 +84,11 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--underline"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('underline')}"
         [attr.aria-pressed]="isToolbarCommandActive('underline')"
         aria-label="Underline"
@@ -85,10 +99,13 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+      </div>
+      <div class="ccd-rich-text-area__toolbar-group" role="group" aria-label="Paragraph and heading formatting">
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--paragraph"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('paragraph')}"
         [attr.aria-pressed]="isToolbarCommandActive('paragraph')"
         aria-label="Paragraph"
@@ -96,22 +113,44 @@
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'paragraph')">
         <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--paragraph" aria-hidden="true">P</span>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button ccd-rich-text-area__toolbar-button--heading"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('heading')}"
         [attr.aria-pressed]="isToolbarCommandActive('heading')"
-        aria-label="Heading level 1"
-        title="Heading level 1"
+        aria-label="Heading"
+        title="Heading"
         (mousedown)="onToolbarButtonMouseDown($event)"
         (click)="executeToolbarCommand($event, 'heading')">
         <span class="ccd-rich-text-area__toolbar-icon ccd-rich-text-area__toolbar-icon--heading" aria-hidden="true">H</span>
-      </button>
+        </button>
+        <div
+          *ngIf="isToolbarCommandActive('heading')"
+          class="ccd-rich-text-area__heading-level">
+          <label class="ccd-rich-text-area__heading-level-label" [for]="headingLevelId()">Heading level</label>
+          <select
+            class="ccd-rich-text-area__heading-level-select"
+            tabindex="-1"
+            [id]="headingLevelId()"
+            [value]="selectedHeadingLevel"
+            (change)="onHeadingLevelChange($event)">
+            <option value="1">Heading 1</option>
+            <option value="2">Heading 2</option>
+            <option value="3">Heading 3</option>
+          </select>
+        </div>
+      </div>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
-      <button
+      <div
+        class="ccd-rich-text-area__toolbar-group ccd-rich-text-area__toolbar-group--list"
+        role="group"
+        aria-label="List formatting">
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isToolbarCommandActive('bullet_list')}"
         [attr.aria-pressed]="isToolbarCommandActive('bullet_list')"
         aria-label="Bullet List"
@@ -121,10 +160,11 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6C3.17 4.5 2.5 5.17 2.5 6S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM7 13h14v-2H7v2zm0 6h14v-2H7v2zM7 5v2h14V5H7z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="-1"
         [ngClass]="{'ccd-rich-text-area__toolbar-button--active': isOrderedListActive()}"
         [attr.aria-pressed]="isOrderedListActive()"
         aria-label="Numbered List"
@@ -134,24 +174,28 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1V14h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"></path>
         </svg>
-      </button>
-      <div class="ccd-rich-text-area__list-style">
-        <label class="ccd-rich-text-area__list-style-label" [for]="listStyleId()">List style</label>
-        <select
-          class="ccd-rich-text-area__list-style-select"
-          [id]="listStyleId()"
-          [value]="currentListSelectValue()"
-          (change)="onListStyleChange($event)">
-          <option *ngIf="!isOrderedListActive()" value="">No list</option>
-          <option value="ordered_list">Numbers (1, 2, 3)</option>
-          <option value="ordered_alpha">Letters (a, b, c)</option>
-          <option value="ordered_roman">Roman numerals (i), (ii), (iii)</option>
-        </select>
+        </button>
+        <div class="ccd-rich-text-area__list-style">
+          <label class="ccd-rich-text-area__list-style-label" [for]="listStyleId()">List style</label>
+          <select
+            class="ccd-rich-text-area__list-style-select"
+            tabindex="-1"
+            [id]="listStyleId()"
+            [value]="currentListSelectValue()"
+            (change)="onListStyleChange($event)">
+            <option *ngIf="!isOrderedListActive()" value="">No list</option>
+            <option value="ordered_list">Numbers (1, 2, 3)</option>
+            <option value="ordered_alpha">Letters (a, b, c)</option>
+            <option value="ordered_roman">Roman numerals (i), (ii), (iii)</option>
+          </select>
+        </div>
       </div>
       <span class="ccd-rich-text-area__toolbar-separator" aria-hidden="true"></span>
-      <button
+      <div class="ccd-rich-text-area__toolbar-group" role="group" aria-label="Indentation">
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="-1"
         aria-label="Decrease Indent"
         title="Decrease Indent"
         (mousedown)="onToolbarButtonMouseDown($event)"
@@ -159,10 +203,11 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M11 17h10v-2H11v2zm-8-5 4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"></path>
         </svg>
-      </button>
-      <button
+        </button>
+        <button
         type="button"
         class="ccd-rich-text-area__toolbar-button"
+        tabindex="-1"
         aria-label="Increase Indent"
         title="Increase Indent"
         (mousedown)="onToolbarButtonMouseDown($event)"
@@ -170,7 +215,8 @@
         <svg class="ccd-rich-text-area__toolbar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"></path>
         </svg>
-      </button>
+        </button>
+      </div>
     </div>
 
     <div class="NgxEditor__Wrapper">

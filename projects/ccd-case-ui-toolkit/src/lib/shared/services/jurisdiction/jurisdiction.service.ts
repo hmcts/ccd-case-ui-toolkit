@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { JudicialUserModel } from '../../domain/jurisdiction';
 import { HttpService } from '../http';
@@ -29,10 +30,19 @@ export class JurisdictionService {
   }
 
   public searchJudicialUsers(searchTerm: string, serviceId: string): Observable<JudicialUserModel[]> {
-    return this.httpService.post('api/prd/judicial/getJudicialUsersSearch', { searchString: searchTerm, serviceCode: serviceId });
+    return this.httpService.post('api/prd/judicial/getJudicialUsersSearch', {
+      searchString: searchTerm,
+      serviceCode: serviceId
+    });
   }
 
   public searchJudicialUsersByPersonalCodes(personalCodes: string[]): Observable<JudicialUserModel[]> {
     return this.httpService.post('api/prd/judicial/searchJudicialUserByPersonalCodes', { personal_code: personalCodes });
+  }
+
+  public getJudicialUserByIdamId(idamId: string): Observable<JudicialUserModel | null> {
+    return this.httpService.post('api/prd/judicial/searchJudicialUserByIdamId', { sidam_ids: [idamId] }).pipe(
+      map((users: JudicialUserModel[]) => (users && users.length > 0 ? users[0] : null))
+    );
   }
 }

@@ -1,7 +1,45 @@
 ## RELEASE NOTES
 
-### Version 7.3.96-exui-5098
+### Version 7.4.96-exui-5098
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.4.9
+**EXUI-4988** Suppressions - rimraf - major
+
+### Version 7.4.8
+**EXUI-3425** Redaction incomplete
+**EXUI-3426** Redaction selection breaks
+
+### Version 7.4.7
+**EXUI-5202** Manage links Reason for change not shown
+
+### Version 7.4.6
+**EXUI-5304** StaffUser type ahead event element label not being shown
+
+### Version 7.4.5
+**EXUI-5255** SRT Release - Gov.uk upgrade and hearings refactoring
+
+### Version 7.4.4
+**EXUI-5161** Library Packages Version Alignment - runtime
+
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
+
+### Version 7.4.1
+**EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
+
+### Version 7.3.99
+**EXUI-5185** Issue with copy and paste on Rich Text Editor
+**EXUI-5187** Undo/Deleting text in rich text field still sends data
+
+### Version 7.3.98
+**EXUI-5063** Staff type-ahead component
+
+### Version 7.3.97
+**EXUI-5153** RTF - Add in option for different heading options
 
 ### Version 7.3.96
 **EXUI-4977** Package update - minimatch - major

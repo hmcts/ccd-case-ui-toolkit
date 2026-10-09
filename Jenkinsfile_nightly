@@ -1,0 +1,18 @@
+#!groovy
+
+@Library('Infrastructure@2.9.0') _
+
+properties([
+  [$class: 'GithubProjectProperty',
+   displayName: 'CCD Case UI Toolkit',
+   projectUrlStr: 'https://github.com/hmcts/ccd-case-ui-toolkit'],
+  // Retain a manual entrypoint; scheduling is deferred. Clear any previous trigger.
+  pipelineTriggers([])
+])
+
+new uk.gov.hmcts.pipeline.TeamConfig(this).setTeamConfigEnv('xui')
+
+node(env.BUILD_AGENT_TYPE) {
+  checkout scm
+  load('playwright_tests/jenkins/validate.groovy').call()
+}

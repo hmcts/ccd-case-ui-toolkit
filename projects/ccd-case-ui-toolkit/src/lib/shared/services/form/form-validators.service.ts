@@ -7,16 +7,15 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FormValidatorsService {
-  private static readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
-    'Date', 'MoneyGBP', 'Label', 'JudicialUser'
-  ];
+  private static readonly CUSTOM_VALIDATED_FIELD_TYPES: FieldTypeEnum[] = ['Date', 'MoneyGBP', 'Label'];
+  private static readonly CUSTOM_VALIDATED_COMPLEX_TYPE_IDS = ['JudicialUser', 'StaffUser'];
   private static readonly DEFAULT_INPUT_TEXT = 'text';
   private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (
       caseField.display_context === Constants.MANDATORY &&
-      FormValidatorsService.CUSTOM_VALIDATED_TYPES.indexOf(caseField.field_type.type) === -1
+      !FormValidatorsService.isCustomValidatedType(caseField)
     ) {
       const validators = [Validators.required];
       if (caseField.field_type.type === 'Text') {
@@ -61,12 +60,18 @@ export class FormValidatorsService {
     return validator;
   }
 
+  private static isCustomValidatedType(caseField: CaseField): boolean {
+    return FormValidatorsService.CUSTOM_VALIDATED_FIELD_TYPES.includes(caseField.field_type.type)
+      || (caseField.field_type.type === 'Complex'
+        && FormValidatorsService.CUSTOM_VALIDATED_COMPLEX_TYPE_IDS.includes(caseField.field_type.id));
+  }
+
   public static markDownPatternValidator(): ValidatorFn {
     // Matches: [text](url), ![alt](url), <img ...>, <a ...>...</a>
     const inlineMarkdownPattern = /(?:!?\[[^\]]{0,500}\]\([^)]{0,500}\)|<(?:img\b[^>]{0,500}>|a\b[^>]{0,500}>[\s\S]*?<\/a>))/i;
 
     // Matches: [text][id], ![alt][id], and the collapsed form [text][]
-    const referenceBoxPattern = /(!)?\[((?:[^[\]\\]|\\.){0,500})\]\s*\[([^\]]{0,100})\]/;
+    const referenceBoxPattern = /(!)?\[((?:[^[\]\\]|\\.){0,500})\]\[([^\]]{0,100})\](?!\s*\/)/;
 
     // Matches: autolinks such as <http://example.com>
     const autolinkPattern = /<(?:[A-Za-z][A-Za-z0-9+.-]*:[^ <>\n]*|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)>/;

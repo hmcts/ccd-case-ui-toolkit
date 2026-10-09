@@ -93,6 +93,7 @@ import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponen
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
+import { ReadStaffUserFieldComponent, WriteStaffUserFieldComponent } from './staff-user';
 import { LabelFieldComponent } from './label';
 import {
   BeforeYouStartComponent,
@@ -178,6 +179,7 @@ const PALETTE_COMPONENTS = [
 
   // new
   ReadJudicialUserFieldComponent,
+  ReadStaffUserFieldComponent,
   ReadYesNoFieldComponent,
   ReadOrganisationFieldComponent,
   ReadOrganisationFieldTableComponent,
@@ -200,6 +202,7 @@ const PALETTE_COMPONENTS = [
 
   // Write
   WriteJudicialUserFieldComponent,
+  WriteStaffUserFieldComponent,
   WriteAddressFieldComponent,
   WriteComplexFieldComponent,
   WriteOrganisationComplexFieldComponent,

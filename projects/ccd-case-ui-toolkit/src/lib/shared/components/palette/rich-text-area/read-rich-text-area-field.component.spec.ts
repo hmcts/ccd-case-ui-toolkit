@@ -101,6 +101,23 @@ describe('ReadRichTextAreaFieldComponent', () => {
     expect(getComputedStyle(romanList).listStyleType).toBe('lower-roman');
   });
 
+  it('should preserve continued lettered lists and legal placeholders when rendering saved rich text', () => {
+    component.caseField.value = `
+      <p>the child[ren] [was] / [were] present</p>
+      <ol type="a" start="3" data-indent="1"><li><p>Third alternative</p></li><li><p>Fourth alternative</p></li></ol>`;
+    fixture.detectChanges();
+
+    const readValue = fixture.debugElement.query(By.css('.ccd-rich-text-area-read')).nativeElement as HTMLElement;
+    const continuedList = readValue.querySelector('ol[type="a"][start="3"]') as HTMLOListElement;
+
+    expect(readValue.textContent).toContain('the child[ren] [was] / [were] present');
+    expect(continuedList).not.toBeNull();
+    expect(continuedList.start).toBe(3);
+    expect(continuedList.classList).toContain('ccd-rich-text-indent-1');
+    expect(getComputedStyle(continuedList).marginLeft).toBe('40px');
+    expect(getComputedStyle(continuedList).listStyleType).toBe('lower-alpha');
+  });
+
   it('should discard unsupported ordered list styles', () => {
     component.caseField.value = '<ol type="A"><li><p>Item</p></li></ol>';
     fixture.detectChanges();
