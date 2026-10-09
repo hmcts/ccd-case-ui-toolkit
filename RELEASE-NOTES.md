@@ -1,9 +1,5 @@
 ## RELEASE NOTES
 
-### Version 7.4.8
-**EXUI-3425** Redaction incomplete
-**EXUI-3426** Redaction selection breaks
-
 ### Version 7.4.7
 **EXUI-5202** Manage links Reason for change not shown
 
