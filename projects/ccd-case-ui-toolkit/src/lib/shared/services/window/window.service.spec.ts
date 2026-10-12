@@ -1,5 +1,5 @@
-import { WindowService } from './window.service';
 import { fakeAsync, tick } from '@angular/core/testing';
+import { WindowService } from './window.service';
 
 describe('WindowService', () => {
   const windowService: WindowService = new WindowService();
