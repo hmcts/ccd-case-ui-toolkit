@@ -1,7 +1,12 @@
 ## RELEASE NOTES
 
+### Version 7.4.10
+**EXUI-5290** ccpay upgrade
+
 ### Version 7.4.9
 **EXUI-4988** Suppressions - rimraf - major
+**EXUI-4064** MV - Redaction - From Search (search value) - seeing a frozen screen
+**EXUI-4077** MV - Redaction - Saved redactions are lost 
 
 ### Version 7.4.8
 **EXUI-3425** Redaction incomplete
