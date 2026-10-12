@@ -135,10 +135,11 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.allowMoving).toBe(false);
   });
 
-  xit('should display an error message if the service is unavilable to get categories and documents', () => {
+  it('should display an error message if the service is unavailable to get categories and documents', () => {
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(throwError(new Error('Unable to retrieve data')));
-    component.ngOnInit();
-    fixture.detectChanges();
+
+    expect(() => fixture.detectChanges()).not.toThrow();
+
     expect(component.getCategoriesAndDocumentsError).toBe(true);
     const nativeElement = fixture.debugElement.nativeElement;
     const errorMessageHeadingElement = nativeElement.querySelector('.govuk-heading-xl');

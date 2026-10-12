@@ -188,6 +188,25 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(component.normaliseRichTextValue('<ol><li><p></p></li></ol>')).toBe('');
   });
 
+  it('should emit non-breaking spaces for blank paragraphs so Docmosis retains carriage returns', fakeAsync(() => {
+    component.editor.setContent('<p>First line</p><p></p><p></p><p>Fourth line</p>');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toBe(
+      '<p>First line</p><p>&nbsp;</p><p>&nbsp;</p><p>Fourth line</p>'
+    );
+  }));
+
+  it('should keep an empty rich-text paragraph editable', fakeAsync(() => {
+    component.editor.setContent('<p></p>');
+    tick();
+    component.editor.commands.insertText('Typed text').exec();
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toBe('<p>Typed text</p>');
+    expect(component.editor.view.state.doc.textContent).toBe('Typed text');
+  }));
+
   it('should reject unsafe HTML tags entered as visible editor text', fakeAsync(() => {
     formGroup.controls[FIELD_ID].setValue('<p>&lt;script&gt;alert("xss")&lt;/script&gt;</p>');
     tick();
@@ -1631,7 +1650,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(editor.querySelectorAll(':scope > ul').length).toBe(2);
     expect(editor.querySelector(':scope > ol')).toBeNull();
     expect(editor.querySelector(':scope > ul > li > ol[type="a"] > li > ol[type="i"]')).not.toBeNull();
-    expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ul>');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>&nbsp;</p><ul>');
   }));
 
   it('should switch a continued Word list sequence between numbers and bullets across headings', fakeAsync(() => {
@@ -1690,7 +1709,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(orderedLists.length).toBe(2);
     expect(orderedLists[0].getAttribute('start')).toBeNull();
     expect(orderedLists[1].getAttribute('start')).toBe('3');
-    expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ol start="3">');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>&nbsp;</p><ol start="3">');
   }));
 
   it('should continue numbering across pasted bullet lists separated by bold Word headings', fakeAsync(() => {
@@ -2331,8 +2350,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const paragraphs = normalisedDocument.querySelectorAll('p');
 
     expect(paragraphs.length).toBe(4);
-    expect(paragraphs[1].textContent).toBe('');
-    expect(paragraphs[2].textContent).toBe('');
+    expect(paragraphs[1].innerHTML).toBe('&nbsp;');
+    expect(paragraphs[2].innerHTML).toBe('&nbsp;');
   });
 
   it('should retain Word paragraph indentation from shorthand margin styles', () => {

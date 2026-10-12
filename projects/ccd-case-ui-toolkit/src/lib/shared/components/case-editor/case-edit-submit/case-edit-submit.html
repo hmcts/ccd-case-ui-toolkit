@@ -22,7 +22,7 @@
         <h2 class="heading-h2">{{pageTitle | rpxTranslate }}</h2>
         <span class="text-16" *ngIf="!caseEdit.isCaseFlagSubmission">{{'Check the information below carefully.' | rpxTranslate}}</span>
 
-        <table class="form-table" aria-describedby="check your answers table">
+        <table class="form-table" aria-label="check your answers table">
           <tbody>
           <ng-container *ngFor="let page of wizard.pages">
             <ng-container *ngIf="isShown(page)">
@@ -61,7 +61,7 @@
       </ng-container>
       <ng-container *ngIf="readOnlySummaryFieldsToDisplayExists()">
 
-        <table class="summary-fields" aria-describedby="summary fields table">
+        <table class="summary-fields" aria-label="summary fields table">
           <tbody>
             <ng-container *ngFor="let field of showSummaryFields">
                 <ng-container [ngSwitch]="!(field | ccdIsCompound)">

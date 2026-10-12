@@ -1,0 +1,20 @@
+{
+  "name": "ccd-case-ui-toolkit-packaged-consumer",
+  "private": true,
+  "scripts": {
+    "start": "ng serve --host 127.0.0.1 --port 4301"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "20.3.24",
+    "@angular/cli": "20.3.24",
+    "@angular/compiler-cli": "^20.3.27",
+    "@playwright/test": "1.63.0",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "@angular/material": "16.2.12",
+    "@angular/cdk": "17.3.5",
+    "@angular-material-components/datetime-picker": "16.0.1",
+    "@angular-material-components/moment-adapter": "16.0.1"
+  }
+}

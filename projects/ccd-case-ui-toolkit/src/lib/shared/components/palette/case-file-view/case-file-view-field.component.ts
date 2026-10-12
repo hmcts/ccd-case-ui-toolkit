@@ -67,6 +67,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const slider = this.elementRef.nativeElement.querySelector('.slider');
     const documentTreeContainer = this.elementRef.nativeElement.querySelector('.document-tree-container');
 
+    if (!slider || !documentTreeContainer) {
+      return;
+    }
+
     const mousedown$ = fromEvent<MouseEvent>(slider, 'mousedown');
     const mousemove$ = fromEvent<MouseEvent>(document, 'mousemove');
     const mouseup$ = fromEvent<MouseEvent>(document, 'mouseup');

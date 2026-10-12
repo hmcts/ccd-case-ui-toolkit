@@ -1,5 +1,35 @@
 ## RELEASE NOTES
 
+### Version 7.4.10
+**EXUI-5290** ccpay upgrade
+
+### Version 7.4.9
+**EXUI-4988** Suppressions - rimraf - major
+**EXUI-4064** MV - Redaction - From Search (search value) - seeing a frozen screen
+**EXUI-4077** MV - Redaction - Saved redactions are lost 
+
+### Version 7.4.8
+**EXUI-3425** Redaction incomplete
+**EXUI-3426** Redaction selection breaks
+
+### Version 7.4.7
+**EXUI-5202** Manage links Reason for change not shown
+
+### Version 7.4.6
+**EXUI-5304** StaffUser type ahead event element label not being shown
+
+### Version 7.4.5
+**EXUI-5255** SRT Release - Gov.uk upgrade and hearings refactoring
+
+### Version 7.4.4
+**EXUI-5161** Library Packages Version Alignment - runtime
+
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
+
 ### Version 7.4.1
 **EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
 
