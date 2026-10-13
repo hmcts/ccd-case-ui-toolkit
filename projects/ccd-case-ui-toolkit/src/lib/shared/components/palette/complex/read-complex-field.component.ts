@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 
@@ -17,6 +17,7 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
 
   public ngOnInit(): void {
     super.ngOnInit();
+    this.caseField = this.caseFieldForDisplay();
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
     } else {
@@ -41,5 +42,58 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
         }
       });
     }
+  }
+
+  private caseFieldForDisplay(): CaseField {
+    const selectedSubfieldPath = this.caseField?.caseFieldSubfieldCode?.trim();
+    if (!selectedSubfieldPath || !this.caseField?.field_type?.complex_fields) {
+      return this.caseField;
+    }
+
+    const path = selectedSubfieldPath.split('.').map((segment) => segment.trim()).filter(Boolean);
+    if (path[0]?.toLowerCase() === this.caseField.id?.toLowerCase()) {
+      path.shift();
+    }
+    if (!path.length) {
+      return this.caseField;
+    }
+
+    const caseFieldWithSelectedSubfieldPath = this.cloneCaseFieldTree(this.caseField);
+    let currentField = caseFieldWithSelectedSubfieldPath;
+    for (const segment of path) {
+      if (!currentField.isComplex() || currentField.isCollection()) {
+        return this.caseField;
+      }
+
+      const selectedChild = currentField.field_type.complex_fields?.find(
+        (field) => field.id?.toLowerCase() === segment.toLowerCase()
+      );
+      if (!selectedChild || selectedChild.isCollection()) {
+        return this.caseField;
+      }
+
+      currentField.field_type.complex_fields = [selectedChild];
+      currentField = selectedChild;
+    }
+
+    return caseFieldWithSelectedSubfieldPath;
+  }
+
+  private cloneCaseFieldTree(caseField: CaseField): CaseField {
+    const clone = Object.assign(new CaseField(), caseField);
+    clone.parent = undefined;
+    if (caseField.field_type) {
+      clone.field_type = this.cloneFieldTypeTree(caseField.field_type);
+    }
+    return clone;
+  }
+
+  private cloneFieldTypeTree(fieldType: FieldType): FieldType {
+    const clone = Object.assign(new FieldType(), fieldType);
+    clone.complex_fields = fieldType.complex_fields?.map((field) => this.cloneCaseFieldTree(field));
+    clone.collection_field_type = fieldType.collection_field_type
+      ? this.cloneFieldTypeTree(fieldType.collection_field_type)
+      : undefined;
+    return clone;
   }
 }
