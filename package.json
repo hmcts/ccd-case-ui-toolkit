@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.11",
+  "version": "7.4.12-broken-access",
   "engines": {
     "node": ">=24.18.0"
   },
