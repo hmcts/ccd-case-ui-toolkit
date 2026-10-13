@@ -4,6 +4,7 @@ import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { ProfileResolver } from '../../services/profile/profile.resolver';
 
 export const editorRouting: Routes = [
   {
@@ -25,6 +26,7 @@ export const editorRouting: Routes = [
     path: ':page',
     resolve: {
       caseEditWizardGuard: CaseEditWizardGuard,
+      profile: ProfileResolver,
     },
     canDeactivate: [FileUploadProgressGuard],
     component: CaseEditPageComponent,

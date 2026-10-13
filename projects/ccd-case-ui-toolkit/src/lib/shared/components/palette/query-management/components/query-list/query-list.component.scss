@@ -1,4 +1,5 @@
-@use 'govuk-frontend/govuk/all' as *;
+@use "govuk-frontend/dist/govuk/index" as *;
+@use 'components/govuk-toolkit-shim' as *;
 
 .query-list {
   &__row {

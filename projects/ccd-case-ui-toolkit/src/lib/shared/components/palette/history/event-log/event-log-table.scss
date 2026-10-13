@@ -1,5 +1,5 @@
 @use 'sass:math';
-@use 'govuk_frontend_toolkit/stylesheets/_colours.scss' as *;
+@use 'components/govuk-toolkit-shim' as *;
 
 #case-timeline {
   a {
