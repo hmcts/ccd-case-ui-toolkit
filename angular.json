@@ -124,7 +124,7 @@
             "assets": [{ "glob": "*", "input": "playwright_tests/mocks/documents", "output": "test" }, { "glob": "pdf.worker.min.mjs", "input": "node_modules/@hmcts/media-viewer/assets/build", "output": "assets/build" }],
             "index": "playwright_tests/host/index.html",
             "browser": "playwright_tests/host/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": ["reflect-metadata", "zone.js"],
             "tsConfig": "playwright_tests/host/tsconfig.json",
             "stylePreprocessorOptions": {
               "includePaths": [
