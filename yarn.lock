@@ -3224,8 +3224,8 @@ __metadata:
     "@babel/core": "npm:^7.23.0"
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.41"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-cme-1118-v1"
+    "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@ngxmc/datetime-picker": "npm:20.1.0"
@@ -3334,9 +3334,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.27":
-  version: 6.5.27
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.27"
+"@hmcts/ccpay-web-component@npm:6.5.28-cme-1118-v1":
+  version: 6.5.28-cme-1118-v1
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-cme-1118-v1"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3344,13 +3344,13 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/892786160ccab3b4a1cb4db7485e4b9866e22743096d9342e107cab3437f9e4404aac6cf62afb99ee8df9ae85eee68404fc9845843963d58b8d550475d6e46f1
+  checksum: 10/4cb02a4fece71a32379d165bc9ae6269684f32809c57471e52f78e7b99b6f5129d786fe4b2753345323777c3f5f0ead6bb6539fa5ea50e099220620b54ec76bd
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.41":
-  version: 4.2.41
-  resolution: "@hmcts/media-viewer@npm:4.2.41"
+"@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20":
+  version: 4.2.42-CME-776-dart-angular-20
+  resolution: "@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3373,7 +3373,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/25971c196b90f0a6792c017785924c9883df890379340df9624e40e72b2def1f5e3640b5d6b0f8313bc42a3df19fc6957968d0d0ffa76be548ea3875031b1f41
+  checksum: 10/56065083f695b520b7eb91bdf412fac2ae1a847c6336e925bebf1f1369a3f087f74d5799c29804c17a72933a9e5daf7c7eeb87e9a6e6269bae00cd73f1940e81
   languageName: node
   linkType: hard
 
