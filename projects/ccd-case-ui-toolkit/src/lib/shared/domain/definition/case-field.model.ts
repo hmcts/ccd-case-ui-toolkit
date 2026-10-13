@@ -35,6 +35,7 @@ export class CaseField implements Orderable {
   public show_summary_content_option?: number;
   public acls?: AccessControlList[];
   public metadata?: boolean;
+  public caseFieldSubfieldCode?: string;
   public formatted_value?: any;
   public retain_hidden_value: boolean;
 

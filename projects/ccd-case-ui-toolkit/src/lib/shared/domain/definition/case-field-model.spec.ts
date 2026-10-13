@@ -44,6 +44,16 @@ describe('CaseField', () => {
     expect(caseField.display_context_parameter).toBe('#ARGUMENT(CATEGORY-ADMIN,CATEGORY-CTSC)');
   });
 
+  it('should retain caseFieldSubfieldCode from a Data Store response', () => {
+    const caseField = plainToClassFromExist(new CaseField(), {
+      id: 'Applicant',
+      field_type: { id: 'Applicant', type: 'Complex' },
+      caseFieldSubfieldCode: 'Address.Postcode'
+    });
+
+    expect(caseField.caseFieldSubfieldCode).toBe('Address.Postcode');
+  });
+
   it('should return simple id for top level field', () => {
     component.parent = null;
     component.id = 'joeyramone';

@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.11-exui-3449
+**EXUI-3449** Allow specific CCD subfields to be displayed on Case View screen
+
 ### Version 7.4.11
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
 
