@@ -25,6 +25,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     otherDescription_cy: 'A description (Welsh)',
     flagComment: 'First flag',
     flagComment_cy: 'First flag (Welsh)',
+    flagUpdateComment_cy: 'Status change reason (Welsh)',
     dateTimeCreated: new Date(),
     path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
@@ -54,6 +55,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
     component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
+    component.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -74,19 +76,23 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add three form controls if formGroup exists', () => {
+  it('should add translation form controls if formGroup exists', () => {
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.COMMENTS)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)).toBeTruthy();
   });
 
-  it('should pre-populate initial values for the three form controls added, if such values exist in the selected flag', () => {
+  it('should pre-populate initial values for translation form controls if such values exist in the selected flag', () => {
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.otherDescription);
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.otherDescription_cy);
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy);
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH).value).toEqual(
+      selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment_cy);
   });
 
   it('should have all four textareas based on names', () => {

@@ -164,12 +164,14 @@ describe('WriteCaseFlagFieldComponent', () => {
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagComment = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagComment_cy = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagUpdateComment = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagUpdateComment_cy = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.otherDescription = 'Original description';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.otherDescription_cy = 'Welsh description';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagComment = 'Original new comment 1';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagComment_cy = 'Welsh new comment 1';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagUpdateComment = 'Status change 1';
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagUpdateComment_cy = 'Status change 1 (Welsh)';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
     '2022-02-14T00:00:00.000';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
@@ -218,12 +220,14 @@ describe('WriteCaseFlagFieldComponent', () => {
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagComment = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagComment_cy = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagUpdateComment = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagUpdateComment_cy = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.otherDescription = 'Another description';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.otherDescription_cy = 'Cymraeg';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagComment = 'Original new comment 2';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagComment_cy = 'Welsh new comment 2';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagUpdateComment = 'Status change 2';
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagUpdateComment_cy = 'Status change 2 (Welsh)';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
     '2022-02-15T00:00:00.000';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
@@ -756,6 +760,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)'),
       [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]: new FormControl('Status set to inactive (Welsh)'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
@@ -771,6 +776,8 @@ describe('WriteCaseFlagFieldComponent', () => {
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual(
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS_CHANGE_REASON]);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment_cy).toEqual(
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(
       CaseFlagStatus[component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS]]);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
@@ -782,6 +789,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].caseField.value.details[1].value.flagComment).toEqual('Original new comment 1');
     expect(component.flagsData[0].caseField.value.details[1].value.flagComment_cy).toEqual('Welsh new comment 1');
     expect(component.flagsData[0].caseField.value.details[1].value.flagUpdateComment).toEqual('Status change 1');
+    expect(component.flagsData[0].caseField.value.details[1].value.flagUpdateComment_cy).toEqual('Status change 1 (Welsh)');
     expect(component.flagsData[0].caseField.value.details[1].value.dateTimeModified).toEqual('2022-02-14T00:00:00.000');
     expect(component.flagsData[0].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
     expect(component.flagsData[1].caseField.value.details[0].value.otherDescription).toBeNull();
@@ -789,6 +797,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[0].value.flagComment).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.flagComment_cy).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.flagUpdateComment).toBeNull();
+    expect(component.flagsData[1].caseField.value.details[0].value.flagUpdateComment_cy).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.dateTimeModified).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
     expect(component.flagsData[1].caseField.value.details[1].value.otherDescription).toEqual('Another description');
@@ -796,8 +805,42 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.flagComment).toEqual('Original new comment 2');
     expect(component.flagsData[1].caseField.value.details[1].value.flagComment_cy).toEqual('Welsh new comment 2');
     expect(component.flagsData[1].caseField.value.details[1].value.flagUpdateComment).toEqual('Status change 2');
+    expect(component.flagsData[1].caseField.value.details[1].value.flagUpdateComment_cy).toEqual('Status change 2 (Welsh)');
     expect(component.flagsData[1].caseField.value.details[1].value.dateTimeModified).toEqual('2022-02-15T00:00:00.000');
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
+  });
+
+  it('should copy status change reason to flagUpdateComment_cy when language is Welsh and Welsh reason is not provided', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    rpxTranslationServiceSpy.language = 'cy';
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Rheswm Cymraeg'),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
+    });
+
+    component.updateFlagInCollection();
+
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual('Rheswm Cymraeg');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment_cy).toEqual('Rheswm Cymraeg');
+  });
+
+  it('should set flagUpdateComment_cy to null when Welsh reason is blank and language is not Welsh', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl(''),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]: new FormControl(''),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
+    });
+
+    component.updateFlagInCollection();
+
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual('Status set to inactive');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment_cy).toBeNull();
   });
 
   it('should retain existing values for otherDescription, otherDescription_cy and flagComment_cy fields if not being updated', () => {

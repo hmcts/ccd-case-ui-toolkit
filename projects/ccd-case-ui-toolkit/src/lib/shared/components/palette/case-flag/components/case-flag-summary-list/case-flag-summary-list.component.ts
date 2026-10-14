@@ -27,6 +27,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public otherDescription: string;
   public otherDescriptionWelsh: string;
   public flagUpdateComments: string;
+  public flagUpdateCommentsWelsh: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
   public caseFlagFieldState = CaseFlagFieldState;
@@ -50,6 +51,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
       // Flag update comments will be coming from the flagStatusReasonChange property instead of flagUpdateComment
       // because these haven't been persisted yet
       this.flagUpdateComments = flagDetail['flagStatusReasonChange'];
+      this.flagUpdateCommentsWelsh = flagDetail['flagStatusReasonChange_cy'];
       this.flagStatus = flagDetail.status;
       this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
       this.flagTypeHeaderText = this.getFlagTypeHeaderText();

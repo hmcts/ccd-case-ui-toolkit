@@ -42,6 +42,7 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail?.flagComment));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl(flagDetail?.flagComment_cy));
+    this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH, new FormControl(flagDetail?.flagUpdateComment_cy));
   }
 
   public ngOnDestroy(): void {

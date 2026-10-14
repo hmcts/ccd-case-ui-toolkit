@@ -6,6 +6,7 @@ export enum CaseFlagFormFields {
   OTHER_FLAG_DESCRIPTION_WELSH = 'otherDescription_cy',
   STATUS = 'status',
   STATUS_CHANGE_REASON = 'flagStatusReasonChange',
+  STATUS_CHANGE_REASON_WELSH = 'flagStatusReasonChange_cy',
   IS_WELSH_TRANSLATION_NEEDED = 'flagIsWelshTranslationNeeded',
   IS_VISIBLE_INTERNALLY_ONLY = 'flagIsVisibleInternallyOnly'
 }

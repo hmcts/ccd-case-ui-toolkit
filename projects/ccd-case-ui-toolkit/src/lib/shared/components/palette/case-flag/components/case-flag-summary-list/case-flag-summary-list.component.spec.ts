@@ -249,16 +249,43 @@ describe('CaseFlagSummaryListComponent', () => {
   });
 
   it('should display the status-change reason in Welsh mode for the Manage Case Flags v2.1 journey', () => {
+    const flag = {
+      ...flagDetailDisplay,
+      flagDetail: {
+        ...flagDetailDisplay.flagDetail,
+        flagStatusReasonChange: 'Change of status',
+        flagStatusReasonChange_cy: 'Newid statws'
+      }
+    } as FlagDetailDisplay;
     mockRpxTranslationService.language = 'cy';
-    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
-    expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
-    expect(summaryListValues[4].textContent).toContain(flagDetailDisplay.flagDetail.flagStatusReasonChange);
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagStatusReasonChange);
+    expect(summaryListValues[5].textContent).toContain(flag.flagDetail['flagStatusReasonChange_cy']);
     const summaryListKeys = nativeElement.querySelectorAll('dt.govuk-summary-list__key');
     expect(summaryListKeys[3].textContent).toContain('Status');
     expect(summaryListKeys[4].textContent.trim()).toBe('Reason for change');
+    expect(summaryListKeys[5].textContent.trim()).toBe('Reason for change (Welsh)');
+  });
+
+  it('should not display an empty Welsh status-change reason row for the Manage Case Flags v2.1 journey', () => {
+    const flag = {
+      ...flagDetailDisplay,
+      flagDetail: {
+        ...flagDetailDisplay.flagDetail,
+        flagStatusReasonChange: 'Change of status',
+        flagStatusReasonChange_cy: ''
+      }
+    } as FlagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues.length).toBe(5);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagStatusReasonChange);
   });
 
   it('should display summary details for Welsh', () => {

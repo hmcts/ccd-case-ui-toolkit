@@ -77,6 +77,42 @@
           {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
+
+      <div class="govuk-!-margin-bottom-4">
+        <label [for]="caseFlagFormFields.STATUS_CHANGE_REASON" class="govuk-label govuk-label--s">{{'Flag status change reason' | rpxTranslate}}</label>
+        <div id="add-translation-flag-status-change-reason-char-limit-error" class="govuk-error-message"
+             *ngIf="flagCommentsWelshCharLimitErrorMessage">
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagCommentsWelshCharLimitErrorMessage | rpxTranslate}}
+        </div>
+        <textarea
+          class="govuk-textarea" rows="5"
+          [id]="caseFlagFormFields.STATUS_CHANGE_REASON"
+          [name]="caseFlagFormFields.STATUS_CHANGE_REASON"
+          [formControlName]="caseFlagFormFields.STATUS_CHANGE_REASON">
+        </textarea>
+        <div id="add-translation-flag-status-change-reason-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
+        </div>
+      </div>
+
+
+      <div class="govuk-!-margin-bottom-4">
+        <label [for]="caseFlagFormFields.STATUS_CHANGE_REASON_WELSH" class="govuk-label govuk-label--s">{{'Flag status change reason (Welsh)' | rpxTranslate}}</label>
+        <div id="add-translation-flag-status-change-reason-welsh-char-limit-error" class="govuk-error-message"
+             *ngIf="flagCommentsWelshCharLimitErrorMessage">
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagCommentsWelshCharLimitErrorMessage | rpxTranslate}}
+        </div>
+        <textarea
+          class="govuk-textarea" rows="5"
+          [id]="caseFlagFormFields.STATUS_CHANGE_REASON_WELSH"
+          [name]="caseFlagFormFields.STATUS_CHANGE_REASON_WELSH"
+          [formControlName]="caseFlagFormFields.STATUS_CHANGE_REASON_WELSH">
+        </textarea>
+        <div id="add-translation-flag-status-change-reason-welsh-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
+        </div>
+      </div>
+
     </div>
   </div>
 </ng-container>
