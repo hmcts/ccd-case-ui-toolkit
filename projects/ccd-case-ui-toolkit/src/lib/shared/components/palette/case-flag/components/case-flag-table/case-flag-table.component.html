@@ -32,8 +32,7 @@
         <div [ngClass]="{'govuk-!-font-weight-bold': isActivePvpFlag(flagDetail)}">
           {{flagDetail | flagFieldDisplay:'flagComment'}}
         </div>
-        <div *ngIf="!caseFlagsExternalUser &&
-          (flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
+        <div *ngIf="(flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
           flagDetail.flagUpdateComment">
           <span class="govuk-!-font-weight-bold">Update Reason: {{flagDetail.flagUpdateComment}}</span>
         </div>
