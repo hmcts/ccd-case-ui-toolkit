@@ -810,10 +810,11 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
   });
 
-  it('should copy status change reason to flagUpdateComment_cy when language is Welsh and Welsh reason is not provided', () => {
+  it('should set only flagUpdateComment_cy when language is Welsh and only one update is made', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
     rpxTranslationServiceSpy.language = 'cy';
+    const previousEnglishStatusReason = component.flagsData[0].caseField.value.details[0].value.flagUpdateComment;
     const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Rheswm Cymraeg'),
@@ -822,8 +823,25 @@ describe('WriteCaseFlagFieldComponent', () => {
 
     component.updateFlagInCollection();
 
-    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual('Rheswm Cymraeg');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual(previousEnglishStatusReason);
     expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment_cy).toEqual('Rheswm Cymraeg');
+  });
+
+  it('should set only flagComment_cy when language is Welsh and only one update is made', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    rpxTranslationServiceSpy.language = 'cy';
+    const previousEnglishComment = component.flagsData[0].caseField.value.details[0].value.flagComment;
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS]: new FormControl('Sylw Cymraeg'),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
+    });
+
+    component.updateFlagInCollection();
+
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(previousEnglishComment);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual('Sylw Cymraeg');
   });
 
   it('should set flagUpdateComment_cy to null when Welsh reason is blank and language is not Welsh', () => {

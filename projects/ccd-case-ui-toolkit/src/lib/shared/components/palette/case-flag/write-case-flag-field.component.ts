@@ -569,6 +569,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
             : this.rpxTranslationService.language === 'cy'
               ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
               : null;
+        }
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH) || this.rpxTranslationService.language === 'cy') {
           flagDetailToUpdate.value.flagUpdateComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)?.value
             ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)?.value
             : this.rpxTranslationService.language === 'cy'
