@@ -3293,7 +3293,7 @@ __metadata:
     "@compodoc/compodoc": "npm:1.1.32"
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.40-exui-5307-rc1"
+    "@hmcts/media-viewer": "npm:4.2.42"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@playwright/test": "npm:1.63.0"
@@ -3370,7 +3370,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.15-exui-5307-rc1"
+    rpx-xui-translation: "npm:1.2.16"
     rxjs: "npm:^7.8.2"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -3415,9 +3415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.40-exui-5307-rc1":
-  version: 4.2.40-exui-5307-rc1
-  resolution: "@hmcts/media-viewer@npm:4.2.40-exui-5307-rc1"
+"@hmcts/media-viewer@npm:4.2.42":
+  version: 4.2.42
+  resolution: "@hmcts/media-viewer@npm:4.2.42"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3440,7 +3440,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/5503010456d189f59886978e4e6c5545d0aeacb0227b57d2b6091cc3753bbfea961cc3c261af99536ae055d79c37d83e9cac6d5b1324152a27a3b0fe2ae4d70e
+  checksum: 10/121bb81a06b11db6b0a9bf1aa92a579e27a4e17026b1b47c166aecb613a7daccdaa9cee5dacdd4290b4e957ca8c9cbd5e6ba365eb03163453ccd249b1fc1a287
   languageName: node
   linkType: hard
 
@@ -20113,9 +20113,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.15-exui-5307-rc1":
-  version: 1.2.15-exui-5307-rc1
-  resolution: "rpx-xui-translation@npm:1.2.15-exui-5307-rc1"
+"rpx-xui-translation@npm:1.2.16":
+  version: 1.2.16
+  resolution: "rpx-xui-translation@npm:1.2.16"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -20124,7 +20124,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/82920866f3f67a1280b538b5dfdfa1aaa5429fa985d01912181cbfb3d14244e45de05a6f0767e0f42e72b3c35671f104cacad85aa5c5ad1457d7c6808399bf9f
+  checksum: 10/d2016adbeb278c92eb393463c78a67aac1b8ac198fe4f521933f2d7edaf4146ce0d1bec3e1a80529b0b93a08bfcc7c2ea9c51a429b62e58e0c76aec4c551112f
   languageName: node
   linkType: hard
 
