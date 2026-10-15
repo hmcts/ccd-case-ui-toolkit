@@ -185,7 +185,7 @@ let alertService: AlertService;
 let windowService;
 const TEST_FORM_GROUP = new FormGroup({});
 
-describe('Clear localStorage for workbasket filters', () => {
+describe('Clear session storage for workbasket filters', () => {
   let windowMockService: WindowService;
   beforeEach(waitForAsync(() => {
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
@@ -197,8 +197,8 @@ describe('Clear localStorage for workbasket filters', () => {
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
-    windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
-      'getLocalStorage', 'removeLocalStorage', 'setLocalStorage']);
+    windowMockService = createSpyObj<WindowService>('windowService', ['clearSessionStorage', 'locationAssign',
+      'getSessionStorage', 'removeSessionStorage', 'setSessionStorage']);
     resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
     activatedRoute = {
       queryParams: of({}),
@@ -266,8 +266,8 @@ describe('with defaults', () => {
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
-    windowService.getLocalStorage.and.returnValue('{}');
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
+    windowService.getSessionStorage.and.returnValue('{}');
     resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
     activatedRoute = {
       queryParams: of({}),
@@ -497,7 +497,7 @@ describe('with defaults', () => {
     component.selected.caseState = null;
 
     const formValue = {};
-    windowService.getLocalStorage.and.returnValue(formValue);
+    windowService.getSessionStorage.and.returnValue(formValue);
     const button = de.query($APPLY_BUTTON);
 
     fixture.detectChanges();
@@ -549,7 +549,7 @@ describe('with defaults', () => {
 
     component.onCaseTypeIdChange();
 
-    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    expect(windowService.removeSessionStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
   });
 
   it('should clear stored dynamic filter values when jurisdiction changes', () => {
@@ -557,7 +557,7 @@ describe('with defaults', () => {
 
     component.onJurisdictionIdChange();
 
-    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    expect(windowService.removeSessionStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
   });
 
   it('should ignore error and reset input fields', () => {
@@ -685,20 +685,20 @@ describe('with defaults', () => {
 
     fixture.detectChanges();
     // The "j1_judicialUserControl" property is expected to have been removed, leaving just the "name" property
-    // Need to check the second call to windowService.setLocalStorage(); the first one is for "savedQueryParams"
-    expect(windowService.setLocalStorage.calls.argsFor(1)).toEqual(
+    // Need to check the second call to windowService.setSessionStorage(); the first one is for "savedQueryParams"
+    expect(windowService.setSessionStorage.calls.argsFor(1)).toEqual(
       ['workbasket-filter-form-group-value', JSON.stringify({ name: 'test' })]);
   });
 
   it('should update form group filters', () => {
-    const formGroupLocalStorage = {
+    const formGroupSessionStorage = {
       regionList: 'london',
       londonFRCList: 'london',
       londonCourtList: 'FR_londonList_10',
       southEastFRCList: null,
       thamesvalleyCourtList: null
     };
-    windowService.getLocalStorage.and.returnValue(JSON.stringify(formGroupLocalStorage));
+    windowService.getSessionStorage.and.returnValue(JSON.stringify(formGroupSessionStorage));
 
     const formControls = {
       regionList: new FormControl('southeast'),
@@ -734,7 +734,7 @@ describe('with defaults and CRUD', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
     jurisdictionService = new JurisdictionService(httpService);
     activatedRoute = {
       queryParams: of({}),
@@ -835,7 +835,7 @@ describe('with defaults and CRUD and empty case types', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
 
     jurisdictionService = new JurisdictionService(httpService);
     activatedRoute = {
@@ -911,7 +911,7 @@ describe('with defaults and CRUD and type with empty case states', () => {
     alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
     resetCaseTypes(JURISDICTION_2, CASE_TYPE_WITH_EMPTY_STATES);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
@@ -997,7 +997,7 @@ describe('with query parameters', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
     alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
     activatedRoute = {
       queryParams: of(QUERY_PARAMS),
@@ -1084,8 +1084,8 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
-    windowService.getLocalStorage.and.returnValue(JSON.stringify(QUERY_PARAMS));
+    windowService = createSpyObj('windowService', ['setSessionStorage', 'getSessionStorage', 'removeSessionStorage']);
+    windowService.getSessionStorage.and.returnValue(JSON.stringify(QUERY_PARAMS));
     activatedRoute = {
       queryParams: of(QUERY_PARAMS),
       snapshot: {
@@ -1168,9 +1168,9 @@ describe('with no defaults', () => {
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
-      'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
-    windowService.getLocalStorage.and.returnValue('{}');
+    windowService = createSpyObj<WindowService>('windowService', ['clearSessionStorage', 'locationAssign',
+      'getSessionStorage', 'setSessionStorage', 'removeSessionStorage']);
+    windowService.getSessionStorage.and.returnValue('{}');
     activatedRoute = {
       queryParams: of({}),
       snapshot: {
@@ -1288,7 +1288,7 @@ describe('with no defaults', () => {
       });
   });
 
-  it('should remove localStorage and clear selected fields once reset button is clicked', fakeAsync(() => {
+  it('should remove session storage and clear selected fields once reset button is clicked', fakeAsync(() => {
     // Set some initial values for the jurisdiction, case type and case state
     component.selected.jurisdiction = JURISDICTION_ONE;
     component.onJurisdictionIdChange();
@@ -1323,10 +1323,10 @@ describe('with no defaults', () => {
     expect(selector.children[0].nativeElement.textContent).toEqual('Any');
     expect(selector.nativeElement.selectedIndex).toEqual(0);
 
-    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
-    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');
+    expect(windowService.removeSessionStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    expect(windowService.removeSessionStorage).toHaveBeenCalledWith('savedQueryParams');
     expect(component.apply).toHaveBeenCalledWith(true);
-    expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
+    expect(windowService.setSessionStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
   }));
 
   it('should call scrollTo when scrollToTop is called', () => {
