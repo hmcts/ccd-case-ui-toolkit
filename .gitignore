@@ -50,6 +50,7 @@ tmp/*
 
 # docs
 docs/
+storybook-static/
 
 # demo
 demo/dist/

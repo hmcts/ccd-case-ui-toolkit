@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.11",
+  "version": "7.4.12-debugger-statement",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -38,7 +38,8 @@
     "docs": "compodoc -p tsconfig.json -d docs --disableCoverage --disablePrivate --disableProtected --disableInternal --disableLifeCycleHooks",
     "explorer": "source-map-explorer ./dist/index.umd.js",
     "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs",
-    "lint": "ng lint ccd-case-ui-toolkit",
+    "lint": "yarn lint:debugger && ng lint ccd-case-ui-toolkit",
+    "lint:debugger": "eslint --no-config-lookup --no-inline-config --ext .ts --parser @typescript-eslint/parser --rule 'no-debugger:error' \"src/**/*.ts\" \"projects/ccd-case-ui-toolkit/src/**/*.ts\"",
     "ngcompile": "node_modules/.bin/ngc -p tsconfig-aot.json",
     "postversion": "git push && git push --tags",
     "prebuild": "rimraf dist tmp",

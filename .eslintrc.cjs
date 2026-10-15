@@ -22,6 +22,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-require-imports': 'off',
+    'no-debugger': 'error',
     'array-bracket-spacing': 'error',
     'arrow-parens': ['error', 'always'],
     'arrow-spacing': 'error',
