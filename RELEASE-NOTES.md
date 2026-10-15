@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.4.12
+**EXUI-5307** Package update - axios - eslint - minimatch
+**EXUI-5311** Package update - express
+
 ### Version 7.4.11
 **EXUI-5098** Event notes are not displayed on the Check Your Answers page
 
