@@ -22,6 +22,7 @@ Desktop.ini
 coverage/
 demo/
 docs
+storybook-static/
 tmp
 
 # Library files
