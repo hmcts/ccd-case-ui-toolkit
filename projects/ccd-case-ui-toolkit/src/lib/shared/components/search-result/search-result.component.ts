@@ -36,7 +36,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public caseType: CaseType;
 
   @Input()
-  public caseState: CaseState;
+  public caseState: CaseState | CaseState[];
 
   @Input()
   public caseFilterFG: FormGroup;
@@ -87,7 +87,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     init?: boolean,
     jurisdiction?: Jurisdiction,
     caseType?: CaseType,
-    caseState?: CaseState,
+    caseState?: CaseState | CaseState[],
     formGroup?: FormGroup,
     metadataFields?: string[],
     page?: number
@@ -287,7 +287,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
     const queryParams = {};
     queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction ? this.selected.jurisdiction.id : null;
     queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType ? this.selected.caseType.id : null;
-    queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState ? this.selected.caseState.id : null;
+    const caseStates = this.getCaseStates(this.selected.caseState);
+    queryParams[SearchResultComponent.PARAM_CASE_STATE] = caseStates.length > 0
+      ? caseStates.map(state => state.id).join(',')
+      : null;
     this.changePage.emit({
       selected: this.selected,
       queryParams
@@ -300,6 +303,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
       }
       topContainer.focus();
     }
+  }
+
+  public hasSelectedCaseState(): boolean {
+    return this.getCaseStates(this.caseState).length > 0;
+  }
+
+  private getCaseStates(caseState: CaseState | CaseState[]): CaseState[] {
+    if (Array.isArray(caseState)) {
+      return caseState;
+    }
+    return caseState ? [caseState] : [];
   }
 
   public buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField {

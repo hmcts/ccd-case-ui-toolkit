@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.13-exui-2855
+**EXUI-2855** Search filters for closed cases
+
 ### Version 7.4.13
 **EXUI-4454** Local storage should not be used
 

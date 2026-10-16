@@ -33,12 +33,12 @@
 
   <div class="form-group">
     <label class="form-label" for="wb-case-state">{{'State' | rpxTranslate}}</label>
-    <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
-            name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
-            aria-controls="search-result">
-      <option [ngValue]="null">{{'Any' | rpxTranslate}}</option>
-      <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
-    </select>
+    <ccd-case-state-multi-select
+      [states]="selectedCaseTypeStates || []"
+      [selectedStates]="selected.caseState || []"
+      [disabled]="isCaseStatesDropdownDisabled()"
+      (selectedStatesChange)="selected.caseState = $event">
+    </ccd-case-state-multi-select>
   </div>
 
   <ng-container ccdConditionalShowForm *ngIf="isSearchableAndWorkbasketInputsReady()" [formGroup]="formGroup" [contextFields]="caseFields">
