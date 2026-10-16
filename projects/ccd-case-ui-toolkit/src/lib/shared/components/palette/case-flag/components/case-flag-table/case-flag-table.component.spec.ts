@@ -146,23 +146,23 @@ describe('CaseFlagTableComponent', () => {
     expect(tableCellElements[6].textContent).toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
   });
 
-  it('should not display the flag update comment for external users even if the case flag status is "Not approved" or "Inactive"', () => {
+  it('should display the flag update comment for external users if the case flag status is "Not approved" or "Inactive"', () => {
     flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
     component.flagData = flagData;
     component.caseFlagsExternalUser = true;
     fixture.detectChanges();
     let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
-    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).not.toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    expect(tableCellElements[6].textContent).toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
     // Change flag status to "Inactive"
     flagData.flags.details[1].status = CaseFlagStatus.INACTIVE;
     component.flagData = flagData;
     fixture.detectChanges();
     tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
-    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).not.toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    expect(tableCellElements[6].textContent).toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
   });
 
   it('should not display "Update Reason: " for internal users if no flag update comment for "Not approved" or "Inactive" flag', () => {
