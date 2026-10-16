@@ -1,4 +1,4 @@
-@import '../../components/typography';
+@use '../../components/typography' as *;
 
 $darkgray: #231F20;
 $gray: #ECEDEE;
