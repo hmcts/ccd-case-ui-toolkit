@@ -29,7 +29,7 @@ test.describe('Case Flags write restrictions', () => {
     await writer.getByLabel('Not approved', { exact: true }).check();
     await writer.getByRole('button', { name: 'Validate flag update' }).click();
     await expect(writer.locator('#update-flag-status-reason-not-entered-error-message')).toBeVisible();
-    await writer.locator('#flagStatusReasonChange').fill('Request withdrawn');
+    await writer.locator('#flagUpdateComment').fill('Request withdrawn');
     await writer.getByRole('button', { name: 'Validate flag update' }).click();
     await expect(writer.locator('#update-flag-status-reason-not-entered-error-message')).toHaveCount(0);
     await expect.poll(async () => JSON.parse(await writer.getByTestId('flag-writer-event').innerText())).toMatchObject({ errorMessages: [] });
@@ -44,10 +44,10 @@ test.describe('Case Flags write restrictions', () => {
     await expect(writer.getByRole('radio')).toHaveCount(0);
     await writer.getByRole('button', { name: 'Validate flag update' }).click();
     await expect(writer.locator('#update-flag-status-reason-not-entered-error-message')).toBeVisible();
-    await writer.locator('#flagStatusReasonChange').fill('Support no longer needed');
+    await writer.locator('#flagUpdateComment').fill('Support no longer needed');
     await writer.getByRole('button', { name: 'Validate flag update' }).click();
     await expect.poll(async () => JSON.parse(await writer.getByTestId('flag-writer-value').innerText())).toMatchObject({
-      status: 'INACTIVE', flagStatusReasonChange: 'Support no longer needed'
+      status: 'INACTIVE', flagUpdateComment: 'Support no longer needed'
     });
     await expect.poll(async () => JSON.parse(await writer.getByTestId('flag-writer-event').innerText())).toMatchObject({ errorMessages: [] });
   });
