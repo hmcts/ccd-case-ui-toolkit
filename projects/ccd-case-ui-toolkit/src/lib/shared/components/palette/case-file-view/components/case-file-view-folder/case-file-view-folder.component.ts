@@ -17,8 +17,6 @@ import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { FieldsUtils } from '../../../../../services/fields/fields.utils';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
-export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
-
 @Component({
   selector: 'ccd-case-file-view-folder',
   templateUrl: './case-file-view-folder.component.html',
@@ -220,22 +218,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         }
 
         const token = FieldsUtils.createToken();
-        const storageKey = `${MEDIA_VIEWER_LOCALSTORAGE_KEY}:${token}`;
-
         const payload = this.documentManagementService.getMediaViewerInfo({
           document_binary_url: documentTreeNode.document_binary_url,
           document_filename: documentTreeNode.document_filename,
           content_type: documentTreeNode.content_type
         });
-        this.windowService.setLocalStorage(storageKey, payload);
-
         const mediaViewerUrl = this.router.createUrlTree(
           ['/media-viewer'],
           { queryParams: { mvToken: token } }
         )?.toString();
 
         if (mediaViewerUrl) {
-          this.windowService.openOnNewTab(mediaViewerUrl);
+          this.windowService.openOnNewTabWithMessage(mediaViewerUrl, payload, token);
         }
         break;
       case ('download'):
