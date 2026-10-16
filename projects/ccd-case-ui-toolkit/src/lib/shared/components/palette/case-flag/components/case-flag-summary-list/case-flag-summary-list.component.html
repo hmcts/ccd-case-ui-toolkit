@@ -83,7 +83,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="is2Point1Update && flagUpdateComments?.length > 0">
+  <div class="govuk-summary-list__row" *ngIf="is2Point1Enabled && flagUpdateComments?.length > 0">
     <dt class="govuk-summary-list__key">
       {{updateFlagStep.STATUS_REASON_LABEL | rpxTranslate}}
     </dt>
@@ -97,7 +97,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="is2Point1Update && flagUpdateCommentsWelsh?.length > 0">
+  <div class="govuk-summary-list__row" *ngIf="is2Point1Enabled && flagUpdateCommentsWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
       {{updateFlagStep.STATUS_REASON_WELSH_LABEL | rpxTranslate}}
     </dt>

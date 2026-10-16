@@ -555,7 +555,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
         if (this.rpxTranslationService.language !== 'cy') {
           flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
-          flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
+          flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.UPDATE_COMMENT)?.value;
         }
         // Populate from the *English* comments field if:
         // * The Welsh comments field has no value (Welsh comments field acquires a value only when an HMCTS internal user has
@@ -570,11 +570,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
               ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
               : null;
         }
-        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH) || this.rpxTranslationService.language === 'cy') {
-          flagDetailToUpdate.value.flagUpdateComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)?.value
-            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)?.value
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH) || this.rpxTranslationService.language === 'cy') {
+          flagDetailToUpdate.value.flagUpdateComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)?.value
+            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)?.value
             : this.rpxTranslationService.language === 'cy'
-              ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value
+              ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.UPDATE_COMMENT)?.value
               : null;
         }
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];

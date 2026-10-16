@@ -28,7 +28,7 @@ describe('CaseFlagSummaryListComponent', () => {
       hearingRelevant: false,
       flagCode: 'FL1',
       status: 'Active',
-      flagStatusReasonChange: 'Change of status'
+      flagUpdateComment: 'Change of status'
     } as FlagDetail
   } as FlagDetailDisplay;
 
@@ -210,7 +210,7 @@ describe('CaseFlagSummaryListComponent', () => {
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flagDetailDisplay.partyName);
     expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
-    expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail['flagStatusReasonChange']);
+    expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagUpdateComment);
     expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
   });
 
@@ -226,7 +226,7 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
     expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
-    expect(summaryListValues[4].textContent).toContain(flagDetailDisplay.flagDetail.flagStatusReasonChange);
+    expect(summaryListValues[4].textContent).toContain(flagDetailDisplay.flagDetail.flagUpdateComment);
     const summaryListKeys = nativeElement.querySelectorAll('dt.govuk-summary-list__key');
     expect(summaryListKeys[3].textContent).toContain('Status');
     expect(summaryListKeys[4].textContent.trim()).toBe('Reason for change');
@@ -237,7 +237,7 @@ describe('CaseFlagSummaryListComponent', () => {
       ...flagDetailDisplay,
       flagDetail: {
         ...flagDetailDisplay.flagDetail,
-        flagStatusReasonChange: ''
+        flagUpdateComment: ''
       }
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
@@ -253,8 +253,8 @@ describe('CaseFlagSummaryListComponent', () => {
       ...flagDetailDisplay,
       flagDetail: {
         ...flagDetailDisplay.flagDetail,
-        flagStatusReasonChange: 'Change of status',
-        flagStatusReasonChange_cy: 'Newid statws'
+        flagUpdateComment: 'Change of status',
+        flagUpdateComment_cy: 'Newid statws'
       }
     } as FlagDetailDisplay;
     mockRpxTranslationService.language = 'cy';
@@ -263,8 +263,8 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
-    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagStatusReasonChange);
-    expect(summaryListValues[5].textContent).toContain(flag.flagDetail['flagStatusReasonChange_cy']);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagUpdateComment);
+    expect(summaryListValues[5].textContent).toContain(flag.flagDetail['flagUpdateComment_cy']);
     const summaryListKeys = nativeElement.querySelectorAll('dt.govuk-summary-list__key');
     expect(summaryListKeys[3].textContent).toContain('Status');
     expect(summaryListKeys[4].textContent.trim()).toBe('Reason for change');
@@ -276,8 +276,8 @@ describe('CaseFlagSummaryListComponent', () => {
       ...flagDetailDisplay,
       flagDetail: {
         ...flagDetailDisplay.flagDetail,
-        flagStatusReasonChange: 'Change of status',
-        flagStatusReasonChange_cy: ''
+        flagUpdateComment: 'Change of status',
+        flagUpdateComment_cy: ''
       }
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
@@ -285,7 +285,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues.length).toBe(5);
-    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagStatusReasonChange);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagUpdateComment);
   });
 
   it('should display summary details for Welsh', () => {
@@ -333,7 +333,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     // Set a comment for the flag update reason (mandatory if the user is external)
-    flag.flagDetail['flagStatusReasonChange'] = 'Update by external user';
+    flag.flagDetail['flagUpdateComment'] = 'Update by external user';
     component.flagForSummaryDisplay = flag;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
@@ -498,7 +498,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const changeLinks = nativeElement.querySelectorAll('.govuk-link');
     // Expected to be four "Change" links
-    expect(changeLinks.length).toBe(4);
+    expect(changeLinks.length).toBe(5);
   });
 
   it('should not display a "Change" link for flag status as part of Manage Case Flags journey, if the user is external', () => {
@@ -603,7 +603,7 @@ describe('CaseFlagSummaryListComponent', () => {
         flagCode: 'FL1',
         otherDescription_cy: 'Other description for Welsh',
         status: 'Active',
-        flagStatusReasonChange: 'Reason for status change'
+        flagUpdateComment: 'Reason for status change',
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;

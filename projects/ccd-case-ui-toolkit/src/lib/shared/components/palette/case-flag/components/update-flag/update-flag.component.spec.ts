@@ -163,7 +163,7 @@ describe('UpdateFlagComponent', () => {
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
-    
+
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -406,7 +406,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
-      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED);
@@ -473,7 +473,7 @@ describe('UpdateFlagComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
     radioButtons[0].click();
-    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     component.onNext();
@@ -481,7 +481,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
-      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT
     });
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED);
@@ -494,7 +494,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
-      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT
     });
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED);
@@ -510,7 +510,7 @@ describe('UpdateFlagComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
     radioButtons[0].click();
-    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
     component.onNext();
@@ -557,7 +557,7 @@ describe('UpdateFlagComponent', () => {
     fixture.detectChanges();
     const commentsTextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.COMMENTS}`);
     expect(commentsTextarea).toBeNull();
-    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     expect(statusChangeReasontextarea).toBeTruthy();
     const radioButtons = fixture.debugElement.nativeElement.querySelector('#flag-status-container');
     expect(radioButtons).toBeNull();
@@ -605,7 +605,7 @@ describe('UpdateFlagComponent', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
-    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     expect(statusChangeReasontextarea.value).toEqual(selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment);
   });
 
@@ -613,7 +613,7 @@ describe('UpdateFlagComponent', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
-    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     expect(statusChangeReasontextarea.value).toEqual('');
   });
 
@@ -636,7 +636,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL,
-      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL);
@@ -649,8 +649,8 @@ describe('UpdateFlagComponent', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     spyOn(component.formGroup.get(CaseFlagFormFields.STATUS), 'setValue');
-    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value).toEqual('');
-    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT).value).toEqual('');
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.UPDATE_COMMENT}`);
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
     component.onNext();
@@ -665,7 +665,7 @@ describe('UpdateFlagComponent', () => {
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
     expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
-    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value).toEqual(textareaInput);
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT).value).toEqual(textareaInput);
   });
 
   it('should show the v2.1 flag status section and translation checkbox if user is internal and Case Flags v2.1 is enabled', () => {

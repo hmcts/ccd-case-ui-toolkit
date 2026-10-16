@@ -55,7 +55,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
     component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
-    component.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
+    component.formGroup.addControl(CaseFlagFormFields.UPDATE_COMMENT, new FormControl(''));
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -81,7 +81,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH)).toBeTruthy();
-    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)).toBeTruthy();
   });
 
   it('should pre-populate initial values for translation form controls if such values exist in the selected flag', () => {
@@ -91,7 +91,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       selectedFlag1.flagDetailDisplay.flagDetail.otherDescription_cy);
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy);
-    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH).value).toEqual(
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment_cy);
   });
 

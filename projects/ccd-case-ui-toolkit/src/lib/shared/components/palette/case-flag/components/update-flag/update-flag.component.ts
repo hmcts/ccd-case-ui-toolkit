@@ -83,7 +83,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(existingComments));
       this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));
       // Populate status reason only if the user is not external
-      this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(
+      this.formGroup.addControl(CaseFlagFormFields.UPDATE_COMMENT, new FormControl(
         this.externalUserUpdate ? '' : this.flagDetail.flagUpdateComment));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
@@ -202,7 +202,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       });
     }
 
-    const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
+    const statusReason = this.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT)?.value;
     const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
     // Status reason is mandatory if flag status is "Not approved" or user is external
     if (this.formGroup.get(CaseFlagFormFields.STATUS)?.value === flagStatusNotApprovedKey && !statusReason) {
@@ -210,7 +210,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
 
@@ -219,7 +219,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
 
@@ -228,7 +228,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
   }

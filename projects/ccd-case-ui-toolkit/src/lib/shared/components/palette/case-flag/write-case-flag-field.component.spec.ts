@@ -759,8 +759,8 @@ describe('WriteCaseFlagFieldComponent', () => {
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]: new FormControl('Status set to inactive (Welsh)'),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.UPDATE_COMMENT_WELSH]: new FormControl('Status set to inactive (Welsh)'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
@@ -775,9 +775,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment).toEqual(
-      component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS_CHANGE_REASON]);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.UPDATE_COMMENT]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagUpdateComment_cy).toEqual(
-      component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.UPDATE_COMMENT_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(
       CaseFlagStatus[component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS]]);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
@@ -817,7 +817,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     const previousEnglishStatusReason = component.flagsData[0].caseField.value.details[0].value.flagUpdateComment;
     const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
     component.caseFlagParentFormGroup = new FormGroup({
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Rheswm Cymraeg'),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Rheswm Cymraeg'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
 
@@ -850,8 +850,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl(''),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON_WELSH]: new FormControl(''),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.UPDATE_COMMENT_WELSH]: new FormControl(''),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
 
@@ -870,7 +870,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Status set to inactive'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.caseFlagParentFormGroup = firstUpdateFormGroup;
@@ -889,7 +889,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     // fields
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Status set to inactive'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.updateFlagInCollection();
@@ -904,7 +904,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     rpxTranslationServiceSpy.language = 'cy';
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.COMMENTS]: new FormControl('Cymraeg'),
-      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.UPDATE_COMMENT]: new FormControl('Status set to inactive'),
       [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.updateFlagInCollection();
