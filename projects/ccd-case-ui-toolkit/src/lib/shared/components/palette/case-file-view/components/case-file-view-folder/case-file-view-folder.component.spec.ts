@@ -18,7 +18,7 @@ import {
   treeDataSortedAlphabeticallyDesc,
   uncategorisedTreeData
 } from '../../test-data/document-tree-node-test-data';
-import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
+import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
 import { FieldsUtils } from '../../../../../services/fields/fields.utils';
 import createSpyObj = jasmine.createSpyObj;
 import { DatePipe } from '../../../utils';
@@ -82,7 +82,7 @@ describe('CaseFileViewFolderComponent', () => {
   }
 
   beforeEach(waitForAsync(() => {
-    const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
+    const mockWindowService = createSpyObj<WindowService>('WindowService', ['openOnNewTab', 'openOnNewTabWithMessage']);
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
@@ -193,24 +193,22 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
   });
 
-  it('should set mediaViewer localStorage using token' +
-    'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
+  it('should transfer media viewer data and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
     const documentTreeNode = component.nestedDataSource[0].children[3];
     spyOn(FieldsUtils, 'createToken').and.returnValue('test-token');
     component.triggerDocumentAction('openInANewTab', documentTreeNode);
 
     // @ts-expect-error -- private method
-    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
-      `${MEDIA_VIEWER_LOCALSTORAGE_KEY}:test-token`,
+    expect(component.windowService.openOnNewTabWithMessage).toHaveBeenCalledWith(
+      '/media-viewer?mvToken=test-token',
       // @ts-expect-error -- private method
       component.documentManagementService.getMediaViewerInfo({
         document_binary_url: documentTreeNode.document_binary_url,
-        document_filename: documentTreeNode.document_filename
-      })
+        document_filename: documentTreeNode.document_filename,
+        content_type: documentTreeNode.content_type
+      }),
+      'test-token'
     );
-
-    // @ts-expect-error -- private method
-    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer?mvToken=test-token');
   });
 
   it('should open HTML document binary URL directly in a new tab', () => {
@@ -227,7 +225,7 @@ describe('CaseFileViewFolderComponent', () => {
     // @ts-expect-error -- private method
     expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/documents/html-file/binary');
     // @ts-expect-error -- private method
-    expect(component.windowService.setLocalStorage).not.toHaveBeenCalled();
+    expect(component.windowService.openOnNewTabWithMessage).not.toHaveBeenCalled();
   });
 
   it('should display correct folder icons', () => {
