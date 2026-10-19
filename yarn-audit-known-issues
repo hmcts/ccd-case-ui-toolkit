@@ -1,8 +1,18 @@
-{"value":"@angular/animations","children":{"ID":"@angular/animations (deprecation)","Issue":"@angular/animations is deprecated. Use `animate.enter` and `animate.leave` instead. For more information see: https://v22.angular.dev/guide/animations.","Severity":"moderate","Vulnerable Versions":"20.3.33","Tree Versions":["20.3.33"],"Dependents":["@hmcts/ccd-case-ui-toolkit@workspace:."]}}
-{"value":"@angular/platform-browser-dynamic","children":{"ID":"@angular/platform-browser-dynamic (deprecation)","Issue":"@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.","Severity":"moderate","Vulnerable Versions":"20.3.33","Tree Versions":["20.3.33"],"Dependents":["@hmcts/ccd-case-ui-toolkit@workspace:."]}}
-{"value":"@angular/router","children":{"ID":1240617,"Issue":"Angular Server-Side Rendering (SSR): Denial of Service via Numeric URL Matrix Parameters","URL":"https://github.com/advisories/GHSA-ff3f-86qr-9cv3","Severity":"high","Vulnerable Versions":">=20.0.0 <20.3.32","Tree Versions":["20.3.31"],"Dependents":["@hmcts/ccd-case-ui-toolkit@workspace:."]}}
-{"value":"glob","children":{"ID":"glob (deprecation)","Issue":"Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me","Severity":"moderate","Vulnerable Versions":"7.2.3","Tree Versions":["7.2.3"],"Dependents":["archiver-utils@npm:2.1.0"]}}
-{"value":"inflight","children":{"ID":"inflight (deprecation)","Issue":"This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.","Severity":"moderate","Vulnerable Versions":"1.0.6","Tree Versions":["1.0.6"],"Dependents":["glob@npm:7.2.3"]}}
-{"value":"katex","children":{"ID":1241206,"Issue":"KaTeX: Existing prototype pollution can bypass trust restrictions","URL":"https://github.com/advisories/GHSA-238p-pmpm-9mq7","Severity":"low","Vulnerable Versions":">=0.11.0 <0.18.2","Tree Versions":["0.16.47"],"Dependents":["ngx-markdown@virtual:6ff8c2a3aef81417d9f60600e3255d97c9c6c863d8733a87ed99d869392767523e0e28c07db1eb2a034bc9265813386132447698258584d621a7fd0e13d93585#npm:20.1.0"]}}
-{"value":"lodash.isequal","children":{"ID":"lodash.isequal (deprecation)","Issue":"This package is deprecated. Use require('node:util').isDeepStrictEqual instead.","Severity":"moderate","Vulnerable Versions":"4.5.0","Tree Versions":["4.5.0"],"Dependents":["@fast-csv/format@npm:4.3.5"]}}
-{"value":"uuid","children":{"ID":1119441,"Issue":"uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided","URL":"https://github.com/advisories/GHSA-w5hq-g745-h8pq","Severity":"moderate","Vulnerable Versions":"<11.1.1","Tree Versions":["8.3.2"],"Dependents":["exceljs@npm:4.4.0"]}}
+➤ YN0001: RequestError: unable to get local issuer certificate
+    at ClientRequest.<anonymous> (/Users/anthony.dummer/WebstormProjects/ccd-case-ui-toolkit/.yarn/releases/yarn-4.5.0.cjs:147:14258)
+    at Object.onceWrapper (node:events:639:26)
+    at ClientRequest.emit (node:events:536:35)
+    at u.emit (/Users/anthony.dummer/WebstormProjects/ccd-case-ui-toolkit/.yarn/releases/yarn-4.5.0.cjs:142:14855)
+    at emitErrorEvent (node:_http_client:101:11)
+    at TLSSocket.socketErrorListener (node:_http_client:504:5)
+    at TLSSocket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at TLSSocket.onConnectSecure (node:_tls_wrap:1677:34)
+    at TLSSocket.emit (node:events:524:28)
+    at TLSSocket._finishInit (node:_tls_wrap:1076:8)
+    at ssl.onhandshakedone (node:_tls_wrap:862:12)
+
+➤ Errors happened when preparing the environment required to run this command.
+➤ This might be caused by packages being missing from the lockfile, in which case running "yarn install" might help.
