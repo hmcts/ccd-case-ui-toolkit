@@ -3035,7 +3035,7 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.3.7"
     "@eslint/js": "npm:^10.0.0"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.42"
+    "@hmcts/media-viewer": "npm:4.2.43"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@playwright/test": "npm:1.63.0"
@@ -3158,9 +3158,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.42":
-  version: 4.2.42
-  resolution: "@hmcts/media-viewer@npm:4.2.42"
+"@hmcts/media-viewer@npm:4.2.43":
+  version: 4.2.43
+  resolution: "@hmcts/media-viewer@npm:4.2.43"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3183,7 +3183,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/121bb81a06b11db6b0a9bf1aa92a579e27a4e17026b1b47c166aecb613a7daccdaa9cee5dacdd4290b4e957ca8c9cbd5e6ba365eb03163453ccd249b1fc1a287
+  checksum: 10/d3109460b33e9f74fee17590a07ed6dbbef2bfb3c53a9f348a7ccdee905cc580a53d1b92e1118f2c697c3e53e1ca56b87f47dce17a37b0ca8d9aa5c9050a2fb4
   languageName: node
   linkType: hard
 
