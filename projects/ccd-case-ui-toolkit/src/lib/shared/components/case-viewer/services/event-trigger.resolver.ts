@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Profile } from '../../../domain/profile/profile.model';
 import { AlertService } from '../../../services/alert/alert.service';
 import { ProfileNotifier } from '../../../services/profile/profile.notifier';
 import { ProfileService } from '../../../services/profile/profile.service';
@@ -20,7 +19,6 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   public static readonly IGNORE_WARNING = 'ignoreWarning';
   private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
   private cachedEventTrigger: CaseEventTrigger;
-  private cachedProfile: Profile;
   constructor(
     private readonly casesService: CasesService,
     private readonly alertService: AlertService,
@@ -97,19 +95,14 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       ignoreWarning = 'false';
     }
 
-    if (this.cachedProfile) {
-      this.profileNotifier.announceProfile(this.cachedProfile);
-    } else {
-      this.profileService.get().subscribe(profile => {
-        this.cachedProfile = profile;
-        this.profileNotifier.announceProfile(profile);
-      });
-    }
+    const profile$ = this.profileService.get().pipe(
+      tap(profile => this.profileNotifier.announceProfile(profile))
+    );
+    const eventTrigger$ = this.casesService.getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning);
 
-    return this.casesService
-      .getEventTrigger(caseTypeId, eventTriggerId, cid, ignoreWarning)
+    return forkJoin([profile$, eventTrigger$])
       .pipe(
-        map((eventTrigger) => this.cachedEventTrigger = eventTrigger),
+        map(([, eventTrigger]) => this.cachedEventTrigger = eventTrigger),
         catchError((error) => {
           error.details = { eventId: eventTriggerId, ...error.details };
           this.alertService.setPreserveAlerts(true);

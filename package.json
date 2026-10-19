@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.11-cve-update",
+  "version": "7.4.13-cve-update",
   "engines": {
     "node": ">=24.18.0"
   },
@@ -68,7 +68,7 @@
     "@angular/upgrade": "20.3.31",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.27",
-    "@hmcts/media-viewer": "4.2.41",
+    "@hmcts/media-viewer": "4.2.42",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "file-saver": "^2.0.5",
@@ -85,7 +85,7 @@
     "prosemirror-history": "1.5.0",
     "prosemirror-model": "1.25.12",
     "prosemirror-schema-list": "1.5.1",
-    "rpx-xui-translation": "1.2.15",
+    "rpx-xui-translation": "1.2.16",
     "rxjs": "^7.8.2",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.13.8",
@@ -193,6 +193,7 @@
     }
   },
   "resolutions": {
+    "odhin-reports-playwright/axios": "0.34.0",
     "prosemirror-model": "1.25.12",
     "braces": "^3.0.3",
     "dompurify": "^3.4.13",
@@ -205,7 +206,6 @@
     "ip": "^1.1.5",
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.23",
-    "minimatch": "8.0.7",
     "minimist": "^1.2.8",
     "tar": "^7.5.22",
     "node-fetch": "^2.6.7",
