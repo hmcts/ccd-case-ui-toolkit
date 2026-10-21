@@ -32,10 +32,9 @@
         <div [ngClass]="{'govuk-!-font-weight-bold': isActivePvpFlag(flagDetail)}">
           {{flagDetail | flagFieldDisplay:'flagComment'}}
         </div>
-        <div *ngIf="!caseFlagsExternalUser &&
-          (flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
+        <div *ngIf="(flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
           flagDetail.flagUpdateComment">
-          <span class="govuk-!-font-weight-bold">Update Reason: {{flagDetail.flagUpdateComment}}</span>
+          <span class="govuk-!-font-weight-bold">{{'Update Reason' | rpxTranslate}}: {{flagDetail | flagFieldDisplay:'flagUpdateComment'}}</span>
         </div>
       </td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
@@ -49,3 +48,7 @@
     </tr>
   </tbody>
 </table>
+
+
+
+<!--<th scope="col" class="govuk-table__header col-comments">{{'caseFlagTable.comments' | rpxTranslate}}</th><th scope="col" class="govuk-table__header col-creation-date">{{'caseFlagTable.creationDate' | rpxTranslate}}</th><th scope="col" class="govuk-table__header col-last-modified">{{'caseFlagTable.lastModified' | rpxTranslate}}</th><th scope="col" class="govuk-table__header col-flag-status">{{'caseFlagTable.flagStatus' | rpxTranslate}}</th>-->

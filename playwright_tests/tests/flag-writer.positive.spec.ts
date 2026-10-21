@@ -17,10 +17,10 @@ test.describe('Case Flags write steps', () => {
     await page.goto('/?flags-write=update');
     const writer = page.getByTestId('flag-writer');
     await writer.getByLabel('Active', { exact: true }).check();
-    await writer.locator('#flagStatusReasonChange').fill('Access arranged');
+    await writer.locator('#flagUpdateComment').fill('Access arranged');
     await writer.getByRole('button', { name: 'Validate flag update' }).click();
     await expect.poll(async () => JSON.parse(await writer.getByTestId('flag-writer-value').innerText())).toMatchObject({
-      status: 'ACTIVE', flagStatusReasonChange: 'Access arranged', flagComment: 'Needs step-free access'
+      status: 'ACTIVE', flagUpdateComment: 'Access arranged', flagComment: 'Needs step-free access'
     });
     await expect.poll(async () => JSON.parse(await writer.getByTestId('flag-writer-event').innerText())).toMatchObject({ errorMessages: [] });
   });
