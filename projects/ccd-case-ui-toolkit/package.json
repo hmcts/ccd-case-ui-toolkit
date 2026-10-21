@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.13-hdpi-8362",
+  "version": "7.4.14",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",
@@ -18,8 +18,6 @@
     "@angular/upgrade": "^20.3.27",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
-    "class-transformer": "^0.5.1",
-    "lodash": "^4.17.22",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.31",
     "ngx-chips": "^3.0.0",
@@ -34,7 +32,9 @@
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
-    "zone.js": "^0.15.1"
+    "zone.js": "^0.15.1",
+    "class-transformer": "^0.5.1",
+    "lodash": "^4.17.22"
   },
   "engines": {
     "node": ">=24.18.0"
