@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
@@ -37,6 +38,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
   };
   let router: Router;
   let location: Location;
+  let titleService: Title;
   beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
     casesNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
@@ -67,6 +69,8 @@ describe('CaseChallengedAccessRequestComponent', () => {
   }));
 
   beforeEach(() => {
+    titleService = TestBed.inject(Title);
+    titleService.setTitle('Challenged access - HM Courts & Tribunals Service - GOV.UK');
     fixture = TestBed.createComponent(CaseChallengedAccessRequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -95,6 +99,22 @@ describe('CaseChallengedAccessRequestComponent', () => {
     expect(errorBannerElement.textContent).toContain(ChallengedAccessRequestErrors.NO_SELECTION);
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(ChallengedAccessRequestErrors.NO_SELECTION);
+    // The error summary link should target the first radio button (a focusable control), not the message div
+    const errorSummaryLink = errorBannerElement.querySelector('a');
+    expect(errorSummaryLink.getAttribute('href')).toBe('#reason-0');
+    // The document title should be prefixed with "Error: " so screen reader users are alerted to the error state
+    expect(titleService.getTitle().startsWith('Error:')).toBe(true);
+  });
+
+  it('should restore the document title once the "no selection" validation error is resolved', () => {
+    const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    submitButton.click();
+    fixture.detectChanges();
+    expect(titleService.getTitle().startsWith('Error:')).toBe(true);
+    const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-1');
+    radioButton.click();
+    fixture.detectChanges();
+    expect(titleService.getTitle().startsWith('Error:')).toBe(false);
   });
 
   it('should clear the \"no selection\" validation error before form submission when an option is selected', () => {

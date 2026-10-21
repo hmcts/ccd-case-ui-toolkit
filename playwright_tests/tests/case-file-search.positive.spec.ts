@@ -6,15 +6,15 @@ test.describe('Case File Viewer search and ordering', () => {
     await page.goto('/');
     const viewer = page.getByTestId('launcher-mini-app-controls');
     await viewer.getByRole('searchbox', { name: 'Search by document name' }).fill('Lager');
-    await expect(viewer.getByRole('treeitem', { name: 'Lager encyclopedia', exact: true })).toBeVisible();
-    await expect(viewer.getByRole('treeitem', { name: 'Ale encyclopedia', exact: true })).toHaveCount(0);
+    await expect(viewer.getByRole('button', { name: 'Lager encyclopedia', exact: true })).toBeVisible();
+    await expect(viewer.getByRole('button', { name: 'Ale encyclopedia', exact: true })).toHaveCount(0);
     await viewer.getByRole('searchbox', { name: 'Search by document name' }).fill('No matching document');
     await expect(viewer.getByText('No results found', { exact: true })).toBeVisible();
     await expect(viewer.getByRole('treeitem')).toHaveCount(0);
     await viewer.getByRole('searchbox', { name: 'Search by document name' }).clear();
     await expect(viewer.locator('button[aria-label="Beers folder, 3 documents"]')).toBeVisible();
     await viewer.locator('button[aria-label="Beers folder, 3 documents"]').click();
-    await expect(viewer.getByRole('treeitem', { name: 'Ale encyclopedia', exact: true })).toBeVisible();
+    await expect(viewer.getByRole('button', { name: 'Ale encyclopedia', exact: true })).toBeVisible();
   });
 
   test('orders the same filtered documents in both directions without losing matches', async ({ page }) => {
