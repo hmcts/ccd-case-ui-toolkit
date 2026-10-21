@@ -1039,6 +1039,44 @@ describe('LabelSubstitutorDirective', () => {
       expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
     });
 
+    it('should request only the original solicitor template, even when a complete-sentence translation could exist', () => {
+      const original = '**Enter the details of ${ApplicantLabel} solicitor**.';
+      const interpolated = '**Enter the details of the applicant’s solicitor**.';
+      const brokenWelsh = '**Rhowch fanylion cyfreithiwr y ${ApplicantLabel}';
+
+      // Represent the field state when returning to an already-interpolated page.
+      comp.caseField = field('SolicitorLabel', '', {
+        id: 'SolicitorLabel',
+        type: 'Label'
+      }, interpolated);
+      comp.caseField.originalLabel = original;
+      comp.caseFields = [comp.caseField, textField('ApplicantLabel', null)];
+      comp.formGroup = new FormGroup({
+        ApplicantLabel: new FormControl('the applicant’s')
+      });
+      placeholderService.resolvePlaceholders.and.callFake(
+        (fields: { ApplicantLabel?: string }, text: string) =>
+          text?.replace('${ApplicantLabel}', fields.ApplicantLabel || '')
+      );
+
+      translationService.translationResult.next(original);
+      translationService.setLanguage('cy');
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(interpolated);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(original);
+
+      translationService.translationResult.next(brokenWelsh);
+      fixture.detectChanges();
+
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(original);
+      expect(translationService.getTranslation$).not.toHaveBeenCalledWith(interpolated);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
+      expect(comp.caseField.originalLabel).toBe(original);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+    });
+
     it('should keep an existing English label when the original template can no longer be resolved', () => {
       const originalTemplate = '${tseAdmReplyTableMarkUp}';
       const resolvedTable = '|Application|Change personal details|';
