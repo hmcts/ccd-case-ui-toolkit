@@ -7,7 +7,7 @@ describe('SessionStorageGuard', () => {
   let router: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'setItem']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
   });
 
@@ -25,6 +25,14 @@ describe('SessionStorageGuard', () => {
 
     expect(guard.canActivate()).toBe(true);
     expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('removes sensitive fields left in session storage by an older app version', () => {
+    sessionStorageService.getItem.and.returnValue('{"id":"123","token":"secret","sub":"subject","roles":[],"roleAssignmentInfo":[{"jurisdiction":"IA"}]}');
+    const guard = new SessionStorageGuard(sessionStorageService, router);
+
+    expect(guard.canActivate()).toBe(true);
+    expect(sessionStorageService.setItem).toHaveBeenCalledWith('userDetails', '{"id":"123","roles":[],"roleAssignmentInfo":[{"jurisdiction":"IA"}]}');
   });
 
   it('should log via injected logger and navigate to custom route on invalid JSON', () => {

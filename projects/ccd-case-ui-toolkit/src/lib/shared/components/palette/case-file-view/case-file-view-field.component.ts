@@ -5,11 +5,10 @@ import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
-import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
-import { safeJsonParse } from '../../../json-utils';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -53,7 +52,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     });
 
     // EXUI-8000
-    const userInfo = safeJsonParse<UserInfo>(this.sessionStorageService.getItem('userDetails'), null);
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
     const userRoles = userInfo?.roles || [];
     // Get acls that intersects from acl roles and user roles
     const acls = this.caseField.acls.filter(acl => userRoles.includes(acl.role));
