@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, QueryList, SimpleChange, TemplateRef, ViewContainerRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -14,8 +14,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import clone from 'just-clone';
 import { MockComponent } from 'ng2-mock-component';
-import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { of, Subject, Subscription } from 'rxjs';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject, of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
@@ -29,6 +29,7 @@ import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.
 import { CaseField } from '../../../domain/definition';
 import { HttpError } from '../../../domain/http';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
+import { PipesModule } from '../../../pipes/pipes.module';
 import {
   ActivityService,
   AuthService,
@@ -677,6 +678,7 @@ describe('CaseFullAccessViewComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PipesModule,
           PaymentLibModule,
           RouterTestingModule,
           caseActivityComponentMock,
@@ -808,6 +810,126 @@ it('should set case view tab based on navigation end event', () => {
     const header = de.query(By.directive(caseHeaderComponentMock));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(caseViewData);
+  });
+
+  describe('field label translation guards', () => {
+    let translateSpy: jasmine.Spy;
+    let language$: BehaviorSubject<string>;
+    let translationResult$: BehaviorSubject<string>;
+    let translationService: any;
+
+    beforeEach(() => {
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+      language$ = new BehaviorSubject('en');
+      translationResult$ = new BehaviorSubject('');
+      translationService = TestBed.inject(RpxTranslationService);
+      translationService.language = 'en';
+      translationService.language$ = language$.asObservable();
+      translationService.getTranslation$ = jasmine.createSpy('getTranslation$')
+        .and.returnValue(translationResult$.asObservable());
+    });
+
+    const renderField = (compound: boolean, label: string): CaseField => {
+      const field = Object.assign(new CaseField(), {
+        id: 'TranslationGuardField',
+        label,
+        field_type: { id: compound ? 'AddressUK' : 'Text', type: compound ? 'AddressUK' : 'Text' },
+        value: compound ? { AddressLine1: '1 Test Street' } : 'Test value'
+      });
+      const personName = Object.assign(new CaseField(), {
+        id: 'personName',
+        field_type: { id: 'Text', type: 'Text' },
+        value: 'PRIVATE_NAME'
+      });
+      component.sortedTabs = [{ id: 'TranslationGuardTab', label: 'Test tab', fields: [field], show_condition: null }];
+      component.caseFields = [field, personName];
+      component.formGroup = new FormGroup({ data: new FormGroup({}) });
+      fixture.detectChanges();
+
+      // Mock tabs do not instantiate matTabContent; render the real lazy template explicitly.
+      const tab = de.query(By.css('mat-tab#TranslationGuardTab'));
+      const content = tab.queryAllNodes(node => !!node.injector.get(TemplateRef, null))[0];
+      expect(content).toBeDefined();
+      content.injector.get(ViewContainerRef).createEmbeddedView(content.injector.get(TemplateRef));
+      fixture.detectChanges();
+
+      return de.query(By.directive(LabelSubstitutorDirective)).injector.get(LabelSubstitutorDirective).caseField;
+    };
+
+    const renderedLabel = (compound: boolean): string => {
+      const label = compound
+        ? de.query(By.css('#case-viewer-field-read--TranslationGuardField'))
+        : de.query(By.css('#case-viewer-field-label--TranslationGuardField .case-viewer-label'));
+      expect(label).not.toBeNull();
+      return compound ? label.nativeElement.getAttribute('aria-label') : label.nativeElement.textContent.trim();
+    };
+
+    [false, true].forEach(compound => {
+      const labelType = compound ? 'compound ARIA label' : 'visible field label';
+
+      it(`should translate an ordinary ${labelType}`, () => {
+        renderField(compound, 'Ordinary label');
+
+        expect(renderedLabel(compound)).toBe('Translated: Ordinary label');
+        expect(translateSpy).toHaveBeenCalledWith('Ordinary label');
+      });
+
+      it(`should display an already-translated ${labelType} without another lookup`, () => {
+        const field = renderField(compound, 'Ordinary label');
+        field.label = 'Welsh result PRIVATE_NAME';
+        field.isTranslated = true;
+        field.translationHandledLocally = false;
+        translateSpy.calls.reset();
+        fixture.detectChanges();
+
+        expect(renderedLabel(compound)).toBe(field.label);
+        expect(translateSpy).not.toHaveBeenCalledWith(field.label);
+      });
+
+      it(`should render a locally handled ${labelType} while Welsh is pending, on fallback and after success`, () => {
+        const template = 'Contact ${personName}';
+        const welshTemplate = 'Welsh contact ${personName}';
+        translationResult$.next(template);
+        const field = renderField(compound, template);
+        translateSpy.calls.reset();
+        translationService.language = 'cy';
+        language$.next('cy');
+        fixture.detectChanges();
+
+        expect(renderedLabel(compound)).toBe('Contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(false);
+        expect(field.translationHandledLocally).toBe(true);
+
+        translationResult$.next(template + ' [Translation in progress]');
+        fixture.detectChanges();
+        expect(renderedLabel(compound)).toBe('Contact PRIVATE_NAME');
+
+        translationResult$.next(template);
+        fixture.detectChanges();
+        expect(renderedLabel(compound)).toBe('Contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(false);
+
+        translationResult$.next(welshTemplate);
+        fixture.detectChanges();
+        expect(renderedLabel(compound)).toBe('Welsh contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(true);
+        expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(template);
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+    });
+
+    [undefined, ''].forEach(label => {
+      it(`should retain the translated field-ID ARIA fallback when the label is ${label === undefined ? 'missing' : 'empty'}`, () => {
+        const field = renderField(true, label);
+        field.isTranslated = true;
+        field.translationHandledLocally = true;
+        fixture.detectChanges();
+
+        expect(renderedLabel(true)).toBe('Translated: TranslationGuardField');
+        expect(translateSpy).toHaveBeenCalledWith('TranslationGuardField');
+      });
+    });
   });
 
   describe('tabs', () => {

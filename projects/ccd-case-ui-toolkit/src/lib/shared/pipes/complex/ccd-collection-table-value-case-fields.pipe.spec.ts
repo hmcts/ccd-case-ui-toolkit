@@ -1,8 +1,69 @@
 import { CaseField } from '../../domain';
 import { newCaseField, textFieldType } from '../../fixture';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
+import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 describe('CcdCollectionTableCaseFieldsFilterPipe', () => {
+  describe('child label state through the collection pipeline', () => {
+    (['CaseField instance', 'plain object'] as const).forEach(sourceType => {
+      (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+        it(`should preserve ${flag} from a ${sourceType} through both filters`, () => {
+          const properties = {
+            id: 'contact', label: 'Contact PRIVATE_NAME',
+            field_type: { id: 'Text', type: 'Text' },
+            isTranslated: false, translationHandledLocally: false,
+            [flag]: true, value: undefined
+          };
+          const source = sourceType === 'CaseField instance'
+            ? Object.assign(new CaseField(), properties)
+            : properties as unknown as CaseField;
+          const entries = [{
+            key: 'contact',
+            value: { caseField: source, label: source.label, type: { type: 'Text' } }
+          }];
+          const parent = Object.assign(new CaseField(), { id: 'contacts', label: 'Contacts' });
+          const row = { contact: 'Row value' };
+
+          const wrapper = new CcdCollectionTableCaseFieldsFilterPipe().transform(entries, parent, row);
+          const copiedDefinition = wrapper.field_type.complex_fields[0];
+          const [renderedChild] = new ReadFieldsFilterPipe().transform(wrapper, true);
+
+          expect(copiedDefinition).not.toBe(source);
+          expect(copiedDefinition.isTranslated).toBe(source.isTranslated);
+          expect(copiedDefinition.translationHandledLocally).toBe(source.translationHandledLocally);
+          expect(renderedChild.label).toBe('Contact PRIVATE_NAME');
+          expect(renderedChild.value).toBe('Row value');
+          expect(renderedChild.isTranslated).toBe(source.isTranslated);
+          expect(renderedChild.translationHandledLocally).toBe(source.translationHandledLocally);
+          expect(source.value).toBeUndefined();
+          expect(source[flag]).toBe(true);
+          expect(row).toEqual({ contact: 'Row value' });
+        });
+      });
+    });
+
+    it('should not mark an unrelated child handled when the parent has a handled label', () => {
+      const source = newCaseField('contact', 'Contact', null, textFieldType(), 'OPTIONAL').build();
+      const parent = Object.assign(new CaseField(), {
+        id: 'contacts', label: 'Contacts PRIVATE_NAME',
+        isTranslated: true, translationHandledLocally: true
+      });
+      const entries = [{
+        key: 'contact', value: { caseField: source, label: source.label, type: { type: 'Text' } }
+      }];
+
+      const wrapper = new CcdCollectionTableCaseFieldsFilterPipe()
+        .transform(entries, parent, { contact: 'Row value' });
+      const [renderedChild] = new ReadFieldsFilterPipe().transform(wrapper, true);
+
+      expect(renderedChild.label).toBe('Contact');
+      expect(!!renderedChild.isTranslated).toBe(false);
+      expect(!!renderedChild.translationHandledLocally).toBe(false);
+      expect(source.isTranslated).toBe(false);
+      expect(source.translationHandledLocally).toBe(false);
+    });
+  });
+
   const CASE_FIELDS: Record<string, any>[] = [
     {
       key: 'hearingShowDetails',

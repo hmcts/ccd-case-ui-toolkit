@@ -190,6 +190,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   private static cloneFieldWithValue(field: CaseField, values: any, index?: number): CaseField {
     const clone = FieldsUtils.cloneObject(field);
+    clone.isTranslated = !!field.isTranslated;
+    clone.translationHandledLocally = !!field.translationHandledLocally;
     const value = ReadFieldsFilterPipe.getValue(field, values, index);
     if (!ReadFieldsFilterPipe.isEmpty(value)) {
       clone.value = value;

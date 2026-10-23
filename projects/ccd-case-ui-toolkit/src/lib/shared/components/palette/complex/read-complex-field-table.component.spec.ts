@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
-import { of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
@@ -35,6 +35,170 @@ describe('ReadComplexFieldTableComponent', () => {
   let fixture: ComponentFixture<ReadComplexFieldTableComponent>;
   let component: ReadComplexFieldTableComponent;
   let de: DebugElement;
+
+  describe('translation guards', () => {
+    let translateSpy: jasmine.Spy;
+    let language$: BehaviorSubject<string>;
+    let translationResult$: BehaviorSubject<string>;
+    let translationService: {
+      language: string;
+      language$: Observable<string>;
+      getTranslation$: jasmine.Spy;
+    };
+
+    beforeEach(waitForAsync(() => {
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+      language$ = new BehaviorSubject('en');
+      translationResult$ = new BehaviorSubject('');
+      translationService = {
+        language: 'en',
+        language$: language$.asObservable(),
+        getTranslation$: jasmine.createSpy('getTranslation$').and.returnValue(translationResult$.asObservable())
+      };
+      TestBed.configureTestingModule({
+        imports: [PaletteUtilsModule, LabelSubstitutorModule, fieldReadComponentMock],
+        declarations: [ReadComplexFieldTableComponent, ReadFieldsFilterPipe, MockRpxTranslatePipe],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          { provide: RpxTranslationService, useValue: translationService }
+        ]
+      }).compileComponents();
+      fixture = TestBed.createComponent(ReadComplexFieldTableComponent);
+      component = fixture.componentInstance;
+      de = fixture.debugElement;
+
+      const child = Object.assign(new CaseField(), {
+        id: 'child',
+        label: 'Child label',
+        display_context: 'READONLY',
+        field_type: { id: 'Text', type: 'Text' }
+      });
+      component.caseField = Object.assign(new CaseField(), {
+        id: 'parentComplex',
+        label: 'Parent label',
+        display_context: 'READONLY',
+        field_type: { id: 'Complex', type: 'Complex', complex_fields: [child] },
+        value: { child: 'Test value' }
+      });
+      component.caseFields = [component.caseField];
+      const rootForm = new FormGroup({
+        data: new FormGroup({
+          parentComplex: new FormGroup({ child: new FormControl('Test value') }),
+          personName: new FormControl('PRIVATE_NAME')
+        })
+      });
+      component.topLevelFormGroup = rootForm.get('data');
+    }));
+
+    const parentHeading = (): string => de.query($COMPLEX_PANEL_TITLE).nativeElement.textContent.trim();
+    const childHeading = (): string => de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS).nativeElement.textContent.trim();
+    const renderedChild = (): CaseField =>
+      de.query($COMPLEX_PANEL_SIMPLE_ROWS_VALUES).componentInstance.caseField;
+
+    it('should translate ordinary parent and child headings', () => {
+      fixture.detectChanges();
+
+      expect(parentHeading()).toBe('Translated: Parent label');
+      expect(childHeading()).toBe('Translated: Child label');
+      expect(translateSpy).toHaveBeenCalledWith('Parent label');
+      expect(translateSpy).toHaveBeenCalledWith('Child label');
+      expect(translationService.getTranslation$).not.toHaveBeenCalled();
+    });
+
+    (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+      it(`should bypass parent translation when ${flag} is true while still translating an ordinary child`, () => {
+        component.caseField.label = 'Parent PRIVATE_NAME';
+        component.caseField[flag] = true;
+        fixture.detectChanges();
+
+        expect(parentHeading()).toBe('Parent PRIVATE_NAME');
+        expect(childHeading()).toBe('Translated: Child label');
+        expect(translateSpy).not.toHaveBeenCalledWith('Parent PRIVATE_NAME');
+        expect(translateSpy).toHaveBeenCalledWith('Child label');
+      });
+
+      it(`should bypass child translation when ${flag} is true while still translating an ordinary parent`, () => {
+        fixture.detectChanges();
+        const child = renderedChild();
+        child.label = 'Child PRIVATE_NAME';
+        child[flag] = true;
+        fixture.detectChanges();
+
+        expect(parentHeading()).toBe('Translated: Parent label');
+        expect(childHeading()).toBe('Child PRIVATE_NAME');
+        expect(translateSpy).toHaveBeenCalledWith('Parent label');
+        expect(translateSpy).not.toHaveBeenCalledWith('Child PRIVATE_NAME');
+      });
+    });
+
+    it('should display parent states supplied by an outer substitutor without translating resolved values', () => {
+      component.caseField.label = 'English parent PRIVATE_NAME';
+      component.caseField.translationHandledLocally = true;
+      fixture.detectChanges();
+
+      expect(parentHeading()).toBe('English parent PRIVATE_NAME');
+      expect(component.caseField.isTranslated).toBe(false);
+
+      // Parent translation belongs to its caller; this component only renders the resulting state.
+      component.caseField.label = 'Welsh parent PRIVATE_NAME';
+      component.caseField.isTranslated = true;
+      fixture.detectChanges();
+
+      expect(parentHeading()).toBe('Welsh parent PRIVATE_NAME');
+      expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+    });
+
+    it('should keep child interpolation local while Welsh is pending, on fallback and after success', () => {
+      const template = 'Contact ${personName}';
+      component.caseField.field_type.complex_fields[0].label = template;
+      translationResult$.next(template);
+      fixture.detectChanges();
+      translationService.language = 'cy';
+      language$.next('cy');
+      fixture.detectChanges();
+
+      expect(childHeading()).toBe('Contact PRIVATE_NAME');
+      expect(renderedChild().isTranslated).toBe(false);
+      expect(renderedChild().translationHandledLocally).toBe(true);
+
+      translationResult$.next(template + ' [Translation in progress]');
+      fixture.detectChanges();
+      expect(childHeading()).toBe('Contact PRIVATE_NAME');
+
+      translationResult$.next(template);
+      fixture.detectChanges();
+      expect(childHeading()).toBe('Contact PRIVATE_NAME');
+      expect(renderedChild().isTranslated).toBe(false);
+
+      translationResult$.next('Welsh contact ${personName}');
+      fixture.detectChanges();
+
+      expect(childHeading()).toBe('Welsh contact PRIVATE_NAME');
+      expect(renderedChild().isTranslated).toBe(true);
+      expect(parentHeading()).toBe('Translated: Parent label');
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(template);
+      expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+    });
+
+    it('should retain translation of an unflagged numbered collection-style heading', () => {
+      // Match the new object created for an item by read-collection-field.html.
+      component.caseField = {
+        id: '0',
+        label: 'Collection heading 1',
+        field_type: { id: 'Complex', type: 'Complex', complex_fields: [] },
+        value: { child: 'Test value' },
+        hidden: false
+      } as CaseField;
+      fixture.detectChanges();
+
+      expect(component.caseField.isTranslated).toBeUndefined();
+      expect(component.caseField.translationHandledLocally).toBeUndefined();
+      expect(parentHeading()).toBe('Translated: Collection heading 1');
+      expect(translateSpy).toHaveBeenCalledWith('Collection heading 1');
+    });
+  });
 
   describe('when values split across children fields', () => {
     const FIELD_TYPE_WITHOUT_FIELDS: FieldType = {

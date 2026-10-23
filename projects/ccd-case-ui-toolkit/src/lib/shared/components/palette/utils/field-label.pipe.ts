@@ -25,11 +25,10 @@ export class FieldLabelPipe implements PipeTransform {
   }
 
   private getTranslatedLabel(field: CaseField): string {
-    if (!field.isTranslated) {
-      return this.rpxTranslationPipe.transform(field.label);
-    } else {
+    if (field.isTranslated || field.translationHandledLocally) {
       return field.label;
     }
+    return this.rpxTranslationPipe.transform(field.label);
   }
 
   public getOriginalLabelForYesNoTranslation(field: CaseField): string {

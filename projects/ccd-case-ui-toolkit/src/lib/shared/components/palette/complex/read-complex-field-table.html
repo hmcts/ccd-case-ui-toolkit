@@ -1,5 +1,12 @@
 <div class="complex-panel">
-  <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label | rpxTranslate}}</span></dt><dd></dd></dl>
+  <dl class="complex-panel-title">
+    <dt>
+      <span class="text-16">{{ (caseField.isTranslated || caseField.translationHandledLocally)
+          ? caseField.label
+          : (caseField.label | rpxTranslate) }}</span>
+    </dt>
+    <dd></dd>
+  </dl>
   <table class="complex-panel-table" aria-label="complex field table">
     <tbody>
       <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true :topLevelFormGroup :path :idPrefix">
@@ -16,7 +23,11 @@
           </ng-container>
           <ng-template #SimpleRow>
             <tr class="complex-panel-simple-field" [hidden]="field.hidden">
-              <th *ngIf="field.label" scope="row"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
+              <th *ngIf="field.label" scope="row">
+                <span class="text-16">{{ (field.isTranslated || field.translationHandledLocally)
+                    ? field.label
+                    : (field.label | rpxTranslate) }}</span>
+              </th>
               <td *ngIf="!field.label"></td>
               <td>
                   <span class="text-16">
