@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class MarkdownComponent implements OnInit {
   @Input() public content: string;
   @Input() public renderUrlToTextFeature?: boolean = true;
+  @Input() public inline = false;
 
   constructor(private router: Router, private renderer: Renderer2, private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 

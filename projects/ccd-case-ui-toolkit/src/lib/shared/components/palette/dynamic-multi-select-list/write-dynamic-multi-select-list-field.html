@@ -14,8 +14,10 @@
       <div class="multiple-choice">
         <input class="form-control" id="{{ createElementId(checkbox.code) }}" name="{{ id() }}" type="checkbox"
           [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
-        <label class="form-label" for="{{ createElementId(checkbox.code) }}">
-          <ccd-markdown [content]="checkbox.label | rpxTranslate" [renderUrlToTextFeature]="false"></ccd-markdown>
+        <label for="{{ createElementId(checkbox.code) }}">
+          <span class="form-label">
+            <ccd-markdown [content]="checkbox.label | rpxTranslate" [renderUrlToTextFeature]="false" [inline]="true"></ccd-markdown>
+          </span>
         </label>
       </div>
 
