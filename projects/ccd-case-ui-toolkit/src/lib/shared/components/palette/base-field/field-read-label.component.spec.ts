@@ -52,6 +52,81 @@ describe('FieldReadLabelComponent', () => {
     fixture.detectChanges();
   }));
 
+  describe('translation guards', () => {
+    let translateSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+      component.caseField = Object.assign(new CaseField(), CASE_FIELD, { label: 'Ordinary label' });
+    });
+
+    it('should translate an ordinary unhandled label', () => {
+      fixture.detectChanges();
+
+      expect(text(de.query(BY_FIELD_LABEL))).toBe('Translated: Ordinary label');
+      expect(translateSpy).toHaveBeenCalledWith('Ordinary label');
+    });
+
+    (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+      it(`should display the label directly when ${flag} is true`, () => {
+        component.caseField.label = 'Resolved PRIVATE_NAME';
+        component.caseField[flag] = true;
+        fixture.detectChanges();
+
+        expect(text(de.query(BY_FIELD_LABEL))).toBe('Resolved PRIVATE_NAME');
+        expect(translateSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should render locally handled English fallback and Welsh updates without another lookup', () => {
+      // Translation belongs to the caller; the wrapper renders the supplied state.
+      component.caseField.translationHandledLocally = true;
+      component.caseField.label = 'English fallback PRIVATE_NAME';
+      fixture.detectChanges();
+
+      expect(component.caseField.isTranslated).toBe(false);
+      expect(text(de.query(BY_FIELD_LABEL))).toBe('English fallback PRIVATE_NAME');
+
+      component.caseField.label = 'Welsh result PRIVATE_NAME';
+      component.caseField.isTranslated = true;
+      fixture.detectChanges();
+
+      expect(text(de.query(BY_FIELD_LABEL))).toBe('Welsh result PRIVATE_NAME');
+      expect(translateSpy).not.toHaveBeenCalled();
+    });
+
+    it('should still omit the heading for a locally handled Label field', () => {
+      component.caseField = Object.assign(new CaseField(), CASE_FIELD_OF_LABEL_TYPE, {
+        translationHandledLocally: true
+      });
+      fixture.detectChanges();
+
+      expect(de.query(BY_FIELD_LABEL)).toBeNull();
+      expect(translateSpy).not.toHaveBeenCalled();
+    });
+
+    it('should still omit the heading for an ordinary Complex field', () => {
+      component.caseField.field_type = createFieldType('Complex', 'Complex', []);
+      component.caseField.translationHandledLocally = true;
+      fixture.detectChanges();
+
+      expect(de.query(BY_FIELD_LABEL)).toBeNull();
+      expect(translateSpy).not.toHaveBeenCalled();
+    });
+
+    it('should display a locally handled CaseLink heading directly', () => {
+      component.caseField = Object.assign(new CaseField(), CASE_LINK_FIELD, {
+        label: 'Case link PRIVATE_NAME',
+        translationHandledLocally: true
+      });
+      fixture.detectChanges();
+
+      expect(text(de.query(BY_FIELD_LABEL))).toBe('Case link PRIVATE_NAME');
+      expect(translateSpy).not.toHaveBeenCalled();
+    });
+  });
+
   it('should display label when `withLabel` is true', () => {
     component.withLabel = true;
     fixture.detectChanges();

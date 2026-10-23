@@ -13,7 +13,6 @@ import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { OrganisationService } from '../../../services/organisation';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
@@ -24,6 +23,10 @@ describe('ReadOrganisationFieldTableComponent', () => {
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
+  });
+  const markdownComponentMock = MockComponent({
+    selector: 'ccd-markdown',
+    inputs: ['content']
   });
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
   const FIELD_TYPE_WITH_VALUES: FieldType = {
@@ -110,11 +113,11 @@ describe('ReadOrganisationFieldTableComponent', () => {
         HttpClientTestingModule,
         ReactiveFormsModule,
         PaletteUtilsModule,
-        fieldReadComponentMock
+        fieldReadComponentMock,
+        markdownComponentMock
       ],
       declarations: [
         CaseReferencePipe,
-        MarkdownComponent,
         ReadOrganisationFieldTableComponent,
         FieldsFilterPipe,
         MockRpxTranslatePipe
@@ -142,6 +145,49 @@ describe('ReadOrganisationFieldTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('label translation guards', () => {
+    let translateSpy: jasmine.Spy;
+    const heading = () => fixture.nativeElement.querySelector('.complex-panel-title dt span').textContent;
+
+    beforeEach(() => {
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+    });
+
+    it('should translate an ordinary unhandled heading', () => {
+      component.caseField.label = 'Organisation';
+      fixture.detectChanges();
+
+      expect(heading()).toBe('Translated: Organisation');
+      expect(translateSpy).toHaveBeenCalledWith('Organisation');
+    });
+
+    (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+      it(`should display the heading directly when ${flag} is true`, () => {
+        component.caseField.label = 'Organisation PRIVATE_NAME';
+        component.caseField[flag] = true;
+        fixture.detectChanges();
+
+        expect(heading()).toBe('Organisation PRIVATE_NAME');
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+    });
+
+    it('should display locally handled English fallback and Welsh updates without another lookup', () => {
+      component.caseField.translationHandledLocally = true;
+      component.caseField.label = 'Organisation PRIVATE_NAME';
+      fixture.detectChanges();
+      expect(heading()).toBe('Organisation PRIVATE_NAME');
+
+      component.caseField.label = 'Sefydliad PRIVATE_NAME';
+      component.caseField.isTranslated = true;
+      fixture.detectChanges();
+
+      expect(heading()).toBe('Sefydliad PRIVATE_NAME');
+      expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+    });
   });
 
   it('should read selected organisation', waitForAsync(() => {

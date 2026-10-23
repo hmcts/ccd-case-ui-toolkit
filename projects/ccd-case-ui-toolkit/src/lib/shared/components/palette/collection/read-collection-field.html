@@ -12,7 +12,9 @@
             display_context_parameter: caseField.display_context_parameter,
             value: caseField.value,
             hidden: caseField.hidden,
-            parent: caseField
+            parent: caseField,
+            isTranslated: caseField.isTranslated,
+            translationHandledLocally: caseField.translationHandledLocally
           }"
           [context]="context"
           [caseFields]="caseFields"
@@ -31,7 +33,9 @@
             field_type: caseField.field_type.collection_field_type,
             value: item.value,
             hidden: caseField.hidden,
-            parent: caseField
+            parent: caseField,
+            isTranslated: caseField.isTranslated,
+            translationHandledLocally: caseField.translationHandledLocally
           }"
           [context]="context"
           [caseFields]="caseFields"

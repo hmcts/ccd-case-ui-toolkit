@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, DebugElement, Input } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -10,12 +10,16 @@ import { PlaceholderService } from './services/placeholder.service';
 import createSpyObj = jasmine.createSpyObj;
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 
 class MockRpxTranslationService {
   private langSubject = new BehaviorSubject<string>('en');
   private _language = 'en';
+  translationResult = new BehaviorSubject<string>('');
   language$ = this.langSubject.asObservable();
+
+  getTranslation$ = jasmine.createSpy('getTranslation$')
+    .and.callFake(() => this.translationResult.asObservable());
 
   get language() {
     return this._language;
@@ -50,6 +54,25 @@ class TestHostComponent {
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
 
+@Component({
+  templateUrl: '../../components/palette/label/label-field.html',
+  standalone: false
+})
+class LabelTemplateTestHostComponent {
+  public caseField: CaseField;
+  public caseFields: CaseField[];
+  public labelCanBeTranslated = true;
+}
+
+@Component({
+  selector: 'ccd-markdown',
+  template: '{{ content }}',
+  standalone: false
+})
+class TestMarkdownComponent {
+  @Input() public content: string;
+}
+
 const field = (id, value, fieldType, label?, hintText?) => {
   const caseField = new CaseField();
   caseField.id = id;
@@ -72,6 +95,59 @@ const textField = (id, value, label?, hintText?) => {
   caseField.hint_text = hintText;
   return caseField;
 };
+
+describe('LabelSubstitutorDirective with the label-field template', () => {
+  it('should never request translation of interpolated content while waiting or displaying a fallback', () => {
+    const englishTemplate = 'Claim fee is ${feeAmount}';
+    const welshTemplate = 'Ffi hawlio yw ${feeAmount}';
+    const translationService = new MockRpxTranslationService();
+    const placeholderService = createSpyObj<PlaceholderService>('placeholderService', ['resolvePlaceholders']);
+    const mockTranslationPipe = createSpyObj<RpxTranslatePipe>('RpxTranslatePipe', ['transform']);
+    placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) =>
+      text?.replace('${feeAmount}', '415')
+    );
+    TestBed.configureTestingModule({
+      declarations: [LabelTemplateTestHostComponent, LabelSubstitutorDirective, TestMarkdownComponent, RpxTranslatePipe],
+      providers: [
+        FieldsUtils,
+        FormatTranslatorService,
+        { provide: PlaceholderService, useValue: placeholderService },
+        { provide: RpxTranslatePipe, useValue: mockTranslationPipe },
+        { provide: RpxTranslationService, useValue: translationService }
+      ]
+    });
+    const fixture = TestBed.createComponent(LabelTemplateTestHostComponent);
+    const comp = fixture.componentInstance;
+    comp.caseField = field('FeeLabel', null, { id: 'Label', type: 'Label' }, englishTemplate);
+    comp.caseFields = [comp.caseField, textField('feeAmount', '415')];
+    translationService.translationResult.next(englishTemplate);
+    fixture.detectChanges();
+    expect(translationService.getTranslation$).not.toHaveBeenCalled();
+
+    translationService.setLanguage('cy');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Claim fee is 415');
+
+    translationService.translationResult.next(englishTemplate + ' [Translation in progress]');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Claim fee is 415');
+    expect(fixture.nativeElement.textContent).not.toContain('[Translation in progress]');
+
+    translationService.translationResult.next(englishTemplate);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Claim fee is 415');
+    expect(comp.caseField.isTranslated).toBe(false);
+    expect(comp.caseField.translationHandledLocally).toBe(true);
+
+    translationService.translationResult.next(welshTemplate);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Ffi hawlio yw 415');
+    // The real template pipe would also call the service if it received the resolved label.
+    expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
+    fixture.destroy();
+  });
+});
 
 describe('LabelSubstitutorDirective', () => {
 
@@ -123,7 +199,6 @@ describe('LabelSubstitutorDirective', () => {
       placeholderService.resolvePlaceholders.and
         .returnValues(
           'Label B with valueA=ValueA and valueA=ValueA:1',
-          'Label B with valueA=ValueA and valueA=ValueA:1', // directive calls it twice for label
           'Label B with valueA=ValueA and valueA=ValueA:2',
           'Label B with valueA=ValueA and valueA=ValueA:3');
       fixture.detectChanges();
@@ -153,24 +228,18 @@ describe('LabelSubstitutorDirective', () => {
       const transLabel = 'Welsh text with a REPLACEMENT in it';
       const hintText = '';
       const value = '';
-      const translationService = TestBed.inject(RpxTranslationService) as any;
+      const translationService = TestBed.inject(RpxTranslationService) as unknown as MockRpxTranslationService;
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
       translationService.setLanguage('cy');
 
-      placeholderService.resolvePlaceholders.and.returnValues(
-        'REPLACEMENT',
-        transLabel,
-        hintText,
-        value);
-      mockTranslationPipe.transform.and.callFake((text: string) => {
-        if (text === label) {
-          return 'Welsh text with a ${placeholder} in it';
-        }
-        return text;
-      });
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) =>
+        text?.replace('${placeholder}', 'REPLACEMENT')
+      );
+      translationService.translationResult.next('Welsh text with a ${placeholder} in it');
       fixture.detectChanges();
-      expect(mockTranslationPipe.transform).toHaveBeenCalledWith(label);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(label);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
       expect(labelEl.innerText).toBe(transLabel);
       expect(hintEl.innerText).toBe('');
       expect(valueEl.innerText).toBe('');
@@ -760,437 +829,394 @@ describe('LabelSubstitutorDirective', () => {
 
   describe('Language change and translation functionality', () => {
     let translationService: MockRpxTranslationService;
+    const englishTemplate = 'English text with ${LabelA} placeholder';
+    const englishResolved = 'English text with ValueA placeholder';
+    const welshTemplate = 'Welsh text with ${LabelA} placeholder';
+    const welshResolved = 'Welsh text with ValueA placeholder';
 
     beforeEach(() => {
-      translationService = TestBed.inject(RpxTranslationService) as any;
+      translationService = TestBed.inject(RpxTranslationService) as unknown as MockRpxTranslationService;
+      comp.caseField = textField('LabelB', '', englishTemplate);
+      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+
+      // Resolve by input text so later translation emissions do not depend on call order.
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) => {
+        if (text === englishTemplate) {
+          return englishResolved;
+        }
+        if (text === welshTemplate) {
+          return welshResolved;
+        }
+        return text;
+      });
+      translationService.translationResult.next(englishTemplate);
     });
 
-    it('should set isTranslated to false when language is not cy', fakeAsync(() => {
-      const label = 'English label with ${placeholder}';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
-
-      placeholderService.resolvePlaceholders.and.returnValues('English label with ValueA', '', '');
+    it('should render English locally without requesting a translation', () => {
       fixture.detectChanges();
 
-      placeholderService.resolvePlaceholders.calls.reset();
-      placeholderService.resolvePlaceholders.and.returnValues('English label with ValueA', '', '');
-
-      translationService.setLanguage('en');
-
-      tick(100);
-      fixture.detectChanges();
-
+      expect(labelEl.innerText).toBe(englishResolved);
       expect(comp.caseField.isTranslated).toBe(false);
-    }));
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).not.toHaveBeenCalled();
+    });
 
-    it('should translate unsubstituted text first then apply substitutions', () => {
-      const label = 'English text with ${LabelA} placeholder';
-      const translatedTemplate = 'Welsh text with ${LabelA} placeholder';
-      const finalText = 'Welsh text with ValueA placeholder';
-
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+    it('should update the displayed label when Welsh arrives after the initial English emission', () => {
+      fixture.detectChanges();
       translationService.setLanguage('cy');
-
-      placeholderService.resolvePlaceholders.and.returnValues(
-        'English text with ValueA placeholder',
-        finalText,
-        '',
-        ''
-      );
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value === label) {
-          return translatedTemplate;
-        }
-        return value;
-      });
-
       fixture.detectChanges();
 
-      expect(mockTranslationPipe.transform).toHaveBeenCalledWith(label);
-      expect(comp.caseField.label).toBe(finalText);
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledTimes(4);
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+
+      translationService.translationResult.next(englishTemplate + ' [Translation in progress]');
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+
+      // Simulate the result arriving later, without recreating the component.
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.isTranslated).toBe(true);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
         jasmine.objectContaining({ LabelA: 'ValueA' }),
-        translatedTemplate
+        welshTemplate
       );
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
     });
 
-    it('should handle hint_text during language changes', fakeAsync(() => {
-      const initialHint = 'Initial hint with ${placeholder}';
-      comp.caseField = textField('LabelB', '', '', initialHint);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
+    it('should use a cached Welsh template when Welsh is selected before initialisation', () => {
+      translationService.setLanguage('cy');
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
 
-      placeholderService.resolvePlaceholders.and.callFake((_fields: any, str: any) => {
-        if (str === initialHint) return 'Initial hint with ValueA';
-        if (str === '') return '';
-        return str;
-      });
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.isTranslated).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
+
+    it('should keep English locally when the service returns an English fallback', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      translationService.translationResult.next(englishTemplate + ' [Translation in progress]');
+      translationService.translationResult.next(englishTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
+    });
+
+    it('should ignore empty translation emissions while keeping the subscription active', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      translationService.translationResult.next('');
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.isTranslated).toBe(true);
+    });
+
+    it('should keep English locally if the translated template cannot be resolved', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) =>
+        text === welshTemplate ? '' : text
+      );
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
+
+    it('should handle hint_text during language changes', () => {
+      const initialHint = 'Initial hint with ${LabelA}';
+      comp.caseField.hint_text = initialHint;
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) =>
+        text?.replace('${LabelA}', 'ValueA')
+      );
       fixture.detectChanges();
 
       comp.caseField.hint_text = 'Modified hint';
-
-      placeholderService.resolvePlaceholders.calls.reset();
-      placeholderService.resolvePlaceholders.and.callFake((_fields: any, str: any) => {
-        if (str === initialHint) return 'Initial hint with ValueA after change';
-        if (str === '') return '';
-        return str;
-      });
-
-      translationService.setLanguage('en');
-
-      tick(100);
+      translationService.setLanguage('cy');
       fixture.detectChanges();
 
-      expect(comp.caseField.hint_text).toBe('Initial hint with ValueA after change');
-      expect(hintEl.innerText).toBe('Initial hint with ValueA after change');
-    }));
-
-    it('should not call translation when label has no placeholders', () => {
-      const label = 'Simple label without placeholders';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField];
-
-      placeholderService.resolvePlaceholders.and.returnValue(label);
-      fixture.detectChanges();
-
-      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
-      expect(comp.caseField.label).toBe(label);
-      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.hint_text).toBe('Initial hint with ValueA');
+      expect(hintEl.innerText).toBe('Initial hint with ValueA');
     });
 
-    it('should handle language change correctly', fakeAsync(() => {
-      const label = 'Label with ${placeholder}';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
-
-      placeholderService.resolvePlaceholders.and.returnValues('Label with ValueA', 'Label with ValueA', '', '');
-      fixture.detectChanges();
-
-      placeholderService.resolvePlaceholders.calls.reset();
-
+    it('should leave labels without placeholders to the render layer', () => {
+      const label = 'Simple label without placeholders';
+      comp.caseField.label = label;
       translationService.setLanguage('cy');
-
       fixture.detectChanges();
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalled();
-    }));
 
-    it('should preserve original label template across language switches', fakeAsync(() => {
-      const englishTemplate = 'English text with ${LabelA} placeholder';
-      const englishResolved = 'English text with ValueA placeholder';
-      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
-      const welshResolved = 'Welsh text with ValueA placeholder';
+      expect(translationService.getTranslation$).not.toHaveBeenCalled();
+      expect(comp.caseField.label).toBe(label);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(false);
+    });
 
-      comp.caseField = textField('LabelB', '', englishTemplate);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
-
-      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
-        if (stringToResolve === englishTemplate) {
-          return englishResolved;
-        }
-        if (stringToResolve === welshTemplate) {
-          return welshResolved;
-        }
-        return stringToResolve;
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value !== englishTemplate) {
-          return value;
-        }
-        return translationService.language === 'cy' ? welshTemplate : englishTemplate;
-      });
-
+    it('should preserve the original template across repeated language switches', () => {
       fixture.detectChanges();
-      expect(comp.caseField.originalLabel).toBe(englishTemplate);
-      expect(comp.caseField.label).toBe(englishResolved);
-
       translationService.setLanguage('cy');
-      tick(100);
+      translationService.translationResult.next(welshTemplate);
       fixture.detectChanges();
 
+      expect(labelEl.innerText).toBe(welshResolved);
       expect(comp.caseField.originalLabel).toBe(englishTemplate);
-      expect(comp.caseField.label).toBe(welshResolved);
 
       translationService.setLanguage('en');
-      tick(100);
       fixture.detectChanges();
 
+      expect(labelEl.innerText).toBe(englishResolved);
       expect(comp.caseField.originalLabel).toBe(englishTemplate);
-      expect(comp.caseField.label).toBe(englishResolved);
-    }));
+      expect(comp.caseField.isTranslated).toBe(false);
 
-    it('should restore originalLabel during language changes when it has been cleared after initialisation', fakeAsync(() => {
-      const englishTemplate = 'English text with ${LabelA} placeholder';
-      const englishResolved = 'English text with ValueA placeholder';
-      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
-      const welshResolved = 'Welsh text with ValueA placeholder';
-
-      comp.caseField = textField('LabelB', '', englishTemplate);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
-
-      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
-        if (stringToResolve === englishTemplate) {
-          return englishResolved;
-        }
-        if (stringToResolve === welshTemplate) {
-          return welshResolved;
-        }
-        return stringToResolve;
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value !== englishTemplate) {
-          return value;
-        }
-        return translationService.language === 'cy' ? welshTemplate : englishTemplate;
-      });
-
+      translationService.translationResult.next(englishTemplate);
+      translationService.setLanguage('cy');
+      translationService.translationResult.next(welshTemplate);
       fixture.detectChanges();
 
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(translationService.getTranslation$.calls.allArgs()).toEqual([
+        [englishTemplate], [englishTemplate]
+      ]);
+    });
+
+    it('should restore originalLabel when it has been cleared before a language change', () => {
+      fixture.detectChanges();
       comp.caseField.label = englishTemplate;
       comp.caseField.originalLabel = undefined;
 
       translationService.setLanguage('cy');
-      tick(100);
+      translationService.translationResult.next(welshTemplate);
       fixture.detectChanges();
 
       expect(comp.caseField.originalLabel).toBe(englishTemplate);
-      expect(comp.caseField.label).toBe(welshResolved);
+      expect(labelEl.innerText).toBe(welshResolved);
       expect(comp.caseField.isTranslated).toBe(true);
-    }));
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
 
-    it('should prefer translating the resolved english label for label fields when that translation exists', fakeAsync(() => {
-      const englishTemplate = '**Enter the details of ${ApplicantLabel} solicitor**.';
-      const englishResolved = '**Enter the details of the applicant’s solicitor**.';
-      const brokenWelshTemplate = '**Rhowch fanylion cyfreithiwr y ${ApplicantLabel}';
-      const welshResolved = '**Nodwch fanylion cyfreithiwr yr ymgeisydd**.';
-      const helperField = textField('ApplicantLabel', null, 'The applicant\'s or applicant 1’s');
-      const recreatedFormGroup = new FormGroup({
-        ApplicantLabel: new FormControl('the applicant’s')
-      });
-
-      comp.caseField = field('SolicitorLabel', '', {
-        id: 'SolicitorLabel',
-        type: 'Label'
-      }, englishTemplate);
-      comp.caseFields = [comp.caseField, helperField];
-      comp.formGroup = recreatedFormGroup;
-
-      placeholderService.resolvePlaceholders.and.callFake((fields: any, stringToResolve: string) => {
-        if (stringToResolve === englishTemplate) {
-          return `**Enter the details of ${fields.ApplicantLabel} solicitor**.`;
-        }
-        if (stringToResolve === brokenWelshTemplate) {
-          return `**Rhowch fanylion cyfreithiwr y ${fields.ApplicantLabel}`;
-        }
-        return stringToResolve || '';
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value === englishTemplate && translationService.language === 'cy') {
-          return brokenWelshTemplate;
-        }
-        if (value === englishResolved && translationService.language === 'cy') {
-          return welshResolved;
-        }
-        return value;
-      });
-
-      fixture.detectChanges();
-      fixture.destroy();
-
+    it('should request only the original template when a label has already been interpolated', () => {
       comp.caseField.label = englishResolved;
       comp.caseField.originalLabel = englishTemplate;
       translationService.setLanguage('cy');
+      fixture.detectChanges();
 
-      const recreatedFixture = TestBed.createComponent(TestHostComponent);
-      const recreatedComp = recreatedFixture.componentInstance;
-      recreatedComp.caseField = comp.caseField;
-      recreatedComp.caseFields = comp.caseFields;
-      recreatedComp.formGroup = recreatedFormGroup;
-      recreatedFixture.detectChanges();
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
 
-      expect(recreatedComp.caseField.label).toBe(englishResolved);
-      expect(recreatedComp.caseField.originalLabel).toBe(englishTemplate);
-      expect(recreatedComp.caseField.isTranslated).toBe(false);
-    }));
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
 
-    it('should keep an existing english label when the original template can no longer be resolved', () => {
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.originalLabel).toBe(englishTemplate);
+      expect(comp.caseField.isTranslated).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
+    });
+
+    it('should request only the original solicitor template, even when a complete-sentence translation could exist', () => {
+      const original = '**Enter the details of ${ApplicantLabel} solicitor**.';
+      const interpolated = '**Enter the details of the applicant’s solicitor**.';
+      const brokenWelsh = '**Rhowch fanylion cyfreithiwr y ${ApplicantLabel}';
+
+      // Represent the field state when returning to an already-interpolated page.
+      comp.caseField = field('SolicitorLabel', '', {
+        id: 'SolicitorLabel',
+        type: 'Label'
+      }, interpolated);
+      comp.caseField.originalLabel = original;
+      comp.caseFields = [comp.caseField, textField('ApplicantLabel', null)];
+      comp.formGroup = new FormGroup({
+        ApplicantLabel: new FormControl('the applicant’s')
+      });
+      placeholderService.resolvePlaceholders.and.callFake(
+        (fields: { ApplicantLabel?: string }, text: string) =>
+          text?.replace('${ApplicantLabel}', fields.ApplicantLabel || '')
+      );
+
+      translationService.translationResult.next(original);
+      translationService.setLanguage('cy');
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(interpolated);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(original);
+
+      translationService.translationResult.next(brokenWelsh);
+      fixture.detectChanges();
+
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(original);
+      expect(translationService.getTranslation$).not.toHaveBeenCalledWith(interpolated);
+      expect(mockTranslationPipe.transform).not.toHaveBeenCalled();
+      expect(comp.caseField.originalLabel).toBe(original);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+    });
+
+    it('should keep an existing English label when the original template can no longer be resolved', () => {
       const originalTemplate = '${tseAdmReplyTableMarkUp}';
       const resolvedTable = '|Application|Change personal details|';
-
       comp.caseField = field('tseAdmReplyTableLabel', '', {
         id: 'tseAdmReplyTableLabel',
         type: 'Label'
       }, resolvedTable);
       comp.caseField.originalLabel = originalTemplate;
-      comp.caseFields = [
-        comp.caseField,
-        textField('tseAdmReplyTableMarkUp', null, '')
-      ];
-
-      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
-        if (stringToResolve === resolvedTable) {
-          return resolvedTable;
-        }
-        if (stringToResolve === originalTemplate) {
-          return '';
-        }
-        return stringToResolve || '';
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => value);
-
+      comp.caseFields = [comp.caseField, textField('tseAdmReplyTableMarkUp', null, '')];
+      placeholderService.resolvePlaceholders.and.callFake((_fields: object, text: string) =>
+        text === originalTemplate ? '' : text || ''
+      );
       fixture.detectChanges();
 
       expect(comp.caseField.label).toBe(resolvedTable);
       expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).not.toHaveBeenCalled();
+    });
+
+    it('should cancel the pending subscription when switching back to English', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      const directive = de.query(By.directive(LabelSubstitutorDirective)).injector.get(LabelSubstitutorDirective);
+      const pendingTranslation = directive['templateTranslationSubscription'];
+
+      translationService.setLanguage('en');
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(pendingTranslation.closed).toBe(true);
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
+
+    it('should resolve delayed Welsh templates with the latest field values', () => {
+      placeholderService.resolvePlaceholders.and.callFake((fields: { LabelA?: string }, text: string) =>
+        text?.replace('${LabelA}', fields?.LabelA || '')
+      );
+
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      fixture.detectChanges();
+
+      comp.caseFields[1].value = 'ValueB';
+      fixture.detectChanges();
+
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe('Welsh text with ValueB placeholder');
+      expect(comp.caseField.isTranslated).toBe(true);
       expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith(
-        jasmine.any(Object),
-        resolvedTable
+        jasmine.objectContaining({ LabelA: 'ValueB' }),
+        welshTemplate
       );
     });
 
-    it('should fall back to template translation when the resolved english label has no welsh translation', fakeAsync(() => {
-      const englishTemplate = 'Has the applicant’s ${MarriageLabel} broken down irretrievably?';
-      const englishResolved = 'Has the applicant’s marriage broken down irretrievably?';
-      const welshTemplate = 'A yw ${MarriageLabel} y ceisydd wedi chwalu’n gyfan gwbl?';
-      const welshResolved = 'A yw priodas y ceisydd wedi chwalu’n gyfan gwbl?';
-      const helperField = textField('MarriageLabel', 'marriage', 'Marriage or civil partnership');
-      const recreatedFormGroup = new FormGroup({
-        MarriageLabel: new FormControl('marriage')
-      });
-
-      comp.caseField = field('MarriageBreakdown', '', {
-        id: 'YesOrNo',
-        type: 'YesOrNo'
-      }, englishTemplate);
-      comp.caseFields = [comp.caseField, helperField];
-      comp.formGroup = recreatedFormGroup;
-
-      placeholderService.resolvePlaceholders.and.callFake((fields: any, stringToResolve: string) => {
-        if (stringToResolve === englishTemplate) {
-          return `Has the applicant’s ${fields.MarriageLabel} broken down irretrievably?`;
-        }
-        if (stringToResolve === welshTemplate) {
-          return welshResolved;
-        }
-        return stringToResolve || '';
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value === englishTemplate && translationService.language === 'cy') {
-          return welshTemplate;
-        }
-        if (value === englishResolved && translationService.language === 'cy') {
-          return englishResolved;
-        }
-        return value;
-      });
+    it('should ignore emissions from a stale Welsh request after rapid language changes', () => {
+      const firstRequest$ = new BehaviorSubject<string>('');
+      const secondRequest$ = new BehaviorSubject<string>('');
+      translationService.getTranslation$.and.returnValues(
+        firstRequest$.asObservable(),
+        secondRequest$.asObservable()
+      );
 
       fixture.detectChanges();
-      fixture.destroy();
-
-      comp.caseField.label = englishResolved;
-      comp.caseField.originalLabel = englishTemplate;
       translationService.setLanguage('cy');
-
-      const recreatedFixture = TestBed.createComponent(TestHostComponent);
-      const recreatedComp = recreatedFixture.componentInstance;
-      recreatedComp.caseField = comp.caseField;
-      recreatedComp.caseFields = comp.caseFields;
-      recreatedComp.formGroup = recreatedFormGroup;
-      recreatedFixture.detectChanges();
-
-      expect(recreatedComp.caseField.label).toBe(welshResolved);
-      expect(recreatedComp.caseField.originalLabel).toBe(englishTemplate);
-      expect(recreatedComp.caseField.isTranslated).toBe(true);
-    }));
-
-    it('should switch back to english label from welsh when language changes to en', fakeAsync(() => {
-      const englishTemplate = 'English text with ${LabelA} placeholder';
-      const englishResolved = 'English text with ValueA placeholder';
-      const welshTemplate = 'Welsh text with ${LabelA} placeholder';
-      const welshResolved = 'Welsh text with ValueA placeholder';
-      let returnStaleWelshForEnglish = false;
-
-      comp.caseField = textField('LabelB', '', englishTemplate);
-      comp.caseFields = [comp.caseField, textField('LabelA', 'ValueA', '')];
-
-      placeholderService.resolvePlaceholders.and.callFake((_fields: object, stringToResolve: string) => {
-        if (stringToResolve === englishTemplate) {
-          return englishResolved;
-        }
-        if (stringToResolve === welshTemplate) {
-          return welshResolved;
-        }
-        if (stringToResolve === '') {
-          return '';
-        }
-        return stringToResolve;
-      });
-      mockTranslationPipe.transform.and.callFake((value: string) => {
-        if (value === englishTemplate && translationService.language === 'cy') {
-          return welshTemplate;
-        }
-        if (value === englishTemplate && translationService.language === 'en' && returnStaleWelshForEnglish) {
-          returnStaleWelshForEnglish = false;
-          return welshTemplate;
-        }
-        return value;
-      });
-
       fixture.detectChanges();
-      expect(comp.caseField.label).toBe(englishResolved);
-      mockTranslationPipe.transform.calls.reset();
 
-      translationService.setLanguage('cy');
-      tick(100);
-      fixture.detectChanges();
-      expect(comp.caseField.label).toBe(welshResolved);
-      expect(mockTranslationPipe.transform.calls.count()).toBe(2);
-
-      returnStaleWelshForEnglish = true;
-      mockTranslationPipe.transform.calls.reset();
       translationService.setLanguage('en');
-      tick(100);
-      fixture.detectChanges();
-      expect(comp.caseField.label).toBe(englishResolved);
-      expect(mockTranslationPipe.transform.calls.count()).toBe(0);
-    }));
-
-    it('should clean up language subscription on destroy', () => {
-      const label = 'Test label';
-      comp.caseField = textField('LabelB', '', label);
-      comp.caseFields = [comp.caseField];
-
-      placeholderService.resolvePlaceholders.and.returnValues(label, '', '');
       fixture.detectChanges();
 
-      const directiveEl = de.query(By.directive(LabelSubstitutorDirective));
-      const directive = directiveEl.injector.get(LabelSubstitutorDirective);
-      spyOn(directive['languageSubscription'], 'unsubscribe');
+      translationService.setLanguage('cy');
+      fixture.detectChanges();
 
-      fixture.destroy();
+      firstRequest$.next(welshTemplate);
+      fixture.detectChanges();
 
-      expect(directive['languageSubscription'].unsubscribe).toHaveBeenCalled();
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+
+      secondRequest$.next(welshTemplate);
+      fixture.detectChanges();
+
+      expect(labelEl.innerText).toBe(welshResolved);
+      expect(comp.caseField.isTranslated).toBe(true);
+      expect(translationService.getTranslation$.calls.count()).toBe(2);
     });
 
-    it('should restore initial values on destroy', () => {
-      const initialLabel = 'Initial label';
-      const initialHint = 'Initial hint';
-      comp.caseField = textField('LabelB', '', initialLabel, initialHint);
-      comp.caseFields = [comp.caseField];
+    it('should restore English after a completed Welsh translation', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      translationService.translationResult.next(welshTemplate);
+      fixture.detectChanges();
+      expect(labelEl.innerText).toBe(welshResolved);
 
-      placeholderService.resolvePlaceholders.and.returnValues('Modified label', 'Modified hint', '');
+      translationService.setLanguage('en');
       fixture.detectChanges();
 
-      comp.caseField.label = 'Changed label';
-      comp.caseField.hint_text = 'Changed hint';
-      comp.caseField.isTranslated = true;
+      expect(labelEl.innerText).toBe(englishResolved);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(true);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
 
+    it('should unsubscribe from language and translation updates on destroy', () => {
+      fixture.detectChanges();
+      translationService.setLanguage('cy');
+      const directive = de.query(By.directive(LabelSubstitutorDirective)).injector.get(LabelSubstitutorDirective);
+      const languageSubscription = directive['languageSubscription'];
+      const translationSubscription = directive['templateTranslationSubscription'];
       fixture.destroy();
 
-      expect(comp.caseField.label).toBe('Initial label');
-      expect(comp.caseField.hint_text).toBe(initialHint);
+      expect(languageSubscription.closed).toBe(true);
+      expect(translationSubscription.closed).toBe(true);
+      expect(comp.caseField.label).toBe(englishTemplate);
       expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(false);
+
+      translationService.translationResult.next(welshTemplate);
+      translationService.setLanguage('en');
+      translationService.setLanguage('cy');
+
+      expect(comp.caseField.label).toBe(englishTemplate);
+      expect(comp.caseField.isTranslated).toBe(false);
+      expect(comp.caseField.translationHandledLocally).toBe(false);
+      expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(englishTemplate);
+    });
+
+    it('should restore the initial hint on destroy', () => {
+      const initialHint = 'Initial hint with ${LabelA}';
+      comp.caseField.hint_text = initialHint;
+      fixture.detectChanges();
+      comp.caseField.hint_text = 'Changed hint';
+      fixture.destroy();
+
+      expect(comp.caseField.hint_text).toBe(initialHint);
     });
   });
 
@@ -1312,8 +1338,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
 
-      // First call is for label substitution, second is for translation check, third and fourth are hint_text and value
-      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Value is 123', '[NOCACHE]Value is 123', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('[NOCACHE]Value is 123', '', '');
       fixture.detectChanges();
 
       // [NOCACHE] should not be processed when outside ${...}
@@ -1347,7 +1372,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('fieldValue', '123', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Value is 123', 'Value is 123', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Value is 123', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('Value is ${fieldValue}');
@@ -1359,7 +1384,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('calculatedValue', '42', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Result: 42', 'Result: 42', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Result: 42', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('Result: ${calculatedValue}');
@@ -1371,7 +1396,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('prefixfieldName', 'value123', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Data: value123', 'Data: value123', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Data: value123', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('Data: ${prefixfieldName}');
@@ -1383,7 +1408,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('fieldName', 'info', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Info: info', 'Info: info', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Info: info', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('Info: ${fieldName}');
@@ -1399,7 +1424,7 @@ describe('LabelSubstitutorDirective', () => {
         textField('field2', 'value2', '')
       ];
 
-      placeholderService.resolvePlaceholders.and.returnValues('value1 and value2', 'value1 and value2', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('value1 and value2', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('${field1} and ${field2}');
@@ -1427,7 +1452,7 @@ describe('LabelSubstitutorDirective', () => {
         textField('formattedCalculatedDailyRentChargeAmount', '£9.86', '')
       ];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Amount: £9.86', 'Amount: £9.86', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Amount: £9.86', '', '');
       fixture.detectChanges();
 
       expect(comp.caseField.noCacheLabel).toBe('Amount: ${formattedCalculatedDailyRentChargeAmount}');
@@ -1439,7 +1464,7 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseField = textField('TestField', '', label);
       comp.caseFields = [comp.caseField, textField('dynamicField', 'initial', '')];
 
-      placeholderService.resolvePlaceholders.and.returnValues('Value: initial', 'Value: initial', '', '');
+      placeholderService.resolvePlaceholders.and.returnValues('Value: initial', '', '');
       fixture.detectChanges();
 
       const noCacheLabelValue = comp.caseField.noCacheLabel;
@@ -1459,9 +1484,7 @@ describe('LabelSubstitutorDirective', () => {
         textField('field2', 'B', '')
       ];
 
-      // First call for label, second for translation check, third and fourth for hint_text and value
       placeholderService.resolvePlaceholders.and.returnValues(
-        '[NOCACHE] prefix A middle B suffix',
         '[NOCACHE] prefix A middle B suffix',
         '',
         ''

@@ -7,6 +7,13 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { ReadCollectionFieldComponent } from './read-collection-field.component';
 
+const TRANSLATION_STATES = [
+  { isTranslated: false, translationHandledLocally: false },
+  { isTranslated: true, translationHandledLocally: false },
+  { isTranslated: false, translationHandledLocally: true },
+  { isTranslated: true, translationHandledLocally: true }
+];
+
 describe('ReadCollectionFieldComponent', () => {
   const $CHILD_FIELDS = By.css('table>tbody>tr>td>ccd-field-read');
 
@@ -40,7 +47,7 @@ describe('ReadCollectionFieldComponent', () => {
   }) as CaseField;
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+    inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
 
   let fixture: ComponentFixture<ReadCollectionFieldComponent>;
@@ -61,7 +68,7 @@ describe('ReadCollectionFieldComponent', () => {
     fixture = TestBed.createComponent(ReadCollectionFieldComponent);
     component = fixture.componentInstance;
 
-    component.caseField = CASE_FIELD;
+    component.caseField = { ...CASE_FIELD, value: VALUES.slice() } as CaseField;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -86,9 +93,33 @@ describe('ReadCollectionFieldComponent', () => {
         },
         value: VALUES[i].value,
         hidden: false,
-        parent: component.caseField
+        parent: component.caseField,
+        isTranslated: component.caseField.isTranslated,
+        translationHandledLocally: component.caseField.translationHandledLocally
       });
     }
+  });
+
+  TRANSLATION_STATES.forEach(state => {
+    it(`should copy numbered-label flags isTranslated=${state.isTranslated}, translationHandledLocally=${state.translationHandledLocally}`, () => {
+      component.caseField = Object.assign(new CaseField(), component.caseField, state, {
+        label: 'Contact PRIVATE_NAME'
+      });
+      fixture.detectChanges();
+
+      const fields = de.queryAll($CHILD_FIELDS);
+      expect(fields.length).toBe(VALUES.length);
+      fields.forEach((element, index) => {
+        const field = element.componentInstance.caseField;
+        expect(field).not.toBe(component.caseField);
+        expect(field.label).toBe(`Contact PRIVATE_NAME ${index + 1}`);
+        expect(field.isTranslated).toBe(state.isTranslated);
+        expect(field.translationHandledLocally).toBe(state.translationHandledLocally);
+        expect(field.value).toBe(VALUES[index].value);
+        expect(field.parent).toBe(component.caseField);
+      });
+      expect(component.caseField.label).toBe('Contact PRIVATE_NAME');
+    });
   });
 
   it('should NOT render anything when value is undefined', () => {
@@ -159,7 +190,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   }) as CaseField;
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
+    inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
 
   let fixture: ComponentFixture<ReadCollectionFieldComponent>;
@@ -180,7 +211,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
     fixture = TestBed.createComponent(ReadCollectionFieldComponent);
     component = fixture.componentInstance;
 
-    component.caseField = CASE_FIELD_WITH_DISPLAY_CONTEXT;
+    component.caseField = { ...CASE_FIELD_WITH_DISPLAY_CONTEXT, value: VALUES.slice() } as CaseField;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -192,5 +223,26 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
     fixture.detectChanges();
     const cell = de.queryAll($CHILD_FIELDS);
     expect(cell[0].name).toEqual('ccd-field-read');
+  });
+
+  TRANSLATION_STATES.forEach(state => {
+    it(`should copy table-label flags isTranslated=${state.isTranslated}, translationHandledLocally=${state.translationHandledLocally}`, () => {
+      component.caseField = Object.assign(new CaseField(), component.caseField, state, {
+        label: 'Contact PRIVATE_NAME'
+      });
+      fixture.detectChanges();
+
+      const fields = de.queryAll($CHILD_FIELDS);
+      expect(fields.length).toBe(1);
+      const field = fields[0].componentInstance.caseField;
+      expect(field).not.toBe(component.caseField);
+      expect(field.label).toBe('Contact PRIVATE_NAME');
+      expect(field.isTranslated).toBe(state.isTranslated);
+      expect(field.translationHandledLocally).toBe(state.translationHandledLocally);
+      expect(field.value).toBe(component.caseField.value);
+      expect(field.parent).toBe(component.caseField);
+      expect(field.display_context_parameter).toBe(component.caseField.display_context_parameter);
+      expect(component.caseField.label).toBe('Contact PRIVATE_NAME');
+    });
   });
 });
