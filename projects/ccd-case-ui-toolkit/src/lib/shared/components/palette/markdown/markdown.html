@@ -1,1 +1,6 @@
-<div><markdown class="markdown" (click)="interceptClick($event)" [data]="content | ccdCaseReference"></markdown></div>
+<ng-container *ngIf="inline; else blockMarkdown">
+  <markdown class="markdown" (click)="interceptClick($event)" [data]="content | ccdCaseReference" [inline]="true"></markdown>
+</ng-container>
+<ng-template #blockMarkdown>
+  <div><markdown class="markdown" (click)="interceptClick($event)" [data]="content | ccdCaseReference"></markdown></div>
+</ng-template>

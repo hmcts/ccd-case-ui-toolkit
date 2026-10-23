@@ -1,3 +1,7 @@
+<div class="govuk-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+  {{(hasResults() || hasDrafts()) ? (getTotalResults() + ' ' + ('results have been found' | rpxTranslate)) : ''}}
+</div>
+
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
     <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ (caseState ? 'Your cases' : 'Search result') | rpxTranslate}}</h2>
@@ -11,7 +15,6 @@
     </div>
 
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top">
-      <output [attr.aria-label]="getTotalResults() + ' ' + ('results have been found' | rpxTranslate)"></output>
           <span class="text-16" id="search-result-summary__text">{{'Showing' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
         {{'to' | rpxTranslate}}
@@ -136,6 +139,6 @@
   [screenReaderPageLabel]="page"
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
-<div *ngIf="!(hasResults() || hasDrafts())" class="notification" role="status">
-{{'No cases found. Try using different filters.' | rpxTranslate}}
+<div [class.notification]="!(hasResults() || hasDrafts())" role="status" aria-live="polite" aria-atomic="true">
+{{!(hasResults() || hasDrafts()) ? ('No cases found. Try using different filters.' | rpxTranslate) : ''}}
 </div>
