@@ -56,9 +56,10 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
+      <!-- Keep URL tab fragments separate from Material header IDs to avoid anchor scrolling. -->
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true" [(selectedIndex)]="selectedTabIndex"
         [selectedIndex]="selectedTabIndex">
-        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+        <mat-tab *ngFor="let tab of prependedTabs" [id]="'case-tab-' + tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
             <ng-container *ngIf="tab.id === 'tasks'">
               <exui-tasks-ce></exui-tasks-ce>
@@ -68,7 +69,7 @@
             </ng-container>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="'case-tab-' + tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
           <ng-template matTabContent>
             <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
@@ -104,7 +105,7 @@
             </table>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+        <mat-tab *ngFor="let tab of appendedTabs" [id]="'case-tab-' + tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
             <ng-container *ngIf="tab.id === 'hearings'">
               <exui-case-hearings-ce></exui-case-hearings-ce>

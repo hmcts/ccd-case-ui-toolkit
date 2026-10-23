@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { Location, ViewportScroller } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange } from '@angular/core';
@@ -363,7 +363,7 @@ const CID = '1234567890123456';
 const $ALL_TAB_HEADERS = By.css('mat-tab-group>mat-tab');
 const $FIRST_TAB_HEADER = By.css('mat-tab-group>mat-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('mat-tab-group>mat-tab:not(:first-child)');
-const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#NameTab');
+const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#case-tab-NameTab');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
@@ -2159,6 +2159,52 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect((tabLabels[2].nativeElement as HTMLElement).innerText).toBe('Overview');
     expect((tabLabels[3].nativeElement as HTMLElement).innerText).toBe('Case notes');
     expect((tabLabels[4].nativeElement as HTMLElement).innerText).toBe('Hearings');
+  });
+
+  it('keeps case tab IDs separate from URL fragment targets and preserves accessibility links', () => {
+    const tabs = caseViewerComponent.tabGroup._tabs.toArray();
+    const headers = debugElement.queryAll(By.css('[role="tab"]'));
+    const panels = debugElement.queryAll(By.css('[role="tabpanel"]'));
+
+    expect(headers.length).toBe(tabs.length);
+    tabs.forEach((tab, index) => {
+      const header = headers[index].nativeElement as HTMLElement;
+      const panel = panels[index].nativeElement as HTMLElement;
+      expect(header.id).toBe(tab.id);
+      expect(header.id).toMatch(/^case-tab-/);
+      expect(panel.getAttribute('aria-labelledby')).toBe(header.id);
+      expect(header.getAttribute('aria-controls')).toBe(panel.id);
+    });
+    ['tasks', 'roles-and-access', 'overview', 'caseNotes', 'hearings'].forEach(id => {
+      expect(componentFixture.nativeElement.querySelector(`[id="${id}"]`)).toBeNull();
+    });
+  });
+
+  it('selects Summary without giving router anchor scrolling a matching target', () => {
+    caseViewerComponent.sortedTabs = [{
+      ...caseViewerComponent.sortedTabs[0], id: 'Summary', label: 'Summary', fields: []
+    }];
+    componentFixture.detectChanges();
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Summary');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toBe('case-tab-Summary');
+    expect(selectedTab.textContent.trim()).toBe('Summary');
+    expect(document.getElementById('Summary')).toBeNull();
+    const scrollTo = spyOn(window, 'scrollTo');
+    TestBed.inject(ViewportScroller).scrollToAnchor('Summary');
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('selects a tab from its unchanged fragment label after prefixing header IDs', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Case%20notes');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toBe('case-tab-caseNotes');
+    expect(selectedTab.textContent.trim()).toBe('Case notes');
   });
 
   it('should add prepended & appended tabs to the existing tab list', () => {
