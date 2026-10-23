@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.17",
+  "version": "7.4.17-1661-assessibility-issue",
   "engines": {
     "node": ">=24.22.1"
   },
