@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.14",
+  "version": "7.4.15",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",
@@ -37,7 +37,7 @@
     "lodash": "^4.17.22"
   },
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.22.1"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",
