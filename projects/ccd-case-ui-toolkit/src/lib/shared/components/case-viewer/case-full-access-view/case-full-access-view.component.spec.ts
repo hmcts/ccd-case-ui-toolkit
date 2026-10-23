@@ -363,7 +363,7 @@ const CID = '1234567890123456';
 const $ALL_TAB_HEADERS = By.css('mat-tab-group>mat-tab');
 const $FIRST_TAB_HEADER = By.css('mat-tab-group>mat-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('mat-tab-group>mat-tab:not(:first-child)');
-const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#case-tab-NameTab');
+const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab[data-case-tab-id="NameTab"]');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
@@ -2170,8 +2170,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     tabs.forEach((tab, index) => {
       const header = headers[index].nativeElement as HTMLElement;
       const panel = panels[index].nativeElement as HTMLElement;
-      expect(header.id).toBe(tab.id);
-      expect(header.id).toMatch(/^case-tab-/);
+      expect(tab.id).toBeNull();
+      expect(header.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
       expect(panel.getAttribute('aria-labelledby')).toBe(header.id);
       expect(header.getAttribute('aria-controls')).toBe(panel.id);
     });
@@ -2190,7 +2190,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
 
     const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
-    expect(selectedTab.id).toBe('case-tab-Summary');
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
     expect(selectedTab.textContent.trim()).toBe('Summary');
     expect(document.getElementById('Summary')).toBeNull();
     const scrollTo = spyOn(window, 'scrollTo');
@@ -2198,12 +2198,12 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(scrollTo).not.toHaveBeenCalled();
   });
 
-  it('selects a tab from its unchanged fragment label after prefixing header IDs', () => {
+  it('selects a tab from its unchanged fragment label with Material-generated header IDs', () => {
     mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Case%20notes');
     caseViewerComponent.organiseTabPosition();
     componentFixture.detectChanges();
     const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
-    expect(selectedTab.id).toBe('case-tab-caseNotes');
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
     expect(selectedTab.textContent.trim()).toBe('Case notes');
   });
 
