@@ -62,7 +62,7 @@ The normal browser diagnostics catch these failures. Do not suppress them or ass
 
 ## Reproduce and inspect
 
-Use Node >=24.18.0, repository Yarn 4.5.0 and installed Playwright 1.63.0. From the repository root:
+Use Node >=24.22.1, repository Yarn 4.5.0 and installed Playwright 1.63.0. From the repository root:
 
 ```sh
 yarn install --immutable
