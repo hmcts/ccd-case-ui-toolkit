@@ -22,3 +22,5 @@ export * from './search/sorting/sort-parameters';
 export * from './sort-order.enum';
 export * from './work-allocation';
 export * from './workbasket';
+export * from './user/user-info.model';
+export * from './user/user-details.model';
