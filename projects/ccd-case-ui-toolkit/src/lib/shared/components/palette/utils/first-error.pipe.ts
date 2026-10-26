@@ -41,6 +41,8 @@ export class FirstErrorPipe implements PipeTransform, OnDestroy {
       errorMessage = 'The data entered is not valid for %FIELDLABEL%';
     } else if (keys[0] === 'markDownPattern') {
       errorMessage = 'The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field';
+    } else if (keys[0] === 'unsafeRichText') {
+      errorMessage = 'The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field';
     } else if (keys[0] === 'minlength') {
       errorMessage = '%FIELDLABEL% is below the minimum length';
     } else if (keys[0] === 'maxlength') {

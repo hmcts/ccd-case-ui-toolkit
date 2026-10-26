@@ -1,6 +1,6 @@
-<ng-container *ngIf="currentPage">
-  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
-  <ng-container *ngIf="currentPage.label">
+<ng-container *ngIf="eventTrigger">
+  <h1 *ngIf="!currentPage?.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
+  <ng-container *ngIf="currentPage?.label">
     <span class="govuk-caption-l">{{ eventTrigger.name | rpxTranslate}}</span>
     <h1 class="govuk-heading-l">{{currentPage.label | rpxTranslate}}</h1>
   </ng-container>
@@ -9,7 +9,7 @@
 <!--Case ID or Title -->
 <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
 <ng-template #titleBlock>
-  <ccd-markdown [content]="getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data'] | rpxTranslate"></ccd-markdown>
+  <ccd-markdown [content]="demoteCaseTitleHeadingLevel(getCaseTitle() | ccdCaseTitle: caseFields : editForm.controls['data'] | rpxTranslate)"></ccd-markdown>
 </ng-template>
 <ng-template #idBlock>
   <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
@@ -41,8 +41,7 @@
 </ccd-callback-errors>
 <div class="width-50">
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
-    <fieldset id="fieldset-case-data">
-      <legend style="display: none;"></legend>
+    <div id="fieldset-case-data">
       <!-- single column -->
       <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
                           [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
@@ -59,7 +58,7 @@
                               [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
       </div>
-    </fieldset>
+    </div>
 
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" (click)="toPreviousPage()" *ngIf="!isAtStart()" [disabled]="isDisabled()">

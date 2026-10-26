@@ -17,6 +17,7 @@ export * from './fixed-list';
 export * from './fixed-radio-list';
 export * from './history';
 export * from './judicial-user';
+export * from './staff-user';
 export * from './label';
 export * from './linked-cases';
 export * from './markdown';
@@ -32,8 +33,8 @@ export * from './phone-uk';
 export * from './query-management';
 export * from './text';
 export * from './text-area';
+export * from './rich-text-area';
 export * from './unsupported-field.component';
 export * from './utils';
 export * from './waystopay';
 export * from './yes-no';
-

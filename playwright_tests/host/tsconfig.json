@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../tmp/playwright-host-types",
+    "types": []
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true
+  },
+  "files": ["main.ts"]
+}

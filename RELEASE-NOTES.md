@@ -1,7 +1,110 @@
 ## RELEASE NOTES
 
-### Version 7.3.79-exui-5006-1
+### Version 7.4.13
+**EXUI-4454** Local storage should not be used
+
+### Version 7.4.12
+**EXUI-5307** Package update - axios - eslint - minimatch
+**EXUI-5311** Package update - express
+
+### Version 7.4.11
+**EXUI-5098** Event notes are not displayed on the Check Your Answers page
+
+### Version 7.4.10
+**EXUI-5290** ccpay upgrade
+
+### Version 7.4.9
+**EXUI-4988** Suppressions - rimraf - major
+**EXUI-4064** MV - Redaction - From Search (search value) - seeing a frozen screen
+**EXUI-4077** MV - Redaction - Saved redactions are lost 
+
+### Version 7.4.8
+**EXUI-3425** Redaction incomplete
+**EXUI-3426** Redaction selection breaks
+
+### Version 7.4.7
+**EXUI-5202** Manage links Reason for change not shown
+
+### Version 7.4.6
+**EXUI-5304** StaffUser type ahead event element label not being shown
+
+### Version 7.4.5
+**EXUI-5255** SRT Release - Gov.uk upgrade and hearings refactoring
+
+### Version 7.4.4
+**EXUI-5161** Library Packages Version Alignment - runtime
+
+### Version 7.4.3
+**EXUI-5233** RTF carriage returns are not being interpreted properly
+
+### Version 7.4.2
+**EXUI-5213** Package update - tar - resolution - patch
+
+### Version 7.4.1
+**EXUI-5069** Add additional guidance onto defendant LR details screens for unrepresented defendants
+
+### Version 7.3.99
+**EXUI-5185** Issue with copy and paste on Rich Text Editor
+**EXUI-5187** Undo/Deleting text in rich text field still sends data
+
+### Version 7.3.98
+**EXUI-5063** Staff type-ahead component
+
+### Version 7.3.97
+**EXUI-5153** RTF - Add in option for different heading options
+
+### Version 7.3.96
+**EXUI-4977** Package update - minimatch - major
+
+### Version 7.3.95
+**EXUI-5033** upgrade TK to node 24
+
+### Version 7.3.94
+**EXUI-4951** Package update - uuid - major
+
+### Version 7.3.93
+**EXUI-4937** Package update - minimist - minor
+
+### Version 7.3.92
+**EXUI-5101** RTF - Additional options
+
+### Version 7.3.91
+**EXUI-5056** Hardcoded Credentials v2
+
+### Version 7.3.90
+**EXUI-4950** Package update - dompurify - major
+
+### Version 7.3.89
+**EXUI-4919** Create a Rich Text Editor Component - Write
+**EXUI-4920** Create a Rich Text Editor Component - Read
+
+### Version 7.3.88
+**EXUI-5043** Package update - socket-io - minor
+
+### Version 7.3.87
+**EXUI-5014** Package update - @hmcts/properties-volume
+
+### Version 7.3.86
+**EXUI-5013** Package update - sass
+
+### Version 7.3.85
+**EXUI-4817** Package update - File-saver - minor
+
+### Version 7.3.84
+**EXUI-2506** Catch-all error message needs updating
+
+### Version 7.3.83
+**EXUI-1855** Upgrade jasmine types and fix toolkit tests
+
+### Version 7.3.82
+**EXUI-4949** Package update - Angular - major
+**EXUI-5044** Package update - Angular build tools - major
+
+### Version 7.3.81
 **EXUI-5006** Package update - ngx-markdown - major
+
+### Version 7.3.80
+**POFCC-131** Onboard PCS to Work Allocation
 
 ### Version 7.3.79
 **EXUI-5054** Halo IN-0190438 - Collated comments
