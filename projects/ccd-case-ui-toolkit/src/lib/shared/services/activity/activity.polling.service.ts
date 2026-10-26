@@ -1,41 +1,48 @@
 import { Injectable, NgZone } from '@angular/core';
 import { concat, defer, EMPTY, Observable, Subject, Subscription, timer } from 'rxjs';
-import { repeat, retry, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, repeat, retry, switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
-import { StructuredLoggerService } from '../logging';
 import { ActivityService } from './activity.service';
+import { MODES } from './utils';
 
 interface PollingOptions {
   interval: number;
   attempts?: number;
   exponentialUnit?: number;
+  backgroundPolling?: boolean;
 }
 
 // @dynamic
 @Injectable()
 export class ActivityPollingService {
-  private readonly logger = new StructuredLoggerService();
-
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
-  private currentTimeoutHandle: ReturnType<typeof setTimeout> | undefined;
-  private pollActivitiesSubscription: Subscription | undefined;
-  private readonly pollConfig: PollingOptions;
-  private readonly batchCollectionDelayMs: number;
-  private readonly maxRequestsPerBatch: number;
+  private currentTimeoutHandle: any;
+  private pollActivitiesSubscription: Subscription;
+  private pollConfig: PollingOptions;
+  private batchCollectionDelayMs: number;
+  private maxRequestsPerBatch: number;
 
-  constructor(private readonly activityService: ActivityService, private readonly ngZone: NgZone, private readonly config: AbstractAppConfig) {
-    this.pollConfig = {
-      interval: config.getActivityNexPollRequestMs(),
-      attempts: config.getActivityRetry()
-    };
-    this.batchCollectionDelayMs = config.getActivityBatchCollectionDelayMs();
-    this.maxRequestsPerBatch = config.getActivityMaxRequestPerBatch();
+  constructor(
+    private readonly activityService: ActivityService,
+    private readonly ngZone: NgZone,
+    private readonly config: AbstractAppConfig
+  ) {
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        this.stopPolling();
+        if (mode === MODES.polling) {
+          this.init();
+        }
+      });
   }
 
   public get isEnabled(): boolean {
-    return this.activityService.isEnabled;
+    return this.activityService.isEnabled && (this.activityService.mode === MODES.polling || this.activityService.mode === MODES.socket);
   }
+
 
   public subscribeToActivity(caseId: string, done: (activity: Activity) => void): Subject<Activity> {
     if (!this.isEnabled) {
@@ -46,21 +53,18 @@ export class ActivityPollingService {
     if (subject) {
       subject.subscribe(done);
     } else {
-      // Only the first pending request should start the batch collection timer.
-      const wasEmpty = this.pendingRequests.size === 0;
       subject = new Subject<Activity>();
       subject.subscribe(done);
       this.addPendingRequest(caseId, subject);
-
-      if (wasEmpty) {
-        this.ngZone.runOutsideAngular(() => {
-          this.currentTimeoutHandle = setTimeout(
-            () => this.ngZone.run(() => {
-              this.flushRequests();
-            }),
-            this.batchCollectionDelayMs);
-        });
-      }
+    }
+    if (this.pendingRequests.size === 1) {
+      this.ngZone.runOutsideAngular(() => {
+        this.currentTimeoutHandle = setTimeout(
+          () => this.ngZone.run(() => {
+            this.flushRequests();
+          }),
+          this.batchCollectionDelayMs);
+      });
     }
 
     if (this.pendingRequests.size >= this.maxRequestsPerBatch) {
@@ -106,24 +110,62 @@ export class ActivityPollingService {
     return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
   }
 
-  protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
+   private init(): void {
+    this.pollConfig = {
+      interval: this.config.getActivityNexPollRequestMs(),
+      attempts: this.config.getActivityRetry(),
+      backgroundPolling: true
+    };
+    this.batchCollectionDelayMs = this.config.getActivityBatchCollectionDelayMs();
+    this.maxRequestsPerBatch = this.config.getActivityMaxRequestPerBatch();
+  }
+
+  private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
-    this.ngZone.runOutsideAngular( () => {
+
+    // Pre-bind handlers to avoid deeply nested inline callbacks
+    const onNext = this.createActivitiesHandler(requests);
+    const onError = this.createErrorHandler(requests);
+
+    this.ngZone.runOutsideAngular(() => {
       // run polling outside angular zone so it does not trigger change detection
       this.pollActivitiesSubscription = this.pollActivities(caseIds).subscribe({
-        // process activity inside zone so it triggers change detection for activity.component.ts
-        next: (activities: Activity[]) => this.ngZone.run(() => {
-          activities.forEach((activity) => {
-            // Ignore activities returned for cases outside this local batch.
-            requests.get(activity.caseId)?.next(activity);
-          });
-        }),
-        error: (err) => this.ngZone.run(() => {
-          this.logger.error('Error while polling activities.', { error: err });
-          Array.from(requests.values()).forEach((subject) => subject.error(err));
-        })
+        next: onNext,
+        error: onError
       });
     });
+  }
+
+  private createActivitiesHandler(requests: Map<string, Subject<Activity>>) {
+    // single-level function: process inside Angular zone
+    return (activities: Activity[]) => this.processActivitiesInsideZone(activities, requests);
+  }
+
+  private processActivitiesInsideZone(
+    activities: Activity[],
+    requests: Map<string, Subject<Activity>>
+  ): void {
+    // process activity inside zone so it triggers change detection for activity.component.ts
+    this.ngZone.run(() => {
+      for (const activity of activities) {
+        const subject = requests.get(activity.caseId);
+        if (subject) {
+          subject.next(activity);
+        }
+      }
+    });
+  }
+
+  private createErrorHandler(requests: Map<string, Subject<Activity>>) {
+    return (err: unknown) => this.handlePollingError(err, requests);
+  }
+
+  private handlePollingError(err: unknown, requests: Map<string, Subject<Activity>>): void {
+    for (const subject of requests.values()) {
+      if (!subject.closed) {
+        subject.error(err);
+      }
+    }
   }
 
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {

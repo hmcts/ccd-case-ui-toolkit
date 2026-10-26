@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.15",
+  "version": "7.4.15-exui-2906-activity-tracker-web-pubsub-4",
   "peerDependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
     "@angular-material-components/moment-adapter": "16.0.1",
@@ -35,6 +35,9 @@
     "zone.js": "^0.15.1",
     "class-transformer": "^0.5.1",
     "lodash": "^4.17.22"
+  },
+  "dependencies": {
+    "@azure/web-pubsub-client": "^1.0.4"
   },
   "engines": {
     "node": ">=24.22.1"

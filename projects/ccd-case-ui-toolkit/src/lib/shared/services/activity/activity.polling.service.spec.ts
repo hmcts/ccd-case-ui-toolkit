@@ -1,6 +1,7 @@
 import { NgZone } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
+import { MODES } from './utils';
 import { ActivityPollingService } from './activity.polling.service';
 import { ActivityService } from './activity.service';
 
@@ -10,7 +11,7 @@ const CASES = ['111', '222', '333'];
 let ngZone: any;
 let activityService: any;
 let activityPollingService: ActivityPollingService;
-let appConfig;
+let appConfig: any;
 
 describe('ActivityPollingService', () => {
   beforeEach(() => {
@@ -21,6 +22,8 @@ describe('ActivityPollingService', () => {
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['getActivities', 'postActivity']);
     activityService.getActivities.and.returnValue(of());
     activityService.isEnabled = true;
+    activityService.mode = MODES.polling;
+    activityService.modeSubject = new BehaviorSubject<MODES>(MODES.polling);
 
     appConfig = jasmine.createSpyObj('AppConfig', ['getActivityMaxRequestPerBatch', 'getActivityBatchCollectionDelayMs',
                                                     'getActivityNexPollRequestMs', 'getActivityRetry']);

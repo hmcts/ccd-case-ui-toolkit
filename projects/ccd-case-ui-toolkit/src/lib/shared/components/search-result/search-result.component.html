@@ -26,6 +26,7 @@
   </caption>
   <thead>
     <tr scope="row">
+      <th *ngIf="activityEnabled" class="activity-column" id="activity-column="></th>
       <td *ngIf="selectionEnabled" class="govuk-table__checkbox">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
@@ -44,7 +45,6 @@
           </div>
         </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;" scope="col">&ZeroWidthSpace;</th>
     </tr>
   </thead>
 
@@ -52,6 +52,11 @@
     <!-- sorted by consumer -->
     <ng-container *ngIf="consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
+        <td *ngIf="activityEnabled">
+          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
+          </div>
+        </td>
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
@@ -76,11 +81,6 @@
                             [caseField]="result.columns[col.case_field_id]"
                             [contextFields]="result.hydrated_case_fields"
                             [elementsToSubstitute]="['value']"></ccd-field-read>
-          </div>
-        </td>
-        <td *ngIf="activityEnabled()">
-          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
           </div>
         </td>
       </tr>
@@ -115,7 +115,7 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
             <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
           </div>

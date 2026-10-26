@@ -5,6 +5,7 @@ import { UserInfo } from './domain/user/user-info.model';
 export const USER_DETAILS = 'userDetails';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
 export const JUDGE = 'judge';
+export const SOLICITOR = 'solicitor';
 
 
 export function getUserDetails(sessionStorageService: SessionStorageService): UserInfo | null {
@@ -23,4 +24,9 @@ export function isJudiciaryUser(sessionStorageService: SessionStorageService): b
   const userDetails = getUserDetails(sessionStorageService);
   return !!userDetails?.roles
     && (userDetails.roles.some((role: string) => role.toLowerCase().includes(JUDGE)));
+}
+
+export function isSolicitorUser(sessionStorageService: SessionStorageService): boolean {
+  const userDetails = getUserDetails(sessionStorageService);
+  return userDetails?.roleCategory === SOLICITOR;
 }
