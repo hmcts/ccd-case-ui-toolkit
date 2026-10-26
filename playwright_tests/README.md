@@ -1,6 +1,6 @@
 # Toolkit source browser tests
 
-Use Node >=24.18.0 and repository Yarn 4.5.0. Playwright is pinned to 1.63.0.
+Use Node >=24.22.1 and repository Yarn 4.5.0. Playwright is pinned to 1.63.0.
 
 ```sh
 yarn install --immutable
