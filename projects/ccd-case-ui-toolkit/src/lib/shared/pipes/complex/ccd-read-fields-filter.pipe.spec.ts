@@ -84,6 +84,72 @@ function buildNestedCollectionFixture(parentFieldValue: any, hasCollectionAncest
 }
 
 describe('ReadFieldsFilterPipe', () => {
+  describe('child label state when cloning', () => {
+    (['CaseField instance', 'plain object'] as const).forEach(sourceType => {
+      (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+        it(`should preserve ${flag} from a ${sourceType} without changing the source`, () => {
+          const properties = {
+            id: 'contact', label: 'Contact PRIVATE_NAME',
+            field_type: { id: 'Text', type: 'Text' },
+            isTranslated: false, translationHandledLocally: false,
+            [flag]: true, value: undefined
+          };
+          const source = sourceType === 'CaseField instance'
+            ? Object.assign(new CaseField(), properties)
+            : properties as unknown as CaseField;
+          const parent = getComplexField('contacts', [source], { contact: 'Row value' });
+
+          const [clone] = new ReadFieldsFilterPipe().transform(parent, true);
+
+          expect(clone).not.toBe(source);
+          expect(clone.label).toBe('Contact PRIVATE_NAME');
+          expect(clone.value).toBe('Row value');
+          expect(clone.isTranslated).toBe(source.isTranslated);
+          expect(clone.translationHandledLocally).toBe(source.translationHandledLocally);
+          expect(source.value).toBeUndefined();
+          expect(source.label).toBe('Contact PRIVATE_NAME');
+          expect(source[flag]).toBe(true);
+        });
+      });
+    });
+
+    it('should not apply a handled parent label state to an unhandled child', () => {
+      const source = buildCaseField('contact', {
+        label: 'Contact', field_type: { id: 'Text', type: 'Text' }
+      });
+      const parent = getComplexField('contacts', [source], { contact: 'Row value' });
+      parent.isTranslated = true;
+      parent.translationHandledLocally = true;
+
+      const [clone] = new ReadFieldsFilterPipe().transform(parent, true);
+
+      expect(clone.label).toBe('Contact');
+      expect(!!clone.isTranslated).toBe(false);
+      expect(!!clone.translationHandledLocally).toBe(false);
+    });
+
+    it('should produce independent row values without mutating the shared child definition', () => {
+      const source = buildCaseField('contact', {
+        label: 'Contact ${personName}', field_type: { id: 'Text', type: 'Text' }
+      });
+      const pipe = new ReadFieldsFilterPipe();
+      const [first] = pipe.transform(getComplexField('first', [source], { contact: 'First row' }), true);
+      const [second] = pipe.transform(getComplexField('second', [source], { contact: 'Second row' }), true);
+
+      first.label = 'Contact FIRST_PRIVATE_NAME';
+      first.translationHandledLocally = true;
+
+      expect(first).not.toBe(second);
+      expect(first.value).toBe('First row');
+      expect(second.value).toBe('Second row');
+      expect(second.label).toBe('Contact ${personName}');
+      expect(!!second.translationHandledLocally).toBe(false);
+      expect(source.label).toBe('Contact ${personName}');
+      expect(source.value).toBeUndefined();
+      expect(source.translationHandledLocally).toBe(false);
+    });
+  });
+
   const TEXT_FIELD: CaseField = buildCaseField('text', {
     field_type: { id: 'Text', type: 'Text' }
   }, null);

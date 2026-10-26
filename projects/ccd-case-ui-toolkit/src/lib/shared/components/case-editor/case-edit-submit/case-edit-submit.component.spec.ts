@@ -4,6 +4,8 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
 import { CaseField, CaseTab, Jurisdiction, Profile } from '../../../domain';
@@ -392,6 +394,7 @@ describe('CaseEditSubmitComponent', () => {
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
+          LabelSubstitutorDirective,
           IsCompoundPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
@@ -417,6 +420,11 @@ describe('CaseEditSubmitComponent', () => {
           { provide: SessionStorageService, useValue: sessionStorageService },
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
+          { provide: RpxTranslationService, useValue: {
+            language: 'en',
+            language$: of('en'),
+            getTranslation$: jasmine.createSpy('getTranslation$').and.returnValue(of(''))
+          } },
           { provide: CaseNotifier, useValue: mockCaseNotifier },
           { provide: LinkedCasesService, useValue: linkedCasesService },
           JurisdictionService,
@@ -435,6 +443,144 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
       const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
+    });
+
+    describe('CYA field label translation guards', () => {
+      let translateSpy: jasmine.Spy;
+      let translationService: any;
+      let language$: BehaviorSubject<string>;
+      let translationResult$: BehaviorSubject<string>;
+
+      beforeEach(() => {
+        translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+          .and.callFake((value: string) => value === 'Change' ? 'Newid' : `Translated: ${value}`);
+        language$ = new BehaviorSubject('en');
+        translationResult$ = new BehaviorSubject('');
+        translationService = TestBed.inject(RpxTranslationService);
+        translationService.language$ = language$.asObservable();
+        translationService.getTranslation$.and.returnValue(translationResult$.asObservable());
+      });
+
+      const renderField = (label: string, displayContext = 'OPTIONAL', type: 'Text' | 'Label' = 'Text'): CaseField => {
+        const field = Object.assign(new CaseField(), aCaseField('cyaGuardField', label, type, displayContext, null), {
+          value: 'Test value',
+          show_summary_change_option: true
+        });
+        const control = new FormControl(field.value);
+        // CcdPageFieldsPipe discovers field definitions through their form controls.
+        control['caseField'] = field;
+        caseEditComponent.form = new FormGroup({
+          data: new FormGroup({ cyaGuardField: control, personName: new FormControl('PRIVATE_NAME') })
+        });
+        const page = aWizardPage('cyaGuardPage', 'CYA guard page', 1);
+        page.case_fields = [field];
+        caseEditComponent.wizard = new Wizard([page]);
+        caseEditComponent.eventTrigger = {
+          ...caseEditComponent.eventTrigger,
+          case_fields: [field],
+          show_summary: true,
+          show_event_notes: false
+        };
+        fixture.detectChanges();
+
+        const directive = de.query(By.directive(LabelSubstitutorDirective));
+        expect(directive).not.toBeNull();
+        return directive.injector.get(LabelSubstitutorDirective).caseField;
+      };
+
+      const heading = (): string => de.query(By.css('th.case-field-label')).nativeElement.textContent.trim();
+      const changeLink = (): DebugElement => de.query(By.css('td.case-field-change a'));
+      const expectChangeText = (label: string): void => {
+        const text = changeLink().query(By.css('span')).nativeElement;
+        expect(text.textContent.trim()).toBe('Newid');
+        expect(text.getAttribute('aria-label').trim().replace(/\s+/g, ' ')).toBe(`Newid ${label}`);
+        expect(translateSpy).toHaveBeenCalledWith('Change');
+      };
+
+      it('should translate ordinary headings and ARIA labels while translating Change separately', () => {
+        renderField('Ordinary label');
+
+        expect(heading()).toBe('Translated: Ordinary label');
+        expectChangeText('Translated: Ordinary label');
+        expect(translateSpy).toHaveBeenCalledWith('Ordinary label');
+      });
+
+      it('should display an already-translated heading and ARIA label without another field-label lookup', () => {
+        const field = renderField('Ordinary label');
+        field.label = 'Welsh label PRIVATE_NAME';
+        field.isTranslated = true;
+        field.translationHandledLocally = false;
+        fixture.detectChanges();
+
+        expect(heading()).toBe(field.label);
+        expectChangeText(field.label);
+        expect(translateSpy).not.toHaveBeenCalledWith(field.label);
+      });
+
+      it('should keep interpolated values out of the pipe while Welsh is pending, on fallback and after success', () => {
+        const template = 'Contact ${personName}';
+        translationResult$.next(template);
+        const field = renderField(template);
+        translationService.language = 'cy';
+        language$.next('cy');
+        fixture.detectChanges();
+
+        expect(heading()).toBe('Contact PRIVATE_NAME');
+        expectChangeText('Contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(false);
+        expect(field.translationHandledLocally).toBe(true);
+
+        translationResult$.next(template + ' [Translation in progress]');
+        fixture.detectChanges();
+        expect(heading()).toBe('Contact PRIVATE_NAME');
+        expectChangeText('Contact PRIVATE_NAME');
+
+        translationResult$.next(template);
+        fixture.detectChanges();
+        expect(heading()).toBe('Contact PRIVATE_NAME');
+        expectChangeText('Contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(false);
+
+        translationResult$.next('Welsh contact ${personName}');
+        fixture.detectChanges();
+        expect(heading()).toBe('Welsh contact PRIVATE_NAME');
+        expectChangeText('Welsh contact PRIVATE_NAME');
+        expect(field.isTranslated).toBe(true);
+        expect(translationService.getTranslation$).toHaveBeenCalledOnceWith(template);
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+
+      it('should omit the Change link for a read-only field', () => {
+        renderField('Read-only label', 'READONLY');
+
+        expect(heading()).toBe('Translated: Read-only label');
+        expect(changeLink()).toBeNull();
+      });
+
+      it('should navigate to the field page when its Change link is clicked', () => {
+        renderField('Ordinary label');
+        const event = jasmine.createSpyObj('event', ['preventDefault']);
+        changeLink().triggerEventHandler('click', event);
+
+        expect(caseEditComponent.navigateToPage).toHaveBeenCalledWith('cyaGuardPage');
+        expect(event.preventDefault).toHaveBeenCalled();
+      });
+
+      it('should omit the heading and span both content columns for a Label field', () => {
+        renderField('Standalone label', 'OPTIONAL', 'Label');
+
+        expect(de.query(By.css('th.case-field-label'))).toBeNull();
+        expect(de.query(By.css('td.case-field-content')).nativeElement.getAttribute('colspan')).toBe('2');
+      });
+
+      it('should omit field headings and Change links for a case-flag submission', () => {
+        renderField('Ordinary label');
+        caseEditComponent.isCaseFlagSubmission = true;
+        fixture.detectChanges();
+
+        expect(de.query(By.css('th.case-field-label'))).toBeNull();
+        expect(changeLink()).toBeNull();
+      });
     });
 
     it('should interpolate triggerText when end_button_label contains a placeholder', () => {

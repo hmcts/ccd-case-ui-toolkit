@@ -4,7 +4,9 @@
       <tr>
         <th class="complex-field-title">
           <dl class="complex-panel-title">
-            <dt><span class="text-16">{{caseField.label | rpxTranslate}}</span></dt>
+            <dt><span class="text-16">{{ (caseField.isTranslated || caseField.translationHandledLocally)
+                ? caseField.label
+                : (caseField.label | rpxTranslate) }}</span></dt>
           </dl>
         </th>
         <td>

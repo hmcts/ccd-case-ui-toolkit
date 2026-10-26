@@ -1,10 +1,10 @@
-import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Directive, Input, OnDestroy, OnInit} from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
-import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { skip, Subscription } from 'rxjs';
 
 @Directive({
@@ -24,12 +24,13 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   private initialLabel: string;
   private initialHintText: string;
   private languageSubscription: Subscription;
+  private templateTranslationSubscription?: Subscription;
 
   constructor(
     private readonly fieldsUtils: FieldsUtils,
     private readonly placeholderService: PlaceholderService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe,
-    private readonly rpxTranslationService: RpxTranslationService
+    private readonly rpxTranslationService: RpxTranslationService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
@@ -65,11 +66,13 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private applySubstitutions(isLanguageChange = false): void {
+  private applySubstitutions(): void {
+    this.templateTranslationSubscription?.unsubscribe();
     const fields: object = this.getReadOnlyAndFormFields();
+    this.caseField.translationHandledLocally = false;
 
     if (this.shouldSubstitute('label')) {
-      this.applyLabelSubstitution(fields, isLanguageChange);
+      this.applyLabelSubstitution(fields);
     }
     if (this.shouldSubstitute('hint_text')) {
       this.caseField.hint_text = this.resolvePlaceholders(fields, this.caseField.hint_text);
@@ -79,7 +82,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     }
   }
 
-  private applyLabelSubstitution(fields: object, isLanguageChange: boolean): void {
+  private applyLabelSubstitution(fields: object): void {
     const currentLabel = this.caseField.label;
     // `originalLabel` stores the label exactly as it came from the server, before any
     // placeholder values were inserted. That gives us a clean starting point when the user
@@ -102,61 +105,59 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
     // Preserve the original template the first time we successfully interpolate it.
     this.caseField.originalLabel = this.caseField.originalLabel || originalLabel;
-    this.applyTranslatedLabelState(fields, originalLabel, substitutedLabel, isLanguageChange);
+    this.applyTranslatedLabelState(fields, originalLabel, substitutedLabel);
   }
+
 
   private applyTranslatedLabelState(
     fields: object,
     originalLabel: string,
-    substitutedLabel: string,
-    isLanguageChange: boolean
+    substitutedLabel: string
   ): void {
-    // Some labels only translate correctly if we translate the template first and then
-    // substitute the helper values into the translated sentence.
-    const translatedTemplateLabel = this.resolvePlaceholders(
-      fields,
-      isLanguageChange ? this.translateLabelOnLanguageChange(originalLabel) : this.translateLabel(originalLabel)
-    );
 
-    // Other labels only translate correctly if we first resolve the English phrase and let
-    // the render layer translate that final resolved string.
-    const translatedResolvedLabel = isLanguageChange
-      ? this.translateLabelOnLanguageChange(substitutedLabel)
-      : this.translateLabel(substitutedLabel);
-    const languageIsWelsh = this.rpxTranslationService.language === 'cy';
-    const hasResolvedWelshTranslation = languageIsWelsh
-      && translatedResolvedLabel
-      && translatedResolvedLabel !== substitutedLabel;
-    const hasTemplateWelshTranslation = languageIsWelsh
-      && translatedTemplateLabel
-      && translatedTemplateLabel !== substitutedLabel;
+    // Interpolated content must be rendered without another translation request.
+    this.caseField.translationHandledLocally = true;
+    this.setLabelState(substitutedLabel, false);
 
-    if (hasResolvedWelshTranslation) {
-      // Keep the resolved English label and mark it as not yet translated so the field
-      // template can run `rpxTranslate` on the full phrase at render time.
-      this.setLabelState(substitutedLabel);
+    if (this.rpxTranslationService.language !== 'cy') {
       return;
     }
 
-    if (hasTemplateWelshTranslation) {
-      // Use the template-translated result when translating the fully resolved label does
-      // not improve the Welsh output.
-      this.setLabelState(translatedTemplateLabel, true);
-      return;
-    }
+    this.templateTranslationSubscription = this.rpxTranslationService
+      .getTranslation$(originalLabel)
+      .subscribe((translatedTemplate) => {
+        if (
+          this.rpxTranslationService.language !== 'cy' ||
+          !translatedTemplate ||
+          translatedTemplate.includes('[Translation in progress]')
+        ) {
+          return;
+        }
 
-    // English, untranslated Welsh, or labels whose translation is handled elsewhere.
-    this.setLabelState(substitutedLabel);
-  }
+        // Initial English emissions and English fallbacks are not Welsh results.
+        if (translatedTemplate.trim() === originalLabel.trim()) {
+          this.setLabelState(substitutedLabel, false);
+          this.cdr.markForCheck();
+          return;
+        }
 
-  private translateLabel(label: string): string {
-    return this.rpxTranslationPipe.transform(label);
-  }
+        // Re-read values at emission time so delayed translations use the latest form/context values.
+        const latestFields = this.getReadOnlyAndFormFields();
+        const resolvedLabel =
+          this.resolvePlaceholders(latestFields, translatedTemplate);
 
-  private translateLabelOnLanguageChange(label: string): string {
-    return this.rpxTranslationService.language === 'en'
-      ? label
-      : this.translateLabel(label);
+        // Keep usable existing content if the template cannot be resolved.
+        if (resolvedLabel?.trim()) {
+          this.setLabelState(
+            resolvedLabel,
+            resolvedLabel !== substitutedLabel
+          );
+        } else {
+          this.setLabelState(substitutedLabel, false);
+        }
+
+        this.cdr.markForCheck();
+      });
   }
 
   private setLabelState(label: string, isTranslated = false): void {
@@ -166,7 +167,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private onLanguageChange(): void {
     this.resetToInitialValues(true);
-    this.applySubstitutions(true);
+    this.applySubstitutions();
   }
 
   private resetToInitialValues(isLanguageChange = false): void {
@@ -183,6 +184,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     // Check if isTranslated is a property on caseField before setting it
     if (this.caseField) {
       this.caseField.isTranslated = false;
+      this.caseField.translationHandledLocally = false;
     }
   }
 
@@ -190,6 +192,9 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     this.resetToInitialValues();
     if (this.languageSubscription) {
       this.languageSubscription.unsubscribe();
+    }
+    if (this.templateTranslationSubscription) {
+      this.templateTranslationSubscription.unsubscribe();
     }
   }
 

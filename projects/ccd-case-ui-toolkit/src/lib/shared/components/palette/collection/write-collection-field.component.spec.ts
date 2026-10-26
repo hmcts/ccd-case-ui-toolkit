@@ -150,6 +150,74 @@ describe('WriteCollectionFieldComponent', () => {
     fixture.destroy();
   });
 
+  describe('item label translation guards', () => {
+    let translateSpy: jasmine.Spy;
+    const headings = () => de.queryAll(By.css('.collection-title h3'))
+      .map(element => element.nativeElement.textContent);
+    const removeLabels = () => de.queryAll($REMOVE_BUTTONS)
+      .map(element => element.attributes['aria-label']);
+
+    beforeEach(() => {
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+      // Install the spy before the new view's pure pipes cache their first results.
+      fixture.destroy();
+      fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+      component = fixture.componentInstance;
+      component.caseField = caseField;
+      component.caseFields = [caseField];
+      component.formGroup = new FormGroup({ field1: new FormControl() });
+      de = fixture.debugElement;
+    });
+
+    it('should retain ordinary item label translation and existing numbering', () => {
+      fixture.detectChanges();
+
+      expect(headings()).toEqual(['Translated: X', 'Translated: X 2']);
+      expect(translateSpy).toHaveBeenCalledWith('X');
+      expect(translateSpy).toHaveBeenCalledWith('X 2');
+      expect(removeLabels()).toEqual(['Translated: Remove X', 'Translated: Remove X 2']);
+    });
+
+    (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+      it(`should render item labels directly when ${flag} is true and translate only the Remove command`, () => {
+        component.caseField.label = 'Contact PRIVATE_NAME';
+        component.caseField[flag] = true;
+        fixture.detectChanges();
+
+        expect(headings()).toEqual(['Contact PRIVATE_NAME', 'Contact PRIVATE_NAME 2']);
+        expect(removeLabels()).toEqual([
+          'Translated: Remove Contact PRIVATE_NAME',
+          'Translated: Remove Contact PRIVATE_NAME 2'
+        ]);
+        expect(translateSpy).toHaveBeenCalledWith('Remove');
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+        de.queryAll($WRITE_FIELDS).forEach(element => {
+          expect(element.componentInstance.caseField.isTranslated).not.toBe(true);
+          expect(element.componentInstance.caseField.translationHandledLocally).not.toBe(true);
+        });
+      });
+    });
+
+    it('should display locally handled English fallback and Welsh updates without another lookup', () => {
+      component.caseField.translationHandledLocally = true;
+      component.caseField.label = 'Contact PRIVATE_NAME';
+      fixture.detectChanges();
+      expect(headings()).toEqual(['Contact PRIVATE_NAME', 'Contact PRIVATE_NAME 2']);
+
+      component.caseField.label = 'Cyswllt PRIVATE_NAME';
+      component.caseField.isTranslated = true;
+      fixture.detectChanges();
+
+      expect(headings()).toEqual(['Cyswllt PRIVATE_NAME', 'Cyswllt PRIVATE_NAME 2']);
+      expect(removeLabels()).toEqual([
+        'Translated: Remove Cyswllt PRIVATE_NAME',
+        'Translated: Remove Cyswllt PRIVATE_NAME 2'
+      ]);
+      expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+    });
+  });
+
   it('should render a row with a write field for each items', () => {
     const writeFields = de.queryAll($WRITE_FIELDS);
 

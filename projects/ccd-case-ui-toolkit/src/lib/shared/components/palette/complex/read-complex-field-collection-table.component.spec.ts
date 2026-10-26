@@ -57,6 +57,90 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
   let component: ReadComplexFieldCollectionTableComponent;
   let de: DebugElement;
 
+  describe('label translation guards', () => {
+    let translateSpy: jasmine.Spy;
+    let column: CaseField;
+
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [PaletteUtilsModule, ConditionalShowModule],
+        declarations: [
+          ReadComplexFieldCollectionTableComponent,
+          FieldsFilterPipe,
+          ReadFieldsFilterPipe,
+          CcdCollectionTableCaseFieldsFilterPipe,
+          MockFieldReadComponent,
+          MockReadCaseLinkFieldComponent,
+          MockRpxTranslatePipe
+        ]
+      }).compileComponents();
+
+      translateSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform')
+        .and.callFake((value: string) => `Translated: ${value}`);
+      column = newCaseField('name', 'Name', null, textFieldType(), 'OPTIONAL').build();
+      fixture = TestBed.createComponent(ReadComplexFieldCollectionTableComponent);
+      component = fixture.componentInstance;
+      component.caseField = newCaseField('contacts', 'Contacts', null, {
+        id: 'Contact', type: 'Complex', complex_fields: [column]
+      }, 'OPTIONAL')
+        .withValue([{ value: { name: 'Example' } }])
+        .withDisplayContextParameter('#TABLE(name)').build();
+      component.context = PaletteContext.TABLE_VIEW;
+      de = fixture.debugElement;
+    }));
+
+    it('should retain ordinary heading and sort phrase translation', () => {
+      fixture.detectChanges();
+
+      expect(de.query($COMPLEX_PANEL_TITLE).nativeElement.textContent).toBe('Translated: Contacts');
+      expect(de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS).nativeElement.textContent).toBe('Translated: Name');
+      expect(de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK).attributes['aria-label']).toBe('Translated: Sort Name');
+    });
+
+    (['isTranslated', 'translationHandledLocally'] as const).forEach(flag => {
+      it(`should bypass parent label translation when ${flag} is true without bypassing child translation`, () => {
+        component.caseField.label = 'Contacts PRIVATE_NAME';
+        component.caseField[flag] = true;
+        fixture.detectChanges();
+
+        expect(de.query($COMPLEX_PANEL_TITLE).nativeElement.textContent).toBe('Contacts PRIVATE_NAME');
+        expect(de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS).nativeElement.textContent).toBe('Translated: Name');
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+
+      it(`should bypass column and sort label translation when the source field's ${flag} is true`, () => {
+        column.label = 'Contact PRIVATE_NAME';
+        column[flag] = true;
+        fixture.detectChanges();
+
+        expect(de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS).nativeElement.textContent).toBe('Contact PRIVATE_NAME');
+        expect(de.query($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK).attributes['aria-label'])
+          .toBe('Translated: Sort Contact PRIVATE_NAME');
+        expect(translateSpy).toHaveBeenCalledWith('Sort');
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+
+      it(`should preserve an expanded child's ${flag} through cloning and not translate its resolved label`, () => {
+        const child = newCaseField('details', 'Details PRIVATE_NAME', null, textFieldType(), 'OPTIONAL').build();
+        child[flag] = true;
+        component.caseField.field_type.complex_fields.push(child);
+        component.caseField.value[0].value.details = 'Row details';
+
+        fixture.detectChanges();
+
+        const heading = de.query($COMPLEX_PANEL_EXPANDED_ROWS_HEADERS);
+        const renderedField = de.query($COMPLEX_PANEL_EXPANDED_ROWS_VALUES).componentInstance.caseField;
+        expect(heading.nativeElement.textContent).toBe('Details PRIVATE_NAME');
+        expect(renderedField.label).toBe('Details PRIVATE_NAME');
+        expect(renderedField.value).toBe('Row details');
+        expect(renderedField[flag]).toBe(true);
+        expect(child[flag]).toBe(true);
+        expect(child.label).toBe('Details PRIVATE_NAME');
+        expect(translateSpy.calls.allArgs().some(args => args[0]?.includes('PRIVATE_NAME'))).toBe(false);
+      });
+    });
+  });
+
   describe('when values split across children fields', () => {
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'IAmVeryComplex',

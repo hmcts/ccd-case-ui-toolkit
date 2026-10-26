@@ -74,13 +74,15 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     return field;
   }
 
-  public toCaseField(id: string, label: string, fieldType: any, value: any): CaseField {
+  public toCaseField(id: string, label: string, fieldType: any, value: any, sourceField?: CaseField): CaseField {
     return plainToClassFromExist(new CaseField(), {
       id,
       label,
       display_context: 'READONLY',
       value,
-      field_type: fieldType
+      field_type: fieldType,
+      isTranslated: !!sourceField?.isTranslated,
+      translationHandledLocally: !!sourceField?.translationHandledLocally
     });
   }
 

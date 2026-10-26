@@ -78,7 +78,10 @@
                     <tr *ngSwitchCase="true">
                       <th [id]="'case-viewer-field-label--' + field.id" scope="row" *ngIf="!isFieldToHaveNoLabel(field) && field.label">
                         <div class="case-viewer-label text-16">
-                          {{field.label | rpxTranslate}}</div>
+                          {{ (field.isTranslated || field.translationHandledLocally)
+                              ? field.label
+                              : (field.label | rpxTranslate) }}
+                        </div>
                       </th>
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
@@ -89,13 +92,17 @@
                       </td>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <td role="rowheader" [attr.aria-label]="(field.label || field.id) | rpxTranslate" [id]="'case-viewer-field-read--' + field.id">
+                      <th scope="row"
+                          [attr.aria-label]="field.label && (field.isTranslated || field.translationHandledLocally)
+                            ? field.label
+                            : ((field.label || field.id) | rpxTranslate)"
+                          [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']" [caseFields]="caseFields"
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
                           </ccd-field-read>
                         </span>
-                      </td>
+                      </th>
                     </tr>
                   </ng-container>
                 </div>
