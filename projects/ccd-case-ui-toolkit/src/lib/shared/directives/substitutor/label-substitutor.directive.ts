@@ -147,7 +147,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
           this.resolvePlaceholders(latestFields, translatedTemplate);
 
         // Keep usable existing content if the template cannot be resolved.
-        if (resolvedLabel && resolvedLabel.trim()) {
+        if (resolvedLabel?.trim()) {
           this.setLabelState(
             resolvedLabel,
             resolvedLabel !== substitutedLabel

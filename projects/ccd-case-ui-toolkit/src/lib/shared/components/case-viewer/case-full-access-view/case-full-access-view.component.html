@@ -92,7 +92,7 @@
                       </td>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <td role="rowheader"
+                      <th scope="row"
                           [attr.aria-label]="field.label && (field.isTranslated || field.translationHandledLocally)
                             ? field.label
                             : ((field.label || field.id) | rpxTranslate)"
@@ -102,7 +102,7 @@
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
                           </ccd-field-read>
                         </span>
-                      </td>
+                      </th>
                     </tr>
                   </ng-container>
                 </div>
