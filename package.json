@@ -2,7 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "7.4.14-CME-1008-dart-sass-rc3",
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.22.1"
   },
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
@@ -86,7 +86,7 @@
     "prosemirror-history": "1.5.0",
     "prosemirror-model": "1.25.12",
     "prosemirror-schema-list": "1.5.1",
-    "rpx-xui-translation": "1.2.16",
+    "rpx-xui-translation": "1.2.17",
     "rxjs": "^7.8.2",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.13.8",

@@ -3046,7 +3046,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.16"
+    rpx-xui-translation: "npm:1.2.17"
     rxjs: "npm:^7.8.2"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -19162,9 +19162,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.16":
-  version: 1.2.16
-  resolution: "rpx-xui-translation@npm:1.2.16"
+"rpx-xui-translation@npm:1.2.17":
+  version: 1.2.17
+  resolution: "rpx-xui-translation@npm:1.2.17"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -19173,7 +19173,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/d2016adbeb278c92eb393463c78a67aac1b8ac198fe4f521933f2d7edaf4146ce0d1bec3e1a80529b0b93a08bfcc7c2ea9c51a429b62e58e0c76aec4c551112f
+  checksum: 10/647a82a6cdef9d20abb83bb1940720fe3babec45275050542f8cfab6fb50d1cd4afc3b677b03b02b41650144e29e45b340fb4d7091facb0309ad8777155634c4
   languageName: node
   linkType: hard
 
