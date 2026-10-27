@@ -1,13 +1,8 @@
-import {
-  NgxMatDateAdapter,
-  NgxMatDateFormats,
-  NgxMatDatetimepicker,
-  NGX_MAT_DATE_FORMATS
-} from '@angular-material-components/datetime-picker';
-import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+import { NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats, ThemePalette } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MAT_LEGACY_DATE_LOCALE, LegacyThemePalette as ThemePalette } from '@angular/material/legacy-core';
 import { Moment } from 'moment/moment';
 
 import moment from 'moment';
@@ -22,13 +17,13 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
   styleUrls: ['./datetime-picker.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
     {
-      provide: NgxMatDateAdapter,
-      useClass: NgxMatMomentAdapter,
-      deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ],
   standalone: false
 })
@@ -64,7 +59,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   private momentFormat = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(private readonly formatTranslationService: FormatTranslatorService,
-    @Inject(NGX_MAT_DATE_FORMATS) private readonly ngxMatDateFormats: NgxMatDateFormats) {
+    @Inject(MAT_DATE_FORMATS) private readonly ngxMatDateFormats: MatDateFormats) {
     super();
   }
 
