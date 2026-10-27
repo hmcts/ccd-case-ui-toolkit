@@ -62,7 +62,7 @@ describe('ReadDocumentFieldComponent', () => {
       mockDocumentManagementService.getMediaViewerInfo.and.returnValue('{"document_filename":"evidence_document.evd"}');
       mockDocumentManagementService.getDocumentBinaryUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService.isHtmlDocument.and.returnValue(false);
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'openOnNewTab', 'removeLocalStorage']);
+      windowService = createSpyObj('windowService', ['openOnNewTab', 'openOnNewTabWithMessage']);
       router = createSpyObj<Router>('router', ['navigate', 'createUrlTree']);
       router.navigate.and.returnValue(new Promise(any));
       router.createUrlTree.and.returnValue({ toString: () => '/media-viewer' } as any);
@@ -140,7 +140,6 @@ describe('ReadDocumentFieldComponent', () => {
 
       expect(mockDocumentManagementService.isHtmlDocument).toHaveBeenCalledWith(htmlDocument);
       expect(windowService.openOnNewTab).toHaveBeenCalledWith(VALUE.document_binary_url);
-      expect(windowService.setLocalStorage).not.toHaveBeenCalled();
     });
 
     it('should store media viewer payload and open media viewer with token', () => {
@@ -155,8 +154,7 @@ describe('ReadDocumentFieldComponent', () => {
       component.openMediaViewer(VALUE);
 
       expect(mockDocumentManagementService.getMediaViewerInfo).toHaveBeenCalledWith(VALUE);
-      expect(windowService.setLocalStorage).toHaveBeenCalledWith(`media-viewer-info:${token}`, payload);
-      expect(windowService.openOnNewTab).toHaveBeenCalledWith(mediaViewerUrl);
+      expect(windowService.openOnNewTabWithMessage).toHaveBeenCalledWith(mediaViewerUrl, payload, token);
     });
   });
 
@@ -187,7 +185,7 @@ describe('ReadDocumentFieldComponent', () => {
       mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
       mockAppConfig.getRemoteHrsUrl.and.returnValue(VALUE.document_binary_url);
       mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
-      windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+      windowService = createSpyObj('windowService', ['openOnNewTabWithMessage']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(new Promise(any));
       mockCasesService = createSpyObj<CasesService>('casesService', ['getCaseViewV2']);

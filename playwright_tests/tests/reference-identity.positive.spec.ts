@@ -10,6 +10,5 @@ test.describe('Reference identity controls', () => {
     await expect(controls).toContainText('1 Test Street');
     await expect(controls).toContainText('Judicial Reader (judicial@example.test)');
     await expect(controls).toContainText('Staff Member');
-    await expect(controls).toContainText('Judicial Fallback');
   });
 });

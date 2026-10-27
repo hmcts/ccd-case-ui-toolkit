@@ -24,4 +24,7 @@ const createCollectionField = (id: string, label: string, displayContextParamete
 
 export const collectionField = createCollectionField('names', 'Names', '#COLLECTION(allowInsert,allowDelete)');
 
-export const restrictedCollectionField = createCollectionField('restrictedNames', 'Restricted names', '#COLLECTION()');
+export const restrictedCollectionField = createCollectionField('restrictedNames', 'Restricted names', new URLSearchParams(window.location.search).get('collection-permissions') === 'create'
+  ? '#COLLECTION(allowInsert)'
+  : new URLSearchParams(window.location.search).get('collection-permissions') === 'delete'
+    ? '#COLLECTION(allowDelete)' : '#COLLECTION()');

@@ -43,7 +43,9 @@ chmod +x .toolkit-bin/yarn
       }
     } finally {
       stage('Toolkit test evidence') {
-        sh 'node scripts/ensure-odhin-report.js --report-dir playwright_tests/odhin-report --report-file toolkit-playwright.html --suite-name "CCD Case UI Toolkit Playwright"'
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          sh 'node scripts/ensure-odhin-report.js --report-dir playwright_tests/odhin-report --report-file toolkit-playwright.html --suite-name "CCD Case UI Toolkit Playwright"'
+        }
         // Publication cannot hide the original command failure or turn a failed run green.
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           archiveArtifacts allowEmptyArchive: true,

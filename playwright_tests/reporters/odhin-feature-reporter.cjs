@@ -5,12 +5,43 @@ const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = re
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 
+// Group by the tested domain, not by a positive/negative suite's description.
+const featureNames = {
+  'address-document-lifecycle': 'Address and document lifecycle',
+  'address-lookup': 'Address and document lifecycle',
+  'advanced-fields': 'Advanced fields',
+  'callback-error': 'Callback handling',
+  'case-edit-form': 'Case edit form',
+  'case-file-media': 'Case File Viewer',
+  'case-file-search': 'Case File Viewer',
+  'case-file-states': 'Case File Viewer',
+  'case-file-viewer': 'Case File Viewer',
+  'case-flags-workflow': 'Case Flags',
+  'flag-writer': 'Case Flags',
+  'case-notifier': 'Case notifier',
+  'collection-field': 'Collection fields',
+  'date-input': 'Date fields',
+  'date-time-input': 'Date and time fields',
+  'field-form': 'Field form controls',
+  'identity-controls': 'Identity controls',
+  'reference-identity': 'Identity controls',
+  'launcher-mini-apps': 'Component launchers',
+  'linked-case-writer': 'Linked Cases',
+  'linked-cases-workflow': 'Linked Cases',
+  'mandatory-fields': 'Mandatory fields',
+  'money-field': 'Money fields',
+  'palette-dispatch': 'Field dispatch',
+  'public-field-routing': 'Field dispatch',
+  'payment-contract': 'Payment components',
+  'viewer-payment': 'Payment components',
+  'query-management-workflow': 'Query Management',
+  'query-writer': 'Query Management',
+  'structured-fields': 'Structured fields'
+};
+
 function featureFor(test) {
-  const titles = typeof test.titlePath === 'function' ? test.titlePath() : [];
-  const feature = titles.length > 1 ? titles[titles.length - 2] : test.title || 'Uncategorised';
-  return /\.(?:positive|negative)\.spec\.ts$/i.test(feature)
-    ? deriveFeatureName(test.location?.file ?? feature)
-    : feature;
+  const stem = deriveFeatureName(test.location?.file);
+  return featureNames[stem] ?? stem.replace(/[-_]/g, ' ').replace(/^./, letter => letter.toUpperCase());
 }
 
 function statusFor(result) {

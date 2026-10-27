@@ -93,3 +93,8 @@ assert success.commands.contains('node .yarn/releases/yarn-4.5.0.cjs test:playwr
 assert run(null, green, true).failed
 assert run(null, green, false, true).failed
 println 'Pipeline contract checks passed: variable suite counts, install/browser/static/test failures, empty/skipped/failed/missing reports'
+
+def fallback = 'node scripts/ensure-odhin-report.js --report-dir playwright_tests/odhin-report --report-file toolkit-playwright.html --suite-name "CCD Case UI Toolkit Playwright"'
+def fallbackFailure = run(fallback, green, false)
+assert fallbackFailure.failed && !fallbackFailure.caught
+println 'Fallback failure retains all publication steps'
