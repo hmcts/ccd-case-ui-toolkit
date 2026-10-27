@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+### Version 7.4.17
+**EXUI-5337** RTF doesn't support all options on one line
+
+### Version 7.4.16
+**CME-1008** Angular 20 post upgrade action - Dart Sass depricated
+
+### Version 7.4.15
+**EXUI-5455** Node vulnerability checks
+
+### Version 7.4.14
+**EXUI-5306** Package update - tar
+
 ### Version 7.4.13
 **EXUI-4454** Local storage should not be used
 
