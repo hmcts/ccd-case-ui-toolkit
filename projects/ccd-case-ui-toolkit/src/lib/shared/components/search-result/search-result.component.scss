@@ -1,4 +1,4 @@
-@import 'components/govuk-toolkit-shim';
+@use 'components/govuk-toolkit-shim' as *;
 
 $blue_table: #005ea5;
 $black: #231F20;
