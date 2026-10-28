@@ -1,4 +1,4 @@
-@import '../../../components/typography.scss';
+@use '../../../components/typography.scss' as *;
 
 div select {
   @include core-12pt;
