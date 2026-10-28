@@ -119,7 +119,7 @@ export class DatePipe implements PipeTransform {
   }
 
   private toInt(str: string): number {
-    return parseInt(str, 10);
+    return Number.parseInt(str, 10);
   }
 
   private pad(num: any, padNum = 2): string {

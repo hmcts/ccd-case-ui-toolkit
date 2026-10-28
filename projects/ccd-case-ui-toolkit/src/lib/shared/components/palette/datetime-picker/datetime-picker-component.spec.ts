@@ -230,9 +230,9 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
 
     let setDay = fixture.nativeElement.querySelector('input').value.split('/');
-    const d = parseInt(setDay[0], 10);
-    const m = parseInt(setDay[1], 10);
-    const y = parseInt(setDay[2], 10);
+    const d = Number.parseInt(setDay[0], 10);
+    const m = Number.parseInt(setDay[1], 10);
+    const y = Number.parseInt(setDay[2], 10);
     setDay = new Date(y, m - 1, d);
 
     // check the new input against the first day of the month of the year in order to verify
@@ -548,9 +548,9 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
 
     let setDate = fixture.nativeElement.querySelector('input').value.split('/');
-    const d = parseInt(setDate[0], 10);
-    const m = parseInt(setDate[1], 10);
-    const y = parseInt(setDate[2], 10);
+    const d = Number.parseInt(setDate[0], 10);
+    const m = Number.parseInt(setDate[1], 10);
+    const y = Number.parseInt(setDate[2], 10);
     setDate = new Date(y, m - 1, d);
 
     // check all are first values (apart from year which can check is not initial selected year)
