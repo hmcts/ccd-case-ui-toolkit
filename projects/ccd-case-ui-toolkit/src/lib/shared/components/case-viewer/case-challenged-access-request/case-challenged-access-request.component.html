@@ -68,6 +68,9 @@
             <div id="other-reason-error-message" class="govuk-error-message" *ngIf="formGroup.get('otherReason').invalid && submitted">
               {{errorMessage.description | rpxTranslate}}
             </div>
+            <label class="govuk-label govuk-visually-hidden" for="other-reason">
+              {{ 'Other reason' | rpxTranslate }}
+            </label>
             <textarea class="govuk-textarea" [ngClass]="{'govuk-textarea--error': formGroup.get('otherReason').invalid && submitted}"
             id="other-reason" name="other-reason" rows="5" [attr.aria-describedby]="'reason-3-label' + (formGroup.get('otherReason')?.invalid && submitted ? ' other-reason-error-message' : '')" formControlName="otherReason"></textarea>
           </div>

@@ -54,9 +54,9 @@
       <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
+            <input class="govuk-checkboxes__input" id="consumer-select-{{ result.case_id }}" name="consumer-select-{{ result.case_id }}"
               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
+            <label class="govuk-label govuk-checkboxes__label" for="consumer-select-{{ result.case_id }}" [attr.aria-labelledby]="'consumer-select-' + result.case_id">
             </label>
           </div>
         </td>

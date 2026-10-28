@@ -9,6 +9,9 @@
           <span class="govuk-error-message" *ngIf="caseNumberError">
             <span class="govuk-visually-hidden">Error:</span> {{caseNumberError}}
           </span>
+          <label class="govuk-label govuk-visually-hidden" for="width-20">
+            {{ 'Enter case reference' }}
+          </label>
           <input class="govuk-input govuk-input--width-20" formControlName="caseNumber" id="width-20" name="width-20"
             type="text">
         </div>
@@ -33,9 +36,12 @@
           <span class="govuk-error-message" *ngIf="caseReasonCommentsError">
             <span class="govuk-visually-hidden">Error:</span> {{caseReasonCommentsError}}
           </span>
+          <label class="govuk-label govuk-visually-hidden" for="otherDescription">
+            {{ 'Other description' }}
+          </label>
           <textarea class="govuk-textarea govuk-input--width-30" id="otherDescription"
             name="otherDescription" formControlName="otherDescription" rows="5"
-            aria-describedby="other-description-hint other-description-char-limit-info other-description-char-limit-error">
+            aria-describedby="other-description-char-limit-info other-description-char-limit-error">
           </textarea>
           <div id="other-description-char-limit-info" aria-live="polite" class="govuk-hint govuk-character-count__message">
             You can enter up to 100 characters
@@ -50,7 +56,7 @@
       </div>
       <hr>
       <br><br>
-      <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
+      <div class="govuk-form-group" id="proposedCaseLinks" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
         <span class="govuk-error-message" *ngIf="noSelectedCaseError">
           <span class="govuk-visually-hidden">Error:</span> {{noSelectedCaseError}}
         </span>
