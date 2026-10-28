@@ -3,7 +3,7 @@ import { createCaseTabArray } from './case-tab.test.fixture';
 import { createCaseViewEvent } from './case-view-event.test.fixture';
 import { createJurisdiction } from './jurisdiction.test.fixture';
 
-export let createCaseHistory = () => {
+export const createCaseHistory = () => {
   const caseHistory = new CaseHistory();
   const caseHistoryCaseType = new CaseHistoryCaseType();
 
