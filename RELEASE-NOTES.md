@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.18
+**EXUI-5389** Case list filter clearing
+
 ### Version 7.4.17
 **EXUI-5337** RTF doesn't support all options on one line
 
