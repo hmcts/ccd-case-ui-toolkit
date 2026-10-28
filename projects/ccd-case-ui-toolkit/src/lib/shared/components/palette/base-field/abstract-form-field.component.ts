@@ -64,7 +64,7 @@ export abstract class AbstractFormFieldComponent {
 
   private addControlToFormArray(control: AbstractControl, parent: FormArray, replace: boolean): AbstractControl {
     const index = Number.parseInt(this.caseField.id, 10);
-    if (replace && !isNaN(index)) {
+    if (replace && !Number.isNaN(index)) {
       parent.setControl(index, control);
     } else {
       parent.push(control);

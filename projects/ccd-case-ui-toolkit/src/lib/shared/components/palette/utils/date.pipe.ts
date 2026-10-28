@@ -62,7 +62,7 @@ export class DatePipe implements PipeTransform {
         // we could attempt to do something with.
         const parsedDate: number = Date.parse(value);
         // We successfully parsed it so let's use it.
-        if (!isNaN(parsedDate)) {
+        if (!Number.isNaN(parsedDate)) {
           const d: Date = new Date(parsedDate);
           // If what we received didn't include time, don't include it here either.
           if (value.indexOf(':') < 0) {
