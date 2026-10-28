@@ -222,6 +222,46 @@ describe('ReadComplexFieldTableComponent', () => {
         }));
     });
 
+    it('should render the legal adviser label alongside a nested StaffUser value', () => {
+      const selectedUser = { idamId: 'test-staff-user-id' };
+      component.caseField = ({
+        id: 'sendMessageObject',
+        label: '',
+        display_context: 'COMPLEX',
+        value: { legalAdviser: selectedUser },
+        field_type: {
+          id: 'Message',
+          type: 'Complex',
+          complex_fields: [{
+            id: 'legalAdviser',
+            label: 'Enter name of a legal adviser',
+            display_context: 'OPTIONAL',
+            display_context_parameter: '#ARGUMENT(CATEGORY-LEGAL-OPS)',
+            field_type: {
+              id: 'StaffUser',
+              type: 'Complex',
+              complex_fields: [{
+                id: 'idamId',
+                label: 'Enter name of a legal adviser',
+                display_context: 'OPTIONAL',
+                field_type: { id: 'Text', type: 'Text' }
+              }]
+            }
+          }]
+        }
+      }) as CaseField;
+
+      fixture.detectChanges();
+
+      const headers = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
+      expect(headers.length).toBe(1);
+      expect(headers[0]?.nativeElement.textContent).toBe('Enter name of a legal adviser');
+      const values = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
+      expect(values.length).toBe(1);
+      expect(values[0]?.componentInstance.caseField.value).toEqual(selectedUser);
+      expect(de.queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES).length).toBe(0);
+    });
+
     it('should render a table with a row containing 1 column for each compound type', () => {
       const compoundRowsHeaders = de
         .query($COMPLEX_PANEL)

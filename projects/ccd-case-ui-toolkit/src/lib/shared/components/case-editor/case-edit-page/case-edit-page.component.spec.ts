@@ -15,7 +15,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
@@ -282,7 +282,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(component.cancel).toHaveBeenCalled();
     });
 
-    it('should update form data, move back, and step the child journey when returning to the previous page', () => {
+    it('should update form data, move back, and step the child journey when returning to the previous page', async () => {
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const caseEditDataServiceMock = createSpyObj<CaseEditDataService>('CaseEditDataService', ['clearFormValidationErrors']);
       const focusServiceMock = createSpyObj<FocusService>('FocusService', ['focus']);
@@ -299,9 +299,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       spyOn(component, 'buildCaseEventData').and.returnValue(caseEventData);
       spyOn(component, 'updateFormData');
       spyOn(component, 'previous');
-      spyOn(component, 'previousStep');
+      spyOn(component, 'previousStep').and.returnValue(Promise.resolve(true));
 
-      component.toPreviousPage();
+      await component.toPreviousPage();
 
       expect(caseEventData.data).toEqual(caseEventData.event_data);
       expect(component.updateFormData).toHaveBeenCalledWith(caseEventData);
@@ -873,9 +873,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventTrigger,
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -905,9 +905,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),
@@ -1333,9 +1333,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -1365,9 +1365,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),
@@ -1535,9 +1535,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventTrigger,
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -1676,6 +1676,22 @@ describe('CaseEditPageComponent - all other tests', () => {
       const title = comp.getCaseTitle();
       expect(title).toEqual('# 1234567812345678: test');
     });
+
+    it('should demote a level 1 markdown heading in the case title to level 2', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('# 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title that is already below level 1', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('## 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title with no markdown heading', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('1234567812345678: test')).toEqual('1234567812345678: test');
+    });
+
+    it('should return an empty/falsy case title unchanged', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('')).toEqual('');
+    });
   });
 
   describe('submit the form', () => {
@@ -1709,9 +1725,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
@@ -1741,9 +1757,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
         spyOn(caseEditComponentStub, 'validate').and.returnValue(
           of(validateResult)
         );
@@ -1772,7 +1788,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         caseEditDataService.caseFormValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
         caseEditDataService.caseEditForm$ = of(caseEditComponentStub.form);
         caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
-        
+
         const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
         TestBed.configureTestingModule({
@@ -2166,9 +2182,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
@@ -2197,7 +2213,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
         spyOn(formValueService, 'sanitise').and.returnValue(
           caseEventDataPrevious
         );
@@ -2396,9 +2412,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -2425,9 +2441,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),

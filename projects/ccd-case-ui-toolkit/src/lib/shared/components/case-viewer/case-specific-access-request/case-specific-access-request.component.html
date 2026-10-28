@@ -46,6 +46,9 @@
             *ngIf="formGroup.get('specificReason').invalid && submitted">
             {{ errorMessage.description | rpxTranslate }}
           </div>
+          <label class="govuk-label govuk-visually-hidden" for="specific-reason">
+            {{ title | rpxTranslate }}
+          </label>
           <textarea
             class="govuk-textarea"
             [ngClass]="{
@@ -55,6 +58,7 @@
             id="specific-reason"
             name="specific-reason"
             rows="8"
+            [attr.aria-describedby]="formGroup.get('specificReason')?.invalid && submitted ? 'specific-reason-error-message' : null"
             formControlName="specificReason">
           </textarea>
         </div>

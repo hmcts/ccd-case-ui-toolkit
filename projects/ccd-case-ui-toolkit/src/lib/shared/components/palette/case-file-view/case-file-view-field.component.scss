@@ -1,3 +1,5 @@
+@use 'components/govuk-toolkit-shim' as *;
+
 #case-file-view {
   display: flex;
   border: 2px solid #C9C9C9;

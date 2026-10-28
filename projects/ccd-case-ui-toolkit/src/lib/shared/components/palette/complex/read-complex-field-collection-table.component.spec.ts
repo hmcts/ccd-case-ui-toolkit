@@ -42,7 +42,7 @@ class MockReadCaseLinkFieldComponent {
 describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
-  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
+  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span:not(.govuk-visually-hidden)');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK = By.css('div>table>tbody>tr>th>a');
   const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>div>ccd-field-read');
   const $COMPLEX_PANEL_EXPANDED_ROWS_HEADERS = By.css('div>table>tbody>tr>td>table>tbody>tr>th>span');
