@@ -8,72 +8,72 @@ export class CaseFieldBuilder {
     return new CaseFieldBuilder();
   }
 
-  public withACLs(acls: AccessControlList[]): CaseFieldBuilder {
+  public withACLs(acls: AccessControlList[]): this {
     this.caseField.acls = acls;
     return this;
   }
 
-  public withId(id: string): CaseFieldBuilder {
+  public withId(id: string): this {
     this.caseField.id = id;
     return this;
   }
 
-  public withFieldType(fieldType: FieldType): CaseFieldBuilder {
+  public withFieldType(fieldType: FieldType): this {
     this.caseField.field_type = fieldType;
     return this;
   }
 
-  public withDisplayContext(displayContext: string): CaseFieldBuilder {
+  public withDisplayContext(displayContext: string): this {
     this.caseField.display_context = displayContext;
     return this;
   }
 
-  public withDisplayContextParameter(displayContextParameter: string): CaseFieldBuilder {
+  public withDisplayContextParameter(displayContextParameter: string): this {
     this.caseField.display_context_parameter = displayContextParameter;
     return this;
   }
 
-  public withHidden(hidden: boolean): CaseFieldBuilder {
+  public withHidden(hidden: boolean): this {
     this.caseField.hidden = hidden;
     return this;
   }
 
-  public withHintText(hintText: string): CaseFieldBuilder {
+  public withHintText(hintText: string): this {
     this.caseField.hint_text = hintText;
     return this;
   }
 
-  public withLabel(label: string): CaseFieldBuilder {
+  public withLabel(label: string): this {
     this.caseField.label = label;
     return this;
   }
 
-  public withOrder(order: number): CaseFieldBuilder {
+  public withOrder(order: number): this {
     this.caseField.order = order;
     return this;
   }
 
-  public withSecurityLabel(securityLabel: string): CaseFieldBuilder {
+  public withSecurityLabel(securityLabel: string): this {
     this.caseField.security_label = securityLabel;
     return this;
   }
 
-  public withShowCondition(showCondition: string): CaseFieldBuilder {
+  public withShowCondition(showCondition: string): this {
     this.caseField.show_condition = showCondition;
     return this;
   }
 
-  public withShowSummaryContentOption(option: number): CaseFieldBuilder {
+  public withShowSummaryContentOption(option: number): this {
     this.caseField.show_summary_content_option = option;
     return this;
   }
 
-  public withValue(value: any): CaseFieldBuilder {
+  public withValue(value: any): this {
     this.caseField.value = value;
     return this;
   }
 
-  public withListValue(value: any): CaseFieldBuilder {
+  public withListValue(value: any): this {
     this.caseField.list_items = value;
     return this;
   }
