@@ -195,7 +195,7 @@ export class FormValueService {
 
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
     for (const dataKey in data) {
-      if (!caseFields.find((cf) => cf.id === dataKey)) {
+      if (!caseFields.some((cf) => cf.id === dataKey)) {
         delete data[dataKey];
       }
     }

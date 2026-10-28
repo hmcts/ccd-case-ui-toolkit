@@ -34,12 +34,12 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     const type = field.field_type;
     const value = ReadFieldsFilterPipe.getValue(field, values);
 
-    const hasChildrenWithValue = type.complex_fields.find(f => {
+    const hasChildrenWithValue = type.complex_fields.some(f => {
       const willKeep = ReadFieldsFilterPipe.keepField(f, value, true, checkConditionalShowAgainst);
       return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst).hidden !== true;
     });
 
-    return !!hasChildrenWithValue;
+    return hasChildrenWithValue;
   }
 
   private static isValidCollection(field: CaseField, values?: object, checkConditionalShowAgainst?: object): boolean {
@@ -49,7 +49,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
     const isNotEmpty = Array.isArray(field.value) && field.value.length > 0;
     if (isNotEmpty && field.field_type.collection_field_type.type === 'Complex') {
-      return !!field.value.find(item => {
+      return field.value.some(item => {
         const complexField = plainToClassFromExist(new CaseField(), {
           id: field.field_type.collection_field_type.id,
           field_type: field.field_type.collection_field_type,

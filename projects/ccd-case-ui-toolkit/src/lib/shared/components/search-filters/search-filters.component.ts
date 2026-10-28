@@ -79,7 +79,7 @@ export class SearchFiltersComponent implements OnInit {
         this.selected.jurisdiction = this.jurisdictions
           .filter(j => j.id === jurisdiction.id)[0];
         if(jurisdiction.currentCaseType &&
-          this.selected.jurisdiction.caseTypes.find(ct => ct.id === jurisdiction.currentCaseType.id)) {
+          this.selected.jurisdiction.caseTypes.some(ct => ct.id === jurisdiction.currentCaseType.id)) {
           this.selected.jurisdiction.currentCaseType = jurisdiction.currentCaseType;
         } else {
           this.selected.jurisdiction.currentCaseType = this.selected.jurisdiction.caseTypes[0];

@@ -28,11 +28,11 @@ export class FieldsFilterPipe implements PipeTransform {
     values = values || {};
     const type = field.field_type;
     const value = FieldsFilterPipe.getValue(field, values);
-    const hasChildrenWithValue = type.complex_fields.find(f => {
+    const hasChildrenWithValue = type.complex_fields.some(f => {
       return FieldsFilterPipe.keepField(f, value);
     });
 
-    return !!hasChildrenWithValue;
+    return hasChildrenWithValue;
   }
 
   private static isEmpty(value: any): boolean {

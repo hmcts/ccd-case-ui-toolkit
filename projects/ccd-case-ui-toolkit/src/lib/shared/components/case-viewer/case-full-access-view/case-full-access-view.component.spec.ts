@@ -832,8 +832,8 @@ it('should set case view tab based on navigation end event', () => {
       const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
       expect(tabHeaders.length).toBe(caseViewData.tabs.length + 1);
 
-      expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeFalsy('Could not find tab Name');
-      expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeFalsy('Could not find tab Some Tab');
+      expect(tabHeaders.some(c => 'Name' === attr(c, 'title'))).toBeFalsy('Could not find tab Name');
+      expect(tabHeaders.some(c => 'Some Tab' === attr(c, 'title'))).toBeFalsy('Could not find tab Some Tab');
     });
 
     xit('should render the field labels based on show_condition', () => {
@@ -841,11 +841,11 @@ it('should set case view tab based on navigation end event', () => {
         .query($NAME_TAB_CONTENT)
         .queryAll(By.css('tbody>tr>th'));
 
-      expect(headers.find(r => r.nativeElement.textContent.trim() === 'Complex field'))
+        expect(headers.some(r => r.nativeElement.textContent.trim() === 'Complex field'))
         .toBeFalsy('Found row with label Complex field');
-      expect(headers.find(r => r.nativeElement.textContent.trim() === 'Last name'))
+        expect(headers.some(r => r.nativeElement.textContent.trim() === 'Last name'))
         .toBeTruthy('Cannot find row with label Last name');
-      expect(headers.find(r => r.nativeElement.textContent.trim() === 'First name'))
+        expect(headers.some(r => r.nativeElement.textContent.trim() === 'First name'))
         .toBeTruthy('Cannot find row with label First name');
     });
 
@@ -869,7 +869,7 @@ it('should set case view tab based on navigation end event', () => {
         .queryAll(By.css('tbody>tr>th'));
 
       SIMPLE_FIELDS.forEach(field => {
-        expect(headers.find(r => r.nativeElement.textContent.trim() === field.label))
+        expect(headers.some(r => r.nativeElement.textContent.trim() === field.label))
           .toBeTruthy(`Could not find row with label ${field.label}`);
       });
     });

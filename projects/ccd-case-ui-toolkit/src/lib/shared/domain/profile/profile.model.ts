@@ -35,14 +35,14 @@ export class Profile {
 
   public isSolicitor(): boolean {
     if (hasRoles(this)) {
-      return this.user.idam.roles.find(r => r.endsWith('-solicitor')) !== undefined;
+      return this.user.idam.roles.some(r => r.endsWith('-solicitor'));
     }
     return false;
   }
 
   public isCourtAdmin(): boolean {
     if (hasRoles(this)) {
-      return this.user.idam.roles.find(r => r.endsWith('-courtadmin')) !== undefined;
+      return this.user.idam.roles.some(r => r.endsWith('-courtadmin'));
     }
     return false;
   }

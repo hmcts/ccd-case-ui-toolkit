@@ -111,7 +111,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
     organisations.forEach((org) => {
       const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
-      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
+      const hasMatchingOrganisation = resultSet.some(item => item.organisationIdentifier === org.organisationIdentifier);
       const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
       const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
 
