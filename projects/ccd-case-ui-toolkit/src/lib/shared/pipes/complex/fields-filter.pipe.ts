@@ -36,7 +36,7 @@ export class FieldsFilterPipe implements PipeTransform {
   }
 
   private static isEmpty(value: any): boolean {
-    return FieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1
+    return FieldsFilterPipe.EMPTY_VALUES.includes(value)
       || value.length === 0;
   }
 

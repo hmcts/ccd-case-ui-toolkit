@@ -78,7 +78,7 @@ export class WorkAllocationService {
       return false;
     }
     this.features.configurations.forEach(serviceConfig => {
-      if (serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1)) {
+      if (serviceConfig.serviceName === jurisdiction && serviceConfig.caseTypes.includes(caseType)) {
           enabled = true;
       }
     });

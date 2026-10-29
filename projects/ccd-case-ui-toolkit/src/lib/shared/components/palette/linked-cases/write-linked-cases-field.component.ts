@@ -191,7 +191,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       }
       const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
       const caseFieldValue = this.linkedCasesService.caseFieldValue;
-      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
+      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => !unlinkedCaseRefereneIds.includes(item.id));
     }
 
     this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;

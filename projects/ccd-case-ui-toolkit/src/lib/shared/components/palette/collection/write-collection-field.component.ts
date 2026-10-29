@@ -397,6 +397,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private isCollectionOfSimpleType(caseField: CaseField) {
     const notSimple = ['Collection', 'Complex'];
-    return notSimple.indexOf(caseField.field_type.collection_field_type.type) < 0;
+    return !notSimple.includes(caseField.field_type.collection_field_type.type);
   }
 }

@@ -135,7 +135,7 @@ export class FormValueService {
     for (const key in rawObject) {
       // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
       // properties is null, the entire sanitised object to be returned should be null
-      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null) {
+      if (documentFieldKeys.includes(key) && rawObject[key] === null) {
         sanitisedObject = null;
         break;
       } else if ('CaseReference' === key) {
@@ -364,7 +364,7 @@ export class FormValueService {
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
       for (const objCollection of data[field.id]) {
-        if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).indexOf('id') > -1) {
+        if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).includes('id')) {
           data[field.id] = [];
         }
       }

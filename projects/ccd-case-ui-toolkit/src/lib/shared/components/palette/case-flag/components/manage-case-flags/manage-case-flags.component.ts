@@ -183,7 +183,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     // CaseField formatted_value from which to get the original persisted data
     const pathToValue = flagsInstance.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-    if (pathToValue.indexOf('.') > -1) {
+    if (pathToValue.includes('.')) {
       pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach((part) => {
         if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
           formattedValue = formattedValue[part];

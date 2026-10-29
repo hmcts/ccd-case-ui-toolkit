@@ -92,14 +92,14 @@ export class FieldTypeSanitiser {
   }
 
   private isDynamicList(fieldType: FieldTypeEnum): boolean {
-    return FieldTypeSanitiser.DYNAMIC_LIST_TYPE.indexOf(fieldType) !== -1;
+    return FieldTypeSanitiser.DYNAMIC_LIST_TYPE.includes(fieldType);
   }
 
   private convertArrayToDynamicListOutput(field: CaseField, data: any): void {
     const values = data[field.id];
     if (Array.isArray(values)) {
       const listItems = this.getListItems(field);
-      const matches = listItems.filter(item => values.map(v => v.code).indexOf(item.code) !== -1);
+      const matches = listItems.filter(item => values.map(v => v.code).includes(item.code));
 
       data[field.id] = {
         value: matches,

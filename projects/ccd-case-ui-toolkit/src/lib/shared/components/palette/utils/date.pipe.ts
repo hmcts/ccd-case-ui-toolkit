@@ -65,7 +65,7 @@ export class DatePipe implements PipeTransform {
         if (!Number.isNaN(parsedDate)) {
           const d: Date = new Date(parsedDate);
           // If what we received didn't include time, don't include it here either.
-          if (value.indexOf(':') < 0) {
+          if (!value.includes(':')) {
             const shortDate: string = d.toLocaleDateString('en-GB');
             const shortISO: string = shortDate.split('/').reverse().join('-');
             return this.transform(shortISO, zone, format);

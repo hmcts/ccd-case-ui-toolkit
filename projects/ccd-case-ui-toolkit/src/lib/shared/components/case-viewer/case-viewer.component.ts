@@ -74,7 +74,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public hasStandardAccess(): boolean {
-    return !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
+    return !this.accessGranted ? !CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.includes(this.userAccessType) : true;
   }
 
   private suffixDuplicateTabs(tabs: CaseTab[]): CaseTab[] {

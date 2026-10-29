@@ -91,7 +91,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     const caseType = route.parent.paramMap.get('caseType');
     const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
-    if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
+    if (!EventTriggerResolver.IGNORE_WARNING_VALUES.includes(ignoreWarning)) {
       ignoreWarning = 'false';
     }
 

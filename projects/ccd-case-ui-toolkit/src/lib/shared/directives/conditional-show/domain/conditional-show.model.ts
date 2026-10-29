@@ -34,7 +34,7 @@ export class ShowCondition {
     let finalCondition: string = originalCondition;
     if (Array.isArray(formula)) {
       formula.forEach(condition => {
-        if (typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1) {
+        if (typeof condition === 'string' && this.validJoinComparators.includes(condition)) {
           // do nothing
         } else {
           if (Array.isArray(condition)) {
@@ -54,8 +54,8 @@ export class ShowCondition {
     if (condition.fieldReference.startsWith(pathPrefix)) {
       return originalCondition;
     } else {
-      if (originalCondition.indexOf(condition.fieldReference) > -1) {
-        if (this.processedList && this.processedList.indexOf(condition.fieldReference) === -1) {
+      if (originalCondition.includes(condition.fieldReference)) {
+        if (this.processedList && !this.processedList.includes(condition.fieldReference)) {
           this.processedList.push(condition.fieldReference);
           const regularExp = new RegExp(`(\\b)${condition.fieldReference}(?=[^"]*(?:"[^"]*"[^"]*)*$)(\\b)`, 'g');
           return originalCondition.replace(regularExp, `${pathPrefix}.${condition.fieldReference}`);
@@ -78,9 +78,9 @@ export class ShowCondition {
 
   private static getField(condition: string): [string, string?] {
     let separator: string = ShowCondition.CONTAINS;
-    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
+      if (!condition.includes(ShowCondition.CONTAINS)) {
       separator = ShowCondition.CONDITION_EQUALS;
-      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
+      if (condition.includes(ShowCondition.CONDITION_NOT_EQUALS)) {
         separator = ShowCondition.CONDITION_NOT_EQUALS;
       }
     }
@@ -93,7 +93,7 @@ export class ShowCondition {
       const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
       if (Array.isArray(newFormula)) {
         newFormula.forEach(condition => {
-          if (!(typeof condition === 'string' && this.validJoinComparators.indexOf(condition) !== -1)) {
+            if (!(typeof condition === 'string' && this.validJoinComparators.includes(condition))) {
             if (Array.isArray(condition)) {
               conditionList.push(ShowCondition.getConditions(condition).toString());
             } else {
@@ -131,7 +131,7 @@ export class ShowCondition {
             if (caseField) {
               // Jump out if this is HIDDEN or READONLY, regardless of whether or not it's
               // complex or a collection - nested fields will "inherit" the display_context.
-              if (['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1) {
+              if (['HIDDEN', 'READONLY'].includes(caseField.display_context)) {
                 break;
               }
 
@@ -153,7 +153,7 @@ export class ShowCondition {
             }
           }
           if (caseField) {
-            allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].indexOf(caseField.display_context) > -1;
+            allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].includes(caseField.display_context);
           }
         }
         return allUnchangeable;

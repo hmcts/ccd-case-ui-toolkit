@@ -64,7 +64,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   private static isEmpty(value: any): boolean {
     const fieldValue = value?.hasOwnProperty('list_items')  && value?.hasOwnProperty('value') ? value.value : value;
-    return  ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(fieldValue) !== -1
+    return  ReadFieldsFilterPipe.EMPTY_VALUES.includes(fieldValue)
       || fieldValue.length === 0;
   }
 
@@ -225,7 +225,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       return true;
     }
     // We also shouldn't ditch fields that will always come back with a null value.
-    if (this.ALWAYS_NULL_FIELDS.indexOf(field.field_type.type) !== -1) {
+      if (this.ALWAYS_NULL_FIELDS.includes(field.field_type.type)) {
       return true;
     }
 
@@ -259,7 +259,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       field.hidden = true;
     } else if (field.show_condition) {
       let cond: ShowCondition;
-      if (fieldId && field.show_condition.indexOf(`${fieldId}.`) > -1 && !formGroupAvailable && !!Object.keys(formValue).length) {
+      if (fieldId && field.show_condition.includes(`${fieldId}.`) && !formGroupAvailable && !!Object.keys(formValue).length) {
         const search = `/.*${fieldId}./`;
         const searchRegExp = new RegExp(search, 'g');
         const replaceWith = '';

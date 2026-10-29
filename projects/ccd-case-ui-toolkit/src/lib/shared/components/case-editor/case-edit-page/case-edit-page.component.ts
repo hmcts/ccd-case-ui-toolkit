@@ -258,7 +258,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           const label = this.getInterpolatedFieldLabel(casefield);
           let id = casefield.id;
           if (fieldElement['component'] && (fieldElement['component'].parent || sourceFromComplexField)) {
-            if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
+            if (!fieldElement['component'].idPrefix.includes(`_${id}_`)) {
               id = `${fieldElement['component'].idPrefix}${id}`;
             } else {
               id = `${fieldElement['component'].idPrefix}`;

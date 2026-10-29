@@ -29,7 +29,7 @@ export class ConditionParser {
 
     return conditions.reduce((accumulator: boolean, condition, index: number) => {
       const isJoinComparator = (comparator: string): boolean =>
-        (typeof comparator === 'string' && validJoinComparators.indexOf(comparator) !== -1);
+        (typeof comparator === 'string' && validJoinComparators.includes(comparator));
 
       if (isJoinComparator(condition)) { return accumulator; }
 
@@ -91,9 +91,9 @@ export class ConditionParser {
 
   private static getField(condition: string): [string, string?] {
     let separator: string = ShowCondition.CONTAINS;
-    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
+    if (!condition.includes(ShowCondition.CONTAINS)) {
       separator = ShowCondition.CONDITION_EQUALS;
-      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
+      if (condition.includes(ShowCondition.CONDITION_NOT_EQUALS)) {
         separator = ShowCondition.CONDITION_NOT_EQUALS;
       }
     }
@@ -200,7 +200,7 @@ export class ConditionParser {
   }
 
   private static removeStarChar(str: string): string {
-    if (str && str.indexOf('*') > -1) {
+    if (str && str.includes('*')) {
       return str.substring(0, str.indexOf('*'));
     }
     return str;
