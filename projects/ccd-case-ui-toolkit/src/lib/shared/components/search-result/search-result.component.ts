@@ -209,10 +209,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
           this.selectedCases.splice(i, 1);
         }
       });
-    } else {
-      if (this.canBeShared(c)) {
-        this.selectedCases.push(c);
-      }
+    } else if (this.canBeShared(c)) {
+      this.selectedCases.push(c);
     }
     this.selection.emit(this.selectedCases);
   }
@@ -343,14 +341,12 @@ export class SearchResultComponent implements OnChanges, OnInit {
       this.consumerSortParameters.column = column.case_field_id;
       this.consumerSortParameters.type = column.case_field_type.type;
       this.sortHandler.emit(this.consumerSortParameters);
+    } else if (this.comparator(column) === undefined) {
+      return;
+    } else if (this.isSortAscending(column)) {
+      this.sortParameters = new SortParameters(this.comparator(column), SortOrder.ASCENDING);
     } else {
-      if (this.comparator(column) === undefined) {
-        return;
-      } else if (this.isSortAscending(column)) {
-        this.sortParameters = new SortParameters(this.comparator(column), SortOrder.ASCENDING);
-      } else {
-        this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
-      }
+      this.sortParameters = new SortParameters(this.comparator(column), SortOrder.DESCENDING);
     }
   }
 
@@ -374,17 +370,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public hyphenateIfCaseReferenceOrGet(col, result): any {
     if (col.case_field_id === '[CASE_REFERENCE]') {
       return this.caseReferencePipe.transform(result.case_fields[col.case_field_id]);
-    } else {
-      if (col.id) {
-        if (col.id === '[CASE_REFERENCE]') {
-          return this.caseReferencePipe.transform(result.case_fields[col.id]);
-        } else {
-          return result.case_fields[col.id];
-        }
-      } else {
-        return result.case_fields[col.case_field_id];
-      }
     }
+    if (!col.id) {
+      return result.case_fields[col.case_field_id];
+    }
+    if (col.id === '[CASE_REFERENCE]') {
+      return this.caseReferencePipe.transform(result.case_fields[col.id]);
+    }
+    return result.case_fields[col.id];
   }
 
   public draftPrefixOrGet(col, result): any {

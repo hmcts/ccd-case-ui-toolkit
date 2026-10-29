@@ -86,14 +86,12 @@ export class CaseResolver implements Resolve<CaseView> {
     if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
       this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
       return of(this.caseNotifier.cachedCaseView).toPromise();
+    } else if (Draft.isDraft(cid)) {
+      return this.getAndCacheDraft(cid);
     } else {
-      if (Draft.isDraft(cid)) {
-        return this.getAndCacheDraft(cid);
-      } else {
-        return this.caseNotifier.fetchAndRefresh(cid)
-          .pipe(catchError(error => this.processErrorInCaseFetch(error, cid)))
-          .toPromise();
-      }
+      return this.caseNotifier.fetchAndRefresh(cid)
+        .pipe(catchError(error => this.processErrorInCaseFetch(error, cid)))
+        .toPromise();
     }
   }
 

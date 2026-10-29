@@ -129,12 +129,10 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       }
       this.addState(this.linkedCasesPage);
       this.proceedToNextPage();
-    } else {
-      if (linkedCasesState.errorMessages?.length) {
-        linkedCasesState.errorMessages.forEach((errorMessage, index) => {
-          this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description });
-        });
-      }
+    } else if (linkedCasesState.errorMessages?.length) {
+      linkedCasesState.errorMessages.forEach((errorMessage, index) => {
+        this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description });
+      });
     }
   }
 

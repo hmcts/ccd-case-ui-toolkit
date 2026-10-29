@@ -64,12 +64,10 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         };
       }
       this.preSelectDefaultOrg();
+    } else if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
+      this.preSelectDefaultOrg();
     } else {
-      if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
-        this.preSelectDefaultOrg();
-      } else {
-        this.preSelectEmptyOrg();
-      }
+      this.preSelectEmptyOrg();
     }
 
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an

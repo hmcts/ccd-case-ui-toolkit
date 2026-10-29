@@ -254,12 +254,10 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     if (this.isServiceErrorFound(error)){
       this.error = null;
       this.callbackErrorsSubject.next(error);
+    } else if (error && error.status !== 401 && error.status !== 403) {
+      this.error = error;
     } else {
-      if (error && error.status !== 401 && error.status !== 403) {
-        this.error = error;
-      } else {
-        this.router.navigate(['/', 'service-down']);
-      }
+      this.router.navigate(['/', 'service-down']);
     }
 
     window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });

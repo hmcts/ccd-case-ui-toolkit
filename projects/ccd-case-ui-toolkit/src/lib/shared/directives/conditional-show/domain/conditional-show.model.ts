@@ -36,12 +36,10 @@ export class ShowCondition {
       formula.forEach(condition => {
         if (typeof condition === 'string' && this.validJoinComparators.includes(condition)) {
           // do nothing
+        } else if (Array.isArray(condition)) {
+          finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition);
         } else {
-          if (Array.isArray(condition)) {
-            finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition);
-          } else {
-            finalCondition = this.extractConditions(condition, pathPrefix, finalCondition);
-          }
+          finalCondition = this.extractConditions(condition, pathPrefix, finalCondition);
         }
       });
     } else {
@@ -53,15 +51,13 @@ export class ShowCondition {
   private static extractConditions(condition: any, pathPrefix: string, originalCondition: string): string {
     if (condition.fieldReference.startsWith(pathPrefix)) {
       return originalCondition;
-    } else {
-      if (originalCondition.includes(condition.fieldReference)) {
-        if (this.processedList && !this.processedList.includes(condition.fieldReference)) {
-          this.processedList.push(condition.fieldReference);
-          const regularExp = new RegExp(`(\\b)${condition.fieldReference}(?=[^"]*(?:"[^"]*"[^"]*)*$)(\\b)`, 'g');
-          return originalCondition.replace(regularExp, `${pathPrefix}.${condition.fieldReference}`);
-        } else {
-          return originalCondition;
-        }
+    } else if (originalCondition.includes(condition.fieldReference)) {
+      if (this.processedList && !this.processedList.includes(condition.fieldReference)) {
+        this.processedList.push(condition.fieldReference);
+        const regularExp = new RegExp(`(\\b)${condition.fieldReference}(?=[^"]*(?:"[^"]*"[^"]*)*$)(\\b)`, 'g');
+        return originalCondition.replace(regularExp, `${pathPrefix}.${condition.fieldReference}`);
+      } else {
+        return originalCondition;
       }
     }
   }

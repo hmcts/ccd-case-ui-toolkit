@@ -46,10 +46,8 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
           return null;
         }
         return { error: 'Please use a valid 16 Digit Case Reference' };
-      } else {
-        if (control.touched) {
-          return { error: 'Please use a valid 16 Digit Case Reference' };
-        }
+      } else if (control.touched) {
+        return { error: 'Please use a valid 16 Digit Case Reference' };
       }
       return null;
     };

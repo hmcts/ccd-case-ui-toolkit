@@ -158,12 +158,10 @@ export class ConditionParser {
     }
     if (tail.length === 0) {
       return this.getValue(fields, head);
+    } else if (FieldsUtils.isArray(fields[head])) {
+      return this.findValueForComplexConditionInArray(fields, head, tail, path);
     } else {
-      if (FieldsUtils.isArray(fields[head])) {
-        return this.findValueForComplexConditionInArray(fields, head, tail, path);
-      } else {
-        return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
-      }
+      return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
     }
   }
 

@@ -88,10 +88,8 @@ export class CaseListComponent {
           this.selectedCases = this.selectedCases.slice(0, i).concat(this.selectedCases.slice(i + 1));
         }
       });
-    } else {
-      if (this.canBeShared(aCase)) {
-        this.selectedCases = [...this.selectedCases, aCase];
-      }
+    } else if (this.canBeShared(aCase)) {
+      this.selectedCases = [...this.selectedCases, aCase];
     }
     this.selection.emit(this.selectedCases);
   }

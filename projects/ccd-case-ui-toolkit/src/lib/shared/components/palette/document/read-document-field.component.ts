@@ -40,10 +40,8 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
           this.openMediaViewer(mergedInfo);
         }
       });
-    } else {
-      if (this.caseField && this.caseField.value) {
-        this.openMediaViewer(this.caseField.value);
-      }
+    } else if (this.caseField && this.caseField.value) {
+      this.openMediaViewer(this.caseField.value);
     }
   }
 

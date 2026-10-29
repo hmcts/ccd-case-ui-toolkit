@@ -447,10 +447,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // from the CaseField itself.
     if (parentField?.formatted_value) {
       rawFormValueData[key] = parentField.formatted_value[caseField.id];
-    } else {
-      if (!(caseField.hidden && caseField.retain_hidden_value)) {
-        rawFormValueData[key] = caseField.formatted_value;
-      }
+    } else if (!(caseField.hidden && caseField.retain_hidden_value)) {
+      rawFormValueData[key] = caseField.formatted_value;
     }
   }
 
@@ -575,15 +573,14 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       // EXUI-2668 - Add additional logic to confirm the task is relevant to the event
       if (this.taskIsForEvent(taskInSessionStorage, eventDetails)) {
         return true;
-      } else {
-        // client context still needed for language
-        removeTaskFromClientContext(this.sessionStorageService);
-        return false;
       }
-    } else {
-      if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
-        return true;
-      } else if ((taskEventCompletionInfo.taskId === taskInSessionStorage.id &&
+      // client context still needed for language
+      removeTaskFromClientContext(this.sessionStorageService);
+      return false;
+    }
+    if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
+      return true;
+    } else if ((taskEventCompletionInfo.taskId === taskInSessionStorage.id &&
           this.eventDetailsDoNotMatch(taskEventCompletionInfo, eventDetails))
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
@@ -592,13 +589,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
         return false;
       }
-      if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
-        // if the user does not match task assignee, assign is now needed
-        // data cannot be deleted and ignored as it matches understanding
-        this.sessionStorageService.setItem('assignNeeded', 'true');
-      }
-      return true;
+    if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
+      // if the user does not match task assignee, assign is now needed
+      // data cannot be deleted and ignored as it matches understanding
+      this.sessionStorageService.setItem('assignNeeded', 'true');
     }
+    return true;
   }
 
   public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted): void {
