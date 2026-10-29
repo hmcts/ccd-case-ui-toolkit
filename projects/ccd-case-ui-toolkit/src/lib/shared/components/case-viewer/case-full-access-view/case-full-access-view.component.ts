@@ -303,15 +303,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     let hashValue = url.substring(url.indexOf('#') + 1);
     const hasHash = url.includes('#');
     const isSpecialTabPath = url.includes('roles-and-access') || url.includes('tasks') || url.includes('hearings');
-    // TODO: Remove defaultFocusDemo once QA'd
-    const defaultFocusDemo = url.includes('default-focus-demo');
-    if (defaultFocusDemo) {
-      this.caseDetails.tabs[Number(url.substring(url.indexOf('default-focus-demo-')+19))].defaultFocus = true;
-    }
-    if (defaultFocusDemo || (!hasHash && !isSpecialTabPath)) {
+    if (!hasHash && !isSpecialTabPath) {
       const paths = url.split('/');
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
-      let foundTab: CaseTab = null;
+      let foundTab: CaseTab | undefined;
       if (!this.prependedTabs) {
         this.prependedTabs = [];
       }
