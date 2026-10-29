@@ -5,6 +5,24 @@ describe('WindowService', () => {
   const windowService: WindowService = new WindowService();
   const userName = 'test user';
 
+  it('should get saved filters from local storage', () => {
+    spyOn(window.localStorage, 'getItem').and.returnValue('saved filters');
+    expect(windowService.getLocalStorage('savedQueryParams')).toBe('saved filters');
+    expect(window.localStorage.getItem).toHaveBeenCalledWith('savedQueryParams');
+  });
+
+  it('should save filters in local storage', () => {
+    spyOn(window.localStorage, 'setItem');
+    windowService.setLocalStorage('savedQueryParams', 'saved filters');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith('savedQueryParams', 'saved filters');
+  });
+
+  it('should remove saved filters from local storage', () => {
+    spyOn(window.localStorage, 'removeItem');
+    windowService.removeLocalStorage('savedQueryParams');
+    expect(window.localStorage.removeItem).toHaveBeenCalledWith('savedQueryParams');
+  });
+
   it('should get from session storage', () => {
     spyOn(window.sessionStorage, 'getItem');
     windowService.getSessionStorage('organisationDetails');
