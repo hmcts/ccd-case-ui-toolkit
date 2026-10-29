@@ -1,6 +1,6 @@
-<div class="govuk-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+<output class="govuk-visually-hidden" aria-live="polite" aria-atomic="true">
   {{(hasResults() || hasDrafts()) ? (getTotalResults() + ' ' + ('results have been found' | rpxTranslate)) : ''}}
-</div>
+</output>
 
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
@@ -139,6 +139,6 @@
   [screenReaderPageLabel]="page"
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
-<div [class.notification]="!(hasResults() || hasDrafts())" role="status" aria-live="polite" aria-atomic="true">
+<output [class.notification]="!(hasResults() || hasDrafts())" aria-live="polite" aria-atomic="true">
 {{!(hasResults() || hasDrafts()) ? ('No cases found. Try using different filters.' | rpxTranslate) : ''}}
-</div>
+</output>

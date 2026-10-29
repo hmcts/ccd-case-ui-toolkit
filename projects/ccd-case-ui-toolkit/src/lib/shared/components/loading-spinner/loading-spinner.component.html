@@ -1,6 +1,9 @@
-<div class="spinner-container" role="status" aria-live="polite" aria-atomic="true">
+<output class="govuk-visually-hidden" aria-live="polite" aria-atomic="true">
+    {{loading ? (loadingText | rpxTranslate) : ''}}
+</output>
+<div *ngIf="loading" class="spinner-container" aria-hidden="true">
     <div class="spinner-inner-container">
-        <p *ngIf="loading">{{loadingText | rpxTranslate}}</p>
-        <div *ngIf="loading" class="spinner" style="margin: auto;"></div>
+        <p>{{loadingText | rpxTranslate}}</p>
+        <div class="spinner" style="margin: auto;"></div>
     </div>
 </div>
