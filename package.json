@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.18",
+  "version": "7.4.18-4775-5008-CVEs",
   "engines": {
     "node": ">=24.22.1"
   },
@@ -75,7 +75,7 @@
     "govuk-frontend": "5.13.0",
     "lz-string": "^1.5.0",
     "marked": "^18.0.5",
-    "moment": "^2.30.1",
+    "moment": "^2.31.0",
     "moment-timezone": "^0.6.2",
     "ngx-chips": "3.0.0",
     "ngx-editor": "19.0.0-beta.1",
