@@ -366,7 +366,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('should not display error message when results present', () => {
-      const error = de.query(By.css('div.notification'));
+      const error = de.query(By.css('output.notification'));
       expect(error).toBeFalsy();
     });
 
@@ -846,8 +846,9 @@ describe('SearchResultComponent', () => {
     }));
 
     it('should display error message when no results', () => {
-      const error = de.query(By.css('div.notification'));
+      const error = de.query(By.css('output.notification'));
       expect(error).toBeTruthy();
+      expect(error.nativeElement.textContent).toContain('No cases found. Try using different filters.');
     });
 
     it('should not display table when no results', () => {
