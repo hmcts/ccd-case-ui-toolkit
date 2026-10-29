@@ -170,7 +170,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public canBeShared(caseView: SearchResultViewItem): boolean {
-    return caseView.supplementary_data && caseView.supplementary_data.hasOwnProperty('orgs_assigned_users');
+    return !!caseView.supplementary_data?.hasOwnProperty('orgs_assigned_users');
   }
 
   public canAnyBeShared(): boolean {

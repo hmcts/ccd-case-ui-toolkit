@@ -111,7 +111,7 @@ export class FormValueService {
   public filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
     const cloneForm = {
       ...(editForm || {}),
-      data: { ...((editForm && editForm.data) || {}) }
+      data: { ...(editForm?.data || {}) }
     };
     Object.keys(cloneForm.data).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
@@ -163,7 +163,7 @@ export class FormValueService {
     }
 
     rawArray.forEach((item) => {
-      if (item && item.hasOwnProperty('value')) {
+      if (item?.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value, isCaseFlagJourney);
       }
     });
@@ -203,7 +203,7 @@ export class FormValueService {
 
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
   public removeNullLabels(data: object, caseFields: CaseField[]) {
-    if (data && caseFields && caseFields.length > 0) {
+    if (data && caseFields?.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       for (const field of caseFields) {
         if (field.field_type) {
@@ -244,7 +244,7 @@ export class FormValueService {
 
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
   public removeEmptyDocuments(data: object, caseFields: CaseField[]) {
-    if (data && caseFields && caseFields.length > 0) {
+    if (data && caseFields?.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       for (const field of caseFields) {
         if (field.field_type) {
@@ -295,7 +295,7 @@ export class FormValueService {
    */
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
     fromPreviousPage = false, currentPageCaseFields = []): void {
-    if (data && caseFields && caseFields.length > 0) {
+    if (data && caseFields?.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
         this.clearNonCaseFields(data, caseFields);
@@ -379,7 +379,7 @@ export class FormValueService {
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0) {
+    if (data && caseFields?.length > 0) {
       for (const field of caseFields) {
         if (field.field_type.type === 'Collection' && typeof field.field_type.min === 'number' && field.field_type.min > 0 &&
           data[field.id] && Array.isArray(data[field.id]) && data[field.id].length === 0) {
@@ -399,7 +399,7 @@ export class FormValueService {
    * @param types An array of one or more field types
    */
   public removeCaseFieldsOfType(data: object, caseFields: CaseField[], types: FieldTypeEnum[]): void {
-    if (data && caseFields && caseFields.length > 0 && types.length > 0) {
+    if (data && caseFields?.length > 0 && types.length > 0) {
       const caseFieldsToRemove = caseFields.filter((caseField) => FieldsUtils.isCaseFieldOfType(caseField, types));
       for (const caseField of caseFieldsToRemove) {
         delete data[caseField.id];
@@ -419,7 +419,7 @@ export class FormValueService {
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public repopulateFormDataFromCaseFieldValues(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0 &&
+    if (data && caseFields?.length > 0 &&
       caseFields.findIndex((caseField) => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
       // Ignore the FlagLauncher CaseField because it does not hold any values
       caseFields.filter((caseField) => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
@@ -454,7 +454,7 @@ export class FormValueService {
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public populateLinkedCasesDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0) {
+    if (data && caseFields?.length > 0) {
       caseFields.filter((caseField) => !FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']))
         .forEach((caseField) => {
           if (data.hasOwnProperty('caseLinks') && caseField.value) {

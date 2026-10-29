@@ -65,7 +65,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
         /* istanbul ignore else */
-        if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
+        if (flagsInstance.flags.details?.length > 0) {
           displayData = [
             ...displayData,
             ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance, originalStatus, originalIdToFlag))
@@ -75,7 +75,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
       }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
     }
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
-    if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
+    if (this.flagsDisplayData?.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
     } else {
       // No flags display data means there are no flags to select from. The user cannot proceed with a flag update.

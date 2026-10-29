@@ -194,7 +194,7 @@ export class WorkAllocationService {
       .pipe(
         map((response: any) => {
           const tasks: any[] = response.tasks;
-          if (tasks && tasks.length > 0) {
+          if (tasks?.length > 0) {
             if (tasks.length === 1) {
               this.completeTask(tasks[0].id, eventId).subscribe();
             } else {

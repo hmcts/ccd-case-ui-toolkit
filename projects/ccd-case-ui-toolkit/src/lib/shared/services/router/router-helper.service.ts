@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 export class RouterHelperService {
   public getUrlSegmentsFromRoot(route: ActivatedRouteSnapshot): string[] {
     return route.pathFromRoot
-      .filter(r => r.url && r.url.length)
+      .filter(r => r.url?.length)
       .reduce((acc, r) => {
         r.url.forEach(url => {
           acc.push(url.path);

@@ -79,7 +79,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   private isTabViewRoute(route: ActivatedRouteSnapshot) {
     // is route case/:jid/:ctid/:cid#fragment
-    return route.firstChild && route.firstChild.fragment;
+    return route.firstChild?.fragment;
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {

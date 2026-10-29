@@ -445,7 +445,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
     // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
     // from the CaseField itself.
-    if (parentField && parentField.formatted_value) {
+    if (parentField?.formatted_value) {
       rawFormValueData[key] = parentField.formatted_value[caseField.id];
     } else {
       if (!(caseField.hidden && caseField.retain_hidden_value)) {

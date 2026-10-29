@@ -127,7 +127,7 @@ export class FieldTypeSanitiser {
       if (field.list_items) {
         return field.list_items;
       }
-      if (field.formatted_value && field.formatted_value.list_items) {
+      if (field.formatted_value?.list_items) {
         return field.formatted_value.list_items;
       }
     }

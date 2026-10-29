@@ -113,7 +113,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
     // Get the case type ID from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type) {
+    if (this.route.snapshot.data.case?.case_type) {
       this.caseTypeId = this.route.snapshot.data.case.case_type.id;
       // Get the jurisdiction (required for retrieving the available flag types if unable to determine using case type ID)
       if (this.route.snapshot.data.case.case_type.jurisdiction) {

@@ -57,7 +57,7 @@ export class QueryWriteRaiseQueryComponent implements OnChanges {
   onSubjectInput(): void {
     const control = this.formGroup.get('subject');
     const value = control?.value;
-    if (value && value.length > 200) {
+    if (value?.length > 200) {
       control?.setValue(value.substring(0, 200));
     }
   }

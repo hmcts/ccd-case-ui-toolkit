@@ -7,7 +7,7 @@ export class CollectionCreateCheckerService {
   public setDisplayContextForChildren(caseField: CaseField, profile: Profile) {
     const children = this.getCaseFieldChildren(caseField);
 
-    if (children && children.length > 0) {
+    if (children?.length > 0) {
       children.forEach(child => {
         if (profile.user.idam.roles.some(role => this.hasCreateAccess(child, role))) {
           child.display_context = caseField.display_context;

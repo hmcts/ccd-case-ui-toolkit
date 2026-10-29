@@ -267,7 +267,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private getDocumentAttachments(): void {
     const attachmentsValue = this.formGroup.get('attachments').value;
-    if (attachmentsValue && attachmentsValue.length > 0) {
+    if (attachmentsValue?.length > 0) {
       const documents = attachmentsValue;
       this.attachments = documents.map(QueryManagementUtils.documentToCollectionFormDocument);
     }

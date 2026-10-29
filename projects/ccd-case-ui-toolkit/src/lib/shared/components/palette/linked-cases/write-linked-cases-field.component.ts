@@ -130,7 +130,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       this.addState(this.linkedCasesPage);
       this.proceedToNextPage();
     } else {
-      if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
+      if (linkedCasesState.errorMessages?.length) {
         linkedCasesState.errorMessages.forEach((errorMessage, index) => {
           this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description });
         });
@@ -243,7 +243,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const caseViewFiltered = caseView.tabs.filter((tab) => {
         return tab.fields.some(
-          ({ field_type }) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
+          ({ field_type }) => field_type?.collection_field_type?.id === 'CaseLink'
         );
       });
       if (caseViewFiltered) {

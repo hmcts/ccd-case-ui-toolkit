@@ -15,7 +15,7 @@
       </span>
     </h2>
 
-    <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
+    <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value?.length">
       <fieldset class="govuk-fieldset">
         <div *ngFor="let item of collItems; let i = index; trackBy: trackByCollectionItem" #collectionItem
             [id]="this.buildIdPrefix(i) + i" class="form-group">
@@ -44,7 +44,7 @@
       </fieldset>
     </div>
 
-    <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">{{'Add new' | rpxTranslate }}</button>
+    <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value?.length">{{'Add new' | rpxTranslate }}</button>
 
   </div>
 
