@@ -11,4 +11,5 @@ export class CaseTab implements Orderable {
   @Type(() => CaseField)
   public fields: CaseField[];
   public show_condition?: string;
+  public defaultFocus?: boolean;
 }

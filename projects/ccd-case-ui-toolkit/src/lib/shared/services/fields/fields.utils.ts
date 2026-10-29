@@ -27,9 +27,9 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
-  public static readonly defaultTabList = {
+  public static readonly defaultTabList: Record<string, string> = {
     "PRLAPPS": "Summary"
-  }
+  };
 
   public static isValidDisplayContext(ctx: string): boolean {
     return (ctx === 'MANDATORY' || ctx === 'READONLY'
