@@ -2967,7 +2967,7 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.3.7"
     "@eslint/js": "npm:^10.0.0"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.45-ngrx-store-freeze-removal"
+    "@hmcts/media-viewer": "npm:4.2.46"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
     "@ngxmc/datetime-picker": "npm:20.1.0"
@@ -3046,7 +3046,7 @@ __metadata:
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
-    rpx-xui-translation: "npm:1.2.18-ts-node-update"
+    rpx-xui-translation: "npm:1.2.18"
     rxjs: "npm:^7.8.2"
     rxjs-compat: "npm:^6.6.7"
     sass: "npm:^1.54.0"
@@ -3091,9 +3091,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.45-ngrx-store-freeze-removal":
-  version: 4.2.45-ngrx-store-freeze-removal
-  resolution: "@hmcts/media-viewer@npm:4.2.45-ngrx-store-freeze-removal"
+"@hmcts/media-viewer@npm:4.2.46":
+  version: 4.2.46
+  resolution: "@hmcts/media-viewer@npm:4.2.46"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3114,9 +3114,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.18-ts-node-update
+    rpx-xui-translation: 1.2.18
     rxjs: ^7.8.2
-  checksum: 10/4825a3a40bbedd322f211d031ba85f0667d0caff0ddaffb8e8b8ef942fa25c737d5c4f5110287a3ca398622a3094b7dc41fa3308cbb9dabfaae3abdfd50637fe
+  checksum: 10/f21dcf3f6dabb8b8c375e4b19df1935b16e942e02994506339fd9cb5789655137259de7ac6ed41ac64dc7140056edc7fb498b01970321271a43dcfd86b1742b5
   languageName: node
   linkType: hard
 
@@ -19163,9 +19163,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.18-ts-node-update":
-  version: 1.2.18-ts-node-update
-  resolution: "rpx-xui-translation@npm:1.2.18-ts-node-update"
+"rpx-xui-translation@npm:1.2.18":
+  version: 1.2.18
+  resolution: "rpx-xui-translation@npm:1.2.18"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -19174,7 +19174,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/8a35895b2db99ec231f6cedf97343b1e25c8a47b27446376c88c243726d11edb183a5cc374f23711fe9591cd236ea97d4863603a4a7a47c609ed43866608a140
+  checksum: 10/a1ab0ed0d989d68f78d319db1f851ca2fe283cf3aa5273453dad210a2509f9cbb30b5dcde06fb49b192322085aa5c78d17d7b618aa29731572814afd0cb4a5ac
   languageName: node
   linkType: hard
 
