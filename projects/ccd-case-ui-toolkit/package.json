@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.19-alignment-issue",
+  "version": "7.4.20-alignment-issue",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^20.0.0",
     "@ngxmc/datetime-picker": "20.1.0",
@@ -18,7 +18,7 @@
     "@angular/upgrade": "^20.3.27",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
-    "moment": "^2.30.1",
+    "moment": "^2.31.0",
     "moment-timezone": "^0.5.31",
     "ngx-chips": "^3.0.0",
     "ngx-editor": "19.0.0-beta.1",
