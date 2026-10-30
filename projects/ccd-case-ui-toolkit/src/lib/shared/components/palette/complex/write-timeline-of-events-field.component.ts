@@ -48,11 +48,11 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   }
 
   public dateQuestionLabel(): string {
-    return this.dateLabelField()?.label || 'Date';
+    return this.dateLabelField()?.label;
   }
 
   public dateInputHintText(): string {
-    return this.dateLabelField()?.hint_text || 'Enter the date using the fields below.';
+    return this.dateLabelField()?.hint_text;
   }
 
   public hasOptionalDatePart(): boolean {
