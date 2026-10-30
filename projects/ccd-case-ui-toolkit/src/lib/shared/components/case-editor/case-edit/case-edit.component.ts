@@ -28,6 +28,7 @@ import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../se
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
 import { safeJsonParse } from '../../../json-utils';
+import { HiddenFieldValues } from '../../../services/form/hidden-field-values';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -317,9 +318,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
-    const formData = this.replaceHiddenFormValuesWithOriginalCaseData(
+    let formData = this.replaceHiddenFormValuesWithOriginalCaseData(
       form.get('data') as FormGroup, eventTrigger.case_fields);
     this.formValueService.sanitiseDynamicLists(eventTrigger.case_fields, { data: formData });
+    if (!this.isCaseFlagSubmission) {
+      formData = HiddenFieldValues.clearHiddenValues(formData, form.get('data'));
+    }
 
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(

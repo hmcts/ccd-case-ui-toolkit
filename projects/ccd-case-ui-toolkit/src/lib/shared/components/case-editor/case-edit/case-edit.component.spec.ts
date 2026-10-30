@@ -1195,6 +1195,57 @@ describe('CaseEditComponent', () => {
     });
 
     describe('submitForm', () => {
+      [
+        { retainHiddenValue: false, isCaseFlagSubmission: false },
+        { retainHiddenValue: true, isCaseFlagSubmission: false },
+        { retainHiddenValue: false, isCaseFlagSubmission: true }
+      ].forEach(({ retainHiddenValue, isCaseFlagSubmission }) => {
+        it(`respects retention ${retainHiddenValue} and case flag mode ${isCaseFlagSubmission} at final submission`, () => {
+          const dateField = Object.assign(new CaseField(), {
+            id: 'hearingScheduledDate', hidden: false, retain_hidden_value: retainHiddenValue,
+            display_context: 'OPTIONAL', field_type: { type: 'Date' }
+          });
+          const parentField = Object.assign(new CaseField(), {
+            id: 'generalAppHearingDate', hidden: false,
+            field_type: { type: 'Complex', complex_fields: [
+              dateField,
+              { id: 'hearingScheduledPreferenceYesNo', field_type: { type: 'YesOrNo' } }
+            ] }
+          });
+          const originalField = Object.assign(new CaseField(), {
+            id: 'prepopulated', hidden: true, retain_hidden_value: true,
+            display_context: 'OPTIONAL', field_type: { type: 'Text' }
+          });
+          const date = new FormControl(null);
+          date['caseField'] = dateField;
+          const original = new FormControl('original value');
+          original['caseField'] = originalField;
+          const data = new FormGroup({
+            generalAppHearingDate: new FormGroup({
+              hearingScheduledPreferenceYesNo: new FormControl('Yes'), hearingScheduledDate: date
+            }),
+            prepopulated: original
+          });
+          const form = new FormGroup({ data, event: new FormGroup({ id: new FormControl('TEST_TRIGGER') }) });
+          date.setValue('-11-16');
+          date.markAsDirty();
+          data.get('generalAppHearingDate.hearingScheduledPreferenceYesNo').setValue('No');
+          dateField.hidden = true;
+          date.disable();
+          formValueService.sanitise.and.callFake(value => value);
+          const eventTrigger = createCaseEventTrigger('TEST_TRIGGER', 'Test', 'caseId', false, [parentField, originalField]);
+
+          component.isCaseFlagSubmission = isCaseFlagSubmission;
+          const payload = (component as any).generateCaseEventData({ eventTrigger, form });
+
+          expect(payload.data.generalAppHearingDate).toEqual({
+            hearingScheduledPreferenceYesNo: 'No', hearingScheduledDate: retainHiddenValue || isCaseFlagSubmission ? '-11-16' : null
+          });
+          expect(payload.data.prepopulated).toBe('original value');
+          expect(date.value).toBe('-11-16');
+        });
+      });
+
       it('should submit case', () => {
         const userInfo = {id: "id"};
         const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: Date.now()};
