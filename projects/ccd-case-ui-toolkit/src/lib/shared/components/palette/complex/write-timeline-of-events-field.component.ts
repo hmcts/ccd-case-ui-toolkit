@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
@@ -142,11 +143,14 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
       if (!/^\d+$/.test(value) || value.length > maxDigits) {
         return { [DATE_INPUT_INVALID]: `Enter a valid ${label}` };
       }
-      if (label === 'month' && (+value < 1 || +value > 12)) {
+      if (label === 'month' && !moment.utc([2000, Number(value) - 1, 1]).isValid()) {
         return { [DATE_INPUT_INVALID]: 'Enter a valid month' };
       }
-      if (label === 'year' && +value < 1) {
-        return { [DATE_INPUT_INVALID]: 'Enter a valid year' };
+      if (label === 'year') {
+        const parsedYear = moment.utc([Number(value), 0, 1]);
+        if (!parsedYear.isValid() || parsedYear.year() < 1) {
+          return { [DATE_INPUT_INVALID]: 'Enter a valid year' };
+        }
       }
       return null;
     };
@@ -161,12 +165,11 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
       const month = this.asText(this.monthControl.value);
       const year = this.asText(this.yearControl.value);
       if (!day || !month || !year || !/^\d+$/.test(day) || !/^\d+$/.test(month) || !/^\d+$/.test(year)
-        || +month < 1 || +month > 12 || +year < 1) {
+        || this.monthControl.errors?.[DATE_INPUT_INVALID] || this.yearControl.errors?.[DATE_INPUT_INVALID]) {
         return null;
       }
 
-      const daysInMonth = this.daysInMonth(+month, +year);
-      return +day >= 1 && +day <= daysInMonth
+      return moment.utc([Number(year), Number(month) - 1, Number(day)]).isValid()
         ? null
         : { [DATE_INPUT_INVALID]: 'Enter a valid date' };
     };
@@ -194,16 +197,5 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
 
   private asText(value: any): string {
     return value === null || value === undefined ? '' : String(value).trim();
-  }
-
-  private daysInMonth(month: number, year: number): number {
-    if (month < 1 || month > 12 || year < 1) {
-      return 0;
-    }
-    if (month === 2) {
-      const isLeapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-      return isLeapYear ? 29 : 28;
-    }
-    return [4, 6, 9, 11].includes(month) ? 30 : 31;
   }
 }
