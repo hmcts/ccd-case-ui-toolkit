@@ -12,49 +12,21 @@
       </span>
 
       <div class="form-date" [class.form-date-has-optional-part]="hasOptionalDatePart()">
-        <div class="form-group form-group-day">
-          <label class="form-label" [for]="dateInputId('timelineDay')">{{dateInputLabel('timelineDay', 'Day') | rpxTranslate}}</label>
+        <div class="form-group"
+             [ngClass]="part.cssClass"
+             *ngFor="let part of dateInputParts">
+          <label class="form-label" [for]="dateInputId(part.fieldId)">{{dateInputLabel(part.fieldId, part.label) | rpxTranslate}}</label>
           <input class="form-control"
-                 [formControl]="dayControl"
-                 [id]="dateInputId('timelineDay')"
-                 [name]="dateInputId('timelineDay')"
+                 [formControl]="part.control"
+                 [id]="dateInputId(part.fieldId)"
+                 [name]="dateInputId(part.fieldId)"
                  type="text"
-                 maxlength="2"
+                 [maxlength]="part.maxLength"
                  pattern="[0-9]*"
                  inputmode="numeric"
                  [attr.aria-describedby]="dateInputDescribedBy()"
                  [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
-                 (input)="clearEmptyDatePart(dayControl)">
-        </div>
-
-        <div class="form-group form-group-month">
-          <label class="form-label" [for]="dateInputId('timelineMonth')">{{dateInputLabel('timelineMonth', 'Month') | rpxTranslate}}</label>
-          <input class="form-control"
-                 [formControl]="monthControl"
-                 [id]="dateInputId('timelineMonth')"
-                 [name]="dateInputId('timelineMonth')"
-                 type="text"
-                 maxlength="2"
-                 pattern="[0-9]*"
-                 inputmode="numeric"
-                 [attr.aria-describedby]="dateInputDescribedBy()"
-                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
-                 (input)="clearEmptyDatePart(monthControl)">
-        </div>
-
-        <div class="form-group form-group-year">
-          <label class="form-label" [for]="dateInputId('timelineYear')">{{dateInputLabel('timelineYear', 'Year') | rpxTranslate}}</label>
-          <input class="form-control"
-                 [formControl]="yearControl"
-                 [id]="dateInputId('timelineYear')"
-                 [name]="dateInputId('timelineYear')"
-                 type="text"
-                 maxlength="4"
-                 pattern="[0-9]*"
-                 inputmode="numeric"
-                 [attr.aria-describedby]="dateInputDescribedBy()"
-                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
-                 (input)="clearEmptyDatePart(yearControl)">
+                 (input)="clearEmptyDatePart(part.control)">
         </div>
       </div>
     </fieldset>

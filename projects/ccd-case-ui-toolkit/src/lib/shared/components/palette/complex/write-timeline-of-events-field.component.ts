@@ -5,7 +5,12 @@ import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { DATE_INPUT_INVALID, DATE_INPUT_REQUIRED, TIMELINE_OF_EVENTS_DATE_INPUT } from './date-input-configuration';
+import {
+  DATE_INPUT_INVALID,
+  DATE_INPUT_REQUIRED,
+  DateInputPartConfiguration,
+  TIMELINE_OF_EVENTS_DATE_INPUT
+} from './date-input-configuration';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 
 const DATE_LABEL_FIELD_ID = 'timelineDateLabel';
@@ -20,6 +25,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   public dayControl: FormControl;
   public monthControl: FormControl;
   public yearControl: FormControl;
+  public dateInputParts: Array<DateInputPartConfiguration & { control: FormControl }> = [];
 
   private readonly dateInputSubscriptions: Subscription[] = [];
 
@@ -29,9 +35,14 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
 
   public ngOnInit(): void {
     super.ngOnInit();
-    this.dayControl = this.complexGroup.get(TIMELINE_OF_EVENTS_DATE_INPUT.dayFieldId) as FormControl;
-    this.monthControl = this.complexGroup.get(TIMELINE_OF_EVENTS_DATE_INPUT.monthFieldId) as FormControl;
-    this.yearControl = this.complexGroup.get(TIMELINE_OF_EVENTS_DATE_INPUT.yearFieldId) as FormControl;
+    const configuration = TIMELINE_OF_EVENTS_DATE_INPUT;
+    this.dayControl = this.complexGroup.get(configuration.day.fieldId) as FormControl;
+    this.monthControl = this.complexGroup.get(configuration.month.fieldId) as FormControl;
+    this.yearControl = this.complexGroup.get(configuration.year.fieldId) as FormControl;
+    this.dateInputParts = Object.values(configuration).map((part: DateInputPartConfiguration) => ({
+      ...part,
+      control: this.complexGroup.get(part.fieldId) as FormControl
+    }));
     this.configureDateInputControls();
     this.complexGroup.updateValueAndValidity({ emitEvent: true });
   }
@@ -41,11 +52,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   }
 
   public isDateInputPart(field: CaseField): boolean {
-    return [
-      TIMELINE_OF_EVENTS_DATE_INPUT.dayFieldId,
-      TIMELINE_OF_EVENTS_DATE_INPUT.monthFieldId,
-      TIMELINE_OF_EVENTS_DATE_INPUT.yearFieldId
-    ].includes(field?.id);
+    return this.dateInputParts.some((part) => part.fieldId === field?.id);
   }
 
   public dateQuestionLabel(): string {
@@ -57,11 +64,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   }
 
   public hasOptionalDatePart(): boolean {
-    return [
-      TIMELINE_OF_EVENTS_DATE_INPUT.dayFieldId,
-      TIMELINE_OF_EVENTS_DATE_INPUT.monthFieldId,
-      TIMELINE_OF_EVENTS_DATE_INPUT.yearFieldId
-    ].some((fieldId) => this.isDateInputPartOptional(fieldId));
+    return this.dateInputParts.some((part) => this.isDateInputPartOptional(part.fieldId));
   }
 
   public dateInputId(fieldId: string): string {
@@ -132,21 +135,21 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
 
   private configureDateInputControls(): void {
     const configuration = TIMELINE_OF_EVENTS_DATE_INPUT;
-    const partValidator = (fieldId: string, label: string) => (current: AbstractControl) => {
+    const partValidator = (part: DateInputPartConfiguration) => (current: AbstractControl) => {
+      const label = part.label.toLowerCase();
       const value = this.asText(current.value);
       if (!value) {
-        return this.isDatePartMandatory(fieldId)
+        return this.isDatePartMandatory(part.fieldId)
           ? { [DATE_INPUT_REQUIRED]: `${label[0].toUpperCase()}${label.slice(1)} is required` }
           : null;
       }
-      const maxDigits = label === 'year' ? 4 : 2;
-      if (!/^\d+$/.test(value) || value.length > maxDigits) {
+      if (!/^\d+$/.test(value) || value.length > part.maxLength) {
         return { [DATE_INPUT_INVALID]: `Enter a valid ${label}` };
       }
-      if (label === 'month' && !moment.utc([2000, Number(value) - 1, 1]).isValid()) {
+      if (part.fieldId === configuration.month.fieldId && !moment.utc([2000, Number(value) - 1, 1]).isValid()) {
         return { [DATE_INPUT_INVALID]: 'Enter a valid month' };
       }
-      if (label === 'year') {
+      if (part.fieldId === configuration.year.fieldId) {
         const parsedYear = moment.utc([Number(value), 0, 1]);
         if (!parsedYear.isValid() || parsedYear.year() < 1) {
           return { [DATE_INPUT_INVALID]: 'Enter a valid year' };
@@ -155,8 +158,8 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
       return null;
     };
 
-    this.monthControl.setValidators(partValidator(configuration.monthFieldId, 'month'));
-    this.yearControl.setValidators(partValidator(configuration.yearFieldId, 'year'));
+    this.monthControl.setValidators(partValidator(configuration.month));
+    this.yearControl.setValidators(partValidator(configuration.year));
     this.monthControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     this.yearControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
 
@@ -174,7 +177,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
         : { [DATE_INPUT_INVALID]: 'Enter a valid date' };
     };
     this.dayControl.setValidators([
-      partValidator(configuration.dayFieldId, 'day'),
+      partValidator(configuration.day),
       validDateValidator
     ]);
     this.dayControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });

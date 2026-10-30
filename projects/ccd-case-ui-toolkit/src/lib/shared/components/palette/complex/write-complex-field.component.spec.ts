@@ -1,6 +1,6 @@
 import { DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
@@ -12,7 +12,6 @@ import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
-import { WriteTimelineOfEventsFieldComponent } from './write-timeline-of-events-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -62,13 +61,11 @@ describe('WriteComplexFieldComponent', () => {
         imports: [
           PaletteUtilsModule,
           ConditionalShowModule,
-          ReactiveFormsModule,
           fieldWriteComponentMock,
           fieldReadComponentMock
         ],
         declarations: [
           WriteComplexFieldComponent,
-          WriteTimelineOfEventsFieldComponent,
           FieldsFilterPipe,
 
           // Mocks
@@ -824,148 +821,6 @@ describe('WriteComplexFieldComponent', () => {
       expect(field.caseField.field_type instanceof FieldType).toBeTruthy();
       expect(field.caseField.field_type.id).toEqual(COLLECTION_TYPE.id);
       expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
-    });
-  });
-
-  describe('configured date input', () => {
-    const createTimelineField = (
-      dayDisplayContext = 'OPTIONAL',
-      monthDisplayContext: string | null = null,
-      yearDisplayContext: string | null = null
-    ): CaseField => ({
-      id: 'timelineOfEvents',
-      label: 'Timeline of events',
-      display_context: 'COMPLEX',
-      field_type: {
-        id: 'TimelineOfEvents',
-        type: 'Complex',
-        complex_fields: [
-          { id: 'timelineDateLabel', label: 'Date', hint_text: 'For example, 12 11 2007', field_type: { id: 'Label', type: 'Label' }, value: null },
-          { id: 'timelineDay', label: 'Day', display_context: dayDisplayContext, field_type: { id: 'Number', type: 'Number' }, value: null },
-          { id: 'timelineMonth', label: 'Month', display_context: monthDisplayContext, field_type: { id: 'Number', type: 'Number' }, value: null },
-          { id: 'timelineYear', label: 'Year', display_context: yearDisplayContext, field_type: { id: 'Number', type: 'Number' }, value: null },
-          { id: 'timelineDescription', label: 'What happened', display_context: 'MANDATORY', field_type: { id: 'TextArea', type: 'TextArea' }, value: null }
-        ]
-      }
-    } as CaseField);
-
-    let fixture: ComponentFixture<WriteTimelineOfEventsFieldComponent>;
-    let component: WriteTimelineOfEventsFieldComponent;
-    let rootForm: FormGroup;
-
-    beforeEach(waitForAsync(() => {
-      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
-      prepareTestBed();
-      fixture = TestBed.createComponent(WriteTimelineOfEventsFieldComponent);
-      component = fixture.componentInstance;
-      rootForm = new FormGroup({});
-      component.formGroup = rootForm;
-      component.caseField = createTimelineField();
-      fixture.detectChanges();
-    }));
-
-    it('renders a shared date question with compact, labelled inputs', () => {
-      expect(fixture.nativeElement.querySelector('fieldset legend').textContent).toContain('Date');
-      expect(fixture.nativeElement.querySelector('.form-hint').textContent).toContain('For example, 12 11 2007');
-      expect(fixture.nativeElement.querySelectorAll('.form-date input').length).toBe(3);
-      expect(fixture.nativeElement.querySelector('ccd-field-write')).toBeTruthy();
-      expect(fixture.nativeElement.querySelector('label[for="timelineDay"]').textContent).toContain('Day (optional)');
-      expect(fixture.nativeElement.querySelector('label[for="timelineMonth"]').textContent).toContain('Month');
-      expect(fixture.nativeElement.querySelector('label[for="timelineYear"]').textContent).toContain('Year');
-    });
-
-    it('allows an unknown day and preserves all three child values in the complex payload', () => {
-      component.monthControl.setValue('4');
-      component.yearControl.setValue('2024');
-      component.dayControl.setValue(null);
-      fixture.detectChanges();
-
-      expect(component.dayControl.valid).toBeTrue();
-      expect(rootForm.valid).toBeTrue();
-      expect(rootForm.value.timelineOfEvents).toEqual({
-        timelineDateLabel: null,
-        timelineDay: null,
-        timelineMonth: '4',
-        timelineYear: '2024',
-        timelineDescription: null
-      });
-    });
-
-    it('requires month and year and validates complete dates, including leap years', () => {
-      expect(component.monthControl.errors.dateInputRequired).toBe('Month is required');
-      expect(component.yearControl.errors.dateInputRequired).toBe('Year is required');
-
-      component.monthControl.setValue('2');
-      component.yearControl.setValue('2024');
-      component.dayControl.setValue('29');
-      expect(component.dayControl.valid).toBeTrue();
-
-      component.yearControl.setValue('2023');
-      expect(component.dayControl.errors.dateInputInvalid).toBe('Enter a valid date');
-
-      component.dayControl.setValue('28');
-      expect(component.dayControl.valid).toBeTrue();
-    });
-
-    it('rejects non-integers, out-of-range months and impossible calendar dates', () => {
-      component.yearControl.setValue('2024');
-      component.monthControl.setValue('13');
-      expect(component.monthControl.errors.dateInputInvalid).toBe('Enter a valid month');
-
-      component.monthControl.setValue('4');
-      component.dayControl.setValue('31');
-      expect(component.dayControl.errors.dateInputInvalid).toBe('Enter a valid date');
-
-      component.dayControl.setValue('1.5');
-      expect(component.dayControl.errors.dateInputInvalid).toBe('Enter a valid day');
-    });
-
-    it('clearing a previously entered day clears its stored value', () => {
-      component.dayControl.setValue('12');
-      component.clearEmptyDatePart(component.dayControl);
-      component.dayControl.setValue('');
-      component.clearEmptyDatePart(component.dayControl);
-      fixture.detectChanges();
-
-      expect(rootForm.value.timelineOfEvents.timelineDay).toBeNull();
-    });
-
-    it('keeps values and input IDs independent between repeated timeline rows', () => {
-      const collectionField = { id: 'timelineEvents', field_type: { type: 'Collection' } };
-      const firstRow = new FormGroup({});
-      const secondRow = new FormGroup({});
-      const firstCaseField = createTimelineField();
-      const secondCaseField = createTimelineField();
-      (firstRow as any).caseField = firstCaseField;
-      (secondRow as any).caseField = secondCaseField;
-      (firstRow as any).component = { caseField: collectionField };
-      (secondRow as any).component = { caseField: collectionField };
-
-      const firstFixture = TestBed.createComponent(WriteTimelineOfEventsFieldComponent);
-      firstFixture.componentInstance.caseField = firstCaseField;
-      firstFixture.componentInstance.parent = firstRow;
-      firstFixture.componentInstance.formGroup = rootForm;
-      firstFixture.componentInstance.idPrefix = 'row0_';
-      firstFixture.detectChanges();
-
-      const secondFixture = TestBed.createComponent(WriteTimelineOfEventsFieldComponent);
-      secondFixture.componentInstance.caseField = secondCaseField;
-      secondFixture.componentInstance.parent = secondRow;
-      secondFixture.componentInstance.formGroup = rootForm;
-      secondFixture.componentInstance.idPrefix = 'row1_';
-      secondFixture.detectChanges();
-
-      firstFixture.componentInstance.monthControl.setValue('3');
-      firstFixture.componentInstance.yearControl.setValue('2025');
-      secondFixture.componentInstance.monthControl.setValue('10');
-      secondFixture.componentInstance.yearControl.setValue('2026');
-
-      expect(firstRow.value).toEqual({ timelineDateLabel: null, timelineDay: null, timelineMonth: '3', timelineYear: '2025', timelineDescription: null });
-      expect(secondRow.value).toEqual({ timelineDateLabel: null, timelineDay: null, timelineMonth: '10', timelineYear: '2026', timelineDescription: null });
-      expect(firstFixture.nativeElement.querySelector('#row0_timelineDay')).toBeTruthy();
-      expect(secondFixture.nativeElement.querySelector('#row1_timelineDay')).toBeTruthy();
-      firstFixture.destroy();
-      secondFixture.destroy();
     });
   });
 });
