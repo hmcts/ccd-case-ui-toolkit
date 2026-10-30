@@ -150,7 +150,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.isRefreshModalVisible = true;
-      this.router.navigate([this.initialUrl], { relativeTo: this.route });
+      void this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
     // if the url contains /submit there is the potential that the user has gone straight to the submit page
@@ -161,7 +161,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
         const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
         this.isRefreshModalVisible = true;
-        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+        void this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
       }
     }
     return false;
@@ -604,7 +604,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       this.caseSubmit({ form, caseEventData, submit });
     } else {
       // Navigate to tasks tab on case details page
-      this.router.navigate([`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.getCaseId(caseDetails)}`], { fragment: 'Tasks' });
+      void this.router.navigate([`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.getCaseId(caseDetails)}`], { fragment: 'Tasks' });
     }
   }
 

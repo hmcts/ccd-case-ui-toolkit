@@ -32,7 +32,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
   public ngOnInit(): void {
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
-    Promise.resolve(null).then(() => {
+    void Promise.resolve(null).then(() => {
       const componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
       const injector = Injector.create({
         providers: [],
