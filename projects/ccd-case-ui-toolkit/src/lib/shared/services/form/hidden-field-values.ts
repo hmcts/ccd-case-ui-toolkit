@@ -29,18 +29,7 @@ export class HiddenFieldValues {
     }
 
     if (control instanceof FormArray) {
-      return Array.isArray(data) ? data.map((item, index) => {
-        const row = control.at(index);
-        const valueControl = row instanceof FormGroup ? row.controls.value : undefined;
-        if (valueControl && item && typeof item === 'object' && Object.prototype.hasOwnProperty.call(item, 'value')) {
-          return {
-            ...item,
-            // The value group is a collection-item container, not another configurable case field.
-            value: this.clearHiddenValues(item.value, valueControl, hidden, valueControl instanceof FormGroup)
-          };
-        }
-        return this.clearHiddenValues(item, row, hidden);
-      }) : data;
+      return this.clearCollectionValues(data, control, hidden);
     }
     if (control instanceof FormGroup) {
       const result = { ...data };
@@ -50,5 +39,23 @@ export class HiddenFieldValues {
       return result;
     }
     return data;
+  }
+
+  private static clearCollectionValues(data: any, control: FormArray, hidden: boolean): any {
+    if (!Array.isArray(data)) {
+      return data;
+    }
+    return data.map((item, index) => {
+      const row = control.at(index);
+      const valueControl = row instanceof FormGroup ? row.controls.value : undefined;
+      if (valueControl && item && typeof item === 'object' && Object.hasOwn(item, 'value')) {
+        return {
+          ...item,
+          // The value group is a collection-item container, not another configurable case field.
+          value: this.clearHiddenValues(item.value, valueControl, hidden, valueControl instanceof FormGroup)
+        };
+      }
+      return this.clearHiddenValues(item, row, hidden);
+    });
   }
 }
