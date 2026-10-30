@@ -1,0 +1,87 @@
+<div class="form-group" [id]="id()">
+  <div class="form-group bottom-30"
+       [ngClass]="{'form-group-error': hasVisibleDateInputError()}">
+    <fieldset>
+      <legend>
+        <span class="form-label">{{dateQuestionLabel() | rpxTranslate}}</span>
+      </legend>
+      <span class="form-hint" [id]="dateInputHintId()">{{dateInputHintText() | rpxTranslate}}</span>
+      <span class="form-hint" *ngIf="caseField.hint_text" [id]="serviceHintId()">{{caseField.hint_text | rpxTranslate}}</span>
+      <span class="error-message" *ngIf="hasVisibleDateInputError()" [id]="dateInputGroupErrorId()">
+        {{dateInputErrorMessage() | rpxTranslate}}
+      </span>
+
+      <div class="form-date" [class.form-date-has-optional-part]="hasOptionalDatePart()">
+        <div class="form-group form-group-day">
+          <label class="form-label" [for]="dateInputId('timelineDay')">{{dateInputLabel('timelineDay', 'Day') | rpxTranslate}}</label>
+          <input class="form-control"
+                 [formControl]="dayControl"
+                 [id]="dateInputId('timelineDay')"
+                 [name]="dateInputId('timelineDay')"
+                 type="text"
+                 maxlength="2"
+                 pattern="[0-9]*"
+                 inputmode="numeric"
+                 [attr.aria-describedby]="dateInputDescribedBy()"
+                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
+                 (input)="clearEmptyDatePart(dayControl)">
+        </div>
+
+        <div class="form-group form-group-month">
+          <label class="form-label" [for]="dateInputId('timelineMonth')">{{dateInputLabel('timelineMonth', 'Month') | rpxTranslate}}</label>
+          <input class="form-control"
+                 [formControl]="monthControl"
+                 [id]="dateInputId('timelineMonth')"
+                 [name]="dateInputId('timelineMonth')"
+                 type="text"
+                 maxlength="2"
+                 pattern="[0-9]*"
+                 inputmode="numeric"
+                 [attr.aria-describedby]="dateInputDescribedBy()"
+                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
+                 (input)="clearEmptyDatePart(monthControl)">
+        </div>
+
+        <div class="form-group form-group-year">
+          <label class="form-label" [for]="dateInputId('timelineYear')">{{dateInputLabel('timelineYear', 'Year') | rpxTranslate}}</label>
+          <input class="form-control"
+                 [formControl]="yearControl"
+                 [id]="dateInputId('timelineYear')"
+                 [name]="dateInputId('timelineYear')"
+                 type="text"
+                 maxlength="4"
+                 pattern="[0-9]*"
+                 inputmode="numeric"
+                 [attr.aria-describedby]="dateInputDescribedBy()"
+                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
+                 (input)="clearEmptyDatePart(yearControl)">
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <ng-container *ngFor="let field of complexFields">
+    <ng-container *ngIf="!isDateInputPart(field) && field.id !== 'timelineDateLabel'">
+      <ng-container [ngSwitch]="field | ccdIsReadOnly">
+        <ccd-field-read *ngSwitchCase="true"
+                        ccdLabelSubstitutor
+                        [caseField]="buildField(field)"
+                        [caseFields]="caseFields"
+                        [formGroup]="formGroup"
+                        [withLabel]="true">
+        </ccd-field-read>
+        <ccd-field-write *ngSwitchCase="false"
+                         ccdLabelSubstitutor
+                         [caseField]="field"
+                         [caseFields]="caseFields"
+                         [formGroup]="formGroup"
+                         [parent]="complexGroup"
+                         [idPrefix]="buildIdPrefix(field)"
+                         [hidden]="field.hidden"
+                         [isExpanded]="isExpanded"
+                         [isInSearchBlock]="isInSearchBlock">
+        </ccd-field-write>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
