@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.19-exui-5453
+**EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
+
 ### Version 7.4.19
 **EXUI-4627** Dev Package Update - Ngrx-store-freeze
 **EXUI-4775** Package update - moment - minor
