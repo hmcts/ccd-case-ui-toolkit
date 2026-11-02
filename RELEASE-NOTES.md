@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.21
+Revert Broken Access Controls
+
 ### Version 7.4.20
 **EXUI-4461** Broken Access Controls
 
