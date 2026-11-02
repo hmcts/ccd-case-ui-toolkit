@@ -468,6 +468,24 @@ describe('WriteDocumentFieldComponent', () => {
       expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
     });
 
+    it('should show the file size message for status 413 in either upload mode', () => {
+      const error = { status: 413, error: 'Payload Too Large' } as HttpError;
+
+      for (const secureMode of [false, true]) {
+        component.fileSecureModeOn = secureMode;
+        expect(component['getErrorMessage'](error)).toBe(WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_TOO_LARGE);
+      }
+    });
+
+    it('should display the file size message after a status 413 upload failure', () => {
+      const error = { status: 413, error: 'Payload Too Large' } as HttpError;
+
+      component['handleDocumentUploadError'](error);
+
+      expect(component.fileUploadMessages).toBe('The selected file exceeds the permitted upload size. Please choose a smaller file or reduce the file size.');
+      expect(component.valid).toBeFalsy();
+    });
+
     it('should return extracted secure error message for status 422 and secure mode', () => {
       component.fileSecureModeOn = true;
       const error = {

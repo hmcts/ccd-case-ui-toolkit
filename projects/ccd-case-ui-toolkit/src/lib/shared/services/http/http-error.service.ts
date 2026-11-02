@@ -25,14 +25,14 @@ export class HttpErrorService {
     }
     let httpError = new HttpError();
     if (error instanceof HttpErrorResponse) {
-      if (error.headers?.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
+      if (error.headers?.get(HttpErrorService.CONTENT_TYPE)?.includes(HttpErrorService.JSON)) {
         try {
           httpError = HttpError.from(error);
         } catch (e) {
           HttpErrorService.logger.error('Unable to convert HTTP error response.', { error: e });
         }
       }
-      if (!httpError.status) {
+      if (error.status) {
         httpError.status = error.status;
       }
     } else if (error) {

@@ -119,6 +119,40 @@ describe('HttpErrorService', () => {
         );
     });
 
+    it('should preserve the HTTP status when the content type is missing', () => {
+      const response = new HttpErrorResponse({ status: 413, error: 'Payload Too Large' });
+
+      errorService.handle(response).subscribe({
+        next: () => fail('expected an error'),
+        error: (error: HttpError) => {
+          expect(error.status).toBe(413);
+          expect(error.error).toBe('Unknown error');
+        }
+      });
+    });
+
+    it('should preserve the HTTP status for a non-JSON response', () => {
+      const response = new HttpErrorResponse({
+        headers: new HttpHeaders().set('Content-Type', 'text/plain'),
+        status: 413,
+        error: 'Payload Too Large'
+      });
+
+      expect(HttpErrorService.convertToHttpError(response).status).toBe(413);
+    });
+
+    it('should use the response status when it differs from the JSON error body', () => {
+      const response = new HttpErrorResponse({
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        status: 413,
+        error: { ...VALID_ERROR_BODY, status: 422 }
+      });
+
+      const converted = HttpErrorService.convertToHttpError(response);
+      expect(converted.status).toBe(413);
+      expect(converted.message).toBe(VALID_ERROR_BODY.message);
+    });
+
     it('should convert a non-valid HttpErrorResponse error into an HttpError', (done) => {
       errorService.handle(NOT_VALID_ERROR_RESPONSE)
         .subscribe(
