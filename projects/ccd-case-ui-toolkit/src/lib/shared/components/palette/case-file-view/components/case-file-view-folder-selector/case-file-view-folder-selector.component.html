@@ -1,4 +1,4 @@
-<span tabindex="0" aria-label="close" class="close" (click)="cancel()" (keyup)="$event.key === 'Enter' ? cancel() : null"></span>
+<button type="button" aria-label="Close" class="close" (click)="cancel()"></button>
 <h2 class="govuk-heading-l">Move File</h2>
 <p>Where do you want to move "{{ data.document.document_filename }}" file?</p>
 <div class="folders govuk-radios govuk-radios--conditional">
