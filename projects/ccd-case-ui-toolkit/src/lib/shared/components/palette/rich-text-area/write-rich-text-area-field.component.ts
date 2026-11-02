@@ -5,7 +5,7 @@ import { marks as editorMarks, nodes as editorNodes } from 'ngx-editor/schema';
 import { setBlockType } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
 import { Fragment, Schema } from 'prosemirror-model';
-import type { DOMOutputSpec, Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
+import type { DOMOutputSpec, MarkSpec, Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 import { liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state';
 import { Subscription } from 'rxjs';
@@ -127,7 +127,19 @@ const richTextNodes = {
   } as NodeSpec
 };
 
-const richTextSchema = new Schema({ nodes: richTextNodes, marks: editorMarks });
+const richTextMarks = {
+  ...editorMarks,
+  em: {
+    ...editorMarks.em,
+    toDOM: (): DOMOutputSpec => ['i', 0]
+  } as MarkSpec,
+  strong: {
+    ...editorMarks.strong,
+    toDOM: (): DOMOutputSpec => ['b', 0]
+  } as MarkSpec
+};
+
+const richTextSchema = new Schema({ nodes: richTextNodes, marks: richTextMarks });
 
 @Component({
   selector: 'ccd-write-rich-text-area-field',
@@ -1137,6 +1149,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
+    this.normaliseDocmosisInlineFormatting(documentElement);
     const hasMeaningfulContent = this.hasMeaningfulRichTextContent(documentElement);
     if (hasMeaningfulContent) {
       this.preserveDocmosisBlankParagraphs(documentElement);
@@ -1164,6 +1177,7 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
     this.removeUnsupportedMarkup(documentElement);
     this.normaliseDateRangeSpacing(documentElement);
     this.removeUnsupportedAttributes(documentElement);
+    this.normaliseDocmosisInlineFormatting(documentElement);
     const hasMeaningfulContent = this.hasMeaningfulRichTextContent(documentElement);
     if (hasMeaningfulContent) {
       this.preserveDocmosisBlankParagraphs(documentElement);
@@ -1180,6 +1194,29 @@ export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent
   */
   private preserveDocmosisBlankParagraphs(documentElement: Document): void {
     this.replaceBlankParagraphContent(documentElement, '\u00a0');
+  }
+
+  /**
+   * Uses the presentational tags supported by Docmosis while continuing to
+   * accept the equivalent semantic tags when existing content is loaded.
+   */
+  private normaliseDocmosisInlineFormatting(documentElement: Document): void {
+    this.replaceElements(documentElement, 'strong', 'b');
+    this.replaceElements(documentElement, 'em', 'i');
+  }
+
+  private replaceElements(documentElement: Document, sourceTag: string, targetTag: string): void {
+    const elements = Array.prototype.slice.call(
+      documentElement.body.querySelectorAll(sourceTag)
+    ) as HTMLElement[];
+
+    elements.forEach((element) => {
+      const replacement = documentElement.createElement(targetTag);
+      while (element.firstChild) {
+        replacement.appendChild(element.firstChild);
+      }
+      element.replaceWith(replacement);
+    });
   }
 
   private hasMeaningfulRichTextContent(documentElement: Document): boolean {

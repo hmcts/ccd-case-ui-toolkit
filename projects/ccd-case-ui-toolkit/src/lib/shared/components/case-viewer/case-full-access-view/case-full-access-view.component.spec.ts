@@ -1,10 +1,10 @@
-import { Location } from '@angular/common';
+import { Location, ViewportScroller } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -363,7 +363,7 @@ const CID = '1234567890123456';
 const $ALL_TAB_HEADERS = By.css('mat-tab-group>mat-tab');
 const $FIRST_TAB_HEADER = By.css('mat-tab-group>mat-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('mat-tab-group>mat-tab:not(:first-child)');
-const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#NameTab');
+const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab[data-case-tab-id="NameTab"]');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
@@ -1382,16 +1382,12 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   }));
 
   it('should render two prepended tabs', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(6);
+    expect(d.queryAll(By.css('[role="tab"]')).length).toBe(6);
   });
 
   it('should display "Tasks" tab as the first tab', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
+    const tasksTab = d.queryAll(By.css('[role="tab"]'))[0].nativeElement as HTMLElement;
+    expect(tasksTab.innerText).toBe('Tasks');
   });
 });
 
@@ -1531,11 +1527,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   }));
 
   it('should render appended tabs hearings', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(7);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const tabs = d.queryAll(By.css('[role="tab"]'));
+    expect(tabs.length).toBe(7);
+    expect((tabs[6].nativeElement as HTMLElement).innerText).toBe('Hearings');
   });
 
   it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
@@ -1827,7 +1821,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
-    const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
+    const caseFlagsTab = d.queryAll(By.css('[role="tab"]'))[5].nativeElement as HTMLElement;
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
     // Click the "View case flags" link and check the Case Flags tab is now active
     viewCaseFlagsLink.click();
@@ -1989,11 +1983,9 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   }));
 
   it('should render 1st order of tabs', () => {
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(4);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
+    const tabs = debugElement.queryAll(By.css('[role="tab"]'));
+    expect(tabs.length).toBe(4);
+    expect((tabs[0].nativeElement as HTMLElement).innerText).toBe('History');
   });
 });
 
@@ -2161,18 +2153,58 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   it('should display overview tab by default', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     componentFixture.detectChanges();
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab0.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
-    const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab1.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
-    const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((tasksTab2.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Overview');
-    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((tasksTab3.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case notes');
-    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
-    expect((tasksTab4.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const tabLabels = debugElement.queryAll(By.css('[role="tab"]'));
+    expect((tabLabels[0].nativeElement as HTMLElement).innerText).toBe('Tasks');
+    expect((tabLabels[1].nativeElement as HTMLElement).innerText).toBe('Roles and access');
+    expect((tabLabels[2].nativeElement as HTMLElement).innerText).toBe('Overview');
+    expect((tabLabels[3].nativeElement as HTMLElement).innerText).toBe('Case notes');
+    expect((tabLabels[4].nativeElement as HTMLElement).innerText).toBe('Hearings');
+  });
+
+  it('keeps case tab IDs separate from URL fragment targets and preserves accessibility links', () => {
+    const tabs = caseViewerComponent.tabGroup._tabs.toArray();
+    const headers = debugElement.queryAll(By.css('[role="tab"]'));
+    const panels = debugElement.queryAll(By.css('[role="tabpanel"]'));
+
+    expect(headers.length).toBe(tabs.length);
+    tabs.forEach((tab, index) => {
+      const header = headers[index].nativeElement as HTMLElement;
+      const panel = panels[index].nativeElement as HTMLElement;
+      expect(tab.id).toBeNull();
+      expect(header.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+      expect(panel.getAttribute('aria-labelledby')).toBe(header.id);
+      expect(header.getAttribute('aria-controls')).toBe(panel.id);
+    });
+    ['tasks', 'roles-and-access', 'overview', 'caseNotes', 'hearings'].forEach(id => {
+      expect(componentFixture.nativeElement.querySelector(`[id="${id}"]`)).toBeNull();
+    });
+  });
+
+  it('selects Summary without giving router anchor scrolling a matching target', () => {
+    caseViewerComponent.sortedTabs = [{
+      ...caseViewerComponent.sortedTabs[0], id: 'Summary', label: 'Summary', fields: []
+    }];
+    componentFixture.detectChanges();
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Summary');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+    expect(selectedTab.textContent.trim()).toBe('Summary');
+    expect(document.getElementById('Summary')).toBeNull();
+    const scrollTo = spyOn(window, 'scrollTo');
+    TestBed.inject(ViewportScroller).scrollToAnchor('Summary');
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('selects a tab from its unchanged fragment label with Material-generated header IDs', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Case%20notes');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+    expect(selectedTab.textContent.trim()).toBe('Case notes');
   });
 
   it('should add prepended & appended tabs to the existing tab list', () => {
