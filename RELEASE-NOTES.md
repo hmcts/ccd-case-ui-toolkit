@@ -1,5 +1,13 @@
 ## RELEASE NOTES
 
+### Version 7.4.19
+**EXUI-4627** Dev Package Update - Ngrx-store-freeze
+**EXUI-4775** Package update - moment - minor
+**EXUI-4952** Package update - session-file-store - minor
+**EXUI-5008** Suppressions - glob - minor
+**EXUI-5045** Package update - ts-node - minor
+**EXUI-5094** Package update - joi - minor
+
 ### Version 7.4.18
 **EXUI-5389** Case list filter clearing
 
