@@ -62,10 +62,10 @@ export class DatePipe implements PipeTransform {
         // we could attempt to do something with.
         const parsedDate: number = Date.parse(value);
         // We successfully parsed it so let's use it.
-        if (!isNaN(parsedDate)) {
+        if (!Number.isNaN(parsedDate)) {
           const d: Date = new Date(parsedDate);
           // If what we received didn't include time, don't include it here either.
-          if (value.indexOf(':') < 0) {
+          if (!value.includes(':')) {
             const shortDate: string = d.toLocaleDateString('en-GB');
             const shortISO: string = shortDate.split('/').reverse().join('-');
             return this.transform(shortISO, zone, format);
@@ -119,7 +119,7 @@ export class DatePipe implements PipeTransform {
   }
 
   private toInt(str: string): number {
-    return parseInt(str, 10);
+    return Number.parseInt(str, 10);
   }
 
   private pad(num: any, padNum = 2): string {

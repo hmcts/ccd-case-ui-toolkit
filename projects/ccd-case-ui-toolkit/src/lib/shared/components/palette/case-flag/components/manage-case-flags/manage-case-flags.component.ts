@@ -65,7 +65,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
         /* istanbul ignore else */
-        if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
+        if (flagsInstance.flags.details?.length > 0) {
           displayData = [
             ...displayData,
             ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance, originalStatus, originalIdToFlag))
@@ -75,7 +75,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
       }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
     }
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
-    if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
+    if (this.flagsDisplayData?.length > 0) {
       this.formGroup.addControl(this.selectedControlName, new FormControl(null));
     } else {
       // No flags display data means there are no flags to select from. The user cannot proceed with a flag update.
@@ -183,7 +183,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
     // CaseField formatted_value from which to get the original persisted data
     const pathToValue = flagsInstance.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-    if (pathToValue.indexOf('.') > -1) {
+    if (pathToValue.includes('.')) {
       pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach((part) => {
         if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
           formattedValue = formattedValue[part];

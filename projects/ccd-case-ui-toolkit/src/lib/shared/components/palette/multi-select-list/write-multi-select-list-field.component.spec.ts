@@ -92,7 +92,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
     expect(checkboxes.length).toEqual(FIELD_TYPE.fixed_list_items.length);
 
     FIELD_TYPE.fixed_list_items.forEach(item => {
-      expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
+      expect(checkboxes.some(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
     });
   });
 
@@ -102,7 +102,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
     expect(checkboxes.length).toEqual(VALUES.length);
 
     VALUES.forEach(value => {
-      expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
+      expect(checkboxes.some(checkbox => attr(checkbox, 'value') === value)).toBeTruthy();
     });
   });
 

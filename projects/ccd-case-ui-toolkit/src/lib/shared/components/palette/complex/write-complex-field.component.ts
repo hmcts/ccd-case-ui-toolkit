@@ -98,7 +98,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   private isAddressUK(): boolean {
-    return ADDRESS_FIELD_TYPES.indexOf(this.caseField.field_type.id) > -1;
+    return ADDRESS_FIELD_TYPES.includes(this.caseField.field_type.id);
   }
 
   private isTopLevelWithinCollection(): boolean {

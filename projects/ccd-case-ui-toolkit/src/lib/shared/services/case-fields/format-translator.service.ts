@@ -212,36 +212,36 @@ export class FormatTranslatorService {
 
   public hasDate(value: string): boolean {
     return this.translate(value).length &&
-      value.toLowerCase().indexOf('d') >= 0 &&
-      value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+      value.toLowerCase().includes('d') &&
+      value.includes('M') && value.toLowerCase().includes('y');
   }
 
   public is24Hour(value: string): boolean {
     return this.translate(value).length &&
-      value.indexOf('H') >= 0;
+      value.includes('H');
   }
 
   public hasNoDay(value: string): boolean {
-    return this.translate(value).length && value.toLowerCase().indexOf('d') === -1 &&
-      value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
+    return this.translate(value).length && !value.toLowerCase().includes('d') &&
+      value.includes('M') && value.toLowerCase().includes('y');
   }
 
   public hasNoDayAndMonth(value: string): boolean {
     return this.translate(value).length &&
-      value.toLowerCase().indexOf('d') === -1 &&
-      value.indexOf('M') === -1 &&
-      value.toLowerCase().indexOf('y') >= 0;
+      !value.toLowerCase().includes('d') &&
+      !value.includes('M') &&
+      value.toLowerCase().includes('y');
   }
 
   public hasHours(value: string): boolean {
-    return this.translate(value).length && value.toLowerCase().indexOf('h') >= 0 && value.indexOf('m') === -1;
+    return this.translate(value).length && value.toLowerCase().includes('h') && !value.includes('m');
   }
 
   public hasMinutes(value: string): boolean {
-    return this.translate(value).length && value.indexOf('m') >= 0 && value.toLowerCase().indexOf('h') >= 0;
+    return this.translate(value).length && value.includes('m') && value.toLowerCase().includes('h');
   }
 
   public hasSeconds(value: string): boolean {
-    return this.translate(value).length && value.toLowerCase().indexOf('s') >= 0;
+    return this.translate(value).length && value.toLowerCase().includes('s');
   }
 }

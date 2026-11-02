@@ -168,7 +168,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     let flagsCaseFieldValue = selectedFlagsLocation.caseField?.value;
     const path = selectedFlagsLocation.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-    if (path.indexOf('.') > -1) {
+    if (path.includes('.')) {
       path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
     if (flagsCaseFieldValue) {

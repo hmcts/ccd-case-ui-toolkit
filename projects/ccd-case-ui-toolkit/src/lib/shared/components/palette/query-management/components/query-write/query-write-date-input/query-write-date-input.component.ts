@@ -23,7 +23,7 @@ export class QueryWriteDateInputComponent implements ControlValueAccessor {
   private onTouched: () => void;
 
   public writeValue(date: Date): void {
-    if (date instanceof Date && !isNaN(date.getTime())) {
+    if (date instanceof Date && !Number.isNaN(date.getTime())) {
       this.day = date.getDate();
       this.month = date.getMonth() + 1; // Months are zero-based
       this.year = date.getFullYear();

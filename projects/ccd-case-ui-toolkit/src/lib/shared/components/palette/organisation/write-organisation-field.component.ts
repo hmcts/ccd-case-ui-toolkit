@@ -64,12 +64,10 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         };
       }
       this.preSelectDefaultOrg();
+    } else if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
+      this.preSelectDefaultOrg();
     } else {
-      if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
-        this.preSelectDefaultOrg();
-      } else {
-        this.preSelectEmptyOrg();
-      }
+      this.preSelectEmptyOrg();
     }
 
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
@@ -111,7 +109,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
     organisations.forEach((org) => {
       const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
-      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
+      const hasMatchingOrganisation = resultSet.some(item => item.organisationIdentifier === org.organisationIdentifier);
       const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
       const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
 

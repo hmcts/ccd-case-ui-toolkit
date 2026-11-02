@@ -138,11 +138,11 @@ export class CreateCaseFiltersComponent implements OnInit {
   private retainEventsWithCreateRights(events: CaseEvent[]): CaseEvent[] {
     const userProfile = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), null);
     return events.filter(event => userProfile && userProfile.roles &&
-      !!userProfile.roles.find(role => this.hasCreateAccess(event, role)));
+      userProfile.roles.some(role => this.hasCreateAccess(event, role)));
   }
 
   private hasCreateAccess(caseEvent: CaseEvent, role: any): boolean {
-    return !!caseEvent.acls.find(acl => acl.role === role && acl.create === true);
+    return caseEvent.acls.some(acl => acl.role === role && acl.create === true);
   }
 
   private selectJurisdiction(jurisdictions: Jurisdiction[], filterJurisdictionControl: FormControl) {

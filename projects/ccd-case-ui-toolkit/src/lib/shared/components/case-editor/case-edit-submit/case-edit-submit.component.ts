@@ -194,7 +194,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public navigateToPage(pageId: string): void {
-    this.caseEdit.navigateToPage(pageId);
+    void this.caseEdit.navigateToPage(pageId);
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {

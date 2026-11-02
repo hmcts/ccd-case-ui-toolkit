@@ -234,7 +234,7 @@ export class FieldsUtils {
       case 'Complex': {
         if (result[field.id] && field.field_type.complex_fields) {
           field.field_type.complex_fields.forEach((f: CaseField) => {
-            if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+            if (['Collection', 'Complex', 'MultiSelectList'].includes(f.field_type.type)) {
               FieldsUtils.LABEL_MERGE_FUNCTION(f, result[field.id]);
             }
           });
@@ -258,7 +258,7 @@ export class FieldsUtils {
               case 'Complex': {
                 if (field.field_type.collection_field_type.complex_fields) {
                   field.field_type.collection_field_type.complex_fields.forEach((f: CaseField) => {
-                    if (['Collection', 'Complex', 'MultiSelectList'].indexOf(f.field_type.type) > -1) {
+                    if (['Collection', 'Complex', 'MultiSelectList'].includes(f.field_type.type)) {
                       FieldsUtils.LABEL_MERGE_FUNCTION(f, elem.value);
                     }
                   });
@@ -313,7 +313,7 @@ export class FieldsUtils {
 
       caseFieldType.complex_fields.forEach(field => {
         try {
-          const isDynamicField = FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.indexOf(field.field_type.type) !== -1;
+          const isDynamicField = FieldsUtils.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.includes(field.field_type.type);
 
           if (isDynamicField) {
             const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);

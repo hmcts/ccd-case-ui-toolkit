@@ -54,7 +54,7 @@ export class FieldsPurger {
   private retainHiddenValueByFieldType(field: CaseField, form: any): void {
     // so far only applies to the new field type OrganisationPolicy which needs to retain the default case role value
     // for other case fields there should be no side effects
-    if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
+    if (field?.field_type?.id === 'OrganisationPolicy') {
       // <bubble_wrap>
       // Doing some null checking to stop it from falling over.
       const data: FormGroup = form.get('data') as FormGroup;

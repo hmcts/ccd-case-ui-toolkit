@@ -129,12 +129,10 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       }
       this.addState(this.linkedCasesPage);
       this.proceedToNextPage();
-    } else {
-      if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
-        linkedCasesState.errorMessages.forEach((errorMessage, index) => {
-          this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description });
-        });
-      }
+    } else if (linkedCasesState.errorMessages?.length) {
+      linkedCasesState.errorMessages.forEach((errorMessage, index) => {
+        this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description });
+      });
     }
   }
 
@@ -191,7 +189,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       }
       const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
       const caseFieldValue = this.linkedCasesService.caseFieldValue;
-      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
+      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => !unlinkedCaseRefereneIds.includes(item.id));
     }
 
     this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
@@ -243,7 +241,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const caseViewFiltered = caseView.tabs.filter((tab) => {
         return tab.fields.some(
-          ({ field_type }) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
+          ({ field_type }) => field_type?.collection_field_type?.id === 'CaseLink'
         );
       });
       if (caseViewFiltered) {

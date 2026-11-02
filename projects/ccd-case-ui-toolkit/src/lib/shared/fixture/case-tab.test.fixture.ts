@@ -2,7 +2,7 @@ import { plainToClass } from 'class-transformer';
 import { CaseTab } from '../domain/case-view/case-tab.model';
 import { CaseField } from '../domain/definition/case-field.model';
 
-export let createCaseTabArray = () => {
+export const createCaseTabArray = () => {
   const tab1 = new CaseTab();
 
   tab1.id = 'AddressTab';

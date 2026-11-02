@@ -25,7 +25,7 @@ export class HttpErrorService {
     }
     let httpError = new HttpError();
     if (error instanceof HttpErrorResponse) {
-      if (error.headers?.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
+      if (error.headers?.get(HttpErrorService.CONTENT_TYPE).includes(HttpErrorService.JSON)) {
         try {
           httpError = HttpError.from(error);
         } catch (e) {

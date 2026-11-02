@@ -24,10 +24,10 @@ export class CaseEventTrigger {
   public can_save_draft?: boolean;
 
   public hasFields(): boolean {
-    return this.case_fields && this.case_fields.length !== 0;
+    return !!this.case_fields?.length;
   }
 
   public hasPages(): boolean {
-    return this.wizard_pages && this.wizard_pages.length !== 0;
+    return !!this.wizard_pages?.length;
   }
 }

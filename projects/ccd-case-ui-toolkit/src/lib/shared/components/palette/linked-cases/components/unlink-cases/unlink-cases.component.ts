@@ -94,7 +94,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
         searchCases.forEach((response: CaseView) => {
           const linkedCaseFromList = this.linkedCases.find((linkedCase) => {
             const caseRefToUse = this.getLinkedCaseId(linkedCase);
-            if (this.linkedCasesService.casesToUnlink.indexOf(caseRefToUse) > -1) {
+            if (this.linkedCasesService.casesToUnlink.includes(caseRefToUse)) {
               linkedCase.unlink = true;
             }
             return caseRefToUse === response.case_id;
@@ -158,7 +158,7 @@ export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent imp
   public onNext(): void {
     this.resetErrorMessages();
     let navigateToNextPage = true;
-    const casesMarkedToUnlink = this.linkedCases.find((linkedCase) => linkedCase.unlink && linkedCase.unlink === true);
+    const casesMarkedToUnlink = this.linkedCases.some((linkedCase) => linkedCase.unlink && linkedCase.unlink === true);
     if (!casesMarkedToUnlink) {
       this.errorMessages.push({
         title: 'case-selection',

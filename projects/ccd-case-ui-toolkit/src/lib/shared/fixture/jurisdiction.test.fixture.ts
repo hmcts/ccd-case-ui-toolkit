@@ -1,6 +1,6 @@
 import { Jurisdiction } from '../domain';
 
-export let createJurisdiction = () => {
+export const createJurisdiction = () => {
   const jurisdiction = new Jurisdiction();
 
   jurisdiction.id = 'TEST';

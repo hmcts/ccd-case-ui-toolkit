@@ -347,7 +347,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   public hasUpdateAccess(role: any): boolean {
-    return !!this.caseField.acls.find(acl => acl.role === role && acl.update === true);
+    return this.caseField.acls.some(acl => acl.role === role && acl.update === true);
   }
 
   public isNotAuthorisedToDelete(index: number) {
@@ -396,6 +396,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private isCollectionOfSimpleType(caseField: CaseField) {
     const notSimple = ['Collection', 'Complex'];
-    return notSimple.indexOf(caseField.field_type.collection_field_type.type) < 0;
+    return !notSimple.includes(caseField.field_type.collection_field_type.type);
   }
 }

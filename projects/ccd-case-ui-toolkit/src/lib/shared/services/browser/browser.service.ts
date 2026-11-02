@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class BrowserService {
   public isFirefox(): boolean {
-    return window.navigator.userAgent.indexOf('Firefox') > -1;
+    return window.navigator.userAgent.includes('Firefox');
   }
   public isSafari(): boolean {
-    const isSafariAgent = window.navigator.userAgent.indexOf('Safari') > -1;
-    const isChromeAgent = window.navigator.userAgent.indexOf('Chrome') > -1;
+    const isSafariAgent = window.navigator.userAgent.includes('Safari');
+    const isChromeAgent = window.navigator.userAgent.includes('Chrome');
     if ((isChromeAgent) && (isSafariAgent)) {
       return false;
     }

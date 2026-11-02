@@ -146,7 +146,7 @@ export class PaletteService {
     if (argumentValue) {
       const displayContextParameterArray = argumentValue.includes(',') ? argumentValue.split(',') : [argumentValue];
       const componentToRender = displayContextParameterArray.filter(displayContextParameter => {
-        return !Object.values(DisplayContextParameter).find(displayContextParameterFromLookup => {
+        return !Object.values(DisplayContextParameter).some(displayContextParameterFromLookup => {
            return displayContextParameter === displayContextParameterFromLookup;
         });
       });

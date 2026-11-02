@@ -34,8 +34,8 @@ export class IsCompoundPipe implements PipeTransform {
       return false;
     }
 
-    if (IsCompoundPipe.COMPOUND_TYPES.indexOf(field.field_type.type) !== -1) {
-      if (IsCompoundPipe.EXCLUDE.indexOf(field.field_type.id) !== -1) {
+    if (IsCompoundPipe.COMPOUND_TYPES.includes(field.field_type.type)) {
+      if (IsCompoundPipe.EXCLUDE.includes(field.field_type.id)) {
         return false;
       }
       return true;

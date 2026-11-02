@@ -92,7 +92,7 @@ describe('CaseListComponent', () => {
       // Added +1 for checkbox column
       expect(headRow.children.length).toBe(tableConfig.columnConfigs.length + 1);
       tableConfig.columnConfigs.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.header)))
+        expect(headRow.children.some(c => c.nativeElement.textContent.trim().startsWith(col.header)))
           .toBeTruthy(`Could not find header ${col.header}`);
       });
     });
@@ -251,7 +251,7 @@ describe('CaseListComponent', () => {
       const headRow = de.query(By.css('div>table>thead>tr'));
       expect(headRow.children.length).toBe(tableConfig.columnConfigs.length);
       tableConfig.columnConfigs.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.header)))
+        expect(headRow.children.some(c => c.nativeElement.textContent.trim().startsWith(col.header)))
           .toBeTruthy(`Could not find header ${col.header}`);
       });
     });

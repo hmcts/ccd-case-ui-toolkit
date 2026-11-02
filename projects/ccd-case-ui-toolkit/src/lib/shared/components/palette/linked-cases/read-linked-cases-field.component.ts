@@ -31,7 +31,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   ) { }
 
   public ngOnInit(): void {
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
+    if (this.route.snapshot.data.case?.tabs) {
       const tabs = this.route.snapshot.data.case.tabs as CaseTab[];
       const tab = tabs?.filter(tabItem => tabItem.fields?.some(field => field.id === 'caseLinks'))[0];
       this.caseField = tab?.fields?.find(field => field.id === 'caseLinks');
@@ -59,15 +59,15 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     this.linkedCasesService.caseFieldValue = this.caseField?.value ?? [];
     let labelField = document.getElementsByClassName('govuk-heading-l');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('heading-h2');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('case-viewer-label');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
   }

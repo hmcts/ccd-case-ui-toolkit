@@ -37,7 +37,7 @@ export class GreyBarService {
   }
 
   public wasToggledToShow(fieldId: string): boolean {
-    return this.fieldsToggledToShow.find(id => id === fieldId) !== undefined;
+    return this.fieldsToggledToShow.some(id => id === fieldId);
   }
 
   public reset() {

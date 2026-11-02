@@ -159,12 +159,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           const page = this.caseEdit.getPage(pageId);
           if (page) {
             this.currentPage = page;
+          } else if (this.currentPage) {
+            return this.next();
           } else {
-            if (this.currentPage) {
-              return this.next();
-            } else {
-              return this.first();
-            }
+            return this.first();
           }
           this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage?.id));
         }
@@ -263,7 +261,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           const label = this.getInterpolatedFieldLabel(casefield);
           let id = casefield.id;
           if (fieldElement['component'] && (fieldElement['component'].parent || sourceFromComplexField)) {
-            if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
+            if (!fieldElement['component'].idPrefix.includes(`_${id}_`)) {
               id = `${fieldElement['component'].idPrefix}${id}`;
             } else {
               id = `${fieldElement['component'].idPrefix}`;

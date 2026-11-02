@@ -81,12 +81,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         this.caseTypeId = caseInfo.caseType;
         this.jurisdictionId = caseInfo.jurisdiction;
         this.caseId = caseInfo.caseId;
-      } else {
-        if (currUrl.includes('/case-details/')) {
-          this.jurisdictionId = currUrl.split('/')[3];
-          this.caseTypeId = currUrl.split('/')[4];
-          this.caseId = currUrl.split('/')[5];
-        }
+      } else if (currUrl.includes('/case-details/')) {
+        this.jurisdictionId = currUrl.split('/')[3];
+        this.caseTypeId = currUrl.split('/')[4];
+        this.caseId = currUrl.split('/')[5];
       }
     } else {
       // the user is in the create case journey so we should get data from the url
@@ -174,7 +172,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public fileSelectEvent(): void {
-    if ((this.caseField.value && this.caseField.value.document_filename) ||
+    if ((this.caseField.value?.document_filename) ||
       (this.selectedFile && this.selectedFile.name)) {
       this.openDialog(this.dialogConfig);
     } else {

@@ -5,17 +5,17 @@ export class TestRouteSnapshotBuilder {
   private params: object = {};
   private data: object = {};
 
-  public withParent(parent: ActivatedRouteSnapshot): TestRouteSnapshotBuilder {
+  public withParent(parent: ActivatedRouteSnapshot): this {
     this.parent = parent;
     return this;
   }
 
-  public withParams(params: object): TestRouteSnapshotBuilder {
+  public withParams(params: object): this {
     this.params = params;
     return this;
   }
 
-  public withData(data: object): TestRouteSnapshotBuilder {
+  public withData(data: object): this {
     this.data = data;
     return this;
   }

@@ -254,6 +254,25 @@ describe('ReadQueryManagementFieldComponent', () => {
         tick();
         expect(router.url).toBe(`/query-management/query/${caseId}/4/id-007`);
       }));
+      it('should display and navigate to query details page on click 2', fakeAsync(() => {
+        USER.roles.push(PUI_CASE_MANAGER);
+        mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+        component.query.children = [new QueryListItem()];
+        component.query.children[0].isClosed = 'No';
+        component.query.id = 'id-007';
+        component.messageType = component.respondToQuery;
+
+        fixture.detectChanges();
+
+        spyOn(router, 'navigate');
+
+        const followUpButton =
+          fixture.nativeElement.querySelector('#ask-follow-up-question-external');
+        followUpButton.click();
+        tick();
+
+        expect(router.url).toBe(`/query-management/query/${caseId}/4/id-007`);
+      }));
     });
   });
 
