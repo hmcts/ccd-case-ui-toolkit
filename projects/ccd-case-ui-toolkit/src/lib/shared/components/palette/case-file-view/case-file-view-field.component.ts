@@ -99,7 +99,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   public setMediaViewerFile(document: DocumentTreeNode): void {
     const documentDetails = {
-      document_binary_url: document.document_binary_url,
+      document_binary_url: this.withLegacyDocumentAccessContext(
+        this.documentManagementService.getDocumentBinaryUrl(document)
+      ),
       document_filename: document.document_filename,
       content_type: document.content_type
     };
@@ -114,6 +116,22 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
     const mediaViewerInfo = this.documentManagementService.getMediaViewerInfo(documentDetails);
     this.currentDocument = JSON.parse(mediaViewerInfo);
+  }
+
+  private withLegacyDocumentAccessContext(documentBinaryUrl: string): string {
+    if (!documentBinaryUrl || !this.caseId) {
+      return documentBinaryUrl;
+    }
+
+    const [path, query = ''] = documentBinaryUrl.split('?');
+    if (!/^\/documents\/[^/]+\/binary\/?$/.test(path)) {
+      return documentBinaryUrl;
+    }
+
+    // XUI validates legacy document access against the case before proxying the binary request.
+    const searchParams = new URLSearchParams(query);
+    searchParams.set('caseId', this.caseId);
+    return `${path}?${searchParams.toString()}`;
   }
 
   public moveDocument(data: { document: DocumentTreeNode, newCategory: string }): void {
