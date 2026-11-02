@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.20
+**EXUI-4461** Broken Access Controls
+
 ### Version 7.4.19
 **EXUI-4627** Dev Package Update - Ngrx-store-freeze
 **EXUI-4775** Package update - moment - minor
