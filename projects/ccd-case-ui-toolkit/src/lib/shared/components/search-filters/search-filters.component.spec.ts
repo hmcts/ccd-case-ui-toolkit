@@ -234,7 +234,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should select the first caseType from LocalStorage', () => {
+  it('should select the first caseType from local storage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
@@ -247,7 +247,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if nothing in LocalStorage', () => {
+  it('should select the first caseType from newly selected jurisdiction if nothing in local storage', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
@@ -263,7 +263,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if not in LocalStorage already', () => {
+  it('should select the first caseType from newly selected jurisdiction if not in local storage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
@@ -279,7 +279,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the first caseType from newly selected jurisdiction if different in LocalStorage already', () => {
+  it('should select the first caseType from newly selected jurisdiction if different in local storage already', () => {
     resetCaseTypes(JURISDICTION_3, [CASE_TYPE_1]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_3];
@@ -295,7 +295,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.isSearchableAndSearchInputsReady).toBeTruthy();
   });
 
-  it('should select the caseType when no LocalStorage is present', () => {
+  it('should select the caseType when no local storage is present', () => {
     resetCaseTypes(JURISDICTION_1, [CASE_TYPE_1, CASE_TYPE_2]);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_1];
@@ -543,7 +543,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 });
-describe('Clear localStorage', () => {
+describe('Clear local storage', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
@@ -558,7 +558,7 @@ describe('Clear localStorage', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
+    windowService = createSpyObj('windowService', ['clearSessionStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
 
     TestBed
       .configureTestingModule({
@@ -604,7 +604,7 @@ describe('Clear localStorage', () => {
       });
   }));
 
-  it('should remove localStorage once reset button is clicked', waitForAsync(() => {
+  it('should remove local storage once reset button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyReset.calls.reset();
     component.selected.jurisdiction = JURISDICTION_3;
