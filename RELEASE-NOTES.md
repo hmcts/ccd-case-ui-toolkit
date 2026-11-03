@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.4.21-exui-5453
+### Version 7.4.23-exui-5453
 **EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
+
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
 
 ### Version 7.4.21
 Revert Broken Access Controls
