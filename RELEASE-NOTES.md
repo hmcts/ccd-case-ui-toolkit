@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
 ### Version 7.4.21
 Revert Broken Access Controls
 
