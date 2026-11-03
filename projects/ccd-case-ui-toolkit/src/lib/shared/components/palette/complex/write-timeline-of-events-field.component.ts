@@ -9,11 +9,10 @@ import {
   DATE_INPUT_INVALID,
   DATE_INPUT_REQUIRED,
   DateInputPartConfiguration,
+  TIMELINE_OF_EVENTS_DATE_LABEL_FIELD_ID,
   TIMELINE_OF_EVENTS_DATE_INPUT
 } from './date-input-configuration';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
-
-const DATE_LABEL_FIELD_ID = 'timelineDateLabel';
 
 @Component({
   selector: 'ccd-write-timeline-of-events-field',
@@ -131,7 +130,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   }
 
   private dateLabelField(): CaseField {
-    return this.caseField?.field_type?.complex_fields?.find((field) => field?.id === DATE_LABEL_FIELD_ID);
+    return this.caseField?.field_type?.complex_fields?.find((field) => field?.id === TIMELINE_OF_EVENTS_DATE_LABEL_FIELD_ID);
   }
 
   private configureDateInputControls(): void {

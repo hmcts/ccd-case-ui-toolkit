@@ -823,4 +823,58 @@ describe('WriteComplexFieldComponent', () => {
       expect(field.caseField.field_type.type).toEqual(COLLECTION_TYPE.type);
     });
   });
+
+  describe('legacy TimelineOfEvents response field', () => {
+    beforeEach(waitForAsync(() => {
+      formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+      prepareTestBed();
+
+      fixture = TestBed.createComponent(WriteComplexFieldComponent);
+      component = fixture.componentInstance;
+      component.formGroup = new FormGroup({});
+      component.caseField = ({
+        id: '0',
+        label: 'Timeline event',
+        display_context: 'COMPLEX',
+        value: {
+          timelineDate: '2024-04-12',
+          timelineDescription: 'The event happened'
+        },
+        field_type: {
+          id: 'TimelineOfEvents',
+          type: 'Complex',
+          complex_fields: [
+            {
+              id: 'timelineDate',
+              label: 'Date',
+              display_context: 'OPTIONAL',
+              field_type: { id: 'Date', type: 'Date' },
+              value: null
+            },
+            {
+              id: 'timelineDescription',
+              label: 'What happened',
+              display_context: 'OPTIONAL',
+              field_type: { id: 'TextArea', type: 'TextArea' },
+              value: null
+            }
+          ]
+        }
+      }) as CaseField;
+
+      fixture.detectChanges();
+    }));
+
+    it('should retain the optional legacy date and description fields without split date parts', () => {
+      const fields = fixture.debugElement.queryAll(By.css('ccd-field-write'));
+
+      expect(fields.length).toBe(2);
+      expect(fields.map((field) => field.componentInstance.caseField.id)).toEqual(['timelineDate', 'timelineDescription']);
+      expect(component.complexGroup.value).toEqual({
+        timelineDate: '2024-04-12',
+        timelineDescription: 'The event happened'
+      });
+      expect(component.complexGroup.valid).toBeTrue();
+    });
+  });
 });

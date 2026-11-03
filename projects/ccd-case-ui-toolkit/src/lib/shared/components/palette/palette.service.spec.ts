@@ -9,6 +9,7 @@ import { ReadCollectionFieldComponent } from './collection/read-collection-field
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
+import { WriteTimelineOfEventsFieldComponent } from './complex/write-timeline-of-events-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
@@ -245,6 +246,57 @@ describe('PaletteService', () => {
 
     it('should get WriteStaffUserFieldComponent component class for Complex field with StaffUser complex type', () => {
       assertComponent('Complex', true, WriteStaffUserFieldComponent, 'StaffUser');
+    });
+
+    it('should use the grouped timeline date renderer for a configured Create Claim timeline', () => {
+      const caseField = new CaseField();
+      caseField.field_type = {
+        id: 'TimelineOfEvents',
+        type: 'Complex',
+        complex_fields: [
+          { id: 'timelineDateLabel', display_context: 'READONLY' },
+          { id: 'timelineDay', display_context: 'OPTIONAL' },
+          { id: 'timelineMonth', display_context: 'MANDATORY' },
+          { id: 'timelineYear', display_context: 'MANDATORY' }
+        ] as CaseField[]
+      };
+
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteTimelineOfEventsFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadComplexFieldComponent);
+    });
+
+    it('should keep a legacy defendant response timeline on the generic complex renderer', () => {
+      const caseField = new CaseField();
+      caseField.field_type = {
+        id: 'TimelineOfEvents',
+        type: 'Complex',
+        complex_fields: [
+          { id: 'timelineDate', display_context: 'OPTIONAL' },
+          { id: 'timelineDateLabel' },
+          { id: 'timelineDay', display_context: 'OPTIONAL' },
+          { id: 'timelineMonth' },
+          { id: 'timelineYear' },
+          { id: 'timelineDescription', display_context: 'OPTIONAL' }
+        ] as CaseField[]
+      };
+
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteComplexFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadComplexFieldComponent);
+    });
+
+    it('should fall back to the generic complex renderer for incomplete timeline date metadata', () => {
+      const caseField = new CaseField();
+      caseField.field_type = {
+        id: 'TimelineOfEvents',
+        type: 'Complex',
+        complex_fields: [
+          { id: 'timelineDateLabel', display_context: 'READONLY' },
+          { id: 'timelineDay', display_context: 'OPTIONAL' },
+          { id: 'timelineMonth', display_context: 'MANDATORY' }
+        ] as CaseField[]
+      };
+
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteComplexFieldComponent);
     });
 
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {
