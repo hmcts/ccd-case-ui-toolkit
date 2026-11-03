@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
 ### Version 7.4.21
 Revert Broken Access Controls
 
