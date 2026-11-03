@@ -1,7 +1,13 @@
 ## RELEASE NOTES
 
-### Version 7.4.19-exui-5453
+### Version 7.4.21-exui-5453
 **EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
+
+### Version 7.4.21
+Revert Broken Access Controls
+
+### Version 7.4.20
+**EXUI-4461** Broken Access Controls
 
 ### Version 7.4.19
 **EXUI-4627** Dev Package Update - Ngrx-store-freeze
