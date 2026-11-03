@@ -25,7 +25,7 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   public dayControl: FormControl;
   public monthControl: FormControl;
   public yearControl: FormControl;
-  public dateInputParts: Array<DateInputPartConfiguration & { control: FormControl }> = [];
+  public dateInputParts: Array<DateInputPartConfiguration & { control: FormControl; field: CaseField }> = [];
 
   private readonly dateInputSubscriptions: Subscription[] = [];
 
@@ -41,7 +41,8 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
     this.yearControl = this.complexGroup.get(configuration.year.fieldId) as FormControl;
     this.dateInputParts = Object.values(configuration).map((part: DateInputPartConfiguration) => ({
       ...part,
-      control: this.complexGroup.get(part.fieldId) as FormControl
+      control: this.complexGroup.get(part.fieldId) as FormControl,
+      field: this.complexFields.find((field) => field.id === part.fieldId)
     }));
     this.configureDateInputControls();
     this.complexGroup.updateValueAndValidity({ emitEvent: true });
@@ -136,6 +137,9 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   private configureDateInputControls(): void {
     const configuration = TIMELINE_OF_EVENTS_DATE_INPUT;
     const partValidator = (part: DateInputPartConfiguration) => (current: AbstractControl) => {
+      if (this.isDatePartHiddenOrReadOnly(part.fieldId)) {
+        return null;
+      }
       const label = part.label.toLowerCase();
       const value = this.asText(current.value);
       if (!value) {
@@ -164,6 +168,9 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
     this.yearControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
 
     const validDateValidator = (control: AbstractControl) => {
+      if (Object.values(configuration).some((part) => this.isDatePartHiddenOrReadOnly(part.fieldId))) {
+        return null;
+      }
       const day = this.asText(control.value);
       const month = this.asText(this.monthControl.value);
       const year = this.asText(this.yearControl.value);
@@ -190,12 +197,22 @@ export class WriteTimelineOfEventsFieldComponent extends WriteComplexFieldCompon
   }
 
   private getConfiguredField(fieldId: string): CaseField {
-    return this.caseField?.field_type?.complex_fields?.find((field) => field?.id === fieldId);
+    return this.complexFields?.find((field) => field?.id === fieldId)
+      || this.caseField?.field_type?.complex_fields?.find((field) => field?.id === fieldId);
   }
 
   private isDatePartMandatory(fieldId: string): boolean {
+    const field = this.getConfiguredField(fieldId);
+    const displayContext = field?.display_context?.toUpperCase();
     return !this.ignoreMandatory
-      && this.getConfiguredField(fieldId)?.display_context?.toUpperCase() !== 'OPTIONAL';
+      && !this.isDatePartHiddenOrReadOnly(fieldId)
+      && displayContext !== 'OPTIONAL';
+  }
+
+  private isDatePartHiddenOrReadOnly(fieldId: string): boolean {
+    const field = this.getConfiguredField(fieldId);
+    const displayContext = field?.display_context?.toUpperCase();
+    return field?.hidden === true || displayContext === 'HIDDEN' || displayContext === 'READONLY';
   }
 
   private asText(value: any): string {

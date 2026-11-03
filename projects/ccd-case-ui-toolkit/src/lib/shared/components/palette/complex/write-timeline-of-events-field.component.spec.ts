@@ -1,4 +1,3 @@
-import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
@@ -6,9 +5,10 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { CaseField } from '../../../domain/definition';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
+import { IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import {
   DATE_INPUT_INVALID,
   DATE_INPUT_REQUIRED,
@@ -65,16 +65,6 @@ describe('WriteTimelineOfEventsFieldComponent', () => {
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
-  @Pipe({
-    name: 'ccdIsReadOnly',
-    standalone: false
-  })
-  class IsReadOnlyPipeMock implements PipeTransform {
-    public transform(field: CaseField): boolean {
-      return field?.display_context?.toUpperCase() === 'READONLY';
-    }
-  }
-
   let fixture: ComponentFixture<WriteTimelineOfEventsFieldComponent>;
   let component: WriteTimelineOfEventsFieldComponent;
   let rootForm: FormGroup;
@@ -96,13 +86,12 @@ describe('WriteTimelineOfEventsFieldComponent', () => {
           WriteComplexFieldComponent,
           WriteTimelineOfEventsFieldComponent,
           FieldsFilterPipe,
-          IsReadOnlyPipeMock,
           MockRpxTranslatePipe,
           MockFieldLabelPipe
         ],
         providers: [
           IsCompoundPipe,
-          IsReadOnlyPipe,
+          CaseFieldService,
           { provide: FormValidatorsService, useValue: formValidatorsService }
         ]
       })
@@ -115,6 +104,14 @@ describe('WriteTimelineOfEventsFieldComponent', () => {
     component.caseField = createTimelineField();
     fixture.detectChanges();
   }));
+
+  const createFixtureFor = (caseField: CaseField): ComponentFixture<WriteTimelineOfEventsFieldComponent> => {
+    const fieldFixture = TestBed.createComponent(WriteTimelineOfEventsFieldComponent);
+    fieldFixture.componentInstance.formGroup = new FormGroup({});
+    fieldFixture.componentInstance.caseField = caseField;
+    fieldFixture.detectChanges();
+    return fieldFixture;
+  };
 
   it('should render the date question and inputs from the date-part configuration', () => {
     const inputs = Array.from(fixture.nativeElement.querySelectorAll('.form-date input')) as HTMLInputElement[];
@@ -152,6 +149,39 @@ describe('WriteTimelineOfEventsFieldComponent', () => {
       .toEqual(parts.map((part) => part.cssClass));
     expect(component.hasOptionalDatePart()).toBeTrue();
     expect(fixture.nativeElement.querySelector('.form-date').classList.contains('form-date-has-optional-part')).toBeTrue();
+  });
+
+  it('should hide configured hidden date parts and exclude them from validation', () => {
+    const caseField = createTimelineField();
+    const monthField = caseField.field_type.complex_fields.find((field) => field.id === TIMELINE_OF_EVENTS_DATE_INPUT.month.fieldId);
+    const yearField = caseField.field_type.complex_fields.find((field) => field.id === TIMELINE_OF_EVENTS_DATE_INPUT.year.fieldId);
+    monthField.hidden = true;
+    yearField.display_context = 'HIDDEN';
+    const hiddenFixture = createFixtureFor(caseField);
+    const hiddenComponent = hiddenFixture.componentInstance;
+
+    expect((hiddenFixture.nativeElement.querySelector('.form-group-month') as HTMLElement).hidden).toBeTrue();
+    expect((hiddenFixture.nativeElement.querySelector('.form-group-year') as HTMLElement).hidden).toBeTrue();
+    expect(hiddenComponent.monthControl.errors).toBeNull();
+    expect(hiddenComponent.yearControl.errors).toBeNull();
+    expect(hiddenComponent.formGroup.valid).toBeTrue();
+
+    hiddenFixture.destroy();
+  });
+
+  it('should render read-only date parts with the read component and exclude them from validation', () => {
+    const readonlyFixture = createFixtureFor(createTimelineField('READONLY', 'READONLY', 'READONLY'));
+    const readonlyComponent = readonlyFixture.componentInstance;
+
+    Object.values(TIMELINE_OF_EVENTS_DATE_INPUT).forEach((part) => {
+      const group = readonlyFixture.nativeElement.querySelector(`.${part.cssClass}`) as HTMLElement;
+      expect(group.querySelector('ccd-field-read')).toBeTruthy();
+      expect(group.querySelector('input')).toBeNull();
+      expect(readonlyComponent.complexGroup.get(part.fieldId).errors).toBeNull();
+    });
+    expect(readonlyComponent.formGroup.valid).toBeTrue();
+
+    readonlyFixture.destroy();
   });
 
   it('should allow an unknown day and preserve all three child values in the complex payload', () => {

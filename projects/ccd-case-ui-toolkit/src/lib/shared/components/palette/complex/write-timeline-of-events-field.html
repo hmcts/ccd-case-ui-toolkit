@@ -14,19 +14,31 @@
       <div class="form-date" [class.form-date-has-optional-part]="hasOptionalDatePart()">
         <div class="form-group"
              [ngClass]="part.cssClass"
+             [hidden]="part.field.hidden || part.field.display_context?.toUpperCase() === 'HIDDEN'"
              *ngFor="let part of dateInputParts">
-          <label class="form-label" [for]="dateInputId(part.fieldId)">{{dateInputLabel(part.fieldId, part.label) | rpxTranslate}}</label>
-          <input class="form-control"
-                 [formControl]="part.control"
-                 [id]="dateInputId(part.fieldId)"
-                 [name]="dateInputId(part.fieldId)"
-                 type="text"
-                 [maxlength]="part.maxLength"
-                 pattern="[0-9]*"
-                 inputmode="numeric"
-                 [attr.aria-describedby]="dateInputDescribedBy()"
-                 [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
-                 (input)="clearEmptyDatePart(part.control)">
+          <ng-container [ngSwitch]="part.field | ccdIsReadOnly">
+            <ccd-field-read *ngSwitchCase="true"
+                            ccdLabelSubstitutor
+                            [caseField]="buildField(part.field)"
+                            [caseFields]="caseFields"
+                            [formGroup]="formGroup"
+                            [withLabel]="true">
+            </ccd-field-read>
+            <ng-container *ngSwitchCase="false">
+              <label class="form-label" [for]="dateInputId(part.fieldId)">{{dateInputLabel(part.fieldId, part.label) | rpxTranslate}}</label>
+              <input class="form-control"
+                     [formControl]="part.control"
+                     [id]="dateInputId(part.fieldId)"
+                     [name]="dateInputId(part.fieldId)"
+                     type="text"
+                     [maxlength]="part.maxLength"
+                     pattern="[0-9]*"
+                     inputmode="numeric"
+                     [attr.aria-describedby]="dateInputDescribedBy()"
+                     [ngClass]="{'govuk-input--error': hasVisibleDateInputError()}"
+                     (input)="clearEmptyDatePart(part.control)">
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </fieldset>
