@@ -57,7 +57,10 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     }
 
     const token = FieldsUtils.createToken();
-    const payload = this.documentManagement.getMediaViewerInfo(documentFieldValue);
+    const payload = this.documentManagement.getMediaViewerInfo({
+      ...documentFieldValue,
+      document_binary_url: documentBinaryUrl
+    });
     this.windowService.openOnNewTabWithMessage(this.getMediaViewerUrl(token), payload, token);
   }
 
