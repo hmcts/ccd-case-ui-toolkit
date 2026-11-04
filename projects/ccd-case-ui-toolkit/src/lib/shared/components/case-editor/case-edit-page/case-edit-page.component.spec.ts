@@ -143,6 +143,42 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     expect(component).toBeTruthy();
   });
 
+  [
+    { retainHiddenValue: false, isCaseFlagSubmission: false },
+    { retainHiddenValue: true, isCaseFlagSubmission: false },
+    { retainHiddenValue: false, isCaseFlagSubmission: true }
+  ].forEach(({ retainHiddenValue, isCaseFlagSubmission }) => {
+    it(`respects retention ${retainHiddenValue} and case flag mode ${isCaseFlagSubmission} in page callbacks`, () => {
+      const date = new FormControl(null);
+      date['caseField'] = { hidden: false, retain_hidden_value: retainHiddenValue };
+      const existing = new FormControl('populated value');
+      existing['caseField'] = { hidden: true, retain_hidden_value: true };
+      const data = new FormGroup({ date, existing });
+      const editForm = new FormGroup({ data });
+      const fields = [
+        { id: 'date', field_type: { type: 'Date' }, retain_hidden_value: retainHiddenValue },
+        { id: 'existing', field_type: { type: 'Text' }, retain_hidden_value: true }
+      ] as CaseField[];
+      component = initializeComponent({
+        formValueService: new FormValueService(new FieldTypeSanitiser()),
+        caseEdit: { validPageList: [], isCaseFlagSubmission },
+        validPageListCaseFieldsService: { deleteNonValidatedFields: () => undefined }
+      });
+      component.editForm = editForm;
+      component.currentPage = { case_fields: fields } as WizardPage;
+      component.eventTrigger = { case_fields: fields } as CaseEventTrigger;
+      date.setValue('-11-16');
+      date.markAsDirty();
+      date['caseField'].hidden = true;
+
+      const payload = (component as any).getFilteredCaseEventData(fields, editForm.value);
+
+      expect(payload.data.date).toBe(retainHiddenValue || isCaseFlagSubmission ? '-11-16' : null);
+      expect(payload.data.existing).toBe('populated value');
+      expect(date.value).toBe('-11-16');
+    });
+  });
+
   describe('multipageComponentStateService', () => {
     it('should trigger previous step with the multi-page component state service', () => {
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
