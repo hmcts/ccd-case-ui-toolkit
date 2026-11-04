@@ -115,12 +115,12 @@ export class PaletteService {
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
           case 'StaffUser':
             return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
-          case 'TimelineOfEvents':
-            return write
-              ? (isTimelineOfEventsDateInputConfigured(caseField)
-                ? WriteTimelineOfEventsFieldComponent
-                : WriteComplexFieldComponent)
-              : ReadComplexFieldComponent;
+          case 'TimelineOfEvents': {
+            const writeComponent = isTimelineOfEventsDateInputConfigured(caseField)
+              ? WriteTimelineOfEventsFieldComponent
+              : WriteComplexFieldComponent;
+            return write ? writeComponent : ReadComplexFieldComponent;
+          }
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
