@@ -1,5 +1,5 @@
 <div class="form-group" [formGroup]="formGroup" [ngClass]="{'form-group-error': !!judicialUserControl && errors}">
-  <label [for]="id()">
+  <label [for]="id()" *ngIf="caseField.label">
     <span *ngIf="caseField.label" class="form-label">
       {{caseField | ccdFieldLabel}}
     </span>

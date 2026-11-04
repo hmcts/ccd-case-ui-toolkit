@@ -26,7 +26,6 @@ describe("CaseFileViewFolderToggleComponent", () => {
   beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(CaseFileViewFolderToggleComponent);
     component = fixture.componentInstance;
-    component.isOpen = true;
     fixture.detectChanges();
   }));
 
