@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.4.24-exui-5453
+### Version 7.4.24-exui-5453-1
 **EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
 
 ### Version 7.4.24
