@@ -1,7 +1,7 @@
 <div class="form-group bottom-30" [ngClass]="{'form-group-error': !fixedRadioListControl.valid && (fixedRadioListControl.dirty || fixedRadioListControl.touched)}" [id]="id()">
   <fieldset>
     <legend>
-      <label [for]="id()">
+      <label [for]="id()" *ngIf="caseField.label">
         <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
       </label>
       <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate }}</span>

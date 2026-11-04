@@ -1,6 +1,6 @@
 <div class="form-group" [ngClass]="{'form-group-error': !fixedListFormControl.valid && (fixedListFormControl.dirty || fixedListFormControl.touched)}">
 
-  <label [for]="id()">
+  <label [for]="id()" *ngIf="caseField.label">
     <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
