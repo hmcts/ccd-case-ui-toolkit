@@ -1,4 +1,5 @@
-@import '../../typography.scss';
+@use '../../typography.scss' as *;
+@use '../../govuk-toolkit-shim' as conditionals;
 
 $black: #000000;
 $white: #FFFFFF;
@@ -17,7 +18,7 @@ $header-background-color: $black;
     color: $white;
     @include vertical-align;
 
-    @include media(desktop){
+    @include conditionals.media(desktop){
       width: 50%;
     }
     @media screen and (max-width: 379px) {
@@ -38,7 +39,7 @@ $header-background-color: $black;
     color: $white;
     @include vertical-align;
 
-    @include media(desktop){
+    @include conditionals.media(desktop){
       width: 50%;
     }
 

@@ -5,6 +5,18 @@ const MEDIA_VIEWER_HANDOFF_MAX_ATTEMPTS = 100;
 
 @Injectable()
 export class WindowService {
+  public setLocalStorage(key: string, value: string): void {
+    window.localStorage.setItem(key, value);
+  }
+
+  public getLocalStorage(key: string): string {
+    return window.localStorage.getItem(key);
+  }
+
+  public removeLocalStorage(key: string): void {
+    window.localStorage.removeItem(key);
+  }
+
   public locationAssign(url: string): void {
     window.location.assign(url);
   }
