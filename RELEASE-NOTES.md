@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.24
+**EXUI-4461** Restore case context for legacy document access
+
 ### Version 7.4.23
 **EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
 

@@ -1,10 +1,11 @@
 import { AppMockConfig } from '../../../app-config.mock';
+import { withLegacyDocumentAccessContext } from './document-management.service';
 
 const appConfigMock = new AppMockConfig();
 
 export const mockDocumentManagementService = {
-  getDocumentBinaryUrl(documentFieldValue: any): string {
-    return documentFieldValue.document_binary_url;
+  getDocumentBinaryUrl(documentFieldValue: any, caseId?: string): string {
+    return withLegacyDocumentAccessContext(documentFieldValue.document_binary_url, caseId);
   },
   isHtmlDocument(documentFieldValue: any): boolean {
     if (documentFieldValue?.content_type) {
