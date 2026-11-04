@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
-### Version 7.4.23-exui-5453
+### Version 7.4.24-exui-5453
 **EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
+
+### Version 7.4.24
+**EXUI-5210** Query Management failing to show hmcts after a users name
 
 ### Version 7.4.23
 **EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
