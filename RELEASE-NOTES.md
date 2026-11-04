@@ -1,5 +1,31 @@
 ## RELEASE NOTES
 
+### Version 7.4.25
+**EXUI-3767** Add defaultFocus change
+
+### Version 7.4.24
+**EXUI-5210** Query Management failing to show hmcts after a users name
+
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
+### Version 7.4.21
+Revert Broken Access Controls
+
+### Version 7.4.20
+**EXUI-4461** Broken Access Controls
+
+### Version 7.4.19
+**EXUI-4627** Dev Package Update - Ngrx-store-freeze
+**EXUI-4775** Package update - moment - minor
+**EXUI-4952** Package update - session-file-store - minor
+**EXUI-5008** Suppressions - glob - minor
+**EXUI-5045** Package update - ts-node - minor
+**EXUI-5094** Package update - joi - minor
+
 ### Version 7.4.18
 **EXUI-5389** Case list filter clearing
 
