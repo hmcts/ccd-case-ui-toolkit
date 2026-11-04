@@ -1,5 +1,17 @@
 ## RELEASE NOTES
 
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
+### Version 7.4.21
+Revert Broken Access Controls
+
+### Version 7.4.20
+**EXUI-4461** Broken Access Controls
+
 ### Version 7.4.19
 **EXUI-4627** Dev Package Update - Ngrx-store-freeze
 **EXUI-4775** Package update - moment - minor
