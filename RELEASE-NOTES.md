@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.25
+**EXUI-3767** Add defaultFocus change
+
 ### Version 7.4.24
 **EXUI-5210** Query Management failing to show hmcts after a users name
 
