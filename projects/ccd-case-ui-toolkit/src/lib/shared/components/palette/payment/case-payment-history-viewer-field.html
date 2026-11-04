@@ -5,21 +5,5 @@
         {{PAYMENT_HISTORY_WARNING | rpxTranslate}}
     </strong>
 </div>
-<ccpay-payment-lib
-    [API_ROOT]="getBaseURL()"
-    [CCD_CASE_NUMBER]="caseReference"
-    [BULKSCAN_API_ROOT]="getPayBulkScanBaseURL()"
-    [SELECTED_OPTION]="'CCDorException'"
-    [ISBSENABLE]="'true'"
-    [LOGGEDINUSEREMAIL]="getUserEmail()"
-    [LOGGEDINUSERROLES]="getUserRoles()"
-    [REFUNDS_API_ROOT]="getRefundsUrl()"
-    [NOTIFICATION_API_ROOT]="getNotificationUrl()"
-    [VIEW]="'case-transactions'"
-    [TAKEPAYMENT]="false"
-    [SERVICEREQUEST]="false"
-    [PAYMENT_GROUP_REF]="null"
-    [EXC_REFERENCE]="caseReference"
-    [DCN_NUMBER]="null"
-    [ISPAYMENTSTATUSENABLED]="'Enable'"
-></ccpay-payment-lib>
+<p *ngIf="paymentLoadError" class="govuk-error-message">The payment information could not be loaded. Please try again.</p>
+<ng-container #paymentHost></ng-container>

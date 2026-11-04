@@ -26,7 +26,7 @@ The published package name is:
 Prerequisites
 -------------
 
-- Node.js 24.18.0 or a later version accepted by package.json.
+- Node.js 24.22.1 or a later version accepted by package.json.
 - Yarn 4.5.0, managed through the repository's Yarn configuration.
 - A Git checkout with the repository files available.
 - Chromium if you are running the Playwright browser tests.
@@ -62,6 +62,19 @@ Repository layout
     docs/                          Generated Compodoc output
 
 The library entry point is projects/ccd-case-ui-toolkit/src/public-api.ts.
+
+Lightweight entry points
+------------------------
+
+Import lightweight utilities from their focused entry point so consumers do not
+make the complete component library reachable from application-shell code:
+
+```ts
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
+```
+
+The root `@hmcts/ccd-case-ui-toolkit` export remains supported for backwards
+compatibility.
 
 
 Build the library

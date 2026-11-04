@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MockComponent } from 'ng2-mock-component';
+import { PaymentLibComponent } from '@hmcts/ccpay-web-component';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -29,7 +29,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   const NOTIFICATION_URL = 'http://notification-api:123';
 
   let appConfig;
-  let paymentWebComponent = null;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
@@ -42,28 +41,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
-    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', standalone: false, inputs: [
-        'API_ROOT',
-        'CCD_CASE_NUMBER',
-        'BULKSCAN_API_ROOT',
-        'ISBSENABLE',
-        'SELECTED_OPTION',
-        'VIEW',
-        'REFUNDS_API_ROOT',
-        'NOTIFICATION_API_ROOT',
-        'TAKEPAYMENT',
-        'SERVICEREQUEST',
-        'PAYMENT_GROUP_REF',
-        'EXC_REFERENCE',
-        'DCN_NUMBER',
-        'LOGGEDINUSERROLES',
-        'LOGGEDINUSEREMAIL',
-        'ISPAYMENTSTATUSENABLED'
-      ]});
-
     TestBed
       .configureTestingModule({
-        imports: [paymentWebComponent],
         declarations: [
           CasePaymentHistoryViewerFieldComponent,
 
@@ -88,9 +67,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   }));
 
   it('should render Payments web component', () => {
-    const paymentDe = de.query(By.directive(paymentWebComponent));
+    const paymentDe = de.query(By.directive(PaymentLibComponent));
 
-    expect(paymentDe).toBeDefined();
+    expect(paymentDe).not.toBeNull();
 
     const paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
@@ -120,7 +99,8 @@ it('returns empty roles when not initialized', () => {
     expect(component.getUserRoles().length).toBe(0);
 });
 
-it('returns empty email when not initialized', () => {
+  it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
 });
+
 });
