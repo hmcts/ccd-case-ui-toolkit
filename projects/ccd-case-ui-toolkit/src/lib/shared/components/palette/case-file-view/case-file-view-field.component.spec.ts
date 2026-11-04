@@ -128,6 +128,12 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewElement).toBeTruthy();
   });
 
+  it('should pass the route case ID to the document folder', () => {
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('ccd-case-file-view-folder')).properties['caseId']).toBe(cidParam);
+  });
+
   it('should default to no permissions when userDetails is invalid', () => {
     mockSessionStorageService.getItem.and.returnValue('{invalid-json');
 
