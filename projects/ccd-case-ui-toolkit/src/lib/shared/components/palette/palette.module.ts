@@ -1,16 +1,17 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerInput, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, NgModule, Provider, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MAT_LEGACY_DATE_LOCALE as MAT_DATE_LOCALE } from '@angular/material/legacy-core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
+import { NgxEditorModule } from 'ngx-editor';
 import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -90,6 +91,7 @@ import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponen
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
+import { ReadStaffUserFieldComponent, WriteStaffUserFieldComponent } from './staff-user';
 import { LabelFieldComponent } from './label';
 import {
   BeforeYouStartComponent,
@@ -145,6 +147,7 @@ import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from 
 import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 import { QueryManagementUtils } from './query-management/utils/query-management.utils';
 import { ErrorsModule } from '../error/errors.module';
+import { ReadRichTextAreaFieldComponent, WriteRichTextAreaFieldComponent } from './rich-text-area';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -164,6 +167,7 @@ const PALETTE_COMPONENTS = [
   // Read
   ReadTextFieldComponent,
   ReadTextAreaFieldComponent,
+  ReadRichTextAreaFieldComponent,
   ReadNumberFieldComponent,
   ReadEmailFieldComponent,
   ReadPhoneUKFieldComponent,
@@ -173,6 +177,7 @@ const PALETTE_COMPONENTS = [
 
   // new
   ReadJudicialUserFieldComponent,
+  ReadStaffUserFieldComponent,
   ReadYesNoFieldComponent,
   ReadOrganisationFieldComponent,
   ReadOrganisationFieldTableComponent,
@@ -195,6 +200,7 @@ const PALETTE_COMPONENTS = [
 
   // Write
   WriteJudicialUserFieldComponent,
+  WriteStaffUserFieldComponent,
   WriteAddressFieldComponent,
   WriteComplexFieldComponent,
   WriteOrganisationComplexFieldComponent,
@@ -202,8 +208,9 @@ const PALETTE_COMPONENTS = [
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
   WriteTextFieldComponent,
-  WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
+  WriteDateContainerFieldComponent,
+  WriteRichTextAreaFieldComponent,
   WritePhoneUKFieldComponent,
   WriteNumberFieldComponent,
   WriteEmailFieldComponent,
@@ -300,9 +307,10 @@ const PALETTE_COMPONENTS = [
     LabelSubstitutorModule,
     TranslatedMarkdownModule,
     MarkdownModule.forChild(),
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -315,7 +323,20 @@ const PALETTE_COMPONENTS = [
     MatDialogModule,
     LoadingModule,
     MarkdownComponentModule,
-    ErrorsModule
+    ErrorsModule,
+    NgxEditorModule.forChild({
+      locals: {
+        bold: 'Bold',
+        italic: 'Italic',
+        underline: 'Underline',
+        ordered_list: 'Ordered List',
+        bullet_list: 'Bullet List',
+        indent: 'Increase Indent',
+        outdent: 'Decrease Indent',
+        undo: 'Undo',
+        redo: 'Redo'
+      }
+    })
   ],
   declarations: [
     FixedListPipe,
@@ -330,9 +351,10 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    NgxMatTimepickerModule,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,

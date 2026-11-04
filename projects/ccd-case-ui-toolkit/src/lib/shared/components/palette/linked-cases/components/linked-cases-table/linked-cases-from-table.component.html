@@ -1,7 +1,7 @@
 <button type="button" *ngIf="!noLinkedCases && !isServerError" id="show-hide-link" class="govuk-js-link"
   (click)="onClick()">{{showHideLinkText}}</button>
 <table *ngIf="(getLinkedCasesResponse && showHideLinkText === 'Hide') || noLinkedCases"
-  aria-describedby="table to display cases linked from">
+  aria-label="table to display cases linked from">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header case-table-column" width="20%">Case name and number</th>

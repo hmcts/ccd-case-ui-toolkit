@@ -56,9 +56,10 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
+      <!-- Let Material generate header IDs so URL tab fragments do not trigger anchor scrolling. -->
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true" [(selectedIndex)]="selectedTabIndex"
         [selectedIndex]="selectedTabIndex">
-        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+        <mat-tab *ngFor="let tab of prependedTabs" [attr.data-case-tab-id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
             <ng-container *ngIf="tab.id === 'tasks'">
               <exui-tasks-ce></exui-tasks-ce>
@@ -68,7 +69,7 @@
             </ng-container>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [attr.data-case-tab-id]="tab.id" [label]="tab.label | rpxTranslate" [aria-label]="curIdx === 0 ? tab.label + ', Please use left and right arrow keys to navigate case tabs' : '' | rpxTranslate">
           <ng-template matTabContent>
             <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
@@ -76,7 +77,7 @@
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
-                      <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
+                      <th [id]="'case-viewer-field-label--' + field.id" scope="row" *ngIf="!isFieldToHaveNoLabel(field) && field.label">
                         <div class="case-viewer-label text-16">
                           {{field.label | rpxTranslate}}</div>
                       </th>
@@ -89,13 +90,13 @@
                       </td>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <th [id]="'case-viewer-field-read--' + field.id" scope="col">
+                      <td role="rowheader" [attr.aria-label]="(field.label || field.id) | rpxTranslate" [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']" [caseFields]="caseFields"
                                           [caseField]="field" [caseReference]="caseDetails.case_id">
                           </ccd-field-read>
                         </span>
-                      </th>
+                      </td>
                     </tr>
                   </ng-container>
                 </div>
@@ -104,7 +105,7 @@
             </table>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
+        <mat-tab *ngFor="let tab of appendedTabs" [attr.data-case-tab-id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
             <ng-container *ngIf="tab.id === 'hearings'">
               <exui-case-hearings-ce></exui-case-hearings-ce>

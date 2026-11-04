@@ -1,6 +1,6 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -27,6 +27,7 @@ import { JourneyInstigator } from '../../../domain/journey';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { FocusService } from '../../../services/window/focus.service';
+import { PlaceholderService } from '../../../directives/substitutor/services';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -69,8 +70,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public caseFormValidationErrorsSub: Subscription;
   private readonly logger = new StructuredLoggerService();
 
+  private readonly fieldsUtils = new FieldsUtils();
+  private readonly placeholderService = new PlaceholderService();
   @ViewChildren(CaseEditFormComponent)
-  private readonly caseEditFormComponents: QueryList<CaseEditFormComponent>;
+  private readonly caseEditFormComponents: QueryList<CaseEditFormComponent> | undefined;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -226,16 +229,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    * This builds the form with data from the previous pages
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
-  public toPreviousPage(): void {
+  public async toPreviousPage(): Promise<void> {
     this.clearValidationErrors();
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
-    this.previous();
-    if (this.getPageNumber() !== undefined){
-      this.previousStep();
+    try {
+      await this.previous();
+      if (this.getPageNumber() !== undefined) {
+        this.previousStep();
+      }
+    } catch (error) {
+      this.handleError(error);
+    } finally {
+      this.focusService.focus();
     }
-    this.focusService.focus();
   }
 
   // Adding validation message to show it as Error Summary
@@ -250,11 +258,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       .forEach(casefield => {
         let errorPresent = true;
         validErrorFieldFound = true;
-        const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
-          ? group.get(`${casefield.id}_judicialUserControl`)
-          : group.get(casefield.id);
+        const fieldElement = group.get(this.getAutocompleteUserControlName(casefield));
         if (fieldElement) {
-          const label = casefield.label || 'Field';
+          const label = this.getInterpolatedFieldLabel(casefield);
           let id = casefield.id;
           if (fieldElement['component'] && (fieldElement['component'].parent || sourceFromComplexField)) {
             if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
@@ -272,9 +278,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
               this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             }
             fieldElement.markAsDirty();
-            // For the JudicialUser field type, an error needs to be set on the component so that an error message
+            // For autocomplete user field types, an error needs to be set on the component so that an error message
             // can be displayed at field level
-            if (FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])) {
+            if (this.isAutocompleteUserField(casefield)) {
               fieldElement['component'].errors = { required: true };
             }
           } else if (fieldElement.hasError('pattern')) {
@@ -289,6 +295,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (fieldElement.hasError('markDownPattern')) {
             this.caseEditDataService.addFormValidationError({
               id, message: `The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field.`, label
+            });
+          } else if (fieldElement.hasError('unsafeRichText')) {
+            this.caseEditDataService.addFormValidationError({
+              id, message: `The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field.`, label
             });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
@@ -309,7 +319,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(casefield)
               });
             } else {
-              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
+              this.validationErrors.push({ id, message: `Select or fill the required ${label} field` });
               fieldElement.markAsDirty();
             }
           }
@@ -436,15 +446,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             this.updateFormData(jsonData as CaseEventData);
           }
           this.saveDraft();
-          this.next();
-        }, error => {
+          void this.next().catch((error) => this.handleError(error));
+        }, (error) => {
           this.handleError(error);
         });
       CaseEditPageComponent.scrollToTop();
-      // Remove all JudicialUser FormControls with the ID suffix "_judicialUserControl" because these are not
+      // Remove autocomplete user FormControls because these are not
       // intended to be present in the Case Event data (they are added only for value selection and validation
       // purposes)
-      this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
+      this.removeAllAutocompleteUserFormControls(this.currentPage, this.editForm);
     }
     this.focusService.focus();
   }
@@ -614,6 +624,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
+  public demoteCaseTitleHeadingLevel(title: string): string {
+    return title ? title.replace(/^#(?!#)(\s+)/, '##$1') : title;
+  }
+
   public getCancelText(): string {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
@@ -772,7 +786,23 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public getRpxTranslatePipeArgs(fieldLabel: string): { FIELDLABEL: string } | null {
-    return fieldLabel ? ({ FIELDLABEL: fieldLabel }) : null;
+    return fieldLabel ? ({ FIELDLABEL: this.resolveLabelPlaceholders(fieldLabel) }) : null;
+  }
+
+  private getInterpolatedFieldLabel(caseField: CaseField): string {
+    const label = caseField.label || 'Field';
+    return this.resolveLabelPlaceholders(label);
+  }
+
+  private resolveLabelPlaceholders(label: string): string {
+    const dataControl = this.editForm?.controls?.['data'];
+    const formFields = dataControl && typeof dataControl.getRawValue === 'function'
+      ? dataControl.getRawValue()
+      : {};
+    const contextFields = this.caseFields?.length ? this.caseFields : this.eventTrigger?.case_fields || [];
+    const fields = this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(contextFields, formFields);
+
+    return this.placeholderService.resolvePlaceholders(fields, label);
   }
 
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
@@ -785,11 +815,25 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     });
   }
 
-  private removeAllJudicialUserFormControls(page: WizardPage, editForm: FormGroup): void {
+  private removeAllAutocompleteUserFormControls(page: WizardPage, editForm: FormGroup): void {
     page.case_fields.forEach(caseField => {
-      if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
-        (editForm.controls['data'] as FormGroup).removeControl(`${caseField.id}_judicialUserControl`);
+      if (this.isAutocompleteUserField(caseField)) {
+        (editForm.controls['data'] as FormGroup).removeControl(this.getAutocompleteUserControlName(caseField));
       }
     });
+  }
+
+  private isAutocompleteUserField(caseField: CaseField): boolean {
+    return FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser', 'StaffUser']);
+  }
+
+  private getAutocompleteUserControlName(caseField: CaseField): string {
+    if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
+      return `${caseField.id}_judicialUserControl`;
+    }
+    if (FieldsUtils.isCaseFieldOfType(caseField, ['StaffUser'])) {
+      return `${caseField.id}_staffUserControl`;
+    }
+    return caseField.id;
   }
 }

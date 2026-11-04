@@ -11,4 +11,8 @@ export class ProfileNotifier {
     this.profileSource.next(profile);
   }
 
+  public clearProfile(): void {
+    this.profileSource.next(new Profile());
+  }
+
 }

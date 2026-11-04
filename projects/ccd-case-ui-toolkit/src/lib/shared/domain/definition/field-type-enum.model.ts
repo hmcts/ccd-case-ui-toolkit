@@ -1,6 +1,7 @@
 export type FieldTypeEnum =
   'Text'
   | 'TextArea'
+  | 'RichTextArea'
   | 'Postcode'
   | 'Number'
   | 'YesOrNo'
@@ -31,4 +32,5 @@ export type FieldTypeEnum =
   | 'FlagDetail'
   | 'FlagLauncher'
   | 'CaseFlag' // Temporary field type for faking Flags field type; to be removed
-  | 'JudicialUser';
+  | 'JudicialUser'
+  | 'StaffUser';

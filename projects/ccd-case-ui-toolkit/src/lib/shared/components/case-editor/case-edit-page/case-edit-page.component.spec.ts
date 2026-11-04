@@ -15,7 +15,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
@@ -282,7 +282,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       expect(component.cancel).toHaveBeenCalled();
     });
 
-    it('should update form data, move back, and step the child journey when returning to the previous page', () => {
+    it('should update form data, move back, and step the child journey when returning to the previous page', async () => {
       const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
       const caseEditDataServiceMock = createSpyObj<CaseEditDataService>('CaseEditDataService', ['clearFormValidationErrors']);
       const focusServiceMock = createSpyObj<FocusService>('FocusService', ['focus']);
@@ -299,9 +299,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       spyOn(component, 'buildCaseEventData').and.returnValue(caseEventData);
       spyOn(component, 'updateFormData');
       spyOn(component, 'previous');
-      spyOn(component, 'previousStep');
+      spyOn(component, 'previousStep').and.returnValue(Promise.resolve(true));
 
-      component.toPreviousPage();
+      await component.toPreviousPage();
 
       expect(caseEventData.data).toEqual(caseEventData.event_data);
       expect(component.updateFormData).toHaveBeenCalledWith(caseEventData);
@@ -873,9 +873,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventTrigger,
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -905,9 +905,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),
@@ -1333,9 +1333,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -1365,9 +1365,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),
@@ -1535,9 +1535,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventTrigger,
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -1676,6 +1676,22 @@ describe('CaseEditPageComponent - all other tests', () => {
       const title = comp.getCaseTitle();
       expect(title).toEqual('# 1234567812345678: test');
     });
+
+    it('should demote a level 1 markdown heading in the case title to level 2', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('# 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title that is already below level 1', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('## 1234567812345678: test')).toEqual('## 1234567812345678: test');
+    });
+
+    it('should not alter a case title with no markdown heading', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('1234567812345678: test')).toEqual('1234567812345678: test');
+    });
+
+    it('should return an empty/falsy case title unchanged', () => {
+      expect(comp.demoteCaseTitleHeadingLevel('')).toEqual('');
+    });
   });
 
   describe('submit the form', () => {
@@ -1709,9 +1725,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
@@ -1741,9 +1757,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
         spyOn(caseEditComponentStub, 'validate').and.returnValue(
           of(validateResult)
         );
@@ -1772,7 +1788,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         caseEditDataService.caseFormValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
         caseEditDataService.caseEditForm$ = of(caseEditComponentStub.form);
         caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
-        
+
         const focusService = createSpyObj<FocusService>('FocusService', ['focus']);
 
         TestBed.configureTestingModule({
@@ -1818,6 +1834,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           createCaseField('field1', 'field1Value'),
           aCaseField('judicialUserField1', 'judicialUser1', 'JudicialUser', 'OPTIONAL', null),
           aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
+          aCaseField('staffUserField', 'staffUser', 'StaffUser', 'OPTIONAL', null),
         ],
         false,
         0,
@@ -1829,6 +1846,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         'judicialUserField1_judicialUserControl', new FormControl('Judicial User'));
       (FORM_GROUP.get('data') as FormGroup).setControl(
         'judicialUserField2_judicialUserControl', new FormControl('Judicial User 2'));
+      (FORM_GROUP.get('data') as FormGroup).setControl(
+        'staffUserField_staffUserControl', new FormControl('Staff User'));
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
 
@@ -1877,14 +1896,14 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(comp.caseEdit.error).toBeNull();
         expect(comp.caseEdit.ignoreWarning).toBe(false);
 
-        // Both JudicialUser FormControls should have been removed from the editForm FormGroup, leaving just one
-        // FormControl
+        // Autocomplete user FormControls should have been removed, leaving just the case-data FormControl.
         const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
         const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
         expect(formControlKeys.length).toBe(1);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(false);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(false);
+        expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(false);
       });
     });
 
@@ -1914,14 +1933,15 @@ describe('CaseEditPageComponent - all other tests', () => {
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should retain all autocomplete user FormControls because
       // their removal is not triggered
       const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
       const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
-      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.length).toBe(4);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(true);
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
@@ -1967,14 +1987,15 @@ describe('CaseEditPageComponent - all other tests', () => {
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should retain all autocomplete user FormControls because
       // their removal is not triggered
       const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
       const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
-      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.length).toBe(4);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[3])).toBe(true);
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {
@@ -2161,9 +2182,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
@@ -2192,7 +2213,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
         spyOn(formValueService, 'sanitise').and.returnValue(
           caseEventDataPrevious
         );
@@ -2391,9 +2412,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           hasPrevious: () => true,
           getPage: () => firstPage,
-          first: () => true,
-          next: () => true,
-          previous: () => true,
+          first: () => Promise.resolve(true),
+          next: () => Promise.resolve(true),
+          previous: () => Promise.resolve(true),
           cancel: () => undefined,
           cancelled,
           validate: (caseEventData: CaseEventData) => of(caseEventData),
@@ -2420,9 +2441,9 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog = createSpyObj<MatDialog>('dialog', ['open']);
         dialog.open.and.returnValue(matDialogRef);
 
-        spyOn(caseEditComponentStub, 'first');
-        spyOn(caseEditComponentStub, 'next');
-        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'next').and.returnValue(Promise.resolve(true));
+        spyOn(caseEditComponentStub, 'previous').and.returnValue(Promise.resolve(true));
 
         caseEditDataService = {
           caseEventTriggerName$: of('ADD'),
@@ -2680,6 +2701,33 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should validate unsafe rich text and log an HTML content error message', () => {
+      const caseField = aCaseField(
+        'UnsafeRichTextField',
+        'Case note',
+        'RichTextArea',
+        'MANDATORY',
+        null
+      );
+      const control = new FormControl('&lt;script&gt;alert("xss")&lt;/script&gt;');
+      control.setErrors({ unsafeRichText: true });
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          UnsafeRichTextField: control
+        })
+      });
+      caseEditDataService.addFormValidationError.calls.reset();
+      spyOn(window, 'scrollTo');
+
+      comp.generateErrorMessage([caseField]);
+
+      expect(caseEditDataService.addFormValidationError).toHaveBeenCalledWith({
+        id: 'UnsafeRichTextField',
+        message: 'The data entered is not valid for %FIELDLABEL%. Potentially unsafe HTML content is not allowed in this field.',
+        label: 'Case note'
+      });
+    });
+
     it('should validate mandatory complex type fields and log error message', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',
@@ -2727,6 +2775,115 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(error.message).toEqual('%FIELDLABEL% is required');
       });
     });
+
+    it('should interpolate placeholders in mandatory complex type validation labels', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.isComplex = () => true;
+      complexField.isCollection = () => false;
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            inlineDocType: new FormControl('order'),
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+      caseEditDataService.caseFormValidationErrors$.subscribe(
+        validationErrors => comp.validationErrors = validationErrors
+      );
+
+      comp.generateErrorMessage([complexField]);
+
+      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors[0]).toEqual({
+        id: 'isReady',
+        message: '%FIELDLABEL% is required',
+        label: 'Is this order ready to be sealed and issued'
+      });
+    });
+
+    it('should interpolate placeholders in validation error translation args', () => {
+      const inlineDocTypeField: CaseField = aCaseField(
+        'inlineDocType',
+        'Document type',
+        'Text',
+        'READONLY',
+        1,
+        null,
+        true,
+        true
+      );
+      inlineDocTypeField.value = 'order';
+      const approvalField: CaseField = aCaseField(
+        'isReady',
+        'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+        'YesOrNo',
+        'MANDATORY',
+        2,
+        null,
+        true,
+        true
+      );
+      const complexField: CaseField = aCaseField(
+        'judgeApproval1',
+        'Judge approval',
+        'Complex',
+        'MANDATORY',
+        1,
+        [inlineDocTypeField, approvalField],
+        true,
+        true
+      );
+      complexField.value = {
+        inlineDocType: 'order',
+        isReady: null
+      };
+
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          judgeApproval1: new FormGroup({
+            isReady: new FormControl(null, Validators.required)
+          })
+        })
+      });
+      comp.caseFields = [complexField];
+
+      expect(comp.getRpxTranslatePipeArgs(approvalField.label)).toEqual({
+        FIELDLABEL: 'Is this order ready to be sealed and issued'
+      });
+    });
+
 
     it('should prefix complex child field id when generateErrorMessage recurses', () => {
       const childField: CaseField = aCaseField(
@@ -2877,6 +3034,32 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
       expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
+    });
+
+    it('should validate StaffUser field and set error message on component', () => {
+      (F_GROUP.get('data') as FormGroup).addControl(
+        'staffUserField_staffUserControl', new FormControl(null, Validators.required));
+      F_GROUP.get('data.staffUserField_staffUserControl')['component'] = {};
+      const staffUserField = aCaseField(
+        'staffUserField',
+        'staffUser1',
+        'StaffUser',
+        'MANDATORY',
+        1,
+        null,
+        false,
+        false
+      );
+      staffUserField.field_type.type = 'Complex';
+      wizardPage.case_fields.push(staffUserField);
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(F_GROUP.get('data.staffUserField_staffUserControl')['component'].errors).toEqual({ required: true });
     });
   });
 

@@ -3,7 +3,7 @@
     <dt><span class="text-16">{{caseField.label | rpxTranslate}}</span></dt>
     <dd></dd>
   </dl>
-  <table class="complex-panel-table" aria-describedby="complex panel table">
+  <table class="complex-panel-table" aria-label="complex panel table">
     <tbody>
     <!-- <COMPLEX table field header>-->
     <tr>
@@ -16,7 +16,7 @@
            [attr.aria-label]="'Sort ' + columnsAllLabels[heading].label | rpxTranslate"
            [innerHTML]="sortWidget(columnsAllLabels[heading])"></a>
       </th>
-      <th></th>
+      <th><span class="govuk-visually-hidden">Expand row</span></th>
     </tr>
     <!-- </COMPLEX table field header>-->
     <ng-container *ngFor="let item of rows; let i = index;">
@@ -45,7 +45,7 @@
       <!-- <COMPLEX table expanded view>-->
       <tr [hidden]="isHidden[i]">
         <td [colSpan]="columns.length + 1">
-          <table class="complex-panel-table" aria-describedby="complex panel table expanded">
+          <table class="complex-panel-table" aria-label="complex panel table expanded">
             <tbody>
             <ng-container
               *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">

@@ -1,0 +1,453 @@
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { AbstractAppConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app.config';
+import { AppMockConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app-config.mock';
+import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
+import { provideHttpClient } from '@angular/common/http';
+import { Component, importProvidersFrom } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { of, throwError } from 'rxjs';
+import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
+import { AlertMessageType, AlertService, CaseEditorModule, CaseNotifier, PaletteModule, CaseField } from '../../projects/ccd-case-ui-toolkit/src/public-api';
+import { BannersModule } from '../../projects/ccd-case-ui-toolkit/src/lib/components/banners/banners.module';
+import { CasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/cases.service';
+import { addressesService } from '../mocks/address-service.mock';
+import { AddressesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/addresses/addresses.service';
+import { DocumentManagementService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service';
+import { JurisdictionService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/jurisdiction/jurisdiction.service';
+import { CaseFileViewService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/case-file-view/case-file-view.service';
+import { LoadingService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/loading/loading.service';
+import { SessionStorageService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/session/session-storage.service';
+import { WindowService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/window/window.service';
+import { CommonDataService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/common-data-service/common-data-service';
+import { LinkedCasesService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/linked-cases/services';
+import { dateField, dateTimeField } from '../mocks/date-field.mock';
+import { mandatoryFields } from '../mocks/mandatory-fields.mock';
+import { moneyField } from '../mocks/money-field.mock';
+import { collectionField, restrictedCollectionField } from '../mocks/collection-field.mock';
+import { editorFields } from '../mocks/editor-fields.mock';
+import { advancedFields, persistedAdvancedFields } from '../mocks/advanced-fields.mock';
+import { orderSummaryField, paymentHistoryField } from '../mocks/viewer-payment.mock';
+import { identityFields } from '../mocks/identity-fields.mock';
+import { structuredFields } from '../mocks/structured-fields.mock';
+import {
+  caseFileLauncher,
+  caseFlagsLauncher,
+  caseFlagsWorkflowExternalLauncher,
+  caseFlagsWorkflowExternalRouteCase,
+  caseFlagsWorkflowInternalLauncher,
+  caseFlagsWorkflowInternalRouteCase,
+  caseHistoryField,
+  launcherRouteCase,
+  linkedCasesLauncher,
+  linkedCasesRouteCase,
+  queryManagementLauncher,
+  unsupportedLauncher,
+  waysToPayField
+} from '../mocks/launchers.mock';
+import { HttpErrorService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services/http/http-error.service';
+import { caseFileViewService } from '../mocks/case-file-service.mock';
+import { fieldFormFields } from '../mocks/field-form.mock';
+import { caseNotifierCases } from '../mocks/case-notifier.mock';
+import { FlagWriterControlsComponent } from './flag-writer-controls.component';
+import { LinkedCaseWriterControlsComponent } from './linked-case-writer-controls.component';
+import { QueryWriterControlsComponent } from './query-writer-controls.component';
+import { WorkflowContractControlsComponent } from './workflow-contract-controls.component';
+import { IdentityWriterControlsComponent } from './identity-writer-controls.component';
+import { FieldBoundaryControlsComponent } from './field-boundary-controls.component';
+import { ReferenceIdentityControlsComponent } from './reference-identity-controls.component';
+import { addressDocumentFields } from '../mocks/address-document.mock';
+
+const launcherCaseReference = '1111222233334444';
+const httpErrorService: Pick<HttpErrorService, 'handle'> = {
+  handle: () => {
+    throw new Error('The launcher test host does not make HTTP requests');
+  }
+};
+let openedWindowUrl = '';
+const windowService: Pick<WindowService, 'openOnNewTab'> = {
+  openOnNewTab: (url: string) => {
+    openedWindowUrl = url;
+  }
+};
+const launcherRoute = { snapshot: { params: { cid: launcherCaseReference }, paramMap: { get: (key: string) => key === 'cid' ? launcherCaseReference : null }, data: {
+  get case() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('case-flags') === 'internal') {
+      return caseFlagsWorkflowInternalRouteCase;
+    }
+    if (searchParams.get('case-flags') === 'external') {
+      return caseFlagsWorkflowExternalRouteCase;
+    }
+    return searchParams.has('linked-cases') ? linkedCasesRouteCase : launcherRouteCase;
+  }
+} } };
+
+const linkedCaseView: any = {
+  case_id: '2222333344445555',
+  case_fields: { caseNameHmctsInternal: 'Linked test case' },
+  case_type: { name: 'Linked case type', description: 'Linked case type', jurisdiction: { description: 'Linked service' } },
+  state: { name: 'Open', description: 'Open' }
+};
+const caseNotifierCasesService = {
+  getCaseViewV2: (caseId: string) => caseId === 'unavailable'
+    ? throwError(() => ({ status: 503 }))
+    : of((caseId === linkedCaseView.case_id ? linkedCaseView : caseNotifierCases[caseId]) as any),
+  getLinkedCases: () => of({ linkedCases: [{
+    caseReference: '3333444455556666',
+    ccdCaseType: 'TestCase',
+    ccdCaseTypeDescription: 'Test case',
+    ccdJurisdiction: 'TEST',
+    state: 'Open',
+    stateDescription: 'Open',
+    caseNameHmctsInternal: 'Incoming linked case',
+    linkDetails: [{ reasons: [{ reasonCode: 'CLRC015' }] }]
+  }] } as any)
+} as Pick<CasesService, 'getCaseViewV2' | 'getLinkedCases'>;
+
+const commonDataService: Pick<CommonDataService, 'getRefData'> = {
+  getRefData: () => of({ list_of_values: [{ key: 'CLRC015', value_en: 'Case consolidated', lov_order: 1 }] } as any)
+};
+
+const linkedCasesService = {
+  serverJurisdictionError: false,
+  isServerReasonCodeError: false,
+  linkCaseReasons: [],
+  linkedCases: [],
+  initialCaseLinks: [],
+  caseFieldValue: [],
+  getCaseName: (caseView: any) => caseView.case_fields?.caseNameHmctsInternal || 'Case name missing',
+  mapLookupIDToValueFromJurisdictions: (_fieldName, value) => value === 'TEST' ? 'Test service' : value
+} as Partial<LinkedCasesService>;
+
+const testAppConfig = Object.assign(new AppMockConfig(), {
+  getPaymentsUrl: () => window.location.origin,
+  getPayBulkScanBaseUrl: () => window.location.origin,
+  getRefundsUrl: () => window.location.origin,
+  getNotificationUrl: () => window.location.origin
+});
+
+const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo' | 'isDocumentSecureModeEnabled' | 'uploadFile' | 'getDocumentBinaryUrl' | 'isHtmlDocument' | 'getMediaViewerInfo'> = {
+  parseCaseInfo: () => new URLSearchParams(window.location.search).has('secure-document-error') || new URLSearchParams(window.location.search).has('secure-document')
+    ? { caseType: 'TestCase', jurisdiction: 'TEST', caseId: launcherCaseReference }
+    : null,
+  isDocumentSecureModeEnabled: () => new URLSearchParams(window.location.search).has('secure-document-error') || new URLSearchParams(window.location.search).has('secure-document'),
+  uploadFile: (data: FormData) => new URLSearchParams(window.location.search).has('secure-document-error')
+    ? throwError(() => ({ status: 500, error: 'secure service: {"error":"Secure upload rejected"}<EOL>.' }))
+    : (data.get('files') as File | null)?.name === 'fail.pdf'
+      ? throwError(() => ({ status: 502 }))
+      : new URLSearchParams(window.location.search).has('secure-document')
+        ? of({ documents: [{ _links: { self: { href: 'https://document.example/documents/secure' }, binary: { href: 'https://document.example/documents/secure/binary' } }, originalDocumentName: 'secure.pdf', hashToken: 'secure-hash' }] } as any)
+        : of({ _embedded: { documents: [{ _links: { self: { href: 'https://document.example/documents/uploaded' }, binary: { href: 'https://document.example/documents/uploaded/binary' } }, originalDocumentName: 'uploaded.pdf' }] } } as any),
+  getDocumentBinaryUrl: (value: any) => value.document_binary_url,
+  isHtmlDocument: (value: any) => new URLSearchParams(window.location.search).has('case-file-html') || value?.content_type === 'text/html',
+  getMediaViewerInfo: () => JSON.stringify({
+    document_binary_url: 'https://document.example/documents/lager/binary',
+    document_filename: 'lager-encyclopedia.pdf',
+    content_type: 'pdf'
+  })
+};
+
+@Component({
+  selector: 'toolkit-test-host',
+  providers: [
+    { provide: AddressesService, useValue: addressesService },
+    { provide: DocumentManagementService, useValue: documentManagementService },
+    { provide: JurisdictionService, useValue: {} },
+    { provide: CommonDataService, useValue: commonDataService },
+    { provide: LinkedCasesService, useValue: linkedCasesService },
+    { provide: CaseFileViewService, useValue: caseFileViewService },
+    { provide: LoadingService, useValue: { register: () => 'test-loading', unregister: () => undefined } },
+    { provide: SessionStorageService, useValue: { getItem: () => JSON.stringify({
+      roles: new URLSearchParams(window.location.search).has('anonymous')
+        ? []
+        : new URLSearchParams(window.location.search).has('judiciary-user')
+          ? ['judiciary']
+          : new URLSearchParams(window.location.search).has('external-user') ? ['pui-case-manager'] : ['caseworker-test'],
+      sub: 'caseworker@example.invalid'
+    }) } },
+    { provide: WindowService, useValue: windowService }
+  ],
+  imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, WorkflowContractControlsComponent, IdentityWriterControlsComponent, FieldBoundaryControlsComponent, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
+  template: `
+    <main>
+      <toolkit-workflow-contract-controls *ngIf="showWorkflowContract" />
+      <toolkit-identity-writer-controls *ngIf="showIdentityWriter" />
+      <toolkit-field-boundary-controls *ngIf="hostArea === 'field-boundaries'" />
+      <toolkit-flag-writer *ngIf="showFlagWriter" />
+      <toolkit-linked-case-writer *ngIf="showLinkedWriter" />
+      <toolkit-query-writer-controls *ngIf="showQueryWriter" />
+      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
+      <h1>Toolkit date input</h1>
+      <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
+      <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
+      <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
+      <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
+      <ccd-field-write [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
+      <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
+      <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
+
+      <h2>Mandatory field controls</h2>
+      <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
+      <output data-testid="money-value">{{ moneyForm.get(money.id)?.value }}</output>
+      <output data-testid="money-status">{{ moneyForm.status }}</output>
+      <ccd-write-text-field [caseField]="mandatory.text" [formGroup]="mandatoryForm" />
+      <ccd-write-number-field [caseField]="mandatory.number" [formGroup]="mandatoryForm" />
+      <ccd-write-email-field [caseField]="mandatory.email" [formGroup]="mandatoryForm" />
+      <ccd-write-phone-uk-field [caseField]="mandatory.phone" [formGroup]="mandatoryForm" />
+      <ccd-write-text-area-field [caseField]="mandatory.textArea" [formGroup]="mandatoryForm" />
+      <ccd-write-yes-no-field [caseField]="mandatory.yesNo" [formGroup]="mandatoryForm" />
+      <ccd-field-write [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
+      <ccd-write-fixed-radio-list-field [caseField]="mandatory.fixedRadio" [formGroup]="mandatoryForm" />
+      <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
+      <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
+      <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
+
+      <section data-testid="advanced-fields"><h2>Advanced field controls</h2>
+      <ccd-write-text-field [caseField]="advanced.postcode" [formGroup]="advancedForm" />
+      <ccd-write-rich-text-area-field [caseField]="advanced.richText" [formGroup]="advancedForm" />
+      <ccd-field-write [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
+      <ccd-write-dynamic-radio-list-field [caseField]="advanced.dynamicRadio" [formGroup]="advancedForm" />
+      <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
+      <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
+      <output data-testid="advanced-status">{{ advancedForm.status }}</output>
+      </section>
+      <section data-testid="palette-dispatch"><h2>Palette dispatch</h2>
+        <div data-testid="palette-component-launcher-read"><ccd-field-read [caseField]="componentLauncher" /></div>
+        <div data-testid="palette-component-launcher-write"><ccd-field-write [caseField]="componentLauncher" [formGroup]="paletteDispatchForm" /></div>
+        <div data-testid="palette-unsupported-read"><ccd-field-read [caseField]="unsupported" /></div>
+        <div data-testid="palette-unsupported-write"><ccd-field-write [caseField]="unsupported" [formGroup]="paletteDispatchForm" /></div>
+        <div data-testid="palette-unknown-launcher-read"><ccd-field-read [caseField]="unknownLauncher" /></div>
+        <div data-testid="palette-unknown-launcher-write"><ccd-field-write [caseField]="unknownLauncher" [formGroup]="paletteDispatchForm" /></div>
+      </section>
+
+      <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
+      <section data-testid="address-uk-control"><ccd-field-write [caseField]="addressDocument.uk" [formGroup]="addressDocumentForm" /></section>
+      <section data-testid="address-global-control"><ccd-field-write [caseField]="addressDocument.global" [formGroup]="addressDocumentForm" /></section>
+      <section data-testid="document-control"><ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" /></section>
+      <output data-testid="address-document-values">{{ addressDocumentForm.value | json }}</output></div>
+
+      <div data-testid="structured-fields"><h2>Structured field controls</h2>
+      <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
+      <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
+      <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
+      <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
+
+      </ng-container>
+      <ng-container *ngIf="hostArea !== 'fields' && !showContractHost">
+      <section data-testid="launcher-mini-app-controls"><h2>Launcher and mini-application controls</h2>
+      <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="caseFlagsLauncher" [caseReference]="caseReference" />
+      <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
+      <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
+      <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
+      <output data-testid="opened-window-url">{{ openedWindowUrl }}</output>
+      </section>
+
+      <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
+      <ccd-field-read [caseField]="caseFlagsWorkflow" [caseReference]="caseReference" />
+      </section>
+
+      <section data-testid="viewer-payment-controls"><h2>Viewer and payment controls</h2>
+      <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
+      <ng-container *ngIf="showPaymentHistory">
+        <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+      </ng-container></section>
+      </ng-container>
+      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
+      <div data-testid="field-form-fields"><h2>Field form controls</h2>
+      <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
+      <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
+      <ccd-field-read [caseField]="fieldForm.readOnly" [formGroup]="fieldFormGroup" />
+      </div>
+      <output data-testid="field-form-values">{{ fieldFormGroup.value | json }}</output>
+      <output data-testid="field-form-status">{{ fieldFormGroup.status }}</output>
+
+      <h2>Identity read-only controls</h2>
+      <ccd-field-read [caseField]="identity.caseLink" />
+      <ccd-field-read [caseField]="identity.label" [caseFields]="[]" />
+      <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
+      <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
+
+      <h2>Reference identity controls</h2>
+      <toolkit-reference-identity-controls />
+
+      <h2>Case notifier state</h2>
+      <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
+      <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
+      <button type="button" (click)="refreshUnavailableCase()">Refresh unavailable case</button>
+      <output data-testid="case-notifier-error">{{ caseNotifierError }}</output>
+      <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
+
+      <h2>Collection controls</h2>
+      <ccd-field-write data-testid="editable-collection" [caseField]="names" [formGroup]="collectionForm" />
+      <div data-testid="restricted-collection">
+        <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
+      </div>
+      <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
+      <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
+
+      <h2>Case edit form validation and state</h2>
+      <ng-container *ngIf="editorPage === 1">
+        <form [formGroup]="editorForm" (ngSubmit)="continueEditor()">
+          <ccd-case-edit-form [fields]="editorFields" [caseFields]="editorFields" [formGroup]="editorForm" />
+          <button type="submit" [disabled]="editorForm.invalid">Continue</button>
+        </form>
+      </ng-container>
+      <ng-container *ngIf="editorPage === 2">
+        <h3>Editor page 2</h3>
+        <output data-testid="editor-optional-value">{{ editorForm.get('editor-optional')?.value }}</output>
+      </ng-container>
+      <output data-testid="editor-page">{{ editorPage }}</output>
+      <output data-testid="editor-values">{{ editorForm.value | json }}</output>
+
+      <h2>Callback error handling</h2>
+      <button type="button" (click)="showCallbackError()">Simulate callback error</button>
+      <button type="button" (click)="clearCallbackError()">Clear callback error</button>
+      <ng-container *ngIf="alertService.errors | async as callbackError">
+        <cut-alert [type]="alertMessageType.ERROR" data-testid="callback-error">
+          {{ callbackError.message }}
+        </cut-alert>
+      </ng-container>
+      </ng-container>
+    </main>
+  `
+})
+class ToolkitTestHost {
+  readonly hostArea = new URLSearchParams(window.location.search).get('host');
+  readonly field = dateField;
+  readonly dateTimeField = dateTimeField;
+  readonly mandatory = mandatoryFields;
+  readonly dateForm = new FormGroup({ [dateField.id]: new FormControl(dateField.value) });
+  readonly dateTimeForm = new FormGroup({});
+  readonly mandatoryForm = new FormGroup({});
+  readonly advanced = new URLSearchParams(window.location.search).has('dynamic-multi')
+    ? persistedAdvancedFields(new URLSearchParams(window.location.search).get('dynamic-multi'))
+    : advancedFields;
+
+  readonly advancedForm = new FormGroup({});
+  readonly caseFileLauncher = Object.assign(new CaseField(), caseFileLauncher, {
+    acls: new URLSearchParams(window.location.search).has('case-file-edit')
+      ? [{ role: 'caseworker-test', update: true }]
+      : []
+  });
+
+  readonly waysToPay = waysToPayField;
+  readonly unsupportedLauncher = unsupportedLauncher;
+  readonly caseFlagsLauncher = caseFlagsLauncher;
+  readonly caseFlagsWorkflow = new URLSearchParams(window.location.search).get('case-flags') === 'external'
+    ? caseFlagsWorkflowExternalLauncher
+    : caseFlagsWorkflowInternalLauncher;
+
+  readonly queryManagementLauncher = queryManagementLauncher;
+  readonly linkedCasesLauncher = linkedCasesLauncher;
+  readonly caseHistory = caseHistoryField;
+  readonly orderSummary = orderSummaryField;
+  readonly paymentHistory = paymentHistoryField;
+  readonly caseReference = launcherCaseReference;
+  readonly identity = identityFields;
+  readonly identityMixed = Object.assign(new CaseField(), { id: 'identity-mixed', label: 'Editable note', display_context: 'OPTIONAL', field_type: { id: 'Text', type: 'Text' }, value: null });
+  readonly identityForm = new FormGroup({});
+  caseNotifierState = 'No case selected';
+  readonly addressDocument = addressDocumentFields;
+  readonly componentLauncher = Object.assign(new CaseField(), { id: 'launcher', label: 'Case file', display_context: 'OPTIONAL', display_context_parameter: '#ARGUMENT(CaseFileView,READONLY)', field_type: { id: 'ComponentLauncher', type: 'ComponentLauncher' }, value: null, acls: [] });
+  readonly unsupported = Object.assign(new CaseField(), { id: 'unsupported', label: 'Unsupported', display_context: 'READONLY', field_type: { id: 'Unsupported', type: 'Unsupported' }, value: null });
+  readonly unknownLauncher = Object.assign(new CaseField(), { id: 'unknown-launcher', label: 'Unknown launcher', display_context: 'READONLY', display_context_parameter: '#ARGUMENT(NotARegisteredLauncher,READONLY)', field_type: { id: 'ComponentLauncher', type: 'ComponentLauncher' }, value: null });
+  readonly paletteDispatchForm = new FormGroup({});
+  readonly addressDocumentForm = new FormGroup({});
+  readonly structured = structuredFields;
+  readonly structuredForm = new FormGroup({});
+  readonly fieldForm = fieldFormFields;
+  readonly fieldFormGroup = new FormGroup({});
+  readonly money = moneyField;
+  readonly moneyForm = new FormGroup({});
+  readonly names = collectionField;
+  readonly restrictedNames = restrictedCollectionField;
+  readonly collectionForm = new FormGroup({});
+  readonly editorFields = editorFields;
+  readonly editorForm = new FormGroup({});
+  editorPage = 1;
+  readonly showPaymentHistory = new URLSearchParams(window.location.search).has('payment-history');
+  readonly showLinkedCases = new URLSearchParams(window.location.search).has('linked-cases');
+  readonly showWorkflowContract = new URLSearchParams(window.location.search).has('workflow-contract');
+  readonly showIdentityWriter = new URLSearchParams(window.location.search).has('identity-write');
+  readonly showContractHost = this.showWorkflowContract || this.showIdentityWriter || this.hostArea === 'field-boundaries';
+  readonly showFlagWriter = new URLSearchParams(window.location.search).has('flags-write');
+  readonly showLinkedWriter = new URLSearchParams(window.location.search).has('linked-write');
+  readonly showQueryWriter = new URLSearchParams(window.location.search).has('query-write');
+  readonly showCaseFlagsWorkflow = new URLSearchParams(window.location.search).has('case-flags');
+  readonly alertMessageType = AlertMessageType;
+  get openedWindowUrl(): string {
+    return openedWindowUrl;
+  }
+
+  constructor(readonly alertService: AlertService, readonly caseNotifier: CaseNotifier) {
+    this.caseNotifier.caseView.subscribe((caseView) => {
+      if (caseView.case_id === launcherCaseReference) {
+        return;
+      }
+      const access = caseView.metadataFields?.find((field) => field.id === '[ACCESS_PROCESS]')?.value;
+      this.caseNotifierState = caseView.case_id && access
+        ? `${caseView.case_id.replace(/(\d{4})(?=\d)/g, '$1-')}: ${access}`
+        : 'No case selected';
+    });
+  }
+
+  continueEditor(): void {
+    this.editorPage = 2;
+  }
+
+  showCallbackError(): void {
+    this.alertService.error({ phrase: 'The callback failed. Please try again.' });
+  }
+
+  clearCallbackError(): void {
+    this.alertService.clear();
+  }
+
+  caseNotifierError = '';
+
+  refreshUnavailableCase(): void {
+    this.caseNotifier.fetchAndRefresh('unavailable').subscribe({
+      error: (error: { status: number }) => {
+        this.caseNotifierError = String(error.status);
+      }
+    });
+  }
+
+  refreshChallengedCase(): void {
+    this.caseNotifier.fetchAndRefresh('challenged').subscribe();
+  }
+
+  refreshStandardCase(): void {
+    this.caseNotifier.fetchAndRefresh('standard').subscribe();
+  }
+}
+
+bootstrapApplication(ToolkitTestHost, {
+  providers: [
+    provideHttpClient(),
+    { provide: AbstractAppConfig, useValue: testAppConfig },
+    provideNoopAnimations(),
+    provideRouter([]),
+    { provide: ActivatedRoute, useValue: launcherRoute },
+    AlertService,
+    { provide: CasesService, useValue: caseNotifierCasesService },
+    { provide: CaseFileViewService, useValue: caseFileViewService },
+    { provide: DocumentManagementService, useValue: documentManagementService },
+    { provide: WindowService, useValue: windowService },
+    { provide: HttpErrorService, useValue: httpErrorService },
+    importProvidersFrom(
+      PaymentLibModule,
+      StoreModule.forRoot({}),
+      EffectsModule.forRoot([]),
+      RpxTranslationModule.forRoot(new RpxTranslationConfig())
+    )
+  ]
+}).catch((error) => console.error(error));

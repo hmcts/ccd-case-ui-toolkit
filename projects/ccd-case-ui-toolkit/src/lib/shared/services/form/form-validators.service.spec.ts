@@ -34,6 +34,19 @@ describe('FormValidatorsService', () => {
     expect(result.invalid).toBeTruthy();
   });
 
+  (['JudicialUser', 'StaffUser'] as const).forEach((complexTypeId) => {
+    it(`should not add a required validator to a mandatory ${complexTypeId} complex group`, () => {
+      const formControl = new FormControl();
+      const caseField = aCaseField('id', 'label', complexTypeId, 'MANDATORY', null);
+      caseField.field_type.type = 'Complex';
+
+      const result = formValidatorsService.addValidators(caseField, formControl);
+      result.updateValueAndValidity();
+
+      expect(result.valid).toBe(true);
+    });
+  });
+
   it('should validate text field for MANDATORY with regular expression', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
@@ -213,11 +226,65 @@ describe('FormValidatorsService', () => {
     expect(result.valid).toBeFalsy();
   });
 
+  it('should return add Markdown validator for OPTIONAL fields - RichTextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<a href="https://www.google.com">Google</a>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should allow legal placeholders followed by slash-separated alternatives in RichTextArea fields', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<p>the child[ren] [was] / [were] present and the child[ren] [is] / [are] protected</p>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+
+    expect(result.hasError('markDownPattern')).toBe(false);
+  });
+
+  it('should allow bracketed legal text separated by whitespace in RichTextArea fields', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<p>[test] [hello]</p>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+
+    expect(result.hasError('markDownPattern')).toBe(false);
+  });
+
+  it('should continue to reject adjacent Markdown reference syntax in RichTextArea fields', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<p>[test][hello]</p>');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+
+    expect(result.hasError('markDownPattern')).toBe(true);
+  });
+
+
   it('should return add Markdown validator for MANDATORY fields - TextArea', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'Label', 'TextArea', 'MANDATORY', null);
     const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
     result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for MANDATORY fields - RichTextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'RichTextArea', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('<a href="https://www.google.com">Google</a>');
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.valid).toBeFalsy();

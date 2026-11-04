@@ -29,6 +29,8 @@ import { WriteFixedRadioListFieldComponent } from './fixed-radio-list/write-fixe
 import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-field.component';
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { ReadStaffUserFieldComponent } from './staff-user/read-staff-user-field.component';
+import { WriteStaffUserFieldComponent } from './staff-user/write-staff-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
@@ -45,10 +47,12 @@ import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-h
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { ReadQueryManagementFieldComponent } from './query-management';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
+import { ReadRichTextAreaFieldComponent } from './rich-text-area/read-rich-text-area-field.component';
+import { WriteRichTextAreaFieldComponent } from './rich-text-area/write-rich-text-area-field.component';
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
+import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
+import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
 import { ReadYesNoFieldComponent } from './yes-no/read-yes-no-field.component';
@@ -69,6 +73,8 @@ export class PaletteService {
         return write ? WriteTextFieldComponent : ReadTextFieldComponent;
       case 'TextArea':
         return write ? WriteTextAreaFieldComponent : ReadTextAreaFieldComponent;
+      case 'RichTextArea':
+        return write ? WriteRichTextAreaFieldComponent : ReadRichTextAreaFieldComponent;
       case 'Number':
         return write ? WriteNumberFieldComponent : ReadNumberFieldComponent;
       case 'YesOrNo':
@@ -105,6 +111,8 @@ export class PaletteService {
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           case 'JudicialUser':
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
+          case 'StaffUser':
+            return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

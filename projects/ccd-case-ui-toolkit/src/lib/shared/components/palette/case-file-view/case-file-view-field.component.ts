@@ -13,6 +13,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CaseField } from '../../../domain';
@@ -86,6 +87,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const slider = this.elementRef.nativeElement.querySelector('.slider');
     const documentTreeContainer = this.elementRef.nativeElement.querySelector('.document-tree-container');
 
+    if (!slider || !documentTreeContainer) {
+      return;
+    }
+
     const mousedown$ = fromEvent<MouseEvent>(slider, 'mousedown');
     const mousemove$ = fromEvent<MouseEvent>(document, 'mousemove');
     const mouseup$ = fromEvent<MouseEvent>(document, 'mouseup');
@@ -101,7 +106,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
               documentTreeContainerWidth
             };
           }),
-            takeUntil(mouseup$));
+          takeUntil(mouseup$));
         }
       )
     );
@@ -141,8 +146,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
         finalize(() => {
           this.loadingService.unregister(loadingToken);
         }),
-        catchError(() => {
-          this.errorMessages = ['You do not have permission to move this document to the selected folder.'];
+        catchError((err) => {
+          this.errorMessages = [this.moveDocumentError(err)];
           return of(null);
         }),
       )
@@ -214,5 +219,33 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   private destroyMediaViewer(): void {
     this.mediaViewerHost?.clear();
     this.mediaViewerComponentRef = undefined;
+  }
+
+  private moveDocumentError(err): string {
+    const defaultMsg = 'We couldn\'t move the document. Please try again.';
+
+    if (!(err instanceof HttpErrorResponse)) {
+      return defaultMsg;
+    }
+
+    switch (err.status) {
+      case HttpStatusCode.BadRequest:
+      // e.g. malformed PUT, invalid attribute_path, invalid target category
+        return 'The request was invalid. Check the document path and destination folder.';
+      case HttpStatusCode.Conflict:
+      // optimistic concurrency / stale case version
+        return 'This case changed since you opened it. Refresh and try again.';
+      case HttpStatusCode.NotFound:
+        return 'The document or destination folder could not be found.';
+      case HttpStatusCode.Forbidden:
+      case HttpStatusCode.Unauthorized:
+        return 'You do not have permission to move this document to the selected folder.';
+      case HttpStatusCode.ServiceUnavailable:
+      case HttpStatusCode.GatewayTimeout:
+        return 'The service is temporarily unavailable. Please try again in a moment.';
+      default:
+      // Any other status (including 500)
+        return defaultMsg;
+    }
   }
 }

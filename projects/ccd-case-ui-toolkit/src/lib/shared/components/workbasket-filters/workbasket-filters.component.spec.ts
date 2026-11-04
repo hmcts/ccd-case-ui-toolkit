@@ -185,7 +185,7 @@ let alertService: AlertService;
 let windowService;
 const TEST_FORM_GROUP = new FormGroup({});
 
-describe('Clear localStorage for workbasket filters', () => {
+describe('Clear local storage for workbasket filters', () => {
   let windowMockService: WindowService;
   beforeEach(waitForAsync(() => {
     workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
@@ -197,7 +197,7 @@ describe('Clear localStorage for workbasket filters', () => {
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
-    windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
+    windowMockService = createSpyObj<WindowService>('windowService', ['clearSessionStorage', 'locationAssign',
       'getLocalStorage', 'removeLocalStorage', 'setLocalStorage']);
     resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
     activatedRoute = {
@@ -266,7 +266,7 @@ describe('with defaults', () => {
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     windowService.getLocalStorage.and.returnValue('{}');
     resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
     activatedRoute = {
@@ -543,6 +543,23 @@ describe('with defaults', () => {
     expect(workbasketInputFilterService.getWorkbasketInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[1].id);
   });
 
+  it('should clear stored dynamic filter values when case type changes', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[1];
+
+    component.onCaseTypeIdChange();
+
+    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+  });
+
+  it('should clear stored dynamic filter values when jurisdiction changes', () => {
+    component.selected.jurisdiction = JURISDICTION_2;
+
+    component.onJurisdictionIdChange();
+
+    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+  });
+
   it('should ignore error and reset input fields', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
@@ -674,14 +691,14 @@ describe('with defaults', () => {
   });
 
   it('should update form group filters', () => {
-    const formGroupLocalStorage = {
+    const formGroupLS = {
       regionList: 'london',
       londonFRCList: 'london',
       londonCourtList: 'FR_londonList_10',
       southEastFRCList: null,
       thamesvalleyCourtList: null
     };
-    windowService.getLocalStorage.and.returnValue(JSON.stringify(formGroupLocalStorage));
+    windowService.getLocalStorage.and.returnValue(JSON.stringify(formGroupLS));
 
     const formControls = {
       regionList: new FormControl('southeast'),
@@ -717,7 +734,7 @@ describe('with defaults and CRUD', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     jurisdictionService = new JurisdictionService(httpService);
     activatedRoute = {
       queryParams: of({}),
@@ -818,7 +835,7 @@ describe('with defaults and CRUD and empty case types', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
 
     jurisdictionService = new JurisdictionService(httpService);
     activatedRoute = {
@@ -894,7 +911,7 @@ describe('with defaults and CRUD and type with empty case states', () => {
     alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
     resetCaseTypes(JURISDICTION_2, CASE_TYPE_WITH_EMPTY_STATES);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
@@ -980,7 +997,7 @@ describe('with query parameters', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     alertService = createSpyObj<AlertService>('alertService', ['isPreserveAlerts', 'setPreserveAlerts']);
     activatedRoute = {
       queryParams: of(QUERY_PARAMS),
@@ -1067,7 +1084,7 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
     orderService = createSpyObj('orderService', ['sortAsc']);
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     windowService.getLocalStorage.and.returnValue(JSON.stringify(QUERY_PARAMS));
     activatedRoute = {
       queryParams: of(QUERY_PARAMS),
@@ -1151,7 +1168,7 @@ describe('with no defaults', () => {
     workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
     workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
     jurisdictionService = new JurisdictionService(httpService);
-    windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
+    windowService = createSpyObj<WindowService>('windowService', ['clearSessionStorage', 'locationAssign',
       'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
     windowService.getLocalStorage.and.returnValue('{}');
     activatedRoute = {
@@ -1271,7 +1288,7 @@ describe('with no defaults', () => {
       });
   });
 
-  it('should remove localStorage and clear selected fields once reset button is clicked', fakeAsync(() => {
+  it('should remove local storage and clear selected fields once reset button is clicked', fakeAsync(() => {
     // Set some initial values for the jurisdiction, case type and case state
     component.selected.jurisdiction = JURISDICTION_ONE;
     component.onJurisdictionIdChange();

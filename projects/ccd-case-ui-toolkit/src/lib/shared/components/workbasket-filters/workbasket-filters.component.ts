@@ -14,6 +14,7 @@ import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { safeJsonParse } from '../../json-utils';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
@@ -140,7 +141,11 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.alertService.setPreserveAlerts(!this.initialised);
     }
     if (Object.keys(this.formGroup.controls).length === 0) {
-      this.selected.formGroup = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
+      const storedFormGroup = safeJsonParse<any>(
+        this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE),
+        null
+      );
+      this.selected.formGroup = storedFormGroup && Object.keys(storedFormGroup).length > 0 ? storedFormGroup : null;
     } else {
       // Update form group filters
       this.updateFormGroupFilters();
@@ -191,6 +196,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public onJurisdictionIdChange() {
+    this.clearStoredWorkbasketFilterValues();
     if (this.selected.jurisdiction) {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
       this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes.length > 0
@@ -206,7 +212,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.clearWorkbasketInputs();
 
       if (!this.isApplyButtonDisabled()) {
-        this.onCaseTypeIdChange();
+        this.onCaseTypeIdChange(false);
       }
     } else {
       this.resetCaseType();
@@ -214,7 +220,10 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
   }
 
-  public onCaseTypeIdChange(): void {
+  public onCaseTypeIdChange(clearStoredValues = true): void {
+    if (clearStoredValues) {
+      this.clearStoredWorkbasketFilterValues();
+    }
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
@@ -272,8 +281,8 @@ export class WorkbasketFiltersComponent implements OnInit {
    * in future to incorporate other dynamic filters.
    */
   public updateFormGroupFilters(): void {
-    // Read the form group local storage
-    const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
+    // Read the form group from local storage
+    const formGroupLS = safeJsonParse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE), null);
 
     // Form group local storage is available and contains regionList property
     if (!!formGroupLS && formGroupLS.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {
@@ -318,7 +327,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.selectedJurisdictionCaseTypes = this.selected.jurisdiction.caseTypes;
         this.selected.caseType = this.selectCaseType(this.selected, this.selectedJurisdictionCaseTypes, routeSnapshot);
         if (this.selected.caseType) {
-          this.onCaseTypeIdChange();
+          this.onCaseTypeIdChange(false);
           this.selected.caseState = this.selectCaseState(this.selected.caseType, routeSnapshot);
         }
         this.workbasketDefaults = true;
@@ -369,6 +378,10 @@ export class WorkbasketFiltersComponent implements OnInit {
   private clearWorkbasketInputs() {
     this.workbasketInputsReady = false;
     this.workbasketInputs = [];
+  }
+
+  private clearStoredWorkbasketFilterValues() {
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
   }
 
   private resetCaseState() {

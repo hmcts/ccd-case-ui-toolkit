@@ -42,7 +42,7 @@ class MockReadCaseLinkFieldComponent {
 describe('ReadComplexFieldCollectionTableComponent', () => {
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
-  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
+  const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span:not(.govuk-visually-hidden)');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK = By.css('div>table>tbody>tr>th>a');
   const $COMPLEX_PANEL_SIMPLE_ROWS_VALUES = By.css('div>table>tbody>tr>td>div>ccd-field-read');
   const $COMPLEX_PANEL_EXPANDED_ROWS_HEADERS = By.css('div>table>tbody>tr>td>table>tbody>tr>th>span');
@@ -206,6 +206,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
       component.sortRowsByColumns('AddressLine1');
       expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[0].value[FIRST_COLUMN]);
+    });
+
+    it('should sort rows based on a RichTextArea column', () => {
+      component.columnsHorizontalLabel.AddressLine1.type.type = 'RichTextArea';
+
+      component.sortRowsByColumns('AddressLine1');
+
+      expect(component.rows[0].AddressLine1).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
     });
 
     it('should sort rows based on Number type', () => {
