@@ -2728,6 +2728,29 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('adds the configured date input validation message to the error summary', () => {
+      const dayField = aCaseField('timelineDay', 'Day', 'Number', 'OPTIONAL', 1, null, true, true);
+      const dateField = aCaseField('timelineEventDate', 'Date of event', 'Complex', 'COMPLEX', 1, [dayField], true, true);
+      dateField.isComplex = () => true;
+      dateField.isCollection = () => false;
+      const dayControl = new FormControl('31');
+      dayControl.setErrors({ dateInputInvalid: 'Enter a valid date' });
+      comp.editForm = new FormGroup({
+        data: new FormGroup({
+          timelineEventDate: new FormGroup({ timelineDay: dayControl })
+        })
+      });
+      comp.caseFields = [dateField];
+      spyOn(window, 'scrollTo');
+
+      comp.generateErrorMessage([dateField]);
+
+      expect(caseEditDataService.addFormValidationError).toHaveBeenCalledWith({
+        id: 'timelineDay',
+        message: 'Enter a valid date'
+      });
+    });
+
     it('should validate mandatory complex type fields and log error message', () => {
       const complexSubField1: CaseField = aCaseField(
         'childField1',

@@ -11,6 +11,8 @@ import { ReadCollectionFieldComponent } from './collection/read-collection-field
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
+import { isTimelineOfEventsDateInputConfigured } from './complex/date-input-configuration';
+import { WriteTimelineOfEventsFieldComponent } from './complex/write-timeline-of-events-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
@@ -113,6 +115,12 @@ export class PaletteService {
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
           case 'StaffUser':
             return write ? WriteStaffUserFieldComponent : ReadStaffUserFieldComponent;
+          case 'TimelineOfEvents': {
+            const writeComponent = isTimelineOfEventsDateInputConfigured(caseField)
+              ? WriteTimelineOfEventsFieldComponent
+              : WriteComplexFieldComponent;
+            return write ? writeComponent : ReadComplexFieldComponent;
+          }
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

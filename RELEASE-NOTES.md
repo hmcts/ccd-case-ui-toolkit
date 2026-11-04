@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.24-exui-5453-1
+**EXUI-5453** EXUI Timeline Event page layout changes when "Day" field is made optional
+
 ### Version 7.4.24
 **EXUI-5210** Query Management failing to show hmcts after a users name
 

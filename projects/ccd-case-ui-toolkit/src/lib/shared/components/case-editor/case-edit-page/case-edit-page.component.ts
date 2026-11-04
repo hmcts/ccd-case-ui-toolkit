@@ -283,6 +283,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             if (this.isAutocompleteUserField(casefield)) {
               fieldElement['component'].errors = { required: true };
             }
+          } else if (fieldElement.hasError('dateInputRequired') || fieldElement.hasError('dateInputInvalid')) {
+            const message = fieldElement.getError('dateInputRequired') || fieldElement.getError('dateInputInvalid');
+            this.caseEditDataService.addFormValidationError({ id, message });
+            fieldElement.markAsDirty();
           } else if (fieldElement.hasError('pattern')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is not valid`, label });
             fieldElement.markAsDirty();

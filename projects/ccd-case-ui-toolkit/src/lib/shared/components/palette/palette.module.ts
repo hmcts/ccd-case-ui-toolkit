@@ -74,7 +74,8 @@ import {
   ReadComplexFieldComponent,
   ReadComplexFieldRawComponent,
   ReadComplexFieldTableComponent,
-  WriteComplexFieldComponent
+  WriteComplexFieldComponent,
+  WriteTimelineOfEventsFieldComponent
 } from './complex';
 import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
 import { DatetimePickerComponent } from './datetime-picker';
@@ -205,6 +206,7 @@ const PALETTE_COMPONENTS = [
   WriteStaffUserFieldComponent,
   WriteAddressFieldComponent,
   WriteComplexFieldComponent,
+  WriteTimelineOfEventsFieldComponent,
   WriteOrganisationComplexFieldComponent,
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
