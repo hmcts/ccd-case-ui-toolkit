@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.24
+**EXUI-5210** Query Management failing to show hmcts after a users name
+
 ### Version 7.4.23
 **EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
 
