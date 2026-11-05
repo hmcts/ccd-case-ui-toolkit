@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -127,6 +128,12 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewElement).toBeTruthy();
   });
 
+  it('should pass the route case ID to the document folder', () => {
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('ccd-case-file-view-folder')).properties['caseId']).toBe(cidParam);
+  });
+
   it('should default to no permissions when userDetails is invalid', () => {
     mockSessionStorageService.getItem.and.returnValue('{invalid-json');
 
@@ -167,6 +174,29 @@ describe('CaseFileViewFieldComponent', () => {
     expect(mockWindowService.openOnNewTab).not.toHaveBeenCalled();
   });
 
+  it('should add case context to a legacy document URL for the media viewer', () => {
+    component.caseId = cidParam;
+    const dummyNodeTreeDocument = new DocumentTreeNode();
+    dummyNodeTreeDocument.document_filename = 'dummy_document.pdf';
+    dummyNodeTreeDocument.document_binary_url = '/documents/document-123/binary?preview=true';
+
+    component.setMediaViewerFile(dummyNodeTreeDocument);
+
+    expect(component.currentDocument.document_binary_url)
+      .toEqual(`/documents/document-123/binary?preview=true&caseId=${cidParam}`);
+  });
+
+  it('should not add case context to a v2 document URL', () => {
+    component.caseId = cidParam;
+    const dummyNodeTreeDocument = new DocumentTreeNode();
+    dummyNodeTreeDocument.document_filename = 'dummy_document.pdf';
+    dummyNodeTreeDocument.document_binary_url = '/documentsv2/document-123/binary';
+
+    component.setMediaViewerFile(dummyNodeTreeDocument);
+
+    expect(component.currentDocument.document_binary_url).toEqual('/documentsv2/document-123/binary');
+  });
+
   it('should open HTML document in a new tab when calling setMediaViewerFile', () => {
     const dummyNodeTreeDocument = new DocumentTreeNode();
     dummyNodeTreeDocument.name = 'dummy_document.html';
@@ -179,6 +209,20 @@ describe('CaseFileViewFieldComponent', () => {
     fixture.detectChanges();
 
     expect(mockWindowService.openOnNewTab).toHaveBeenCalledWith('/test/html-binary');
+    expect(component.currentDocument).toBeUndefined();
+  });
+
+  it('should add case context when opening a legacy HTML document in a new tab', () => {
+    component.caseId = cidParam;
+    const dummyNodeTreeDocument = new DocumentTreeNode();
+    dummyNodeTreeDocument.document_filename = 'dummy_document.html';
+    dummyNodeTreeDocument.document_binary_url = '/documents/document-123/binary';
+    dummyNodeTreeDocument.content_type = 'text/html';
+
+    component.setMediaViewerFile(dummyNodeTreeDocument);
+
+    expect(mockWindowService.openOnNewTab)
+      .toHaveBeenCalledWith(`/documents/document-123/binary?caseId=${cidParam}`);
     expect(component.currentDocument).toBeUndefined();
   });
 

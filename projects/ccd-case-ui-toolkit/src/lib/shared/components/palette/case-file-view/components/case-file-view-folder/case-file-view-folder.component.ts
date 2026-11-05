@@ -29,6 +29,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly MINIMUM_SEARCH_CHARACTERS = 1;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
+  @Input() public caseId: string;
   @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
   @Output() public moveDocument = new EventEmitter<{ newCategory: string, document: DocumentTreeNode }>();
@@ -198,19 +199,22 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
     documentTreeNode: DocumentTreeNode
   ): void {
+    const documentBinaryUrl = actionType === 'changeFolder' ? '' : this.documentManagementService.getDocumentBinaryUrl(documentTreeNode, this.caseId);
+    if (actionType !== 'changeFolder' && !documentBinaryUrl) {
+      return;
+    }
     switch (actionType) {
       case ('changeFolder'):
         this.openMoveDialog(documentTreeNode);
         break;
       case ('openInANewTab'):
         const documentDetails = {
-          document_binary_url: documentTreeNode.document_binary_url,
+          document_binary_url: documentBinaryUrl,
           document_filename: documentTreeNode.document_filename,
           content_type: documentTreeNode.content_type
         };
         const isHtmlDocument = this.documentManagementService.isHtmlDocument(documentDetails);
         if (isHtmlDocument) {
-          const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
           if (documentBinaryUrl) {
             this.windowService.openOnNewTab(documentBinaryUrl);
             return;
@@ -219,9 +223,10 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
         const token = FieldsUtils.createToken();
         const payload = this.documentManagementService.getMediaViewerInfo({
-          document_binary_url: documentTreeNode.document_binary_url,
+          document_binary_url: documentBinaryUrl,
           document_filename: documentTreeNode.document_filename,
-          content_type: documentTreeNode.content_type
+          content_type: documentTreeNode.content_type,
+          id: this.caseId
         });
         const mediaViewerUrl = this.router.createUrlTree(
           ['/media-viewer'],
@@ -236,10 +241,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).
         // This is necessary because the Manage Cases application will automatically apply a proxy to the request, with
         // the correct remote endpoint
-        this.downloadFile(new URL(documentTreeNode.document_binary_url).pathname, documentTreeNode.document_filename);
+        const downloadUrl = new URL(documentBinaryUrl, window.location.origin);
+        this.downloadFile(`${downloadUrl.pathname}${downloadUrl.search}`, documentTreeNode.document_filename);
         break;
       case ('print'):
-        this.printDocument(new URL(documentTreeNode.document_binary_url).pathname);
+        const printUrl = new URL(documentBinaryUrl, window.location.origin);
+        this.printDocument(`${printUrl.pathname}${printUrl.search}`);
         break;
       default:
         return;

@@ -32,6 +32,7 @@
       <ccd-case-file-view-folder 
           class="document-tree-container__tree"
           [categoriesAndDocuments]="categoriesAndDocuments$"
+          [caseId]="caseId"
           (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()" 
           (moveDocument)="moveDocument($event)"
           [allowMoving]="allowMoving">

@@ -8,6 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
+import { withLegacyDocumentAccessContext } from '../../../services/document-management/document-management.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { WindowService } from '../../../services/window';
 import { attr, text } from '../../../test/helpers';
@@ -140,6 +141,82 @@ describe('ReadDocumentFieldComponent', () => {
 
       expect(mockDocumentManagementService.isHtmlDocument).toHaveBeenCalledWith(htmlDocument);
       expect(windowService.openOnNewTab).toHaveBeenCalledWith(VALUE.document_binary_url);
+    });
+
+    it('should include the case ID when opening a legacy HTML document from a case', () => {
+      const htmlDocument = {
+        ...VALUE,
+        document_binary_url: '/documents/legacy-file/binary?preview=true',
+        content_type: 'text/html'
+      };
+      component.caseField = { ...CASE_FIELD, value: htmlDocument } as CaseField;
+      mockCasesService.getCaseViewV2.and.returnValue(of({
+        case_id: '1234123412341234',
+        case_type: { jurisdiction: { id: 'JURI' } }
+      }));
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(true);
+      mockDocumentManagementService.getDocumentBinaryUrl.and.callFake((value, caseId) =>
+        withLegacyDocumentAccessContext(value.document_binary_url, caseId));
+
+      component.showMediaViewer();
+
+      expect(windowService.openOnNewTab)
+        .toHaveBeenCalledWith('/documents/legacy-file/binary?preview=true&caseId=1234123412341234');
+    });
+
+    it('should leave a v2 HTML document URL unchanged', () => {
+      const htmlDocument = {
+        ...VALUE,
+        id: '1234123412341234',
+        document_binary_url: '/documentsv2/new-file/binary',
+        content_type: 'text/html'
+      };
+      mockDocumentManagementService.isHtmlDocument.and.returnValue(true);
+      mockDocumentManagementService.getDocumentBinaryUrl.and.callFake((value, caseId) =>
+        withLegacyDocumentAccessContext(value.document_binary_url, caseId));
+
+      component.openMediaViewer(htmlDocument);
+
+      expect(windowService.openOnNewTab).toHaveBeenCalledWith('/documentsv2/new-file/binary');
+    });
+
+    it('should carry the case ID in a legacy PDF media viewer handoff', () => {
+      const pdfDocument = {
+        ...VALUE,
+        document_binary_url: '/documents/legacy-file/binary?preview=true',
+        document_filename: 'evidence.pdf'
+      };
+      component.caseField = { ...CASE_FIELD, value: pdfDocument } as CaseField;
+      mockCasesService.getCaseViewV2.and.returnValue(of({
+        case_id: '1234123412341234',
+        case_type: { jurisdiction: { id: 'JURI' } }
+      }));
+      mockDocumentManagementService.getDocumentBinaryUrl.and.callFake((value, caseId) =>
+        withLegacyDocumentAccessContext(value.document_binary_url, caseId));
+      mockDocumentManagementService.getMediaViewerInfo.and.callFake(value => JSON.stringify(value));
+
+      component.showMediaViewer();
+
+      const payload = JSON.parse(windowService.openOnNewTabWithMessage.calls.mostRecent().args[1]);
+      expect(payload.document_binary_url).toBe('/documents/legacy-file/binary?preview=true&caseId=1234123412341234');
+      expect(payload.id).toBe('1234123412341234');
+    });
+
+    it('should leave a v2 PDF media viewer handoff URL unchanged', () => {
+      const pdfDocument = {
+        ...VALUE,
+        id: '1234123412341234',
+        document_binary_url: '/documentsv2/new-file/binary',
+        document_filename: 'evidence.pdf'
+      };
+      mockDocumentManagementService.getDocumentBinaryUrl.and.callFake((value, caseId) =>
+        withLegacyDocumentAccessContext(value.document_binary_url, caseId));
+      mockDocumentManagementService.getMediaViewerInfo.and.callFake(value => JSON.stringify(value));
+
+      component.openMediaViewer(pdfDocument);
+
+      const payload = JSON.parse(windowService.openOnNewTabWithMessage.calls.mostRecent().args[1]);
+      expect(payload.document_binary_url).toBe('/documentsv2/new-file/binary');
     });
 
     it('should store media viewer payload and open media viewer with token', () => {

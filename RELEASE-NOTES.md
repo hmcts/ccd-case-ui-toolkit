@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.26
+**EXUI-4461** Restore case context for legacy document access
+
 ### Version 7.4.25
 **EXUI-3767** Add defaultFocus change
 

@@ -99,7 +99,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   public setMediaViewerFile(document: DocumentTreeNode): void {
     const documentDetails = {
-      document_binary_url: document.document_binary_url,
+      document_binary_url: this.documentManagementService.getDocumentBinaryUrl(document, this.caseId),
       document_filename: document.document_filename,
       content_type: document.content_type
     };

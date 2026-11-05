@@ -7,6 +7,21 @@ import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';
 import { SessionStorageService } from '../session';
 
+export function withLegacyDocumentAccessContext(binaryUrl: string, caseId?: string): string {
+  if (!binaryUrl || !caseId) {
+    return binaryUrl;
+  }
+
+  const url = new URL(binaryUrl, window.location.origin);
+  if (!/^\/documents\/[^/]+\/binary\/?$/.test(url.pathname)) {
+    return binaryUrl;
+  }
+
+  // XUI validates legacy document access against the case before proxying the binary request.
+  url.searchParams.set('caseId', caseId);
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 @Injectable()
 export class DocumentManagementService {
   private static readonly PDF = 'pdf';
@@ -70,11 +85,11 @@ export class DocumentManagementService {
     return JSON.stringify(mediaViewerInfo);
   }
 
-  public getDocumentBinaryUrl(documentFieldValue: any): string {
+  public getDocumentBinaryUrl(documentFieldValue: any, caseId?: string): string {
     if (!documentFieldValue?.document_binary_url) {
       return '';
     }
-    return this.transformDocumentUrl(documentFieldValue.document_binary_url);
+    return withLegacyDocumentAccessContext(this.transformDocumentUrl(documentFieldValue.document_binary_url), caseId);
   }
 
   // keep HTML support explicit to avoid opening arbitrary MIME types directly in a browser tab

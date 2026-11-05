@@ -45,6 +45,24 @@ describe('DocumentManagementService', () => {
     documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
   }));
 
+  it('adds case context to a legacy document URL and preserves its query', () => {
+    expect(documentManagementService.getDocumentBinaryUrl({
+      document_binary_url: '/documents/legacy-file/binary?preview=true&caseId=old'
+    }, '1234123412341234')).toBe('/documents/legacy-file/binary?preview=true&caseId=1234123412341234');
+  });
+
+  it('proxies an absolute legacy document URL with case context', () => {
+    expect(documentManagementService.getDocumentBinaryUrl({
+      document_binary_url: 'https://documents.example.com/documents/legacy-file/binary'
+    }, '1234123412341234')).toBe('/documents/legacy-file/binary?caseId=1234123412341234');
+  });
+
+  it('leaves v2 document URLs unchanged', () => {
+    expect(documentManagementService.getDocumentBinaryUrl({
+      document_binary_url: '/documentsv2/new-file/binary?preview=true'
+    }, '1234123412341234')).toBe('/documentsv2/new-file/binary?preview=true');
+  });
+
   describe('uploadFile', () => {
     const RESPONSE: DocumentData = {
       _embedded: {

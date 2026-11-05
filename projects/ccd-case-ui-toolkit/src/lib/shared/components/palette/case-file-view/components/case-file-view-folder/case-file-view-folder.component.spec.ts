@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { CdkTreeModule, NestedTreeControl } from '@angular/cdk/tree';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -212,6 +213,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should open HTML document binary URL directly in a new tab', () => {
+    component.caseId = '1234123412341234';
     const htmlNode = plainToClass(DocumentTreeNode, {
       name: 'legacy-history.html',
       type: DocumentTreeNodeType.DOCUMENT,
@@ -223,9 +225,53 @@ describe('CaseFileViewFolderComponent', () => {
     component.triggerDocumentAction('openInANewTab', htmlNode);
 
     // @ts-expect-error -- private method
-    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/documents/html-file/binary');
+    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/documents/html-file/binary?caseId=1234123412341234');
     // @ts-expect-error -- private method
     expect(component.windowService.openOnNewTabWithMessage).not.toHaveBeenCalled();
+  });
+
+  it('should send case context with a legacy document to the new-tab media viewer', () => {
+    component.caseId = '1234123412341234';
+    const documentTreeNode = plainToClass(DocumentTreeNode, {
+      document_filename: 'legacy.pdf',
+      document_binary_url: '/documents/legacy-file/binary?preview=true',
+      content_type: 'application/pdf'
+    });
+    spyOn(FieldsUtils, 'createToken').and.returnValue('test-token');
+
+    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+
+    // @ts-expect-error -- private method
+    const payload = JSON.parse(component.windowService.openOnNewTabWithMessage.calls.mostRecent().args[1]);
+    expect(payload.document_binary_url).toBe('/documents/legacy-file/binary?preview=true&caseId=1234123412341234');
+    expect(payload.case_id).toBe('1234123412341234');
+  });
+
+  it('should leave v2 document URLs unchanged when opening the media viewer', () => {
+    component.caseId = '1234123412341234';
+    const documentTreeNode = plainToClass(DocumentTreeNode, {
+      document_filename: 'new.pdf',
+      document_binary_url: '/documentsv2/new-file/binary',
+      content_type: 'application/pdf'
+    });
+
+    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+
+    // @ts-expect-error -- private method
+    const payload = JSON.parse(component.windowService.openOnNewTabWithMessage.calls.mostRecent().args[1]);
+    expect(payload.document_binary_url).toBe('/documentsv2/new-file/binary');
+    expect(payload.case_id).toBe('1234123412341234');
+  });
+
+  it('should not download when a document has no binary URL', () => {
+    spyOn(component, 'downloadFile');
+
+    component.triggerDocumentAction('download', plainToClass(DocumentTreeNode, {
+      document_filename: 'missing.pdf',
+      document_binary_url: ''
+    }));
+
+    expect(component.downloadFile).not.toHaveBeenCalled();
   });
 
   it('should display correct folder icons', () => {
@@ -403,6 +449,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should call the printDocument function when the triggerDocumentAction function is called with actionType "document"', () => {
+    component.caseId = '1234123412341234';
     const documentTreeNode = {
       name: 'Test',
       type: DocumentTreeNodeType.DOCUMENT,
@@ -413,12 +460,13 @@ describe('CaseFileViewFolderComponent', () => {
     const fakeWindow = createSpyObj('window', ['print']);
     spyOn(window, 'open').and.returnValue(fakeWindow);
     component.triggerDocumentAction('print', documentTreeNode);
-    expect(component.printDocument).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary');
+    expect(component.printDocument).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary?caseId=1234123412341234');
     expect(window.open).toHaveBeenCalled();
     expect(fakeWindow.print).toHaveBeenCalled();
   });
 
   it('should call the downloadFile function when the triggerDocumentAction function is called with actionType "download"', () => {
+    component.caseId = '1234123412341234';
     const documentTreeNode = {
       name: 'Test',
       type: DocumentTreeNodeType.DOCUMENT,
@@ -432,11 +480,11 @@ describe('CaseFileViewFolderComponent', () => {
     spyOn(document, 'createElement').and.returnValue(fakeAnchorElement);
     spyOn(document.body, 'appendChild');
     component.triggerDocumentAction('download', documentTreeNode);
-    expect(component.downloadFile).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary', 'Document1.pdf');
+    expect(component.downloadFile).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary?caseId=1234123412341234', 'Document1.pdf');
     expect(document.createElement).toHaveBeenCalledWith('a');
     expect(document.body.appendChild).toHaveBeenCalledWith(fakeAnchorElement);
     expect(fakeAnchorElement.setAttribute).toHaveBeenCalledWith('style', 'display: none');
-    expect(fakeAnchorElement.href).toEqual('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary');
+    expect(fakeAnchorElement.href).toEqual('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary?caseId=1234123412341234');
     expect(fakeAnchorElement.download).toEqual('Document1.pdf');
     expect(fakeAnchorElement.click).toHaveBeenCalled();
     expect(fakeAnchorElement.remove).toHaveBeenCalled();
