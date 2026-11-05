@@ -538,18 +538,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
         if (!this.selectedFlag.originalStatus) {
           this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
         }
-        // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
         // If their FormControls don't exist, it means these fields weren't visited as part of the "Update Flag" journey, so do
         // *not* update their values (otherwise they will become undefined)
-        if (flagDetailToUpdate.value?.flagCode === this.otherFlagTypeCode) {
-          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
-            flagDetailToUpdate.value.otherDescription = this.caseFlagParentFormGroup.get(
-              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
-          }
-          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)) {
-            flagDetailToUpdate.value.otherDescription_cy = this.caseFlagParentFormGroup.get(
-              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value;
-          }
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
+          flagDetailToUpdate.value.otherDescription = this.caseFlagParentFormGroup.get(
+            CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
+        }
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)) {
+          flagDetailToUpdate.value.otherDescription_cy = this.caseFlagParentFormGroup.get(
+            CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value;
         }
         // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
         if (this.rpxTranslationService.language !== 'cy') {
