@@ -31,6 +31,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   public static readonly UPLOAD_ERROR_INVALID_FORMAT = 'Document format is not supported';
+  public static readonly UPLOAD_ERROR_FILE_TOO_LARGE = 'The selected file exceeds the permitted upload size. Please choose a smaller file or reduce the file size.';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
   public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
 
@@ -319,6 +320,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private getErrorMessage(error: HttpError): string {
     if (error.status === 0 || error.status === 502) {
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    }
+    if (error.status === 413) {
+      return WriteDocumentFieldComponent.UPLOAD_ERROR_FILE_TOO_LARGE;
     }
     if (error.status === 422 || error.status === 500) {
       if (this.fileSecureModeOn) {
