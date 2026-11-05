@@ -67,7 +67,7 @@
     "@angular/upgrade": "20.3.31",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.28",
-    "@hmcts/media-viewer": "4.2.46",
+    "@hmcts/media-viewer": "4.2.47",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@ngxmc/datetime-picker": "20.1.0",

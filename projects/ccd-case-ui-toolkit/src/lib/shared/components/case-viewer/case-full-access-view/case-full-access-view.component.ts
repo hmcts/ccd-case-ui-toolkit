@@ -306,7 +306,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     if (!hasHash && !isSpecialTabPath) {
       const paths = url.split('/');
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
-      let foundTab: CaseTab = null;
+      let foundTab: CaseTab | undefined;
       if (!this.prependedTabs) {
         this.prependedTabs = [];
       }
@@ -326,10 +326,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           this.selectTabByLabel(foundTab.label);
         });
       } else {
-        this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
+        this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
+        // Presuming default focus only set for one tab here - multiple tabs with default focus are not handled as is a contradiction
+        let preSelectTab: CaseTab | null = this.caseDetails.tabs.find((tab) => tab.defaultFocus === true) ?? null;
+        // Attempt to pre-select the tab based on the preferred label for the current case type
         const preferredLabel = FieldsUtils.defaultTabList?.[this.caseDetails?.case_type?.id];
-        let preSelectTab: CaseTab = null;
-        if (preferredLabel) {
+        // If no tab has default focus, attempt to use the preferred label for the current case type
+        if (!preSelectTab && preferredLabel) {
           preSelectTab = this.caseDetails.tabs.find((tab) => (tab.label === preferredLabel) || (tab.id === preferredLabel)) ?? null;
         }
 

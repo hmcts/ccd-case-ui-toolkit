@@ -1,5 +1,20 @@
 ## RELEASE NOTES
 
+### Version 7.4.25
+**EXUI-3767** Add defaultFocus change
+
+### Version 7.4.24
+**EXUI-5210** Query Management failing to show hmcts after a users name
+
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
+### Version 7.4.21
+Revert Broken Access Controls
+
 ### Version 7.4.20
 **EXUI-4461** Broken Access Controls
 
