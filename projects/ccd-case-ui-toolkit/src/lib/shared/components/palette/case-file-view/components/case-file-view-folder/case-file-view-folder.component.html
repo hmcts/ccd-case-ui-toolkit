@@ -75,6 +75,7 @@
             (downloadAction)="triggerDocumentAction('download', node)"
             (printAction)="triggerDocumentAction('print', node)"
             [allowMoving]="allowMoving"
+            [documentName]="node.name"
           >
           </ccd-case-file-view-folder-document-actions>
         </div>

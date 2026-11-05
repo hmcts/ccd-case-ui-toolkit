@@ -24,12 +24,20 @@ describe('CaseFileViewFolderDocumentActionsComponent', () => {
     component = fixture.componentInstance;
     component.isOpen = true;
     component.allowMoving = true;
+    component.documentName = 'Appointment_of_a_guardian_C47A.pdf';
     fixture.detectChanges();
     overlayMenuButtons = fixture.debugElement.queryAll(By.css('.overlay-menu__item'));
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should include the document name in the options trigger accessible name', () => {
+    const triggerImage = fixture.debugElement.query(By.css('.overlay-toggle img'));
+
+    expect(triggerImage.nativeElement.getAttribute('alt'))
+      .toBe('More document options for Appointment_of_a_guardian_C47A.pdf');
   });
 
   it('should emit changeFolderAction on clicking "Change folder" button', () => {

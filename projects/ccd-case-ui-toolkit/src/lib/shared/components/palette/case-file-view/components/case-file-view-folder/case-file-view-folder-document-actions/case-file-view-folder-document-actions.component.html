@@ -4,6 +4,6 @@
 >
   <ng-container trigger>
     <img class="actions-trigger-icon" src="/assets/img/case-file-view/document-menu/more_vert.svg"
-      alt="More document options">
+      [attr.alt]="'More document options for ' + documentName">
   </ng-container>
 </ccd-case-file-view-overlay-menu>

@@ -11,6 +11,7 @@ export class CaseFileViewFolderDocumentActionsComponent implements OnInit {
   public isOpen = false;
 
   @Input() public allowMoving: boolean;
+  @Input() public documentName: string;
 
   @Output() public changeFolderAction = new EventEmitter<void>();
   @Output() public openInANewTabAction = new EventEmitter<void>();
