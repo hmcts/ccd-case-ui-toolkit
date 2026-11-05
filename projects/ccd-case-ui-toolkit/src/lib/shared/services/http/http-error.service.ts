@@ -32,7 +32,9 @@ export class HttpErrorService {
           HttpErrorService.logger.error('Unable to convert HTTP error response.', { error: e });
         }
       }
-      if (error.status) {
+      // Preserve existing error handling for other statuses; uploads need the transport 413
+      // even when a proxy omits a JSON body or returns a different status in that body.
+      if (error.status === 413 || !httpError.status) {
         httpError.status = error.status;
       }
     } else if (error) {
