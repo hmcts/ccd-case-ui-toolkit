@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseField, DocumentData, FieldType } from '../../domain';
 import { HttpService } from '../http';
-import { DocumentManagementService } from './document-management.service';
+import { DocumentManagementService, withLegacyDocumentAccessContext } from './document-management.service';
 import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
 import { JurisdictionService } from '../jurisdiction';
 import { SessionStorageService } from '../session/session-storage.service';
@@ -27,7 +27,7 @@ describe('DocumentManagementService', () => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
-      'getAnnotationApiUrl', 'getCdamExclusionList', 'getDocumentManagementUrlV2', 'logMessage'
+      'getDocumentPendingAccessEnabled', 'getAnnotationApiUrl', 'getCdamExclusionList', 'getDocumentManagementUrlV2', 'logMessage'
     ]);
     appConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_MANAGEMENT_URL);
     appConfig.getDocumentManagementUrl.and.returnValue(DOCUMENT_MANAGEMENT_URL);
@@ -45,6 +45,50 @@ describe('DocumentManagementService', () => {
     documentManagementService = new DocumentManagementService(httpService, appConfig, mockSessionStorageService);
   }));
 
+  describe('private pending document routing', () => {
+    beforeEach(() => {
+      appConfig.getCdamExclusionList.and.returnValue('sessionCaseType');
+      appConfig.getDocumentManagementUrl.and.returnValue('/documents');
+      appConfig.getDocumentManagementUrlV2.and.returnValue('/documentsv2');
+      appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
+    });
+
+    it('retains the existing exclusion policy while the capability is disabled', () => {
+      appConfig.getDocumentPendingAccessEnabled.and.returnValue(false);
+      expect(documentManagementService.getDocumentBinaryUrl({
+        document_binary_url: 'https://store.example/documents/new/binary', document_hash: 'attachment-hash'
+      })).toBe('/documents/new/binary');
+    });
+
+    it('routes a new hashed upload through CDAM without rerouting historical documents', () => {
+      appConfig.getDocumentPendingAccessEnabled.and.returnValue(true);
+      const document = { document_binary_url: 'https://store.example/documents/new/binary?preview=true#page=2' };
+      expect(documentManagementService.getDocumentBinaryUrl({ ...document, document_hash: 'attachment-hash' }))
+        .toBe('/documentsv2/new/binary?preview=true#page=2');
+      expect(documentManagementService.getDocumentBinaryUrl(document, '1234'))
+        .toBe('/documents/new/binary?preview=true&caseId=1234#page=2');
+    });
+
+    it('retains the pending route after viewer serialization loses the hash', () => {
+      appConfig.getDocumentPendingAccessEnabled.and.returnValue(true);
+      const info = JSON.parse(documentManagementService.getMediaViewerInfo({
+        document_binary_url: '/documentsv2/new/binary?preview=true#page=2', document_hash: 'attachment-hash'
+      }));
+      expect(info.document_binary_url).toBe('/documentsv2/new/binary?preview=true#page=2');
+      expect(documentManagementService.getDocumentBinaryUrl(info)).toBe('/documentsv2/new/binary?preview=true#page=2');
+    });
+
+    it('uses the dedicated pending endpoint so an old backend cannot silently accept an unbound upload', () => {
+      appConfig.getDocumentPendingAccessEnabled.and.returnValue(true);
+      httpService.post.and.returnValue(of({ documents: [] }));
+      const data = new FormData();
+      data.append('caseId', '1234123412341234');
+      documentManagementService.uploadFile(data);
+      expect(httpService.post.calls.mostRecent().args[0]).toBe('/documentsv2/pending');
+      expect(data.get('caseId')).toBe('1234123412341234');
+    });
+  });
+
   it('adds case context to a legacy document URL and preserves its query', () => {
     expect(documentManagementService.getDocumentBinaryUrl({
       document_binary_url: '/documents/legacy-file/binary?preview=true&caseId=old'
@@ -61,6 +105,133 @@ describe('DocumentManagementService', () => {
     expect(documentManagementService.getDocumentBinaryUrl({
       document_binary_url: '/documentsv2/new-file/binary?preview=true'
     }, '1234123412341234')).toBe('/documentsv2/new-file/binary?preview=true');
+  });
+
+
+  describe('legacy version binary access context', () => {
+    const caseId = '1234123412341234';
+
+    it('preserves a version query and fragment while replacing stale case context', () => {
+      expect(withLegacyDocumentAccessContext(
+        '/documents/file/versions/version/binary?preview=true&caseId=old&caseId=older#page=2', caseId
+      )).toBe(`/documents/file/versions/version/binary?preview=true&caseId=${caseId}#page=2`);
+    });
+
+    it('uses the local proxy for an absolute version binary URL', () => {
+      expect(withLegacyDocumentAccessContext(
+        'https://store.example/documents/file/versions/version/binary#page=2', caseId
+      )).toBe(`/documents/file/versions/version/binary?caseId=${caseId}#page=2`);
+    });
+
+    it('preserves a trailing slash on the version binary path', () => {
+      expect(withLegacyDocumentAccessContext('/documents/file/versions/version/binary/', caseId))
+        .toBe(`/documents/file/versions/version/binary/?caseId=${caseId}`);
+    });
+
+    it('retains version context through the shared resolver and viewer serialization', () => {
+      appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
+      appConfig.getDocumentManagementUrl.and.returnValue('/documents');
+      appConfig.getCdamExclusionList.and.returnValue('sessionCaseType');
+      const document = { document_binary_url: '/documents/file/versions/version/binary?preview=true#page=2', id: caseId };
+      const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
+      const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
+      expect(info.document_binary_url).toBe(`/documents/file/versions/version/binary?preview=true&caseId=${caseId}#page=2`);
+    });
+
+    for (const binaryUrl of [
+      '/documents//versions/version/binary',
+      '/documents/file/versions//binary',
+      '/documents/file/versions/version',
+      '/documents/file/versions/version/binary/extra',
+      '/documents/file?query=/versions/version/binary',
+      '/documents/file/versions/version?query=/binary',
+      '/documents/file/versions/version#fragment/binary',
+      '/documents/file/versions/one/two/binary',
+      '/documentsv2/file/versions/version/binary?preview=true#page=2',
+      '/hearing-recordings/file/versions/version/binary?preview=true#time=2'
+    ]) {
+      it(`leaves unsupported version path unchanged: ${binaryUrl}`, () => {
+        expect(withLegacyDocumentAccessContext(binaryUrl, caseId)).toBe(binaryUrl);
+      });
+    }
+
+    it('does not add context without a case ID', () => {
+      const binaryUrl = '/documents/file/versions/version/binary?preview=true#page=2';
+      expect(withLegacyDocumentAccessContext(binaryUrl)).toBe(binaryUrl);
+    });
+  });
+
+  describe('document gateway URL idempotence', () => {
+    const caseId = '1234123412341234';
+
+    beforeEach(() => {
+      appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
+      appConfig.getDocumentManagementUrl.and.returnValue('/documents');
+      appConfig.getDocumentManagementUrlV2.and.returnValue('/documentsv2');
+    });
+
+    for (const input of [
+      '/documents/file/binary',
+      '/documentsv2/file/binary',
+      'https://store.example/documents/file/binary'
+    ]) {
+      it(`resolves ${input} once before serializing the viewer handoff`, () => {
+        const document = { document_binary_url: input, document_filename: 'file.pdf', id: caseId };
+        const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
+        const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
+        expect(binaryUrl).toBe('/documentsv2/file/binary');
+        expect(info.document_binary_url).toBe(binaryUrl);
+        expect(info.case_id).toBe(caseId);
+      });
+    }
+
+    for (const suffix of ['', '?preview=true', '#page=2', '/file/binary?caseId=1234123412341234#page=2']) {
+      it(`preserves the canonical gateway boundary and suffix ${suffix}`, () => {
+        const binaryUrl = `/documentsv2${suffix}`;
+        expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
+      });
+    }
+
+    for (const target of ['/gateway/documents', '/gateway/documents/', 'https://proxy.example/gateway/documents/']) {
+      it(`preserves the configured custom gateway ${target}`, () => {
+        appConfig.getDocumentManagementUrlV2.and.returnValue(target);
+        const binaryUrl = `${target.replace(/\/+$/, '')}/file/binary?preview=true#page=2`;
+        expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
+      });
+    }
+
+    it('preserves a same-origin absolute canonical gateway', () => {
+      const binaryUrl = `${window.location.origin}/documentsv2/file/binary?preview=true#page=2`;
+      expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
+    });
+
+    it('does not mistake a near-miss prefix for the selected gateway', () => {
+      appConfig.getRemoteDocumentManagementUrl.and.returnValue('^/documentsv2-extra');
+      expect(documentManagementService.getDocumentBinaryUrl({
+        document_binary_url: '/documentsv2-extra/file/binary?preview=true#page=2'
+      })).toBe('/documentsv2/file/binary?preview=true#page=2');
+    });
+
+    it('does not bypass remote rewriting for an unrelated origin', () => {
+      appConfig.getRemoteDocumentManagementUrl.and.returnValue('^https://remote.example/documentsv2');
+      expect(documentManagementService.getDocumentBinaryUrl({
+        document_binary_url: 'https://remote.example/documentsv2/file/binary'
+      })).toBe('/documentsv2/file/binary');
+    });
+
+    it('preserves legacy context through repeated viewer serialization', () => {
+      appConfig.getCdamExclusionList.and.returnValue('sessionCaseType');
+      const document = { document_binary_url: '/documents/file/binary?preview=true&caseId=old#page=2', id: caseId };
+      const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
+      const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
+      expect(info.document_binary_url).toBe(`/documents/file/binary?preview=true&caseId=${caseId}#page=2`);
+    });
+
+    it('preserves the HRS rewrite', () => {
+      expect(documentManagementService.getDocumentBinaryUrl({
+        document_binary_url: `${REMOTE_HRS_URL}/file?preview=true#time=2`
+      })).toBe(`${HRS_URL}/file?preview=true#time=2`);
+    });
   });
 
   describe('uploadFile', () => {

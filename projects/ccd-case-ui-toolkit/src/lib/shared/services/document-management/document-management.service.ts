@@ -13,7 +13,7 @@ export function withLegacyDocumentAccessContext(binaryUrl: string, caseId?: stri
   }
 
   const url = new URL(binaryUrl, window.location.origin);
-  if (!/^\/documents\/[^/]+\/binary\/?$/.test(url.pathname)) {
+  if (!/^\/documents\/[^/]+(?:\/versions\/[^/]+)?\/binary\/?$/.test(url.pathname)) {
     return binaryUrl;
   }
 
@@ -54,7 +54,9 @@ export class DocumentManagementService {
 
   public uploadFile(formData: FormData): Observable<DocumentData> {
     this.setCaseInfo();
-    const url = this.getDocStoreUrl();
+    const url = this.isPendingDocumentAccessEnabled()
+      ? `${this.appConfig.getDocumentManagementUrlV2().replace(/\/+$/, '')}/pending`
+      : this.getDocStoreUrl();
     // Do not set any headers, such as "Accept" or "Content-Type", with null values; this is not permitted with the
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
@@ -89,7 +91,7 @@ export class DocumentManagementService {
     if (!documentFieldValue?.document_binary_url) {
       return '';
     }
-    return withLegacyDocumentAccessContext(this.transformDocumentUrl(documentFieldValue.document_binary_url), caseId);
+    return withLegacyDocumentAccessContext(this.transformDocumentUrl(documentFieldValue.document_binary_url, this.isPendingDocumentAccessEnabled() && !!documentFieldValue.document_hash), caseId);
   }
 
   // keep HTML support explicit to avoid opening arbitrary MIME types directly in a browser tab
@@ -191,11 +193,22 @@ export class DocumentManagementService {
     return caseType;
   }
 
-  private transformDocumentUrl(documentBinaryUrl: string): string {
+  private transformDocumentUrl(documentBinaryUrl: string, pending = false): string {
     const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
+    const documentStoreUrl = pending ? this.appConfig.getDocumentManagementUrlV2() : this.getDocStoreUrl();
+    const documentStorePrefix = documentStoreUrl?.replace(/\/+$/, '');
+    const origin = typeof window === 'undefined' ? '' : window.location?.origin;
+    const localBinaryUrl = origin && documentStorePrefix?.startsWith('/') && documentBinaryUrl.startsWith(`${origin}/`)
+      ? documentBinaryUrl.slice(origin.length)
+      : documentBinaryUrl;
+    // Viewer handoff can resolve a URL that the selected document store already resolved.
+    if (documentStorePrefix && localBinaryUrl.startsWith(documentStorePrefix)
+      && ['', '/', '?', '#'].includes(localBinaryUrl.charAt(documentStorePrefix.length))) {
+      return documentBinaryUrl;
+    }
     const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
-    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
+    return documentBinaryUrl.replace(remoteDocumentManagementPattern, documentStoreUrl);
   }
 
   private normaliseMimeType(contentType: string): string {
@@ -222,6 +235,10 @@ export class DocumentManagementService {
       return this.appConfig.getDocumentManagementUrlV2();
     }
     return this.appConfig.getDocumentManagementUrl();
+  }
+
+  public isPendingDocumentAccessEnabled(): boolean {
+    return this.appConfig.getDocumentPendingAccessEnabled?.() === true;
   }
 
   // return false == document should not use CDAM

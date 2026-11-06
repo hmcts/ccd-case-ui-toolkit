@@ -97,7 +97,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
 
     // use the documentManagement service to check if the document upload should use CDAM
-    if (this.documentManagement.isDocumentSecureModeEnabled()) {
+    if (this.documentManagement.isPendingDocumentAccessEnabled?.() || this.documentManagement.isDocumentSecureModeEnabled()) {
       this.fileSecureModeOn = true;
     }
     this.dialogConfig = initDialog();
@@ -359,6 +359,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     const caseTypeJurisdictionId = this.jurisdictionId ? this.jurisdictionId : null;
     documentUpload.append('caseTypeId', caseTypeId);
     documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
+    if (this.documentManagement.isPendingDocumentAccessEnabled?.() && /^\d{16}$/.test(this.caseId)) {
+      documentUpload.append('caseId', this.caseId);
+    }
 
     return documentUpload;
   }
@@ -374,7 +377,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private handleDocumentUploadResult(result: DocumentData): void {
     // use the documentManagement service to check if the document upload should use CDAM
-    if (this.documentManagement.isDocumentSecureModeEnabled()) {
+    if (this.documentManagement.isPendingDocumentAccessEnabled?.() || this.documentManagement.isDocumentSecureModeEnabled()) {
       this.generateLogMessage(true);
     } else {
       this.generateLogMessage(false);
@@ -407,15 +410,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.valid = true;
     this.fileUploadStateService.setUploadInProgress(false);
 
-    // refresh replaced document info
-    if (this.caseField.value) {
-      this.caseField.value.document_binary_url = document._links.binary.href;
-      this.caseField.value.document_filename = document.originalDocumentName;
-      this.caseField.value.document_url = document._links.self.href;
-
-      if (this.fileSecureModeOn) {
-        this.caseField.value.document_hash = document.hashToken;
-      }
+    this.caseField.value = this.caseField.value || {};
+    this.caseField.value.document_binary_url = document._links.binary.href;
+    this.caseField.value.document_filename = document.originalDocumentName;
+    this.caseField.value.document_url = document._links.self.href;
+    if (this.fileSecureModeOn) {
+      this.caseField.value.document_hash = document.hashToken;
     }
   }
 

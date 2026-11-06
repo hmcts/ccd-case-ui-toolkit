@@ -204,6 +204,26 @@ describe('WriteDocumentFieldComponent', () => {
     expect(ccdReadDocumentElement).toBeTruthy();
   });
 
+  it('uses secure parsing and only a persisted case binding for private pending uploads', () => {
+    component.caseField = Object.assign(new CaseField(), component.caseField, { value: { ...component.caseField.value } });
+    mockDocumentManagementService.isPendingDocumentAccessEnabled = jasmine.createSpy().and.returnValue(true);
+    mockDocumentManagementService.isDocumentSecureModeEnabled.and.returnValue(false);
+    mockDocumentManagementService.parseCaseInfo.and.returnValue({ caseType: 'legacyType', jurisdiction: 'ET', caseId: '1234123412341234' });
+    component.ngOnInit();
+    expect(component.fileSecureModeOn).toBe(true);
+    const file = new File(['pdf'], 'replacement.pdf');
+    expect((component as any).buildDocumentUploadData(file).get('caseId')).toBe('1234123412341234');
+    for (const id of [null, 'DRAFT1234', 'b16dc530-899f-4377-a993-b1152b642462', '1234']) {
+      component.caseId = id;
+      expect((component as any).buildDocumentUploadData(file).has('caseId')).toBe(false);
+    }
+    const result = { ...RESPONSE_FIRST_DOCUMENT, documents: [{ ...RESPONSE_FIRST_DOCUMENT.documents[0], hashToken: 'hash' }] };
+    component.caseField.value = null;
+    (component as any).handleDocumentUploadResult(result);
+    expect(component.caseField.value.document_filename).toBe('howto.pdf');
+    expect(component.caseField.value.document_hash).toBe('hash');
+  });
+
   it('should initialise formControl with provided value', () => {
     expect(FORM_GROUP.controls[CASE_FIELD.id].value.document_url).toBe(VALUE.document_url);
     expect(FORM_GROUP.controls[CASE_FIELD.id].value.document_binary_url).toBe(VALUE.document_binary_url);

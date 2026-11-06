@@ -25,6 +25,10 @@ export interface AccessManagementRequestReviewMockModel {
 }
 
 export abstract class AbstractAppConfig {
+  public getDocumentPendingAccessEnabled?(): boolean {
+    return false;
+  }
+
   public abstract load(): Promise<void>;
   public abstract getLoginUrl(): string;
   public abstract getApiUrl(): string;
@@ -126,6 +130,7 @@ export abstract class AbstractAppConfig {
   public abstract getEventsToHide(): string[];
 }
 export class CaseEditorConfig {
+  public document_pending_access_enabled?: boolean;
   public api_url: string;
   public case_data_url: string;
   public document_management_url: string;
