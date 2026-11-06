@@ -117,6 +117,35 @@ describe('CaseChallengedAccessRequestComponent', () => {
     expect(titleService.getTitle().startsWith('Error:')).toBe(false);
   });
 
+  [
+    { radioId: null, fieldId: 'reason-0' },
+    { radioId: 'reason-0', fieldId: 'case-reference' },
+    { radioId: 'reason-3', fieldId: 'other-reason' }
+  ].forEach(({ radioId, fieldId }) => {
+    it(`should focus and scroll to ${fieldId} without navigating when its error summary link is activated`, () => {
+      const element: HTMLElement = fixture.nativeElement;
+      if (radioId) {
+        element.querySelector<HTMLInputElement>(`#${radioId}`).click();
+        fixture.detectChanges();
+      }
+      element.querySelector<HTMLButtonElement>('button[type="submit"]').click();
+      fixture.detectChanges();
+
+      const field = element.querySelector<HTMLElement>(`#${fieldId}`);
+      const scrollSpy = spyOn(field, 'scrollIntoView');
+      const link = element.querySelector<HTMLAnchorElement>('.govuk-error-summary a');
+      const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+      const originalUrl = window.location.href;
+      link.dispatchEvent(click);
+
+      expect(click.defaultPrevented).toBe(true);
+      expect(document.activeElement).toBe(field);
+      expect(scrollSpy).toHaveBeenCalledWith({ block: 'center' });
+      expect(window.location.href).toBe(originalUrl);
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+  });
+
   it('should clear the \"no selection\" validation error before form submission when an option is selected', () => {
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
