@@ -87,10 +87,10 @@ describe('QueryDetailsComponent', () => {
       {
         _links: {
           self: {
-            href: 'https://hmcts.internal/documents/111-111'
+            href: '/documents/111-111'
           },
           binary: {
-            href: 'https://hmcts.internal/documents/111-111/binary'
+            href: '/documents/111-111/binary'
           }
         },
         originalDocumentName: 'Document 1'
@@ -106,10 +106,10 @@ describe('QueryDetailsComponent', () => {
           {
             _links: {
               self: {
-                href: 'https://hmcts.internal/documents/111-111'
+                href: '/documents/111-111'
               },
               binary: {
-                href: 'https://hmcts.internal/documents/111-111/binary'
+                href: '/documents/111-111/binary'
               }
             },
             originalDocumentName: 'Document 1'
@@ -131,10 +131,10 @@ describe('QueryDetailsComponent', () => {
           {
             _links: {
               self: {
-                href: 'https://hmcts.internal/documents/111-111'
+                href: '/documents/111-111'
               },
               binary: {
-                href: 'https://hmcts.internal/documents/111-111/binary'
+                href: '/documents/111-111/binary'
               }
             },
             originalDocumentName: 'Document 1'
