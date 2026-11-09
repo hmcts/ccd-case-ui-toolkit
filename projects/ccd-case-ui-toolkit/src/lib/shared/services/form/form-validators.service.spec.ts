@@ -25,6 +25,55 @@ describe('FormValidatorsService', () => {
     expect(result.invalid).toBeFalsy();
   });
 
+  it('should validate OPTIONAL text fields with min and max when populated', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
+    caseField.field_type.min = 3;
+    caseField.field_type.max = 9;
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+
+    result.setValue('Hi');
+    result.updateValueAndValidity();
+    expect(result.hasError('minlength')).toBeTrue();
+
+    result.setValue('Perfect');
+    result.updateValueAndValidity();
+    expect(result.valid).toBeTrue();
+
+    result.setValue('Max reached');
+    result.updateValueAndValidity();
+    expect(result.hasError('maxlength')).toBeTrue();
+  });
+
+  it('should allow an empty OPTIONAL text field with min and max validators', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
+    caseField.field_type.min = 3;
+    caseField.field_type.max = 9;
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+
+    result.setValue('');
+    result.updateValueAndValidity();
+
+    expect(result.valid).toBeTrue();
+    expect(result.hasError('required')).toBeFalse();
+  });
+
+  it('should validate OPTIONAL text fields with a regular expression when populated', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'label', 'Text', 'OPTIONAL', null);
+    caseField.field_type.regular_expression = '^(Test)$';
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+
+    result.setValue('Invalid');
+    result.updateValueAndValidity();
+    expect(result.hasError('pattern')).toBeTrue();
+
+    result.setValue('Test');
+    result.updateValueAndValidity();
+    expect(result.valid).toBeTrue();
+  });
+
   it('should return add REQUIRED validator for MANDATORY fields', () => {
     const formControl: FormControl = new FormControl();
     const caseField: CaseField = aCaseField('id', 'label', 'Text', 'MANDATORY', null);
