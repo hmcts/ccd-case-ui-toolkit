@@ -13,16 +13,20 @@ export class FormValidatorsService {
   private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
-    if (
-      caseField.display_context === Constants.MANDATORY &&
-      !FormValidatorsService.isCustomValidatedType(caseField)
-    ) {
-      const validators = [Validators.required];
+    const isMandatory = caseField.display_context === Constants.MANDATORY &&
+      !FormValidatorsService.isCustomValidatedType(caseField);
+    const isOptionalText = caseField.display_context === 'OPTIONAL' && caseField.field_type.type === 'Text';
+
+    if (isMandatory || isOptionalText) {
+      const validators = [];
+      if (isMandatory) {
+        validators.push(Validators.required);
+      }
       if (caseField.field_type.type === 'Text') {
         validators.push(this.markDownPatternValidator());
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
-        } else {
+        } else if (isMandatory) {
           validators.push(this.emptyValidator());
         }
         if (caseField.field_type.min && (typeof caseField.field_type.min === 'number')) {
@@ -42,7 +46,7 @@ export class FormValidatorsService {
         validators.push(control.validator);
       }
       control.setValidators(validators);
-    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || this.isTextAreaType(caseField.field_type.type))
+    } else if (caseField.display_context === 'OPTIONAL' && this.isTextAreaType(caseField.field_type.type)
       || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
       control.setValidators(this.markDownPatternValidator());
     }
