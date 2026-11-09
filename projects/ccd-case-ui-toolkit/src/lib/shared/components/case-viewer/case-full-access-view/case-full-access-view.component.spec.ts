@@ -1,9 +1,10 @@
-import { Location } from '@angular/common';
+import { Location, ViewportScroller } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, QueryList, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -364,7 +365,7 @@ const CID = '1234567890123456';
 const $ALL_TAB_HEADERS = By.css('mat-tab-group>mat-tab');
 const $FIRST_TAB_HEADER = By.css('mat-tab-group>mat-tab:first-child');
 const $CASE_TAB_HEADERS = By.css('mat-tab-group>mat-tab:not(:first-child)');
-const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab#NameTab');
+const $NAME_TAB_CONTENT = By.css('mat-tab-group>mat-tab[data-case-tab-id="NameTab"]');
 const $PRINT_LINK = By.css('#case-viewer-control-print');
 const $ERROR_SUMMARY = By.css('.error-summary');
 const $ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
@@ -1457,16 +1458,12 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   }));
 
   it('should render two prepended tabs', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(6);
+    expect(d.queryAll(By.css('[role="tab"]')).length).toBe(6);
   });
 
   it('should display "Tasks" tab as the first tab', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
+    const tasksTab = d.queryAll(By.css('[role="tab"]'))[0].nativeElement as HTMLElement;
+    expect(tasksTab.innerText).toBe('Tasks');
   });
 });
 
@@ -1606,11 +1603,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   }));
 
   it('should render appended tabs hearings', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(7);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const tabs = d.queryAll(By.css('[role="tab"]'));
+    expect(tabs.length).toBe(7);
+    expect((tabs[6].nativeElement as HTMLElement).innerText).toBe('Hearings');
   });
 
   it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
@@ -1902,7 +1897,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
-    const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
+    const caseFlagsTab = d.queryAll(By.css('[role="tab"]'))[5].nativeElement as HTMLElement;
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
     // Click the "View case flags" link and check the Case Flags tab is now active
     viewCaseFlagsLink.click();
@@ -2064,11 +2059,9 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   }));
 
   it('should render 1st order of tabs', () => {
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(4);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
+    const tabs = debugElement.queryAll(By.css('[role="tab"]'));
+    expect(tabs.length).toBe(4);
+    expect((tabs[0].nativeElement as HTMLElement).innerText).toBe('History');
   });
 });
 
@@ -2236,18 +2229,58 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   it('should display overview tab by default', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     componentFixture.detectChanges();
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((tasksTab0.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
-    const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab1.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
-    const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((tasksTab2.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Overview');
-    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((tasksTab3.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case notes');
-    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
-    expect((tasksTab4.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const tabLabels = debugElement.queryAll(By.css('[role="tab"]'));
+    expect((tabLabels[0].nativeElement as HTMLElement).innerText).toBe('Tasks');
+    expect((tabLabels[1].nativeElement as HTMLElement).innerText).toBe('Roles and access');
+    expect((tabLabels[2].nativeElement as HTMLElement).innerText).toBe('Overview');
+    expect((tabLabels[3].nativeElement as HTMLElement).innerText).toBe('Case notes');
+    expect((tabLabels[4].nativeElement as HTMLElement).innerText).toBe('Hearings');
+  });
+
+  it('keeps case tab IDs separate from URL fragment targets and preserves accessibility links', () => {
+    const tabs = caseViewerComponent.tabGroup._tabs.toArray();
+    const headers = debugElement.queryAll(By.css('[role="tab"]'));
+    const panels = debugElement.queryAll(By.css('[role="tabpanel"]'));
+
+    expect(headers.length).toBe(tabs.length);
+    tabs.forEach((tab, index) => {
+      const header = headers[index].nativeElement as HTMLElement;
+      const panel = panels[index].nativeElement as HTMLElement;
+      expect(tab.id).toBeNull();
+      expect(header.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+      expect(panel.getAttribute('aria-labelledby')).toBe(header.id);
+      expect(header.getAttribute('aria-controls')).toBe(panel.id);
+    });
+    ['tasks', 'roles-and-access', 'overview', 'caseNotes', 'hearings'].forEach(id => {
+      expect(componentFixture.nativeElement.querySelector(`[id="${id}"]`)).toBeNull();
+    });
+  });
+
+  it('selects Summary without giving router anchor scrolling a matching target', () => {
+    caseViewerComponent.sortedTabs = [{
+      ...caseViewerComponent.sortedTabs[0], id: 'Summary', label: 'Summary', fields: []
+    }];
+    componentFixture.detectChanges();
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Summary');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+    expect(selectedTab.textContent.trim()).toBe('Summary');
+    expect(document.getElementById('Summary')).toBeNull();
+    const scrollTo = spyOn(window, 'scrollTo');
+    TestBed.inject(ViewportScroller).scrollToAnchor('Summary');
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('selects a tab from its unchanged fragment label with Material-generated header IDs', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Case%20notes');
+    caseViewerComponent.organiseTabPosition();
+    componentFixture.detectChanges();
+    const selectedTab = debugElement.query(By.css('[role="tab"][aria-selected="true"]')).nativeElement as HTMLElement;
+    expect(selectedTab.id).toMatch(/^mat-tab-group-[\w-]+-label-\d+$/);
+    expect(selectedTab.textContent.trim()).toBe('Case notes');
   });
 
   it('should add prepended & appended tabs to the existing tab list', () => {
@@ -2272,7 +2305,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should navigate to roles and access tab', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/roles-and-access');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#roles-and-access');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
@@ -2330,6 +2363,22 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(caseViewerComponent.tabGroup.selectedIndex).toBe(1);
   }));
 
+  it('should rewrite tasks path to a fragment URL', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(router.navigate).toHaveBeenCalledWith([
+      'cases',
+      'case-details',
+      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
+      WORK_ALLOCATION_CASE_VIEW.case_type.id,
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ], { fragment: 'Tasks' });
+  }));
+
   it('should not set tabGroup selected index if a non-roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
     caseViewerComponent.prependedTabs = [
       {
@@ -2341,28 +2390,22 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Component sets selected index to the matched tab even if it is already selected
-    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 
   it('should not set tabGroup selected index to pre-selected tab if it is already selected', fakeAsync(() => {
     caseViewerComponent.prependedTabs = [];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/dummy');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#dummy');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Component sets selected index to the pre-selected tab even if it is already selected
-    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 
   it('should not set tabGroup selected index if a roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
@@ -2376,14 +2419,11 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
-    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330/tasks');
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Tasks');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     tick();
     componentFixture.detectChanges();
     expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
-    // Component sets selected index to the matched tab even if it is already selected
-    expect(selectedIndexSetSpy).toHaveBeenCalledWith(0);
   }));
 });
 
@@ -3068,6 +3108,288 @@ describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
     const selectedTab = component.findPreSelectedActiveTab();
     expect(selectedTab.id).toEqual('HistoryTab');
   });
+});
+
+describe('CaseFullAccessViewComponent - Overview with prepended Tabs (additional scenarios)', () => {
+  let mockLocation: any;
+
+  let caseViewerComponent: CaseFullAccessViewComponent;
+  let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
+  let router: Router;
+  let routerEvents$: Subject<NavigationEnd>;
+
+  beforeEach(waitForAsync(() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+
+    mockLocation = createSpyObj('location', ['path']);
+    // default to caseNotes hash so checkRouteAndSetCaseViewTab picks it up
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#caseNotes');
+
+    TestBed.configureTestingModule({
+      imports: [
+        PaletteUtilsModule,
+        MatTabsModule,
+        BrowserAnimationsModule,
+        PaletteModule,
+        PaymentLibModule,
+        NotificationBannerModule,
+        RouterTestingModule.withRoutes([
+          {
+            path: 'cases',
+            children: [
+              {
+                path: 'case-details',
+                children: [
+                  {
+                    path: ':id#overview',
+                    children: [
+                      {
+                        path: ':caseType',
+                        children: [
+                          {
+                            path: ':id#overview',
+                            children: [{ path: 'tasks', component: TasksContainerComponent }]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]),
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([]),
+        caseActivityComponentMock,
+        caseHeaderComponentMock,
+        linkComponentMock
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        TasksContainerComponent,
+        CaseFullAccessViewComponent,
+        DeleteOrCancelDialogComponent,
+        EventTriggerComponent,
+        CallbackErrorsComponent,
+        MockRpxTranslatePipe
+      ],
+      providers: [
+        FieldsUtils,
+        PlaceholderService,
+        CaseReferencePipe,
+        OrderService,
+        { provide: Location, useValue: mockLocation },
+        ErrorNotifierService,
+        { provide: AbstractAppConfig, useClass: AppMockConfig },
+        NavigationNotifierService,
+        { provide: CaseNotifier, useValue: caseNotifier },
+        { provide: ActivatedRoute, useValue: mockRoute },
+        ActivityPollingService,
+        ActivityService,
+        HttpService,
+        HttpErrorService,
+        AuthService,
+        SessionStorageService,
+        { provide: DraftService, useValue: draftService },
+        { provide: AlertService, useValue: alertService },
+        { provide: MatDialog, useValue: dialog },
+        { provide: MatDialogRef, useValue: matDialogRef },
+        { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+        { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+        DeleteOrCancelDialogComponent,
+        LoadingService,
+        { provide: LinkedCasesService, useValue: jasmine.createSpyObj('LinkedCasesService', ['resetLinkedCaseData']) },
+        { provide: CaseFlagStateService, useValue: jasmine.createSpyObj('CaseFlagStateService', ['resetInitialCaseFlags']) }
+      ],
+      teardown: { destroyAfterEach: false }
+    }).compileComponents();
+  }));
+
+  function makeTabGroup(labels: string[]): any {
+    const ql = new QueryList<any>();
+    ql.reset(labels.map((l, i) => makeTab(l, i)));
+    ql.notifyOnChanges();
+    return { _tabs: ql, selectedIndex: 0 };
+  }
+  function makeTab(label: string, order = 0): any {
+    return { textLabel: label, position: order };
+  }
+
+  beforeEach(() => {
+    componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    caseViewerComponent = componentFixture.componentInstance;
+    caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
+    caseViewerComponent.appendedTabs = [
+      { id: 'hearings', label: 'Hearings', fields: [], show_condition: null },
+      { id: 'caseNotes', label: 'Case notes', fields: [], show_condition: null }
+    ];
+    caseViewerComponent.prependedTabs = [
+      { id: 'tasks', label: 'Tasks', fields: [], show_condition: null },
+      { id: 'roles-and-access', label: 'Roles and access', fields: [], show_condition: null }
+    ];
+    router = TestBed.inject(Router);
+    routerEvents$ = new Subject<NavigationEnd>();
+    spyOnProperty(router, 'events', 'get').and.returnValue(routerEvents$.asObservable());
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    componentFixture.detectChanges();
+  });
+
+  it('checkRouteAndSetCaseViewTab should select tab from hash fragment', fakeAsync(() => {
+    componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
+
+    (caseViewerComponent as any)['checkRouteAndSetCaseViewTab']();
+    routerEvents$.next(new NavigationEnd(1, '/cases/case-details/1234#Case%20notes', '/cases/case-details/1234#Case%20notes'));
+
+    componentFixture.detectChanges();
+
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(3);
+  }));
+
+  it('organiseTabPosition should prefer FieldsUtils.defaultTabList and fall back when preferred is not rendered', fakeAsync(() => {
+    const caseView = clone(CASE_VIEW);
+    caseView.case_type.id = 'PRLAPPS';
+    caseView.tabs = [
+      { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: '' },
+      { id: 'summary', label: 'Summary', order: 2, fields: [], show_condition: '' },
+      { id: 'history', label: 'History', order: 3, fields: [], show_condition: '' }
+    ] as any;
+    caseViewerComponent.caseDetails = caseView;
+    componentFixture.detectChanges();
+
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/PRLAPPS/1234567890123456');
+
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: {
+        toArray: () => [{ textLabel: 'Overview', position: 0 }, { textLabel: 'History', position: 1 }],
+        find: (fn: any) => [{ textLabel: 'Overview', position: 0 }, { textLabel: 'History', position: 1 }].find(fn)
+      },
+      selectedIndex: 0
+    } as any;
+
+    (router.navigate as jasmine.Spy).calls.reset();
+    caseViewerComponent.organiseTabPosition();
+    tick();
+
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['cases', 'case-details', 'TEST', 'PRLAPPS', '1234567890123456'],
+      { fragment: 'Overview' }
+    );
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(0);
+  }));
+
+  it('organiseTabPosition should pre-select the tab marked with defaultFocus', fakeAsync(() => {
+    const caseView = clone(CASE_VIEW);
+    caseView.case_type.id = 'TestAddressBookCase';
+    caseView.tabs = [
+      { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: '' },
+      { id: 'summary', label: 'Summary', order: 2, fields: [], show_condition: '', defaultFocus: true },
+      { id: 'history', label: 'History', order: 3, fields: [], show_condition: '' }
+    ] as any;
+    caseViewerComponent.caseDetails = caseView;
+    componentFixture.detectChanges();
+
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1234567890123456');
+
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: {
+        toArray: () => [
+          { textLabel: 'Overview', position: 0 },
+          { textLabel: 'Summary', position: 1 },
+          { textLabel: 'History', position: 2 }
+        ],
+        find: (fn: any) => [
+          { textLabel: 'Overview', position: 0 },
+          { textLabel: 'Summary', position: 1 },
+          { textLabel: 'History', position: 2 }
+        ].find(fn)
+      },
+      selectedIndex: 0
+    } as any;
+
+    (router.navigate as jasmine.Spy).calls.reset();
+    caseViewerComponent.organiseTabPosition();
+    tick();
+
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['cases', 'case-details', 'TEST', 'TestAddressBookCase', '1234567890123456'],
+      { fragment: 'Summary' }
+    );
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(1);
+  }));
+
+  it('tabChanged should route to appended/prepended tabs using id from view container', () => {
+    componentFixture.componentInstance.tabGroup = makeTabGroup(['Tasks', 'Roles and access', 'Overview', 'Case notes', 'Hearings']);
+
+    caseViewerComponent.tabChanged(5);
+    const call = (router.navigate as jasmine.Spy).calls.mostRecent().args;
+    expect(call[0]).toEqual([
+      'cases',
+      'case-details',
+      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
+      WORK_ALLOCATION_CASE_VIEW.case_type.id,
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ], { fragment: 'Hearings' });
+  });
+
+  it('tabChanged should route to fragment for regular tabs', () => {
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: [{ textLabel: 'Overview', isActive: true }]
+    } as any;
+
+    caseViewerComponent.tabChanged(3);
+    const call = (router.navigate as jasmine.Spy).calls.mostRecent().args;
+    expect(call[0]).toEqual([
+      'cases',
+      'case-details',
+      WORK_ALLOCATION_CASE_VIEW.case_type.jurisdiction.id,
+      WORK_ALLOCATION_CASE_VIEW.case_type.id,
+      WORK_ALLOCATION_CASE_VIEW.case_id
+    ]);
+    expect(call[1]).toEqual({ fragment: 'Overview' });
+  });
+
+  it('onLinkClicked should set selectedTabIndex and selectedIndex to target tab', () => {
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: {
+        toArray: () => [
+          { textLabel: 'Tasks' },
+          { textLabel: 'Roles and access' },
+          { textLabel: 'Overview' },
+          { textLabel: 'Case flags' }
+        ]
+      },
+      selectedIndex: 0
+    } as any;
+
+    caseViewerComponent.onLinkClicked('Case flags');
+    expect(caseViewerComponent.selectedTabIndex).toBe(3);
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(3);
+  });
+
+  it('organiseTabPosition should do nothing if URL includes roles-and-access/tasks/hearings hash conversion', fakeAsync(() => {
+    mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#roles-and-access');
+
+    (caseViewerComponent as any).tabGroup = {
+      _tabs: [
+        { textLabel: 'Tasks', position: 0 },
+        { textLabel: 'Roles and access', position: 0 }
+      ],
+      selectedIndex: 0
+    } as any;
+
+    (router.navigate as jasmine.Spy).calls.reset();
+    caseViewerComponent.organiseTabPosition();
+    tick();
+
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect((caseViewerComponent.tabGroup as any).selectedIndex).toBe(0);
+  }));
 });
 
 describe('CaseFullAccessViewComponent - print and event selector disabled', () => {

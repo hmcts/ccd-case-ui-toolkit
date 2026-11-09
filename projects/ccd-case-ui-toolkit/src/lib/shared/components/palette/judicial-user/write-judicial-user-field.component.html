@@ -12,10 +12,11 @@
   </span>
   <input class="form-control bottom-30" [id]="id()"
     [formControl]="judicialUserControl" [matAutocomplete]="autoComplete" (blur)="onBlur($event)">
-  <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayJudicialUser">
+  <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayJudicialUser"
+    (optionSelected)="onSelectionChange($event)" (closed)="onAutocompleteClosed()">
     <mat-option *ngFor="let judicialUser of filteredJudicialUsers$ | async"
       class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
-      [value]="judicialUser" (onSelectionChange)="onSelectionChange($event)">
+      [value]="judicialUser">
       {{judicialUser?.fullName ? judicialUser.fullName : ''}}{{judicialUser?.emailId ? ' (' + judicialUser.emailId + ')' : ''}}
     </mat-option>
     <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
