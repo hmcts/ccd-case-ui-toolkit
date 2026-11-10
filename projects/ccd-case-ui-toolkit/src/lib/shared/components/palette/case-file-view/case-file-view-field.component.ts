@@ -3,10 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
-  createNgModule,
   ElementRef,
-  EnvironmentInjector,
-  NgModuleRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -14,7 +11,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { fromEvent, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
@@ -23,6 +20,7 @@ import { CaseFileViewService, DocumentManagementService, LoadingService, Session
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
 import { safeJsonParse } from '../../../json-utils';
+import { MediaViewerModuleService } from './media-viewer-module.service';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -46,12 +44,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('mediaViewerHost', { read: ViewContainerRef })
   private mediaViewerHost: ViewContainerRef;
   private mediaViewerComponentRef: ComponentRef<unknown>;
-  private mediaViewerModuleRef: NgModuleRef<unknown>;
+  private dragSubscription: Subscription;
   private mediaViewerRenderId = 0;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private readonly elementRef: ElementRef,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly environmentInjector: EnvironmentInjector,
+    private readonly mediaViewerModuleService: MediaViewerModuleService,
     private readonly route: ActivatedRoute,
     private caseFileViewService: CaseFileViewService,
     private documentManagementService: DocumentManagementService,
@@ -111,7 +110,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       )
     );
 
-    drag$.subscribe(pos => {
+    this.dragSubscription = drag$.subscribe(pos => {
       const calculatedWidth = ((pos.documentTreeContainerWidth + pos.dx) * 100) / slider.parentElement.getBoundingClientRect().width;
       documentTreeContainer.setAttribute('style', `width: ${calculatedWidth}%`);
     });
@@ -143,6 +142,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory)
       .pipe(
+        takeUntil(this.destroyed$),
         finalize(() => {
           this.loadingService.unregister(loadingToken);
         }),
@@ -169,8 +169,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   public ngOnDestroy(): void {
     this.mediaViewerRenderId++;
+    this.destroyed$.next();
+    this.destroyed$.complete();
     this.destroyMediaViewer();
-    this.mediaViewerModuleRef?.destroy();
+    this.dragSubscription?.unsubscribe();
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
     }
@@ -200,9 +202,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     }
 
     const { MediaViewerComponent, MediaViewerModule } = mediaViewer;
-    this.mediaViewerModuleRef ??= createNgModule(MediaViewerModule, this.environmentInjector);
+    const mediaViewerModuleRef = this.mediaViewerModuleService.getModuleRef(MediaViewerModule);
     this.mediaViewerComponentRef = this.mediaViewerHost.createComponent(MediaViewerComponent, {
-      ngModuleRef: this.mediaViewerModuleRef
+      ngModuleRef: mediaViewerModuleRef
     });
     this.mediaViewerComponentRef.setInput('url', this.currentDocument.document_binary_url);
     this.mediaViewerComponentRef.setInput('downloadFileName', this.currentDocument.document_filename);
