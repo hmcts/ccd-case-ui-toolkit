@@ -1,7 +1,17 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ComponentRef,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { fromEvent, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
@@ -10,6 +20,7 @@ import { CaseFileViewService, DocumentManagementService, LoadingService, Session
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseNotifier } from '../../case-editor/services';
 import { safeJsonParse } from '../../../json-utils';
+import { MediaViewerModuleService } from './media-viewer-module.service';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -30,8 +41,16 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public icp_jurisdictions: string[] = [];
   public icpEnabled: boolean = false;
   public caseId: string;
+  @ViewChild('mediaViewerHost', { read: ViewContainerRef })
+  private mediaViewerHost: ViewContainerRef;
+  private mediaViewerComponentRef: ComponentRef<unknown>;
+  private dragSubscription: Subscription;
+  private mediaViewerRenderId = 0;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(private readonly elementRef: ElementRef,
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly mediaViewerModuleService: MediaViewerModuleService,
     private readonly route: ActivatedRoute,
     private caseFileViewService: CaseFileViewService,
     private documentManagementService: DocumentManagementService,
@@ -91,7 +110,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       )
     );
 
-    drag$.subscribe(pos => {
+    this.dragSubscription = drag$.subscribe(pos => {
       const calculatedWidth = ((pos.documentTreeContainerWidth + pos.dx) * 100) / slider.parentElement.getBoundingClientRect().width;
       documentTreeContainer.setAttribute('style', `width: ${calculatedWidth}%`);
     });
@@ -106,6 +125,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     if (this.documentManagementService.isHtmlDocument(documentDetails)) {
       const documentBinaryUrl = this.documentManagementService.getDocumentBinaryUrl(documentDetails);
       if (documentBinaryUrl) {
+        this.destroyMediaViewer();
         this.currentDocument = undefined;
         this.windowService.openOnNewTab(documentBinaryUrl);
         return;
@@ -114,6 +134,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
     const mediaViewerInfo = this.documentManagementService.getMediaViewerInfo(documentDetails);
     this.currentDocument = JSON.parse(mediaViewerInfo);
+    void this.renderMediaViewer();
   }
 
   public moveDocument(data: { document: DocumentTreeNode, newCategory: string }): void {
@@ -121,6 +142,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory)
       .pipe(
+        takeUntil(this.destroyed$),
         finalize(() => {
           this.loadingService.unregister(loadingToken);
         }),
@@ -146,6 +168,11 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public ngOnDestroy(): void {
+    this.mediaViewerRenderId++;
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    this.destroyMediaViewer();
+    this.dragSubscription?.unsubscribe();
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
     }
@@ -154,6 +181,46 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public isIcpEnabled(): boolean {
     return this.icpEnabled && ((this.icp_jurisdictions?.length < 1) || this.icp_jurisdictions.includes(
       this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id));
+  }
+
+  private async renderMediaViewer(): Promise<void> {
+    const renderId = ++this.mediaViewerRenderId;
+    this.destroyMediaViewer();
+    this.changeDetectorRef.detectChanges();
+
+    let mediaViewer;
+    try {
+      mediaViewer = await import('@hmcts/media-viewer');
+    } catch {
+      if (renderId === this.mediaViewerRenderId) {
+        this.errorMessages = ['The document viewer could not be loaded. Please try again.'];
+      }
+      return;
+    }
+    if (renderId !== this.mediaViewerRenderId || !this.currentDocument || !this.mediaViewerHost) {
+      return;
+    }
+
+    const { MediaViewerComponent, MediaViewerModule } = mediaViewer;
+    const mediaViewerModuleRef = this.mediaViewerModuleService.getModuleRef(MediaViewerModule);
+    this.mediaViewerComponentRef = this.mediaViewerHost.createComponent(MediaViewerComponent, {
+      ngModuleRef: mediaViewerModuleRef
+    });
+    this.mediaViewerComponentRef.setInput('url', this.currentDocument.document_binary_url);
+    this.mediaViewerComponentRef.setInput('downloadFileName', this.currentDocument.document_filename);
+    this.mediaViewerComponentRef.setInput('showToolbar', true);
+    this.mediaViewerComponentRef.setInput('contentType', this.currentDocument.content_type);
+    this.mediaViewerComponentRef.setInput('enableAnnotations', true);
+    this.mediaViewerComponentRef.setInput('enableRedactions', true);
+    this.mediaViewerComponentRef.setInput('height', '94.5vh');
+    this.mediaViewerComponentRef.setInput('caseId', this.caseId);
+    this.mediaViewerComponentRef.setInput('multimediaPlayerEnabled', true);
+    this.mediaViewerComponentRef.setInput('enableICP', this.isIcpEnabled());
+  }
+
+  private destroyMediaViewer(): void {
+    this.mediaViewerHost?.clear();
+    this.mediaViewerComponentRef = undefined;
   }
 
   private moveDocumentError(err): string {

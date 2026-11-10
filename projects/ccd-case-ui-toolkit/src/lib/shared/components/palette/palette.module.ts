@@ -12,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
-import { MediaViewerModule } from '@hmcts/media-viewer';
 import { NgxEditorModule } from 'ngx-editor';
 import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
@@ -319,12 +318,12 @@ const PALETTE_COMPONENTS = [
     MatAutocompleteModule,
     CdkTreeModule,
     OverlayModule,
+    // Payment services provided at root depend on providers from this module.
     PaymentLibModule,
     RpxTranslationModule.forChild(),
     CdkTreeModule,
     OverlayModule,
     MatDialogModule,
-    MediaViewerModule,
     LoadingModule,
     MarkdownComponentModule,
     ErrorsModule,

@@ -11,7 +11,6 @@ import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-v
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'CasePaymentHistoryViewer',
     type: 'CasePaymentHistoryViewer'
@@ -20,7 +19,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
+    field_type: FIELD_TYPE
   }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
@@ -29,41 +28,32 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   const NOTIFICATION_URL = 'http://notification-api:123';
 
   let appConfig;
-  let paymentWebComponent = null;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
+  let paymentWebComponentMock;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(waitForAsync(async () => {
     appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl', 'getNotificationUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
-    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', standalone: false, inputs: [
-        'API_ROOT',
-        'CCD_CASE_NUMBER',
-        'BULKSCAN_API_ROOT',
-        'ISBSENABLE',
-        'SELECTED_OPTION',
-        'VIEW',
-        'REFUNDS_API_ROOT',
-        'NOTIFICATION_API_ROOT',
-        'TAKEPAYMENT',
-        'SERVICEREQUEST',
-        'PAYMENT_GROUP_REF',
-        'EXC_REFERENCE',
-        'DCN_NUMBER',
-        'LOGGEDINUSERROLES',
-        'LOGGEDINUSEREMAIL',
-        'ISPAYMENTSTATUSENABLED'
-      ]});
+    paymentWebComponentMock = MockComponent({
+      selector: 'ccpay-payment-lib',
+      inputs: [
+        'API_ROOT', 'CCD_CASE_NUMBER', 'BULKSCAN_API_ROOT', 'SELECTED_OPTION', 'ISBSENABLE',
+        'LOGGEDINUSEREMAIL', 'LOGGEDINUSERROLES', 'REFUNDS_API_ROOT', 'NOTIFICATION_API_ROOT',
+        'VIEW', 'TAKEPAYMENT', 'SERVICEREQUEST', 'PAYMENT_GROUP_REF', 'EXC_REFERENCE',
+        'DCN_NUMBER', 'ISPAYMENTSTATUSENABLED'
+      ]
+    });
 
-    TestBed
+    await TestBed
       .configureTestingModule({
-        imports: [paymentWebComponent],
+        imports: [paymentWebComponentMock],
         declarations: [
           CasePaymentHistoryViewerFieldComponent,
 
@@ -88,9 +78,9 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   }));
 
   it('should render Payments web component', () => {
-    const paymentDe = de.query(By.directive(paymentWebComponent));
+    const paymentDe = de.query(By.directive(paymentWebComponentMock));
 
-    expect(paymentDe).toBeDefined();
+    expect(paymentDe).not.toBeNull();
 
     const paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
@@ -98,29 +88,34 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException');
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
+    expect(paymentComponent.REFUNDS_API_ROOT).toEqual(REFUNDS_URL);
+    expect(paymentComponent.NOTIFICATION_API_ROOT).toEqual(NOTIFICATION_URL);
+    expect(paymentComponent.VIEW).toEqual('case-transactions');
+    expect(paymentComponent.TAKEPAYMENT).toBeFalse();
+    expect(paymentComponent.SERVICEREQUEST).toBeFalse();
   });
 
   it('Returns correct base url', () => {
     expect(component.getBaseURL()).toEqual(PAYMENTS_URL);
-});
+  });
 
-it('returns correct bulkscan url', () => {
+  it('returns correct bulkscan url', () => {
     expect(component.getPayBulkScanBaseURL()).toEqual(BULKSCAN_API_URL);
-});
+  });
 
-it('returns correct refunds url', () => {
+  it('returns correct refunds url', () => {
     expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
-});
+  });
 
-it('returns correct notification url', () => {
-  expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
-});
+  it('returns correct notification url', () => {
+    expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
+  });
 
-it('returns empty roles when not initialized', () => {
+  it('returns empty roles when not initialized', () => {
     expect(component.getUserRoles().length).toBe(0);
-});
+  });
 
-it('returns empty email when not initialized', () => {
+  it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
-});
+  });
 });

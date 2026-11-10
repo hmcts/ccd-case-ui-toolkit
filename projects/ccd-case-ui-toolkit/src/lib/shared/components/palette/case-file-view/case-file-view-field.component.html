@@ -42,19 +42,7 @@
     <!-- Media viewer -->
     <div class="media-viewer-container">
       <ng-container *ngIf="currentDocument">
-        <mv-media-viewer
-          [url]="currentDocument.document_binary_url"
-          [downloadFileName]="currentDocument.document_filename"
-          [showToolbar]="true"
-          [contentType]="currentDocument.content_type"
-          [enableAnnotations]="true"
-          [enableRedactions]="true"
-          [height]="'94.5vh'"
-          [caseId]="caseId"
-          [multimediaPlayerEnabled]="true"
-          [enableICP]="isIcpEnabled()"
-        >
-        </mv-media-viewer>
+        <ng-container #mediaViewerHost></ng-container>
       </ng-container>
     </div>
   </div>
