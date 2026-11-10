@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -88,7 +90,7 @@ describe('Ways To Pay Component', () => {
   let fixture: ComponentFixture<WaysToPayFieldComponent>;
   let component: WaysToPayFieldComponent;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(waitForAsync(async () => {
     paymentWebComponentMock = MockComponent({
       selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
@@ -98,6 +100,7 @@ describe('Ways To Pay Component', () => {
         'SELECTED_OPTION',
         'VIEW',
         'REFUNDS_API_ROOT',
+        'NOTIFICATION_API_ROOT',
         'TAKEPAYMENT',
         'SERVICEREQUEST',
         'PAYMENT_GROUP_REF',
@@ -109,9 +112,10 @@ describe('Ways To Pay Component', () => {
       ]
     });
 
-    TestBed
+    await TestBed
       .configureTestingModule({
         imports: [
+          CommonModule,
           ReactiveFormsModule,
           PaletteUtilsModule,
           paymentWebComponentMock
@@ -155,13 +159,15 @@ describe('Ways To Pay Component', () => {
     expect(component.getUserEmail()).toEqual('');
   });
 
-  it('should render and configure the Payments web component for a logged-in user', async () => {
+  it('should render and configure the Payments web component for a logged-in user', () => {
     spyOn(component, 'getUserRoles').and.returnValue(['caseworker']);
     component.caseReference = '1234123412341234';
 
-    await (component as any).renderPayment();
+    fixture.detectChanges();
 
-    const paymentComponent = (component as any).paymentComponentRef.instance;
+    const paymentDe = fixture.debugElement.query(By.directive(paymentWebComponentMock));
+    expect(paymentDe).not.toBeNull();
+    const paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual('paymentsUrl');
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual('payBulkScanBaseUrl');
     expect(paymentComponent.REFUNDS_API_ROOT).toEqual('refundsUrl');
@@ -169,6 +175,8 @@ describe('Ways To Pay Component', () => {
     expect(paymentComponent.CCD_CASE_NUMBER).toEqual('1234123412341234');
     expect(paymentComponent.LOGGEDINUSERROLES).toEqual(['caseworker']);
     expect(paymentComponent.CARDPAYMENTRETURNURL).toEqual('paymentReturnUrl');
+    expect(paymentComponent.VIEW).toEqual('case-transactions');
+    expect(paymentComponent.TAKEPAYMENT).toBeFalse();
+    expect(paymentComponent.SERVICEREQUEST).toBeTrue();
   });
-
 });

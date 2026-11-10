@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { PaymentLibComponent } from '@hmcts/ccpay-web-component';
+import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -11,7 +11,6 @@ import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-v
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePaymentHistoryViewerFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'CasePaymentHistoryViewer',
     type: 'CasePaymentHistoryViewer'
@@ -20,7 +19,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
+    field_type: FIELD_TYPE
   }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
@@ -33,16 +32,28 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
+  let paymentWebComponentMock;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(waitForAsync(async () => {
     appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl', 'getNotificationUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
     appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
-    TestBed
+    paymentWebComponentMock = MockComponent({
+      selector: 'ccpay-payment-lib',
+      inputs: [
+        'API_ROOT', 'CCD_CASE_NUMBER', 'BULKSCAN_API_ROOT', 'SELECTED_OPTION', 'ISBSENABLE',
+        'LOGGEDINUSEREMAIL', 'LOGGEDINUSERROLES', 'REFUNDS_API_ROOT', 'NOTIFICATION_API_ROOT',
+        'VIEW', 'TAKEPAYMENT', 'SERVICEREQUEST', 'PAYMENT_GROUP_REF', 'EXC_REFERENCE',
+        'DCN_NUMBER', 'ISPAYMENTSTATUSENABLED'
+      ]
+    });
+
+    await TestBed
       .configureTestingModule({
+        imports: [paymentWebComponentMock],
         declarations: [
           CasePaymentHistoryViewerFieldComponent,
 
@@ -67,7 +78,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   }));
 
   it('should render Payments web component', () => {
-    const paymentDe = de.query(By.directive(PaymentLibComponent));
+    const paymentDe = de.query(By.directive(paymentWebComponentMock));
 
     expect(paymentDe).not.toBeNull();
 
@@ -77,30 +88,34 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException');
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
+    expect(paymentComponent.REFUNDS_API_ROOT).toEqual(REFUNDS_URL);
+    expect(paymentComponent.NOTIFICATION_API_ROOT).toEqual(NOTIFICATION_URL);
+    expect(paymentComponent.VIEW).toEqual('case-transactions');
+    expect(paymentComponent.TAKEPAYMENT).toBeFalse();
+    expect(paymentComponent.SERVICEREQUEST).toBeFalse();
   });
 
   it('Returns correct base url', () => {
     expect(component.getBaseURL()).toEqual(PAYMENTS_URL);
-});
+  });
 
-it('returns correct bulkscan url', () => {
+  it('returns correct bulkscan url', () => {
     expect(component.getPayBulkScanBaseURL()).toEqual(BULKSCAN_API_URL);
-});
+  });
 
-it('returns correct refunds url', () => {
+  it('returns correct refunds url', () => {
     expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
-});
+  });
 
-it('returns correct notification url', () => {
-  expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
-});
+  it('returns correct notification url', () => {
+    expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
+  });
 
-it('returns empty roles when not initialized', () => {
+  it('returns empty roles when not initialized', () => {
     expect(component.getUserRoles().length).toBe(0);
-});
+  });
 
   it('returns empty email when not initialized', () => {
     expect(component.getUserEmail()).toEqual('');
-});
-
+  });
 });
