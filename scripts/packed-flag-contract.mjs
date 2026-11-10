@@ -7,7 +7,7 @@ export function checkPackedFlagContract(consumer) {
   const ts = createRequire(join(consumer, 'package.json'))('typescript');
   const fixture = join(consumer, 'flag-pipe-contract.ts');
   writeFileSync(fixture, `import { AsyncPipe } from '@angular/common';
-import { FlagFieldDisplayPipe } from '@hmcts/ccd-case-ui-toolkit';
+import { FlagFieldDisplayPipe, type CaseEditSubmitForm } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, Subscribable } from 'rxjs';
 type IsAny<T> = 0 extends (1 & T) ? true : false;
 const validAsyncPipe: IsAny<AsyncPipe> = false;
@@ -31,6 +31,10 @@ const observableNotAny: IsAny<typeof observableResult> = false;
 const nullNotAny: IsAny<typeof nullResult> = false;
 void inherited; void promiseType; void observableType; void nullType;
 void promiseNotAny; void observableNotAny; void nullNotAny;
+type SubmitResult = ReturnType<CaseEditSubmitForm['submit']>;
+const submitType: IsEqual<SubmitResult, Observable<object>> = true;
+const submitNotAny: IsAny<SubmitResult> = false;
+void submitType; void submitNotAny;
 `);
   const options = {
     strict: true, skipLibCheck: false, noEmit: true,
@@ -49,9 +53,19 @@ void promiseNotAny; void observableNotAny; void nullNotAny;
     return statement.importClause.namedBindings.elements.some((element) =>
       ['AsyncPipe', 'Observable', 'Subscribable'].includes((element.propertyName ?? element.name).text));
   });
+  const caseEdit = packageSource.statements.find((statement) =>
+    ts.isInterfaceDeclaration(statement) && statement.name.text === 'CaseEditModel');
+  const submit = caseEdit?.members.find((member) => ts.isMethodSignature(member) && member.name.getText(packageSource) === 'submit');
+  if (!submit) throw new Error('Packed case-edit submit declaration was not found');
+  const submitTypeName = submit.type && ts.isTypeReferenceNode(submit.type) ? submit.type.typeName.getText(packageSource) : '';
+  const usesCompat = packageSource.statements.some((statement) =>
+    ts.isImportDeclaration(statement) && statement.moduleSpecifier.text === 'rxjs-compat' &&
+    statement.importClause?.namedBindings && ts.isNamedImports(statement.importClause.namedBindings) &&
+    statement.importClause.namedBindings.elements.some((element) => element.name.text === submitTypeName));
   const diagnostics = ts.getPreEmitDiagnostics(program);
   const targeted = diagnostics.filter((diagnostic) => !diagnostic.file || (
     diagnostic.file.fileName === fixture ||
+    (usesCompat && /[/\\]rxjs-compat[/\\]/.test(diagnostic.file.fileName)) ||
     (diagnostic.file === packageSource && [flag, ...imports].some((node) => diagnostic.start >= node.getStart() && diagnostic.start < node.getEnd()))
   ));
   const unrelated = diagnostics.filter((diagnostic) => !targeted.includes(diagnostic));
@@ -59,6 +73,7 @@ void promiseNotAny; void observableNotAny; void nullNotAny;
     getCurrentDirectory: () => consumer, getCanonicalFileName: (file) => file, getNewLine: () => '\n'
   });
   if (unrelated.length) process.stderr.write(`Unrelated strict diagnostics (${unrelated.length}; not a full strict-build pass):\n${format(unrelated)}`);
-  if (targeted.length) throw new Error(`Packed flag contract failed:\n${format(targeted)}`);
-  process.stdout.write('Packed flag contract passed; unrelated strict diagnostics are reported separately.\n');
+  if (usesCompat) throw new Error('Packed case-edit submit must use the rxjs Observable type, not rxjs-compat');
+  if (targeted.length) throw new Error(`Packed flag and case-edit contracts failed:\n${format(targeted)}`);
+  process.stdout.write('Packed flag and case-edit contracts passed; unrelated strict diagnostics are reported separately.\n');
 }
