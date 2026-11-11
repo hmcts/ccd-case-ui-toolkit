@@ -10,7 +10,7 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { LabelFieldComponent } from './label-field.component';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 describe('LabelFieldComponent', () => {
@@ -57,7 +57,7 @@ describe('LabelFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [markdownComponentMock],
+        imports: [markdownComponentMock, ReactiveFormsModule],
         declarations: [
           LabelFieldComponent,
           LabelSubstitutorDirective,

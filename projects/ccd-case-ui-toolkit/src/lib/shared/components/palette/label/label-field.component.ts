@@ -15,7 +15,7 @@ export class LabelFieldComponent {
   public caseFields: CaseField[] = [];
 
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: FormGroup = new FormGroup({});
 
   @Input()
   public labelCanBeTranslated = false;
