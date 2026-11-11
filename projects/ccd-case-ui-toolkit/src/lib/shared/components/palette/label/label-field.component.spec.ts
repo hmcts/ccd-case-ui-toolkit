@@ -10,6 +10,8 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { LabelFieldComponent } from './label-field.component';
 import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { FormControl, FormGroup } from '@angular/forms';
+import { of } from 'rxjs';
 
 describe('LabelFieldComponent', () => {
   const $CONTENT = By.css('dl>dt ccd-markdown');
@@ -58,7 +60,8 @@ describe('LabelFieldComponent', () => {
         imports: [markdownComponentMock],
         declarations: [
           LabelFieldComponent,
-          LabelSubstitutorDirective
+          LabelSubstitutorDirective,
+          RpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -75,6 +78,39 @@ describe('LabelFieldComponent', () => {
 
     fixture = TestBed.createComponent(LabelFieldComponent);
   }));
+
+  it('keeps event document links when switching languages with a helper value only in the form', () => {
+    const translationService = TestBed.inject(RpxTranslationService);
+    spyOn(translationService, 'getTranslation$').and.callFake(value => of(value));
+    const initialLanguage = translationService.language;
+    translationService.language = 'en';
+    const links = '<a href="/documents/application/binary" target="_blank">General app (GA1) - Claimant 1</a>';
+    component = fixture.componentInstance;
+    // The enclosing case-edit-form has already resolved the event's label before this component is created.
+    component.caseField = {
+      id: 'existingApplication-application-links',
+      field_type: FIELD_TYPE,
+      label: links,
+      originalLabel: '${lrDocUpload_ExistingApplicationDocumentLinks}'
+    } as CaseField;
+    component.formGroup = new FormGroup({
+      lrDocUpload_ExistingApplicationDocumentLinks: new FormControl({ value: links, disabled: true })
+    });
+    component.labelCanBeTranslated = true;
+
+    try {
+      fixture.detectChanges();
+      expect(fixture.debugElement.query($CONTENT).componentInstance.content).toBe(links);
+
+      for (const language of ['cy', 'en', 'cy'] as const) {
+        translationService.language = language;
+        fixture.detectChanges();
+        expect(fixture.debugElement.query($CONTENT).componentInstance.content).toBe(links);
+      }
+    } finally {
+      translationService.language = initialLanguage;
+    }
+  });
 
   describe('LabelFieldComponent without label substitution', () => {
     beforeEach(() => {
