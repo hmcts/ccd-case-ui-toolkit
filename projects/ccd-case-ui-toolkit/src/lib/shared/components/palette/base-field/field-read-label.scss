@@ -1,5 +1,6 @@
-@use "sass:meta";
+@use '../../palette/base-field/grey-bar.scss';
 @use 'components/govuk-toolkit-shim' as *;
+@use 'components/govuk-toolkit-shim' as conditionals;
 
 .case-field {
 
@@ -8,7 +9,7 @@
 
   margin-bottom: $gutter-half;
 
-  @include media(tablet) {
+  @include conditionals.media(tablet) {
     margin-bottom: $gutter;
   }
 
@@ -24,5 +25,3 @@
     @include core-19;
   }
 }
-
-@include meta.load-css("../../palette/base-field/grey-bar");
