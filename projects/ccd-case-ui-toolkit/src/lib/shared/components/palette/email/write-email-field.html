@@ -1,12 +1,12 @@
-<div class="form-group bottom-30" [ngClass]="{'form-group-error': !emailControl.valid && (emailControl.dirty || emailControl.touched)}">
+<div class="govuk-form-group bottom-30" [ngClass]="{'govuk-form-group--error': !emailControl.valid && (emailControl.dirty || emailControl.touched)}">
 
-  <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
+  <label class="govuk-label" [for]="id()">
+    <ng-container *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</ng-container>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="emailControl.errors && (emailControl.dirty || emailControl.touched)">{{(emailControl.errors | ccdFirstError:caseField.label)}}</span>
+  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message" *ngIf="emailControl.errors && (emailControl.dirty || emailControl.touched)"><span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{(emailControl.errors | ccdFirstError:caseField.label)}}</span>
 
-  <input class="form-control" [ngClass]="{'govuk-input--error': emailControl.errors && (emailControl.dirty || emailControl.touched)}"
+  <input class="govuk-input" [ngClass]="{'govuk-input--error': emailControl.errors && (emailControl.dirty || emailControl.touched)}"
     [id]="id()" type="email" [formControl]="emailControl">
 
 </div>

@@ -1,11 +1,11 @@
-<div class="form-group" [ngClass]="{'form-group-error': !phoneUkControl.valid && (phoneUkControl.dirty || phoneUkControl.touched)}">
-  <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !phoneUkControl.valid && (phoneUkControl.dirty || phoneUkControl.touched)}">
+  <label class="govuk-label" [for]="id()">
+    <ng-container *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</ng-container>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="phoneUkControl.errors && (phoneUkControl.dirty || phoneUkControl.touched)">
-    {{phoneUkControl.errors | ccdFirstError:caseField.label}}
+  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message" *ngIf="phoneUkControl.errors && (phoneUkControl.dirty || phoneUkControl.touched)">
+    <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{phoneUkControl.errors | ccdFirstError:caseField.label}}
   </span>
-  <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': phoneUkControl.errors && phoneUkControl.dirty}"
+  <input class="govuk-input bottom-30" [ngClass]="{'govuk-input--error': phoneUkControl.errors && phoneUkControl.dirty}"
    [id]="id()" type="tel" [formControl]="phoneUkControl">
 </div>

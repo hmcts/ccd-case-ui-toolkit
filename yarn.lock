@@ -2966,7 +2966,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/eslintrc": "npm:^3.3.7"
     "@eslint/js": "npm:^10.0.0"
-    "@hmcts/ccpay-web-component": "npm:6.5.28"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-v1"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
@@ -2996,7 +2996,7 @@ __metadata:
     font-awesome: "npm:^4.6.1"
     gh-pages: "npm:^2.0.0"
     git-message: "npm:^2.0.2"
-    govuk-frontend: "npm:5.13.0"
+    govuk-frontend: "npm:6.4.0"
     gulp: "npm:^4.0.2"
     gulp-inline-ng2-template: "npm:^5.0.1"
     gulp-sass: "npm:^5.1.0"
@@ -3077,9 +3077,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.28":
-  version: 6.5.28
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.28"
+"@hmcts/ccpay-web-component@npm:6.5.28-v1":
+  version: 6.5.28-v1
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-v1"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3087,7 +3087,8 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/fb7de5a176d7284f17494e928565bc0f8157c1576234ed016ca6944e43e129f9bd6b09b7450675e36317b8e938b2072ebdf28a4dcc483d3267945c68eff25f88
+    govuk-frontend: ^6.4.0
+  checksum: 10/ee5c681491e0c124a480ce728a5ec1be2c3acc0492b8e85e66aca0073703df86744bce797c2896c61e9ddd0ef9f080d5ca79451a46483d604cedbbdb8c85145e
   languageName: node
   linkType: hard
 
@@ -12302,10 +12303,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:5.13.0":
-  version: 5.13.0
-  resolution: "govuk-frontend@npm:5.13.0"
-  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
+"govuk-frontend@npm:6.4.0":
+  version: 6.4.0
+  resolution: "govuk-frontend@npm:6.4.0"
+  checksum: 10/e98a24d8e68626154775b5f84478ad12d144c1c4822d539faaf608bb3b60862d4786f6ac5f195893439b38bdb23c8177826768beb9cb793d8f8edb43e74a4e6f
   languageName: node
   linkType: hard
 

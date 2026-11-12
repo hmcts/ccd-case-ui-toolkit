@@ -43,8 +43,8 @@ const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
 
 describe('WriteDynamicListFieldComponent', () => {
 
-  const $SELECT = By.css('.form-group select');
-  const $OPTION = By.css('.form-group option');
+  const $SELECT = By.css('.govuk-form-group select');
+  const $OPTION = By.css('.govuk-form-group option');
 
   let fixture: ComponentFixture<WriteDynamicListFieldComponent>;
   let component: WriteDynamicListFieldComponent;

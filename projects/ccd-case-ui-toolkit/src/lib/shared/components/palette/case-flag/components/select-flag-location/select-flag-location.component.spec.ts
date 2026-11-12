@@ -136,7 +136,7 @@ describe('SelectFlagLocationComponent', () => {
       .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: component.errorMessages });
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    const nextButtonElement = nativeElement.querySelector('.button');
+    const nextButtonElement = nativeElement.querySelector('.govuk-button');
     // The "Next" button should not be present if the error condition has been set
     expect(nextButtonElement).toBeNull();
   });

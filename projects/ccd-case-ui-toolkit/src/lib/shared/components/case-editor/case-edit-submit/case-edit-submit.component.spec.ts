@@ -812,7 +812,7 @@ describe('CaseEditSubmitComponent', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
       expect(comp.caseEdit.isCaseFlagSubmission).toBe(false);
-      const previousButton = de.query(By.css('.button-secondary'));
+      const previousButton = de.query(By.css('.govuk-button--secondary'));
       expect(previousButton.nativeElement.textContent).toContain('Previous');
     });
 

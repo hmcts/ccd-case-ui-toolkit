@@ -1,17 +1,17 @@
-<div [id]="id()" class="form-group bottom-30" [ngClass]="{'form-group-error': !yesNoControl.valid && (yesNoControl.dirty || yesNoControl.touched)}">
-	<fieldset class="inline">
-    <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+<div [id]="id()" class="govuk-form-group bottom-30" [ngClass]="{'govuk-form-group--error': !yesNoControl.valid && (yesNoControl.dirty || yesNoControl.touched)}">
+	<fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend">
+      <ng-container *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</ng-container>
     </legend>
-    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-    <span class="error-message" *ngIf="yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)">
-      {{yesNoControl.errors | ccdFirstError:caseField.label}}
+    <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+    <span class="govuk-error-message" *ngIf="yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)">
+      <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{yesNoControl.errors | ccdFirstError:caseField.label}}
     </span>
 
-    <div [id]="createElementId('radio')">
-  	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
-  	    <input class="form-control" [id]="createElementId(value)" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
-        <label class="form-label" [for]="createElementId(value)">{{caseField.label ? ((caseField.originalLabel || caseField.label) | rpxTranslate:null:value) : value}}</label>
+    <div [id]="createElementId('radio')" class="govuk-radios govuk-radios--inline">
+  	  <div class="govuk-radios__item" *ngFor="let value of yesNoValues">
+  	    <input class="govuk-radios__input" [id]="createElementId(value)" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
+        <label class="govuk-label govuk-radios__label" [for]="createElementId(value)">{{caseField.label ? ((caseField.originalLabel || caseField.label) | rpxTranslate:null:value) : value}}</label>
   	  </div>
     </div>
 	</fieldset>

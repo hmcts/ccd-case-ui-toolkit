@@ -1,10 +1,9 @@
 <div
-  class="tabs-panel"
+  class="govuk-tabs__panel"
+  [class.govuk-tabs__panel--hidden]="!selected"
   [id]="id"
   role="tabpanel"
-  [ngClass]="{
-          'js-hidden': !selected
-        }"
+  [attr.aria-labelledby]="'tab_' + id"
   [attr.aria-hidden]="!selected"
 >
   <ng-content></ng-content>

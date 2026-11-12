@@ -735,18 +735,18 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 describe('CaseEditPageComponent - all other tests', () => {
   let de: DebugElement;
   const $SELECT_SUBMIT_BUTTON = By.css('button[type=submit]');
-  const $SELECT_ERROR_SUMMARY = By.css('.error-summary');
-  const $SELECT_ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
+  const $SELECT_ERROR_SUMMARY = By.css('ccd-case-edit-generic-errors .govuk-error-summary');
+  const $SELECT_ERROR_HEADING_GENERIC = By.css('.govuk-error-summary__title');
   const $SELECT_ERROR_MESSAGE_GENERIC = By.css(
     '.govuk-error-summary__body>p:first-child'
   );
   const $SELECT_ERROR_HEADING_SPECIFIC = By.css(
-    '.error-summary>h3:first-child'
+    '.govuk-error-summary__title'
   );
   const $SELECT_ERROR_MESSAGE_SPECIFIC = By.css(
-    '.error-summary>p:nth-child(2)'
+    '.govuk-error-summary__body>p:first-child'
   );
-  const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
+  const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('ccd-case-edit-generic-errors .govuk-error-summary__list');
   const $SELECT_FIRST_FIELD_ERROR = By.css('li:first-child');
   const $SELECT_SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
 

@@ -728,7 +728,7 @@ describe('UpdateFlagComponent', () => {
     textarea.value = 'Edited comment';
     textarea.dispatchEvent(new Event('input'));
     // Click the "Make inactive" button to change the flag status
-    fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
+    fixture.debugElement.nativeElement.querySelector('.govuk-button--secondary').click();
     component.onNext();
     fixture.detectChanges();
     expect(component.onMakeInactive).toHaveBeenCalled();
@@ -742,7 +742,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
     expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
     // The "Make inactive" button should no longer be visible
-    expect(fixture.debugElement.nativeElement.querySelector('.button-secondary')).toBeNull();
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-button--secondary')).toBeNull();
   });
 
   it('should use the original persisted flag status instead of the UI value, to determine the actual flag status', () => {

@@ -4,7 +4,7 @@ div select {
   @include core-12pt;
 }
 
-.form-group {
+.govuk-form-group {
   margin-bottom: 7px;
 
   &.flex {
@@ -21,6 +21,9 @@ div select {
     button {
       margin: 0.25rem;
     }
+  }
+  .heading-h2 {
+    width: 100%;
   }
 }
 
