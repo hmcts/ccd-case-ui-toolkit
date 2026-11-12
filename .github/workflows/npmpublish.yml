@@ -38,7 +38,7 @@ jobs:
         run: yarn test:packaged-consumer
       - name: Retain packaged-consumer diagnostics
         if: always()
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: packaged-consumer-results
           path: packaged-consumer-results
@@ -47,7 +47,7 @@ jobs:
       - name: Change Report Path
         run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: code-coverage-report
           path: coverage
