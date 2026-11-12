@@ -103,10 +103,10 @@ describe('QueryCheckYourAnswersComponent', () => {
       {
         _links: {
           self: {
-            href: 'https://hmcts.internal/documents/111-111'
+            href: '/documents/111-111'
           },
           binary: {
-            href: 'https://hmcts.internal/documents/111-111/binary'
+            href: '/documents/111-111/binary'
           }
         },
         originalDocumentName: 'Document 1'
@@ -391,8 +391,8 @@ describe('QueryCheckYourAnswersComponent', () => {
   const mockAttachment = {
     originalDocumentName: 'blank.docx',
     _links: {
-      binary: { href: 'http://dm-store-aat.service.core-compute-aat.inter…ments/718288ed-517f-4348-b27d-3cbabf2aaff0/binary' },
-      self: { href: 'http://dm-store-aat.service.core-compute-aat.internal/documents/718288ed-517f-4348-b27d-3cbabf2aaff0' }
+      binary: { href: '/documents/718288ed-517f-4348-b27d-3cbabf2aaff0/binary' },
+      self: { href: '/documents/718288ed-517f-4348-b27d-3cbabf2aaff0' }
     }
   };
 

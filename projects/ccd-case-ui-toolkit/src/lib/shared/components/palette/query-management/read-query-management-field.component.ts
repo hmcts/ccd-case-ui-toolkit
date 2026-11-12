@@ -56,7 +56,6 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
 
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
-      // this.caseQueriesCollections = caseMessagesMockData;
 
       // TODO: Actual implementation once the CCD API and data contract is available
       // Each parties will have a separate collection of party messages
