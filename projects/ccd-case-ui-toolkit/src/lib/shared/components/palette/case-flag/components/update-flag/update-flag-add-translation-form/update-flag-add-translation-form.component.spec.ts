@@ -28,13 +28,24 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     dateTimeCreated: new Date(),
     path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
-    flagCode: 'FL1',
+    flagCode: 'OT0001',
     status: 'Active'
   } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
       flagDetail: activeFlag,
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
+
+  const nonOtherSelectedFlag = {
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: {
+        ...activeFlag,
+        flagCode: 'FL1'
+      },
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
@@ -72,6 +83,26 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return true for otherFlagType when selected flag code is OT0001', () => {
+    component.selectedFlag = selectedFlag1;
+
+    expect(component.otherFlagType).toBeTrue();
+  });
+
+  it('should return false for otherFlagType when selected flag code is not OT0001', () => {
+    component.formGroup.get('selectedManageCaseLocation').setValue(nonOtherSelectedFlag);
+    component.ngOnInit();
+
+    expect(component.otherFlagType).toBeFalse();
+  });
+
+  it('should return false for otherFlagType when selected flag is undefined', () => {
+    component.formGroup.get('selectedManageCaseLocation').setValue(undefined);
+    component.ngOnInit();
+
+    expect(component.otherFlagType).toBeFalse();
   });
 
   it('should add three form controls if formGroup exists', () => {

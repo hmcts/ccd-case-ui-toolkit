@@ -24,6 +24,7 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public updateFlagAddTranslationTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
+  public otherFlagType: boolean = false;
   public otherFlagDescriptionCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public otherFlagDescriptionWelshCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public flagCommentsCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
@@ -31,11 +32,13 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
   public updateFlagAddTranslationStepEnum = UpdateFlagAddTranslationStep;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
+  private readonly otherFlagTypeCode = 'OT0001';
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.updateFlagAddTranslationTitle = CaseFlagWizardStepTitle.UPDATE_FLAG_ADD_TRANSLATION;
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    this.otherFlagType = this.selectedFlag?.flagDetailDisplay?.flagDetail?.flagCode === this.otherFlagTypeCode;
     this.multipageComponentStateService.getJourneyCollectionMainObject().journeyEndPageNumber++;
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
@@ -70,22 +73,24 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
     this.flagCommentsWelshCharLimitErrorMessage = null;
     this.errorMessages = [];
 
-    if (this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value?.length > this.textMaxCharLimit) {
-      this.otherFlagDescriptionCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED;
-      this.errorMessages.push({
-        title: '',
-        description: UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED,
-        fieldId: CaseFlagFormFields.OTHER_FLAG_DESCRIPTION
-      });
-    }
+    if (this.otherFlagType) {
+      if (this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value?.length > this.textMaxCharLimit) {
+        this.otherFlagDescriptionCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED;
+        this.errorMessages.push({
+          title: '',
+          description: UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED,
+          fieldId: CaseFlagFormFields.OTHER_FLAG_DESCRIPTION
+        });
+      }
 
-    if (this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value?.length > this.textMaxCharLimit) {
-      this.otherFlagDescriptionWelshCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED;
-      this.errorMessages.push({
-        title: '',
-        description: UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED,
-        fieldId: CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH
-      });
+      if (this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value?.length > this.textMaxCharLimit) {
+        this.otherFlagDescriptionWelshCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED;
+        this.errorMessages.push({
+          title: '',
+          description: UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED,
+          fieldId: CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH
+        });
+      }
     }
 
     if (this.formGroup.get(CaseFlagFormFields.COMMENTS)?.value?.length > this.textMaxCharLimit) {
