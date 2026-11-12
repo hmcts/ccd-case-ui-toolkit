@@ -1,4 +1,4 @@
-<dl [hidden]="caseField.hidden" class="case-field" ccdLabelSubstitutor [caseField]="caseField" [contextFields]="caseFields" [id]="caseField.id">
+<dl [hidden]="caseField.hidden" class="case-field" ccdLabelSubstitutor [caseField]="caseField" [contextFields]="caseFields" [formGroup]="formGroup" [id]="caseField.id">
   <dt>
     <ccd-markdown *ngIf="labelCanBeTranslated && !caseField.isTranslated" [content]="caseField.label | rpxTranslate">
     </ccd-markdown>
