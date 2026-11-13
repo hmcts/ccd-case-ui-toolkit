@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { checkPackedFlagContract } from './packed-flag-contract.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const dist = join(root, 'dist/ccd-case-ui-toolkit');
@@ -39,6 +40,7 @@ function smoke() {
       writeFileSync(join(consumer, '.yarnrc.yml'), 'nodeLinker: node-modules\nenableScripts: false\nenableImmutableInstalls: false\n');
       process.stdout.write(run(process.execPath, [join(root, '.yarn/releases/yarn-4.5.0.cjs'), 'install'], consumer));
     }
+    checkPackedFlagContract(consumer);
     process.stdout.write(run('npx', ['ng', 'build'], consumer));
     process.stdout.write(run('npx', ['playwright', 'test'], consumer));
   } finally {

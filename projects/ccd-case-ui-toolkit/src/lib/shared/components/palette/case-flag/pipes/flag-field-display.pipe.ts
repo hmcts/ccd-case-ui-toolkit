@@ -22,9 +22,13 @@ export class FlagFieldDisplayPipe extends AsyncPipe implements PipeTransform {
   }
 
   public transform<T>(obj: null|undefined): null;
-  public transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>|null|undefined): T|null;
+  public transform<T>(obj: Observable<T>|Subscribable<T>|PromiseLike<T>|null|undefined): T|null;
   public transform<T = FlagType | FlagDetail>(value: T, fieldName: string): string|null;
   public transform<T = FlagType | FlagDetail>(value: T, fieldName: string = ''): string|null {
+    if (arguments.length === 1 && (value == null ||
+      typeof (value as any).then === 'function' || typeof (value as any).subscribe === 'function')) {
+      return super.transform(value as any);
+    }
     if (typeof value === 'object' && value.hasOwnProperty(fieldName)) {
       // Use a map from FlagType code + fieldName + fieldName_cy to an Observable returned by RpxTranslationService,
       // to keep track of which Observables exist already. This is to avoid problems with the async pipe, caused by a
@@ -42,6 +46,6 @@ export class FlagFieldDisplayPipe extends AsyncPipe implements PipeTransform {
       }
       return super.transform<string>(this.languageObservables.get(languageObservableKey));
     }
-    return null;
+    return super.transform(null);
   }
 }
