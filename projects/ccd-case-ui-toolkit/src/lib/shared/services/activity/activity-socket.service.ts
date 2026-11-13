@@ -12,6 +12,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { CaseActivityInfo } from '../../domain/activity';
 import { UserInfo } from '../../domain/user';
 import { isSolicitorUser } from '../../utils';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';
 import { MODES } from './utils';
@@ -59,6 +60,7 @@ const ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_TIMEOUT_MS = 0;
 })
 export class ActivitySocketService implements OnDestroy {
   public static readonly SOCKET_MODES: MODES[] = [MODES.socket, MODES.socketLongPoll];
+  private static readonly logger = new StructuredLoggerService();
 
   public readonly activity: Observable<CaseActivityInfo[]>;
   public readonly connect: Observable<OnConnectedArgs>;
@@ -334,6 +336,7 @@ export class ActivitySocketService implements OnDestroy {
       }
       state.connected = true;
       ActivitySocketService.clearSharedClientRestart(client);
+      console.log('Activity socket connected using Web PubSub.');
       state.owners.forEach((owner) => owner.handleConnected(event));
     });
 
@@ -344,6 +347,19 @@ export class ActivitySocketService implements OnDestroy {
       }
       state.connected = false;
       ActivitySocketService.clearActiveActivity(client);
+      const reconnectMessage = 'Activity socket connection lost, Web PubSub automatic reconnection enabled.';
+      console.log(reconnectMessage);
+      ActivitySocketService.logger.warn(reconnectMessage);
+
+      const retryMessage = 'Activity socket Web PubSub reconnect retry configuration:';
+      const retryConfiguration = {
+        maxRetries: 10,
+        mode: 'Exponential',
+        retryDelayInMs: 1000,
+        maxRetryDelayInMs: 20000
+      };
+      console.log(retryMessage, retryConfiguration);
+      ActivitySocketService.logger.warn(retryMessage, retryConfiguration);
       state.owners.forEach((owner) => owner.handleDisconnected(event));
     });
 
@@ -590,9 +606,16 @@ export class ActivitySocketService implements OnDestroy {
       return;
     }
 
+    ActivitySocketService.logger.warn('Activity socket client stopped or start failed, scheduling restart...', {
+      transport: 'Web PubSub',
+      delayMs: ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS
+    });
+    console.log(`Activity socket restart scheduled in ${ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS}ms`);
+
     state.restartTimer = setTimeout(() => {
       state.restartTimer = undefined;
       if (client === state.client && state.owners.size > 0 && !state.connected) {
+        console.log('Activity socket restart attempt using Web PubSub.');
         ActivitySocketService.startSharedClientIfNeeded(client);
       }
     }, ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS);
