@@ -24,7 +24,7 @@
                   type="checkbox" (change)="changeSelection(c)" [checked]="isSelected(c)" [disabled]="!canBeShared(c)" (keyup)="onKeyUp($event, c)" />
             <!-- This label element is used to hide the standard checkbox with a govuk-styled one -->
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ c[tableConfig.idField] || i }}">
-              <span class="govuk-visually-hidden">{{'Select case' | rpxTranslate}} {{c[tableConfig.idField] || i + 1}}</span>
+              <span class="govuk-visually-hidden">{{'Select case' | rpxTranslate}} {{c[tableConfig.idField] === 0 ? 0 : c[tableConfig.idField] || i + 1}}</span>
             </label>
           </div>
         </td>
