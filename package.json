@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.26",
+  "version": "7.4.26-exui-5515-rc1",
   "engines": {
     "node": ">=24.22.2"
   },
@@ -67,7 +67,7 @@
     "@angular/upgrade": "20.3.31",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.28",
-    "@hmcts/media-viewer": "4.2.48",
+    "@hmcts/media-viewer": "4.2.48-exui-5515-rc1",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/store": "^20.1.0",
     "@ngxmc/datetime-picker": "20.1.0",
