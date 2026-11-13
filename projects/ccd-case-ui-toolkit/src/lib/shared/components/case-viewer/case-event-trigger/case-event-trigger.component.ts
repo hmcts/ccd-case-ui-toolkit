@@ -4,9 +4,21 @@ import { Observable, Subscription, of } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, LoadingService, SessionStorageService } from '../../../services';
+import {
+  ActivityPollingService,
+  ActivityService,
+  ActivitySocketService,
+  AlertService,
+  EventStatusService,
+  FieldsUtils,
+  LoadingService,
+  SessionStorageService
+} from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { EventTriggerResolver } from '../services';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { MODES } from '../../../services/activity/utils';
+import { isSolicitorUser } from '../../../utils';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -22,6 +34,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   public activitySubscription: Subscription;
   public caseSubscription: Subscription;
+  public modeSubscription: Subscription;
+  public socketConnectSub: Subscription;
   public parentUrl: string;
   public routerCurrentNavigation: Navigation;
 
@@ -36,7 +50,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly loadingService: LoadingService,
-    private eventTriggerResolver: EventTriggerResolver
+    private readonly eventTriggerResolver: EventTriggerResolver,
+    private readonly activitySocketService: ActivitySocketService,
+    private readonly activityService: ActivityService
   ) {
     this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
@@ -53,12 +69,22 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe(() => {
+    this.modeSubscription = this.activityService.modeSubject
+        .pipe(filter(mode => !!mode))
+        .pipe(distinctUntilChanged())
+        .subscribe(mode => {
+          this.unsubscribe(this.socketConnectSub);
+          this.socketConnectSub = undefined;
+          if (ActivitySocketService.SOCKET_MODES.includes(mode) && !isSolicitorUser(this.sessionStorageService)) {
+              this.socketConnectSub = this.activitySocketService.connected
+                .pipe(distinctUntilChanged(), filter(connected => connected))
+                .subscribe(() => this.activitySocketService.editCase(this.caseDetails.case_id, true));
+          } else if (mode === MODES.polling) {
+              this.ngZone.runOutsideAngular(() => {
+                  this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
+              });
+          }
         });
-      });
-    }
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });
@@ -71,7 +97,15 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
+    this.unsubscribe(this.modeSubscription);
+    this.unsubscribe(this.socketConnectSub);
     this.eventTriggerResolver.resetCachedEventTrigger();
+  }
+
+  public unsubscribe(subscription: Subscription): void {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 
   public postEditActivity(): Observable<Activity[]> {

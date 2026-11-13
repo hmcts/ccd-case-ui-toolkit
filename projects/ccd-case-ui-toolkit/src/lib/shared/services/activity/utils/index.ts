@@ -1,0 +1,109 @@
+import { Activity, ActivityInfo, CaseActivityInfo, User } from '../../../domain';
+
+export enum MODES {
+  off = 'off',
+  polling = 'polling',
+  socket = 'socket',
+  socketLongPoll = 'socket-long-poll'
+}
+
+const DESCRIPTIONS = {
+  VIEWERS_SUFFIX: 'viewing this case',
+  EDITORS_PREFIX: 'This case is being updated by '
+};
+
+const UTILS = {
+  activity: {
+    hasEditors: (activity: Activity | CaseActivityInfo): boolean => {
+      if (activity) {
+        return (activity.editors.length + activity.unknownEditors) > 0;
+      }
+      return false;
+    },
+    hasViewers: (activity: Activity | CaseActivityInfo): boolean => {
+      if (activity) {
+        return (activity.viewers.length + activity.unknownViewers) > 0;
+      }
+      return false;
+    },
+    hasViewersOrEditors: (activity: Activity | CaseActivityInfo): boolean => {
+      return UTILS.activity.hasViewers(activity) || UTILS.activity.hasEditors(activity);
+    },
+    editorsDescription: (activity: Activity | CaseActivityInfo): string => {
+      if (UTILS.activity.hasEditors(activity)) {
+        return UTILS.activity.generateDescription(DESCRIPTIONS.EDITORS_PREFIX, '', activity.editors, activity.unknownEditors);
+      }
+      return undefined;
+    },
+    viewersDescription: (activity: Activity | CaseActivityInfo): string => {
+      if (UTILS.activity.hasViewers(activity)) {
+        return UTILS.activity.generateDescription('', DESCRIPTIONS.VIEWERS_SUFFIX, activity.viewers, activity.unknownViewers);
+      }
+      return undefined;
+    },
+    generateDescription: (prefix: string, suffix: string, names: Array<ActivityInfo | User>, unknownCount: number): string => {
+      let resultText = `${prefix}${UTILS.activity.activityNames(names)}`;
+      if (unknownCount > 0) {
+        resultText += (names.length > 0 ? ` and ${unknownCount} other` : `${unknownCount} user`);
+        if (unknownCount > 1) {
+          resultText = `${resultText}s`;
+        }
+      } else {
+        resultText = replaceLastCommaWithAnd(resultText);
+      }
+      let preSuffix = '';
+      if (suffix.length > 0) {
+        if (names.length + unknownCount > 1) {
+          preSuffix = ' are ';
+        } else {
+          preSuffix = ' is ';
+        }
+      }
+      return `${resultText}${preSuffix}${suffix}`;
+    },
+    activityName: (user: ActivityInfo | User): string => {
+      if (user) {
+        return `${user.forename || ''} ${user.surname || ''}`.trim();
+      }
+      return undefined;
+    },
+    activityNames: (users: Array<ActivityInfo | User>): string => {
+      if (users && users.length > 0) {
+        return users.map((info) => UTILS.activity.activityName(info)).filter((name) => !!name).join(', ');
+      }
+      return '';
+    },
+    stripUserFromActivity: (activity: Activity | CaseActivityInfo, user: object): Activity | CaseActivityInfo => {
+      const currentUser = user as { uid?: string; id?: string; email?: string };
+      const currentUserIds = new Set(
+        [currentUser?.uid, currentUser?.id, currentUser?.email]
+          .map(normaliseUserId)
+          .filter((userId) => !!userId)
+      );
+
+      if (currentUserIds.size > 0 && UTILS.activity.hasViewersOrEditors(activity)) {
+        activity.editors = activity.editors.filter((editor) => !currentUserIds.has(normaliseUserId(editor.id)));
+        activity.viewers = activity.viewers.filter((viewer) => !currentUserIds.has(normaliseUserId(viewer.id)));
+      }
+      return activity;
+    }
+  }
+};
+
+function normaliseUserId(userId: unknown): string {
+  return typeof userId === 'string' ? userId.trim().toLowerCase() : '';
+}
+
+function replaceLastCommaWithAnd(text: string): string {
+  const i = text.lastIndexOf(',');
+  if (i === -1) {
+    return text;
+  }
+  const after = text.slice(i + 1);
+  return text.slice(0, i) + ' and' + after;
+}
+
+export const Utils = {
+  DESCRIPTIONS,
+  ...UTILS
+};
