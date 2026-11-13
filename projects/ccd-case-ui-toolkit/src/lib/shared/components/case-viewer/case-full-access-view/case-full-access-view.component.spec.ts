@@ -1389,6 +1389,57 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     const tasksTab = d.queryAll(By.css('[role="tab"]'))[0].nativeElement as HTMLElement;
     expect(tasksTab.innerText).toBe('Tasks');
   });
+
+  it('should retain CCD special-tab positions and only prepend missing special tabs', () => {
+    comp.sortedTabs = [
+      { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: null },
+      { id: 'tasks', label: 'Tasks', order: 2, fields: [], show_condition: null },
+      { id: 'caseNotes', label: 'Case notes', order: 3, fields: [], show_condition: null },
+    ] as CaseTab[];
+
+    const viewerTabs = (comp as any).buildViewerTabs();
+
+    expect(viewerTabs.map((viewerTab) => viewerTab.tab.id)).toEqual([
+      'roles-and-access',
+      'overview',
+      'tasks',
+      'caseNotes',
+    ]);
+    expect(viewerTabs.find((viewerTab) => viewerTab.tab.id === 'tasks').contentType).toBe('tasks');
+  });
+
+  it('should render all CCD-supplied special tabs in their CCD order without fallback duplicates', () => {
+    comp.sortedTabs = [
+      { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: null },
+      { id: 'tasks', label: 'Tasks', order: 2, fields: [], show_condition: null },
+      { id: 'roles-and-access', label: 'Roles and access', order: 3, fields: [], show_condition: null },
+      { id: 'hearings', label: 'Hearings', order: 4, fields: [], show_condition: null },
+      { id: 'caseNotes', label: 'Case notes', order: 5, fields: [], show_condition: null },
+    ] as CaseTab[];
+
+    comp.prependedTabs = [
+      { id: 'tasks', label: 'Tasks', fields: [], show_condition: null },
+      { id: 'roles-and-access', label: 'Roles and access', fields: [], show_condition: null },
+    ];
+    comp.appendedTabs = [{ id: 'hearings', label: 'Hearings', fields: [], show_condition: null }];
+
+    const viewerTabs = (comp as any).buildViewerTabs();
+
+    expect(viewerTabs.map((viewerTab) => viewerTab.tab.id)).toEqual([
+      'overview',
+      'tasks',
+      'roles-and-access',
+      'hearings',
+      'caseNotes',
+    ]);
+    expect(viewerTabs.map((viewerTab) => viewerTab.contentType)).toEqual([
+      'case',
+      'tasks',
+      'roles-and-access',
+      'hearings',
+      'case',
+    ]);
+  });
 });
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
@@ -2181,9 +2232,15 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('selects Summary without giving router anchor scrolling a matching target', () => {
-    caseViewerComponent.sortedTabs = [{
-      ...caseViewerComponent.sortedTabs[0], id: 'Summary', label: 'Summary', fields: []
-    }];
+    caseViewerComponent.caseDetails = {
+      ...caseViewerComponent.caseDetails,
+      tabs: [{
+        ...caseViewerComponent.caseDetails.tabs[0], id: 'Summary', label: 'Summary', fields: []
+      }]
+    };
+    caseViewerComponent.ngOnChanges({
+      caseDetails: new SimpleChange(null, caseViewerComponent.caseDetails, false)
+    });
     componentFixture.detectChanges();
     mockLocation.path.and.returnValue('/cases/case-details/TEST/TestAddressBookCase/1620409659381330#Summary');
     caseViewerComponent.organiseTabPosition();
@@ -2211,7 +2268,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(6);
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
   });
 
   it('should return blank array when prepended tabs are null', () => {

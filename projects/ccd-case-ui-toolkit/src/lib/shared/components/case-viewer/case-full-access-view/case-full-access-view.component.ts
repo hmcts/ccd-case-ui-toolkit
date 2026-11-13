@@ -39,6 +39,13 @@ import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
+type ViewerTabContentType = 'case' | 'tasks' | 'roles-and-access' | 'hearings';
+
+interface ViewerTab {
+  tab: CaseTab;
+  contentType: ViewerTabContentType;
+}
+
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
@@ -61,6 +68,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
+  public viewerTabs: ViewerTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
   public error: any;
@@ -146,8 +154,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFlagStateService.resetInitialCaseFlags();
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes && changes.prependedTabs && !changes.prependedTabs.firstChange) {
+  public ngOnChanges(changes: SimpleChanges): void {
+    const caseDetailsChanged =
+      changes?.caseDetails && !changes.caseDetails.firstChange;
+
+    const prependedTabsChanged =
+      changes?.prependedTabs && !changes.prependedTabs.firstChange;
+
+    const appendedTabsChanged =
+      changes?.appendedTabs && !changes.appendedTabs.firstChange;
+
+    if (caseDetailsChanged || prependedTabsChanged || appendedTabsChanged) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
@@ -275,7 +292,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0 || this.appendedTabs.length > 0;
+    return this.viewerTabs.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
@@ -481,17 +498,39 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.sortedTabs = this.orderService.sort(this.caseDetails?.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+    this.viewerTabs = this.buildViewerTabs();
     this.formGroup = this.buildFormGroup(this.caseFields);
     if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
   }
 
+  private buildViewerTabs(): ViewerTab[] {
+    const suppliedTabIds = new Set(this.sortedTabs.map((tab) => tab.id));
+    const prependedTabs = (this.prependedTabs || [])
+      .filter((tab) => !suppliedTabIds.has(tab.id))
+      .map((tab) => this.toViewerTab(tab));
+    const appendedTabs = (this.appendedTabs || [])
+      .filter((tab) => !suppliedTabIds.has(tab.id))
+      .map((tab) => this.toViewerTab(tab));
+    const caseTabs = this.sortedTabs.map((tab) => this.toViewerTab(tab));
+
+    return [...prependedTabs, ...caseTabs, ...appendedTabs];
+  }
+
+  private toViewerTab(tab: CaseTab): ViewerTab {
+    const contentType = ['tasks', 'roles-and-access', 'hearings'].includes(tab.id)
+      ? tab.id as ViewerTabContentType
+      : 'case';
+
+    return { tab, contentType };
+  }
+
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map((tab) => ({ 
-        ...tab,
-        fields: this.orderService.sort(tab.fields) 
-      }))
+    return tabs?.map((tab) => ({
+      ...tab,
+      fields: this.orderService.sort(tab.fields)
+    }))
       .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
