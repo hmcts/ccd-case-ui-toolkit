@@ -102,6 +102,37 @@ describe('CaseListComponent', () => {
       expect(tbody.children.length).toEqual(cases.length);
     });
 
+    it('should associate the select all checkbox with its label', () => {
+      const checkbox: HTMLInputElement = de.query(By.css('#select-all')).nativeElement;
+
+      expect(checkbox.labels.length).toBe(1);
+      expect(checkbox.labels[0].textContent.trim()).toBe('Select all cases');
+    });
+
+    it('should associate each case checkbox with a label containing its configured ID', () => {
+      const checkboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+
+      expect(checkboxes.length).toBe(cases.length);
+      checkboxes.forEach((element, index) => {
+        const checkbox: HTMLInputElement = element.nativeElement;
+        expect(checkbox.labels.length).toBe(1);
+        expect(checkbox.labels[0].textContent.trim()).toBe(`Select case ${cases[index].caseRef}`);
+      });
+    });
+
+    it('should use the row number in the checkbox label when the configured ID is absent', () => {
+      component.cases = cases.map(aCase => ({ ...aCase, caseRef: undefined }));
+      fixture.detectChanges();
+      const checkboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+
+      expect(checkboxes.length).toBe(cases.length);
+      checkboxes.forEach((element, index) => {
+        const checkbox: HTMLInputElement = element.nativeElement;
+        expect(checkbox.labels.length).toBe(1);
+        expect(checkbox.labels[0].textContent.trim()).toBe(`Select case ${index + 1}`);
+      });
+    });
+
     it('should render required columns for each Case row, with a checkbox in the first column', () => {
       const firstRow = de.query(By.css('div>table>tbody tr:nth-child(1)'));
       // Added +1 for checkbox column
