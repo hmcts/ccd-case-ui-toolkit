@@ -22,9 +22,11 @@ interface ActivityWebPubSubSharedState {
   userKey?: string;
   owners: Set<ActivitySocketService>;
   connected?: boolean;
+  disconnectedAt?: number;
   startPromise?: Promise<void>;
   closeTimer?: ReturnType<typeof setTimeout>;
   restartTimer?: ReturnType<typeof setTimeout>;
+  cancelReconnectWait?: () => void;
   activeCaseId?: string;
   activeActivity?: ActivityEvent;
   desiredCaseId?: string;
@@ -42,7 +44,8 @@ type LoggedActivityEvent = ActivityEvent | 'stop' | 'stopAll';
 
 const ACTIVITY_WEB_PUBSUB_SHARED_STATE_KEY = '__ccdActivityWebPubSubSharedState__';
 const ACTIVITY_WEB_PUBSUB_CLOSE_GRACE_MS = 5000;
-const ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS = 5000;
+const ACTIVITY_WEB_PUBSUB_MIN_RECONNECT_DELAY_MS = 1000;
+const ACTIVITY_WEB_PUBSUB_MAX_RECONNECT_DELAY_MS = 20000;
 // Avoid application-level ping/pong frames. The WebSocket remains open and the
 // client still reconnects when the browser receives an actual close event.
 const ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_INTERVAL_MS = 0;
@@ -297,9 +300,17 @@ export class ActivitySocketService implements OnDestroy {
     }
 
     ActivitySocketService.closeSharedClient(state.client);
+    let initialAttempt = true;
     const client = new WebPubSubClient(
       {
         getClientAccessUrl: async () => {
+          if (!initialAttempt) {
+            await ActivitySocketService.waitBeforeReconnect(client);
+          }
+          initialAttempt = false;
+          if (client !== state.client || state.owners.size === 0) {
+            throw new Error('Activity Web PubSub connection is no longer needed');
+          }
           const connection = await firstValueFrom(activityService.negotiateWebPubSubConnection());
           if (!connection?.url) {
             throw new Error('Web PubSub negotiation did not return a connection URL');
@@ -313,9 +324,10 @@ export class ActivitySocketService implements OnDestroy {
         keepAliveTimeoutInMs: ACTIVITY_WEB_PUBSUB_KEEP_ALIVE_TIMEOUT_MS,
         reconnectRetryOptions: {
           maxRetries: 10,
-          mode: 'Exponential',
-          retryDelayInMs: 1000,
-          maxRetryDelayInMs: 20000
+          // The credential callback applies fresh jitter before every backend negotiation.
+          // Avoid adding an SDK backoff on top of that delay. Reliable session recovery is retained.
+          mode: 'Fixed',
+          retryDelayInMs: 0
         }
       }
     );
@@ -323,6 +335,7 @@ export class ActivitySocketService implements OnDestroy {
     state.client = client;
     state.userKey = userKey;
     state.connected = false;
+    state.disconnectedAt = undefined;
     ActivitySocketService.registerSharedClientEvents(client);
     ActivitySocketService.registerPageExitHandlers(client);
     return client;
@@ -336,7 +349,22 @@ export class ActivitySocketService implements OnDestroy {
       }
       state.connected = true;
       ActivitySocketService.clearSharedClientRestart(client);
-      console.log('Activity socket connected using Web PubSub.');
+      const connectedAt = Date.now();
+      if (state.disconnectedAt !== undefined) {
+        const elapsedMs = connectedAt - state.disconnectedAt;
+        const message = `Activity socket reconnected using Web PubSub after ${elapsedMs}ms total downtime.`;
+        const timing = {
+          disconnectedAt: new Date(state.disconnectedAt).toISOString(),
+          reconnectedAt: new Date(connectedAt).toISOString(),
+          elapsedMs
+        };
+        ActivitySocketService.logConnection(message, timing);
+      } else {
+        const message = 'Activity socket connected using Web PubSub.';
+        const timing = { connectedAt: new Date(connectedAt).toISOString() };
+        ActivitySocketService.logConnection(message, timing);
+      }
+      state.disconnectedAt = undefined;
       state.owners.forEach((owner) => owner.handleConnected(event));
     });
 
@@ -346,20 +374,11 @@ export class ActivitySocketService implements OnDestroy {
         return;
       }
       state.connected = false;
+      state.disconnectedAt = state.disconnectedAt ?? Date.now();
       ActivitySocketService.clearActiveActivity(client);
-      const reconnectMessage = 'Activity socket connection lost, Web PubSub automatic reconnection enabled.';
-      console.log(reconnectMessage);
-      ActivitySocketService.logger.warn(reconnectMessage);
-
-      const retryMessage = 'Activity socket Web PubSub reconnect retry configuration:';
-      const retryConfiguration = {
-        maxRetries: 10,
-        mode: 'Exponential',
-        retryDelayInMs: 1000,
-        maxRetryDelayInMs: 20000
-      };
-      console.log(retryMessage, retryConfiguration);
-      ActivitySocketService.logger.warn(retryMessage, retryConfiguration);
+      const reconnectMessage = 'Activity socket connection lost; fresh Web PubSub connections will use a random 1000-20000ms delay.';
+      const timing = { disconnectedAt: new Date(state.disconnectedAt).toISOString() };
+      ActivitySocketService.logConnection(reconnectMessage, timing);
       state.owners.forEach((owner) => owner.handleDisconnected(event));
     });
 
@@ -484,10 +503,12 @@ export class ActivitySocketService implements OnDestroy {
     if (client === state.client) {
       ActivitySocketService.clearSharedClientCloseTimer();
       ActivitySocketService.clearSharedClientRestart(client);
+      state.cancelReconnectWait?.();
       ActivitySocketService.removePageExitHandlers();
       state.client = undefined;
       state.userKey = undefined;
       state.connected = false;
+      state.disconnectedAt = undefined;
       state.startPromise = undefined;
       state.activeCaseId = undefined;
       state.activeActivity = undefined;
@@ -581,6 +602,7 @@ export class ActivitySocketService implements OnDestroy {
       state.connected ||
       state.startPromise !== undefined ||
       state.restartTimer ||
+      state.cancelReconnectWait ||
       state.owners.size === 0
     ) {
       return;
@@ -606,19 +628,57 @@ export class ActivitySocketService implements OnDestroy {
       return;
     }
 
-    ActivitySocketService.logger.warn('Activity socket client stopped or start failed, scheduling restart...', {
-      transport: 'Web PubSub',
-      delayMs: ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS
-    });
-    console.log(`Activity socket restart scheduled in ${ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS}ms`);
-
+    // Yield until start() has settled. The credential callback applies the random wait.
     state.restartTimer = setTimeout(() => {
       state.restartTimer = undefined;
       if (client === state.client && state.owners.size > 0 && !state.connected) {
-        console.log('Activity socket restart attempt using Web PubSub.');
         ActivitySocketService.startSharedClientIfNeeded(client);
       }
-    }, ACTIVITY_WEB_PUBSUB_RESTART_DELAY_MS);
+    }, 0);
+  }
+
+  private static waitBeforeReconnect(client: WebPubSubClient): Promise<void> {
+    const state = ActivitySocketService.sharedState;
+    if (client !== state.client || state.owners.size === 0) {
+      return Promise.reject(new Error('Activity Web PubSub connection is no longer needed'));
+    }
+
+    const delayMs = ACTIVITY_WEB_PUBSUB_MIN_RECONNECT_DELAY_MS + Math.floor(
+      Math.random() * (ACTIVITY_WEB_PUBSUB_MAX_RECONNECT_DELAY_MS - ACTIVITY_WEB_PUBSUB_MIN_RECONNECT_DELAY_MS + 1)
+    );
+    const scheduledAt = Date.now();
+    const timing = {
+      scheduledAt: new Date(scheduledAt).toISOString(),
+      reconnectAt: new Date(scheduledAt + delayMs).toISOString(),
+      delayMs
+    };
+    ActivitySocketService.logConnection(`Activity socket reconnect scheduled in ${delayMs}ms.`, timing);
+
+    return new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        state.cancelReconnectWait = undefined;
+        if (client !== state.client || state.owners.size === 0) {
+          reject(new Error('Activity Web PubSub connection is no longer needed'));
+          return;
+        }
+        ActivitySocketService.logConnection(`Activity socket reconnect attempt after ${delayMs}ms scheduled delay.`, {
+          ...timing,
+          attemptedAt: new Date().toISOString(),
+          actualDelayMs: Date.now() - scheduledAt
+        });
+        resolve();
+      }, delayMs);
+      state.cancelReconnectWait = () => {
+        clearTimeout(timer);
+        state.cancelReconnectWait = undefined;
+        reject(new Error('Activity Web PubSub reconnect cancelled'));
+      };
+    });
+  }
+
+  private static logConnection(message: string, context: object): void {
+    console.log(message, context);
+    ActivitySocketService.logger.debug(message, context);
   }
 
   private static clearSharedClientRestart(client: WebPubSubClient): void {

@@ -5,9 +5,10 @@ import {
   OnServerDataMessageArgs,
   WebPubSubClient
 } from '@azure/web-pubsub-client';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 
 import { CaseActivityInfo } from '../../domain/activity';
+import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
 import { MODES } from './utils';
@@ -26,6 +27,7 @@ describe('ActivitySocketService', () => {
 
   function resetSharedClient(): void {
     const state = (ActivitySocketService as any).sharedState;
+    state.cancelReconnectWait?.();
     if (state.pageExitHandler) {
       window.removeEventListener('beforeunload', state.pageExitHandler);
       window.removeEventListener('pagehide', state.pageExitHandler);
@@ -39,6 +41,7 @@ describe('ActivitySocketService', () => {
     state.client = undefined;
     state.userKey = undefined;
     state.connected = false;
+    state.disconnectedAt = undefined;
     state.startPromise = undefined;
     state.closeTimer = undefined;
     state.restartTimer = undefined;
@@ -63,7 +66,8 @@ describe('ActivitySocketService', () => {
     });
     startSpy = spyOn(WebPubSubClient.prototype, 'start').and.returnValue(Promise.resolve());
     stopSpy = spyOn(WebPubSubClient.prototype, 'stop');
-    sendEventSpy = spyOn(WebPubSubClient.prototype, 'sendEvent').and.returnValue(Promise.resolve({ ackId: 1 }));
+    sendEventSpy = spyOn(WebPubSubClient.prototype, 'sendEvent')
+      .and.returnValue(Promise.resolve({ ackId: 1, isDuplicated: false }));
 
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
@@ -125,6 +129,9 @@ describe('ActivitySocketService', () => {
     expect(clientOptions.keepAliveIntervalInMs).toBe(0);
     expect(clientOptions.keepAliveTimeoutInMs).toBe(0);
     expect(clientOptions.autoReconnect).toBe(true);
+    expect(clientOptions.reconnectRetryOptions.maxRetries).toBe(10);
+    expect(clientOptions.reconnectRetryOptions.retryDelayInMs).toBe(0);
+    expect((service.socket as any)._protocol.isReliableSubProtocol).toBeTrue();
   });
 
   it('should negotiate a client access URL through ActivityService', async () => {
@@ -294,10 +301,10 @@ describe('ActivitySocketService', () => {
       service.stopAllCase(['case-1', 'case-2'], true);
 
       expect(consoleLogSpy.calls.allArgs()).toEqual([
-        ["[Case activity] Sending 'view' event", { caseId: 'case-1' }],
-        ["[Case activity] Sending 'edit' event", { caseId: 'case-1' }],
-        ["[Case activity] Sending 'stop' event", { caseId: 'case-1' }],
-        ["[Case activity] Sending 'stopAll' event", { caseIds: ['case-1', 'case-2'] }]
+        ['[Case activity] Sending \'view\' event', { caseId: 'case-1' }],
+        ['[Case activity] Sending \'edit\' event', { caseId: 'case-1' }],
+        ['[Case activity] Sending \'stop\' event', { caseId: 'case-1' }],
+        ['[Case activity] Sending \'stopAll\' event', { caseIds: ['case-1', 'case-2'] }]
       ]);
     });
 
@@ -340,7 +347,7 @@ describe('ActivitySocketService', () => {
       ]);
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        "[Case activity] Sending 'stop' event during page exit",
+        '[Case activity] Sending \'stop\' event during page exit',
         { caseId: 'case-2' }
       );
     });
@@ -436,7 +443,12 @@ describe('ActivitySocketService', () => {
   }));
 
   it('should surface initial connection errors and retry the shared client', fakeAsync(() => {
-    startSpy.and.returnValues(Promise.reject(new Error('unavailable')), Promise.resolve());
+    spyOn(Math, 'random').and.returnValue(0);
+    startSpy.and.callFake(() => (service.socket as any)._credential.getClientAccessUrl().then(() => undefined));
+    activityService.negotiateWebPubSubConnection.and.returnValues(
+      throwError(() => new Error('unavailable')),
+      of({ url: 'wss://example.webpubsub.azure.com/client/hubs/hub' })
+    );
     let receivedError: unknown;
     service.connect_error.subscribe((error) => receivedError = error);
 
@@ -446,8 +458,154 @@ describe('ActivitySocketService', () => {
     expect((receivedError as Error).message).toBe('unavailable');
     expect(startSpy).toHaveBeenCalledTimes(1);
 
-    tick(5000);
+    tick(999);
+    expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+    tick(1);
     expect(startSpy).toHaveBeenCalledTimes(2);
+    expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(2);
     flushMicrotasks();
   }));
+
+  describe('random reconnection delay', () => {
+    beforeEach(() => {
+      // Exercise the real credential callback without opening an external WebSocket.
+      startSpy.and.callFake(() => (service.socket as any)._credential.getClientAccessUrl().then(() => undefined));
+    });
+
+    [
+      { random: 0, delayMs: 1000 },
+      { random: 0.5, delayMs: 10500 },
+      { random: 0.999999, delayMs: 20000 }
+    ].forEach(({ random, delayMs }) => {
+      it(`should delay backend negotiation by ${delayMs}ms and log matching timing details`, fakeAsync(() => {
+        spyOn(Math, 'random').and.returnValue(random);
+        const debugSpy = spyOn(StructuredLoggerService.prototype, 'debug');
+        const logSpy = spyOn(console, 'log');
+        activityService.mode = MODES.socket;
+        flushMicrotasks();
+        expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+        trigger('connected', CONNECTED_EVENT);
+        const disconnectedAt = Date.now();
+        trigger('disconnected', CONNECTED_EVENT);
+        trigger('stopped');
+        trigger('stopped');
+        tick(0);
+
+        const scheduledMessage = `Activity socket reconnect scheduled in ${delayMs}ms.`;
+        const timing = {
+          scheduledAt: new Date(disconnectedAt).toISOString(),
+          reconnectAt: new Date(disconnectedAt + delayMs).toISOString(),
+          delayMs
+        };
+        expect(logSpy).toHaveBeenCalledWith(scheduledMessage, timing);
+        expect(debugSpy).toHaveBeenCalledWith(scheduledMessage, timing);
+        tick(delayMs - 1);
+        expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+        tick(1);
+        expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(2);
+        const attemptMessage = `Activity socket reconnect attempt after ${delayMs}ms scheduled delay.`;
+        const attemptedTiming = {
+          ...timing,
+          attemptedAt: new Date(disconnectedAt + delayMs).toISOString(),
+          actualDelayMs: delayMs
+        };
+        expect(logSpy).toHaveBeenCalledWith(attemptMessage, attemptedTiming);
+        expect(debugSpy).toHaveBeenCalledWith(attemptMessage, attemptedTiming);
+        trigger('connected', CONNECTED_EVENT);
+        expect(service.connected.value).toBeTrue();
+        expect(debugSpy).toHaveBeenCalledWith(
+          `Activity socket reconnected using Web PubSub after ${delayMs}ms total downtime.`,
+          {
+            disconnectedAt: new Date(disconnectedAt).toISOString(),
+            reconnectedAt: new Date(disconnectedAt + delayMs).toISOString(),
+            elapsedMs: delayMs
+          }
+        );
+      }));
+    });
+
+    it('should apply fresh jitter to SDK retries without waiting for a stopped event', fakeAsync(() => {
+      spyOn(Math, 'random').and.returnValues(0, 0.999999);
+      activityService.mode = MODES.socket;
+      flushMicrotasks();
+      const credential = (service.socket as any)._credential;
+      let completed = 0;
+
+      credential.getClientAccessUrl().then(() => completed++);
+      tick(999);
+      expect(completed).toBe(0);
+      tick(1);
+      expect(completed).toBe(1);
+
+      credential.getClientAccessUrl().then(() => completed++);
+      tick(19999);
+      expect(completed).toBe(1);
+      tick(1);
+      expect(completed).toBe(2);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(3);
+    }));
+
+    it('should choose a new delay after each failed restart', fakeAsync(() => {
+      const randomSpy = spyOn(Math, 'random').and.returnValues(0, 0.999999);
+      activityService.negotiateWebPubSubConnection.and.returnValues(
+        of({ url: 'wss://example.webpubsub.azure.com/client/hubs/hub' }),
+        throwError(() => new Error('unavailable')),
+        of({ url: 'wss://example.webpubsub.azure.com/client/hubs/hub' })
+      );
+      activityService.mode = MODES.socket;
+      flushMicrotasks();
+      trigger('stopped');
+      tick(1000);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(2);
+      expect(randomSpy).toHaveBeenCalledTimes(2);
+      tick(19999);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(2);
+      tick(1);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(3);
+    }));
+
+    it('should keep one pending retry when a second service attaches', fakeAsync(() => {
+      const randomSpy = spyOn(Math, 'random').and.returnValue(0);
+      activityService.mode = MODES.socket;
+      flushMicrotasks();
+      trigger('stopped');
+      tick(0);
+      const secondService = new ActivitySocketService(sessionStorageService, activityService);
+
+      tick(1000);
+
+      expect(secondService.socket).toBe(service.socket);
+      expect(randomSpy).toHaveBeenCalledTimes(1);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(2);
+      secondService.ngOnDestroy();
+    }));
+
+    it('should cancel a pending delay when the last owner closes', fakeAsync(() => {
+      spyOn(Math, 'random').and.returnValue(0.999999);
+      activityService.mode = MODES.socket;
+      flushMicrotasks();
+      trigger('stopped');
+      tick(0);
+
+      service.ngOnDestroy();
+      tick(20000);
+
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+      expect(stopSpy).toHaveBeenCalledTimes(1);
+      expect((ActivitySocketService as any).sharedState.cancelReconnectWait).toBeUndefined();
+    }));
+
+    it('should not negotiate if the last owner leaves before the delay expires', fakeAsync(() => {
+      spyOn(Math, 'random').and.returnValue(0);
+      activityService.mode = MODES.socket;
+      flushMicrotasks();
+      trigger('stopped');
+      tick(0);
+
+      service.ngOnDestroy();
+      tick(1000);
+      expect(activityService.negotiateWebPubSubConnection).toHaveBeenCalledTimes(1);
+      tick(4000);
+    }));
+  });
 });
