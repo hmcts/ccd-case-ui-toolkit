@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, skip } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -8,15 +10,16 @@ import {
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
 } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
-
+import { ActivityService,
+  ActivitySocketService,BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService, FieldsUtils } from '../../services';
+import { isSolicitorUser } from '../../utils';
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss'],
   standalone: false
 })
-export class SearchResultComponent implements OnChanges, OnInit {
+export class SearchResultComponent implements OnChanges, OnDestroy, OnInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -100,6 +103,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public consumerSortParameters: { column: string, order: SortOrder, type: string } = { column: null, order: null, type: null };
 
   public selectedCases: SearchResultViewItem[] = [];
+  private lastWatchedCaseIds: string[] = [];
+  private lastWatchedCaseIdsKey: string | null = null;
+  private socketConnectSubscription: Subscription;
+  private readonly alphabeticalCompare = (left: string, right: string): number => left.localeCompare(right);
 
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
@@ -108,7 +115,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
     private readonly browserService: BrowserService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly activitySocketService: ActivitySocketService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -125,6 +133,18 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
     this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
+    if (!isSolicitorUser(this.sessionStorageService)) {
+      this.socketConnectSubscription = this.activitySocketService.connected
+        .pipe(distinctUntilChanged(), skip(1), filter(connected => connected))
+        .subscribe(() => this.watchResults(true));
+    }
+  }
+
+  public ngOnDestroy(): void {
+    this.socketConnectSubscription?.unsubscribe();
+    if (this.activitySocketService.isEnabled && this.lastWatchedCaseIdsKey !== null) {
+      this.activitySocketService.stopAllCase(this.lastWatchedCaseIds, true);
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -146,6 +166,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
+      if (!isSolicitorUser(this.sessionStorageService)) {
+        this.watchResults();
+      }
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
@@ -367,7 +390,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return condition ? '&#9660;' : '&#9650;';
   }
 
-  public activityEnabled(): boolean {
+  public get activityEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
@@ -443,6 +466,20 @@ export class SearchResultComponent implements OnChanges, OnInit {
       if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
         this.changeSelection(c);
       }
+    }
+  }
+
+  private watchResults(force = false): void {
+    if (this.activitySocketService.isEnabled && this.activitySocketService.connected.value) {
+      const caseIds: string[] = this.resultView?.results?.map(value => value.case_id) ?? [];
+      const watchKey = [...caseIds].sort(this.alphabeticalCompare).join(',');
+      if (!force && watchKey === this.lastWatchedCaseIdsKey) {
+        return;
+      }
+
+      this.lastWatchedCaseIdsKey = watchKey;
+      this.lastWatchedCaseIds = caseIds.slice(0);
+      this.activitySocketService.watchCases(caseIds);
     }
   }
 
