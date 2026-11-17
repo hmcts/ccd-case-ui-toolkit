@@ -204,7 +204,7 @@
     "elliptic": "6.5.4",
     "exceljs/uuid": "11.1.1",
     "graceful-fs": "^4.2.3",
-    "glob@npm:^10.0.0": "npm:13.0.0",
+    "glob@npm:^10.0.0": "npm:glob@14.0.2",
     "handlebars": "^4.7.7",
     "socket.io-parser": "4.2.7",
     "https-proxy-agent": "^2.2.3",
