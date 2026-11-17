@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.25-exui-5318
+**EXUI-5318** F&P - Removing the dependency on @hmcts/frontend - Manage Case
+
 ### Version 7.4.25
 **EXUI-3767** Add defaultFocus change
 
