@@ -3084,7 +3084,7 @@ __metadata:
     raw-loader: "npm:^0.5.1"
     reflect-metadata: "npm:^0.1.12"
     rimraf: "npm:2.6.2"
-    rollup: "npm:^0.66.2"
+    rollup: "npm:^2.0.0"
     rollup-plugin-commonjs: "npm:^9.1.8"
     rollup-plugin-node-resolve: "npm:^3.0.0"
     rollup-plugin-typescript: "npm:^1.0.0"
@@ -5796,13 +5796,6 @@ __metadata:
   version: 4.3.1
   resolution: "@types/esrecurse@npm:4.3.1"
   checksum: 10/ada5798554b76ac466e90fff26a769b65f905666f32988dcd1b6cf8288896e0fb53080843fd644bf731d16719a6e09b155d623ce36545b75abdd99bb6dcec114
-  languageName: node
-  linkType: hard
-
-"@types/estree@npm:0.0.39":
-  version: 0.0.39
-  resolution: "@types/estree@npm:0.0.39"
-  checksum: 10/9f0f20990dbf725470564d4d815d3758ac688b790f601ea98654b6e0b9797dc3c80306fb525abdacd9e75e014e3d09ad326098eaa2ed1851e4823a8e278538aa
   languageName: node
   linkType: hard
 
@@ -19108,15 +19101,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^0.66.2":
-  version: 0.66.6
-  resolution: "rollup@npm:0.66.6"
+"rollup@npm:^2.0.0":
+  version: 2.80.0
+  resolution: "rollup@npm:2.80.0"
   dependencies:
-    "@types/estree": "npm:0.0.39"
-    "@types/node": "npm:*"
+    fsevents: "npm:~2.3.2"
+  dependenciesMeta:
+    fsevents:
+      optional: true
   bin:
-    rollup: ./bin/rollup
-  checksum: 10/911c74fa7079c0d7f17a483124812e2b1e9845c6844255bfd33837ae5aa2741a5b950e73c04f2025b66abca2b6de14a7acfd0b93eaa2cdbcb239d3d65e6fcb55
+    rollup: dist/bin/rollup
+  checksum: 10/1150ab0f71d59e25a0fe6c0d07e49615ada1e9deba1754073be527c48c558a019fcd31d4d927a9c172593b7dc9c7c3c6871ef07fe1e575371ee24400a7c58213
   languageName: node
   linkType: hard
 
