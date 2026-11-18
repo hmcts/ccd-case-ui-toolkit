@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.25-exui-5450-rc2",
+  "version": "7.4.25-exui-5450-rc3",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^20.0.0",
     "@ngxmc/datetime-picker": "20.1.0",
@@ -37,7 +37,7 @@
     "lodash": "^4.17.22"
   },
   "engines": {
-    "node": ">=24.22.1"
+    "node": ">=24.22.2"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",
