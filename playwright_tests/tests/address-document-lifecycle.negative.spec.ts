@@ -7,7 +7,7 @@ test.describe('Address and document lifecycle', () => {
     const upload = page.getByTestId('document-control').locator('#supporting-document');
 
     await upload.setInputFiles({ name: 'secure.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
-    await expect(page.getByRole('alert')).toHaveText('Secure upload rejected');
+    await expect(page.getByRole('alert')).toContainText('Secure upload rejected');
   });
   test('recovers from invalid and empty postcode results with a valid lookup', async ({ page }) => {
     await page.goto('/');

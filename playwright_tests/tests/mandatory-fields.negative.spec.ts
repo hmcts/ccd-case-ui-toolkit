@@ -13,9 +13,9 @@ test.describe('Mandatory fields', () => {
     await input.fill('value');
     await input.fill('');
     await input.blur();
-    await expect(input.locator('..')).toHaveClass(/form-group-error/);
+    await expect(input.locator('..')).toHaveClass(/govuk-form-group--error/);
     await input.fill('corrected');
-    await expect(input.locator('..')).not.toHaveClass(/form-group-error/);
+    await expect(input.locator('..')).not.toHaveClass(/govuk-form-group--error/);
   });
 
   test('keeps the mandatory form invalid until every required control has a value', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Mandatory fields', () => {
     await input.fill('');
     await input.blur();
     await expect(page.getByTestId('mandatory-status')).toHaveText('INVALID');
-    await expect(input.locator('..')).toHaveClass(/form-group-error/);
+    await expect(input.locator('..')).toHaveClass(/govuk-form-group--error/);
   });
   for (const [name, value] of [['Number field', '12'], ['Email field', 'alice@example.test'], ['Phone field', '020 7946 0000'], ['Text area field', 'Explanation']]) {
     test(`requires ${name} independently and accepts correction`, async ({ page }) => {
