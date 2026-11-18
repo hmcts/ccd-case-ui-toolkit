@@ -28,6 +28,7 @@ import { LinkedCasesService } from '../../palette/linked-cases/services/linked-c
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { FocusService } from '../../../services/window/focus.service';
 import { PlaceholderService } from '../../../directives/substitutor/services';
+import { HiddenFieldValues } from '../../../services/form/hidden-field-values';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -761,6 +762,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // Sort out the dynamic lists.
     this.formValueService.sanitiseDynamicLists(caseFields, formFields);
+    if (!this.caseEdit.isCaseFlagSubmission) {
+      formFields.data = HiddenFieldValues.clearHiddenValues(formFields.data, this.editForm.get('data'));
+    }
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
