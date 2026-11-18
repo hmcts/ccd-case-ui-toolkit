@@ -16,8 +16,8 @@ import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { safeJsonParse } from '../../json-utils';
 
-const FORM_GROUP_VAL_SES_STORAGE = 'workbasket-filter-form-group-value';
-const SAVED_QUERY_PARAM_SES_STORAGE = 'savedQueryParams';
+const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
+const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
 const REGION_LIST_AND_FRC_FILTER = 'regionList';
 
 @Component({
@@ -142,7 +142,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
     if (Object.keys(this.formGroup.controls).length === 0) {
       const storedFormGroup = safeJsonParse<any>(
-        this.windowService.getSessionStorage(FORM_GROUP_VAL_SES_STORAGE),
+        this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE),
         null
       );
       this.selected.formGroup = storedFormGroup && Object.keys(storedFormGroup).length > 0 ? storedFormGroup : null;
@@ -156,7 +156,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
     if (init) {
-      this.windowService.setSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE, JSON.stringify(queryParams));
+      this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
       if (Object.keys(this.formGroup.controls).length > 0) {
         // Find all "special case" JudicialUser FormControl keys and remove the corresponding values from the
         // FormGroup value because these values are not intended to be stored and subsequently passed as query string
@@ -164,7 +164,7 @@ export class WorkbasketFiltersComponent implements OnInit {
         const judicialUserControlValuesToRemove =
           Object.keys(this.formGroup.controls).filter((key) => key.endsWith('_judicialUserControl'));
         judicialUserControlValuesToRemove.forEach((controlKey) => delete this.formGroup.value[controlKey]);
-        this.windowService.setSessionStorage(FORM_GROUP_VAL_SES_STORAGE, JSON.stringify(this.formGroup.value));
+        this.windowService.setLocalStorage(FORM_GROUP_VAL_LOC_STORAGE, JSON.stringify(this.formGroup.value));
       }
     }
     // Announce selected jurisdiction via JurisdictionService
@@ -179,8 +179,8 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   public reset(): void {
-    this.windowService.removeSessionStorage(FORM_GROUP_VAL_SES_STORAGE);
-    this.windowService.removeSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE);
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+    this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     setTimeout(() => {
       this.resetFieldsWhenNoDefaults();
       this.onReset.emit(true);
@@ -236,7 +236,7 @@ export class WorkbasketFiltersComponent implements OnInit {
           this.workbasketInputsReady = true;
           this.workbasketInputs = workbasketInputs
             .sort(this.orderService.sortAsc);
-          const formValue = this.windowService.getSessionStorage(FORM_GROUP_VAL_SES_STORAGE);
+          const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
           workbasketInputs.forEach(item => {
             if (item.field.elementPath) {
@@ -281,19 +281,19 @@ export class WorkbasketFiltersComponent implements OnInit {
    * in future to incorporate other dynamic filters.
    */
   public updateFormGroupFilters(): void {
-    // Read the form group from session storage
-    const formGroupSessionStorage = safeJsonParse(this.windowService.getSessionStorage(FORM_GROUP_VAL_SES_STORAGE), null);
+    // Read the form group from local storage
+    const formGroupLS = safeJsonParse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE), null);
 
-    // Form group session storage is available and contains regionList property
-    if (!!formGroupSessionStorage && formGroupSessionStorage.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {
+    // Form group local storage is available and contains regionList property
+    if (!!formGroupLS && formGroupLS.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {
       if (this.formGroup.get(REGION_LIST_AND_FRC_FILTER)) {
-        // If regionList value does not match between session storage and form group
+        // If regionList value does not match between local storage and form group
         // then the filter value has been changed and we need to clear the old filter values
-        if (formGroupSessionStorage[REGION_LIST_AND_FRC_FILTER] !== this.formGroup.get(REGION_LIST_AND_FRC_FILTER).value) {
-          for (const key in formGroupSessionStorage) {
-            if (formGroupSessionStorage.hasOwnProperty(key)) {
-              const value = formGroupSessionStorage[key];
-              // Clear the filter form group control values if it has a value in session storage
+        if (formGroupLS[REGION_LIST_AND_FRC_FILTER] !== this.formGroup.get(REGION_LIST_AND_FRC_FILTER).value) {
+          for (const key in formGroupLS) {
+            if (formGroupLS.hasOwnProperty(key)) {
+              const value = formGroupLS[key];
+              // Clear the filter form group control values if it has a value in local storage
               // The regionList form group control value should be ignored as it always contain the latest value
               if (key !== REGION_LIST_AND_FRC_FILTER && value !== null) {
                 this.formGroup.get(key).setValue(null);
@@ -314,7 +314,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Query parameters, when available, take precedence over workbasket defaults.
    */
   private initFilters(init: boolean) {
-    const savedQueryParams = this.windowService.getSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE);
+    const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
     const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
       routeSnapshot.queryParams = JSON.parse(savedQueryParams);
@@ -381,7 +381,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   }
 
   private clearStoredWorkbasketFilterValues() {
-    this.windowService.removeSessionStorage(FORM_GROUP_VAL_SES_STORAGE);
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
   }
 
   private resetCaseState() {
