@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 7.4.27
+**EXUI-5543** Update packages
+
+### Version 7.4.26
+**EXUI-4953** Exceljs/uuid upgrade
+
 ### Version 7.4.25
 **EXUI-3767** Add defaultFocus change
 
