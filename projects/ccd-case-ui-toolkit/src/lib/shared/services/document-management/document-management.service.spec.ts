@@ -63,6 +63,16 @@ describe('DocumentManagementService', () => {
     }, '1234123412341234')).toBe('/documentsv2/new-file/binary?preview=true');
   });
 
+  it('does not add v2 again when the webapp document pattern transforms a URL twice', () => {
+    appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
+    appConfig.getDocumentManagementUrlV2.and.returnValue('/documentsv2');
+    const original = 'http://localhost:3000/documents/new-file/binary';
+    const transformed = documentManagementService.getDocumentBinaryUrl({ document_binary_url: original });
+
+    expect(transformed).toBe('/documentsv2/new-file/binary');
+    expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: transformed })).toBe(transformed);
+  });
+
   describe('uploadFile', () => {
     const RESPONSE: DocumentData = {
       _embedded: {

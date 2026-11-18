@@ -194,7 +194,7 @@ export class DocumentManagementService {
   private transformDocumentUrl(documentBinaryUrl: string): string {
     const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
-    const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+    const remoteDocumentManagementPattern = new RegExp(`${this.appConfig.getRemoteDocumentManagementUrl()}(?=/|\\?|$)`);
     return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
   }
 
