@@ -63,7 +63,7 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryCaseDetailsHeaderComponent);
     component = fixture.componentInstance;
-    component.caseDetails = CASE_DETAILS;
+    component.caseDetails = { ...CASE_DETAILS, state: { ...CASE_DETAILS.state } } as typeof CASE_DETAILS;
     de = fixture.debugElement;
 
     component.ngOnInit();
@@ -89,6 +89,29 @@ describe('QueryCaseDetailsHeaderComponent', () => {
     const header = de.query($MARKDOWN);
     expect(header).toBeTruthy();
     expect(header.nativeElement.getAttribute('ng-reflect-content')).toEqual('Title');
+  });
+
+  it('should render the case reference as an h2 so the page keeps a single h1', () => {
+    const header = de.query($HEADING);
+    expect(header.nativeElement.tagName).toEqual('H2');
+  });
+
+  it('should demote markdown headings in the title display below the page h1', () => {
+    expect(
+      QueryCaseDetailsHeaderComponent.demoteHeadings('# ${[CASE_REFERENCE]}: ${applicantName}\n## Sub\nText # not a heading')
+    ).toEqual('## ${[CASE_REFERENCE]}: ${applicantName}\n### Sub\nText # not a heading');
+  });
+
+  it('should pass the demoted title display to the markdown label', () => {
+    component.caseDetails.state.title_display = '# ${[CASE_REFERENCE]}';
+    component.ngOnInit();
+
+    expect(component.caseTitle.label).toEqual('## ${[CASE_REFERENCE]}');
+  });
+
+  it('should leave a title display without headings unchanged', () => {
+    expect(QueryCaseDetailsHeaderComponent.demoteHeadings('#123 plain')).toEqual('#123 plain');
+    expect(QueryCaseDetailsHeaderComponent.demoteHeadings(undefined)).toBeUndefined();
   });
 });
 
