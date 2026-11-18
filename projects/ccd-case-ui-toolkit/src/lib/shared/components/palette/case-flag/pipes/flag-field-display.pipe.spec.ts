@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Injector } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { FlagType } from '../../../../domain/case-flag';
 import { FlagDetail } from '../domain';
 import { FlagFieldDisplayPipe } from './flag-field-display.pipe';
@@ -84,4 +84,40 @@ describe('FlagFieldDisplayPipe', () => {
     mockRpxTranslationService.language = 'cy';
     expect(pipe.transform(flagDetail, 'otherDescription')).toEqual(flagDetail.otherDescription);
   });
+  it('delegates an observable when called with one argument', () => {
+    expect(pipe.transform(of('observable value'))).toEqual('observable value');
+  });
+
+  it('delegates a PromiseLike when called with one argument', async () => {
+    const promiseLike: PromiseLike<string> = { then: (resolve, reject) => Promise.resolve('promise value').then(resolve, reject) };
+    expect(pipe.transform(promiseLike)).toBeNull();
+    await Promise.resolve();
+    expect(pipe.transform(promiseLike)).toEqual('promise value');
+  });
+
+  it('returns null for an empty asynchronous input', () => {
+    expect(pipe.transform(null)).toBeNull();
+    expect(pipe.transform(undefined)).toBeNull();
+  });
+
+  it('switches between flag and async inputs without retaining the prior subscription', () => {
+    const values = new BehaviorSubject('first');
+    expect(pipe.transform(values)).toEqual('first');
+    expect(values.observed).toBeTrue();
+    expect(pipe.transform(flagType, 'name')).toEqual('Other');
+    expect(values.observed).toBeFalse();
+    expect(pipe.transform(values)).toEqual('first');
+    expect(values.observed).toBeTrue();
+    expect(pipe.transform(null)).toBeNull();
+    expect(values.observed).toBeFalse();
+  });
+
+  it('disposes the previous async input when the requested flag field is absent', () => {
+    const values = new BehaviorSubject('first');
+    expect(pipe.transform(values)).toEqual('first');
+    expect(values.observed).toBeTrue();
+    expect(pipe.transform(flagType, 'missing')).toBeNull();
+    expect(values.observed).toBeFalse();
+  });
+
 });
