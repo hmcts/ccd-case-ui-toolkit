@@ -11,5 +11,5 @@ test('published toolkit preserves the WebApp Material and datetime peer contract
   assert.equal(peers['@angular-material-components/datetime-picker'], undefined);
   assert.equal(peers['@angular-material-components/moment-adapter'], undefined);
   assert.equal(peers['@ngxmc/datetime-picker'], '20.1.0');
-  assert.equal(peers['@angular/material-moment-adapter'], '^20.0.0');
+  assert.equal(peers['@angular/material-moment-adapter'], '^20.2.14');
 });

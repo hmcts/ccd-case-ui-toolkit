@@ -2,7 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "7.4.27",
   "peerDependencies": {
-    "@angular/material-moment-adapter": "^20.0.0",
+    "@angular/material-moment-adapter": "^20.2.14",
     "@ngxmc/datetime-picker": "20.1.0",
     "@angular/animations": "^20.3.35",
     "@angular/cdk": "^20.2.14",
@@ -34,7 +34,8 @@
     "underscore": "^1.9.1",
     "zone.js": "^0.15.1",
     "class-transformer": "^0.5.1",
-    "lodash": "^4.17.22"
+    "lodash": "^4.17.22",
+    "@ngrx/store-devtools": "^20.1.0"
   },
   "engines": {
     "node": ">=24.22.2"
