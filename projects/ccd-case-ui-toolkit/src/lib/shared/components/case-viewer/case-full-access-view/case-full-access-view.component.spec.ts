@@ -1393,29 +1393,31 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   it('should retain CCD special-tab positions and only prepend missing special tabs', () => {
     comp.sortedTabs = [
       { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: null },
-      { id: 'tasks', label: 'Tasks', order: 2, fields: [], show_condition: null },
+      { id: 'ccdTasks', label: 'CCD tasks', order: 2, fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })], show_condition: null },
       { id: 'caseNotes', label: 'Case notes', order: 3, fields: [], show_condition: null },
     ] as CaseTab[];
+    comp.caseDetails = { ...comp.caseDetails, tabs: comp.sortedTabs };
 
     const viewerTabs = (comp as any).buildViewerTabs();
 
     expect(viewerTabs.map((viewerTab) => viewerTab.tab.id)).toEqual([
       'roles-and-access',
       'overview',
-      'tasks',
+      'ccdTasks',
       'caseNotes',
     ]);
-    expect(viewerTabs.find((viewerTab) => viewerTab.tab.id === 'tasks').contentType).toBe('tasks');
+    expect(viewerTabs.find((viewerTab) => viewerTab.tab.id === 'ccdTasks').contentType).toBe('tasks');
   });
 
   it('should render all CCD-supplied special tabs in their CCD order without fallback duplicates', () => {
     comp.sortedTabs = [
       { id: 'overview', label: 'Overview', order: 1, fields: [], show_condition: null },
-      { id: 'tasks', label: 'Tasks', order: 2, fields: [], show_condition: null },
-      { id: 'roles-and-access', label: 'Roles and access', order: 3, fields: [], show_condition: null },
-      { id: 'hearings', label: 'Hearings', order: 4, fields: [], show_condition: null },
+      { id: 'ccdTasks', label: 'CCD tasks', order: 2, fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })], show_condition: null },
+      { id: 'ccdRoles', label: 'CCD roles', order: 3, fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })], show_condition: null },
+      { id: 'ccdHearings', label: 'CCD hearings', order: 4, fields: [Object.assign(new CaseField(), { id: 'HearingsLauncher' })], show_condition: null },
       { id: 'caseNotes', label: 'Case notes', order: 5, fields: [], show_condition: null },
     ] as CaseTab[];
+    comp.caseDetails = { ...comp.caseDetails, tabs: comp.sortedTabs };
 
     comp.prependedTabs = [
       { id: 'tasks', label: 'Tasks', fields: [], show_condition: null },
@@ -1427,9 +1429,9 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
 
     expect(viewerTabs.map((viewerTab) => viewerTab.tab.id)).toEqual([
       'overview',
-      'tasks',
-      'roles-and-access',
-      'hearings',
+      'ccdTasks',
+      'ccdRoles',
+      'ccdHearings',
       'caseNotes',
     ]);
     expect(viewerTabs.map((viewerTab) => viewerTab.contentType)).toEqual([

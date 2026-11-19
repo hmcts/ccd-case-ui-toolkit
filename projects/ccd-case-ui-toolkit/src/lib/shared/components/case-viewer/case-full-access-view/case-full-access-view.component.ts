@@ -40,6 +40,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
 type ViewerTabContentType = 'case' | 'tasks' | 'roles-and-access' | 'hearings';
+type SpecialViewerTabContentType = Exclude<ViewerTabContentType, 'case'>;
 
 interface ViewerTab {
   tab: CaseTab;
@@ -506,24 +507,58 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private buildViewerTabs(): ViewerTab[] {
-    const suppliedTabIds = new Set(this.sortedTabs.map((tab) => tab.id));
+    const suppliedTabIds = new Set((this.caseDetails?.tabs || []).map((tab) => tab.id));
+    const suppliedSpecialTabTypes = new Set(
+      (this.caseDetails?.tabs || [])
+        .map((tab) => this.getCcdSpecialTabContentType(tab))
+        .filter((contentType): contentType is SpecialViewerTabContentType => !!contentType)
+    );
     const prependedTabs = (this.prependedTabs || [])
-      .filter((tab) => !suppliedTabIds.has(tab.id))
-      .map((tab) => this.toViewerTab(tab));
+      .filter((tab) => !this.isConfiguredTabSupplied(tab, suppliedTabIds, suppliedSpecialTabTypes))
+      .map((tab) => this.toViewerTab(tab, this.getConfiguredSpecialTabContentType(tab)));
     const appendedTabs = (this.appendedTabs || [])
-      .filter((tab) => !suppliedTabIds.has(tab.id))
-      .map((tab) => this.toViewerTab(tab));
+      .filter((tab) => !this.isConfiguredTabSupplied(tab, suppliedTabIds, suppliedSpecialTabTypes))
+      .map((tab) => this.toViewerTab(tab, this.getConfiguredSpecialTabContentType(tab)));
     const caseTabs = this.sortedTabs.map((tab) => this.toViewerTab(tab));
 
     return [...prependedTabs, ...caseTabs, ...appendedTabs];
   }
 
-  private toViewerTab(tab: CaseTab): ViewerTab {
-    const contentType = ['tasks', 'roles-and-access', 'hearings'].includes(tab.id)
-      ? tab.id as ViewerTabContentType
-      : 'case';
+  private toViewerTab(tab: CaseTab, fallbackContentType?: SpecialViewerTabContentType): ViewerTab {
+    const contentType = fallbackContentType || this.getCcdSpecialTabContentType(tab) || 'case';
 
     return { tab, contentType };
+  }
+
+  private getConfiguredSpecialTabContentType(tab: CaseTab): SpecialViewerTabContentType | null {
+    return ['tasks', 'roles-and-access', 'hearings'].includes(tab.id)
+      ? tab.id as SpecialViewerTabContentType
+      : null;
+  }
+
+  private isConfiguredTabSupplied(
+    tab: CaseTab,
+    suppliedTabIds: Set<string>,
+    suppliedSpecialTabTypes: Set<SpecialViewerTabContentType>
+  ): boolean {
+    const contentType = this.getConfiguredSpecialTabContentType(tab);
+    return contentType ? suppliedSpecialTabTypes.has(contentType) : suppliedTabIds.has(tab.id);
+  }
+
+  private getCcdSpecialTabContentType(tab: CaseTab): SpecialViewerTabContentType | null {
+    const launcherFieldIds = new Set((tab.fields || []).map((field) => field.id?.toLowerCase()));
+
+    if (launcherFieldIds.has('tasklauncher')) {
+      return 'tasks';
+    }
+    if (launcherFieldIds.has('roleslauncher')) {
+      return 'roles-and-access';
+    }
+    if (launcherFieldIds.has('hearingslauncher')) {
+      return 'hearings';
+    }
+
+    return null;
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
