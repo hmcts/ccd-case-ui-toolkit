@@ -32,7 +32,7 @@ test.describe('launcher and mini-application components', () => {
     await expect(launcherControls.getByRole('heading', { name: 'Case file' })).toBeVisible();
     await expect(launcherControls.getByRole('tree', { name: 'Case documents' })).toBeVisible();
     await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
-    await expect(launcherControls.getByLabel('Lager encyclopedia')).toBeVisible();
+    await expect(launcherControls.getByRole('button', { name: /^Lager encyclopedia( |$)/ })).toBeVisible();
   });
 
   test('opens HTML documents directly instead of mounting the media viewer', async ({ page }) => {
@@ -40,7 +40,7 @@ test.describe('launcher and mini-application components', () => {
 
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
     await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
-    await launcherControls.getByLabel('Lager history.html').click();
+    await launcherControls.getByRole('button', { name: /^Lager history[.]html( |$)/ }).click();
 
     await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(0);
     await expect(page.getByTestId('opened-window-url')).toHaveText('https://document.example/documents/lager/history.html');

@@ -76,8 +76,8 @@ test.describe('Case File Viewer document actions', () => {
       caseId: '1111222233334444', version: 1, attributePath: 'caseDocuments.0.document', category: 'Wines'
     });
     await launcherControls.getByRole('button', { name: 'Beers folder, 2 documents' }).click();
-    await expect(launcherControls.getByLabel('Lager encyclopedia', { exact: true })).not.toBeVisible();
+    await expect(launcherControls.getByRole('button', { name: /^Lager encyclopedia( |$)/ })).not.toBeVisible();
     await launcherControls.getByRole('button', { name: 'Wines folder, 5 documents' }).click();
-    await expect(launcherControls.getByLabel('Lager encyclopedia', { exact: true })).toBeVisible();
+    await expect(launcherControls.getByRole('button', { name: /^Lager encyclopedia( |$)/ })).toBeVisible();
   });
 });
