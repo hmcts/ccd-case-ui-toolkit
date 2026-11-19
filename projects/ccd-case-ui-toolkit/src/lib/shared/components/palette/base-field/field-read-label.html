@@ -7,7 +7,7 @@
       </dd>
     </dl>
   } @else {
-    <ng-content></ng-content>
+    <ng-container *ngTemplateOutlet="caseFieldValue"></ng-container>
   }
   <ng-template #caseFieldValue>
     <ng-content></ng-content>

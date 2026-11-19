@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -21,6 +21,20 @@ const CASE_FIELD_OF_LABEL_TYPE: CaseField = newCaseField('PersonFirstName', 'Fir
   createFieldType('Text', 'Label'), 'OPTIONAL').withValue('Johnny').build();
 const BY_FIELD_LABEL = By.css('.case-field__label');
 
+@Component({
+  template: `
+    <ccd-field-read-label [caseField]="caseField" [withLabel]="withLabel">
+      <span data-testid="projected-field-value">Johnny</span>
+    </ccd-field-read-label>
+  `,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
+})
+class FieldReadLabelHostComponent {
+  public caseField = CASE_FIELD;
+  public withLabel = false;
+}
+
 describe('FieldReadLabelComponent', () => {
 
   let fixture: ComponentFixture<FieldReadLabelComponent>;
@@ -36,6 +50,7 @@ describe('FieldReadLabelComponent', () => {
         ],
         declarations: [
           FieldReadLabelComponent,
+          FieldReadLabelHostComponent,
           MockRpxTranslatePipe
         ],
         providers: []
@@ -86,5 +101,19 @@ describe('FieldReadLabelComponent', () => {
     const label = de.query(BY_FIELD_LABEL);
     expect(label).toBeTruthy();
     expect(text(label)).toEqual(CASE_LINK_FIELD.label);
+  });
+
+  it('should retain projected field content when switching between unlabelled and labelled layouts', () => {
+    const host = TestBed.createComponent(FieldReadLabelHostComponent);
+
+    for (const withLabel of [false, true, false]) {
+      host.componentInstance.withLabel = withLabel;
+      host.detectChanges();
+
+      const values = host.debugElement.queryAll(By.css('[data-testid="projected-field-value"]'));
+      expect(values.length).toBe(1);
+      expect(text(values[0])).toBe('Johnny');
+      expect(host.debugElement.query(BY_FIELD_LABEL) !== null).toBe(withLabel);
+    }
   });
 });
