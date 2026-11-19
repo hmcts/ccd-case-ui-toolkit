@@ -876,10 +876,57 @@ describe('WriteCaseFlagFieldComponent', () => {
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS]);
   });
 
-  it('should not update description fields when updating a case flag not of type "Other"', () => {
-    // Set an initial description for both description fields
+  it('should update description fields entered on the translation step for a reasonable adjustment flag', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const flagDetail = component.selectedFlag.flagDetailDisplay.flagDetail;
+    flagDetail.flagCode = 'RA0036';
+    flagDetail.otherDescription = null;
+    flagDetail.otherDescription_cy = null;
+    // The "Add translations to flag" step adds these controls, seeded from the selected flag
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl(flagDetail.otherDescription),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl(flagDetail.otherDescription_cy),
+      [CaseFlagFormFields.COMMENTS]: new FormControl(flagDetail.flagComment),
+      [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl(flagDetail.flagComment_cy)
+    });
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
+    // The user enters values on the translation step
+    component.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).setValue('Step free access');
+    component.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).setValue('Mynediad heb risiau');
+    component.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS).setValue('An updated comment');
+    component.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH).setValue('An updated comment (Welsh)');
+    component.updateFlagInCollection();
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual('Step free access');
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual('Mynediad heb risiau');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual('An updated comment');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual('An updated comment (Welsh)');
+  });
+
+  it('should update description fields entered on the translation step for a case level flag', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const flagDetail = component.selectedFlag.flagDetailDisplay.flagDetail;
+    flagDetail.flagCode = 'CF0004';
+    flagDetail.otherDescription = null;
+    flagDetail.otherDescription_cy = null;
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('Preferred title'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('Teitl dewisol'),
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment')
+    });
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
+    component.updateFlagInCollection();
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual('Preferred title');
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual('Teitl dewisol');
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual('An updated comment');
+  });
+
+  it('should retain description fields for a flag not of type "Other" when the translation step is not visited', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const flagDetail = component.selectedFlag.flagDetailDisplay.flagDetail;
+    flagDetail.flagCode = 'CF0004';
     const firstUpdateFormGroup = new FormGroup({
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('Initial description'),
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('Initial description (Welsh)')
@@ -887,16 +934,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.caseFlagParentFormGroup = firstUpdateFormGroup;
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
-    // Perform a second flag update and deliberately change the flag code to non-"Other" code
-    component.selectedFlag.flagDetailDisplay.flagDetail.flagCode = 'ABC';
+    // Perform a second flag update without the translation step controls
     component.caseFlagParentFormGroup = new FormGroup({
-      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('Another description'),
-      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('Another description (Welsh)'),
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)')
     });
     component.updateFlagInCollection();
-    // Check the description fields have not been updated but the comments have
+    // Check the description fields have been retained but the comments have been updated
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
       firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]);
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
