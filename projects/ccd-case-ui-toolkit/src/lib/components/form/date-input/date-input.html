@@ -1,103 +1,109 @@
-<div class="form-date">
-  <div class="form-group form-group-day">
-    <span class="form-label" [attr.id]="'day-label-'+dayId()">{{'Day' | rpxTranslate}}</span>
-    <input #dayInput
-           class="form-control"
-           [id]="dayId()"
-           [name]="dayId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'day-label-'+dayId()"
-           [value]="displayDay"
-           (change)="dayChange(dayInput.value)"
-           (keyup)="dayChange(dayInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+<div class="govuk-date-input">
+  <div class="govuk-date-input__item">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="dayId()">{{'Day' | rpxTranslate}}</label>
+      <input #dayInput
+             class="govuk-input govuk-date-input__input govuk-input--width-2"
+             [id]="dayId()"
+             [name]="dayId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displayDay"
+             (change)="dayChange(dayInput.value)"
+             (keyup)="dayChange(dayInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 
-  <div class="form-group form-group-month">
-    <span class="form-label" [attr.id]="'month-label-'+ monthId()">{{'Month' | rpxTranslate}}</span>
-    <input #monthInput
-           class="form-control"
-           [id]="monthId()"
-           [name]="monthId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'month-label-'+ monthId()"
-           [value]="displayMonth"
-           (change)="monthChange(monthInput.value)"
-           (keyup)="monthChange(monthInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+  <div class="govuk-date-input__item">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="monthId()">{{'Month' | rpxTranslate}}</label>
+      <input #monthInput
+             class="govuk-input govuk-date-input__input govuk-input--width-2"
+             [id]="monthId()"
+             [name]="monthId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displayMonth"
+             (change)="monthChange(monthInput.value)"
+             (keyup)="monthChange(monthInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 
-  <div class="form-group form-group-year">
-    <span class="form-label" [attr.id]="'year-label-'+ yearId()">{{'Year' | rpxTranslate}}</span>
-    <input #yearInput
-           class="form-control"
-           [id]="yearId()"
-           [name]="yearId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'year-label-'+ yearId()"
-           [value]="displayYear"
-           (change)="yearChange(yearInput.value)"
-           (keyup)="yearChange(yearInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+  <div class="govuk-date-input__item">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="yearId()">{{'Year' | rpxTranslate}}</label>
+      <input #yearInput
+             class="govuk-input govuk-date-input__input govuk-input--width-4"
+             [id]="yearId()"
+             [name]="yearId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displayYear"
+             (change)="yearChange(yearInput.value)"
+             (keyup)="yearChange(yearInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 
-  <div class="form-group form-group-hour" *ngIf="isDateTime">
-    <span class="form-label" [attr.id]="'hour-label-'+ hourId()">{{'Hour' | rpxTranslate}}</span>
-    <input #hourInput
-           class="form-control"
-           [id]="hourId()"
-           [name]="hourId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'hour-label-'+ hourId()"
-           [value]="displayHour"
-           (input)="hourChange(hourInput.value)"
-           (keyup)="hourChange(hourInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+  <div class="govuk-date-input__item" *ngIf="isDateTime">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="hourId()">{{'Hour' | rpxTranslate}}</label>
+      <input #hourInput
+             class="govuk-input govuk-date-input__input govuk-input--width-2"
+             [id]="hourId()"
+             [name]="hourId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displayHour"
+             (input)="hourChange(hourInput.value)"
+             (keyup)="hourChange(hourInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 
-  <div class="form-group form-group-minute" *ngIf="isDateTime">
-    <span class="form-label" [attr.id]="'minute-label-'+ minuteId()">{{'Minute' | rpxTranslate}}</span>
-    <input #minuteInput
-           class="form-control"
-           [id]="minuteId()"
-           [name]="minuteId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'minute-label-'+ minuteId()"
-           [value]="displayMinute"
-           (input)="minuteChange(minuteInput.value)"
-           (keyup)="minuteChange(minuteInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+  <div class="govuk-date-input__item" *ngIf="isDateTime">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="minuteId()">{{'Minute' | rpxTranslate}}</label>
+      <input #minuteInput
+             class="govuk-input govuk-date-input__input govuk-input--width-2"
+             [id]="minuteId()"
+             [name]="minuteId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displayMinute"
+             (input)="minuteChange(minuteInput.value)"
+             (keyup)="minuteChange(minuteInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 
-  <div class="form-group form-group-second" *ngIf="isDateTime">
-    <span class="form-label" [attr.id]="'second-label-'+ secondId()">{{'Second' | rpxTranslate}}</span>
-    <input #secondInput
-           class="form-control"
-           [id]="secondId()"
-           [name]="secondId()"
-           type="text"
-           pattern="[0-9]*"
-           inputmode="numeric"
-           [attr.aria-labelledby]="'second-label-'+ secondId()"
-           [value]="displaySecond"
-           (input)="secondChange(secondInput.value)"
-           (keyup)="secondChange(secondInput.value)"
-           (focus)="inputFocus()"
-           [ngClass]="{'govuk-input--error': isInvalid}">
+  <div class="govuk-date-input__item" *ngIf="isDateTime">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-date-input__label" [for]="secondId()">{{'Second' | rpxTranslate}}</label>
+      <input #secondInput
+             class="govuk-input govuk-date-input__input govuk-input--width-2"
+             [id]="secondId()"
+             [name]="secondId()"
+             type="text"
+             pattern="[0-9]*"
+             inputmode="numeric"
+             [value]="displaySecond"
+             (input)="secondChange(secondInput.value)"
+             (keyup)="secondChange(secondInput.value)"
+             (focus)="inputFocus()"
+             [ngClass]="{'govuk-input--error': isInvalid}">
+    </div>
   </div>
 </div>

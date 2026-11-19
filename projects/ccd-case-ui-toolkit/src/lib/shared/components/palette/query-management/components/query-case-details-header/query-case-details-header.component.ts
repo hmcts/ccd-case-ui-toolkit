@@ -15,8 +15,12 @@ export class QueryCaseDetailsHeaderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseTitle = new CaseField();
-    this.caseTitle.label = this.caseDetails?.state?.title_display;
+    this.caseTitle.label = QueryCaseDetailsHeaderComponent.demoteHeadings(this.caseDetails?.state?.title_display);
     this.caseFields = this.getCaseFieldsInfo();
+  }
+
+  public static demoteHeadings(markdown: string): string {
+    return typeof markdown === 'string' ? markdown.replace(/^(\s{0,3})(#{1,5})(?=\s|$)/gm, '$1$2#') : markdown;
   }
 
   private getCaseFieldsInfo(): CaseField[] {

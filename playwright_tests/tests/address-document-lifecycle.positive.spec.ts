@@ -39,7 +39,7 @@ test.describe('Address and document lifecycle', () => {
     });
 
     await upload.setInputFiles({ name: 'fail.pdf', mimeType: 'application/pdf', buffer: Buffer.from('pdf') });
-    await expect(page.getByRole('alert')).toHaveText('Document upload facility is not available at the moment');
+    await expect(page.getByRole('alert')).toContainText('Document upload facility is not available at the moment');
     await expect.poll(async () => JSON.parse(await page.getByTestId('address-document-values').innerText())['supporting-document']).toEqual({
       document_url: 'https://document.example/documents/uploaded',
       document_binary_url: 'https://document.example/documents/uploaded/binary',

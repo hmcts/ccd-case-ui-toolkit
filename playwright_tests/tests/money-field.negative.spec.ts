@@ -10,13 +10,13 @@ test.describe('Money fields', () => {
     await input.fill('12.345');
     await input.blur();
     await expect(page.getByTestId('money-status')).toHaveText('INVALID');
-    await expect(field).toHaveClass(/form-group-error/);
+    await expect(field).toHaveClass(/govuk-form-group--error/);
 
     await input.fill('12.34');
     await input.blur();
     await expect(page.getByTestId('money-status')).toHaveText('VALID');
     await expect(page.getByTestId('money-value')).toHaveText('1234');
-    await expect(field).not.toHaveClass(/form-group-error/);
+    await expect(field).not.toHaveClass(/govuk-form-group--error/);
   });
 
   test('rejects an empty mandatory value after it has been touched', async ({ page }) => {
@@ -29,6 +29,6 @@ test.describe('Money fields', () => {
     await input.blur();
 
     await expect(page.getByTestId('money-status')).toHaveText('INVALID');
-    await expect(field).toHaveClass(/form-group-error/);
+    await expect(field).toHaveClass(/govuk-form-group--error/);
   });
 });

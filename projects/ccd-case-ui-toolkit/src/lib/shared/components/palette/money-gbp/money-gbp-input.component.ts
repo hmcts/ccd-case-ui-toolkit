@@ -3,7 +3,7 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
 
 @Component({
     selector: 'ccd-money-gbp-input',
-    template: `<input class="form-control form-control-1-8"
+    template: `<input class="govuk-input govuk-input--width-5"
                     type="text"
                     [id]="id"
                     [name]="name"

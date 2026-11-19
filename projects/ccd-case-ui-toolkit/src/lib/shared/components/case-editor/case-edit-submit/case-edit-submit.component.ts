@@ -358,6 +358,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
+  // The event name is the page h1, so the case title (usually "# ${[CASE_REFERENCE]}") must not be a second h1.
+  public demoteCaseTitleHeadingLevel(title: string): string {
+    return title ? title.replace(/^#(?!#)(\s+)/, '##$1') : title;
+  }
+
   public getCancelText(): string {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';

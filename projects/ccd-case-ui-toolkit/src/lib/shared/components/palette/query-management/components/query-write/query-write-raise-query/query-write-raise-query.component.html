@@ -43,7 +43,11 @@
             formControlName="subject"
             maxlength="200"
             (input)="onSubjectInput()"
-            aria-describedby="subject-error" />
+            [attr.aria-describedby]="
+              submitted && (formGroup.get('subject').hasError('required') || formGroup.get('subject').hasError('maxlength'))
+                ? 'subject-hint subject-error'
+                : 'subject-hint'
+            " />
       </div>
 
         <div class="govuk-form-group"
@@ -62,7 +66,7 @@
           </p>
           <textarea [formControlName]="'body'"
                     id="body" name="body" rows="5"
-                    aria-describedby="body-hint body-error"
+                    [attr.aria-describedby]="submitted && formGroup.get('body').hasError('required') ? 'body-hint body-error' : 'body-hint'"
                     class="govuk-textarea"
                     [class.govuk-textarea--error]="submitted && formGroup.get('body').hasError('required')"
           >
@@ -85,6 +89,7 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="isHearingRelated-yes" name="isHearingRelated"
                      type="radio"
+                     [attr.aria-describedby]="submitted && formGroup.get('isHearingRelated').hasError('required') ? 'isHearingRelated-error' : null"
                      formControlName="isHearingRelated"
                      [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
               >
@@ -95,6 +100,7 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="isHearingRelated-no" name="isHearingRelated"
                      type="radio"
+                     [attr.aria-describedby]="submitted && formGroup.get('isHearingRelated').hasError('required') ? 'isHearingRelated-error' : null"
                      formControlName="isHearingRelated"
                      [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
               >
