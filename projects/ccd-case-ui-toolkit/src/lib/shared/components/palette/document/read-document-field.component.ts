@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DocumentManagementService } from '../../../services/document-management';
@@ -10,6 +10,7 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 @Component({
   selector: 'ccd-read-document-field',
   templateUrl: './read-document-field.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnDestroy {

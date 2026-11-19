@@ -1,7 +1,8 @@
-<exui-error-message
-  *ngIf="formGroup.invalid && submitted"
-  [error]="errorMessage">
-</exui-error-message>
+@if (formGroup.invalid && submitted) {
+  <exui-error-message
+    [error]="errorMessage">
+  </exui-error-message>
+}
 
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group">
@@ -59,12 +60,14 @@
                 {{ hint | rpxTranslate }}
               </h1>
             </legend>
-            <div
-              id="error-message"
-              class="govuk-error-message"
-              *ngIf="formGroup.get('radioSelected').invalid && submitted">
-              {{ errorMessage.description | rpxTranslate }}
-            </div>
+            @if (formGroup.get('radioSelected').invalid && submitted) {
+              <div
+                id="error-message"
+                class="govuk-error-message"
+                >
+                {{ errorMessage.description | rpxTranslate }}
+              </div>
+            }
             <div class="govuk-radios__item">
               <input
                 class="govuk-radios__input"

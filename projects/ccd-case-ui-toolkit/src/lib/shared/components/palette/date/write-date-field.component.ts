@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-date-field',
   templateUrl: './write-date-field.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteDateFieldComponent extends AbstractFieldWriteComponent implements OnInit {

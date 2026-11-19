@@ -1,51 +1,75 @@
-<table class="govuk-table" *ngIf="flagData">
-  <caption class="govuk-table__caption govuk-table__caption--l" *ngIf="tableCaption">{{tableCaption}}</caption>
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header col-party-name">{{firstColumnHeader}}</th>
-      <th scope="col" class="govuk-table__header col-comments">{{'Comments' | rpxTranslate}}</th>
-      <th scope="col" class="govuk-table__header col-creation-date">{{'Creation date' | rpxTranslate}}</th>
-      <th scope="col" class="govuk-table__header col-last-modified">{{'Last modified' | rpxTranslate}}</th>
-      <th scope="col" class="govuk-table__header col-flag-status">{{'Flag status' | rpxTranslate}}</th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr *ngIf="!flagData.flags.details || (flagData.flags.details && flagData.flags.details.length === 0)">
-      <td colspan="5">{{'None' | rpxTranslate}}</td>
-    </tr>
-  </tbody>
-  <tbody class="govuk-table__body" *ngIf="flagData.flags.details && flagData.flags.details.length > 0">
-    <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.flags.details">
-      <td class="govuk-table__cell">
-        <div *ngIf="isActivePvpFlag(flagDetail)">
-          <svg class="hmcts-banner__icon" fill="currentColor" role="presentation" aria-hidden="true" focusable="false"
-            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25">
-            <path d="M13.6,15.4h-2.3v-4.5h2.3V15.4z M13.6,19.8h-2.3v-2.2h2.3V19.8z M0,23.2h25L12.5,2L0,23.2z"></path>
-          </svg>
-          <span class="govuk-!-font-weight-bold">{{pvpDisplayText}}</span>
-        </div>
-        <div *ngIf="!isActivePvpFlag(flagDetail)">{{flagDetail | flagFieldDisplay:'name'}}</div>
-        <div>{{flagDetail | flagFieldDisplay:'otherDescription'}}</div>
-        <div>{{flagDetail | flagFieldDisplay:'subTypeValue'}}</div>
-      </td>
-      <td class="govuk-table__cell">
-        <div [ngClass]="{'govuk-!-font-weight-bold': isActivePvpFlag(flagDetail)}">
-          {{flagDetail | flagFieldDisplay:'flagComment'}}
-        </div>
-        <div *ngIf="!caseFlagsExternalUser &&
-          (flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
-          flagDetail.flagUpdateComment">
-          <span class="govuk-!-font-weight-bold">Update Reason: {{flagDetail.flagUpdateComment}}</span>
-        </div>
-      </td>
-      <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
-      <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
-      <td class="govuk-table__cell cell-flag-status">
-        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag govuk-tag--turquoise">{{'Active' | rpxTranslate}}</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">{{'Inactive' | rpxTranslate}}</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--yellow">{{'Requested' | rpxTranslate}}</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.NOT_APPROVED" class="govuk-tag govuk-tag--red">{{'Not approved' | rpxTranslate}}</strong>
-      </td>
-    </tr>
-  </tbody>
-</table>
+@if (flagData) {
+  <table class="govuk-table">
+    @if (tableCaption) {
+      <caption class="govuk-table__caption govuk-table__caption--l">{{tableCaption}}</caption>
+    }
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header col-party-name">{{firstColumnHeader}}</th>
+        <th scope="col" class="govuk-table__header col-comments">{{'Comments' | rpxTranslate}}</th>
+        <th scope="col" class="govuk-table__header col-creation-date">{{'Creation date' | rpxTranslate}}</th>
+        <th scope="col" class="govuk-table__header col-last-modified">{{'Last modified' | rpxTranslate}}</th>
+        <th scope="col" class="govuk-table__header col-flag-status">{{'Flag status' | rpxTranslate}}</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      @if (!flagData.flags.details || (flagData.flags.details && flagData.flags.details.length === 0)) {
+        <tr>
+          <td colspan="5">{{'None' | rpxTranslate}}</td>
+        </tr>
+      }
+    </tbody>
+    @if (flagData.flags.details && flagData.flags.details.length > 0) {
+      <tbody class="govuk-table__body">
+        @for (flagDetail of flagData.flags.details; track flagDetail) {
+          <tr scope="row" class="govuk-table__row">
+            <td class="govuk-table__cell">
+              @if (isActivePvpFlag(flagDetail)) {
+                <div>
+                  <svg class="hmcts-banner__icon" fill="currentColor" role="presentation" aria-hidden="true" focusable="false"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25">
+                    <path d="M13.6,15.4h-2.3v-4.5h2.3V15.4z M13.6,19.8h-2.3v-2.2h2.3V19.8z M0,23.2h25L12.5,2L0,23.2z"></path>
+                  </svg>
+                  <span class="govuk-!-font-weight-bold">{{pvpDisplayText}}</span>
+                </div>
+              }
+              @if (!isActivePvpFlag(flagDetail)) {
+                <div>{{flagDetail | flagFieldDisplay:'name'}}</div>
+              }
+              <div>{{flagDetail | flagFieldDisplay:'otherDescription'}}</div>
+              <div>{{flagDetail | flagFieldDisplay:'subTypeValue'}}</div>
+            </td>
+            <td class="govuk-table__cell">
+              <div [ngClass]="{'govuk-!-font-weight-bold': isActivePvpFlag(flagDetail)}">
+                {{flagDetail | flagFieldDisplay:'flagComment'}}
+              </div>
+              @if (!caseFlagsExternalUser &&
+                (flagDetail.status === caseFlagStatus.NOT_APPROVED || flagDetail.status === caseFlagStatus.INACTIVE) &&
+                flagDetail.flagUpdateComment) {
+                <div>
+                  <span class="govuk-!-font-weight-bold">Update Reason: {{flagDetail.flagUpdateComment}}</span>
+                </div>
+              }
+            </td>
+            <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
+            <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
+            <td class="govuk-table__cell cell-flag-status">
+              @if (flagDetail.status === caseFlagStatus.ACTIVE) {
+                <strong class="govuk-tag govuk-tag--turquoise">{{'Active' | rpxTranslate}}</strong>
+              }
+              @if (flagDetail.status === caseFlagStatus.INACTIVE) {
+                <strong class="govuk-tag govuk-tag--grey">{{'Inactive' | rpxTranslate}}</strong>
+              }
+              @if (flagDetail.status === caseFlagStatus.REQUESTED) {
+                <strong class="govuk-tag govuk-tag--yellow">{{'Requested' | rpxTranslate}}</strong>
+              }
+              @if (flagDetail.status === caseFlagStatus.NOT_APPROVED) {
+                <strong class="govuk-tag govuk-tag--red">{{'Not approved' | rpxTranslate}}</strong>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+}

@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
   selector: 'ccd-read-money-gbp-field',
-  template: `<ng-container *ngIf="isNumber()"><span class="text-16">{{value / 100 | currency:'GBP':'symbol'}}</span></ng-container>`,
+  template: `@if (isNumber()) {<span class="text-16">{{value / 100 | currency:'GBP':'symbol'}}</span>}`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadMoneyGbpFieldComponent extends AbstractFieldReadComponent implements OnInit {

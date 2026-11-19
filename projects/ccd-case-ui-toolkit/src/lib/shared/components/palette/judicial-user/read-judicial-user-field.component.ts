@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JudicialUserModel } from '../../../domain/jurisdiction/judicial-user.model';
 import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
@@ -7,6 +7,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 @Component({
   selector: 'ccd-read-judicial-user-field',
   templateUrl: './read-judicial-user-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadJudicialUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {

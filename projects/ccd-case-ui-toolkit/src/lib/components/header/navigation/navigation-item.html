@@ -1,4 +1,6 @@
 <div>
   <a [routerLinkActive]="'item-bold'" [routerLink]="link">{{label | rpxTranslate}}</a>
-  <input type="image" alt="{{label}} button" *ngIf="imageLink" src="{{imageLink}}"/>
+  @if (imageLink) {
+    <input type="image" alt="{{label}} button" src="{{imageLink}}"/>
+  }
 </div>

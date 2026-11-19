@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -33,6 +33,7 @@ import { PlaceholderService } from '../../../directives/substitutor/services';
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
   styleUrls: ['./case-edit-page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy, JourneyInstigator {

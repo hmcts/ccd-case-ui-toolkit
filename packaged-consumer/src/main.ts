@@ -1,5 +1,5 @@
 import 'zone.js';
-import { Component, importProvidersFrom } from '@angular/core';
+import { Component, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HeadersModule } from '@hmcts/ccd-case-ui-toolkit';
 import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation';
@@ -12,5 +12,5 @@ import { RpxTranslationConfig, RpxTranslationModule } from 'rpx-xui-translation'
 class ConsumerRoot {}
 
 bootstrapApplication(ConsumerRoot, {
-  providers: [importProvidersFrom(RpxTranslationModule.forRoot(new RpxTranslationConfig()))]
+  providers: [provideZoneChangeDetection(), importProvidersFrom(RpxTranslationModule.forRoot(new RpxTranslationConfig()))]
 });

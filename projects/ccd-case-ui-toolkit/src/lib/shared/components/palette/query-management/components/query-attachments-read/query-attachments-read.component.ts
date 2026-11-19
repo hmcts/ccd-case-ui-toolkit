@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnChanges, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { CaseField, FieldType, FormDocument } from '../../../../../domain';
 
 @Component({
@@ -6,6 +6,7 @@ import { CaseField, FieldType, FormDocument } from '../../../../../domain';
   templateUrl: './query-attachments-read.component.html',
   styleUrls: ['./query-attachments-read.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryAttachmentsReadComponent implements OnChanges {

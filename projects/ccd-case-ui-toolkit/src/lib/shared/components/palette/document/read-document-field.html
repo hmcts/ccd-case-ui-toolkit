@@ -1,4 +1,6 @@
-<button type="button" *ngIf="caseField.value" class="govuk-js-link"
-   (click)="showMediaViewer()">
-  {{ caseField.value.document_filename }}
-</button>
+@if (caseField.value) {
+  <button type="button" class="govuk-js-link"
+    (click)="showMediaViewer()">
+    {{ caseField.value.document_filename }}
+  </button>
+}

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
 
 @Component({
   selector: 'ccd-case-file-view-folder-document-actions',
   templateUrl: './case-file-view-folder-document-actions.component.html',
   styleUrls: ['./case-file-view-folder-document-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFileViewFolderDocumentActionsComponent implements OnInit {

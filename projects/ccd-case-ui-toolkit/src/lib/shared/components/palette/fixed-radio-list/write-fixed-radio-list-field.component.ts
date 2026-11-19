@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-fixed-radio-list-field',
   templateUrl: './write-fixed-radio-list-field.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteFixedRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {

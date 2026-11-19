@@ -1,34 +1,36 @@
 <div class="form-group govuk-!-margin-bottom-2" [formGroup]="formGroup">
-  <div class="govuk-form-group" [ngSwitch]="linkedCasesPage">
-    <ng-container *ngSwitchCase="linkedCasesPages.BEFORE_YOU_START">
-      <ccd-linked-cases-before-you-start
-        #journeyChild 
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
-      </ccd-linked-cases-before-you-start>
-    </ng-container>
-    <ng-container *ngSwitchCase="linkedCasesPages.NO_LINKED_CASES">
-      <ccd-no-linked-cases
-        #journeyChild 
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
-      </ccd-no-linked-cases>
-    </ng-container>
-    <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">
-      <ccd-link-cases
-        #journeyChild 
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
-      </ccd-link-cases>
-    </ng-container>
-    <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
-      <ccd-unlink-cases
-        #journeyChild 
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
-      </ccd-unlink-cases>
-    </ng-container>
-    <ng-container *ngSwitchCase="linkedCasesPages.CHECK_YOUR_ANSWERS">
-      <ccd-linked-cases-check-your-answers
-        #journeyChild 
-        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
-      </ccd-linked-cases-check-your-answers>
-    </ng-container>
+  <div class="govuk-form-group">
+    @switch (linkedCasesPage) {
+      @case (linkedCasesPages.BEFORE_YOU_START) {
+        <ccd-linked-cases-before-you-start
+          #journeyChild
+          (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-linked-cases-before-you-start>
+      }
+      @case (linkedCasesPages.NO_LINKED_CASES) {
+        <ccd-no-linked-cases
+          #journeyChild
+          (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-no-linked-cases>
+      }
+      @case (linkedCasesPages.LINK_CASE) {
+        <ccd-link-cases
+          #journeyChild
+          (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-link-cases>
+      }
+      @case (linkedCasesPages.UNLINK_CASE) {
+        <ccd-unlink-cases
+          #journeyChild
+          (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-unlink-cases>
+      }
+      @case (linkedCasesPages.CHECK_YOUR_ANSWERS) {
+        <ccd-linked-cases-check-your-answers
+          #journeyChild
+          (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-linked-cases-check-your-answers>
+      }
+    }
   </div>
 </div>

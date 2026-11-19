@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -26,19 +26,24 @@ import { launcherRouteCase } from '../mocks/launchers.mock';
         ? ['pui-case-manager'] : ['caseworker-test']
     }) } }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="query-writer">
-      <ccd-query-write-raise-query *ngIf="context === contexts.NEW_QUERY"
-        [formGroup]="form" [showForm]="true" [submitted]="submitted" [eventData]="event" serviceMessage="Query details"
-        [queryCreateContext]="context" [triggerSubmission]="trigger" (queryDataCreated)="receive($event)" />
-      <ccd-query-write-respond-to-query *ngIf="context !== contexts.NEW_QUERY"
-        [formGroup]="form" [showForm]="true" [submitted]="submitted" [eventData]="event"
-        [caseQueriesCollections]="collections" [queryItem]="query" [queryCreateContext]="context"
-        [triggerSubmission]="trigger" (queryDataCreated)="receive($event)" />
+      @if (context === contexts.NEW_QUERY) {
+        <ccd-query-write-raise-query
+          [formGroup]="form" [showForm]="true" [submitted]="submitted" [eventData]="event" serviceMessage="Query details"
+          [queryCreateContext]="context" [triggerSubmission]="trigger" (queryDataCreated)="receive($event)" />
+      }
+      @if (context !== contexts.NEW_QUERY) {
+        <ccd-query-write-respond-to-query
+          [formGroup]="form" [showForm]="true" [submitted]="submitted" [eventData]="event"
+          [caseQueriesCollections]="collections" [queryItem]="query" [queryCreateContext]="context"
+          [triggerSubmission]="trigger" (queryDataCreated)="receive($event)" />
+      }
       <button type="button" (click)="submit()">Emit query data</button>
       <output data-testid="query-writer-payload">{{ payload | json }}</output>
     </section>
-  `
+    `
 })
 export class QueryWriterControlsComponent {
   readonly contexts = QueryCreateContext;

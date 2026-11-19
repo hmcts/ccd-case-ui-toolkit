@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage, Journey } from '../../../../../../domain';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
@@ -14,6 +14,7 @@ import { AbstractJourneyComponent } from '../../../../base-field';
 @Component({
   selector: 'ccd-update-flag-add-translation-form',
   templateUrl: './update-flag-add-translation-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyComponent implements OnInit, Journey {

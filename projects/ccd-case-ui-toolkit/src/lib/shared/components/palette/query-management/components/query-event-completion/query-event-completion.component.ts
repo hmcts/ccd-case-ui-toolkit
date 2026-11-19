@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 
 @Component({
   selector: 'ccd-query-event-completion',
   templateUrl: './query-event-completion.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryEventCompletionComponent {

@@ -1,62 +1,73 @@
-<ng-container *ngIf="flagTypes?.length" [formGroup]="formGroup">
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
-    <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-        <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
-          <ng-container *ngIf="!cachedFlagType || subJourneyIndex == 0; else priorFlagTypeSelected">
-            {{
-            isDisplayContextParameterExternal
-            ? (caseFlagWizardStepTitle.SELECT_CASE_FLAG_EXTERNAL | rpxTranslate)
-            : (caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate)
-            }}
-          </ng-container>
-          <ng-template #priorFlagTypeSelected>
-            {{cachedFlagType | flagFieldDisplay:'name'}}
-          </ng-template>
-        </h1>
-      </legend>
-      <div id="flag-type-not-selected-error-message" class="govuk-error-message"
-        *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
-        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagTypeNotSelectedErrorMessage |
-        rpxTranslate}}
-      </div>
-      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
-        <div class="govuk-radios__item" *ngFor="let flagType of flagTypes; index as i; trackBy: identifyFlagType">
-          <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="caseFlagFormField.FLAG_TYPE" type="radio"
-            [value]="flagType" [formControlName]="caseFlagFormField.FLAG_TYPE" />
-          <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">
-            {{flagType | flagFieldDisplay:'name'}}
-          </label>
-        </div>
-        <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
-          <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
-            <label class="govuk-label" for="other-flag-type-description">
+@if (flagTypes?.length) {
+  <ng-container [formGroup]="formGroup">
+    <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
+      <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
+            @if (!cachedFlagType || subJourneyIndex == 0) {
               {{
               isDisplayContextParameterExternal
-              ? (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION_EXTERNAL | rpxTranslate)
-              : (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION | rpxTranslate)
+              ? (caseFlagWizardStepTitle.SELECT_CASE_FLAG_EXTERNAL | rpxTranslate)
+              : (caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate)
               }}
-            </label>
-            <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
-              <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagTypeErrorMessage |
-              rpxTranslate}}
-            </div>
-            <input class="govuk-input govuk-!-width-one-half"
-              [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}" id="other-flag-type-description"
-              [name]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" type="text"
-              [formControlName]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" />
-            <div class="govuk-checkboxes__item govuk-!-margin-top-4"
-              *ngIf="!isDisplayContextParameterExternal && !isCaseLevelFlag && isDisplayContextParameter2Point1Enabled">
-              <input class="govuk-checkboxes__input" id="is-visible-externally" type="checkbox"
-                [name]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY"
-                [formControlName]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY">
-              <label class="govuk-label govuk-checkboxes__label" for="is-visible-externally">
-                {{'This flag should only be visible to HMCTS Staff' | rpxTranslate}}
+            } @else {
+              {{cachedFlagType | flagFieldDisplay:'name'}}
+            }
+          </h1>
+        </legend>
+        @if (flagTypeNotSelectedErrorMessage.length > 0) {
+          <div id="flag-type-not-selected-error-message" class="govuk-error-message"
+            >
+            <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagTypeNotSelectedErrorMessage |
+            rpxTranslate}}
+          </div>
+        }
+        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
+          @for (flagType of flagTypes; track identifyFlagType(i, flagType); let i = $index) {
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="caseFlagFormField.FLAG_TYPE" type="radio"
+                [value]="flagType" [formControlName]="caseFlagFormField.FLAG_TYPE" />
+              <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">
+                {{flagType | flagFieldDisplay:'name'}}
               </label>
             </div>
-          </div>
+          }
+          @if (otherFlagTypeSelected) {
+            <div class="govuk-radios__conditional" id="conditional-flagType">
+              <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
+                <label class="govuk-label" for="other-flag-type-description">
+                  {{
+                  isDisplayContextParameterExternal
+                  ? (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION_EXTERNAL | rpxTranslate)
+                  : (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION | rpxTranslate)
+                  }}
+                </label>
+                @if (flagTypeErrorMessage.length > 0) {
+                  <div id="flag-type-error-message" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagTypeErrorMessage |
+                    rpxTranslate}}
+                  </div>
+                }
+                <input class="govuk-input govuk-!-width-one-half"
+                  [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}" id="other-flag-type-description"
+                  [name]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" type="text"
+                  [formControlName]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" />
+                @if (!isDisplayContextParameterExternal && !isCaseLevelFlag && isDisplayContextParameter2Point1Enabled) {
+                  <div class="govuk-checkboxes__item govuk-!-margin-top-4"
+                    >
+                    <input class="govuk-checkboxes__input" id="is-visible-externally" type="checkbox"
+                      [name]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY"
+                      [formControlName]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY">
+                    <label class="govuk-label govuk-checkboxes__label" for="is-visible-externally">
+                      {{'This flag should only be visible to HMCTS Staff' | rpxTranslate}}
+                    </label>
+                  </div>
+                }
+              </div>
+            </div>
+          }
         </div>
-      </div>
-    </fieldset>
-  </div>
-</ng-container>
+      </fieldset>
+    </div>
+  </ng-container>
+}

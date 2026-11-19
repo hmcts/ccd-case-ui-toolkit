@@ -1,7 +1,8 @@
-<ng-container *ngIf="attachments?.length > 0">
-  <ccd-read-collection-field
-    *ngIf="attachments?.length > 0"
-    [caseField]="caseFieldWithAttachments"
-  >
-  </ccd-read-collection-field>
-</ng-container>
+@if (attachments?.length > 0) {
+  @if (attachments?.length > 0) {
+    <ccd-read-collection-field
+      [caseField]="caseFieldWithAttachments"
+      >
+    </ccd-read-collection-field>
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
@@ -14,6 +14,7 @@ import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory,
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SearchResultComponent implements OnChanges, OnInit {

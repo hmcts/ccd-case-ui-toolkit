@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { SearchService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services';
@@ -18,19 +18,21 @@ import { linkedWriterCase, linkedWriterReasons } from '../mocks/linked-writer.mo
     { provide: CasesService, useValue: { getCaseViewV2: (reference: string) => reference === linkedWriterCase.case_id
       ? of(linkedWriterCase) : throwError(() => ({ status: 404 })) } }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="linked-case-writer">
-      <ccd-link-cases *ngIf="!unlink; else unlinkStage" (linkedCasesStateEmitter)="state = $event" />
-      <output data-testid="linked-case-event">{{ state | json }}</output>
-      <ng-template #unlinkStage>
+      @if (!unlink) {
+        <ccd-link-cases (linkedCasesStateEmitter)="state = $event" />
+      } @else {
         <ccd-unlink-cases #unlinker (linkedCasesStateEmitter)="state = $event" />
         <button type="button" (click)="unlinker.next()">Continue unlink</button>
         <output data-testid="unlink-event">{{ state | json }}</output>
         <output data-testid="unlink-references">{{ service.casesToUnlink | json }}</output>
-      </ng-template>
+      }
+      <output data-testid="linked-case-event">{{ state | json }}</output>
       <output data-testid="linked-case-payload">{{ service.caseFieldValue | json }}</output>
     </section>
-  `
+    `
 })
 export class LinkedCaseWriterControlsComponent {
   readonly unlink = new URLSearchParams(window.location.search).get('linked-write') === 'unlink';

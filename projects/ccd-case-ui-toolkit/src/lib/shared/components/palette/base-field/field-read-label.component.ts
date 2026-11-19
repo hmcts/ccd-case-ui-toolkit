@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -10,6 +10,7 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
   styleUrls: [
     './field-read-label.scss'
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {

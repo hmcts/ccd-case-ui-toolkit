@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractAppConfig } from '../../../../../../../app.config';
 import { CaseFileViewSortColumns } from '../../../../../../domain/case-file-view/case-file-view-sort-columns.enum';
 import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
@@ -7,6 +7,7 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
   selector: 'ccd-case-file-view-folder-sort',
   templateUrl: './case-file-view-folder-sort.component.html',
   styleUrls: ['./case-file-view-folder-sort.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFileViewFolderSortComponent implements OnInit {

@@ -1,32 +1,34 @@
-<ng-container *ngIf="queryListData">
+@if (queryListData) {
   <table class="govuk-table query-list__table">
     <caption class="govuk-table__caption govuk-table__caption--l query-list__caption">
       <div class="query-list__caption-text">{{ queryListData.partyName }}</div>
     </caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row query-list__row">
-        <th scope="col" class="govuk-table__header" [attr.aria-sort]="getAriaSortHeaderValue(col)"
-            *ngFor="let col of displayedColumns; let i = index;">
-          <button type="button" [attr.data-index]="i" aria-sort="none" (click)="sortTable(col)">
-            {{ col.displayName | rpxTranslate }}
-          </button>
-        </th>
+        @for (col of displayedColumns; track col; let i = $index) {
+          <th scope="col" class="govuk-table__header" [attr.aria-sort]="getAriaSortHeaderValue(col)"
+            >
+            <button type="button" [attr.data-index]="i" aria-sort="none" (click)="sortTable(col)">
+              {{ col.displayName | rpxTranslate }}
+            </button>
+          </th>
+        }
       </tr>
     </thead>
-
     <tbody class="govuk-table__body">
-    <tr class="govuk-table__row query-list__row"
-        *ngFor="let message of queryListData.queries"
-    >
-      <td class="govuk-table__cell query-list__cell query-list__cell--first">
-        <button type="button" class="govuk-js-link" (click)="showDetails(message)">{{ message.subject }}</button>
-      </td>
-      <td class="govuk-table__cell query-list__cell">{{ message.name }} @if (isHmctsStaffUser(message)) { - {{ hmctsStaff }} }</td>
-      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }} @if (message.isLastSubmittedByHmctsStaff) { - {{ hmctsStaff }} }</td>
-      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM yyyy HH:mm' }} </td>
-      <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM yyyy HH:mm' }} </td>
-      <td class="govuk-table__cell query-list__cell">{{ message.responseStatus | rpxTranslate }}</td>
-    </tr>
+      @for (message of queryListData.queries; track message) {
+        <tr class="govuk-table__row query-list__row"
+          >
+          <td class="govuk-table__cell query-list__cell query-list__cell--first">
+            <button type="button" class="govuk-js-link" (click)="showDetails(message)">{{ message.subject }}</button>
+          </td>
+          <td class="govuk-table__cell query-list__cell">{{ message.name }} @if (isHmctsStaffUser(message)) { - {{ hmctsStaff }} }</td>
+          <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }} @if (message.isLastSubmittedByHmctsStaff) { - {{ hmctsStaff }} }</td>
+          <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM yyyy HH:mm' }} </td>
+          <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM yyyy HH:mm' }} </td>
+          <td class="govuk-table__cell query-list__cell">{{ message.responseStatus | rpxTranslate }}</td>
+        </tr>
+      }
     </tbody>
   </table>
-</ng-container>
+}
