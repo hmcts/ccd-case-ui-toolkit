@@ -20,7 +20,7 @@ test.describe('PDF document rendering', () => {
     await page.goto('/');
 
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     await launcherControls.getByLabel('Lager encyclopedia').click();
     await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(1);
     await expect(launcherControls.locator('mv-media-viewer canvas').first()).toBeVisible();

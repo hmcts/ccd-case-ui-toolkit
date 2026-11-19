@@ -26,12 +26,11 @@
     </div>
   </ng-container>
 
-  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="govuk-button" (click)="apply()" (keyup.enter)="apply()" [title]="'Apply filter' | rpxTranslate"
-          [attr.aria-label]="'Apply filter' | rpxTranslate">
-    {{'Apply' | rpxTranslate}}
+  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="govuk-button" (click)="apply()" (keyup.enter)="apply()" [title]="'Apply filter' | rpxTranslate">
+    {{'Apply' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'filter' | rpxTranslate}}</span>
   </button> &nbsp;&nbsp;&nbsp;
   <button id="reset" type="button" (click)="reset()" class="govuk-button govuk-button--secondary"
-          [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
-    {{'Reset' | rpxTranslate}}
+          [title]="'Reset filter' | rpxTranslate">
+    {{'Reset' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'filter' | rpxTranslate}}</span>
   </button>
 </form>

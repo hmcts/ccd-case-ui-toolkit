@@ -2,10 +2,11 @@
   <label class="govuk-label" [for]="id()" *ngIf="!caseField.hidden">
     <ng-container *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</ng-container>
   </label>
-  <div class="govuk-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
-  <span class="govuk-error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">
+  <div class="govuk-hint" [id]="id() + '-hint'" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</div>
+  <span class="govuk-error-message" [id]="id() + '-error'" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">
     <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{textControl.errors | ccdFirstError:caseField.label}}
   </span>
   <input class="govuk-input bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
-    [id]="id()" [type]="caseField.hidden ? 'hidden' : 'text'" [formControl]="textControl" (blur)="onBlur($event)">
+    [id]="id()" [type]="caseField.hidden ? 'hidden' : 'text'" [formControl]="textControl" (blur)="onBlur($event)"
+    [attr.aria-describedby]="((caseField.hint_text ? id() + '-hint ' : '') + (textControl?.errors && (textControl.dirty || textControl.touched) ? id() + '-error' : '')).trim() || null">
 </div>

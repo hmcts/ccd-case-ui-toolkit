@@ -31,7 +31,7 @@ test.describe('launcher and mini-application components', () => {
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
     await expect(launcherControls.getByRole('heading', { name: 'Case file' })).toBeVisible();
     await expect(launcherControls.getByRole('tree', { name: 'Case documents' })).toBeVisible();
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     await expect(launcherControls.getByLabel('Lager encyclopedia')).toBeVisible();
   });
 
@@ -39,7 +39,7 @@ test.describe('launcher and mini-application components', () => {
     await page.goto('/?case-file=html');
 
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     await launcherControls.getByLabel('Lager history.html').click();
 
     await expect(launcherControls.locator('mv-media-viewer')).toHaveCount(0);
@@ -50,7 +50,7 @@ test.describe('launcher and mini-application components', () => {
     await page.goto('/?case-file-edit&case-file-move-failure');
 
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     await expect(page.getByText('Change folder', { exact: true })).toBeVisible();
@@ -61,7 +61,7 @@ test.describe('launcher and mini-application components', () => {
     await expect(page.getByText('We couldn\'t move the document. Please try again.', { exact: true })).toBeVisible();
 
     await page.goto('/');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     await launcherControls.locator('ccd-case-file-view-folder-document-actions').first()
       .getByRole('button', { name: 'More document options' }).click();
     await expect(page.getByText('Change folder', { exact: true })).toHaveCount(0);

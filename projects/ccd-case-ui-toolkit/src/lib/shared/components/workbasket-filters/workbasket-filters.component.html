@@ -2,12 +2,12 @@
   <div class="govuk-form-group flex">
     <h2 class="heading-h2">{{'Filters' | rpxTranslate }}</h2>
     <button type="button" class="govuk-button workbasket-filters-apply" (click)="apply(true)" [disabled]="isApplyButtonDisabled()"
-        [title]="'Apply filter' | rpxTranslate" [attr.aria-label]="'Apply filter' | rpxTranslate">
-      {{'Apply' | rpxTranslate}}
+        [title]="'Apply filter' | rpxTranslate">
+      {{'Apply' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'filter' | rpxTranslate}}</span>
     </button>&nbsp;&nbsp;&nbsp;
     <button type="button" (click)="reset()" class="govuk-button govuk-button--secondary"
-        [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
-      {{'Reset' | rpxTranslate}}
+        [title]="'Reset filter' | rpxTranslate">
+      {{'Reset' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'filter' | rpxTranslate}}</span>
     </button>
   </div>
 

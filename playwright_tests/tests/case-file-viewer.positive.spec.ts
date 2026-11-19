@@ -31,7 +31,7 @@ test.describe('Case File Viewer document actions', () => {
     const pdf = await readFile(resolve(__dirname, '../mocks/documents/toolkit.pdf'));
     await page.goto('/?host=miniapps&case-file=actions');
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
     await documentActions.getByRole('button', { name: 'More document options' }).click();
 
@@ -47,7 +47,7 @@ test.describe('Case File Viewer document actions', () => {
   test('opens printable document content from its action menu', async ({ page }) => {
     await page.goto('/?host=miniapps&case-file=print');
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     const printPopupPromise = page.waitForEvent('popup');
@@ -60,7 +60,7 @@ test.describe('Case File Viewer document actions', () => {
   test('refreshes the document tree after a successful category update', async ({ page }) => {
     await page.goto('/?host=miniapps&case-file-edit&case-file-move-success');
     const launcherControls = page.getByTestId('launcher-mini-app-controls');
-    await launcherControls.getByLabel('Beers folder, 3 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 3 documents' }).click();
     const documentActions = launcherControls.locator('ccd-case-file-view-folder-document-actions').first();
     await documentActions.getByRole('button', { name: 'More document options' }).click();
     await page.getByText('Change folder', { exact: true }).click();
@@ -75,9 +75,9 @@ test.describe('Case File Viewer document actions', () => {
     expect(await page.evaluate(() => JSON.parse(sessionStorage.getItem('case-file-update')!))).toEqual({
       caseId: '1111222233334444', version: 1, attributePath: 'caseDocuments.0.document', category: 'Wines'
     });
-    await launcherControls.getByLabel('Beers folder, 2 documents').click();
+    await launcherControls.getByRole('button', { name: 'Beers folder, 2 documents' }).click();
     await expect(launcherControls.getByLabel('Lager encyclopedia', { exact: true })).not.toBeVisible();
-    await launcherControls.getByLabel('Wines folder, 5 documents').click();
+    await launcherControls.getByRole('button', { name: 'Wines folder, 5 documents' }).click();
     await expect(launcherControls.getByLabel('Lager encyclopedia', { exact: true })).toBeVisible();
   });
 });
