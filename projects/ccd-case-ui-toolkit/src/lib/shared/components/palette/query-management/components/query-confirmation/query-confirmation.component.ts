@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QueryCreateContext } from '../../models/query-create-context.enum';
 import { SessionStorageService, StructuredLoggerService } from '../../../../../services';
@@ -8,7 +8,6 @@ import { CaseQueriesCollection, QueryListData } from '../../models';
 @Component({
   selector: 'ccd-query-confirmation',
   templateUrl: './query-confirmation.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryConfirmationComponent implements OnInit {

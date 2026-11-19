@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CaseView } from '../../../../../domain';
@@ -12,7 +12,6 @@ import { LinkedCasesService } from '../../services';
   selector: 'ccd-linked-cases-from-table',
   templateUrl: './linked-cases-from-table.component.html',
   styleUrls: ['./linked-cases-from-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 export enum AlertMessageType {
   WARNING = 'warning',
@@ -13,7 +13,6 @@ export enum AlertMessageType {
   styleUrls: [
     './alert.component.scss'
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AlertComponent {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { Constants } from '../../../commons/constants';
@@ -17,7 +17,6 @@ const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
   selector: 'ccd-write-complex-type-field',
   templateUrl: './write-complex-field.html',
   styleUrls: ['./read-complex-field-table.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {

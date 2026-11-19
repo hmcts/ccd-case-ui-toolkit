@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { RaiseQueryErrorMessage } from '../../../enums';
 import {
@@ -16,7 +16,6 @@ import { StructuredLoggerService } from '../../../../../../services';
 @Component({
   selector: 'ccd-query-write-raise-query',
   templateUrl: './query-write-raise-query.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryWriteRaiseQueryComponent implements OnChanges {

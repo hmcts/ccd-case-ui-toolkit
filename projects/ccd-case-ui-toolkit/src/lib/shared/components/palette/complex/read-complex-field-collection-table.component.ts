@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 import { SortOrder } from '../../../domain';
 import { CaseField } from '../../../domain/definition';
@@ -8,7 +8,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   selector: 'ccd-read-complex-field-collection-table',
   templateUrl: './read-complex-field-collection-table.html',
   styleUrls: ['./read-complex-field-collection-table.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {

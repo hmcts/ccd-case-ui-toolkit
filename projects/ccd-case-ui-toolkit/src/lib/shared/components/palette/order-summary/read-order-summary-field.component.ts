@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FeeValue } from './fee-value.model';
 
@@ -8,7 +8,6 @@ import { FeeValue } from './fee-value.model';
   styleUrls: [
     './read-order-summary-field.scss'
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadOrderSummaryFieldComponent extends AbstractFieldReadComponent {

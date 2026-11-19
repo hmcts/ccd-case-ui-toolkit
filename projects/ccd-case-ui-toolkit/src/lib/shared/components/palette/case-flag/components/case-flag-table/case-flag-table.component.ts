@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PVP_DISPLAY_TEXT, isPvpFlag } from '../../utils/case-flag-priority.utils';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagStatus } from '../../enums';
@@ -7,7 +7,6 @@ import { CaseFlagStatus } from '../../enums';
   selector: 'ccd-case-flag-table',
   templateUrl: './case-flag-table.component.html',
   styleUrls: ['./case-flag-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFlagTableComponent {

@@ -1,4 +1,4 @@
-import { Component, DebugElement, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DebugElement, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -21,7 +21,6 @@ const CLASS = 'person-first-name-cls';
   template: `
     <div class="${CLASS}"></div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldTestComponent {

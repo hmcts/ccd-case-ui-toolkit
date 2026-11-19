@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewTrigger } from '../../domain/case-view/case-view-trigger.model';
@@ -8,7 +8,6 @@ import { OrderService } from '../../services/order/order.service';
   selector: 'ccd-event-trigger',
   templateUrl: './event-trigger.component.html',
   styleUrls: ['./event-trigger.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventTriggerComponent implements OnChanges, OnInit {

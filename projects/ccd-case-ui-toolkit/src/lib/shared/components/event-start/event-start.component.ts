@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { AbstractAppConfig } from '../../../app.config';
@@ -11,7 +11,6 @@ import { EventStartStateMachineService } from './services/event-start-state-mach
 @Component({
   selector: 'ccd-event-start',
   templateUrl: './event-start.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventStartComponent implements OnInit {

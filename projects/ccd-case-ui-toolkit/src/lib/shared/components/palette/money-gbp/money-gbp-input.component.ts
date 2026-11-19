@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
@@ -23,7 +23,6 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {

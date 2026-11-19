@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, createComponent, ComponentRef, Injector, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, Injector, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition';
@@ -12,7 +12,6 @@ const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList']
   selector: 'ccd-field-write',
   templateUrl: './field-write.component.html',
   styleUrls: ['./field-write.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
@@ -27,7 +26,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   public fieldContainer: ViewContainerRef;
   private componentRef: ComponentRef<any>;
 
-  constructor(private readonly environmentInjector: EnvironmentInjector,
+  constructor(private readonly resolver: ComponentFactoryResolver,
     private readonly paletteService: PaletteService) {
     super();
   }
@@ -40,10 +39,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
     const injector = Injector.create([], this.fieldContainer.parentInjector);
-    this.componentRef = createComponent(componentClass, {
-      environmentInjector: this.environmentInjector,
-      elementInjector: injector
-    });
+    this.componentRef = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance

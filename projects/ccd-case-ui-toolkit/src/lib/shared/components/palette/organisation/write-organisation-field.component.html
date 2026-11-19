@@ -39,7 +39,7 @@
           </label>
           <hr class="govuk-section-break govuk-section-break--visible">
           @if (!(selectedOrg$ | async)?.organisationIdentifier) {
-            <div [ngClass]="{'scroll-container ': $safeNavigationMigration((simpleOrganisations$ | async)?.length) > 10}">
+            <div [ngClass]="{'scroll-container ': (simpleOrganisations$ | async)?.length > 10}">
               @for (organisation of (simpleOrganisations$ | async); track organisation) {
                 <table id="organisation-table">
                   <caption><h3 class="name-header">{{organisation.name}}</h3></caption>

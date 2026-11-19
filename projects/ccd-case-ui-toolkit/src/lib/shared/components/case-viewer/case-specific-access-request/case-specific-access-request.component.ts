@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -19,7 +19,6 @@ import {
 @Component({
   selector: 'ccd-case-specific-access-request',
   templateUrl: './case-specific-access-request.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {

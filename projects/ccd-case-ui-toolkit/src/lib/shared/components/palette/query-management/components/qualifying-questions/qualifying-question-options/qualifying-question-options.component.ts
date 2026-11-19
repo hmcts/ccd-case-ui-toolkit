@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,7 +9,6 @@ import { QualifyingQuestionService } from '../../../services';
 @Component({
   selector: 'ccd-qualifying-question-options',
   templateUrl: './qualifying-question-options.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QualifyingQuestionOptionsComponent implements OnInit {

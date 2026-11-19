@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -15,7 +15,6 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
   selector: 'ccd-select-flag-type',
   templateUrl: './select-flag-type.component.html',
   styleUrls: ['./select-flag-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {

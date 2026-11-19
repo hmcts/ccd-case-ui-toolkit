@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
@@ -15,7 +15,6 @@ import { safeJsonParse } from '../../../json-utils';
   selector: 'ccd-case-file-view-field',
   templateUrl: './case-file-view-field.component.html',
   styleUrls: ['./case-file-view-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {

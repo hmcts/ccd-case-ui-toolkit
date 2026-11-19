@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ChangeDetectionStrategy } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -43,7 +43,6 @@ const CASE_VIEW_WITH_CHALLENGED_ACCESS: CaseView = {
 
 @Component({
   template: ``,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class StubComponent {}

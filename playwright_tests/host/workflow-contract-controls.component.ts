@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
@@ -22,7 +22,6 @@ import { workflowLinkedCase, workflowLinkedLauncher, workflowQueryCase, workflow
       getEnableServiceSpecificMultiFollowups: () => new URLSearchParams(window.location.search).has('multi-followup') ? ['TEST'] : []
     }) }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="workflow-query"><ccd-field-read [caseField]="launcher" [caseReference]="'1111222233334444'" /></section>
   `

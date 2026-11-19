@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -11,7 +11,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   selector: 'ccd-read-organisation-field-table',
   templateUrl: './read-organisation-field-table.component.html',
   styleUrls: ['./organisation-field.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -27,7 +27,6 @@ import { PlaceholderService } from '../../../directives';
   selector: 'ccd-case-edit-submit',
   templateUrl: 'case-edit-submit.html',
   styleUrls: ['../case-edit.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {

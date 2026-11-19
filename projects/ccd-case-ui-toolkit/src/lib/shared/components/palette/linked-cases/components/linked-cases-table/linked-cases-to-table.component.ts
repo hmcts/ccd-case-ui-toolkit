@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { CaseView } from '../../../../../domain';
@@ -22,7 +22,6 @@ interface LinkedCasesResponse {
   selector: 'ccd-linked-cases-to-table',
   templateUrl: './linked-cases-to-table.component.html',
   styleUrls: ['./linked-cases-to-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {

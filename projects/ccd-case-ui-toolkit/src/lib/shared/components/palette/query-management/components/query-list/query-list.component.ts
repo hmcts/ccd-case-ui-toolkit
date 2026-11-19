@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
 import { CaseQueriesCollection, QueryCreateContext, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
@@ -6,7 +6,6 @@ import { CaseQueriesCollection, QueryCreateContext, QueryListColumn, QueryListDa
   selector: 'ccd-query-list',
   templateUrl: './query-list.component.html',
   styleUrls: ['./query-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryListComponent implements OnChanges {

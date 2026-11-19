@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SecurityContext, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { cloneDeep } from 'lodash';
@@ -14,7 +14,6 @@ import { AbstractJourneyComponent } from '../../../base-field';
   templateUrl: './manage-case-flags.component.html',
   styleUrls: ['./manage-case-flags.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ManageCaseFlagsComponent extends AbstractJourneyComponent implements OnInit, Journey {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import moment from 'moment';
 import { throwError } from 'rxjs';
@@ -22,7 +22,6 @@ import { MultipageComponentStateService } from '../../../../../services';
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
   templateUrl: './link-cases.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LinkCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {

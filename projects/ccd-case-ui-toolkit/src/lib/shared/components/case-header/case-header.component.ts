@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '../../domain/case-view/case-view.model';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { Draft } from '../../domain/draft.model';
@@ -7,7 +7,6 @@ import { Draft } from '../../domain/draft.model';
   selector: 'ccd-case-header',
   templateUrl: './case-header.html',
   styleUrls: ['./case-header.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

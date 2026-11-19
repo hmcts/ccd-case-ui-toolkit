@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../../../../services/loading/loading.service';
 
 @Component({
   selector: 'app-multiple-tasks-exist',
   templateUrl: './multiple-tasks-exist.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MultipleTasksExistComponent implements OnInit {

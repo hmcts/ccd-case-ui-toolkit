@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl } from '@angular/forms';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -6,7 +6,6 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 @Component({
   selector: 'ccd-write-multi-select-list-field',
   templateUrl: './write-multi-select-list-field.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {

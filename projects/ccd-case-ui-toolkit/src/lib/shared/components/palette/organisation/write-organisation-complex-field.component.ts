@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SimpleOrganisationModel } from '../../../domain/organisation';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -7,7 +7,6 @@ import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.co
   selector: 'ccd-write-organisation-complex-field',
   templateUrl: './write-organisation-complex-field.component.html',
   styleUrls: ['./organisation-field.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteOrganisationComplexFieldComponent extends AbstractFormFieldComponent {

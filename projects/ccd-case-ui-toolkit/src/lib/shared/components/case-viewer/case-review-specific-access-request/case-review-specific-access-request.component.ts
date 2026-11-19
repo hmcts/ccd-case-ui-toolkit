@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,6 @@ import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRe
   selector: 'ccd-case-review-specific-access-request',
   templateUrl: './case-review-specific-access-request.component.html',
   styleUrls: ['./case-review-specific-access-request.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseReviewSpecificAccessRequestComponent

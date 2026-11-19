@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -7,7 +7,6 @@ import { WriteComplexFieldComponent } from '../complex/write-complex-field.compo
 @Component({
   selector: 'ccd-write-case-link-field',
   templateUrl: 'write-case-link-field.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent implements OnInit {

@@ -1,7 +1,7 @@
 import { NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats, ThemePalette } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
 
@@ -25,7 +25,6 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
     },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

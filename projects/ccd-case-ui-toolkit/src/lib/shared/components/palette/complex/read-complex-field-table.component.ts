@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
@@ -6,7 +6,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   selector: 'ccd-read-complex-field-table',
   templateUrl: './read-complex-field-table.html',
   styleUrls: ['./read-complex-field-table.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadComplexFieldTableComponent extends AbstractFieldReadComponent implements OnInit {

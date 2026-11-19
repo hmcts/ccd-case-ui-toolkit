@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -8,7 +8,6 @@ import { QueryManagementUtils } from '../../../utils/query-management.utils';
 @Component({
   selector: 'ccd-query-write-add-documents',
   templateUrl: './query-write-add-documents.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, OnDestroy {

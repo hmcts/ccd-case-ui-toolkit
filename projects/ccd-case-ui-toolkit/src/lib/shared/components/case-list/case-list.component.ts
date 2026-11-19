@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BrowserService } from '../../services/browser/browser.service';
 
 export class DateTimeFormatUtils {
@@ -16,7 +16,6 @@ export class DateTimeFormatUtils {
   selector: 'ccd-case-list',
   templateUrl: './case-list.component.html',
   styleUrls: ['./case-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseListComponent {

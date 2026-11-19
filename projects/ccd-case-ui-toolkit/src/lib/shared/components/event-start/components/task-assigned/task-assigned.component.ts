@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Task } from '../../../../domain/work-allocation/Task';
@@ -8,7 +8,6 @@ import { JudicialworkerService } from '../../../case-editor/services/judicial-wo
 @Component({
   selector: 'app-task-assigned',
   templateUrl: './task-assigned.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TaskAssignedComponent implements OnInit, OnDestroy {

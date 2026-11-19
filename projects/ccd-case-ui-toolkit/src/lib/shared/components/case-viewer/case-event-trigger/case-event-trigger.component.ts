@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
 import { Constants } from '../../../commons/constants';
@@ -11,7 +11,6 @@ import { EventTriggerResolver } from '../services';
 @Component({
   selector: 'ccd-case-event-trigger',
   templateUrl: './case-event-trigger.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {

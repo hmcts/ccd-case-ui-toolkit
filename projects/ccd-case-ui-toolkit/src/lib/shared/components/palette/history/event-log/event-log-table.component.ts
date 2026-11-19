@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
 import { SessionStorageService } from '../../../../services';
 import { safeJsonParse } from '../../../../json-utils';
@@ -8,7 +8,6 @@ import { safeJsonParse } from '../../../../json-utils';
   selector: 'ccd-event-log-table',
   templateUrl: './event-log-table.component.html',
   styleUrls: ['./event-log-table.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventLogTableComponent implements OnInit {

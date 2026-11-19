@@ -179,8 +179,6 @@ describe('WriteDocumentFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
-    // Keep URL-dependent tests isolated from browser history and other suites.
-    spyOn<any>(component, 'getCurrentPathname').and.returnValue('/');
 
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
@@ -738,8 +736,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
-    // Keep URL-dependent tests isolated from browser history and other suites.
-    spyOn<any>(component, 'getCurrentPathname').and.returnValue('/');
 
     component.caseField = CASE_FIELD_MANDATORY;
 
@@ -797,7 +793,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   it('should set ids from session caseInfo when present and not in create-case journey', () => {
     // Arrange: simulate caseInfo present in session
-    (component['getCurrentPathname'] as jasmine.Spy).and.returnValue('/cases/case-details/OTHER/IGNORED/999');
+    window.history.pushState({}, '', '/cases/case-details/OTHER/IGNORED/999');
 
     // Act
     component.ngOnInit();
@@ -811,7 +807,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   it('should set ids from URL when no caseInfo and on case-details page', () => {
     mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
-    (component['getCurrentPathname'] as jasmine.Spy).and.returnValue('/cases/case-details/IA/Asylum/12345/test/event/random');
+    window.history.pushState({}, '', '/cases/case-details/IA/Asylum/12345/test/event/random');
 
     // Clear any prior state
     component.gotFromCaseInfo = false;
@@ -829,10 +825,10 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(component.caseId).toBe('12345');
   });
 
-  it('should set ids from URL when no caseInfo and on case-create page', () => {
+  it('should set ids from URL when no caseInfo and on case-details page', () => {
     // Arrange: no caseInfo available, derive from URL
     mockDocumentManagementService.parseCaseInfo.and.returnValue(null);
-    (component['getCurrentPathname'] as jasmine.Spy).and.returnValue('/cases/case-create/IA/Bail/1234');
+    window.history.pushState({}, '', '/cases/case-create/IA/Bail/1234');
 
     // Act
     component.ngOnInit();
@@ -1013,8 +1009,6 @@ describe('WriteDocumentFieldComponent', () => {
 
     fixture = TestBed.createComponent(WriteDocumentFieldComponent);
     component = fixture.componentInstance;
-    // Keep URL-dependent tests isolated from browser history and other suites.
-    spyOn<any>(component, 'getCurrentPathname').and.returnValue('/');
 
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
@@ -1024,11 +1018,11 @@ describe('WriteDocumentFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should use the case-create URL case type instead of session caseInfo', () => {
+  it('should set jurisdiction and casetype from casenotifier', () => {
     caseNotifier.caseView = of(undefined); // mock expected structure
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getSelectedJurisdiction']);
     jurisdictionService.getSelectedJurisdiction.and.returnValue(of(undefined));
-    (component['getCurrentPathname'] as jasmine.Spy).and.returnValue('/case/case-create/test1/test2');
+    window.history.pushState({}, '', '/case/case-create/test1/test2');
     component.ngOnInit();
     expect(component.caseTypeId).toBe('test2');
   });

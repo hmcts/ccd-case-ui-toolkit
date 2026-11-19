@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 
@@ -13,7 +13,6 @@ import { EventTriggerService } from '../services/event-trigger.service';
 @Component({
   selector: 'ccd-case-create',
   templateUrl: 'case-create.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseCreateComponent implements OnInit {

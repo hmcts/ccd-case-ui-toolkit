@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CaseViewEvent } from '../../domain/case-view/case-view-event.model';
@@ -13,7 +13,6 @@ export enum CaseTimelineDisplayMode {
 @Component({
   selector: 'ccd-case-timeline',
   templateUrl: './case-timeline.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseTimelineComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -26,7 +26,6 @@ import { launcherRouteCase } from '../mocks/launchers.mock';
         ? ['pui-case-manager'] : ['caseworker-test']
     }) } }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="query-writer">
       @if (context === contexts.NEW_QUERY) {

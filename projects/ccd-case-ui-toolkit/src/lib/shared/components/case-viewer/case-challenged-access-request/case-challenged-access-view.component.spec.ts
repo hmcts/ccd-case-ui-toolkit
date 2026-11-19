@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -19,7 +19,6 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: ``,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class StubComponent { }

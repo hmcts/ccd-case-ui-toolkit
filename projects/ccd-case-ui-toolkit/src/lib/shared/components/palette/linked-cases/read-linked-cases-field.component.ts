@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, CaseTab } from '../../../domain';
@@ -9,7 +9,6 @@ import { LinkedCasesService } from './services';
   selector: 'ccd-read-linked-cases-field',
   templateUrl: './read-linked-cases-field.component.html',
   styleUrls: ['./read-linked-cases-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {

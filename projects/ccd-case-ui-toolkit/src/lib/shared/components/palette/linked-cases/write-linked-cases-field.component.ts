@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,6 @@ import { MultipageComponentStateService } from '../../../services';
 @Component({
   selector: 'ccd-write-linked-cases-field',
   templateUrl: './write-linked-cases-field.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, AfterViewInit, OnDestroy {

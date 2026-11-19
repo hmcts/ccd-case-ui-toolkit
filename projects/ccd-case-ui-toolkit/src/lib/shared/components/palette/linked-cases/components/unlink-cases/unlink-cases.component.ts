@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin, Observable } from 'rxjs';
 import { CaseView, ErrorMessage, Journey } from '../../../../../domain';
@@ -12,7 +12,6 @@ import { MultipageComponentStateService } from '../../../../../services';
 @Component({
   selector: 'ccd-unlink-cases',
   templateUrl: './unlink-cases.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent implements OnInit, Journey {

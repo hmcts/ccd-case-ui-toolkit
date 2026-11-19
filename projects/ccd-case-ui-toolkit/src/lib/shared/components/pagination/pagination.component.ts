@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 function coerceToBoolean(input: string | boolean): boolean {
   return !!input && input !== 'false';
@@ -8,7 +8,6 @@ function coerceToBoolean(input: string | boolean): boolean {
   selector: 'ccd-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PaginationComponent {

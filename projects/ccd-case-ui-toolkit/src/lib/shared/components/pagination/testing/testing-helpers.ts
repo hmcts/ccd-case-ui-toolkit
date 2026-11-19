@@ -1,4 +1,4 @@
-import { Component, DebugElement, Type, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DebugElement, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PaginationControlsDirective, PaginationInstance } from 'ngx-pagination';
@@ -79,7 +79,6 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
       [maxSize]="maxSize"
       [autoHide]="autoHide">
     </ccd-pagination>`,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ComponentTestComponent {

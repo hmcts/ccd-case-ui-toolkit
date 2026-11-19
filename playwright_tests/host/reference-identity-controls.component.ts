@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { of } from 'rxjs';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { CaseworkerService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/services/case-worker.service';
@@ -19,7 +19,6 @@ import { referenceIdentityFields } from '../mocks/reference-identity.mock';
       getJudicialUserByIdamId: (idamId: string) => of(idamId === 'judicial-123' ? { fullName: 'Judicial Fallback' } : null)
     } }
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div data-testid="reference-identity-controls">
       <ccd-read-organisation-field [caseField]="fields.organisation" />

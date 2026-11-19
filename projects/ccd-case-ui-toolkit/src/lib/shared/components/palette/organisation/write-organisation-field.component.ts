@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -14,7 +14,6 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
   selector: 'ccd-write-organisation-field',
   templateUrl: './write-organisation-field.component.html',
   styleUrls: ['./organisation-field.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {

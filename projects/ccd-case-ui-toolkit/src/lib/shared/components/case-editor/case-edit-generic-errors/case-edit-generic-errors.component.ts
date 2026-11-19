@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { HttpError } from '../../../domain';
 
@@ -7,7 +7,6 @@ import { HttpError } from '../../../domain';
   templateUrl: 'case-edit-generic-errors.component.html',
   styleUrls: ['../case-edit.scss'],
   providers: [],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditGenericErrorsComponent {

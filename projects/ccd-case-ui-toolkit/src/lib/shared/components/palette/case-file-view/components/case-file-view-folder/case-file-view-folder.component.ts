@@ -1,5 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -21,7 +21,6 @@ import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-se
   selector: 'ccd-case-file-view-folder',
   templateUrl: './case-file-view-folder.component.html',
   styleUrls: ['./case-file-view-folder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {

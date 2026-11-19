@@ -1,10 +1,9 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'ccd-activity-banner',
   templateUrl: './activity-banner.component.html',
   styleUrls: ['./activity-banner.component.css'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ActivityBannerComponent implements OnInit {

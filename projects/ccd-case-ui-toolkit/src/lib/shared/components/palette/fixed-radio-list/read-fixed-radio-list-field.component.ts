@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
   selector: 'ccd-read-fixed-radio-list-field',
   template: '<span class="text-16">{{caseField.value | ccdFixedRadioList:caseField.field_type.fixed_list_items | rpxTranslate}}</span>',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadFixedRadioListFieldComponent extends AbstractFieldReadComponent { }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { READ_ACCESS } from '../../domain/case-view/access-types.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
@@ -6,7 +6,6 @@ import { DefinitionsService } from '../../services/definitions/definitions.servi
 @Component({
   selector: 'ccd-case-list-filters',
   templateUrl: './case-list-filters.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseListFiltersComponent implements OnInit {

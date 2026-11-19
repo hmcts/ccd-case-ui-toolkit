@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
@@ -8,7 +8,6 @@ import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-
   templateUrl: './case-file-view-folder-selector.component.html',
   styleUrls: ['./case-file-view-folder-selector.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFileViewFolderSelectorComponent implements AfterViewInit {

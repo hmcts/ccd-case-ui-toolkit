@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ChangeDetectionStrategy } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -24,7 +24,6 @@ import createSpyObj = jasmine.createSpyObj;
 @Component({
   selector: 'ccd-field-write',
   template: `{{value}}`,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {

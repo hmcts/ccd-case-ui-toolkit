@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import { FormValueService } from '../../../services/form/form-value.service';
 @Component({
   selector: 'ccd-case-edit-form',
   templateUrl: 'case-edit-form.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditFormComponent implements OnDestroy, AfterViewInit {

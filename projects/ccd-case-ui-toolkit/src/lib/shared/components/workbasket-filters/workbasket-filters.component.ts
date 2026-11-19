@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -24,7 +24,6 @@ const REGION_LIST_AND_FRC_FILTER = 'regionList';
   selector: 'ccd-workbasket-filters',
   templateUrl: './workbasket-filters.component.html',
   styleUrls: ['./workbasket-filters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WorkbasketFiltersComponent implements OnInit {

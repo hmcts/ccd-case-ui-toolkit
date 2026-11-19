@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
 import {
@@ -12,7 +12,6 @@ import {
 @Component({
   selector: 'ccd-case-flag-summary-list',
   templateUrl: './case-flag-summary-list.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFlagSummaryListComponent implements OnInit {

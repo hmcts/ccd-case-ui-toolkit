@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SessionStorageService } from '../../../../../services';
@@ -13,7 +13,6 @@ import { Subscription } from 'rxjs';
   selector: 'ccd-query-details',
   templateUrl: './query-details.component.html',
   styleUrls: ['./query-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {

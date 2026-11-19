@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { PaymentField } from '../base-field/payment-field.component';
@@ -7,7 +7,6 @@ import { PaymentField } from '../base-field/payment-field.component';
   selector: 'ccd-case-payment-history-viewer-field',
   templateUrl: 'case-payment-history-viewer-field.html',
   styleUrls: ['./case-payment-history-viewer-field.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CasePaymentHistoryViewerFieldComponent extends PaymentField {

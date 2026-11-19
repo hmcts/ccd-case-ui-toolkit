@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState } from '../../domain';
@@ -14,7 +14,6 @@ import { AbstractJourneyComponent } from '../../../base-field';
 @Component({
   selector: 'ccd-confirm-flag-status',
   templateUrl: './confirm-flag-status.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ConfirmFlagStatusComponent extends AbstractJourneyComponent implements OnInit, Journey {

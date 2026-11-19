@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Editor } from 'ngx-editor';
 import { marks as editorMarks, nodes as editorNodes } from 'ngx-editor/schema';
@@ -146,7 +146,6 @@ const richTextSchema = new Schema({ nodes: richTextNodes, marks: richTextMarks }
   templateUrl: './write-rich-text-area-field.component.html',
   styleUrls: ['./write-rich-text-area-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteRichTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -22,7 +22,6 @@ import createSpyObj = jasmine.createSpyObj;
         <input type="text" [hidden]="makeHidden" formControlName="carMake" id="CarMake"/>
         <input type="text" [hidden]="modelHidden" formControlName="carModel" id="CarModel"/>"
       </div>`,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
@@ -15,7 +15,6 @@ import { CreateCaseFiltersSelection } from './create-case-filters-selection.mode
 @Component({
   selector: 'ccd-create-case-filters',
   templateUrl: './create-case-filters.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CreateCaseFiltersComponent implements OnInit {

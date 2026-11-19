@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -43,7 +43,6 @@ const CLASS = 'text-cls';
   template: `
     <span class="${CLASS}"></span>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldTestComponent { }
@@ -53,7 +52,6 @@ class FieldTestComponent { }
   template: `
     <ng-content></ng-content>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldReadLabelComponent {

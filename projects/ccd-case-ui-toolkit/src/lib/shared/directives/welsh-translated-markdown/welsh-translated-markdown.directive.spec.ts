@@ -1,7 +1,6 @@
 import {
   Component,
-  Input,
-  ChangeDetectionStrategy
+  Input
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
@@ -29,7 +28,6 @@ class MockRpxTranslationService {
       <p class="output">{{ content }}</p>
     </ng-container>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TestHostComponent {
