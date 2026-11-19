@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FeeValue } from './fee-value.model';
 
@@ -9,6 +9,7 @@ import { FeeValue } from './fee-value.model';
   styleUrls: [
     './read-order-summary-row.scss'
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadOrderSummaryRowComponent extends AbstractFieldReadComponent implements OnInit {

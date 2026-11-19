@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { SearchService } from '../../projects/ccd-case-ui-toolkit/src/lib/shared/services';
@@ -18,6 +18,7 @@ import { linkedWriterCase, linkedWriterReasons } from '../mocks/linked-writer.mo
     { provide: CasesService, useValue: { getCaseViewV2: (reference: string) => reference === linkedWriterCase.case_id
       ? of(linkedWriterCase) : throwError(() => ({ status: 404 })) } }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="linked-case-writer">
       @if (!unlink) {

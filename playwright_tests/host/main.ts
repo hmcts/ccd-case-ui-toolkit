@@ -2,8 +2,8 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { AbstractAppConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app.config';
 import { AppMockConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app-config.mock';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
-import { Component, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { Component, importProvidersFrom, provideZoneChangeDetection, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -173,6 +173,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     { provide: WindowService, useValue: windowService }
   ],
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, WorkflowContractControlsComponent, IdentityWriterControlsComponent, FieldBoundaryControlsComponent, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <main>
       @if (showWorkflowContract) {
@@ -198,7 +199,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
         <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
         <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
         <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
-        <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
+        <p>Form errors: <output data-testid="date-errors">{{ $safeNavigationMigration(dateForm.get(field.id)?.errors) | json }}</output></p>
         <ccd-field-write [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
         <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
         <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
@@ -295,7 +296,7 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
     <div data-testid="restricted-collection">
       <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
     </div>
-    <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
+    <output data-testid="names-value">{{ $safeNavigationMigration(collectionForm.get(names.id)?.value) | json }}</output>
     <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
     <h2>Case edit form validation and state</h2>
     @if (editorPage === 1) {
@@ -436,7 +437,7 @@ class ToolkitTestHost {
 bootstrapApplication(ToolkitTestHost, {
   providers: [
     provideZoneChangeDetection(),
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
     { provide: AbstractAppConfig, useValue: testAppConfig },
     provideNoopAnimations(),
     provideRouter([]),

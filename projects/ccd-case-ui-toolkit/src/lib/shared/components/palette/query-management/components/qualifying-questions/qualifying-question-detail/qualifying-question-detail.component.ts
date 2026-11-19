@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { QualifyingQuestion } from '../../../models';
 
 @Component({
   selector: 'ccd-qualifying-question-detail',
   templateUrl: './qualifying-question-detail.component.html',
   styleUrls: ['./qualifying-question-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QualifyingQuestionDetailComponent {

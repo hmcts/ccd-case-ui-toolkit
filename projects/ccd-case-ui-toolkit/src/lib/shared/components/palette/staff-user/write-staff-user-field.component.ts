@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
 @Component({
   selector: 'ccd-write-staff-user-field',
   templateUrl: './write-staff-user-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteStaffUserFieldComponent extends WriteComplexFieldComponent implements OnInit, OnDestroy {

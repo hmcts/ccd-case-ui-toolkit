@@ -8,7 +8,7 @@
       </h1>
       @if (externalUserUpdate) {
         <div id="update-flag-hint-external" class="govuk-hint">
-          {{selectedFlag?.flagDetailDisplay?.flagDetail | updateFlagTitleDisplay}}
+          {{$safeNavigationMigration(selectedFlag?.flagDetailDisplay?.flagDetail) | updateFlagTitleDisplay}}
         </div>
       }
 
@@ -146,7 +146,7 @@
             <p>{{'Flag status:' | rpxTranslate}}
               <span>
                 <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetailDisplay.flagDetail.status === 'Inactive'}">
-                  {{selectedFlag?.flagDetailDisplay?.flagDetail?.status | rpxTranslate}}
+                  {{$safeNavigationMigration(selectedFlag?.flagDetailDisplay?.flagDetail?.status) | rpxTranslate}}
                 </strong>
               </span>
             </p>

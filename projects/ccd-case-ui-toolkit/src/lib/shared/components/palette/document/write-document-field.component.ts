@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription, combineLatest } from 'rxjs';
@@ -20,6 +20,7 @@ import { SessionStorageService } from '../../../services/session';
 @Component({
   selector: 'ccd-write-document-field',
   templateUrl: './write-document-field.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
@@ -73,7 +74,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public ngOnInit(): void {
     // Wait for both observables to emit at least once
     const caseInfo = this.documentManagement.parseCaseInfo(this.sessionStorageService.getItem('caseInfo'));
-    const currUrl = window.location.pathname;
+    const currUrl = this.getCurrentPathname();
     // if the user is not creating a case we can use the caseInfo session storage
     if (!currUrl.includes('/case-create/')) {
       if (caseInfo) {
@@ -203,6 +204,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).value;
     }
     return undefined;
+  }
+
+  private getCurrentPathname(): string {
+    return window.location.pathname;
   }
 
   private resetUpload(): void {
@@ -364,7 +369,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   generateLogMessage(cdamEnabled: boolean): void {
-    const currUrl = window.location.pathname;
+    const currUrl = this.getCurrentPathname();
     if (!currUrl.includes('/create-case/')) {
       this.appConfig.logMessage(`WDF:: CDAM is ${cdamEnabled ? 'enabled' : 'disabled'} || existing case || case ref:: ${this.caseId} || jurisdiction:: ${this.jurisdictionId} || case type:: ${this.caseTypeId} || gotFromCaseInfo:: ${this.gotFromCaseInfo}`);
     } else {

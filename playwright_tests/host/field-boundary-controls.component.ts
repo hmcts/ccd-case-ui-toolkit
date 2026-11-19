@@ -1,11 +1,12 @@
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
 import { fieldBoundaryFields } from '../mocks/field-boundary.mock';
 
 @Component({
   selector: 'toolkit-field-boundary-controls',
   imports: [PaletteModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @for (field of fields; track field) {
       <div [attr.data-testid]="field.id">

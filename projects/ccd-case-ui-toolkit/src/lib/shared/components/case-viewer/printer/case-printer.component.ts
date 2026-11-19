@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CasePrintDocument } from '../../../domain/case-view/case-print-document.model';
@@ -10,6 +10,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   templateUrl: './case-printer.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CasePrinterComponent implements OnInit, OnDestroy {

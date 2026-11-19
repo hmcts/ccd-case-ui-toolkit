@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 @Component({
   selector: 'ccd-case-view',
   templateUrl: 'case-view.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseViewComponent implements OnInit, OnDestroy {

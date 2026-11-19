@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FocusElementDirective } from './focus-element.directive';
@@ -8,6 +8,7 @@ import { FocusElementDirective } from './focus-element.directive';
     <input type='text' id='firstName' name='firstName'>
     <input type='text' id='lastName' name='lastName' focusElement>
     <input type='text' id='postcode' name='postcode'>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TestFocusComponent {

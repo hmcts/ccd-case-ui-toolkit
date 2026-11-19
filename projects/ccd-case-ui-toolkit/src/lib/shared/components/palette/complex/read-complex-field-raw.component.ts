@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CaseField } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
@@ -12,6 +12,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   styleUrls: [
     './read-complex-field-raw.scss'
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadComplexFieldRawComponent extends AbstractFieldReadComponent {

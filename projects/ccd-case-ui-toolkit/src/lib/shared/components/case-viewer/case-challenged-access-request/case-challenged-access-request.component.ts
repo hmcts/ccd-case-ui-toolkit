@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPag
 @Component({
   selector: 'ccd-case-challenged-access-request',
   templateUrl: './case-challenged-access-request.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {

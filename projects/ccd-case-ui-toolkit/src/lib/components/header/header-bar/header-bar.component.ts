@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Optional, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Optional, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProfileNotifier } from '../../../shared/services/profile/profile.notifier';
 import { ProfileService } from '../../../shared/services/profile/profile.service';
 
@@ -6,6 +6,7 @@ import { ProfileService } from '../../../shared/services/profile/profile.service
   selector: 'cut-header-bar',
   templateUrl: './header-bar.html',
   styleUrls: ['./header-bar.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HeaderBarComponent {

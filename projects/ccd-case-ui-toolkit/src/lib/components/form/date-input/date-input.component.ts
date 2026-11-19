@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
@@ -16,6 +16,7 @@ import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_V
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DateInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {

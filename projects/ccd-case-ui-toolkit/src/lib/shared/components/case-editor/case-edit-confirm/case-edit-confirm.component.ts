@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Confirmation } from '../domain/confirmation.model';
 @Component({
   templateUrl: './case-edit-confirm.html',
   styleUrls: ['../case-edit.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditConfirmComponent {

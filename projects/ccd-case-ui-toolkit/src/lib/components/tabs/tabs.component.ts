@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, ElementRef, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TabComponent } from './tab.component';
 
@@ -8,6 +8,7 @@ import { TabComponent } from './tab.component';
   styleUrls: [
     './tabs.component.scss'
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TabsComponent implements AfterContentInit {

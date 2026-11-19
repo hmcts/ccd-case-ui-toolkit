@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { StructuredLoggerService } from '../../../../../../services';
   selector: 'ccd-query-write-respond-to-query',
   templateUrl: './query-write-respond-to-query.component.html',
   styleUrls: ['./query-write-respond-to-query.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

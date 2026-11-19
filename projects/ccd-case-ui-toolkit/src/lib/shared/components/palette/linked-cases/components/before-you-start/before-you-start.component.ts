@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ErrorMessage, Journey } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
@@ -10,6 +10,7 @@ import { MultipageComponentStateService } from '../../../../../services';
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
   templateUrl: './before-you-start.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BeforeYouStartComponent extends AbstractJourneyComponent implements Journey {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { compressToUTF16, decompressFromUTF16} from 'lz-string';
@@ -22,6 +22,7 @@ const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 @Component({
   selector: 'ccd-search-filters',
   templateUrl: './search-filters.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

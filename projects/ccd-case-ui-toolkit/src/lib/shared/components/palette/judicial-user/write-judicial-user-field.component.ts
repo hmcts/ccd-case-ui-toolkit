@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Observable, Subscription, of } from 'rxjs';
@@ -14,6 +14,7 @@ import { CaseNotifier } from '../../case-editor/services/case.notifier';
   selector: 'ccd-write-judicial-user-field',
   styleUrls: ['./write-judicial-user-field.component.scss'],
   templateUrl: './write-judicial-user-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent implements OnInit, OnDestroy {

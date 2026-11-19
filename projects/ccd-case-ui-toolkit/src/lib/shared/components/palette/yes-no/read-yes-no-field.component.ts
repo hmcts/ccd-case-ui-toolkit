@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { YesNoService } from './yes-no.service';
 
 @Component({
   selector: 'ccd-read-yes-no-field',
   template: `<span class="text-16">{{formattedValue ? (formattedValue | rpxTranslate : null : formattedValue) : null}}</span>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implements OnInit {
