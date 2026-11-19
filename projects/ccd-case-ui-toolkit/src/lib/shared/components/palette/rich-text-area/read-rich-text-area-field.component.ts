@@ -1,4 +1,4 @@
-import { Component, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { Component, SecurityContext, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { sanitiseRichTextHtml } from './rich-text-sanitizer';
@@ -8,6 +8,7 @@ import { sanitiseRichTextHtml } from './rich-text-sanitizer';
   template: `<div class="ccd-rich-text-area-read" [innerHTML]="sanitisedValue()"></div>`,
   styleUrls: ['./read-rich-text-area-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadRichTextAreaFieldComponent extends AbstractFieldReadComponent {

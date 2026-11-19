@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { AbstractJourneyComponent } from '../../../base-field';
@@ -8,6 +8,7 @@ import { Journey } from '../../../../../domain';
 @Component({
   selector: 'ccd-no-linked-cases',
   templateUrl: './no-linked-cases.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NoLinkedCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {

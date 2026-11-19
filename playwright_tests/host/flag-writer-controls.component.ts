@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
@@ -14,6 +14,7 @@ import { flagWriterSelection, flagWriterTypes } from '../mocks/flag-writer.mock'
     getCaseFlagsRefdata: () => new URLSearchParams(window.location.search).has('flags-unavailable')
       ? throwError(() => new Error('Flag reference data unavailable')) : of(structuredClone(flagWriterTypes))
   } }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="flag-writer">
       @if (create) {

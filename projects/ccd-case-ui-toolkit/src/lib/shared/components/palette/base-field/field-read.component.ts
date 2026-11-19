@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, EnvironmentInjector, createComponent, Injector, Input, OnInit, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -10,6 +10,7 @@ const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList']
 @Component({
   selector: 'ccd-field-read',
   templateUrl: './field-read.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
@@ -26,7 +27,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   @ViewChild('fieldContainer', { static: false, read: ViewContainerRef })
   public fieldContainer: ViewContainerRef;
 
-  constructor(private readonly resolver: ComponentFactoryResolver, private readonly paletteService: PaletteService) {
+  constructor(private readonly environmentInjector: EnvironmentInjector, private readonly paletteService: PaletteService) {
     super();
   }
 
@@ -39,7 +40,10 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
         parent: this.fieldContainer?.injector
       });
 
-      const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+      const component = createComponent(componentClass, {
+        environmentInjector: this.environmentInjector,
+        elementInjector: injector
+      });
 
       // Provide component @Inputs
       // Only Fixed list use plainToClassFromExist

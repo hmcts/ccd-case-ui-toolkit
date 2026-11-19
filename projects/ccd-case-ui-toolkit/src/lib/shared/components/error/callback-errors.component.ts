@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { CallbackErrorsContext } from './domain/error-context';
@@ -6,6 +6,7 @@ import { CallbackErrorsContext } from './domain/error-context';
 @Component({
   selector: 'ccd-callback-errors',
   templateUrl: './callback-errors.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CallbackErrorsComponent implements OnInit {

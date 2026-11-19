@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input } from '@angular/core';
+import { Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -127,6 +127,7 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 @Component({
   selector: 'ccd-field-write',
   template: `{{value}}`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {

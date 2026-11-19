@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input, ViewChild } from '@angular/core';
+import { Component, DebugElement, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { getMockCaseNotifier } from '../../../services/case.notifier.spec';
 
 @Component({
   template: '<app-case-event-completion-task-reassigned [context]="context"></app-case-event-completion-task-reassigned>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class WrapperComponent {

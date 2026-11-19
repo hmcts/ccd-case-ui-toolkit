@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
@@ -6,6 +6,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 @Component({
   selector: 'ccd-read-complex-field',
   templateUrl: './read-complex-field.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadComplexFieldComponent extends AbstractFieldReadComponent implements OnInit {

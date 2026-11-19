@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, DebugElement, Type } from '@angular/core';
+import { Component, DebugElement, Type, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
@@ -72,6 +72,7 @@ class MockActivatedRoute implements ActivatedRoute {
 
 @Component({
   template: ``,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class StubComponent { }

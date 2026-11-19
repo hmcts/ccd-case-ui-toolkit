@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DebugElement, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -40,6 +40,7 @@ class MockRpxTranslationService {
       <td>{{caseField.hint_text}}</td>
       <td>{{caseField.value}}</td>
     </tr>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TestHostComponent {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -28,6 +28,7 @@ import {
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
   styleUrls: ['./query-check-your-answers.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {

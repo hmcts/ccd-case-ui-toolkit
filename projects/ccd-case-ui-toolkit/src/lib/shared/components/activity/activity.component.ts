@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Activity, ActivityInfo, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
@@ -7,6 +7,7 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
   selector: 'ccd-activity',
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ActivityComponent implements OnInit, OnDestroy {

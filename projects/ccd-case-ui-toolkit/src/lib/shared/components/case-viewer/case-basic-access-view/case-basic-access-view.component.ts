@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseView } from '../../../domain/case-view/case-view.model';
@@ -7,6 +7,7 @@ import { CasesService } from '../../case-editor/services/cases.service';
 @Component({
   selector: 'ccd-case-basic-access-view',
   templateUrl: 'case-basic-access-view.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {

@@ -1,8 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -20,11 +18,12 @@
     ],
     "paths": {
       "ccd-case-ui-toolkit": [
-        "dist/ccd-case-ui-toolkit"
+        "./dist/ccd-case-ui-toolkit"
       ],
       "ccd-case-ui-toolkit/*": [
-        "dist/ccd-case-ui-toolkit/*"
+        "./dist/ccd-case-ui-toolkit/*"
       ]
-    }
+    },
+    "strict": false
   }
 }

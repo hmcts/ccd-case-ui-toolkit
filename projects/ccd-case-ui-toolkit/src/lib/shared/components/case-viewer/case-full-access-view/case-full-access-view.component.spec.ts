@@ -1,7 +1,7 @@
 import { Location, ViewportScroller } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, Pipe, PipeTransform, QueryList, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -67,6 +67,7 @@ import { LinkedCasesService } from '../../palette/linked-cases/services';
   // tslint:disable-next-line
   selector: 'mat-tab-group',
   template: '<ng-content></ng-content>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TabsComponent {
@@ -76,6 +77,7 @@ class TabsComponent {
   // tslint:disable-next-line
   selector: 'mat-tab',
   template: '<ng-content></ng-content>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TabComponent {
@@ -87,6 +89,7 @@ class TabComponent {
   // tslint:disable-next-line
   selector: 'exui-tasks-container',
   template: '<p>Tasks Container</p>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class TasksContainerComponent {
@@ -95,6 +98,7 @@ class TasksContainerComponent {
 @Component({
   selector: 'ccd-event-trigger',
   template: ``,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class EventTriggerComponent {
@@ -117,6 +121,7 @@ class EventTriggerComponent {
 @Component({
   selector: 'ccd-callback-errors',
   template: ``,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class CallbackErrorsComponent {
