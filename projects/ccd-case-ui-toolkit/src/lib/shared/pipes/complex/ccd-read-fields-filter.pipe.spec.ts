@@ -650,6 +650,122 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);
   });
+  describe('isolated collection show-condition contexts', () => {
+    function hearingFixture(dateType = 'DATE_RANGE') {
+      const dates = ['fromDate', 'toDate', 'date'].map(id => buildCaseField(id, {
+        field_type: { id: 'Date', type: 'Date' },
+        show_condition: `unavailableDateType="${id === 'date' ? 'SINGLE_DATE' : 'DATE_RANGE'}"`
+      }));
+      const item = getComplexField('0', dates, {
+        fromDate: '2026-01-01', toDate: '2026-01-02', date: '2026-01-01', unavailableDateType: dateType
+      });
+      const collection = buildCaseField('smallClaimUnavailableDate', {
+        field_type: { id: 'Collection', type: 'Collection', collection_field_type: item.field_type }
+      }, [{ id: 'item-1', value: item.value }]);
+      item.parent = collection;
+      dates.forEach(field => field.parent = item);
+      const respondent = getComplexField('respondent1DQHearingSmallClaim', [], {
+        unavailableDatesRequired: 'Yes', smallClaimUnavailableDate: collection.value
+      });
+      const applicant = getComplexField('applicant1DQSmallClaimHearing', [], {
+        unavailableDatesRequired: 'No', smallClaimUnavailableDate: undefined
+      });
+      collection.parent = respondent;
+      const data = {
+        respondent1DQHearingSmallClaim: respondent.value,
+        applicant1DQSmallClaimHearing: applicant.value
+      };
+      const form = new FormGroup({ data: new FormControl(data) });
+      const renderParent = (field: CaseField) => pipe.transform(field, false, undefined, true,
+        form.controls.data, 'parent_value', '');
+      const renderItem = (target = item) => pipe.transform(target, false, undefined, true, form.controls.data,
+        `parent_smallClaimUnavailableDate_${target.id}_value`, `smallClaimUnavailableDate_${target.id}_`);
+      return { item, applicant, respondent, data, renderParent, renderItem };
+    }
+
+    [true, false].forEach(applicantFirst => {
+      ['DATE_RANGE', 'SINGLE_DATE'].forEach(dateType => {
+        it(`should evaluate ${dateType} locally with applicantFirst=${applicantFirst}`, () => {
+          const fixture = hearingFixture(dateType);
+          const parents = applicantFirst ? [fixture.applicant, fixture.respondent] : [fixture.respondent, fixture.applicant];
+          parents.forEach(fixture.renderParent);
+          const result = fixture.renderItem();
+          expect(result.map(field => field.hidden)).toEqual(dateType === 'DATE_RANGE' ? [false, false, true] : [true, true, false]);
+          expect(Object.keys(fixture.data)).toEqual(['respondent1DQHearingSmallClaim', 'applicant1DQSmallClaimHearing']);
+          expect(fixture.data.respondent1DQHearingSmallClaim.smallClaimUnavailableDate[0].value).toBe(fixture.item.value);
+          // A subsequent change-detection pass must not depend on the previous render order.
+          parents.reverse().forEach(fixture.renderParent);
+          expect(fixture.renderItem().map(field => field.hidden)).toEqual(result.map(field => field.hidden));
+        });
+      });
+    });
+
+    it('should evaluate an item before either parent has been rendered', () => {
+      const fixture = hearingFixture();
+      expect(fixture.renderItem().map(field => field.hidden)).toEqual([false, false, true]);
+    });
+
+    it('should keep separate collection items independent', () => {
+      const fixture = hearingFixture();
+      expect(fixture.renderItem()[0].hidden).toBe(false);
+      const secondItem = getComplexField('1', fixture.item.field_type.complex_fields, {
+        ...fixture.item.value, unavailableDateType: 'SINGLE_DATE'
+      });
+      secondItem.parent = fixture.item.parent;
+      expect(fixture.renderItem(secondItem).map(field => field.hidden)).toEqual([true, true, false]);
+      expect(fixture.renderItem().map(field => field.hidden)).toEqual([false, false, true]);
+    });
+
+    it('should preserve qualified collection conditions and explicitly hidden fields', () => {
+      const fixture = hearingFixture();
+      fixture.item.field_type.complex_fields[0].show_condition = 'smallClaimUnavailableDate.unavailableDateType="DATE_RANGE"';
+      fixture.item.field_type.complex_fields[1].display_context = 'HIDDEN';
+      expect(fixture.renderItem().map(field => field.hidden)).toEqual([false, true, true]);
+    });
+
+    it('should not show dates when the item has no date type', () => {
+      const fixture = hearingFixture();
+      fixture.item.value.unavailableDateType = undefined;
+      expect(fixture.renderItem().map(field => field.hidden)).toEqual([true, true, true]);
+    });
+
+    it('should preserve root conditions for prefixed complex fields that are not collection items', () => {
+      const child = buildCaseField('detail', {
+        field_type: { id: 'Text', type: 'Text' }, show_condition: 'globalFlag="Yes"'
+      });
+      const complex = getComplexField('complex', [child], { detail: 'Value' });
+      const form = new FormGroup({ data: new FormControl({ globalFlag: 'Yes' }) });
+      const result = pipe.transform(complex, false, undefined, true, form.controls.data, 'parent_complex_value', 'complex_');
+      expect(result[0].hidden).toBe(false);
+    });
+
+    it('should not mutate the shared form data even when merging undefined values', () => {
+      const fixture = hearingFixture();
+      Object.freeze(fixture.data);
+      expect(() => fixture.renderParent(fixture.applicant)).not.toThrow();
+    });
+
+    it('should preserve nested collection parent values without mutating the parent item', () => {
+      const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+      const parentValue = Object.freeze(nestedComplexField.parent.value);
+      nestedComplexField.value = { nestedField: 'Show' };
+      nestedComplexField.field_type.complex_fields[0].show_condition = 'parentField="Yes" AND nestedField="Show"';
+      const result = pipe.transform(nestedComplexField, true, undefined, true, buildMockFormGroup(), 'parent_value', '');
+      expect(result[0].hidden).toBe(false);
+      expect(parentValue).toEqual({ parentField: 'Yes' });
+    });
+
+    it('should not mutate shared data when the collection parent value is empty', () => {
+      const { nestedComplexField } = buildNestedCollectionFixture({ parentField: 'Yes' }, true);
+      nestedComplexField.parent.value = {};
+      const data = Object.freeze({ unrelated: 'value' });
+      const form = new FormGroup({ data: new FormControl(data) });
+      const result = pipe.transform(nestedComplexField, true, undefined, true, form.controls.data, 'parent_value', '');
+      expect(result[0].hidden).toBe(false);
+      expect(data).toEqual({ unrelated: 'value' });
+    });
+  });
+
   it('should remove dynamic list field if its value is null', () => {
     const formField = FORM_GROUP1.controls['data'] as FormGroup;
     const allFieldValues = Object.assign(METADATA, formField.value);
