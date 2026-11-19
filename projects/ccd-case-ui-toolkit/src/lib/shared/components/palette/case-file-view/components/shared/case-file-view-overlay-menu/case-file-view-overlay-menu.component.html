@@ -1,10 +1,10 @@
 <div>
   <button type="button"
-          class="overlay-toggle"
-          (click)="$event.stopPropagation(); setOpen()"
-          cdkOverlayOrigin #trigger="cdkOverlayOrigin"
-          aria-haspopup="true"
-          [attr.aria-expanded]="isOpen">
+    class="overlay-toggle"
+    (click)="$event.stopPropagation(); setOpen()"
+    cdkOverlayOrigin #trigger="cdkOverlayOrigin"
+    aria-haspopup="true"
+    [attr.aria-expanded]="isOpen">
     <ng-content select="[trigger]" aria-hidden="true"></ng-content>
   </button>
 
@@ -15,19 +15,21 @@
     [cdkConnectedOverlayHasBackdrop]="true"
     [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
     (backdropClick)="closeOverlay()"
-  >
+    >
     <div class="overlay-menu">
-      <ng-container *ngIf="title">
+      @if (title) {
         <div class="overlay-menu__title">{{title}}</div>
-      </ng-container>
+      }
 
       <ul>
-        <ng-container *ngFor="let item of menuItems;">
+        @for (item of menuItems; track item) {
           <li class="overlay-menu__item" tabindex="0" (click)="item.actionFn(); closeOverlay();" (keydown.enter)="item.actionFn(); closeOverlay();">
-            <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{item.actionText}} icon" aria-hidden="true" />
+            @if (item.iconSrc) {
+              <img [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{item.actionText}} icon" aria-hidden="true" />
+            }
             <span class="overlay-menu__actionText">{{item.actionText}}</span>
           </li>
-        </ng-container>
+        }
       </ul>
     </div>
   </ng-template>

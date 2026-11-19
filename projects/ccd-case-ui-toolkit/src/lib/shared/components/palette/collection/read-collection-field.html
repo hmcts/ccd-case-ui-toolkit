@@ -1,10 +1,12 @@
-<table *ngIf="caseField.value && caseField.value.length " class="collection-field-table" aria-label="collection table">
-  <ng-container [ngSwitch]="isDisplayContextParameterAvailable">
-    <tbody *ngSwitchCase="true">
-    <tr>
-      <th id="hiddenHeader" style="display: none;"></th>
-      <td>
-        <ccd-field-read
+@if (caseField.value && caseField.value.length ) {
+  <table class="collection-field-table" aria-label="collection table">
+    @switch (isDisplayContextParameterAvailable) {
+      @case (true) {
+        <tbody>
+          <tr>
+            <th id="hiddenHeader" style="display: none;"></th>
+            <td>
+              <ccd-field-read
           [caseField]="{
             id: caseField.label,
             label: caseField.label,
@@ -14,17 +16,20 @@
             hidden: caseField.hidden,
             parent: caseField
           }"
-          [context]="context"
-          [caseFields]="caseFields"
-          [topLevelFormGroup]="topLevelFormGroup">
-        </ccd-field-read>
-      </td>
-    </tr>
-    </tbody>
-    <tbody *ngSwitchCase="false">
-    <tr *ngFor="let item of caseField.value; let i = index">
-      <td>
-        <ccd-field-read
+                [context]="context"
+                [caseFields]="caseFields"
+                [topLevelFormGroup]="topLevelFormGroup">
+              </ccd-field-read>
+            </td>
+          </tr>
+        </tbody>
+      }
+      @case (false) {
+        <tbody>
+          @for (item of caseField.value; track item; let i = $index) {
+            <tr>
+              <td>
+                <ccd-field-read
           [caseField]="{
             id: i + '',
             label: caseField.label + ' ' + (i + 1),
@@ -33,13 +38,16 @@
             hidden: caseField.hidden,
             parent: caseField
           }"
-          [context]="context"
-          [caseFields]="caseFields"
-          [topLevelFormGroup]="topLevelFormGroup"
-          [idPrefix]="buildIdPrefix(i)">
-        </ccd-field-read>
-      </td>
-    </tr>
-    </tbody>
-  </ng-container>
-</table>
+                  [context]="context"
+                  [caseFields]="caseFields"
+                  [topLevelFormGroup]="topLevelFormGroup"
+                  [idPrefix]="buildIdPrefix(i)">
+                </ccd-field-read>
+              </td>
+            </tr>
+          }
+        </tbody>
+      }
+    }
+  </table>
+}

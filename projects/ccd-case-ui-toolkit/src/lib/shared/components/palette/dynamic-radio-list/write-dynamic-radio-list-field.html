@@ -1,21 +1,31 @@
 <div class="form-group bottom-30"
-    [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
+  [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
   <fieldset>
     <legend style="display: none;"></legend>
     <label [for]="id()">
-        <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
-        <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-        <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</span>
+      @if (caseField.label) {
+        <span class="form-label">{{(caseField | ccdFieldLabel)}}</span>
+      }
+      @if (caseField.hint_text) {
+        <span class="form-hint">{{caseField.hint_text | rpxTranslate}}</span>
+      }
+      @if (!caseField.label && !caseField.hint_text) {
+        <span class="form-label">{{'Select an option below' | rpxTranslate}}</span>
+      }
+      @if (dynamicRadioListControl.errors && dynamicRadioListControl.dirty) {
         <span class="error-message"
-            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{(dynamicRadioListControl.errors |
-            ccdFirstError)}}</span>
+          >{{(dynamicRadioListControl.errors |
+        ccdFirstError)}}</span>
+      }
     </label>
 
     <ng-container>
-      <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
-        <input class="form-control" [id]="createElementId(radioButton.code)" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
-        <label class="form-label" [for]="createElementId(radioButton.code)">{{radioButton.label | rpxTranslate}}</label>
-      </div>
+      @for (radioButton of caseField.list_items; track radioButton) {
+        <div class="multiple-choice" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
+          <input class="form-control" [id]="createElementId(radioButton.code)" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
+          <label class="form-label" [for]="createElementId(radioButton.code)">{{radioButton.label | rpxTranslate}}</label>
+        </div>
+      }
     </ng-container>
   </fieldset>
 </div>

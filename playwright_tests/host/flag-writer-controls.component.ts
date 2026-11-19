@@ -16,21 +16,22 @@ import { flagWriterSelection, flagWriterTypes } from '../mocks/flag-writer.mock'
   } }],
   template: `
     <section data-testid="flag-writer">
-      <ng-container *ngIf="create; else update">
+      @if (create) {
         <ccd-select-flag-type #selector [formGroup]="form" hmctsServiceId="TEST"
           [isDisplayContextParameterExternal]="external" [isDisplayContextParameter2Point1Enabled]="true"
           (caseFlagStateEmitter)="receive($event)" />
-        <button type="button" *ngIf="!selector.refdataError" (click)="selector.next()">Continue flag selection</button>
-      </ng-container>
-      <ng-template #update>
+        @if (!selector.refdataError) {
+          <button type="button" (click)="selector.next()">Continue flag selection</button>
+        }
+      } @else {
         <ccd-update-flag #editor [formGroup]="form" [displayContextParameter]="context"
           (caseFlagStateEmitter)="receive($event)" />
         <button type="button" (click)="editor.next()">Validate flag update</button>
-      </ng-template>
+      }
       <output data-testid="flag-writer-value">{{ form.value | json }}</output>
       <output data-testid="flag-writer-event">{{ state | json }}</output>
     </section>
-  `
+    `
 })
 export class FlagWriterControlsComponent {
   readonly create = new URLSearchParams(window.location.search).get('flags-write') === 'create';

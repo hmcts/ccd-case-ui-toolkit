@@ -3,7 +3,9 @@
     <label class="form-label" for="cc-jurisdiction">{{'Jurisdiction' | rpxTranslate}}</label>
     <select class="form-control ccd-dropdown" id="cc-jurisdiction" name="jurisdiction" [formControl]="filterJurisdictionControl" (change)="onJurisdictionIdChange()">
       <option value="">--{{'Select a value' | rpxTranslate}}--</option>
-      <option *ngFor="let j of jurisdictions" [value]="j.id">{{j.name | rpxTranslate}}</option>
+      @for (j of jurisdictions; track j) {
+        <option [value]="j.id">{{j.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 
@@ -11,7 +13,9 @@
     <label class="form-label" for="cc-case-type">{{'Case type' | rpxTranslate}}</label>
     <select class="form-control ccd-dropdown" id="cc-case-type" name="case-type" [formControl]="filterCaseTypeControl" (change)="onCaseTypeIdChange()">
       <option value="">--{{'Select a value' | rpxTranslate}}--</option>
-      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [value]="ct.id">{{ct.name | rpxTranslate}}</option>
+      @for (ct of selectedJurisdictionCaseTypes; track ct) {
+        <option [value]="ct.id">{{ct.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 
@@ -19,7 +23,9 @@
     <label class="form-label" for="cc-event">{{'Event' | rpxTranslate}}</label>
     <select class="form-control ccd-dropdown" id="cc-event" name="event" [formControl]="filterEventControl" (change)="onEventIdChange()">
       <option value="">--{{'Select a value' | rpxTranslate}}--</option>
-      <option *ngFor="let e of selectedCaseTypeEvents" [value]="e.id">{{e.name | rpxTranslate}}</option>
+      @for (e of selectedCaseTypeEvents; track e) {
+        <option [value]="e.id">{{e.name | rpxTranslate}}</option>
+      }
     </select>
   </div>
 

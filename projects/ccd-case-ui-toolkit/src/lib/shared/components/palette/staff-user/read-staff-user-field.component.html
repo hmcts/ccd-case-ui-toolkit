@@ -1,2 +1,4 @@
-<ccd-loading-spinner *ngIf="showSpinner"></ccd-loading-spinner>
+@if (showSpinner) {
+  <ccd-loading-spinner></ccd-loading-spinner>
+}
 <span>{{ displayName }}</span>

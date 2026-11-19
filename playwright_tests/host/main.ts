@@ -3,7 +3,7 @@ import { AbstractAppConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/ap
 import { AppMockConfig } from '../../projects/ccd-case-ui-toolkit/src/lib/app-config.mock';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
-import { Component, importProvidersFrom } from '@angular/core';
+import { Component, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -175,149 +175,152 @@ const documentManagementService: Pick<DocumentManagementService, 'parseCaseInfo'
   imports: [CommonModule, AsyncPipe, PaletteModule, CaseEditorModule, BannersModule, ReactiveFormsModule, JsonPipe, WorkflowContractControlsComponent, IdentityWriterControlsComponent, FieldBoundaryControlsComponent, ReferenceIdentityControlsComponent, QueryWriterControlsComponent, LinkedCaseWriterControlsComponent, FlagWriterControlsComponent],
   template: `
     <main>
-      <toolkit-workflow-contract-controls *ngIf="showWorkflowContract" />
-      <toolkit-identity-writer-controls *ngIf="showIdentityWriter" />
-      <toolkit-field-boundary-controls *ngIf="hostArea === 'field-boundaries'" />
-      <toolkit-flag-writer *ngIf="showFlagWriter" />
-      <toolkit-linked-case-writer *ngIf="showLinkedWriter" />
-      <toolkit-query-writer-controls *ngIf="showQueryWriter" />
-      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
-      <h1>Toolkit date input</h1>
-      <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
-      <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
-      <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
-      <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
-      <ccd-field-write [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
-      <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
-      <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
-
-      <h2>Mandatory field controls</h2>
-      <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
-      <output data-testid="money-value">{{ moneyForm.get(money.id)?.value }}</output>
-      <output data-testid="money-status">{{ moneyForm.status }}</output>
-      <ccd-write-text-field [caseField]="mandatory.text" [formGroup]="mandatoryForm" />
-      <ccd-write-number-field [caseField]="mandatory.number" [formGroup]="mandatoryForm" />
-      <ccd-write-email-field [caseField]="mandatory.email" [formGroup]="mandatoryForm" />
-      <ccd-write-phone-uk-field [caseField]="mandatory.phone" [formGroup]="mandatoryForm" />
-      <ccd-write-text-area-field [caseField]="mandatory.textArea" [formGroup]="mandatoryForm" />
-      <ccd-write-yes-no-field [caseField]="mandatory.yesNo" [formGroup]="mandatoryForm" />
-      <ccd-field-write [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
-      <ccd-write-fixed-radio-list-field [caseField]="mandatory.fixedRadio" [formGroup]="mandatoryForm" />
-      <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
-      <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
-      <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
-
-      <section data-testid="advanced-fields"><h2>Advanced field controls</h2>
-      <ccd-write-text-field [caseField]="advanced.postcode" [formGroup]="advancedForm" />
-      <ccd-write-rich-text-area-field [caseField]="advanced.richText" [formGroup]="advancedForm" />
-      <ccd-field-write [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
-      <ccd-write-dynamic-radio-list-field [caseField]="advanced.dynamicRadio" [formGroup]="advancedForm" />
-      <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
-      <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
-      <output data-testid="advanced-status">{{ advancedForm.status }}</output>
+      @if (showWorkflowContract) {
+        <toolkit-workflow-contract-controls />
+      }
+      @if (showIdentityWriter) {
+        <toolkit-identity-writer-controls />
+      }
+      @if (hostArea === 'field-boundaries') {
+        <toolkit-field-boundary-controls />
+      }
+      @if (showFlagWriter) {
+        <toolkit-flag-writer />
+      }
+      @if (showLinkedWriter) {
+        <toolkit-linked-case-writer />
+      }
+      @if (showQueryWriter) {
+        <toolkit-query-writer-controls />
+      }
+      @if (hostArea !== 'miniapps' && !showContractHost) {
+        <h1>Toolkit date input</h1>
+        <ccd-field-write [caseField]="field" [formGroup]="dateForm" />
+        <p>Form value: <output data-testid="date-value">{{ dateForm.get(field.id)?.value }}</output></p>
+        <p>Form status: <output data-testid="date-status">{{ dateForm.status }}</output></p>
+        <p>Form errors: <output data-testid="date-errors">{{ dateForm.get(field.id)?.errors | json }}</output></p>
+        <ccd-field-write [caseField]="dateTimeField" [formGroup]="dateTimeForm" />
+        <p>Form value: <output data-testid="date-time-value">{{ dateTimeForm.get(dateTimeField.id)?.value }}</output></p>
+        <p>Form status: <output data-testid="date-time-status">{{ dateTimeForm.status }}</output></p>
+        <h2>Mandatory field controls</h2>
+        <ccd-write-money-gbp-field [caseField]="money" [formGroup]="moneyForm" />
+        <output data-testid="money-value">{{ moneyForm.get(money.id)?.value }}</output>
+        <output data-testid="money-status">{{ moneyForm.status }}</output>
+        <ccd-write-text-field [caseField]="mandatory.text" [formGroup]="mandatoryForm" />
+        <ccd-write-number-field [caseField]="mandatory.number" [formGroup]="mandatoryForm" />
+        <ccd-write-email-field [caseField]="mandatory.email" [formGroup]="mandatoryForm" />
+        <ccd-write-phone-uk-field [caseField]="mandatory.phone" [formGroup]="mandatoryForm" />
+        <ccd-write-text-area-field [caseField]="mandatory.textArea" [formGroup]="mandatoryForm" />
+        <ccd-write-yes-no-field [caseField]="mandatory.yesNo" [formGroup]="mandatoryForm" />
+        <ccd-field-write [caseField]="mandatory.fixedList" [formGroup]="mandatoryForm" />
+        <ccd-write-fixed-radio-list-field [caseField]="mandatory.fixedRadio" [formGroup]="mandatoryForm" />
+        <ccd-write-multi-select-list-field [caseField]="mandatory.multiSelect" [formGroup]="mandatoryForm" />
+        <output data-testid="mandatory-status">{{ mandatoryForm.status }}</output>
+        <output data-testid="mandatory-values">{{ mandatoryForm.value | json }}</output>
+        <section data-testid="advanced-fields"><h2>Advanced field controls</h2>
+        <ccd-write-text-field [caseField]="advanced.postcode" [formGroup]="advancedForm" />
+        <ccd-write-rich-text-area-field [caseField]="advanced.richText" [formGroup]="advancedForm" />
+        <ccd-field-write [caseField]="advanced.dynamicList" [formGroup]="advancedForm" />
+        <ccd-write-dynamic-radio-list-field [caseField]="advanced.dynamicRadio" [formGroup]="advancedForm" />
+        <ccd-write-dynamic-multi-select-list-field [caseField]="advanced.dynamicMulti" [formGroup]="advancedForm" />
+        <output data-testid="advanced-values">{{ advancedForm.value | json }}</output>
+        <output data-testid="advanced-status">{{ advancedForm.status }}</output>
       </section>
       <section data-testid="palette-dispatch"><h2>Palette dispatch</h2>
-        <div data-testid="palette-component-launcher-read"><ccd-field-read [caseField]="componentLauncher" /></div>
-        <div data-testid="palette-component-launcher-write"><ccd-field-write [caseField]="componentLauncher" [formGroup]="paletteDispatchForm" /></div>
-        <div data-testid="palette-unsupported-read"><ccd-field-read [caseField]="unsupported" /></div>
-        <div data-testid="palette-unsupported-write"><ccd-field-write [caseField]="unsupported" [formGroup]="paletteDispatchForm" /></div>
-        <div data-testid="palette-unknown-launcher-read"><ccd-field-read [caseField]="unknownLauncher" /></div>
-        <div data-testid="palette-unknown-launcher-write"><ccd-field-write [caseField]="unknownLauncher" [formGroup]="paletteDispatchForm" /></div>
-      </section>
-
-      <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
-      <section data-testid="address-uk-control"><ccd-field-write [caseField]="addressDocument.uk" [formGroup]="addressDocumentForm" /></section>
-      <section data-testid="address-global-control"><ccd-field-write [caseField]="addressDocument.global" [formGroup]="addressDocumentForm" /></section>
-      <section data-testid="document-control"><ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" /></section>
-      <output data-testid="address-document-values">{{ addressDocumentForm.value | json }}</output></div>
-
-      <div data-testid="structured-fields"><h2>Structured field controls</h2>
-      <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
-      <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
-      <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
-      <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
-
-      </ng-container>
-      <ng-container *ngIf="hostArea !== 'fields' && !showContractHost">
+      <div data-testid="palette-component-launcher-read"><ccd-field-read [caseField]="componentLauncher" /></div>
+      <div data-testid="palette-component-launcher-write"><ccd-field-write [caseField]="componentLauncher" [formGroup]="paletteDispatchForm" /></div>
+      <div data-testid="palette-unsupported-read"><ccd-field-read [caseField]="unsupported" /></div>
+      <div data-testid="palette-unsupported-write"><ccd-field-write [caseField]="unsupported" [formGroup]="paletteDispatchForm" /></div>
+      <div data-testid="palette-unknown-launcher-read"><ccd-field-read [caseField]="unknownLauncher" /></div>
+      <div data-testid="palette-unknown-launcher-write"><ccd-field-write [caseField]="unknownLauncher" [formGroup]="paletteDispatchForm" /></div>
+    </section>
+    <div data-testid="address-document-fields"><h2>Address and document lifecycle</h2>
+    <section data-testid="address-uk-control"><ccd-field-write [caseField]="addressDocument.uk" [formGroup]="addressDocumentForm" /></section>
+    <section data-testid="address-global-control"><ccd-field-write [caseField]="addressDocument.global" [formGroup]="addressDocumentForm" /></section>
+    <section data-testid="document-control"><ccd-field-write [caseField]="addressDocument.document" [formGroup]="addressDocumentForm" /></section>
+    <output data-testid="address-document-values">{{ addressDocumentForm.value | json }}</output></div>
+    <div data-testid="structured-fields"><h2>Structured field controls</h2>
+    <ccd-field-write [caseField]="structured.complex" [formGroup]="structuredForm" />
+    <ccd-field-write [caseField]="structured.requiredComplex" [formGroup]="structuredForm" />
+    <output data-testid="structured-values">{{ structuredForm.value | json }}</output>
+    <output data-testid="structured-status">{{ structuredForm.status }}</output></div>
+    }
+    @if (hostArea !== 'fields' && !showContractHost) {
       <section data-testid="launcher-mini-app-controls"><h2>Launcher and mini-application controls</h2>
       <ccd-field-read [caseField]="caseFileLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="waysToPay" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="unsupportedLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="caseFlagsLauncher" [caseReference]="caseReference" />
       <ccd-field-read [caseField]="queryManagementLauncher" [caseReference]="caseReference" />
-      <div *ngIf="showLinkedCases" data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
+      @if (showLinkedCases) {
+        <div data-testid="linked-cases-control"><ccd-field-read [caseField]="linkedCasesLauncher" [caseReference]="caseReference" /></div>
+      }
       <ccd-field-read [caseField]="caseHistory" [caseReference]="caseReference" />
       <output data-testid="opened-window-url">{{ openedWindowUrl }}</output>
-      </section>
-
-      <section *ngIf="showCaseFlagsWorkflow" data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
+    </section>
+    @if (showCaseFlagsWorkflow) {
+      <section data-testid="case-flags-workflow"><h2>Case flags workflow</h2>
       <ccd-field-read [caseField]="caseFlagsWorkflow" [caseReference]="caseReference" />
-      </section>
-
-      <section data-testid="viewer-payment-controls"><h2>Viewer and payment controls</h2>
-      <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
-      <ng-container *ngIf="showPaymentHistory">
-        <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
-      </ng-container></section>
-      </ng-container>
-      <ng-container *ngIf="hostArea !== 'miniapps' && !showContractHost">
+    </section>
+    }
+    <section data-testid="viewer-payment-controls"><h2>Viewer and payment controls</h2>
+    <ccd-field-read [caseField]="orderSummary" [caseReference]="caseReference" />
+    @if (showPaymentHistory) {
+      <ccd-field-read [caseField]="paymentHistory" [caseReference]="caseReference" />
+    }</section>
+    }
+    @if (hostArea !== 'miniapps' && !showContractHost) {
       <div data-testid="field-form-fields"><h2>Field form controls</h2>
       <ccd-field-write [caseField]="fieldForm.required" [formGroup]="fieldFormGroup" />
       <ccd-field-write [caseField]="fieldForm.optional" [formGroup]="fieldFormGroup" />
       <ccd-field-read [caseField]="fieldForm.readOnly" [formGroup]="fieldFormGroup" />
-      </div>
-      <output data-testid="field-form-values">{{ fieldFormGroup.value | json }}</output>
-      <output data-testid="field-form-status">{{ fieldFormGroup.status }}</output>
-
-      <h2>Identity read-only controls</h2>
-      <ccd-field-read [caseField]="identity.caseLink" />
-      <ccd-field-read [caseField]="identity.label" [caseFields]="[]" />
-      <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
-      <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
-
-      <h2>Reference identity controls</h2>
-      <toolkit-reference-identity-controls />
-
-      <h2>Case notifier state</h2>
-      <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
-      <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
-      <button type="button" (click)="refreshUnavailableCase()">Refresh unavailable case</button>
-      <output data-testid="case-notifier-error">{{ caseNotifierError }}</output>
-      <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
-
-      <h2>Collection controls</h2>
-      <ccd-field-write data-testid="editable-collection" [caseField]="names" [formGroup]="collectionForm" />
-      <div data-testid="restricted-collection">
-        <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
-      </div>
-      <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
-      <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
-
-      <h2>Case edit form validation and state</h2>
-      <ng-container *ngIf="editorPage === 1">
-        <form [formGroup]="editorForm" (ngSubmit)="continueEditor()">
-          <ccd-case-edit-form [fields]="editorFields" [caseFields]="editorFields" [formGroup]="editorForm" />
-          <button type="submit" [disabled]="editorForm.invalid">Continue</button>
-        </form>
-      </ng-container>
-      <ng-container *ngIf="editorPage === 2">
-        <h3>Editor page 2</h3>
-        <output data-testid="editor-optional-value">{{ editorForm.get('editor-optional')?.value }}</output>
-      </ng-container>
-      <output data-testid="editor-page">{{ editorPage }}</output>
-      <output data-testid="editor-values">{{ editorForm.value | json }}</output>
-
-      <h2>Callback error handling</h2>
-      <button type="button" (click)="showCallbackError()">Simulate callback error</button>
-      <button type="button" (click)="clearCallbackError()">Clear callback error</button>
-      <ng-container *ngIf="alertService.errors | async as callbackError">
-        <cut-alert [type]="alertMessageType.ERROR" data-testid="callback-error">
-          {{ callbackError.message }}
-        </cut-alert>
-      </ng-container>
-      </ng-container>
+    </div>
+    <output data-testid="field-form-values">{{ fieldFormGroup.value | json }}</output>
+    <output data-testid="field-form-status">{{ fieldFormGroup.status }}</output>
+    <h2>Identity read-only controls</h2>
+    <ccd-field-read [caseField]="identity.caseLink" />
+    <ccd-field-read [caseField]="identity.label" [caseFields]="[]" />
+    <ccd-write-text-field [caseField]="identityMixed" [formGroup]="identityForm" />
+    <output data-testid="identity-mixed-value">{{ identityForm.value | json }}</output>
+    <h2>Reference identity controls</h2>
+    <toolkit-reference-identity-controls />
+    <h2>Case notifier state</h2>
+    <button type="button" (click)="refreshChallengedCase()">Refresh challenged case</button>
+    <button type="button" (click)="refreshStandardCase()">Refresh standard case</button>
+    <button type="button" (click)="refreshUnavailableCase()">Refresh unavailable case</button>
+    <output data-testid="case-notifier-error">{{ caseNotifierError }}</output>
+    <output data-testid="case-notifier-state">{{ caseNotifierState }}</output>
+    <h2>Collection controls</h2>
+    <ccd-field-write data-testid="editable-collection" [caseField]="names" [formGroup]="collectionForm" />
+    <div data-testid="restricted-collection">
+      <ccd-field-write [caseField]="restrictedNames" [formGroup]="collectionForm" />
+    </div>
+    <output data-testid="names-value">{{ collectionForm.get(names.id)?.value | json }}</output>
+    <output data-testid="collection-values">{{ collectionForm.value | json }}</output>
+    <h2>Case edit form validation and state</h2>
+    @if (editorPage === 1) {
+      <form [formGroup]="editorForm" (ngSubmit)="continueEditor()">
+        <ccd-case-edit-form [fields]="editorFields" [caseFields]="editorFields" [formGroup]="editorForm" />
+        <button type="submit" [disabled]="editorForm.invalid">Continue</button>
+      </form>
+    }
+    @if (editorPage === 2) {
+      <h3>Editor page 2</h3>
+      <output data-testid="editor-optional-value">{{ editorForm.get('editor-optional')?.value }}</output>
+    }
+    <output data-testid="editor-page">{{ editorPage }}</output>
+    <output data-testid="editor-values">{{ editorForm.value | json }}</output>
+    <h2>Callback error handling</h2>
+    <button type="button" (click)="showCallbackError()">Simulate callback error</button>
+    <button type="button" (click)="clearCallbackError()">Clear callback error</button>
+    @if (alertService.errors | async; as callbackError) {
+      <cut-alert [type]="alertMessageType.ERROR" data-testid="callback-error">
+        {{ callbackError.message }}
+      </cut-alert>
+    }
+    }
     </main>
-  `
+    `
 })
 class ToolkitTestHost {
   readonly hostArea = new URLSearchParams(window.location.search).get('host');
@@ -432,6 +435,7 @@ class ToolkitTestHost {
 
 bootstrapApplication(ToolkitTestHost, {
   providers: [
+    provideZoneChangeDetection(),
     provideHttpClient(),
     { provide: AbstractAppConfig, useValue: testAppConfig },
     provideNoopAnimations(),

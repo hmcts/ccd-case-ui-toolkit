@@ -2,32 +2,35 @@
   <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label | rpxTranslate}}</span></dt><dd></dd></dl>
   <table class="complex-panel-table" aria-label="complex field table">
     <tbody>
-      <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true :topLevelFormGroup :path :idPrefix">
+      @for (field of caseField | ccdReadFieldsFilter:false :undefined :true :topLevelFormGroup :path :idPrefix; track field) {
         <ng-container ccdLabelSubstitutor [caseField]="field" [formGroup]="topLevelFormGroup" [contextFields]="caseFields">
-          <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
+          @if ((field | ccdIsCompound)) {
             <tr class="complex-panel-compound-field" [hidden]="field.hidden">
               <td colspan="2">
                 <span class="text-16">
                   <ccd-field-read [topLevelFormGroup]="topLevelFormGroup" [caseFields]="caseFields"
-                    [caseField]="field" [context]="context"></ccd-field-read>
+                  [caseField]="field" [context]="context"></ccd-field-read>
                 </span>
               </td>
             </tr>
-          </ng-container>
-          <ng-template #SimpleRow>
+          } @else {
             <tr class="complex-panel-simple-field" [hidden]="field.hidden">
-              <th *ngIf="field.label" scope="row"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
-              <td *ngIf="!field.label"></td>
+              @if (field.label) {
+                <th scope="row"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
+              }
+              @if (!field.label) {
+                <td></td>
+              }
               <td>
-                  <span class="text-16">
-                    <ccd-field-read [topLevelFormGroup]="topLevelFormGroup" [caseFields]="caseFields"
-                    [caseField]="field" [context]="context"></ccd-field-read>
-                  </span>
+                <span class="text-16">
+                  <ccd-field-read [topLevelFormGroup]="topLevelFormGroup" [caseFields]="caseFields"
+                  [caseField]="field" [context]="context"></ccd-field-read>
+                </span>
               </td>
             </tr>
-          </ng-template>
+          }
         </ng-container>
-      </ng-container>
+      }
     </tbody>
   </table>
 </div>

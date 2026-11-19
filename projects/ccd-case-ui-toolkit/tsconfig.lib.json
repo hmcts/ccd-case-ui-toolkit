@@ -11,10 +11,6 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "types": [],
-    "lib": [
-      "dom",
-      "es2022"
-    ],
     "baseUrl": "../../node_modules"
   },
   "angularCompilerOptions": {

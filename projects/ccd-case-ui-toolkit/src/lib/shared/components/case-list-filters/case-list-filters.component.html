@@ -1,7 +1,8 @@
-<ccd-workbasket-filters
-  *ngIf="isVisible"
-  [jurisdictions]="jurisdictions"
-  [defaults]="defaults"
-  (onApply)="onWrapperApply($event)"
-  (onReset)="onWrapperReset($event)"
-></ccd-workbasket-filters>
+@if (isVisible) {
+  <ccd-workbasket-filters
+    [jurisdictions]="jurisdictions"
+    [defaults]="defaults"
+    (onApply)="onWrapperApply($event)"
+    (onReset)="onWrapperReset($event)"
+  ></ccd-workbasket-filters>
+}

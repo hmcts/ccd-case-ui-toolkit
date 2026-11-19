@@ -1,4 +1,4 @@
-<ng-container *ngIf="qualifyingQuestion?.markdown">
+@if (qualifyingQuestion?.markdown) {
   <h1 class="govuk-heading-l">
     {{ qualifyingQuestion.name | rpxTranslate }}
   </h1>
@@ -7,4 +7,4 @@
       <ccd-markdown [content]="qualifyingQuestion ? content : (qualifyingQuestion.markdown | rpxTranslate)"></ccd-markdown>
     </div>
   </ng-container>
- </ng-container>
+}
