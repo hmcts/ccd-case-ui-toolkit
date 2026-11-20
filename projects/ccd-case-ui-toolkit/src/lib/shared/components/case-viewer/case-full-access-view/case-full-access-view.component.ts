@@ -156,16 +156,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    const caseDetailsChanged =
-      changes?.caseDetails && !changes.caseDetails.firstChange;
+    const hasSubsequentRelevantChange = [
+      changes?.caseDetails,
+      changes?.prependedTabs,
+      changes?.appendedTabs
+    ].some((change) => change && !change.firstChange);
 
-    const prependedTabsChanged =
-      changes?.prependedTabs && !changes.prependedTabs.firstChange;
-
-    const appendedTabsChanged =
-      changes?.appendedTabs && !changes.appendedTabs.firstChange;
-
-    if (caseDetailsChanged || prependedTabsChanged || appendedTabsChanged) {
+    if (hasSubsequentRelevantChange) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
