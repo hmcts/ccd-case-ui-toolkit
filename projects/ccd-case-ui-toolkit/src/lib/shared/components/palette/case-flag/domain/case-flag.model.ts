@@ -18,6 +18,7 @@ export interface FlagDetail {
   flagComment_cy?: string;
   flagUpdateComment?: string;
   flagStatusReasonChange?: string;
+  flagUpdateComment_cy?: string;
   dateTimeModified?: Date | string;
   dateTimeCreated: Date | string;
   path: FlagPath[];
