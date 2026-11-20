@@ -199,6 +199,8 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
         flagDetail.flagComment_cy = originalFlagDetail.value?.flagComment_cy;
         flagDetail.otherDescription = originalFlagDetail.value?.otherDescription;
         flagDetail.otherDescription_cy = originalFlagDetail.value?.otherDescription_cy;
+        flagDetail.flagUpdateComment = originalFlagDetail.value?.flagUpdateComment;
+        flagDetail.flagUpdateComment_cy = originalFlagDetail.value?.flagUpdateComment_cy;
       }
     }
     let returnObj = {

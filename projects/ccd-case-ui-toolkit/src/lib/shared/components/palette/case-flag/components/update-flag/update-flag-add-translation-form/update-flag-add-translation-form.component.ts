@@ -28,6 +28,8 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
   public otherFlagDescriptionWelshCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public flagCommentsCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public flagCommentsWelshCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
+  private flagUpdateCommentsCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
+  private flagUpdateCommentsWelshCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
   public updateFlagAddTranslationStepEnum = UpdateFlagAddTranslationStep;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
@@ -69,6 +71,8 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
     this.otherFlagDescriptionWelshCharLimitErrorMessage = null;
     this.flagCommentsCharLimitErrorMessage = null;
     this.flagCommentsWelshCharLimitErrorMessage = null;
+    this.flagUpdateCommentsCharLimitErrorMessage = null;
+    this.flagUpdateCommentsWelshCharLimitErrorMessage = null;
     this.errorMessages = [];
 
     if (this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value?.length > this.textMaxCharLimit) {
@@ -104,6 +108,23 @@ export class UpdateFlagAddTranslationFormComponent extends AbstractJourneyCompon
         title: '',
         description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
         fieldId: CaseFlagFormFields.COMMENTS_WELSH
+      });
+    }
+    if (this.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT)?.value?.length > this.textMaxCharLimit) {
+      this.flagUpdateCommentsCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED;
+      this.errorMessages.push({
+        title: '',
+        description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
+      });
+    }
+
+    if (this.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)?.value?.length > this.textMaxCharLimit) {
+      this.flagUpdateCommentsWelshCharLimitErrorMessage = UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED;
+      this.errorMessages.push({
+        title: '',
+        description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT_WELSH
       });
     }
   }

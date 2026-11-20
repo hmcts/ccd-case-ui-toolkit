@@ -156,14 +156,21 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
     // this function will check the user does not have any of the translation fields applied and remove if they do
     const flagDetails = this.selectedFlag.flagDetailDisplay.flagDetail;
     const isTranslationRequired = this.formGroup.value.flagIsWelshTranslationNeeded;
-    const hasTranslationFields = (flagDetails.flagComment_cy || flagDetails.otherDescription || flagDetails.otherDescription_cy);
+    const hasTranslationFields = (
+      flagDetails.flagComment_cy ||
+      flagDetails.otherDescription_cy ||
+      flagDetails.flagUpdateComment_cy ||
+      flagDetails.otherDescription
+    );
     if (!isTranslationRequired && hasTranslationFields) {
       flagDetails.flagComment_cy = null;
       flagDetails.otherDescription = null;
       flagDetails.otherDescription_cy = null;
-      this.formGroup.removeControl('flagComment_cy');
-      this.formGroup.removeControl('otherDescription');
-      this.formGroup.removeControl('otherDescription_cy');
+      flagDetails.flagUpdateComment_cy = null;
+      this.formGroup.removeControl(CaseFlagFormFields.COMMENTS_WELSH);
+      this.formGroup.removeControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION);
+      this.formGroup.removeControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH);
+      this.formGroup.removeControl(CaseFlagFormFields.UPDATE_COMMENT_WELSH);
     }
   }
 

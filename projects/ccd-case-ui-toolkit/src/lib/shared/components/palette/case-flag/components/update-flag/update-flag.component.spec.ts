@@ -565,6 +565,22 @@ describe('UpdateFlagComponent', () => {
     expect(checkboxWelshTranslation).toBeNull();
   });
 
+  it('should remove the Welsh status reason when translation is deselected', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment_cy = 'Newid rheswm';
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1),
+      [CaseFlagFormFields.UPDATE_COMMENT_WELSH]: new FormControl('Newid rheswm')
+    });
+    fixture.detectChanges();
+
+    component.formGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED).setValue(false);
+    component.validateTranslationNeeded();
+
+    expect(selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment_cy).toBeNull();
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)).toBeNull();
+  });
+
   it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
     'selected flag is internally visible only', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
