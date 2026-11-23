@@ -22,7 +22,7 @@
     @if (flagData.flags.details && flagData.flags.details.length > 0) {
       <tbody class="govuk-table__body">
         @for (flagDetail of flagData.flags.details; track flagDetail) {
-          <tr scope="row" class="govuk-table__row">
+          <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               @if (isActivePvpFlag(flagDetail)) {
                 <div>
