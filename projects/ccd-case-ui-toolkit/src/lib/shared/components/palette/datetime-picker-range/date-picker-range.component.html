@@ -1,6 +1,6 @@
 <div class="form-group" [ngClass]="{'form-group-error': dateRangeErrors.length}">
   <span class="error-message" *ngFor="let error of dateRangeErrors">{{error.message | rpxTranslate}}</span>
-  <label class="form-label">Last Modified Date:</label>
+  <span class="form-label">Last Modified Date:</span>
   <div class="date-range">
     <ccd-datetime-picker [caseField]="dateFromField" [formGroup]="formGroup" [caseFieldLabel]="false"
                          (dateChange)="validateDateRange()">

@@ -94,13 +94,11 @@ export class DatePickerRangeComponent {
 
   private setDateRangeTime(controlName: string, hour: number, minute: number): void {
     const control = this.formGroup.get(controlName);
-    if (!control || !control.value) {
-      return;
-    }
-
-    const date = moment(control.value);
-    if (date.isValid()) {
-      control.setValue(date.hour(hour).minute(minute).second(0).millisecond(0).format('YYYY-MM-DDTHH:mm:ss.SSS'));
+    if (control?.value) {
+      const date = moment(control.value);
+      if (date.isValid()) {
+        control.setValue(date.hour(hour).minute(minute).second(0).millisecond(0).format('YYYY-MM-DDTHH:mm:ss.SSS'));
+      }
     }
   }
 

@@ -103,7 +103,7 @@ const workbasketFiltersComponent: any = MockComponent({
   ], outputs: [
     'onApply',
     'onReset',
-    'onValidationErrors'
+    'validationErrors'
   ],
   template: '<div id="CaseListFiltersWorkbasketFilters"></div>'
 });
@@ -149,9 +149,9 @@ describe('CaseListFiltersComponent', () => {
 
   it('should pass on WorkbasketFilters validation errors', () => {
     const errors = [{ id: 'dateTo', message: 'Date To must be the same as or later than Date From' }];
-    const validationErrorsSpy = spyOn(component.onValidationErrors, 'emit');
+    const validationErrorsSpy = spyOn(component.validationErrors, 'emit');
 
-    childComponents()[0].onValidationErrors.emit(errors);
+    childComponents()[0].validationErrors.emit(errors);
 
     expect(validationErrorsSpy).toHaveBeenCalledWith(errors);
   });

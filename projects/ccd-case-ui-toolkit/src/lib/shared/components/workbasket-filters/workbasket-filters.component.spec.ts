@@ -549,7 +549,7 @@ describe('with defaults', () => {
 
   it('should emit date range validation errors to the parent component', () => {
     const error = { id: 'dateTo', message: DatePickerRangeComponent.DATE_RANGE_ERROR_MESSAGE };
-    const validationErrorsSpy = spyOn(component.onValidationErrors, 'emit');
+    const validationErrorsSpy = spyOn(component.validationErrors, 'emit');
 
     component.onDateRangeValidationErrors([error]);
 

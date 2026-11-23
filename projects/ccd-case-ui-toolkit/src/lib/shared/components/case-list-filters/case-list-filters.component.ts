@@ -21,7 +21,7 @@ export class CaseListFiltersComponent implements OnInit {
   public onReset: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  public onValidationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
+  public validationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
 
   public jurisdictions: Jurisdiction[];
   public isVisible: boolean;
@@ -50,7 +50,7 @@ export class CaseListFiltersComponent implements OnInit {
   }
 
   public onWrapperValidationErrors(errors: CaseEditValidationError[]): void {
-    this.onValidationErrors.emit(errors);
+    this.validationErrors.emit(errors);
   }
 
 }

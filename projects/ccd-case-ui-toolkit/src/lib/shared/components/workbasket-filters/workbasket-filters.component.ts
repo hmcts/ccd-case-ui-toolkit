@@ -53,7 +53,7 @@ export class WorkbasketFiltersComponent implements OnInit, AfterViewInit {
   public onReset: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  public onValidationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
+  public validationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
 
   public workbasketInputs: WorkbasketInputModel[];
   public workbasketInputsReady: boolean;
@@ -213,7 +213,7 @@ export class WorkbasketFiltersComponent implements OnInit, AfterViewInit {
   // Date range validation errors handler
   // Currently the only validation errors present
   public onDateRangeValidationErrors(errors: CaseEditValidationError[]): void {
-    this.onValidationErrors.emit(errors);
+    this.validationErrors.emit(errors);
   }
 
   public getMetadataFields(): string[] {
