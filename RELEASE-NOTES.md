@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.4.27-date-range-filter
+**EXUI-3010** Implement Customised Date (Time) Display and Entry feature where the day month and year are mandatory
+
 ### Version 7.4.27
 **EXUI-5543** Update packages
 
