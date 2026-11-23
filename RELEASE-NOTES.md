@@ -2,6 +2,11 @@
 
 ### Version 7.4.25-exui-5318
 **EXUI-5318** F&P - Removing the dependency on @hmcts/frontend - Manage Case
+### Version 7.4.27
+**EXUI-5543** Update packages
+
+### Version 7.4.26
+**EXUI-4953** Exceljs/uuid upgrade
 
 ### Version 7.4.25
 **EXUI-3767** Add defaultFocus change
