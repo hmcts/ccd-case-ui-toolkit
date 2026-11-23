@@ -556,6 +556,25 @@ describe('with defaults', () => {
     expect(validationErrorsSpy).toHaveBeenCalledWith([error]);
   });
 
+  it('should not store filters when the date range has validation errors', () => {
+    component.datePickerRange = createSpyObj<DatePickerRangeComponent>('datePickerRange', ['normaliseDateRange']);
+    component.datePickerRange.dateRangeErrors = [{
+      id: 'dateTo',
+      message: DatePickerRangeComponent.DATE_RANGE_ERROR_MESSAGE
+    }];
+    component.formGroup = new FormGroup({
+      dateFrom: new FormControl('2026-11-16'),
+      dateTo: new FormControl('2026-11-01')
+    });
+    windowService.setLocalStorage.calls.reset();
+    workbasketHandler.applyFilters.calls.reset();
+
+    component.apply(true);
+
+    expect(windowService.setLocalStorage).not.toHaveBeenCalled();
+    expect(workbasketHandler.applyFilters).toHaveBeenCalled();
+  });
+
   it('should update search input when case type is reset', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];

@@ -177,7 +177,7 @@ export class WorkbasketFiltersComponent implements OnInit, AfterViewInit {
     this.selected.init = init;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
-    if (init) {
+    if (init && !this.datePickerRange?.dateRangeErrors?.length) {
       this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
       if (Object.keys(this.formGroup.controls).length > 0) {
         // Find all "special case" JudicialUser FormControl keys and remove the corresponding values from the
