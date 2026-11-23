@@ -1,7 +1,7 @@
 import { NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats, ThemePalette } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Moment } from 'moment/moment';
 
@@ -53,6 +53,10 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   @ViewChild('input', { static: false }) public inputElement: ElementRef<HTMLInputElement>;
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
+  // having a case field label means that this component is being used as a caseField
+  @Input() public caseFieldLabel = true;
+  // emit event for DatePickerRange component when the date changes - ignored as casefield
+  @Output() public dateChange: EventEmitter<string> = new EventEmitter<string>();
 
   private minimumDate = new Date('01/01/1800');
   private maximumDate = null;
@@ -93,6 +97,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   */
   public valueChanged(): void {
     this.formatValueAndSetErrors();
+    this.dateChange.emit(this.dateControl.value);
   }
 
   public focusIn(): void {
@@ -101,7 +106,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
 
   public focusOut(): void {
     // focus out needed to obtain errors (relevant to formatting)
-    this.formatValueAndSetErrors();
+    this.valueChanged();
   }
 
   public toggleClick(): void {

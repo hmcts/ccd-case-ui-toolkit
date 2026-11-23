@@ -1,0 +1,29 @@
+.date-range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 20px;
+
+  ccd-datetime-picker {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.form-group-error {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+// The shared date picker has a 298px minimum width by default. Remove that
+// minimum within the range so each picker remains inside its grid column.
+:host ::ng-deep .date-range ccd-datetime-picker {
+  .govuk-form-group,
+  fieldset,
+  .datepicker-container,
+  .datepicker-container .govuk-input {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+  }
+}

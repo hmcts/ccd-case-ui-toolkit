@@ -606,11 +606,13 @@ describe('DatetimePickerComponent', () => {
   it('should set the correct formatted value in dateControl on focusOut', () => {
     fixture.detectChanges();
     const inputValue = '2022-11-23T12:34:56.789';
+    const dateChangeSpy = spyOn(component.dateChange, 'emit');
     component.inputElement.nativeElement.value = inputValue;
     component.focusOut();
 
     const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
     expect(component.dateControl.value).toEqual(expectedFormattedValue);
+    expect(dateChangeSpy).toHaveBeenCalledWith(expectedFormattedValue);
   });
 
   it('should set the correct formatted value in dateControl on focusOut', () => {

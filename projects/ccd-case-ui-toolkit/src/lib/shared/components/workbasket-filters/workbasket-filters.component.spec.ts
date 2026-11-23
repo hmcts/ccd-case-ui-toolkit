@@ -17,6 +17,7 @@ import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
+import { DatePickerRangeComponent } from '../palette/datetime-picker-range/date-picker-range.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -226,8 +227,9 @@ describe('Clear local storage for workbasket filters', () => {
           { provide: WorkbasketInputFilterService, useValue: workbasketInputFilterService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: AlertService, useValue: alertService },
-          { provide: WindowService, useValue: windowMockService },
-        ]
+          { provide: WindowService, useValue: windowMockService }
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents()
       .then(() => {
@@ -533,6 +535,27 @@ describe('with defaults', () => {
     expect(component.selected.metadataFields).toEqual(METADATA_FIELDS);
   });
 
+  it('should ask the date range component to normalise its dates when applying filters', () => {
+    component.datePickerRange = createSpyObj<DatePickerRangeComponent>('datePickerRange', ['normaliseDateRange']);
+    component.formGroup = new FormGroup({
+      dateFrom: new FormControl('2026-11-01'),
+      dateTo: new FormControl('2026-11-16')
+    });
+
+    component.apply(true);
+
+    expect(component.datePickerRange.normaliseDateRange).toHaveBeenCalled();
+  });
+
+  it('should emit date range validation errors to the parent component', () => {
+    const error = { id: 'dateTo', message: DatePickerRangeComponent.DATE_RANGE_ERROR_MESSAGE };
+    const validationErrorsSpy = spyOn(component.onValidationErrors, 'emit');
+
+    component.onDateRangeValidationErrors([error]);
+
+    expect(validationErrorsSpy).toHaveBeenCalledWith([error]);
+  });
+
   it('should update search input when case type is reset', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[1];
@@ -541,6 +564,22 @@ describe('with defaults', () => {
 
     component.onCaseTypeIdChange();
     expect(workbasketInputFilterService.getWorkbasketInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[1].id);
+  });
+
+  it('should retain date controls when the case type changes', () => {
+    component.formGroup = new FormGroup({
+      dateFrom: new FormControl('2026-11-01'),
+      dateTo: new FormControl('2026-11-16'),
+      dynamicField: new FormControl('value')
+    });
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[1];
+
+    component.onCaseTypeIdChange();
+
+    expect(component.formGroup.get('dateFrom').value).toEqual('2026-11-01');
+    expect(component.formGroup.get('dateTo').value).toEqual('2026-11-16');
+    expect(component.formGroup.get('dynamicField')).toBeNull();
   });
 
   it('should clear stored dynamic filter values when case type changes', () => {

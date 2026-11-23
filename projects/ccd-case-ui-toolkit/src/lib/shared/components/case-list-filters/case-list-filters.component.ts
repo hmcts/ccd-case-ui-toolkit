@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CaseEditValidationError } from '../../commons/case-edit-data/case-edit-validation.model';
 import { READ_ACCESS } from '../../domain/case-view/access-types.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
@@ -18,6 +19,9 @@ export class CaseListFiltersComponent implements OnInit {
 
   @Output()
   public onReset: EventEmitter<any> = new EventEmitter();
+
+  @Output()
+  public onValidationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
 
   public jurisdictions: Jurisdiction[];
   public isVisible: boolean;
@@ -43,6 +47,10 @@ export class CaseListFiltersComponent implements OnInit {
 
   public onWrapperReset(value) {
     this.onReset.emit(value);
+  }
+
+  public onWrapperValidationErrors(errors: CaseEditValidationError[]): void {
+    this.onValidationErrors.emit(errors);
   }
 
 }
