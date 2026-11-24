@@ -53,7 +53,8 @@
       </tbody>
     </table>
   </div>
-  <ng-container *ngIf="query.children?.length > 0">
+  {{query.children?.length}} / {{ isHmctsStaffUser(query) && query.children?.length === 0 && query?.messageType === followUpQuery }}
+  <ng-container *ngIf="(query.children?.length > 0)">
     <ng-container *ngFor="let child of query.children; let i = index;">
       <ng-container *ngIf="(i % 2 === 0 && !child?.messageType) || (child && child?.messageType === respondToQuery); else followUpMessage">
         <table class="govuk-table query-details-table" [attr.aria-describedby]="'Response of the query' | rpxTranslate">
