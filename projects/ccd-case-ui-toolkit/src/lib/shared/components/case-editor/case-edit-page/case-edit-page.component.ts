@@ -381,7 +381,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     if ((!this.linkedCasesService.isLinkedCasesEventTrigger) && (this.linkedCasesService.casesToUnlink.length > 0)) {
       // ensure cfv is set correctly
       this.linkedCasesService.caseFieldValue = this.linkedCasesService.caseFieldValue.filter(
-        (caseFieldValue) => !this.linkedCasesService.casesToUnlink.some((link) => caseFieldValue.id === link)
+        (caseFieldValue) => !this.linkedCasesService.casesToUnlink.includes(caseFieldValue.id)
       );
       //ensure that the values are not lost when navigating back
       if (this.editForm.controls.data['controls'].caseLinks.controls){

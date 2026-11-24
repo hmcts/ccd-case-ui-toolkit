@@ -120,19 +120,19 @@ export class DocumentManagementService {
   }
 
   public isImage(imageType: string): boolean {
-    return DocumentManagementService.imagesList.some(e => e === imageType);
+    return DocumentManagementService.imagesList.includes(imageType);
   }
 
   public isWord(wordType: string): boolean {
-    return DocumentManagementService.wordList.some(e => e === wordType);
+    return DocumentManagementService.wordList.includes(wordType);
   }
 
   public isExcel(excelType: string): boolean {
-    return DocumentManagementService.excelList.some(e => e === excelType);
+    return DocumentManagementService.excelList.includes(excelType);
   }
 
   public isPowerpoint(powerpointType: string): boolean {
-    return DocumentManagementService.powerpointList.some(e => e === powerpointType);
+    return DocumentManagementService.powerpointList.includes(powerpointType);
   }
 
   public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string, jurisdiction?: string } | null {
