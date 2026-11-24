@@ -1,1 +1,12 @@
 @use '../base-field/grey-bar.scss';
+@use 'govuk-frontend/dist/govuk/base' as govuk;
+
+// Dynamic field components still use legacy classes supplied by consuming apps.
+// Keep their error colours aligned with the GOV.UK error summary.
+:host ::ng-deep .error-message {
+  color: govuk.$govuk-error-colour;
+}
+
+:host ::ng-deep .form-group-error {
+  border-left-color: govuk.$govuk-error-colour;
+}
