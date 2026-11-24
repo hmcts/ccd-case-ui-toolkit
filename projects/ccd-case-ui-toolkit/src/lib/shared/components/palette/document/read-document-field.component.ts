@@ -31,7 +31,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
 
     if (caseId) {
       this.caseViewSubscription = this.casesService.getCaseViewV2(caseId).subscribe(caseView => {
-        if (this.caseField && this.caseField.value) {
+        if (this.caseField?.value) {
           const mergedInfo = {
             ...this.caseField.value,
             id: caseView.case_id,
@@ -40,7 +40,7 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
           this.openMediaViewer(mergedInfo);
         }
       });
-    } else if (this.caseField && this.caseField.value) {
+    } else if (this.caseField?.value) {
       this.openMediaViewer(this.caseField.value);
     }
   }
