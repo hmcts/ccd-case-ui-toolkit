@@ -1,4 +1,4 @@
-@import 'components/govuk-toolkit-shim';
+@use 'components/govuk-toolkit-shim' as *;
 
 .rightBorderSeparator {
   border-right-width: 4px;
