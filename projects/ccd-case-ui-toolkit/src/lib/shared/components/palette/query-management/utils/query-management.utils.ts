@@ -61,7 +61,7 @@ export class QueryManagementUtils {
     };
 
     // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
-    // this.setHmctsStaffStatus(message, isHmctsStaff);
+    this.setHmctsStaffStatus(message, isHmctsStaff);
 
     return message;
   }
