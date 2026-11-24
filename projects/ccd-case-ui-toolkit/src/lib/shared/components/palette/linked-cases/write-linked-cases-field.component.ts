@@ -187,19 +187,19 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
       if (!this.linkedCasesService.cachedFieldValues) {
         this.linkedCasesService.cachedFieldValues = this.linkedCasesService.caseFieldValue;
       }
-      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+      const unlinkedCaseRefereneIds = new Set(this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference));
       const caseFieldValue = this.linkedCasesService.caseFieldValue;
-      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => !unlinkedCaseRefereneIds.includes(item.id));
+      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => !unlinkedCaseRefereneIds.has(item.id));
     }
 
     this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
     (this.caseEditForm.controls['data'] as any) = new FormGroup({ caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || []) });
-    const unlinkedCaseReferenceIds = this.linkedCasesService.linkedCases
+    const unlinkedCaseReferenceIds = new Set(this.linkedCasesService.linkedCases
       .filter((item) => item.unlink)
-      .map((item) => item.caseReference);
+      .map((item) => item.caseReference));
 
     caseFieldValue = caseFieldValue.filter(
-      (item) => !unlinkedCaseReferenceIds.includes(item.id)
+      (item) => !unlinkedCaseReferenceIds.has(item.id)
     );
 
     // Replace the caseLinks value in this.formGroup
