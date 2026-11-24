@@ -121,7 +121,9 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     if (this.isInternalUser() || this.isJudiciaryUser()) {
-      if (isAwaiting && this.query?.children?.length > 0) {
+      const isUnansweredStaffQuery = this.query?.children?.length === 0
+        && this.query?.isHmctsStaff?.trim().toLowerCase() === 'yes';
+      if (isAwaiting && !isUnansweredStaffQuery) {
         this.hasResponded.emit(false);
         return false;
       }
