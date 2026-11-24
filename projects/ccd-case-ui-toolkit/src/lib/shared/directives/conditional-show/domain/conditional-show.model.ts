@@ -8,7 +8,7 @@ export class ShowCondition {
   public static readonly CONDITION_EQUALS = '=';
   public static readonly CONTAINS = 'CONTAINS';
   private static instanceCache = new Map<string, ShowCondition>();
-  private static readonly validJoinComparators = ['AND', 'OR'];
+  private static readonly validJoinComparators = new Set(['AND', 'OR']);
   private static processedList: string[] = [];
   private conditions = [];
 
@@ -34,7 +34,7 @@ export class ShowCondition {
     let finalCondition: string = originalCondition;
     if (Array.isArray(formula)) {
       formula.forEach(condition => {
-        if (typeof condition === 'string' && this.validJoinComparators.includes(condition)) {
+        if (typeof condition === 'string' && this.validJoinComparators.has(condition)) {
           // do nothing
         } else if (Array.isArray(condition)) {
           finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition);
@@ -89,7 +89,7 @@ export class ShowCondition {
       const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
       if (Array.isArray(newFormula)) {
         newFormula.forEach(condition => {
-            if (!(typeof condition === 'string' && this.validJoinComparators.includes(condition))) {
+            if (!(typeof condition === 'string' && this.validJoinComparators.has(condition))) {
             if (Array.isArray(condition)) {
               conditionList.push(ShowCondition.getConditions(condition).toString());
             } else {
@@ -127,7 +127,7 @@ export class ShowCondition {
             if (caseField) {
               // Jump out if this is HIDDEN or READONLY, regardless of whether or not it's
               // complex or a collection - nested fields will "inherit" the display_context.
-              if (['HIDDEN', 'READONLY'].includes(caseField.display_context)) {
+            if (new Set(['HIDDEN', 'READONLY']).has(caseField.display_context)) {
                 break;
               }
 
@@ -149,7 +149,7 @@ export class ShowCondition {
             }
           }
           if (caseField) {
-            allUnchangeable = allUnchangeable && ['HIDDEN', 'READONLY'].includes(caseField.display_context);
+            allUnchangeable = allUnchangeable && new Set(['HIDDEN', 'READONLY']).has(caseField.display_context);
           }
         }
         return allUnchangeable;

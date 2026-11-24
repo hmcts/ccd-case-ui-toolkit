@@ -145,9 +145,9 @@ export class PaletteService {
     const argumentValue = caseField?.display_context_parameter?.match(/#ARGUMENT\((.*?)\)/)[1];
     if (argumentValue) {
       const displayContextParameterArray = argumentValue.includes(',') ? argumentValue.split(',') : [argumentValue];
-      const displayContextParameterValues = Object.values(DisplayContextParameter) as string[];
+      const displayContextParameterValues = new Set(Object.values(DisplayContextParameter) as string[]);
       const componentToRender = displayContextParameterArray.filter(displayContextParameter =>
-        !displayContextParameterValues.includes(displayContextParameter)
+        !displayContextParameterValues.has(displayContextParameter)
       );
       if (componentToRender?.length > 0 && this.componentLauncherRegistry.hasOwnProperty(componentToRender[0])) {
         return this.componentLauncherRegistry[componentToRender[0]][write ? 0 : 1];

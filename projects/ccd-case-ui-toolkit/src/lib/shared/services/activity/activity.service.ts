@@ -88,7 +88,7 @@ export class ActivityService {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         () => this.userAuthorised = true,
         error => {
-          this.userAuthorised = ![401, 403].includes(error.status);
+          this.userAuthorised = !new Set([401, 403]).has(error.status);
         }
       );
     }

@@ -16,17 +16,17 @@ export class DocumentManagementService {
   private static readonly POWERPOINT = 'powerpoint';
   private static readonly TXT = 'txt';
   private static readonly RTF = 'rtf';
-  private static readonly HTML_MIME_ALLOWLIST: string[] = ['text/html'];
-  private static readonly HTML_EXTENSION_ALLOWLIST: string[] = ['html'];
+  private static readonly HTML_MIME_ALLOWLIST = new Set(['text/html']);
+  private static readonly HTML_EXTENSION_ALLOWLIST = new Set(['html']);
 
   // This delay has been added to give enough time to the user on the UI to see the info messages on the document upload
   // field for cases when uploads are very fast.
   private static readonly RESPONSE_DELAY = 1000;
 
-  private static readonly imagesList: string[] = ['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png'];
-  private static readonly wordList: string[] = ['DOC', 'DOCX', 'doc', 'docx'];
-  private static readonly excelList: string[] = ['XLS', 'XLSX', 'xls', 'xlsx'];
-  private static readonly powerpointList: string[] = ['PPT', 'PPTX', 'ppt', 'pptx'];
+  private static readonly imagesList = new Set(['GIF', 'JPG', 'JPEG', 'PNG', 'gif', 'jpg', 'jpeg', 'png']);
+  private static readonly wordList = new Set(['DOC', 'DOCX', 'doc', 'docx']);
+  private static readonly excelList = new Set(['XLS', 'XLSX', 'xls', 'xlsx']);
+  private static readonly powerpointList = new Set(['PPT', 'PPTX', 'ppt', 'pptx']);
 
   private caseTypeId: string;
   private caseId?: string;
@@ -81,12 +81,12 @@ export class DocumentManagementService {
   public isHtmlDocument(documentFieldValue: any): boolean {
     const rawMimeType = documentFieldValue?.content_type;
     const mimeType = this.normaliseMimeType(rawMimeType);
-    const isAllowedHtmlMime = DocumentManagementService.HTML_MIME_ALLOWLIST.includes(mimeType);
+    const isAllowedHtmlMime = DocumentManagementService.HTML_MIME_ALLOWLIST.has(mimeType);
 
     // Some read paths (e.g. documents rendered via complex table fields) do not provide content_type.
     // For those, allow a narrow extension-based fallback so known .html legacy files can still open in a new tab.
     const fileExtension = this.getFileExtension(documentFieldValue?.document_filename);
-    const isAllowedHtmlExtension = !mimeType && DocumentManagementService.HTML_EXTENSION_ALLOWLIST.includes(fileExtension);
+    const isAllowedHtmlExtension = !mimeType && DocumentManagementService.HTML_EXTENSION_ALLOWLIST.has(fileExtension);
     return isAllowedHtmlMime || isAllowedHtmlExtension;
   }
 
@@ -120,19 +120,19 @@ export class DocumentManagementService {
   }
 
   public isImage(imageType: string): boolean {
-    return DocumentManagementService.imagesList.includes(imageType);
+    return DocumentManagementService.imagesList.has(imageType);
   }
 
   public isWord(wordType: string): boolean {
-    return DocumentManagementService.wordList.includes(wordType);
+    return DocumentManagementService.wordList.has(wordType);
   }
 
   public isExcel(excelType: string): boolean {
-    return DocumentManagementService.excelList.includes(excelType);
+    return DocumentManagementService.excelList.has(excelType);
   }
 
   public isPowerpoint(powerpointType: string): boolean {
-    return DocumentManagementService.powerpointList.includes(powerpointType);
+    return DocumentManagementService.powerpointList.has(powerpointType);
   }
 
   public parseCaseInfo(caseInfo: string | null): { caseType?: string, caseId?: string, jurisdiction?: string } | null {

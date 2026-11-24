@@ -11,7 +11,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
-const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
+const ADDRESS_FIELD_TYPES = new Set(['AddressUK', 'AddressGlobalUK', 'AddressGlobal']);
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -98,7 +98,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   }
 
   private isAddressUK(): boolean {
-    return ADDRESS_FIELD_TYPES.includes(this.caseField.field_type.id);
+    return ADDRESS_FIELD_TYPES.has(this.caseField.field_type.id);
   }
 
   private isTopLevelWithinCollection(): boolean {

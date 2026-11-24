@@ -131,11 +131,11 @@ export class FormValueService {
     }
 
     let sanitisedObject = {};
-    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    const documentFieldKeys = new Set(['document_url', 'document_binary_url', 'document_filename']);
     for (const key in rawObject) {
       // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
       // properties is null, the entire sanitised object to be returned should be null
-      if (documentFieldKeys.includes(key) && rawObject[key] === null) {
+      if (documentFieldKeys.has(key) && rawObject[key] === null) {
         sanitisedObject = null;
         break;
       } else if ('CaseReference' === key) {

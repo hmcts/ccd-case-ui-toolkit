@@ -10,12 +10,12 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 })
 export class FieldsFilterPipe implements PipeTransform {
 
-  private static readonly EMPTY_VALUES = [
+  private static readonly EMPTY_VALUES = new Set([
     undefined,
     null,
     '',
     {}
-  ];
+  ]);
 
   private static readonly NESTED_TYPES = {
     Complex: FieldsFilterPipe?.isValidComplex
@@ -36,7 +36,7 @@ export class FieldsFilterPipe implements PipeTransform {
   }
 
   private static isEmpty(value: any): boolean {
-    return FieldsFilterPipe.EMPTY_VALUES.includes(value)
+    return FieldsFilterPipe.EMPTY_VALUES.has(value)
       || value.length === 0;
   }
 

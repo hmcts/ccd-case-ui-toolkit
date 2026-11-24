@@ -30,7 +30,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
   public flags: Flags;
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
-  private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
+  private readonly excludedFlagStatuses = new Set<CaseFlagStatus>([CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED]);
   public cachedControls:{
     [key: string]: AbstractControl;
   };
@@ -72,7 +72,7 @@ export class ManageCaseFlagsComponent extends AbstractJourneyComponent implement
           ];
         }
         return displayData;
-      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
+      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.has(flagForDisplay.originalStatus as CaseFlagStatus));
     }
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
     if (this.flagsDisplayData?.length > 0) {

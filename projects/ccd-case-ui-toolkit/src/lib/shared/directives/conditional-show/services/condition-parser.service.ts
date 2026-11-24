@@ -25,11 +25,11 @@ export class ConditionParser {
    */
   public static evaluate(fields: any, conditions: any[], path?: string): boolean {
     if (!conditions || conditions.length === 0) { return true; }
-    const validJoinComparators = ['AND', 'OR'];
+    const validJoinComparators = new Set(['AND', 'OR']);
 
     return conditions.reduce((accumulator: boolean, condition, index: number) => {
       const isJoinComparator = (comparator: string): boolean =>
-        (typeof comparator === 'string' && validJoinComparators.includes(comparator));
+        (typeof comparator === 'string' && validJoinComparators.has(comparator));
 
       if (isJoinComparator(condition)) { return accumulator; }
 

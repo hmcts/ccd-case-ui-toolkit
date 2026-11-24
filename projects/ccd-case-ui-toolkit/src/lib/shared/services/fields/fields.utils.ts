@@ -234,7 +234,7 @@ export class FieldsUtils {
       case 'Complex': {
         if (result[field.id] && field.field_type.complex_fields) {
           field.field_type.complex_fields.forEach((f: CaseField) => {
-            if (['Collection', 'Complex', 'MultiSelectList'].includes(f.field_type.type)) {
+            if (new Set(['Collection', 'Complex', 'MultiSelectList']).has(f.field_type.type)) {
               FieldsUtils.LABEL_MERGE_FUNCTION(f, result[field.id]);
             }
           });
@@ -258,7 +258,7 @@ export class FieldsUtils {
               case 'Complex': {
                 if (field.field_type.collection_field_type.complex_fields) {
                   field.field_type.collection_field_type.complex_fields.forEach((f: CaseField) => {
-                    if (['Collection', 'Complex', 'MultiSelectList'].includes(f.field_type.type)) {
+                    if (new Set(['Collection', 'Complex', 'MultiSelectList']).has(f.field_type.type)) {
                       FieldsUtils.LABEL_MERGE_FUNCTION(f, elem.value);
                     }
                   });

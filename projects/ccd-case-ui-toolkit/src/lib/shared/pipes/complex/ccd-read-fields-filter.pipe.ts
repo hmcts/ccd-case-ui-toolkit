@@ -12,14 +12,14 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
 })
 export class ReadFieldsFilterPipe implements PipeTransform {
 
-  private static readonly EMPTY_VALUES = [
+  private static readonly EMPTY_VALUES = new Set([
     undefined,
     null,
     '',
     {}
-  ];
+  ]);
 
-  private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay', 'FlagLauncher', 'ComponentLauncher'];
+  private static readonly ALWAYS_NULL_FIELDS = new Set(['CasePaymentHistoryViewer', 'WaysToPay', 'FlagLauncher', 'ComponentLauncher']);
 
   private static readonly NESTED_TYPES = {
     Complex: ReadFieldsFilterPipe?.isValidComplex,
@@ -64,7 +64,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   private static isEmpty(value: any): boolean {
     const fieldValue = value?.hasOwnProperty('list_items')  && value?.hasOwnProperty('value') ? value.value : value;
-    return  ReadFieldsFilterPipe.EMPTY_VALUES.includes(fieldValue)
+    return  ReadFieldsFilterPipe.EMPTY_VALUES.has(fieldValue)
       || fieldValue.length === 0;
   }
 
@@ -225,7 +225,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       return true;
     }
     // We also shouldn't ditch fields that will always come back with a null value.
-      if (this.ALWAYS_NULL_FIELDS.includes(field.field_type.type)) {
+      if (this.ALWAYS_NULL_FIELDS.has(field.field_type.type)) {
       return true;
     }
 

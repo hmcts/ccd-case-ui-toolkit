@@ -37,7 +37,7 @@ export class ConfirmFlagStatusComponent extends AbstractJourneyComponent impleme
 
   public ngOnInit(): void {
     this.confirmFlagStatusTitle = CaseFlagWizardStepTitle.CONFIRM_FLAG_STATUS;
-    this.flagCreationStatuses = Object.keys(CaseFlagStatus).filter(key => !['INACTIVE'].includes(key));
+    this.flagCreationStatuses = Object.keys(CaseFlagStatus).filter(key => !new Set(['INACTIVE']).has(key));
     this.statusReasonHint = ConfirmStatusStep.HINT_TEXT;
     this.statusReasonCharLimitInfo = ConfirmStatusStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.selectedStatusControlName, new FormControl(this.flagCreationStatuses.find(
