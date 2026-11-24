@@ -1,5 +1,23 @@
 ## RELEASE NOTES
 
+### Version 7.4.27
+**EXUI-5543** Update packages
+
+### Version 7.4.26
+**EXUI-4953** Exceljs/uuid upgrade
+
+### Version 7.4.25
+**EXUI-3767** Add defaultFocus change
+
+### Version 7.4.24
+**EXUI-5210** Query Management failing to show hmcts after a users name
+
+### Version 7.4.23
+**EXUI-5353** Continue buttons appear beside message details in “Send and reply to messages”
+
+### Version 7.4.22
+**EXUI-4316** Page focus shifts downward when moving redact box
+
 ### Version 7.4.21
 Revert Broken Access Controls
 

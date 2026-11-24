@@ -26,7 +26,7 @@ The published package name is:
 Prerequisites
 -------------
 
-- Node.js 24.18.0 or a later version accepted by package.json.
+- Node.js 24.22.2 or a later version accepted by package.json.
 - Yarn 4.5.0, managed through the repository's Yarn configuration.
 - A Git checkout with the repository files available.
 - Chromium if you are running the Playwright browser tests.
