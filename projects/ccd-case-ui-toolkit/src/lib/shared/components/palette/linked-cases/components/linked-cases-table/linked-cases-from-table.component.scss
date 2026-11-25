@@ -1,8 +1,13 @@
 @use 'components/govuk-toolkit-shim' as *;
 
+table {
+  width: 100%;
+  table-layout: auto;
+}
+
 .case-table-column {
+  width: 20%;
   min-width: 20%;
-  max-width: 20%;
 }
 
 .heading-h2 {

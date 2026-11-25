@@ -55,6 +55,9 @@ button {
     float: right;
     width: 30px;
     height: 30px;
+    margin-right: 0;
+    padding: 0;
+    border: 0;
     background: url('/assets/img/x.PNG') no-repeat center center;
     cursor: pointer;
 }

@@ -1,4 +1,9 @@
+table {
+  width: 100%;
+  table-layout: auto;
+}
+
 .case-table-column {
+  width: 20%;
   min-width: 20%;
-  max-width: 20%;
 }
