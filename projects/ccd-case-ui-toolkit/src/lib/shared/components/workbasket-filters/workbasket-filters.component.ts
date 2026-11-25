@@ -14,6 +14,7 @@ import { StructuredLoggerService } from '../../services/logging';
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { safeJsonParse } from '../../json-utils';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
@@ -140,7 +141,11 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.alertService.setPreserveAlerts(!this.initialised);
     }
     if (Object.keys(this.formGroup.controls).length === 0) {
-      this.selected.formGroup = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
+      const storedFormGroup = safeJsonParse<any>(
+        this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE),
+        null
+      );
+      this.selected.formGroup = storedFormGroup && Object.keys(storedFormGroup).length > 0 ? storedFormGroup : null;
     } else {
       // Update form group filters
       this.updateFormGroupFilters();
@@ -276,8 +281,8 @@ export class WorkbasketFiltersComponent implements OnInit {
    * in future to incorporate other dynamic filters.
    */
   public updateFormGroupFilters(): void {
-    // Read the form group local storage
-    const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
+    // Read the form group from local storage
+    const formGroupLS = safeJsonParse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE), null);
 
     // Form group local storage is available and contains regionList property
     if (!!formGroupLS && formGroupLS.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {

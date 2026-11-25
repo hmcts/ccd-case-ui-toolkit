@@ -83,4 +83,18 @@
       </a>
     </dd>
   </div>
+  <div class="govuk-summary-list__row" *ngIf="is2Point1Update && flagUpdateComments?.length > 0">
+    <dt class="govuk-summary-list__key">
+      {{updateFlagStep.STATUS_REASON_LABEL | rpxTranslate}}
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagUpdateComments}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="#"
+        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE); $event.preventDefault()">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{updateFlagStep.STATUS_REASON_LABEL | rpxTranslate}}</span>
+      </a>
+    </dd>
+  </div>
 </dl>

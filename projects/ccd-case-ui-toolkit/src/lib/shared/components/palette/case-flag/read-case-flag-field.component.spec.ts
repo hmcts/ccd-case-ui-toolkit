@@ -1066,6 +1066,10 @@ describe('ReadCaseFlagFieldComponent', () => {
       display_context_parameter: CaseFlagDisplayContextParameter.UPDATE_2_POINT_1
     };
     component.formGroup = formGroup;
+    caseFlagStateServiceSpy.formGroup = new FormGroup({
+      status: new FormControl('ACTIVE'),
+      flagStatusReasonChange: new FormControl('Reason for status change')
+    });
     // Simulate presence of selected flag
     formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
       flagDetailDisplay: {
@@ -1077,7 +1081,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(jasmine.objectContaining(caseFlag2DetailsValue1 as FlagDetail));
+    expect(component.flagForSummaryDisplay.flagDetail.flagStatusReasonChange).toEqual('Reason for status change');
     expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE_2_POINT_1);

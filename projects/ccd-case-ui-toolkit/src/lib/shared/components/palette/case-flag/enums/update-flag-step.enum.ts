@@ -5,5 +5,6 @@ export enum UpdateFlagStep {
   COMMENT_FIELD_LABEL_EXTERNAL = 'Please provide your comments below',
   CHARACTER_LIMIT_INFO = 'You can enter up to 200 characters',
   STATUS_HINT_TEXT = 'Describe reason for status change.',
+  STATUS_REASON_LABEL = 'Reason for change',
   WARNING_TEXT = 'The details entered here MAY be visible to the party in the future.'
 }

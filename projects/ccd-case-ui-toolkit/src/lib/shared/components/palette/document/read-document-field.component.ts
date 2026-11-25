@@ -7,8 +7,6 @@ import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 
-const MEDIA_VIEWER_INFO = 'media-viewer-info';
-
 @Component({
   selector: 'ccd-read-document-field',
   templateUrl: './read-document-field.html',
@@ -59,12 +57,8 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     }
 
     const token = FieldsUtils.createToken();
-    const storageKey = `${MEDIA_VIEWER_INFO}:${token}`;
-
     const payload = this.documentManagement.getMediaViewerInfo(documentFieldValue);
-    this.windowService.setLocalStorage(storageKey, payload);
-
-    this.windowService.openOnNewTab(this.getMediaViewerUrl(token));
+    this.windowService.openOnNewTabWithMessage(this.getMediaViewerUrl(token), payload, token);
   }
 
   public getMediaViewerUrl(token: string): string {
