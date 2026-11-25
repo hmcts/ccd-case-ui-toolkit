@@ -191,6 +191,7 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
+    expect(component.is2Point1Update).toBe(false);
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
@@ -217,6 +218,7 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
+    expect(component.is2Point1Update).toBe(true);
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
@@ -224,6 +226,39 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
     expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
+    expect(summaryListValues[4].textContent).toContain(flagDetailDisplay.flagDetail.flagStatusReasonChange);
+    const summaryListKeys = nativeElement.querySelectorAll('dt.govuk-summary-list__key');
+    expect(summaryListKeys[3].textContent).toContain('Status');
+    expect(summaryListKeys[4].textContent.trim()).toBe('Reason for change');
+  });
+
+  it('should not display an empty status-change reason row for the Manage Case Flags v2.1 journey', () => {
+    const flag = {
+      ...flagDetailDisplay,
+      flagDetail: {
+        ...flagDetailDisplay.flagDetail,
+        flagStatusReasonChange: ''
+      }
+    } as FlagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues.length).toBe(4);
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+  });
+
+  it('should display the status-change reason in Welsh mode for the Manage Case Flags v2.1 journey', () => {
+    mockRpxTranslationService.language = 'cy';
+    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
+    expect(summaryListValues[4].textContent).toContain(flagDetailDisplay.flagDetail.flagStatusReasonChange);
+    const summaryListKeys = nativeElement.querySelectorAll('dt.govuk-summary-list__key');
+    expect(summaryListKeys[3].textContent).toContain('Status');
+    expect(summaryListKeys[4].textContent.trim()).toBe('Reason for change');
   });
 
   it('should display summary details for Welsh', () => {
@@ -462,8 +497,8 @@ describe('CaseFlagSummaryListComponent', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
     const changeLinks = nativeElement.querySelectorAll('.govuk-link');
-    // Expected to be four "Change" links
-    expect(changeLinks.length).toBe(4);
+    // Expected to be five "Change" links
+    expect(changeLinks.length).toBe(5);
   });
 
   it('should emit the correct CaseFlagFieldState values when "Change" links are clicked as part of Create Case Flag v1 journey', () => {
@@ -540,14 +575,15 @@ describe('CaseFlagSummaryListComponent', () => {
         hearingRelevant: false,
         flagCode: 'FL1',
         otherDescription_cy: 'Other description for Welsh',
-        status: 'Active'
+        status: 'Active',
+        flagStatusReasonChange: 'Reason for status change'
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
     const changeLinks = nativeElement.querySelectorAll('.govuk-link');
-    expect(changeLinks.length).toBe(6);
+    expect(changeLinks.length).toBe(7);
     changeLinks[0].click();
     expect(component.changeButtonEmitter.emit).toHaveBeenCalledWith(CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS);
     changeLinks[1].click();
@@ -559,6 +595,8 @@ describe('CaseFlagSummaryListComponent', () => {
     changeLinks[4].click();
     expect(component.changeButtonEmitter.emit).toHaveBeenCalledWith(CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION);
     changeLinks[5].click();
+    expect(component.changeButtonEmitter.emit).toHaveBeenCalledWith(CaseFlagFieldState.FLAG_UPDATE);
+    changeLinks[6].click();
     expect(component.changeButtonEmitter.emit).toHaveBeenCalledWith(CaseFlagFieldState.FLAG_UPDATE);
   });
 });

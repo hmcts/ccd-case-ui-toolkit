@@ -15,14 +15,12 @@ describe('WorkbasketInputFilterService', () => {
   let appConfig: any;
   let httpService: any;
   let workbasketInputFilterService: WorkbasketInputFilterService;
-  let windowService;
 
   beforeEach(() => {
     appConfig = createSpyObj<AppConfig>('appConfig', ['getCaseDataUrl']);
     appConfig.getCaseDataUrl.and.returnValue(API_DATA_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     workbasketInputFilterService = new WorkbasketInputFilterService(httpService, appConfig);
-    windowService = appConfig = createSpyObj<any>('windowService', ['setLocalStorage', 'getLocalStorage']);
   });
 
   describe('getWorkbasketInputs()', () => {

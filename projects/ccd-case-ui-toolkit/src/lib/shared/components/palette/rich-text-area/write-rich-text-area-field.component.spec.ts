@@ -15,7 +15,7 @@ const FIELD_TYPE: FieldType = {
   id: 'RichTextArea',
   type: 'RichTextArea'
 };
-const VALUE = '<p><strong>Initial value</strong></p>';
+const VALUE = '<p><strong><em>Initial value</em></strong></p>';
 
 @Pipe({
   name: 'ccdFirstError',
@@ -164,9 +164,67 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID]).toBeTruthy();
   });
 
-  it('should initialise formControl with provided HTML value', () => {
-    expect(formGroup.controls[FIELD_ID].value).toBe(VALUE);
+  it('should initialise formControl with Docmosis-compatible HTML', () => {
+    expect(formGroup.controls[FIELD_ID].value).toBe('<p><b><i>Initial value</i></b></p>');
   });
+
+  it('should render existing legacy semantic formatting correctly', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const boldElement = fixture.nativeElement.querySelector('.ProseMirror b') as HTMLElement;
+    const italicElement = fixture.nativeElement.querySelector('.ProseMirror i') as HTMLElement;
+
+    expect(boldElement.textContent).toBe('Initial value');
+    expect(italicElement.textContent).toBe('Initial value');
+    expectElementToRenderBold(boldElement);
+    expect(window.getComputedStyle(italicElement).fontStyle).toBe('italic');
+  }));
+
+  it('should convert legacy semantic formatting tags to Docmosis-compatible tags', () => {
+    expect(component.normaliseRichTextValue(
+      '<p><strong><em><u>Legacy formatted text</u></em></strong></p>'
+    )).toBe('<p><b><i><u>Legacy formatted text</u></i></b></p>');
+  });
+
+  it('should store an empty string after all editor text is deleted', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent('<p>Temporary text</p>');
+    selectEditorText('Temporary text');
+
+    const { state, dispatch } = component.editor.view;
+    dispatch(state.tr.deleteSelection());
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toBe('');
+  }));
+
+  it('should normalise empty rich-text structures to an empty string', () => {
+    expect(component.normaliseRichTextValue('<p></p>')).toBe('');
+    expect(component.normaliseRichTextValue('<p><br></p>')).toBe('');
+    expect(component.normaliseRichTextValue('<p>&nbsp; \u200b</p>')).toBe('');
+    expect(component.normaliseRichTextValue('<ol><li><p></p></li></ol>')).toBe('');
+  });
+
+  it('should emit non-breaking spaces for blank paragraphs so Docmosis retains carriage returns', fakeAsync(() => {
+    component.editor.setContent('<p>First line</p><p></p><p></p><p>Fourth line</p>');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toBe(
+      '<p>First line</p><p>&nbsp;</p><p>&nbsp;</p><p>Fourth line</p>'
+    );
+  }));
+
+  it('should keep an empty rich-text paragraph editable', fakeAsync(() => {
+    component.editor.setContent('<p></p>');
+    tick();
+    component.editor.commands.insertText('Typed text').exec();
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toBe('<p>Typed text</p>');
+    expect(component.editor.view.state.doc.textContent).toBe('Typed text');
+  }));
 
   it('should reject unsafe HTML tags entered as visible editor text', fakeAsync(() => {
     formGroup.controls[FIELD_ID].setValue('<p>&lt;script&gt;alert("xss")&lt;/script&gt;</p>');
@@ -571,7 +629,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     component.editor.commands.insertText('Bold text').exec();
     tick();
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<strong>Bold text</strong>');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<b>Bold text</b>');
   }));
 
   it('should apply bold and underline formatting together from the toolbar', fakeAsync(() => {
@@ -587,7 +645,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
 
     const value = formGroup.controls[FIELD_ID].value;
-    expectTextToHaveAncestorTags(value, 'Bold underlined text', ['strong', 'u']);
+    expectTextToHaveAncestorTags(value, 'Bold underlined text', ['b', 'u']);
   }));
 
   it('should retain inline formatting after Enter', fakeAsync(() => {
@@ -620,8 +678,89 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
 
     const value = formGroup.controls[FIELD_ID].value;
-    expectTextToHaveAncestorTags(value, 'Formatted text', ['strong', 'em', 'u']);
-    expectTextToHaveAncestorTags(value, 'More formatted text', ['strong', 'em', 'u']);
+    expectTextToHaveAncestorTags(value, 'Formatted text', ['b', 'i', 'u']);
+    expectTextToHaveAncestorTags(value, 'More formatted text', ['b', 'i', 'u']);
+  }));
+
+  it('should renumber a continued lettered list after Enter adds an item to the preceding list', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol type="a" data-indent="1"><li><p>First pre item</p></li><li><p>Second pre item</p></li></ol>'
+      + '<p><strong>Post section</strong></p>'
+      + '<ol type="a" start="3" data-indent="1"><li><p>First post item</p></li>'
+      + '<li><p>Second post item</p></li><li><p>Third post item</p></li><li><p>Fourth post item</p></li></ol>'
+    );
+
+    let textPosition: number | null = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'Second pre item') {
+        textPosition = position + node.nodeSize;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    editorElement.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter',
+      bubbles: true,
+      cancelable: true
+    }));
+    tick();
+    fixture.detectChanges();
+
+    const orderedLists = editorElement.querySelectorAll(':scope > ol');
+    expect(orderedLists[0].querySelectorAll(':scope > li').length).toBe(3);
+    expect(orderedLists[1].getAttribute('start')).toBe('4');
+    expect(orderedLists[1].getAttribute('type')).toBe('a');
+    expect(orderedLists[1].getAttribute('data-indent')).toBe('1');
+    expect(formGroup.controls[FIELD_ID].value).toContain('start="4"');
+  }));
+
+  it('should renumber continued outer numbered lists across indented lettered clauses', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+    component.editor.setContent(
+      '<ol><li><p>Jurisdiction clause</p></li></ol>'
+      + '<p><strong>Pre section</strong></p>'
+      + '<ol type="a" data-indent="1"><li><p>Pre clause a</p></li><li><p>Pre clause b</p></li></ol>'
+      + '<p><strong>Post section</strong></p>'
+      + '<ol type="a" start="3" data-indent="1"><li><p>Post clause c</p></li></ol>'
+      + '<h3>Child arrangements order</h3>'
+      + '<ol start="2"><li><p>Live with clause</p></li></ol>'
+      + '<p></p><ol start="3"><li><p>Contact clause</p></li></ol>'
+    );
+
+    let textPosition: number | null = null;
+    component.editor.view.state.doc.descendants((node, position) => {
+      if (node.isText && node.text === 'Jurisdiction clause') {
+        textPosition = position + node.nodeSize;
+        return false;
+      }
+      return true;
+    });
+    component.editor.view.dispatch(component.editor.view.state.tr.setSelection(
+      TextSelection.create(component.editor.view.state.doc, textPosition)
+    ));
+
+    const editorElement = fixture.nativeElement.querySelector('.ProseMirror') as HTMLElement;
+    editorElement.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter',
+      bubbles: true,
+      cancelable: true
+    }));
+    tick();
+    fixture.detectChanges();
+
+    const numberedLists = editorElement.querySelectorAll(':scope > ol:not([type])');
+    const letteredLists = editorElement.querySelectorAll(':scope > ol[type="a"]');
+    expect(numberedLists[0].querySelectorAll(':scope > li').length).toBe(2);
+    expect(Array.from(numberedLists).map((list) => list.getAttribute('start'))).toEqual([null, '3', '4']);
+    expect(Array.from(letteredLists).map((list) => list.getAttribute('start'))).toEqual([null, '3']);
   }));
 
   it('should apply bold formatting to selected editor text from the toolbar', fakeAsync(() => {
@@ -633,7 +772,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     clickToolbarButton('Bold');
     tick();
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<strong>Selected text</strong>');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<b>Selected text</b>');
   }));
 
   it('should apply bold and underline formatting together to selected editor text from the toolbar', fakeAsync(() => {
@@ -647,7 +786,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
 
     const value = formGroup.controls[FIELD_ID].value;
-    expectTextToHaveAncestorTags(value, 'Selected text', ['strong', 'u']);
+    expectTextToHaveAncestorTags(value, 'Selected text', ['b', 'u']);
   }));
 
   it('should render bold underline text as visibly bold when underline is nested inside strong', fakeAsync(() => {
@@ -670,7 +809,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const boldElement = fixture.nativeElement.querySelector('.ProseMirror strong') as HTMLElement;
+    const boldElement = fixture.nativeElement.querySelector('.ProseMirror b') as HTMLElement;
 
     expect(boldElement.textContent).toBe('Bold underlined text');
     expectElementToRenderBold(boldElement);
@@ -879,7 +1018,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     ) as HTMLButtonElement;
     const listStyleSelect = fixture.nativeElement.querySelector(`#${component.listStyleId()}`) as HTMLSelectElement;
 
-    expect(formGroup.controls[FIELD_ID].value).toContain('<ol>');
+    expect(formGroup.controls[FIELD_ID].value).toBe('');
+    expect(fixture.nativeElement.querySelector('.ProseMirror > ol')).not.toBeNull();
     expect(component.currentListStyle()).toBe('ordered_list');
     expect(listStyleSelect.value).toBe('ordered_list');
     expect(numberedListButton.getAttribute('aria-pressed')).toBe('true');
@@ -1529,7 +1669,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(editor.querySelectorAll(':scope > ul').length).toBe(2);
     expect(editor.querySelector(':scope > ol')).toBeNull();
     expect(editor.querySelector(':scope > ul > li > ol[type="a"] > li > ol[type="i"]')).not.toBeNull();
-    expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ul>');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>&nbsp;</p><ul>');
   }));
 
   it('should switch a continued Word list sequence between numbers and bullets across headings', fakeAsync(() => {
@@ -1588,7 +1728,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(orderedLists.length).toBe(2);
     expect(orderedLists[0].getAttribute('start')).toBeNull();
     expect(orderedLists[1].getAttribute('start')).toBe('3');
-    expect(formGroup.controls[FIELD_ID].value).toContain('<p></p><ol start="3">');
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>&nbsp;</p><ol start="3">');
   }));
 
   it('should continue numbering across pasted bullet lists separated by bold Word headings', fakeAsync(() => {
@@ -1903,7 +2043,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
       '<p data-indent="1"><strong>Indented text</strong> </p>'
     );
 
-    expect(normalisedHtml).toContain('<strong>Indented text</strong> </p>');
+    expect(normalisedHtml).toContain('<b>Indented text</b> </p>');
   });
 
   it('should insert spaces after indenting existing text', fakeAsync(() => {
@@ -1944,8 +2084,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
     expect(normalisedHtml).toContain('<ol>');
-    expect(normalisedHtml).toContain('<li><strong>First item</strong></li>');
-    expect(normalisedHtml).toContain('<li><em>Second item</em></li>');
+    expect(normalisedHtml).toContain('<li><b>First item</b></li>');
+    expect(normalisedHtml).toContain('<li><i>Second item</i></li>');
   });
 
   it('should remove duplicate Word indentation between bullet markers and list text', () => {
@@ -2006,9 +2146,9 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const indentedParagraph = paragraphs.find((paragraph) => paragraph.textContent.trim() === 'Test Indent');
 
     expect(indentedParagraph.getAttribute('data-indent')).toBe('1');
-    expectTextToHaveAncestorTags(normalisedHtml, 'Test Bold', ['strong']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Test Indent', ['strong', 'u']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Test Italic', ['em']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Test Bold', ['b']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Test Indent', ['b', 'u']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Test Italic', ['i']);
     expectTextToHaveAncestorTags(normalisedHtml, 'Test Underline', ['u']);
     expect(normalisedHtml).not.toContain('MsoNormal');
     expect(normalisedHtml).not.toContain('border-left');
@@ -2033,12 +2173,12 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
     const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
-    const boldText = Array.prototype.slice.call(normalisedDocument.querySelectorAll('strong'))
+    const boldText = Array.prototype.slice.call(normalisedDocument.querySelectorAll('b'))
       .map((element: HTMLElement) => element.textContent);
     const rowText = normalisedDocument.querySelector('p').textContent;
 
     expect(boldText).not.toContain('20XX – 20XX');
-    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['b']);
     expect(rowText).toMatch(/20XX – 20XX\u00a0{12}Senior Editor, Surat, Gujarat/);
     expect(normalisedHtml).not.toContain('<table');
     expect(normalisedHtml).not.toContain('<td');
@@ -2057,7 +2197,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
     expect(normalisedHtml).toContain('<h1>ANEELA MOHAN</h1>');
-    expect(normalisedHtml).toContain('<p><strong>OBJECTIVE</strong></p><hr>');
+    expect(normalisedHtml).toContain('<p><b>OBJECTIVE</b></p><hr>');
     expect(normalisedHtml).not.toContain('MsoTitle');
     expect(normalisedHtml).not.toContain('style=');
   });
@@ -2080,7 +2220,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h2']);
     expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h2']);
     expect(normalisedDocument.querySelector('h2 strong, h2 b')).toBeNull();
-    expect(regularParagraph.querySelector('strong')).toBeNull();
+    expect(regularParagraph.querySelector('strong, b')).toBeNull();
 
     component.editor.setContent(normalisedHtml);
     selectEditorText('Parental responsibility');
@@ -2113,8 +2253,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1', 'strong']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1', 'strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Parental responsibility', ['h1', 'b']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Other recitals', ['h1', 'b']);
     expect(normalisedHtml).not.toContain('<style');
     expect(normalisedHtml).not.toContain('class=');
   });
@@ -2200,7 +2340,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expect(normalisedHtml).toContain('<p><strong>OBJECTIVE</strong></p>');
+    expect(normalisedHtml).toContain('<p><b>OBJECTIVE</b></p>');
     expect(normalisedHtml).toContain('<hr>');
     expect(normalisedHtml).not.toContain('<p></p>');
   });
@@ -2229,8 +2369,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const paragraphs = normalisedDocument.querySelectorAll('p');
 
     expect(paragraphs.length).toBe(4);
-    expect(paragraphs[1].textContent).toBe('');
-    expect(paragraphs[2].textContent).toBe('');
+    expect(paragraphs[1].innerHTML).toBe('&nbsp;');
+    expect(paragraphs[2].innerHTML).toBe('&nbsp;');
   });
 
   it('should retain Word paragraph indentation from shorthand margin styles', () => {
@@ -2262,7 +2402,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     expect(paragraph.dataset.indent).toBe('1');
     expect(paragraph.textContent.trim()).toBe('Test Indent');
-    expect(paragraph.querySelector('strong').textContent).toBe('Test Indent');
+    expect(paragraph.querySelector('b').textContent).toBe('Test Indent');
     expect(normalisedHtml).not.toContain('mso-tab-count');
     expect(normalisedHtml).not.toContain('&nbsp;');
   });
@@ -2293,7 +2433,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
     expectTextToHaveAncestorTags(normalisedHtml, '20XX – 20XX', ['p']);
-    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['strong']);
+    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['b']);
 
     const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
     const walker = normalisedDocument.createTreeWalker(normalisedDocument.body, NodeFilter.SHOW_TEXT);
@@ -2301,7 +2441,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     while (dateText && dateText.textContent.trim() !== '20XX – 20XX') {
       dateText = walker.nextNode();
     }
-    expect(dateText.parentElement.closest('strong')).toBeNull();
+    expect(dateText.parentElement.closest('strong, b')).toBeNull();
   });
 
   it('should preserve a nested regular-weight date and spacing inside a bold Word row', () => {
@@ -2324,8 +2464,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     }
 
     expect(dateText).toBeTruthy();
-    expect(dateText.parentElement.closest('strong')).toBeNull();
-    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['strong']);
+    expect(dateText.parentElement.closest('strong, b')).toBeNull();
+    expectTextToHaveAncestorTags(normalisedHtml, 'Senior Editor, Surat, Gujarat', ['b']);
     expect(paragraph.textContent).toMatch(/20XX – 20XX\s{12,}Senior Editor, Surat, Gujarat/);
   });
 
@@ -2337,8 +2477,8 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const paragraph = normalisedDocument.querySelector('p');
     const dateText = paragraph.firstChild;
 
-    expect(dateText.parentElement.closest('strong')).toBeNull();
-    expectTextToHaveAncestorTags(normalisedHtml, 'Copyeditor, Jaipur, Rajasthan', ['strong']);
+    expect(dateText.parentElement.closest('strong, b')).toBeNull();
+    expectTextToHaveAncestorTags(normalisedHtml, 'Copyeditor, Jaipur, Rajasthan', ['b']);
     expect(paragraph.textContent).toMatch(/20XX – 20XX\u00a0{12}Copyeditor, Jaipur, Rajasthan/);
   });
 
@@ -2382,7 +2522,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
     expect(normalisedHtml).toContain('<ul>');
-    expect(normalisedHtml).toContain('<li><strong>Bye</strong></li>');
+    expect(normalisedHtml).toContain('<li><b>Bye</b></li>');
     expect(normalisedHtml).toContain('<li>World</li>');
     expect(normalisedHtml).not.toContain('MsoListParagraph');
     expect(normalisedHtml).not.toContain('mso-list');
@@ -2460,6 +2600,47 @@ describe('WriteRichTextAreaFieldComponent', () => {
       'whether there should be overnight stays;',
       'whether it should be supervised;'
     ]);
+  });
+
+  it('should preserve visual nesting when Word list IDs report conflicting declared levels', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l0 level2 lfo1">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;</span></span>The issues were as follows:
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">a.<span>&nbsp;</span></span>First issue
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">b.<span>&nbsp;</span></span>Second issue
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">c.<span>&nbsp;</span></span>Contact issue
+      </p>
+      <p class="MsoListParagraph" style="margin-left:108pt;mso-list:l1 level2 lfo2">
+        <span style="mso-list:Ignore">i.<span>&nbsp;</span></span>Overnight stays
+      </p>
+      <p class="MsoListParagraph" style="margin-left:108pt;mso-list:l1 level2 lfo2">
+        <span style="mso-list:Ignore">ii.<span>&nbsp;</span></span>Supervised contact
+      </p>
+      <p class="MsoListParagraph" style="margin-left:72pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">d.<span>&nbsp;</span></span>Education
+      </p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l0 level2 lfo1">
+        <span style="mso-list:Ignore">&#8226;<span>&nbsp;</span></span>The court is satisfied
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const documentElement = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const bulletItems = documentElement.body.querySelectorAll(':scope > ul > li');
+    const letteredList = bulletItems[0].querySelector(':scope > ol[type="a"]');
+    const romanList = letteredList.querySelector(':scope > li:nth-child(3) > ol[type="i"]');
+
+    expect(bulletItems.length).toBe(2);
+    expect(Array.from(letteredList.children).map((item) => item.firstChild.textContent.trim()))
+      .toEqual(['First issue', 'Second issue', 'Contact issue', 'Education']);
+    expect(Array.from(romanList.children).map((item) => item.textContent.trim()))
+      .toEqual(['Overnight stays', 'Supervised contact']);
+    expect(documentElement.body.querySelector(':scope > ol')).toBeNull();
   });
 
   it('should retain nested list text when a Word wrapper contains both the marker and content', () => {
@@ -2659,8 +2840,44 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(wordHtml);
 
-    expect(normalisedHtml).toContain('<ol><li><strong>Hello</strong></li></ol>');
-    expect(normalisedHtml).toContain('<ol start="2"><li><strong>World</strong></li></ol>');
+    expect(normalisedHtml).toContain('<ol><li><b>Hello</b></li></ol>');
+    expect(normalisedHtml).toContain('<ol start="2"><li><b>World</b></li></ol>');
+  });
+
+  it('should keep same-indent Word lettered lists flat and continue them across headings', () => {
+    const wordHtml = `
+      <p class="MsoListParagraph" style="margin-left:0pt;mso-list:l0 level1 lfo1">
+        <span style="mso-list:Ignore">1.<span>&nbsp;</span></span>The court has jurisdiction on the basis that:
+      </p>
+      <p><strong>[pre-11pm on 31 December 2020]</strong></p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">a.<span>&nbsp;</span></span>First alternative
+      </p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">b.<span>&nbsp;</span></span>Second alternative
+      </p>
+      <p><strong>[post-11pm on 31 December 2020]</strong></p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">c.<span>&nbsp;</span></span>Third alternative
+      </p>
+      <p class="MsoListParagraph" style="margin-left:36pt;mso-list:l1 level1 lfo2">
+        <span style="mso-list:Ignore">d.<span>&nbsp;</span></span>Fourth alternative
+      </p>`;
+
+    const normalisedHtml = component.normalisePastedHtml(wordHtml);
+    const normalisedDocument = new DOMParser().parseFromString(normalisedHtml, 'text/html');
+    const letteredLists = normalisedDocument.body.querySelectorAll(':scope > ol[type="a"]');
+
+    expect(letteredLists.length).toBe(2);
+    expect(letteredLists[0].getAttribute('start')).toBeNull();
+    expect(letteredLists[1].getAttribute('start')).toBe('3');
+    expect(Array.from(letteredLists).map((list) => (list as HTMLElement).dataset.indent)).toEqual(['1', '1']);
+    expect(Array.from(letteredLists[0].children).map((item) => item.textContent.trim()))
+      .toEqual(['First alternative', 'Second alternative']);
+    expect(Array.from(letteredLists[1].children).map((item) => item.textContent.trim()))
+      .toEqual(['Third alternative', 'Fourth alternative']);
+    expect(letteredLists[0].querySelector('ol')).toBeNull();
+    expect(letteredLists[1].querySelector('ol')).toBeNull();
   });
 
   it('should strip unsupported link and image markup from pasted HTML', () => {
@@ -2674,7 +2891,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(pastedHtml);
 
-    expect(normalisedHtml).toContain('<strong>https://someurl.com</strong>');
+    expect(normalisedHtml).toContain('<b>https://someurl.com</b>');
     expect(normalisedHtml).not.toContain('<a');
     expect(normalisedHtml).not.toContain('href=');
     expect(normalisedHtml).not.toContain('<img');
@@ -2694,7 +2911,7 @@ describe('WriteRichTextAreaFieldComponent', () => {
 
     const normalisedHtml = component.normalisePastedHtml(pastedHtml);
 
-    expect(normalisedHtml).toContain('<p>Safe <strong>bold text</strong></p>');
+    expect(normalisedHtml).toContain('<p>Safe <b>bold text</b></p>');
     expect(normalisedHtml).not.toContain('alert(');
     expect(normalisedHtml).not.toContain('onclick');
     expect(normalisedHtml).not.toContain('onmouseover');
@@ -2737,4 +2954,32 @@ describe('WriteRichTextAreaFieldComponent', () => {
     expect(formGroup.controls[FIELD_ID].value).not.toContain('[https://someurl.com]');
     expect(formGroup.controls[FIELD_ID].value).not.toContain('](https://someurl.com)');
   }));
+
+  it('should preserve adjacent legal placeholders before slash-separated alternatives', fakeAsync(() => {
+    formGroup.controls[FIELD_ID].setValue(
+      '<p>the child[ren] [was] / [were] present and the child[ren] [is] / [are] protected</p>'
+    );
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain(
+      '<p>the child[ren] [was] / [were] present and the child[ren] [is] / [are] protected</p>'
+    );
+    expect(formGroup.controls[FIELD_ID].hasError('markDownPattern')).toBe(false);
+  }));
+
+  it('should preserve bracketed legal text separated by whitespace', fakeAsync(() => {
+    formGroup.controls[FIELD_ID].setValue('<p>[test] [hello]</p>');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>[test] [hello]</p>');
+    expect(formGroup.controls[FIELD_ID].hasError('markDownPattern')).toBe(false);
+  }));
+
+  it('should continue to normalise adjacent Markdown reference syntax', fakeAsync(() => {
+    formGroup.controls[FIELD_ID].setValue('<p>[test][hello]</p>');
+    tick();
+
+    expect(formGroup.controls[FIELD_ID].value).toContain('<p>test</p>');
+  }));
+
 });

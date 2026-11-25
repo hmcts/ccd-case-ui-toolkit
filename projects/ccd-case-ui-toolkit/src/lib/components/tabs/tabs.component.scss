@@ -1,5 +1,4 @@
-@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals.scss';
+@use 'components/govuk-toolkit-shim' as *;
 
 /*
 Tabs

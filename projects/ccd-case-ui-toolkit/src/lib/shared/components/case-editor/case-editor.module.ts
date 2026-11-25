@@ -26,6 +26,7 @@ import { HttpService } from '../../services/http/http.service';
 import { OrderService } from '../../services/order/order.service';
 import { ProfileNotifier } from '../../services/profile/profile.notifier';
 import { ProfileService } from '../../services/profile/profile.service';
+import { ProfileResolver } from '../../services/profile/profile.resolver';
 import { RouterHelperService } from '../../services/router';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { ErrorsModule } from '../error/errors.module';
@@ -109,6 +110,7 @@ import { FocusService } from '../../services/window/focus.service';
     EventTriggerService,
     ProfileService,
     ProfileNotifier,
+    ProfileResolver,
     AddressesService,
     DocumentManagementService,
     RouterHelperService,
