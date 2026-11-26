@@ -54,12 +54,12 @@ describe('CaseListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule ],
-      declarations: [ CaseListComponent, PaginatePipe, MockRpxTranslatePipe ],
+      imports: [RouterModule],
+      declarations: [CaseListComponent, PaginatePipe, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [ PaginationService, BrowserService ]
+      providers: [PaginationService, BrowserService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   describe('With Case Selection enabled', () => {
@@ -91,8 +91,8 @@ describe('CaseListComponent', () => {
       const headRow = de.query(By.css('div>table>thead>tr'));
       // Added +1 for checkbox column
       expect(headRow.children.length).toBe(tableConfig.columnConfigs.length + 1);
-      tableConfig.columnConfigs.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.header)))
+      tableConfig.columnConfigs.forEach((col) => {
+        expect(headRow.children.find((c) => c.nativeElement.textContent.trim().startsWith(col.header)))
           .toBeTruthy(`Could not find header ${col.header}`);
       });
     });
@@ -100,6 +100,100 @@ describe('CaseListComponent', () => {
     it('should render one row for each Case', () => {
       const tbody = de.query(By.css('div>table>tbody'));
       expect(tbody.children.length).toEqual(cases.length);
+    });
+
+    it('should associate the select all checkbox with its label', () => {
+      const checkbox: HTMLInputElement = de.query(By.css('#select-all')).nativeElement;
+
+      expect(checkbox.labels.length).toBe(1);
+      expect(checkbox.labels[0].textContent.trim()).toBe('Select all cases');
+    });
+
+    it('should associate each case checkbox with a label containing its configured ID', () => {
+      const checkboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+
+      expect(checkboxes.length).toBe(cases.length);
+      checkboxes.forEach((element, index) => {
+        const checkbox: HTMLInputElement = element.nativeElement;
+        expect(checkbox.labels.length).toBe(1);
+        expect(checkbox.labels[0].textContent.trim()).toBe(`Select case ${cases[index].caseRef}`);
+      });
+    });
+
+    [0, '0'].forEach((configuredId) => {
+      it(`should preserve a configured ${typeof configuredId} zero in the checkbox label`, () => {
+        component.cases = [{ ...cases[0], caseRef: configuredId }];
+        fixture.detectChanges();
+        const checkbox: HTMLInputElement = de.query(By.css('tbody input[type="checkbox"]')).nativeElement;
+
+        expect(checkbox.labels.length).toBe(1);
+        expect(checkbox.labels[0].textContent.trim()).toBe('Select case 0');
+      });
+    });
+
+    [undefined, null, ''].forEach((configuredId) => {
+      it(`should use the row number in the checkbox label when the configured ID is ${JSON.stringify(configuredId)}`, () => {
+        component.cases = cases.map((aCase) => ({ ...aCase, caseRef: configuredId }));
+        fixture.detectChanges();
+        const checkboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+
+        expect(checkboxes.length).toBe(cases.length);
+        checkboxes.forEach((element, index) => {
+          const checkbox: HTMLInputElement = element.nativeElement;
+          expect(checkbox.labels.length).toBe(1);
+          expect(checkbox.labels[0].textContent.trim()).toBe(`Select case ${index + 1}`);
+        });
+      });
+    });
+
+    it('should toggle only the case whose associated label is clicked and emit its selection', () => {
+      const selection = spyOn(component.selection, 'emit');
+      const checkboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+      const firstCheckbox: HTMLInputElement = checkboxes[0].nativeElement;
+      const secondCheckbox: HTMLInputElement = checkboxes[1].nativeElement;
+
+      expect(firstCheckbox.labels.length).toBe(1);
+      firstCheckbox.labels[0].click();
+      fixture.detectChanges();
+
+      expect(firstCheckbox.checked).toBe(true);
+      expect(secondCheckbox.checked).toBe(false);
+      expect(component.selectedCases).toEqual([cases[0]]);
+      expect(selection).toHaveBeenCalledOnceWith([cases[0]]);
+
+      firstCheckbox.labels[0].click();
+      fixture.detectChanges();
+
+      expect(firstCheckbox.checked).toBe(false);
+      expect(secondCheckbox.checked).toBe(false);
+      expect(component.selectedCases).toEqual([]);
+      expect(selection.calls.count()).toBe(2);
+      expect(selection.calls.mostRecent().args).toEqual([[]]);
+    });
+
+    it('should select and deselect all supplied cases through the associated select all label', () => {
+      const selection = spyOn(component.selection, 'emit');
+      const checkbox: HTMLInputElement = de.query(By.css('#select-all')).nativeElement;
+      const rowCheckboxes = de.queryAll(By.css('tbody input[type="checkbox"]'));
+
+      expect(checkbox.labels.length).toBe(1);
+      expect(rowCheckboxes.length).toBe(cases.length);
+      checkbox.labels[0].click();
+      fixture.detectChanges();
+
+      expect(checkbox.checked).toBe(true);
+      rowCheckboxes.forEach((row) => expect(row.nativeElement.checked).toBe(true));
+      expect(component.selectedCases).toEqual(cases);
+      expect(selection).toHaveBeenCalledOnceWith(cases);
+
+      checkbox.labels[0].click();
+      fixture.detectChanges();
+
+      expect(checkbox.checked).toBe(false);
+      rowCheckboxes.forEach((row) => expect(row.nativeElement.checked).toBe(false));
+      expect(component.selectedCases).toEqual([]);
+      expect(selection.calls.count()).toBe(2);
+      expect(selection.calls.mostRecent().args).toEqual([[]]);
     });
 
     it('should render required columns for each Case row, with a checkbox in the first column', () => {
@@ -141,12 +235,22 @@ describe('CaseListComponent', () => {
     });
 
     it('should disable the "select all" checkbox when there are no shareable Cases', () => {
+      const selection = spyOn(component.selection, 'emit');
       component.cases = [];
       expect(component.canAnyBeShared()).toBe(false);
       // Update the view
       fixture.detectChanges();
-      const selectAllCheckbox = de.query(By.css('div>table>thead tr:nth-child(1) td:nth-child(1) div:nth-child(1) input'));
-      expect(selectAllCheckbox.nativeElement.disabled).toBe(true);
+      const selectAllCheckbox: HTMLInputElement = de.query(By.css('#select-all')).nativeElement;
+      expect(selectAllCheckbox.disabled).toBe(true);
+      expect(selectAllCheckbox.labels.length).toBe(1);
+      expect(selectAllCheckbox.labels[0].textContent.trim()).toBe('Select all cases');
+
+      selectAllCheckbox.labels[0].click();
+      fixture.detectChanges();
+
+      expect(selectAllCheckbox.disabled).toBe(true);
+      expect(component.selectedCases).toEqual([]);
+      expect(selection).not.toHaveBeenCalled();
     });
 
     it('should check the checkbox if a Case is selected', () => {
@@ -250,8 +354,8 @@ describe('CaseListComponent', () => {
     it('should render columns based on TableConfig', () => {
       const headRow = de.query(By.css('div>table>thead>tr'));
       expect(headRow.children.length).toBe(tableConfig.columnConfigs.length);
-      tableConfig.columnConfigs.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.header)))
+      tableConfig.columnConfigs.forEach((col) => {
+        expect(headRow.children.find((c) => c.nativeElement.textContent.trim().startsWith(col.header)))
           .toBeTruthy(`Could not find header ${col.header}`);
       });
     });
