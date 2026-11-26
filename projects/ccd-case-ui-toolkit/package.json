@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.28-angular-22",
+  "version": "7.4.28-angular-22.0",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^22.3.0",
     "@ngxmc/datetime-picker": "20.1.0",
@@ -32,7 +32,7 @@
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
-    "zone.js": "^0.15.1",
+    "zone.js": "0.16.3",
     "class-transformer": "^0.5.1",
     "lodash": "^4.17.22",
     "@ngrx/store-devtools": "^22.0.1"

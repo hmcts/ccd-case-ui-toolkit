@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.28-angular-22",
+  "version": "7.4.28-angular-22.0",
   "engines": {
     "node": ">=24.22.2"
   },
@@ -95,7 +95,7 @@
     "underscore": "^1.13.8",
     "yargs": "17.7.2",
     "yargs-parser": "^21.1.1",
-    "zone.js": "0.15.1"
+    "zone.js": "0.16.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^22.3.0",
