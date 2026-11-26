@@ -1,10 +1,10 @@
-import { StaffUser, StaffUserRoleCategory, StaffUserSearchConfiguration } from './staff-user.model';
+import { StaffCacheRoleCategory, StaffUser, StaffUserRoleCategory, StaffUserSearchConfiguration } from './staff-user.model';
 
 describe('StaffUser domain contract', () => {
   it('should support a parsed search configuration and selected user', () => {
     const configuration: StaffUserSearchConfiguration = {
-      roleCategories: ['ADMIN', 'JUDICIAL'],
-      staffRoleCategories: ['ADMIN'],
+      roleCategories: ['ADMIN' as StaffUserRoleCategory, 'JUDICIAL' as StaffUserRoleCategory],
+      staffRoleCategories: ['ADMIN' as StaffCacheRoleCategory],
       includesJudicial: true
     };
     const staffUser: StaffUser = {
@@ -13,9 +13,9 @@ describe('StaffUser domain contract', () => {
       emailId: 'alex.smith@justice.gov.uk'
     };
 
-    const supportedRoleCategory: StaffUserRoleCategory = 'LEGAL_OPERATIONS';
+    const supportedRoleCategory: StaffUserRoleCategory = 'LEGAL_OPERATIONS' as StaffUserRoleCategory;
 
-    expect(configuration.staffRoleCategories).toEqual(['ADMIN']);
+    expect(configuration.staffRoleCategories).toEqual(['ADMIN' as StaffCacheRoleCategory]);
     expect(configuration.includesJudicial).toBe(true);
     expect(supportedRoleCategory).toBe('LEGAL_OPERATIONS');
     expect(staffUser.displayName).toBe('Alex Smith');
