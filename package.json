@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.28-angular-22.0",
+  "version": "7.4.28-angular-22.1",
   "engines": {
     "node": ">=24.22.2"
   },
@@ -67,7 +67,7 @@
     "@angular/upgrade": "22.3.0",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccpay-web-component": "6.5.28",
-    "@hmcts/media-viewer": "4.2.49-upgrade-angular-22",
+    "@hmcts/media-viewer": "4.2.50-upgrade-angular-22.0",
     "@ngrx/effects": "^22.0.1",
     "@ngrx/store": "^22.0.1",
     "@ngrx/store-devtools": "^22.0.1",
