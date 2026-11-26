@@ -1,4 +1,5 @@
 @use 'components/govuk-toolkit-shim' as *;
+@use 'govuk-frontend/dist/govuk/base' as govuk;
 
 .rightBorderSeparator {
   border-right-width: 4px;
@@ -9,5 +10,5 @@
 .validation-error {
   cursor: pointer;
   text-decoration: underline;
-  color: #d4351c;
+  color: govuk.$govuk-error-colour;
 }
