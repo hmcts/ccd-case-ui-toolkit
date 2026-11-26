@@ -28,6 +28,7 @@ import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../se
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { removeTaskFromClientContext } from '../case-edit-utils/case-edit.utils';
 import { safeJsonParse } from '../../../json-utils';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -268,10 +269,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     let taskEventCompletionInfo: TaskEventCompletionInfo;
     let userInfo: UserInfo;
     const taskEventCompletionStr = this.sessionStorageService.getItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded');
     taskEventCompletionInfo = safeJsonParse<TaskEventCompletionInfo>(taskEventCompletionStr, null);
-    userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
     const userId = userInfo?.id ? userInfo.id : userInfo?.uid;

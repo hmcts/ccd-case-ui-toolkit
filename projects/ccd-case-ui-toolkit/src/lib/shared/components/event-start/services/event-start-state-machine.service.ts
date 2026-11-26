@@ -5,6 +5,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { EventStartStateMachineContext, EventStartStates } from '../models';
 import { TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { UserInfo } from '../../../domain/user/user-info.model';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 import { CaseEditComponent } from '../../case-editor';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
@@ -128,10 +129,9 @@ export class EventStartStateMachineService {
 
   public entryActionForStateTaskAssignedToUser(state: State, context: EventStartStateMachineContext): void {
     // Get number of tasks assigned to user
-    const userInfoStr = context.sessionStorageService.getItem('userDetails');
-    const userInfo = JSON.parse(userInfoStr);
+    const userInfo = CurrentUserService.readUserInfo(context.sessionStorageService);
     const tasksAssignedToUser = context.tasks.filter(x =>
-        x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+        userInfo && (x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid)
       );
 
     // Check if user initiated the event from task tab
@@ -201,11 +201,7 @@ export class EventStartStateMachineService {
         }
       }
     };
-    let userInfo: UserInfo;
-    const userInfoStr = context.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      userInfo = JSON.parse(userInfoStr);
-    }
+    const userInfo: UserInfo = CurrentUserService.readUserInfo(context.sessionStorageService);
     // Store task to session
     const taskEventCompletionInfo: TaskEventCompletionInfo = {
       caseId: context.caseId,

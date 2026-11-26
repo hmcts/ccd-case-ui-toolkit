@@ -1,5 +1,3 @@
-import { RoleCategory } from '../case-view';
-
 export interface UserInfo {
   uid?: string;
   id: string;
@@ -8,5 +6,11 @@ export interface UserInfo {
   email: string;
   active: boolean;
   roles: string[];
-  roleCategories?: RoleCategory[];
+  roleCategories?: string[];
+  sub?: string;
+  subname?: string;
+  iss?: string;
+  ssoProvider?: string;
+  token?: string;
+  name?: string;
 }

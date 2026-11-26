@@ -9,8 +9,7 @@ import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from '../session';
-import { USER_DETAILS } from '../../utils';
-import { safeJsonParse } from '../../json-utils';
+import { CurrentUserService } from '../session/current-user.service';
 
 // @dynamic
 @Injectable()
@@ -42,10 +41,10 @@ export class ActivityService {
   }
 
   public getOptions(): OptionsType {
-    const userDetails = safeJsonParse<{ token?: string }>(this.sessionStorageService.getItem(USER_DETAILS));
+    const token = CurrentUserService.getTransientToken(this.sessionStorageService);
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    if (userDetails?.token) {
-      headers = headers.set('Authorization', userDetails.token);
+    if (token) {
+      headers = headers.set('Authorization', token);
     }
     return {
       headers,
@@ -84,7 +83,7 @@ export class ActivityService {
   }
 
   public verifyUserIsAuthorized(): void {
-    if (this.sessionStorageService.getItem(USER_DETAILS) && this.activityUrl() && this.userAuthorised === undefined) {
+    if (CurrentUserService.readUserInfo(this.sessionStorageService) && this.activityUrl() && this.userAuthorised === undefined) {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         () => this.userAuthorised = true,
         error => {

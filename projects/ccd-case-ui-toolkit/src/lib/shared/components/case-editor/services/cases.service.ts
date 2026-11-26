@@ -22,7 +22,7 @@ import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { CaseEditUtils } from '../case-edit-utils/case-edit.utils';
 import { CaseEditComponent } from '../case-edit';
-import { getUserDetails } from '../../../utils';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 
 @Injectable()
 export class CasesService {
@@ -312,14 +312,14 @@ export class CasesService {
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const camUtils = new CaseAccessUtils();
-    let userInfo = getUserDetails(this.sessionStorageService);
+    let userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
     if (!userInfo) {
       return throwError(() => new Error('User info not found in session storage'));
     }
 
     // EXUI-4758 - getMappedRoleCategories no longer returns a single string, checks all roles to get the most likely roleCategory
     // Unsure whether we should be using mapped role categories any more - should trust the roleCategories from userInfo if they exist
-    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    const roleCategories: RoleCategory[] = (userInfo.roleCategories as RoleCategory[]) || camUtils.getMappedRoleCategories(userInfo.roles);
     // If user has no role categories, default to LEGAL_OPERATIONS
     const roleName = camUtils.getAMRoleName('challenged', roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS");
     const beginTime = new Date();
@@ -345,13 +345,13 @@ export class CasesService {
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
     const camUtils = new CaseAccessUtils();
-    let userInfo = getUserDetails(this.sessionStorageService);
+    let userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
     if (!userInfo) {
       return throwError(() => new Error('User info not found in session storage'));
     }
 
     // EXUI-4758 - See above comment
-    const roleCategories: RoleCategory[] = userInfo.roleCategories || camUtils.getMappedRoleCategories(userInfo.roles);
+    const roleCategories: RoleCategory[] = (userInfo.roleCategories as RoleCategory[]) || camUtils.getMappedRoleCategories(userInfo.roles);
     // EXUI-4758 - Return first roleCategory as the roleCategory for now, unless not present, in which case default to LEGAL_OPERATIONS
     const roleCategory = roleCategories?.length > 0 ? roleCategories[0] as RoleCategory : "LEGAL_OPERATIONS";
     const roleName = camUtils.getAMRoleName('specific', roleCategory);

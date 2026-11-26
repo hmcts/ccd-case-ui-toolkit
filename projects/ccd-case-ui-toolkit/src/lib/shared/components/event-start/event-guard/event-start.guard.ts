@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { ReadCookieService, SessionStorageService } from '../../../services';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 import { CaseEditComponent, CaseNotifier, WorkAllocationService } from '../../case-editor';
 import { EVENT_START_FIRST_PAGE_REDIRECT, removeTaskFromClientContext } from '../../case-editor/case-edit-utils/case-edit.utils';
 
@@ -48,11 +49,8 @@ export class EventStartGuard implements CanActivate {
       ) : of(true);
 
     let userId: string;
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = JSON.parse(userInfoStr);
-      userId = userInfo.id ? userInfo.id : userInfo.uid;
-    }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    userId = userInfo?.id || userInfo?.uid;
     const languageCookie = this.cookieService.getCookie('exui-preferred-language');
     const currentLanguage = !!languageCookie && languageCookie !== '' ? languageCookie : 'en';
     const preClientContext = this.sessionStorageService.getItem(CaseEditComponent.CLIENT_CONTEXT);
@@ -117,10 +115,9 @@ export class EventStartGuard implements CanActivate {
       return true;
     }
     // Get number of tasks assigned to user
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    const userInfo = JSON.parse(userInfoStr);
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
     const tasksAssignedToUser = payload.tasks.filter(x =>
-      x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
+      userInfo && x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
     );
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on

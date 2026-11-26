@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional, InjectionToken } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { safeJsonParse } from '../../json-utils';
+import { CurrentUserService } from './current-user.service';
 import { StructuredLoggerService } from '../logging';
 import { SessionStorageService } from './session-storage.service';
 
@@ -23,13 +23,8 @@ export class SessionStorageGuard implements CanActivate {
   ) {}
 
   public canActivate(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (!userInfoStr) {
-      return true;
-    }
-
-    const parsed = safeJsonParse(userInfoStr, null);
-    if (parsed !== null) {
+    if (CurrentUserService.isStoredUserInfoValid(this.sessionStorageService)) {
+      CurrentUserService.scrubStoredUserInfo(this.sessionStorageService);
       return true;
     }
 

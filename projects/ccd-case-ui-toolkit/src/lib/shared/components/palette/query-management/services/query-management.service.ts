@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { CaseField, CaseEventTrigger, CaseView } from '../../../../../../lib/shared/domain';
 import { QmCaseQueriesCollection, QueryCreateContext, QueryListItem, CaseQueriesCollection } from '../models';
 import { SessionStorageService, StructuredLoggerService } from '../../../../services';
-import { isInternalUser, isJudiciaryUser, USER_DETAILS } from '../../../../utils';
-import { safeJsonParse } from '../../../../json-utils';
+import { isInternalUser, isJudiciaryUser } from '../../../../utils';
+import { CurrentUserService } from '../../../../services/session/current-user.service';
+import { UserInfo } from '../../../../domain/user/user-info.model';
 import { QueryManagementUtils } from '../utils/query-management.utils';
 import {
   CASE_QUERIES_COLLECTION_ID,
@@ -43,14 +44,7 @@ export class QueryManagementService {
     queryItem: QueryListItem,
     messageId?: string // Get the message ID from route params (if present)
   ): QmCaseQueriesCollection {
-    let currentUserDetails;
-
-    try {
-      currentUserDetails = safeJsonParse<any>(this.sessionStorageService.getItem(USER_DETAILS), {});
-    } catch (e) {
-      this.logger.error('Could not parse USER_DETAILS from session storage.', { error: e });
-      currentUserDetails = {};
-    }
+    const currentUserDetails = CurrentUserService.readUserInfo(this.sessionStorageService) || ({} as UserInfo);
 
     const isHmctsStaff= (this.isJudiciaryUser() || this.isInternalUser()) ? 'Yes' : 'No';
     const caseMessage = queryCreateContext === QueryCreateContext.NEW_QUERY

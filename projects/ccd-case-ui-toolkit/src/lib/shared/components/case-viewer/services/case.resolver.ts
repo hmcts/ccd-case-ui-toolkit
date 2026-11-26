@@ -3,12 +3,11 @@ import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular
 import { plainToClassFromExist } from 'class-transformer';
 import { of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
-import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { PUI_CASE_MANAGER, USER_DETAILS } from '../../../utils';
-import { safeJsonParse } from '../../../json-utils';
+import { PUI_CASE_MANAGER } from '../../../utils';
+import { CurrentUserService } from '../../../services/session/current-user.service';
 import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
@@ -139,7 +138,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
-    const userDetails = safeJsonParse<any>(this.sessionStorage.getItem(USER_DETAILS));
+    const userDetails = CurrentUserService.readUserInfo(this.sessionStorage);
     userDetails && userDetails.roles
         && !userDetails.roles.includes(PUI_CASE_MANAGER)
         &&
