@@ -130,7 +130,7 @@
     "exceljs": "^4.4.0",
     "expect": "^23.0.0",
     "font-awesome": "^4.6.1",
-    "gh-pages": "^2.0.0",
+    "gh-pages": "^5.0.0",
     "git-message": "^2.0.2",
     "gulp": "^4.0.2",
     "gulp-inline-ng2-template": "^5.0.1",
