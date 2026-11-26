@@ -39,6 +39,14 @@ import { LinkedCasesService } from '../../palette/linked-cases/services';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/case-flag/utils/case-flag-priority.utils';
 
+type ViewerTabContentType = 'case' | 'tasks' | 'roles-and-access' | 'hearings';
+type SpecialViewerTabContentType = Exclude<ViewerTabContentType, 'case'>;
+
+interface ViewerTab {
+  tab: CaseTab;
+  contentType: ViewerTabContentType;
+}
+
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
@@ -61,6 +69,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
+  public viewerTabs: ViewerTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
   public error: any;
@@ -146,8 +155,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFlagStateService.resetInitialCaseFlags();
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes && changes.prependedTabs && !changes.prependedTabs.firstChange) {
+  public ngOnChanges(changes: SimpleChanges): void {
+    const hasSubsequentRelevantChange = [
+      changes?.caseDetails,
+      changes?.prependedTabs,
+      changes?.appendedTabs
+    ].some((change) => change && !change.firstChange);
+
+    if (hasSubsequentRelevantChange) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
@@ -275,7 +290,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public hasTabsPresent(): boolean {
-    return this.sortedTabs.length > 0 || this.prependedTabs.length > 0 || this.appendedTabs.length > 0;
+    return this.viewerTabs.length > 0;
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
@@ -481,17 +496,73 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.sortedTabs = this.orderService.sort(this.caseDetails?.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
+    this.viewerTabs = this.buildViewerTabs();
     this.formGroup = this.buildFormGroup(this.caseFields);
     if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
   }
 
+  private buildViewerTabs(): ViewerTab[] {
+    const suppliedTabIds = new Set((this.caseDetails?.tabs || []).map((tab) => tab.id));
+    const suppliedSpecialTabTypes = new Set(
+      (this.caseDetails?.tabs || [])
+        .map((tab) => this.getCcdSpecialTabContentType(tab))
+        .filter((contentType): contentType is SpecialViewerTabContentType => !!contentType)
+    );
+    const prependedTabs = (this.prependedTabs || [])
+      .filter((tab) => !this.isConfiguredTabSupplied(tab, suppliedTabIds, suppliedSpecialTabTypes))
+      .map((tab) => this.toViewerTab(tab, this.getConfiguredSpecialTabContentType(tab)));
+    const appendedTabs = (this.appendedTabs || [])
+      .filter((tab) => !this.isConfiguredTabSupplied(tab, suppliedTabIds, suppliedSpecialTabTypes))
+      .map((tab) => this.toViewerTab(tab, this.getConfiguredSpecialTabContentType(tab)));
+    const caseTabs = this.sortedTabs.map((tab) => this.toViewerTab(tab));
+
+    return [...prependedTabs, ...caseTabs, ...appendedTabs];
+  }
+
+  private toViewerTab(tab: CaseTab, fallbackContentType?: SpecialViewerTabContentType): ViewerTab {
+    const contentType = fallbackContentType || this.getCcdSpecialTabContentType(tab) || 'case';
+
+    return { tab, contentType };
+  }
+
+  private getConfiguredSpecialTabContentType(tab: CaseTab): SpecialViewerTabContentType | null {
+    return ['tasks', 'roles-and-access', 'hearings'].includes(tab.id)
+      ? tab.id as SpecialViewerTabContentType
+      : null;
+  }
+
+  private isConfiguredTabSupplied(
+    tab: CaseTab,
+    suppliedTabIds: Set<string>,
+    suppliedSpecialTabTypes: Set<SpecialViewerTabContentType>
+  ): boolean {
+    const contentType = this.getConfiguredSpecialTabContentType(tab);
+    return contentType ? suppliedSpecialTabTypes.has(contentType) : suppliedTabIds.has(tab.id);
+  }
+
+  private getCcdSpecialTabContentType(tab: CaseTab): SpecialViewerTabContentType | null {
+    const launcherFieldIds = new Set((tab.fields || []).map((field) => field.id?.toLowerCase()));
+
+    if (launcherFieldIds.has('tasklauncher')) {
+      return 'tasks';
+    }
+    if (launcherFieldIds.has('roleslauncher')) {
+      return 'roles-and-access';
+    }
+    if (launcherFieldIds.has('hearingslauncher')) {
+      return 'hearings';
+    }
+
+    return null;
+  }
+
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs?.map((tab) => ({ 
-        ...tab,
-        fields: this.orderService.sort(tab.fields) 
-      }))
+    return tabs?.map((tab) => ({
+      ...tab,
+      fields: this.orderService.sort(tab.fields)
+    }))
       .filter((tab) => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 

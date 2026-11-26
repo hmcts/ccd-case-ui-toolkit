@@ -19,10 +19,10 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
+  @Input() public caseDetails: CaseView;
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public appendedTabs: CaseTab[] = [];
 
-  public caseDetails: CaseView;
   public caseSubscription: Subscription;
   public userAccessType: string;
   public accessGranted: boolean;
@@ -45,7 +45,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public loadCaseDetails(): void {
-    if (this.route.snapshot.data.case) {
+    if (this.caseDetails) {
+      this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
+      this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);
+      this.setUserAccessType(this.caseDetails);
+    } else if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
       this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
       this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);

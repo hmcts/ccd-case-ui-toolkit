@@ -160,6 +160,8 @@ describe('CaseViewerComponent', () => {
     fixture = TestBed.createComponent(CaseViewerComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
+    mockActivatedRoute.snapshot.data = {} as Data;
+    mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
     fixture.detectChanges();
   }));
 
@@ -177,6 +179,25 @@ describe('CaseViewerComponent', () => {
   });
 
   describe('loadCaseDetails()', () => {
+    it('should use the caseDetails input before route data', () => {
+      const inputCaseDetails = {
+        ...CASE_VIEW_FROM_ROUTE,
+        case_type: {
+          ...CASE_VIEW_FROM_ROUTE.case_type,
+          id: 'case_view_from_input_type_id'
+        },
+        tabs: [{ id: 'input-tab', label: 'Input tab', fields: [] }]
+      } as CaseView;
+      mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
+      component.caseDetails = inputCaseDetails;
+
+      component.loadCaseDetails();
+
+      expect(component.caseDetails).toBe(inputCaseDetails);
+      expect(component.caseDetails.case_type.id).toEqual('case_view_from_input_type_id');
+      expect(component.caseDetails.tabs[0].id).toEqual('input-tab');
+    });
+
     it('should assign caseDetails in activatedRoute', () => {
       mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
       fixture.detectChanges();
