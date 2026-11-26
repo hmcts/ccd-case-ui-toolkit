@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseEditValidationError } from '../../commons/case-edit-data/case-edit-validation.model';
 import { CaseState } from '../../domain/definition/case-state.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
@@ -15,6 +16,7 @@ import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { safeJsonParse } from '../../json-utils';
+import { DatePickerRangeComponent } from '../palette/datetime-picker-range/date-picker-range.component';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
@@ -26,13 +28,17 @@ const REGION_LIST_AND_FRC_FILTER = 'regionList';
   styleUrls: ['./workbasket-filters.component.scss'],
   standalone: false
 })
-export class WorkbasketFiltersComponent implements OnInit {
+export class WorkbasketFiltersComponent implements OnInit, AfterViewInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
   private readonly logger = new StructuredLoggerService();
 
+  private storedDateRange: any;
+
   public caseFields: CaseField[];
+
+  @ViewChild(DatePickerRangeComponent) public datePickerRange?: DatePickerRangeComponent;
 
   @Input()
   public jurisdictions: Jurisdiction[];
@@ -45,6 +51,9 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   @Output()
   public onReset: EventEmitter<any> = new EventEmitter();
+
+  @Output()
+  public validationErrors: EventEmitter<CaseEditValidationError[]> = new EventEmitter<CaseEditValidationError[]>();
 
   public workbasketInputs: WorkbasketInputModel[];
   public workbasketInputsReady: boolean;
@@ -59,7 +68,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     formGroup?: FormGroup,
     page?: number,
     metadataFields?: string[]
-  // EXUI-3162 - selected is never undefined
+    // EXUI-3162 - selected is never undefined
   } = {};
 
   public formGroup: FormGroup = new FormGroup({});
@@ -122,6 +131,17 @@ export class WorkbasketFiltersComponent implements OnInit {
     });
   }
 
+  // Need this to set the date range in the form group after the view has initialized
+  // Otherwise does not appear
+  public ngAfterViewInit(): void {
+    if (this.storedDateRange) {
+      this.formGroup.patchValue({
+        dateFrom: this.storedDateRange[0],
+        dateTo: this.storedDateRange[1]
+      });
+    }
+  }
+
   public apply(init: boolean): void {
     // Save filters as query parameters for current route
     const queryParams = {};
@@ -145,17 +165,19 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE),
         null
       );
+      this.storedDateRange = [storedFormGroup?.dateFrom, storedFormGroup?.dateTo];
       this.selected.formGroup = storedFormGroup && Object.keys(storedFormGroup).length > 0 ? storedFormGroup : null;
     } else {
       // Update form group filters
       this.updateFormGroupFilters();
+      this.datePickerRange?.normaliseDateRange();
 
       this.selected.formGroup = this.formGroup;
     }
     this.selected.init = init;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
-    if (init) {
+    if (init && !this.datePickerRange?.dateRangeErrors?.length) {
       this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
       if (Object.keys(this.formGroup.controls).length > 0) {
         // Find all "special case" JudicialUser FormControl keys and remove the corresponding values from the
@@ -181,10 +203,17 @@ export class WorkbasketFiltersComponent implements OnInit {
   public reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
     this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
+    this.datePickerRange?.reset();
     setTimeout(() => {
       this.resetFieldsWhenNoDefaults();
       this.onReset.emit(true);
     }, 500);
+  }
+
+  // Date range validation errors handler
+  // Currently the only validation errors present
+  public onDateRangeValidationErrors(errors: CaseEditValidationError[]): void {
+    this.validationErrors.emit(errors);
   }
 
   public getMetadataFields(): string[] {
@@ -227,7 +256,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
-      this.formGroup = new FormGroup({});
+      this.clearDynamicFormControls();
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
         this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id).pipe(
@@ -408,5 +437,12 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.workbasketInputs) {
       this.caseFields = this.workbasketInputs.map(item => FieldsUtils.convertToCaseField(item.field));
     }
+  }
+
+  // clear the dynamic date range filter
+  private clearDynamicFormControls(): void {
+    Object.keys(this.formGroup.controls)
+      .filter((controlName) => !DatePickerRangeComponent.isRangeControl(controlName))
+      .forEach((controlName) => this.formGroup.removeControl(controlName));
   }
 }

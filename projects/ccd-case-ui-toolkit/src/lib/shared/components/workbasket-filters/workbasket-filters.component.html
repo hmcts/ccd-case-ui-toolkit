@@ -50,7 +50,10 @@
     </div>
   </ng-container>
 
-    <button type="button" class="button" (click)="scrollToTop()"
-          [title]="'Back to top' | rpxTranslate" [attr.aria-label]="'Back to top' | rpxTranslate">{{'Back to top' | rpxTranslate}}
-    </button>
+  <ccd-date-picker-range [formGroup]="formGroup"
+                         (validationErrors)="onDateRangeValidationErrors($event)"></ccd-date-picker-range>
+
+  <button type="button" class="button" (click)="scrollToTop()"
+        [title]="'Back to top' | rpxTranslate" [attr.aria-label]="'Back to top' | rpxTranslate">{{'Back to top' | rpxTranslate}}
+  </button>
 </form>

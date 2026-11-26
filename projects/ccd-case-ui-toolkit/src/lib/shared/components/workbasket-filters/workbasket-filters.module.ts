@@ -9,6 +9,7 @@ import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { PaletteModule } from '../palette/palette.module';
+import { DatePickerRangeComponent } from '../palette/datetime-picker-range/date-picker-range.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 @NgModule({
     imports: [
@@ -20,9 +21,11 @@ import { WorkbasketFiltersComponent } from './workbasket-filters.component';
         RpxTranslationModule.forChild()
     ],
     declarations: [
+        DatePickerRangeComponent,
         WorkbasketFiltersComponent,
     ],
     exports: [
+        DatePickerRangeComponent,
         WorkbasketFiltersComponent,
     ],
     providers: [
