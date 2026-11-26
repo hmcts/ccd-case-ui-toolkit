@@ -14,10 +14,14 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
   let otherDescriptionWelshControl: DebugElement;
   let flagCommentsControl: DebugElement;
   let flagCommentsWelshControl: DebugElement;
+  let flagUpdateCommentsControl: DebugElement;
+  let flagUpdateCommentsWelshControl: DebugElement;
   let otherDescriptionTextarea: HTMLInputElement;
   let otherDescriptionWelshTextarea: HTMLInputElement;
   let flagCommentsTextarea: HTMLInputElement;
   let flagCommentsWelshTextarea: HTMLInputElement;
+  let flagUpdateCommentsTextarea: HTMLInputElement;
+  let flagUpdateCommentsWelshTextarea: HTMLInputElement;
   let textareaInput: string;
   const activeFlag = {
     name: 'Flag 1',
@@ -25,6 +29,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     otherDescription_cy: 'A description (Welsh)',
     flagComment: 'First flag',
     flagComment_cy: 'First flag (Welsh)',
+    flagUpdateComment_cy: 'Status change reason (Welsh)',
     dateTimeCreated: new Date(),
     path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
@@ -54,6 +59,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
     component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
+    component.formGroup.addControl(CaseFlagFormFields.UPDATE_COMMENT, new FormControl(''));
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -64,36 +70,46 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     otherDescriptionWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH}`));
     flagCommentsControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`));
     flagCommentsWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS_WELSH}`));
+    flagUpdateCommentsControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.UPDATE_COMMENT}`));
+    flagUpdateCommentsWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.UPDATE_COMMENT_WELSH}`));
     otherDescriptionTextarea = otherDescriptionControl.nativeElement;
     otherDescriptionWelshTextarea = otherDescriptionWelshControl.nativeElement;
     flagCommentsTextarea = flagCommentsControl.nativeElement;
     flagCommentsWelshTextarea = flagCommentsWelshControl.nativeElement;
+    flagUpdateCommentsTextarea = flagUpdateCommentsControl.nativeElement;
+    flagUpdateCommentsWelshTextarea = flagUpdateCommentsWelshControl.nativeElement;
   });
 
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add three form controls if formGroup exists', () => {
+  it('should add translation form controls if formGroup exists', () => {
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.COMMENTS)).toBeTruthy();
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH)).toBeTruthy();
   });
 
-  it('should pre-populate initial values for the three form controls added, if such values exist in the selected flag', () => {
+  it('should pre-populate initial values for translation form controls if such values exist in the selected flag', () => {
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.otherDescription);
     expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.otherDescription_cy);
     expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH).value).toEqual(
       selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy);
+    expect(component.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT_WELSH).value).toEqual(
+      selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment_cy);
   });
 
-  it('should have all four textareas based on names', () => {
+  it('should have all six textareas based on names', () => {
     expect(otherDescriptionControl?.name).toEqual('textarea');
     expect(otherDescriptionWelshControl?.name).toEqual('textarea');
     expect(flagCommentsControl?.name).toEqual('textarea');
     expect(flagCommentsWelshControl?.name).toEqual('textarea');
+    expect(flagUpdateCommentsControl?.name).toEqual('textarea');
+    expect(flagUpdateCommentsWelshControl?.name).toEqual('textarea');
   });
 
   it('should show an error message on clicking "Next" for each textarea input exceeding a 200-character limit', () => {
@@ -107,6 +123,10 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     flagCommentsTextarea.dispatchEvent(new Event('input'));
     flagCommentsWelshTextarea.value = `${textareaInput}0`;
     flagCommentsWelshTextarea.dispatchEvent(new Event('input'));
+    flagUpdateCommentsTextarea.value = `${textareaInput}0`;
+    flagUpdateCommentsTextarea.dispatchEvent(new Event('input'));
+    flagUpdateCommentsWelshTextarea.value = `${textareaInput}0`;
+    flagUpdateCommentsWelshTextarea.dispatchEvent(new Event('input'));
     component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -135,6 +155,16 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
       description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
       fieldId: CaseFlagFormFields.COMMENTS_WELSH
     });
+    expect(component.errorMessages[4]).toEqual({
+      title: '',
+      description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT
+    });
+    expect(component.errorMessages[5]).toEqual({
+      title: '',
+      description: UpdateFlagAddTranslationErrorMessage.COMMENTS_CHAR_LIMIT_EXCEEDED,
+      fieldId: CaseFlagFormFields.UPDATE_COMMENT_WELSH
+    });
     const errorMessageElements = fixture.debugElement.queryAll(By.css('.govuk-error-message'));
     expect(errorMessageElements[0].nativeElement.textContent).toContain(
       UpdateFlagAddTranslationErrorMessage.DESCRIPTION_CHAR_LIMIT_EXCEEDED);
@@ -155,6 +185,10 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     flagCommentsTextarea.dispatchEvent(new Event('input'));
     flagCommentsWelshTextarea.value = textareaInput;
     flagCommentsWelshTextarea.dispatchEvent(new Event('input'));
+    flagUpdateCommentsTextarea.value = textareaInput;
+    flagUpdateCommentsTextarea.dispatchEvent(new Event('input'));
+    flagUpdateCommentsWelshTextarea.value = textareaInput;
+    flagUpdateCommentsWelshTextarea.dispatchEvent(new Event('input'));
     component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);

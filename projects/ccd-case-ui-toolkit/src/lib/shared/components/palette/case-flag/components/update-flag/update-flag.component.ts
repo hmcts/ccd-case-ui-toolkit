@@ -83,7 +83,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(existingComments));
       this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));
       // Populate status reason only if the user is not external
-      this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(
+      this.formGroup.addControl(CaseFlagFormFields.UPDATE_COMMENT, new FormControl(
         this.externalUserUpdate ? '' : this.flagDetail.flagUpdateComment));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
@@ -156,14 +156,21 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
     // this function will check the user does not have any of the translation fields applied and remove if they do
     const flagDetails = this.selectedFlag.flagDetailDisplay.flagDetail;
     const isTranslationRequired = this.formGroup.value.flagIsWelshTranslationNeeded;
-    const hasTranslationFields = (flagDetails.flagComment_cy || flagDetails.otherDescription || flagDetails.otherDescription_cy);
+    const hasTranslationFields = (
+      flagDetails.flagComment_cy ||
+      flagDetails.otherDescription_cy ||
+      flagDetails.flagUpdateComment_cy ||
+      flagDetails.otherDescription
+    );
     if (!isTranslationRequired && hasTranslationFields) {
       flagDetails.flagComment_cy = null;
       flagDetails.otherDescription = null;
       flagDetails.otherDescription_cy = null;
-      this.formGroup.removeControl('flagComment_cy');
-      this.formGroup.removeControl('otherDescription');
-      this.formGroup.removeControl('otherDescription_cy');
+      flagDetails.flagUpdateComment_cy = null;
+      this.formGroup.removeControl(CaseFlagFormFields.COMMENTS_WELSH);
+      this.formGroup.removeControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION);
+      this.formGroup.removeControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH);
+      this.formGroup.removeControl(CaseFlagFormFields.UPDATE_COMMENT_WELSH);
     }
   }
 
@@ -202,7 +209,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       });
     }
 
-    const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
+    const statusReason = this.formGroup.get(CaseFlagFormFields.UPDATE_COMMENT)?.value;
     const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
     // Status reason is mandatory if flag status is "Not approved" or user is external
     if (this.formGroup.get(CaseFlagFormFields.STATUS)?.value === flagStatusNotApprovedKey && !statusReason) {
@@ -210,7 +217,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
 
@@ -219,7 +226,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
 
@@ -228,7 +235,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
-        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+        fieldId: CaseFlagFormFields.UPDATE_COMMENT
       });
     }
   }
