@@ -348,6 +348,22 @@ describe('QueryDetailsComponent', () => {
       expect(result).toBeFalsy();
     });
 
+    for (const isHmctsStaff of [undefined, 'No', 'Yes']) {
+      for (const userType of ['internal', 'judiciary']) {
+        it(`should ${isHmctsStaff === 'Yes' ? 'hide' : 'show'} an unanswered ${isHmctsStaff ?? 'legacy'} query for ${userType} users`, () => {
+          spyOn(component, 'isInternalUser').and.returnValue(userType === 'internal');
+          spyOn(component, 'isJudiciaryUser').and.returnValue(userType === 'judiciary');
+          component.query = Object.assign(new QueryListItem(), { children: [], isHmctsStaff });
+          component.queryResponseStatus = QueryItemResponseStatus.AWAITING;
+
+          const result = component.hasRespondedToQuery();
+
+          expect(result).toBe(isHmctsStaff === 'Yes');
+          expect(component.hasResponded.emit).toHaveBeenCalledWith(isHmctsStaff === 'Yes');
+        });
+      }
+    }
+
     it('should emit false and return false if responseStatus is not AWAITING but user is not a caseworker', () => {
       spyOn(component, 'isInternalUser').and.returnValue(false);
       spyOn(component, 'isJudiciaryUser').and.returnValue(false);

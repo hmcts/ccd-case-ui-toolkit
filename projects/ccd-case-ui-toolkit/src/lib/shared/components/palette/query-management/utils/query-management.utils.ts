@@ -61,7 +61,7 @@ export class QueryManagementUtils {
     };
 
     // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
-    // this.setHmctsStaffStatus(message, isHmctsStaff);
+    this.setHmctsStaffStatus(message, isHmctsStaff);
 
     return message;
   }
@@ -97,7 +97,7 @@ export class QueryManagementUtils {
     };
 
     // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
-    // this.setHmctsStaffStatus(message, isHmctsStaff);
+    this.setHmctsStaffStatus(message, isHmctsStaff);
 
     return message;
   }
@@ -120,9 +120,9 @@ export class QueryManagementUtils {
   }
 
   // TODO HMCTS_QUERY_USER_TYPE: Enable when isHmctsStaff persistence is supported by the query data contract.
-  // private static setHmctsStaffStatus(message: CaseMessage, isHmctsStaff: string): void {
-  //   if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
-  //     message.isHmctsStaff = this.normalizeHmctsStaffStatus(isHmctsStaff);
-  //   }
-  // }
+  private static setHmctsStaffStatus(message: CaseMessage, isHmctsStaff: string): void {
+    if (typeof isHmctsStaff === 'string' && isHmctsStaff) {
+      message.isHmctsStaff = this.normalizeHmctsStaffStatus(isHmctsStaff);
+    }
+  }
 }

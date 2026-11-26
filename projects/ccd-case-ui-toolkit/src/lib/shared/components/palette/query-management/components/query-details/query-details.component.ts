@@ -121,7 +121,9 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     if (this.isInternalUser() || this.isJudiciaryUser()) {
-      if (isAwaiting) {
+      const isUnansweredStaffQuery = this.query?.children?.length === 0
+        && this.query?.isHmctsStaff?.trim().toLowerCase() === 'yes';
+      if (isAwaiting && !isUnansweredStaffQuery) {
         this.hasResponded.emit(false);
         return false;
       }
@@ -131,6 +133,11 @@ export class QueryDetailsComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     if (isAwaiting) {
+      // This is for new query raised by HMCTS staff - there are no children, and the user is HMCTS staff, they haven't responded yet
+      if (isFollowUp && this.query?.children?.length === 0 && this.query?.isHmctsStaff?.toLowerCase() === 'yes') {
+        this.hasResponded.emit(false);
+        return false;
+      }
       this.hasResponded.emit(true);
       return false; // Don't show message
     }
