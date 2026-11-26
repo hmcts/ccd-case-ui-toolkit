@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CaseNotifier, PaletteModule } from '../../projects/ccd-case-ui-toolkit/src/public-api';
@@ -30,6 +30,7 @@ import { identityWriterFields, identityWriterJudges, identityWriterOrganisations
       searchStaffUsers: (_services: string[], term: string) => term === 'failure' ? throwError(() => new Error('Reference lookup unavailable')) : of(term.toLowerCase().startsWith('alex') ? identityWriterStaff : [])
     } }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section data-testid="identity-writer-controls">
       <ccd-write-case-link-field [caseField]="fields.caseLink" [formGroup]="linkForm" />
@@ -38,10 +39,10 @@ import { identityWriterFields, identityWriterJudges, identityWriterOrganisations
       <ccd-write-organisation-field [caseField]="fields.organisation" [formGroup]="organisationForm" />
       <output data-testid="identity-org-payload">{{ organisationForm.value | json }}</output>
       <ccd-write-judicial-user-field [caseField]="fields.judicial" [formGroup]="judicialForm" />
-      <output data-testid="identity-judge-payload">{{ judicialForm.get('writer-judge')?.value | json }}</output>
+      <output data-testid="identity-judge-payload">{{ $safeNavigationMigration(judicialForm.get('writer-judge')?.value) | json }}</output>
       <output data-testid="identity-judge-valid">{{ judicialForm.valid }}</output>
       <ccd-write-staff-user-field [caseField]="fields.staff" [formGroup]="staffForm" />
-      <output data-testid="identity-staff-payload">{{ staffForm.get('writer-staff')?.value | json }}</output>
+      <output data-testid="identity-staff-payload">{{ $safeNavigationMigration(staffForm.get('writer-staff')?.value) | json }}</output>
       <output data-testid="identity-staff-valid">{{ staffForm.valid }}</output>
       <button type="button">Leave identity field</button>
     </section>

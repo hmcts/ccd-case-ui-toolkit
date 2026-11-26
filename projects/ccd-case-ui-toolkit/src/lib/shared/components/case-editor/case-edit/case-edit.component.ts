@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
@@ -34,6 +34,7 @@ import { safeJsonParse } from '../../../json-utils';
   templateUrl: 'case-edit.component.html',
   styleUrls: ['../case-edit.scss'],
   providers: [GreyBarService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEditComponent implements OnInit, OnDestroy {

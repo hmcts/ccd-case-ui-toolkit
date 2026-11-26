@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CaseView } from '../../../../../domain/case-view/case-view.model';
 import { CaseField } from '../../../../../domain/definition/case-field.model';
 
 @Component({
   selector: 'ccd-query-case-details-header',
   templateUrl: './query-case-details-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

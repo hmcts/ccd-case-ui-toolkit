@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
@@ -9,6 +9,7 @@ import { OrderService } from '../../services';
 @Component({
   selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {

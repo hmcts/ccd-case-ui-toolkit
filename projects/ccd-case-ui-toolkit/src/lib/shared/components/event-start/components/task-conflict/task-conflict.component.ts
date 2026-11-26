@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Task } from '../../../../domain/work-allocation/Task';
 
 @Component({
   selector: 'app-task-conflict',
   templateUrl: './task-conflict.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TaskConflictComponent {

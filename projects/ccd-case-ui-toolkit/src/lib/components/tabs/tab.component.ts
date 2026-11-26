@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'cut-tab',
@@ -6,6 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: [
     './tabs.component.scss'
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TabComponent {

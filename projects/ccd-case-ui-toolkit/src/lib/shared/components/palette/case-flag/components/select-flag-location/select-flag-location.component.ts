@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
@@ -8,6 +8,7 @@ import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.c
 @Component({
   selector: 'ccd-select-flag-location',
   templateUrl: './select-flag-location.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SelectFlagLocationComponent extends AbstractJourneyComponent implements OnInit, Journey {

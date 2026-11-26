@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
@@ -16,6 +16,7 @@ import { MultipageComponentStateService } from "../../../../../services";
   selector: 'ccd-search-language-interpreter',
   templateUrl: './search-language-interpreter.component.html',
   styleUrls: ['./search-language-interpreter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SearchLanguageInterpreterComponent extends AbstractJourneyComponent implements OnInit, Journey {

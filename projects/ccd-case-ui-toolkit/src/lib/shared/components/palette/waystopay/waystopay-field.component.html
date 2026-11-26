@@ -1,4 +1,5 @@
-<ccpay-payment-lib *ngIf="getUserRoles().length > 0"
+@if (getUserRoles().length > 0) {
+  <ccpay-payment-lib
     [API_ROOT]="getBaseURL()"
     [BULKSCAN_API_ROOT]="getPayBulkScanBaseURL()"
     [REFUNDS_API_ROOT]="getRefundsUrl()"
@@ -14,4 +15,5 @@
     [LOGGEDINUSERROLES]="getUserRoles()"
     [CARDPAYMENTRETURNURL]="getCardPaymentReturnUrl()"
     [ISPAYMENTSTATUSENABLED]="'Enable'"
-></ccpay-payment-lib>
+  ></ccpay-payment-lib>
+}

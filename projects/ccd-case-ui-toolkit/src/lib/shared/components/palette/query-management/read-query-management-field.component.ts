@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { SessionStorageService } from '../../../services';
@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {

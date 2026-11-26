@@ -1,8 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -18,17 +16,14 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
     "paths": {
       "ccd-case-ui-toolkit": [
-        "dist/ccd-case-ui-toolkit"
+        "./dist/ccd-case-ui-toolkit"
       ],
       "ccd-case-ui-toolkit/*": [
-        "dist/ccd-case-ui-toolkit/*"
+        "./dist/ccd-case-ui-toolkit/*"
       ]
-    }
+    },
+    "strict": false
   }
 }

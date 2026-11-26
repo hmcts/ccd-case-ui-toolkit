@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -10,6 +10,7 @@ import { Journey } from '../../../../../domain';
   selector: 'ccd-linked-cases-check-your-answers',
   templateUrl: './check-your-answers.component.html',
   styleUrls: ['./check-your-answers.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CheckYourAnswersComponent extends AbstractJourneyComponent implements OnInit, Journey {

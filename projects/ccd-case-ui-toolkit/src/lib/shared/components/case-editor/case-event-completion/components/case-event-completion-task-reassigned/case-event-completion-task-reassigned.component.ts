@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   FieldsUtils,
@@ -12,6 +12,7 @@ import { CaseEditComponent } from '../../../case-edit';
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
   templateUrl: './case-event-completion-task-reassigned.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {

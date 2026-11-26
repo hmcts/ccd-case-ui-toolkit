@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CaseworkerService } from '../../case-editor/services/case-worker.service';
@@ -8,6 +8,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 @Component({
   selector: 'ccd-read-staff-user-field',
   templateUrl: './read-staff-user-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadStaffUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {

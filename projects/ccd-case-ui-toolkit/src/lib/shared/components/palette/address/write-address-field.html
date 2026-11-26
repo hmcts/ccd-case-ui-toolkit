@@ -1,44 +1,61 @@
 <div class="form-group" [id]="id()">
-  <div *ngIf="!isComplexWithHiddenFields()">
-    <h2 class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
-    <span class="form-hint" *ngIf="caseField.hint_text">
-      <ccd-markdown [content]="caseField.hint_text | rpxTranslate"></ccd-markdown>
-    </span>
-
-    <div class="form-group bottom-30 postcodeLookup" [id]="createElementId('postcodeLookup')" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
-      <label [for]="createElementId('postcodeInput')">
-        <span class="form-label">{{'Enter a UK postcode' | rpxTranslate}}</span>
-      </label>
-      <span class="error-message" *ngIf="missingPostcode">{{errorMessage | rpxTranslate}}</span>
-      <input type="text" [ngClass]="{'govuk-input--error': missingPostcode}"
-      [id]="createElementId('postcodeInput')" name="postcode" class="form-control postcodeinput inline-block" [formControl]="postcode">
-      <button type="button" class="button button-30" (click)="findAddress()" [disabled]="loadingAddresses">
-        {{(loadingAddresses ? 'Finding addresses...' : 'Find address') | rpxTranslate}}
-      </button>
+  @if (!isComplexWithHiddenFields()) {
+    <div>
+      <h2 class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
+      @if (caseField.hint_text) {
+        <span class="form-hint">
+          <ccd-markdown [content]="caseField.hint_text | rpxTranslate"></ccd-markdown>
+        </span>
+      }
+      @if (!isExpanded) {
+        <div class="form-group bottom-30 postcodeLookup" [id]="createElementId('postcodeLookup')" [ngClass]="{'form-group-error': missingPostcode}">
+          <label [for]="createElementId('postcodeInput')">
+            <span class="form-label">{{'Enter a UK postcode' | rpxTranslate}}</span>
+          </label>
+          @if (missingPostcode) {
+            <span class="error-message">{{errorMessage | rpxTranslate}}</span>
+          }
+          <input type="text" [ngClass]="{'govuk-input--error': missingPostcode}"
+            [id]="createElementId('postcodeInput')" name="postcode" class="form-control postcodeinput inline-block" [formControl]="postcode">
+          <button type="button" class="button button-30" (click)="findAddress()" [disabled]="loadingAddresses">
+            {{(loadingAddresses ? 'Finding addresses...' : 'Find address') | rpxTranslate}}
+          </button>
+        </div>
+      }
+      @if (addressOptions) {
+        <div class="form-group" id="selectAddress" [ngClass]="{'form-group-error': noAddressSelected}">
+          <label [for]="createElementId('addressList')">
+            <span class="form-label">{{'Select an address' | rpxTranslate}}</span>
+          </label>
+          @if (noAddressSelected) {
+            <span class="error-message">{{errorMessage | rpxTranslate}}</span>
+          }
+          <select class="form-control ccd-dropdown addressList" [id]="createElementId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
+            @if (addressOptions.length === 0) {
+              <option [ngValue]="undefined">
+                {{'No address found' | rpxTranslate}}
+              </option>
+            }
+            @if (addressOptions.length > 0) {
+              <option [ngValue]="undefined">
+                {{addressOptions.length}} {{(addressOptions.length === 1 ? 'address found' : 'addresses found') | rpxTranslate}}
+              </option>
+            }
+            @for (addressOption of addressOptions; track addressOption) {
+              <option [ngValue]="addressOption.value">
+                {{addressOption.description}}
+              </option>
+            }
+          </select>
+        </div>
+      }
+      @if (!shouldShowDetailFields()) {
+        <a class="manual-link bottom-30" (click)="blankAddress(); $event.preventDefault()" href="#">
+          {{"I can't enter a UK postcode" | rpxTranslate}}
+        </a>
+      }
     </div>
-
-    <div class="form-group" *ngIf="addressOptions" id="selectAddress" [ngClass]="{'form-group-error': noAddressSelected}">
-      <label [for]="createElementId('addressList')">
-        <span class="form-label">{{'Select an address' | rpxTranslate}}</span>
-      </label>
-      <span class="error-message" *ngIf="noAddressSelected">{{errorMessage | rpxTranslate}}</span>
-      <select class="form-control ccd-dropdown addressList" [id]="createElementId('addressList')" name="address" [formControl]="addressList" (change)="addressSelected()" focusElement>
-        <option *ngIf="addressOptions.length === 0" [ngValue]="undefined">
-          {{'No address found' | rpxTranslate}}
-        </option>
-        <option *ngIf="addressOptions.length > 0" [ngValue]="undefined">
-          {{addressOptions.length}} {{(addressOptions.length === 1 ? 'address found' : 'addresses found') | rpxTranslate}}
-        </option>
-        <option *ngFor="let addressOption of addressOptions" [ngValue]="addressOption.value">
-          {{addressOption.description}}
-        </option>
-      </select>
-    </div>
-
-    <a class="manual-link bottom-30" *ngIf="!shouldShowDetailFields()" (click)="blankAddress(); $event.preventDefault()" href="#">
-      {{"I can't enter a UK postcode" | rpxTranslate}}
-    </a>
-  </div>
+  }
 
   <ccd-write-complex-type-field
     [hidden]="!shouldShowDetailFields()"

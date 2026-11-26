@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
+import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -27,6 +27,7 @@ import createSpyObj = jasmine.createSpyObj;
 @Component({
   selector: 'ccd-field-read',
   template: `{{caseField.value}}`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class FieldReadComponent {

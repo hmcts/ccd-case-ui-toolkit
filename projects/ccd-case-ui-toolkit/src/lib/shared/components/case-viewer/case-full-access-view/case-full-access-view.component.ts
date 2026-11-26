@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import {
   ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild
+  SimpleChanges, ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -43,6 +44,7 @@ import { PVP_DISPLAY_TEXT, hasActivePvpFlagInCaseFields } from '../../palette/ca
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {

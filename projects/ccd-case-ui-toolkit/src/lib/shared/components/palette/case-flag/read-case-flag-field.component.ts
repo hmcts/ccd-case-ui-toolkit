@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
@@ -13,6 +13,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagStatus } from './enums';
   selector: 'ccd-read-case-flag-field',
   templateUrl: './read-case-flag-field.component.html',
   styleUrls: ['./read-case-flag-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
