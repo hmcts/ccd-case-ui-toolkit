@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.4.28-accessibility-issue",
+  "version": "7.4.28-accessibility-issue.01",
   "peerDependencies": {
     "@angular/material-moment-adapter": "^20.0.0",
     "@ngxmc/datetime-picker": "20.1.0",
