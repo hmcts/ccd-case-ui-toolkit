@@ -284,6 +284,24 @@ describe('SearchResultComponent', () => {
       });
     });
 
+    (['Text', 'Number', 'Date', 'DateTime', 'Complex', 'Label', 'FixedList'] as const).forEach((fieldType) => {
+      it(`should translate the heading for a ${fieldType} column without changing case values`, () => {
+        spyOn(MockRpxTranslatePipe.prototype, 'transform').and.callFake((value) =>
+          value === 'First name' ? 'Enw cyntaf' : value);
+        component.resultView.columns = component.resultView.columns.map((col) => ({
+          ...col,
+          case_field_type: col.case_field_id === 'PersonFirstName' ? { id: fieldType, type: fieldType } : col.case_field_type
+        }));
+
+        fixture.detectChanges();
+
+        const headings = de.queryAll(By.css('.search-result-column-label')).map((header) => header.nativeElement.textContent.trim());
+        expect(headings).toContain('Enw cyntaf');
+        expect(headings).toContain('Last name');
+        expect(de.query(By.css('tbody')).nativeElement.textContent).toContain('Jason');
+      });
+    });
+
     it('should render columns based on SearchResultView without activity column when disabled', () => {
       activityService = fixture.debugElement.injector.get(ActivityService);
       activityService.isEnabled = false;

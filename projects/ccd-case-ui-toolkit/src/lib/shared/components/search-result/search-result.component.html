@@ -37,7 +37,7 @@
         [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')" scope="col">
         <div>
           <div class="search-result-column-label" (click)="sort(col)" (keyup)="noop()">
-            {{ isTranslatable(col) ? (col.label | rpxTranslate) : col.label }}
+            {{ col.label | rpxTranslate }}
           </div>
           <div *ngIf="comparator(col)" class="search-result-column-sort">
             <a (click)="sort(col); $event.preventDefault()" (keyup.enter)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" [attr.aria-label]="'Sort ' + col.label | rpxTranslate" href="#"></a>
