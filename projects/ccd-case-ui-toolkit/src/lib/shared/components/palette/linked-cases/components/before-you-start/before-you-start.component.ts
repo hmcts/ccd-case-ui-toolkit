@@ -27,9 +27,9 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
     super(multipageComponentStateService);
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
-    const linkedCaseReferenceIds = this.linkedCasesService.caseFieldValue.filter((item) => item).map((item) => item.id);
+    const linkedCaseReferenceIds = new Set(this.linkedCasesService.caseFieldValue.filter((item) => item).map((item) => item.id));
     if (this.linkedCasesService.initialCaseLinks.length !== (this.linkedCasesService.caseFieldValue.length + this.linkedCasesService.casesToUnlink.length)) {
-      this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => linkedCaseReferenceIds.indexOf(item.caseReference) !== -1);
+      this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter((item) => linkedCaseReferenceIds.has(item.caseReference));
     }
     if (this.linkedCasesService.linkedCases.length === 0 && this.linkedCasesService.caseFieldValue.length !== 0 && !this.linkedCasesService.hasContinuedFromStart) {
       this.linkedCasesService.caseFieldValue.forEach((item) => {

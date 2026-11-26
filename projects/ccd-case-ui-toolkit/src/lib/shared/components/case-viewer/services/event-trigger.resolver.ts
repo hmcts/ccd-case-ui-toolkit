@@ -17,7 +17,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly PARAM_EVENT_ID = 'eid';
   public static readonly IGNORE_WARNING = 'ignoreWarning';
-  private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
+  private static readonly IGNORE_WARNING_VALUES = new Set([ 'true', 'false' ]);
   private cachedEventTrigger: CaseEventTrigger;
   constructor(
     private readonly casesService: CasesService,
@@ -91,7 +91,7 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     const caseType = route.parent.paramMap.get('caseType');
     const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
-    if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
+    if (!EventTriggerResolver.IGNORE_WARNING_VALUES.has(ignoreWarning)) {
       ignoreWarning = 'false';
     }
 

@@ -31,8 +31,8 @@ export class PrintUrlPipe implements PipeTransform {
        * the rendering engine, "Trident" (used to identify IE 11 because it no longer reports as "MSIE").
        * Note: IE does not support the URL interface and requires a workaround to parse URLs.
        */
-      if (navigator.userAgent.indexOf(PrintUrlPipe.MSIE_BROWSER_NAME) !== -1 ||
-          navigator.userAgent.indexOf(PrintUrlPipe.IE11_BROWSER_ENGINE) !== -1) {
+      if (navigator.userAgent.includes(PrintUrlPipe.MSIE_BROWSER_NAME) ||
+          navigator.userAgent.includes(PrintUrlPipe.IE11_BROWSER_ENGINE)) {
         // Workaround for not being able to use the URL interface
         const urlParser = document.createElement('a');
         urlParser.href = remoteUrl;

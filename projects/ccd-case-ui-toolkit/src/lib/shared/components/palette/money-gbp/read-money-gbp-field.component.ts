@@ -23,7 +23,7 @@ export class ReadMoneyGbpFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public isNumber(): boolean {
-    return null !== this.value && !isNaN(this.value);
+    return null !== this.value && !Number.isNaN(Number(this.value));
   }
 
 }

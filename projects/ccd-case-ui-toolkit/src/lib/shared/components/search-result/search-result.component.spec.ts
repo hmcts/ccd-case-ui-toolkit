@@ -279,7 +279,7 @@ describe('SearchResultComponent', () => {
       // added +1 for case activity column
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
       RESULT_VIEW.columns.forEach(col => {
-        expect(headRow.children.find(c => c.nativeElement.textContent.trim().startsWith(col.label)))
+        expect(headRow.children.some(c => c.nativeElement.textContent.trim().startsWith(col.label)))
           .toBeTruthy(`Could not find header ${col.label}`);
       });
     });

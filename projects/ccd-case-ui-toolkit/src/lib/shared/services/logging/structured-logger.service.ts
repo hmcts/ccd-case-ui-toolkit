@@ -157,7 +157,7 @@ export class StructuredLoggerService {
   }
 
   private isNameKey(key: string): boolean {
-    return ['key', 'name'].includes(key.toLowerCase());
+    return new Set(['key', 'name']).has(key.toLowerCase());
   }
 
   private isSensitiveKey(key: string): boolean {
@@ -165,6 +165,6 @@ export class StructuredLoggerService {
   }
 
   private isValueKey(key: string): boolean {
-    return ['value', 'values'].includes(key.toLowerCase());
+    return new Set(['value', 'values']).has(key.toLowerCase());
   }
 }

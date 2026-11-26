@@ -78,7 +78,7 @@ export class WorkAllocationService {
       return false;
     }
     this.features.configurations.forEach(serviceConfig => {
-      if (serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1)) {
+      if (serviceConfig.serviceName === jurisdiction && serviceConfig.caseTypes.includes(caseType)) {
           enabled = true;
       }
     });
@@ -194,7 +194,7 @@ export class WorkAllocationService {
       .pipe(
         map((response: any) => {
           const tasks: any[] = response.tasks;
-          if (tasks && tasks.length > 0) {
+          if (tasks?.length > 0) {
             if (tasks.length === 1) {
               this.completeTask(tasks[0].id, eventId).subscribe();
             } else {

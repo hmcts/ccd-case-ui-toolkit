@@ -46,7 +46,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(): void {
     const labelField = document.getElementsByClassName('case-viewer-label');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
   }

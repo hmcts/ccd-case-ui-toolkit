@@ -159,12 +159,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           const page = this.caseEdit.getPage(pageId);
           if (page) {
             this.currentPage = page;
+          } else if (this.currentPage) {
+            return this.next();
           } else {
-            if (this.currentPage) {
-              return this.next();
-            } else {
-              return this.first();
-            }
+            return this.first();
           }
           this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage?.id));
         }
@@ -263,7 +261,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           const label = this.getInterpolatedFieldLabel(casefield);
           let id = casefield.id;
           if (fieldElement['component'] && (fieldElement['component'].parent || sourceFromComplexField)) {
-            if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
+            if (!fieldElement['component'].idPrefix.includes(`_${id}_`)) {
               id = `${fieldElement['component'].idPrefix}${id}`;
             } else {
               id = `${fieldElement['component'].idPrefix}`;
@@ -383,7 +381,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     if ((!this.linkedCasesService.isLinkedCasesEventTrigger) && (this.linkedCasesService.casesToUnlink.length > 0)) {
       // ensure cfv is set correctly
       this.linkedCasesService.caseFieldValue = this.linkedCasesService.caseFieldValue.filter(
-        (caseFieldValue) => !this.linkedCasesService.casesToUnlink.some((link) => caseFieldValue.id === link)
+        (caseFieldValue) => !this.linkedCasesService.casesToUnlink.includes(caseFieldValue.id)
       );
       //ensure that the values are not lost when navigating back
       if (this.editForm.controls.data['controls'].caseLinks.controls){

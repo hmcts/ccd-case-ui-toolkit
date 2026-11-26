@@ -2,7 +2,7 @@ import { CaseView } from '../domain/case-view/case-view.model';
 import { CaseField } from '../domain/definition/case-field.model';
 import { createCaseTabArray } from './case-tab.test.fixture';
 
-export let createCaseView = () => {
+export const createCaseView = () => {
   const caseView = new CaseView();
   caseView.case_id = '1234567890123456';
   caseView.case_type = {

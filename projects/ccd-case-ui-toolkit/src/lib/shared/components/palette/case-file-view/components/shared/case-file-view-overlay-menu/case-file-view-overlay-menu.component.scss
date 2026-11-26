@@ -25,9 +25,6 @@
     padding: $padding-x $padding-y;
 
     border-bottom: $border-size solid $border-color;
-    &:last-child {
-      border: none;
-    }
   }
 
   &__title {
@@ -36,10 +33,19 @@
   }
 
   &__item {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
     display: flex;
     align-items: center;
-    cursor: pointer;
+    border: 0;
+    border-bottom: $border-size solid $border-color;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    font: inherit;
     font-size: 0.875em;
+    cursor: pointer;
 
     &:hover {
       background-color: #fff2cc;
@@ -49,6 +55,10 @@
       border: 2px solid #ffbf47;
     }
 
+  }
+
+  ul li:last-child > .overlay-menu__item {
+    border-bottom: 0;
   }
 
   &__itemIcon {

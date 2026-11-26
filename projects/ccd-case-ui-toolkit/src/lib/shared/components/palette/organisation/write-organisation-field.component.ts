@@ -53,28 +53,24 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    if (this.parent && this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
-      && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
-      && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()
-      === WriteOrganisationFieldComponent.YES) {
-      if (this.caseField && !this.caseField.value) {
+    const prePopulateControl = this.parent?.controls?.[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION];
+    if (prePopulateControl?.value?.toUpperCase() === WriteOrganisationFieldComponent.YES) {
+      if (!this.caseField?.value) {
         this.caseField.value = {
           OrganisationID: this.defaultOrg ? this.defaultOrg.organisationIdentifier : null,
           OrganisationName: this.defaultOrg ? this.defaultOrg.name : null
         };
       }
       this.preSelectDefaultOrg();
+    } else if (this.caseField?.value?.OrganisationID) {
+      this.preSelectDefaultOrg();
     } else {
-      if (this.caseField && this.caseField.value && this.caseField.value.OrganisationID) {
-        this.preSelectDefaultOrg();
-      } else {
-        this.preSelectEmptyOrg();
-      }
+      this.preSelectEmptyOrg();
     }
 
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although an
     // Organisation field uses the Complex type, it is meant to be treated as one field
-    if (this.caseField && this.caseField.field_type.type === 'Complex') {
+    if (this.caseField?.field_type?.type === 'Complex') {
       for (const organisationSubField of this.caseField.field_type.complex_fields) {
         organisationSubField.retain_hidden_value = this.caseField.retain_hidden_value;
       }
@@ -111,7 +107,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
 
     organisations.forEach((org) => {
       const resultSet = [...partMatchingResultSet, ...withSpaceMatchingResultSet];
-      const hasMatchingOrganisation = resultSet.find(item => item.organisationIdentifier === org.organisationIdentifier);
+      const hasMatchingOrganisation = resultSet.some(item => item.organisationIdentifier === org.organisationIdentifier);
       const searchHasSpace = this.searchWithSpace(org, lowerOrgSearchText);
       const hasResultSetBelowMaxCount = resultSet.length < MAX_RESULT_COUNT;
 
@@ -162,7 +158,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
         })
           .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),
     );
-    if (this.caseField.value && this.caseField.value.OrganisationID) {
+    if (this.caseField?.value?.OrganisationID) {
       this.searchOrgTextFormControl.disable();
     }
   }
@@ -181,7 +177,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   private addOrganisationValidators(caseField: CaseField, control: AbstractControl): void {
-    if (caseField.field_type && caseField.field_type.complex_fields) {
+    if (caseField.field_type?.complex_fields) {
       const organisationIdField = caseField.field_type.complex_fields
         .find(field => field.id === WriteOrganisationFieldComponent.ORGANISATION_ID);
       this.addValidators(organisationIdField, control);
@@ -189,35 +185,35 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   private searchCriteria(organisation: OrganisationVm, lowerOrgSearchText: string): boolean {
-    if (organisation.postCode && organisation.postCode.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.postCode?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.postCode && this.trimAll(organisation.postCode).toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.postCode?.replace(/\s+/g, '').toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.postCode && organisation.postCode.toLowerCase().includes(this.trimAll(lowerOrgSearchText))) {
+    if (organisation.postCode?.toLowerCase().includes(this.trimAll(lowerOrgSearchText))) {
       return true;
     }
-    if (organisation.name && organisation.name.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.name?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.addressLine1 && organisation.addressLine1.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.addressLine1?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.addressLine2 && organisation.addressLine2.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.addressLine2?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.addressLine3 && organisation.addressLine3.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.addressLine3?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.townCity && organisation.townCity.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.townCity?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
-    if (organisation.county && organisation.county.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.county?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
     // noinspection RedundantIfStatementJS
-    if (organisation.country && organisation.country.toLowerCase().includes(lowerOrgSearchText)) {
+    if (organisation.country?.toLowerCase().includes(lowerOrgSearchText)) {
       return true;
     }
     return false;

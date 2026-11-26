@@ -49,11 +49,11 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(): void {
     let labelField = document.getElementsByClassName('govuk-heading-l');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('heading-h2');
-    if (labelField && labelField.length) {
+    if (labelField?.length) {
       labelField[0].replaceWith('');
     }
   }

@@ -1,6 +1,6 @@
 import { CaseViewEvent } from '../domain';
 
-export let createCaseViewEvent = () => {
+export const createCaseViewEvent = () => {
   const caseViewEvent = new CaseViewEvent();
 
   caseViewEvent.id = 5;

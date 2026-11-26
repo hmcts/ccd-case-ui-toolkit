@@ -95,7 +95,7 @@ export class UpdateFlagComponent extends AbstractJourneyComponent implements OnI
       if (currentFlagStatusKey) {
         switch (currentFlagStatusKey) {
           case 'ACTIVE':
-            this.validStatusProgressions = Object.keys(CaseFlagStatus).filter((key) => !['REQUESTED', 'NOT_APPROVED'].includes(key));
+            this.validStatusProgressions = Object.keys(CaseFlagStatus).filter((key) => !new Set(['REQUESTED', 'NOT_APPROVED']).has(key));
             break;
           case 'REQUESTED':
             this.validStatusProgressions = Object.keys(CaseFlagStatus);

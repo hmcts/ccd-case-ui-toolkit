@@ -73,9 +73,9 @@
            [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('isHearingRelated').hasError('required')}">
         <fieldset class="govuk-fieldset">
           <legend>
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold">
+            <span class="govuk-label govuk-label--m govuk-!-font-weight-bold">
               {{ 'Is the query hearing related?' | rpxTranslate }}
-            </label>
+            </span>
           </legend>
           <p id="isHearingRelated-error" class="govuk-error-message"
               *ngIf="submitted && formGroup.get('isHearingRelated').hasError('required')">
@@ -112,9 +112,9 @@
                formGroup.get('hearingDate').value === null}">
             <fieldset class="govuk-fieldset" role="group">
               <legend>
-                <label class="govuk-label govuk-label--s">
+                <span class="govuk-label govuk-label--s">
                   {{ 'What is the date of the hearing?' | rpxTranslate }}
-                </label>
+                </span>
               </legend>
               <p id="hearingDate-error" class="govuk-error-message"
                   *ngIf="submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null">

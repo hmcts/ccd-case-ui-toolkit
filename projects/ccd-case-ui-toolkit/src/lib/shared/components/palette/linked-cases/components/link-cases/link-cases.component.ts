@@ -96,7 +96,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
 
   public toggleLinkCaseReasonOtherComments(event: any): void {
     this.linkCaseReasons.find((reason) => reason.value_en === event.target.value).selected = event.target.checked;
-    this.showComments = this.linkCaseReasons.find((reason) => reason.value_en === 'Other')?.selected;
+    this.showComments = this.linkCaseReasons.some((reason) => reason.value_en === 'Other' && reason.selected);
   }
 
   public submitCaseInfo(): void {
@@ -127,7 +127,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       return false;
     }
     const caseNumber = this.linkCaseForm.value.caseNumber;
-    return !!linkedCases.find(
+    return linkedCases.some(
       (caseLink) => caseLink.caseReference.split('-').join('').trim() === caseNumber.split('-').join('').trim()
     );
   }
@@ -168,7 +168,7 @@ export class LinkCasesComponent extends AbstractJourneyComponent implements OnIn
       });
     }
     if (this.linkCaseForm.controls.reasonType.valid
-      && this.linkCaseReasons.find((reason) => reason.value_en === 'Other').selected) {
+      && this.linkCaseReasons.some((reason) => reason.value_en === 'Other' && reason.selected)) {
       if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
         this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
         this.errorMessages.push({

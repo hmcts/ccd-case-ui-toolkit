@@ -25,11 +25,11 @@ export class ConditionParser {
    */
   public static evaluate(fields: any, conditions: any[], path?: string): boolean {
     if (!conditions || conditions.length === 0) { return true; }
-    const validJoinComparators = ['AND', 'OR'];
+    const validJoinComparators = new Set(['AND', 'OR']);
 
     return conditions.reduce((accumulator: boolean, condition, index: number) => {
       const isJoinComparator = (comparator: string): boolean =>
-        (typeof comparator === 'string' && validJoinComparators.indexOf(comparator) !== -1);
+        (typeof comparator === 'string' && validJoinComparators.has(comparator));
 
       if (isJoinComparator(condition)) { return accumulator; }
 
@@ -91,9 +91,9 @@ export class ConditionParser {
 
   private static getField(condition: string): [string, string?] {
     let separator: string = ShowCondition.CONTAINS;
-    if (condition.indexOf(ShowCondition.CONTAINS) < 0) {
+    if (!condition.includes(ShowCondition.CONTAINS)) {
       separator = ShowCondition.CONDITION_EQUALS;
-      if (condition.indexOf(ShowCondition.CONDITION_NOT_EQUALS) > -1) {
+      if (condition.includes(ShowCondition.CONDITION_NOT_EQUALS)) {
         separator = ShowCondition.CONDITION_NOT_EQUALS;
       }
     }
@@ -158,12 +158,10 @@ export class ConditionParser {
     }
     if (tail.length === 0) {
       return this.getValue(fields, head);
+    } else if (FieldsUtils.isArray(fields[head])) {
+      return this.findValueForComplexConditionInArray(fields, head, tail, path);
     } else {
-      if (FieldsUtils.isArray(fields[head])) {
-        return this.findValueForComplexConditionInArray(fields, head, tail, path);
-      } else {
-        return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
-      }
+      return this.findValueForComplexConditionForPathIfAny(fields, head, tail, path);
     }
   }
 
@@ -180,7 +178,7 @@ export class ConditionParser {
 
   private static findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
     // use the path to resolve which array element we refer to
-    if (path && path.startsWith(head)) {
+    if (path?.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {
@@ -200,7 +198,7 @@ export class ConditionParser {
   }
 
   private static removeStarChar(str: string): string {
-    if (str && str.indexOf('*') > -1) {
+    if (str?.includes('*')) {
       return str.substring(0, str.indexOf('*'));
     }
     return str;

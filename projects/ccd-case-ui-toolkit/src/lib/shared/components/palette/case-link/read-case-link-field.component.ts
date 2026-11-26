@@ -9,6 +9,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
 
   public hasReference(): boolean {
-    return this.caseField.value && this.caseField.value.CaseReference;
+    return this.caseField.value?.CaseReference;
   }
 }

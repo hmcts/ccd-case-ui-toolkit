@@ -115,7 +115,7 @@ export class LinkedCasesService {
             caseService: item.service,
             caseType: item.caseType,
             unlink: false,
-            reasons: item.reasons && item.reasons.map(reason => {
+            reasons: item.reasons?.map(reason => {
               return {
                 Reason: reason
               } as LinkReason;
@@ -140,15 +140,15 @@ export class LinkedCasesService {
     const state = selectedCaseType && selectedCaseType.states.find(item => item.id === fieldValue);
     switch (fieldName) {
       case 'JURISDICTION':
-        return selectedJurisdiction && selectedJurisdiction.description;
+        return selectedJurisdiction?.description;
       case 'CASE_TYPE':
-        return selectedCaseType && selectedCaseType.name;
+        return selectedCaseType?.name;
       case 'CASE_TYPE_DESCRIPTION':
-        return selectedCaseType && selectedCaseType.description;
+        return selectedCaseType?.description;
       case 'STATE':
-        return state && state.name || fieldValue;
+        return state?.name || fieldValue;
       case 'STATE_DESCRIPTION':
-        return state && state.description || fieldValue;
+        return state?.description || fieldValue;
       default:
         break;
     }

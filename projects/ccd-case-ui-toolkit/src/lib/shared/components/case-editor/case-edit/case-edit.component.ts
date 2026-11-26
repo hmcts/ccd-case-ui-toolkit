@@ -150,7 +150,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.isRefreshModalVisible = true;
-      this.router.navigate([this.initialUrl], { relativeTo: this.route });
+      void this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
     // if the url contains /submit there is the potential that the user has gone straight to the submit page
@@ -161,7 +161,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       if (this.eventTrigger.wizard_pages && this.eventTrigger.wizard_pages.length > 0) {
         const firstPage = this.eventTrigger.wizard_pages.reduce((min, page) => page.order < min.order ? page : min, this.eventTrigger.wizard_pages[0]);
         this.isRefreshModalVisible = true;
-        this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
+        void this.router.navigate([firstPage ? firstPage.id : 'submit'], { relativeTo: this.route });
       }
     }
     return false;
@@ -445,12 +445,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
     // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
     // from the CaseField itself.
-    if (parentField && parentField.formatted_value) {
+    if (parentField?.formatted_value) {
       rawFormValueData[key] = parentField.formatted_value[caseField.id];
-    } else {
-      if (!(caseField.hidden && caseField.retain_hidden_value)) {
-        rawFormValueData[key] = caseField.formatted_value;
-      }
+    } else if (!(caseField.hidden && caseField.retain_hidden_value)) {
+      rawFormValueData[key] = caseField.formatted_value;
     }
   }
 
@@ -575,15 +573,14 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       // EXUI-2668 - Add additional logic to confirm the task is relevant to the event
       if (this.taskIsForEvent(taskInSessionStorage, eventDetails)) {
         return true;
-      } else {
-        // client context still needed for language
-        removeTaskFromClientContext(this.sessionStorageService);
-        return false;
       }
-    } else {
-      if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
-        return true;
-      } else if ((taskEventCompletionInfo.taskId === taskInSessionStorage.id &&
+      // client context still needed for language
+      removeTaskFromClientContext(this.sessionStorageService);
+      return false;
+    }
+    if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
+      return true;
+    } else if ((taskEventCompletionInfo.taskId === taskInSessionStorage.id &&
           this.eventDetailsDoNotMatch(taskEventCompletionInfo, eventDetails))
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
@@ -592,13 +589,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         this.sessionStorageService.removeItem(CaseEditComponent.TASK_EVENT_COMPLETION_INFO);
         return false;
       }
-      if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
-        // if the user does not match task assignee, assign is now needed
-        // data cannot be deleted and ignored as it matches understanding
-        this.sessionStorageService.setItem('assignNeeded', 'true');
-      }
-      return true;
+    if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
+      // if the user does not match task assignee, assign is now needed
+      // data cannot be deleted and ignored as it matches understanding
+      this.sessionStorageService.setItem('assignNeeded', 'true');
     }
+    return true;
   }
 
   public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted): void {
@@ -608,7 +604,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       this.caseSubmit({ form, caseEventData, submit });
     } else {
       // Navigate to tasks tab on case details page
-      this.router.navigate([`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.getCaseId(caseDetails)}`], { fragment: 'Tasks' });
+      void this.router.navigate([`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.getCaseId(caseDetails)}`], { fragment: 'Tasks' });
     }
   }
 

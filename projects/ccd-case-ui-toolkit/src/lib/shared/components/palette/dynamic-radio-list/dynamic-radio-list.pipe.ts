@@ -14,7 +14,7 @@ export class DynamicRadioListPipe implements PipeTransform {
      *
      * If value is object with element `value.code`, use code instead.
      */
-    if (value && value.value && value.value.code) {
+    if (value?.value?.code) {
       value = value.value.code;
     }
     const item = items.find(i => i.code === value);

@@ -171,11 +171,11 @@ describe('CaseHistoryComponent', () => {
 
   it('should render the field labels based on show_condition', () => {
     const headers = de.query($NAME_TAB_CONTENT).queryAll(By.css('tr>th'));
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'Complex field'))
+      expect(headers.some(r => r.nativeElement.textContent.trim() === 'Complex field'))
       .toBeFalsy('Found row with label Complex field');
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'Last name'))
+      expect(headers.some(r => r.nativeElement.textContent.trim() === 'Last name'))
       .toBeTruthy('Cannot find row with label Last name');
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'First name'))
+      expect(headers.some(r => r.nativeElement.textContent.trim() === 'First name'))
       .toBeTruthy('Cannot find row with label First name');
   });
 
@@ -192,7 +192,7 @@ describe('CaseHistoryComponent', () => {
       .queryAll(By.css('tr>th'));
 
     SIMPLE_FIELDS.forEach(field => {
-      expect(headers.find(r => r.nativeElement.textContent.trim() === field.label))
+      expect(headers.some(r => r.nativeElement.textContent.trim() === field.label))
         .toBeTruthy(`Could not find row with label ${field.label}`);
     });
   });

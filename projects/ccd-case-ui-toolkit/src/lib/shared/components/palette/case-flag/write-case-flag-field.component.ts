@@ -113,7 +113,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
     // Get the case type ID from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type) {
+    if (this.route.snapshot.data.case?.case_type) {
       this.caseTypeId = this.route.snapshot.data.case.case_type.id;
       // Get the jurisdiction (required for retrieving the available flag types if unable to determine using case type ID)
       if (this.route.snapshot.data.case.case_type.jurisdiction) {
@@ -361,7 +361,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       let value = instance.caseField?.value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-      if (pathToValue.indexOf('.') > -1) {
+      if (pathToValue.includes('.')) {
         pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => value = value[part]);
       }
       if (value?.details?.length > 0) {
@@ -388,7 +388,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
       // CaseField value to apply changes to
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-      if (path.indexOf('.') > -1) {
+      if (path.includes('.')) {
         path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
       }
       // If the CaseField for the selected flags location has no value, set it to an empty object so it can be populated
@@ -494,7 +494,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       let formattedValue = instance.caseField?.formatted_value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-      if (pathToValue.indexOf('.') > -1) {
+      if (pathToValue.includes('.')) {
         pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => {
           value = value[part];
           if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
@@ -525,7 +525,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     // CaseField value to apply changes to
     const path = this.selectedFlag.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-    if (path.indexOf('.') > -1) {
+    if (path.includes('.')) {
       path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
     if (flagsCaseFieldValue) {

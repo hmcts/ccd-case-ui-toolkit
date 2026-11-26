@@ -2,7 +2,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { Field } from '../../../domain/search/field.model';
 import { SearchInput } from './search-input.model';
 
-export let createSearchInputs = () => {
+export const createSearchInputs = () => {
   const fieldType = new FieldType();
   fieldType.id = 'Text';
   fieldType.type = 'Text';

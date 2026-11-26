@@ -376,7 +376,7 @@ describe('DatetimePickerComponent', () => {
     discardPeriodicTasks();
   }));
 
-  
+
   xit('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);

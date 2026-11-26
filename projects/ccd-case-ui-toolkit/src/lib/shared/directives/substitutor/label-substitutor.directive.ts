@@ -194,7 +194,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private shouldSubstitute(element: string): boolean {
-    return this.elementsToSubstitute.find(e => e === element) !== undefined;
+    return this.elementsToSubstitute.includes(element);
   }
 
   private getReadOnlyAndFormFields(): object {

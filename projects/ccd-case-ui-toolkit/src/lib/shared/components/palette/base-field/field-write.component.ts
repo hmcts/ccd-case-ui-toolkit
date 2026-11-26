@@ -6,7 +6,7 @@ import { FormValidatorsService } from '../../../services/form';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
-const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList'];
+const FIX_CASEFIELD_FOR = new Set(['FixedList', 'DynamicList', 'DynamicMultiSelectList']);
 
 @Component({
   selector: 'ccd-field-write',
@@ -46,7 +46,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     // TODO AW 30/12/20 figure out why FixedLists need plainToClassFromExist
     // Added a check to make sure it's NOT already a CaseField and then
     // assigning it back to this.caseField so we don't create separation.
-    if (FIX_CASEFIELD_FOR.indexOf(this.caseField.field_type.type) > -1 && !(this.caseField instanceof CaseField)) {
+    if (FIX_CASEFIELD_FOR.has(this.caseField.field_type.type) && !(this.caseField instanceof CaseField)) {
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
     this.applyInputsToChild();

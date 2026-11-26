@@ -7,8 +7,8 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()
 export class FormValidatorsService {
-  private static readonly CUSTOM_VALIDATED_FIELD_TYPES: FieldTypeEnum[] = ['Date', 'MoneyGBP', 'Label'];
-  private static readonly CUSTOM_VALIDATED_COMPLEX_TYPE_IDS = ['JudicialUser', 'StaffUser'];
+  private static readonly CUSTOM_VALIDATED_FIELD_TYPES = new Set<FieldTypeEnum>(['Date', 'MoneyGBP', 'Label']);
+  private static readonly CUSTOM_VALIDATED_COMPLEX_TYPE_IDS = new Set(['JudicialUser', 'StaffUser']);
   private static readonly DEFAULT_INPUT_TEXT = 'text';
   private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
@@ -61,9 +61,9 @@ export class FormValidatorsService {
   }
 
   private static isCustomValidatedType(caseField: CaseField): boolean {
-    return FormValidatorsService.CUSTOM_VALIDATED_FIELD_TYPES.includes(caseField.field_type.type)
+    return FormValidatorsService.CUSTOM_VALIDATED_FIELD_TYPES.has(caseField.field_type.type)
       || (caseField.field_type.type === 'Complex'
-        && FormValidatorsService.CUSTOM_VALIDATED_COMPLEX_TYPE_IDS.includes(caseField.field_type.id));
+        && FormValidatorsService.CUSTOM_VALIDATED_COMPLEX_TYPE_IDS.has(caseField.field_type.id));
   }
 
   public static markDownPatternValidator(): ValidatorFn {

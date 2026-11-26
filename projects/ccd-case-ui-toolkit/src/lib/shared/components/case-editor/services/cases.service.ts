@@ -109,7 +109,7 @@ export class CasesService {
 
     const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
     const timeoutPeriods = this.appConfig.getTimeoutsForCaseRetrieval();
-    if (timeoutPeriods && timeoutPeriods.length > 0 && timeoutPeriods[0] > 0) {
+    if (timeoutPeriods?.length > 0 && timeoutPeriods[0] > 0) {
       http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, timeoutPeriods);
     } else {
       this.logger.warn('Skipping retry mechanism for case view retrieval.');
