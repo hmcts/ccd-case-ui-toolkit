@@ -22,6 +22,7 @@ const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 @Component({
   selector: 'ccd-search-filters',
   templateUrl: './search-filters.component.html',
+  styleUrls: ['./search-filters.component.scss'],
   standalone: false
 })
 

@@ -22,6 +22,10 @@ export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent imp
 
   public autoGrow(event): void {
     if (this.browserService.isIEOrEdge()) {
+      // TODO(CSP): Replace this legacy IE/Edge-only auto-grow implementation before
+      // removing `style-src-attr 'unsafe-inline'`. The height is content-dependent,
+      // so it cannot be represented by a finite set of CSS classes. Supported modern
+      // browsers can use CSS `field-sizing: content` once that behaviour is adopted.
       event.target.style.height = 'auto';
       event.target.style.height = `${event.target.scrollHeight}px`;
       event.target.scrollTop = event.target.scrollHeight;

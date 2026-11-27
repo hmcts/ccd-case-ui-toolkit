@@ -435,7 +435,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.downloadFile).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary', 'Document1.pdf');
     expect(document.createElement).toHaveBeenCalledWith('a');
     expect(document.body.appendChild).toHaveBeenCalledWith(fakeAnchorElement);
-    expect(fakeAnchorElement.setAttribute).toHaveBeenCalledWith('style', 'display: none');
+    expect(fakeAnchorElement.hidden).toBeTrue();
     expect(fakeAnchorElement.href).toEqual('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary');
     expect(fakeAnchorElement.download).toEqual('Document1.pdf');
     expect(fakeAnchorElement.click).toHaveBeenCalled();

@@ -314,7 +314,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public downloadFile(url: string, downloadFileName: string): void {
     const a = document.createElement('a');
     document.body.appendChild(a);
-    a.setAttribute('style', 'display: none');
+    a.hidden = true;
     a.href = url;
     a.download = downloadFileName;
     a.click();

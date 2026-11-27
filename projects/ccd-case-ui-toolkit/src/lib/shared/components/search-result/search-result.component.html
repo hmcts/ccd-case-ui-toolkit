@@ -44,7 +44,7 @@
           </div>
         </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;" scope="col">&ZeroWidthSpace;</th>
+      <th *ngIf="activityEnabled()" class="search-result-activity-column" scope="col">&ZeroWidthSpace;</th>
     </tr>
   </thead>
 
@@ -71,7 +71,7 @@
               <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
             </ng-container>
           </a>
-          <div *ngIf="colIndex != 0" class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
+          <div *ngIf="colIndex != 0" class="text-16" [class.search-result-row-hidden]="hideRows">
             <ccd-field-read ccdLabelSubstitutor
                             [caseField]="result.columns[col.case_field_id]"
                             [contextFields]="result.hydrated_case_fields"
@@ -79,7 +79,7 @@
           </div>
         </td>
         <td *ngIf="activityEnabled()">
-          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
+          <div [class.search-result-row-hidden]="hideRows">
             <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
           </div>
         </td>
@@ -108,7 +108,7 @@
               <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
             </ng-container>
           </a>
-          <div *ngIf="colIndex != 0" class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
+          <div *ngIf="colIndex != 0" class="text-16" [class.search-result-row-hidden]="hideRows">
             <ccd-field-read ccdLabelSubstitutor
                             [caseField]="result.columns[col.case_field_id]"
                             [contextFields]="result.hydrated_case_fields"
@@ -116,7 +116,7 @@
           </div>
         </td>
         <td *ngIf="activityEnabled()">
-          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
+          <div [class.search-result-row-hidden]="hideRows">
             <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
           </div>
         </td>

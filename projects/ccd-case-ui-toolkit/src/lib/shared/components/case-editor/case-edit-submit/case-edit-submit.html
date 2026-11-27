@@ -83,7 +83,7 @@
       </ng-container>
       <ng-container *ngIf="showEventNotes()">
         <fieldset id="fieldset-event" formGroupName="event">
-          <legend style="display: none;"></legend>
+          <legend hidden></legend>
           <div class="form-group" [ngClass]="{'form-group-error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
             <label for="field-trigger-summary" class="form-label">
               Event summary (optional)

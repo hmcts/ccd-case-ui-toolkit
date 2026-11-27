@@ -52,6 +52,9 @@ $header-background-color: $black;
 #global-header .full-screen {
   max-width: 100%;
 }
+.govuk-logo-link {
+  margin-left: 0;
+}
 .title {
   font-weight: bold;
   color: $white;
