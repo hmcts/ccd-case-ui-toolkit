@@ -3008,7 +3008,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/eslintrc": "npm:^3.3.7"
     "@eslint/js": "npm:^10.0.0"
-    "@hmcts/ccpay-web-component": "npm:6.5.28-v1"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-v4"
     "@hmcts/media-viewer": "npm:4.2.49"
     "@ngrx/effects": "npm:^20.1.0"
     "@ngrx/store": "npm:^20.1.0"
@@ -3119,9 +3119,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@npm:6.5.28-v1":
-  version: 6.5.28-v1
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-v1"
+"@hmcts/ccpay-web-component@npm:6.5.28-v4":
+  version: 6.5.28-v4
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-v4"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3130,7 +3130,7 @@ __metadata:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
     govuk-frontend: ^6.4.0
-  checksum: 10/ee5c681491e0c124a480ce728a5ec1be2c3acc0492b8e85e66aca0073703df86744bce797c2896c61e9ddd0ef9f080d5ca79451a46483d604cedbbdb8c85145e
+  checksum: 10/e2645264669eefe00e8dbabfaee3153f406654c1adafa0c97fd3f7f5f20b018d9470a2aa5e6ca8e8511cf441e3bffb132c75b3206793b4b0868f9c9228d0f767
   languageName: node
   linkType: hard
 
