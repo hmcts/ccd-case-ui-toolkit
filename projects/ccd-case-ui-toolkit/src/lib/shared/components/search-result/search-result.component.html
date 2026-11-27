@@ -44,84 +44,46 @@
           </div>
         </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;" scope="col">&ZeroWidthSpace;</th>
+      <th *ngIf="activityEnabled()" class="search-result-activity-column" scope="col">&ZeroWidthSpace;</th>
     </tr>
   </thead>
 
   <tbody>
-    <!-- sorted by consumer -->
-    <ng-container *ngIf="consumerSortingEnabled">
-      <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
-        <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
-            </label>
-          </div>
-        </td>
-        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index" scope="row">
-          <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
-            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}" class="govuk-link">
-            <ng-container class="text-16" *ngIf="!hideRows">
-              <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
-                              ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
-                              [contextFields]="result.hydrated_case_fields"
-                              [elementsToSubstitute]="['value']"></ccd-field-read>
-              <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
-            </ng-container>
-          </a>
-          <div *ngIf="colIndex != 0" class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-field-read ccdLabelSubstitutor
-                            [caseField]="result.columns[col.case_field_id]"
+    <tr *ngFor="let result of (consumerSortingEnabled ? resultView.results : (resultView.results | ccdSortSearchResult : sortParameters))
+      | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
+      <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
+            type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)"
+            (keyup)="!consumerSortingEnabled && onKeyUp($event, result)" />
+          <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
+          </label>
+        </div>
+      </td>
+      <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index" scope="row">
+        <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
+          attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}" class="govuk-link">
+          <ng-container class="text-16" *ngIf="!hideRows">
+            <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
+                            ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
                             [contextFields]="result.hydrated_case_fields"
                             [elementsToSubstitute]="['value']"></ccd-field-read>
-          </div>
-        </td>
-        <td *ngIf="activityEnabled()">
-          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
-          </div>
-        </td>
-      </tr>
-    </ng-container>
-    <!-- sorted by toolkit -->
-    <ng-container *ngIf="!consumerSortingEnabled">
-      <tr *ngFor="let result of resultView.results | ccdSortSearchResult : sortParameters | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
-        <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
-            <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}" [attr.aria-labelledby]="'select-' + result.case_id">
-            </label>
-          </div>
-        </td>
-        <td class="search-result-column-cell" *ngFor="let col of resultView.columns; let colIndex = index" scope="row">
-
-          <a *ngIf="colIndex == 0" [routerLink]="prepareCaseLinkUrl(result.case_id)"
-            attr.aria-label="go to case with Case reference:{{ result.case_id | ccdCaseReference }}" class="govuk-link">
-            <ng-container class="text-16" *ngIf="!hideRows">
-              <ccd-field-read *ngIf="draftPrefixOrGet(col, result); else case_reference"
-                              ccdLabelSubstitutor [caseField]="getColumnsWithPrefix(result.columns[col.case_field_id], result)"
-                              [contextFields]="result.hydrated_case_fields"
-                              [elementsToSubstitute]="['value']"></ccd-field-read>
-              <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
-            </ng-container>
-          </a>
-          <div *ngIf="colIndex != 0" class="text-16" [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-field-read ccdLabelSubstitutor
-                            [caseField]="result.columns[col.case_field_id]"
-                            [contextFields]="result.hydrated_case_fields"
-                            [elementsToSubstitute]="['value']"></ccd-field-read>
-          </div>
-        </td>
-        <td *ngIf="activityEnabled()">
-          <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
-          </div>
-        </td>
-      </tr>
-    </ng-container>
+            <ng-template #case_reference>{{result.case_id | ccdCaseReference}}</ng-template>
+          </ng-container>
+        </a>
+        <div *ngIf="colIndex != 0" class="text-16" [class.search-result-row-hidden]="hideRows">
+          <ccd-field-read ccdLabelSubstitutor
+                          [caseField]="result.columns[col.case_field_id]"
+                          [contextFields]="result.hydrated_case_fields"
+                          [elementsToSubstitute]="['value']"></ccd-field-read>
+        </div>
+      </td>
+      <td *ngIf="activityEnabled()">
+        <div [class.search-result-row-hidden]="hideRows">
+          <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+        </div>
+      </td>
+    </tr>
 
   </tbody>
 </table>

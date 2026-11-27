@@ -20,6 +20,7 @@ import { SessionStorageService } from '../../../services/session';
 @Component({
   selector: 'ccd-write-document-field',
   templateUrl: './write-document-field.html',
+  styleUrls: ['./write-document-field.component.scss'],
   standalone: false
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {

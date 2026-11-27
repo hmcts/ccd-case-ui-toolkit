@@ -93,6 +93,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
     drag$.subscribe(pos => {
       const calculatedWidth = ((pos.documentTreeContainerWidth + pos.dx) * 100) / slider.parentElement.getBoundingClientRect().width;
+      // TODO(CSP): This continuously variable drag width needs a CSP-safe resizing
+      // design (for example, app-owned nonce-bearing rules) before parent applications
+      // remove `style-src-attr 'unsafe-inline'`; a class cannot preserve every width.
       documentTreeContainer.setAttribute('style', `width: ${calculatedWidth}%`);
     });
   }
