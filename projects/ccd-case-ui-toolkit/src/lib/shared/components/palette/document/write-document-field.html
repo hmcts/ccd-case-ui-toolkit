@@ -1,15 +1,13 @@
-<div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
-  <label [for]="id()">
-    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</span>
-  </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">
+<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error bottom-30': !valid}">
+  <label class="govuk-label" [for]="id()" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel)}}</label>
+  <div class="govuk-hint" *ngIf="caseField.hint_text">
     <markdown [data]="caseField.hint_text | rpxTranslate"></markdown>
-  </span>
-  <span class="error-message"
+  </div>
+  <span class="govuk-error-message"
         role="alert"
         tabindex="0"
         [hidden]="!(fileUploadMessages && !valid)">
-    {{ fileUploadMessages | rpxTranslate }}
+    <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{ fileUploadMessages | rpxTranslate }}
   </span>
   <div>
     <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
@@ -18,10 +16,10 @@
 
   <div style='position:relative'>
     <div [id]="createElementId('fileInputWrapper')" (click)="fileSelectEvent()" (keyup)="fileSelectEvent()"></div>
-    <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event, caseField.field_type.regular_expression)"
+    <input class="govuk-input bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event, caseField.field_type.regular_expression)"
            accept="{{caseField.field_type.regular_expression}}" #fileInput/>
   </div>
 </div>
-<div class="form-group bottom-30">
-  <button class="button button-secondary" type="button" aria-label="Cancel upload" (click)="cancelUpload()" [disabled]="!isUploadInProgress()">{{'Cancel upload' | rpxTranslate}}</button>
+<div class="govuk-form-group bottom-30">
+  <button class="govuk-button govuk-button--secondary" type="button" aria-label="Cancel upload" (click)="cancelUpload()" [disabled]="!isUploadInProgress()">{{'Cancel upload' | rpxTranslate}}</button>
 </div>

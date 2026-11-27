@@ -10,7 +10,7 @@ test('keeps the form invalid while the required field is empty', async ({ page }
   await required.fill('');
   await required.blur();
 
-  await expect(page.locator('ccd-case-edit-form').getByText('Required field is required', { exact: true })).toBeVisible();
+  await expect(page.locator('ccd-case-edit-form').getByText('Required field is required')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
   await expect(page.getByTestId('editor-page')).toHaveText('1');
 });

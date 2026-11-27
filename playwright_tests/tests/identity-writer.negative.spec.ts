@@ -10,10 +10,10 @@ test.describe('Identity writers', () => {
     test(`rejects malformed case reference ${reference} and recovers`, async ({ page }) => {
       const input = page.getByLabel('Related case reference');
       await input.fill(reference);
-      await expect(page.getByText('Please use a valid 16 Digit Case Reference', { exact: true })).toBeVisible();
+      await expect(page.getByText('Please use a valid 16 Digit Case Reference')).toBeVisible();
       await expect(page.getByTestId('identity-link-valid')).toHaveText('false');
       await input.fill('1234567812345678');
-      await expect(page.getByText('Please use a valid 16 Digit Case Reference', { exact: true })).toBeHidden();
+      await expect(page.getByText('Please use a valid 16 Digit Case Reference')).toBeHidden();
       await expect(page.getByTestId('identity-link-valid')).toHaveText('true');
     });
   }

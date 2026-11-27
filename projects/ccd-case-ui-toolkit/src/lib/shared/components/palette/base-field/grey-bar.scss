@@ -1,6 +1,6 @@
 .form :host::ng-deep .grey-bar {
-  > * > .form-group,
-  > * > * > .form-group,
+  > * > .govuk-form-group,
+  > * > * > .govuk-form-group,
   > * > dl.case-field {
     margin-left: 15px;
     padding-left: 15px;
@@ -21,7 +21,7 @@
     /**
      * Change the border-colour only when this is not in an error state.
      */
-    &:not(.form-group-error) {
+    &:not(.govuk-form-group--error) {
       border-left: solid 5px #b1b4b6; /* govuk-border-colour */
     }
 

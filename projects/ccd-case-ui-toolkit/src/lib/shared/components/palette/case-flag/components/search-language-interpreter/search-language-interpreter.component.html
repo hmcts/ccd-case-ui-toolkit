@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
+  <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
     <h1 class="govuk-label-wrapper">
       <label class="govuk-label govuk-label--m" [for]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM">
         {{flagType | flagFieldDisplay:'name'}}
@@ -36,7 +36,7 @@
         </label>
       </div>
       <div class="govuk-radios__conditional" *ngIf="isCheckboxEnabled">
-        <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotEnteredErrorMessage || languageCharLimitErrorMessage }">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': languageNotEnteredErrorMessage || languageCharLimitErrorMessage }">
           <label class="govuk-label" for="manual-language-entry">{{searchLanguageInterpreterStep.INPUT_LABEL | rpxTranslate}}</label>
           <div id="language-not-entered-error-message" class="govuk-error-message"
             *ngIf="languageNotEnteredErrorMessage">

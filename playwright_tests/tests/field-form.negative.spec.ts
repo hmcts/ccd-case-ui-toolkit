@@ -12,11 +12,11 @@ test.describe('Field form controls', () => {
     await required.fill('');
     await required.blur();
     await expect(page.getByTestId('field-form-status')).toHaveText('INVALID');
-    await expect(required.locator('..')).toHaveClass(/form-group-error/);
+    await expect(required.locator('..')).toHaveClass(/govuk-form-group--error/);
 
     await required.fill('Corrected value');
     await expect(page.getByTestId('field-form-status')).toHaveText('VALID');
-    await expect(required.locator('..')).not.toHaveClass(/form-group-error/);
+    await expect(required.locator('..')).not.toHaveClass(/govuk-form-group--error/);
     await expect(page.getByTestId('field-form-values')).toContainText('"field-form-required": "Corrected value"');
   });
 });

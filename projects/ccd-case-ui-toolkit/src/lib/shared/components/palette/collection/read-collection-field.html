@@ -23,6 +23,7 @@
     </tbody>
     <tbody *ngSwitchCase="false">
     <tr *ngFor="let item of caseField.value; let i = index">
+      <th scope="row" class="govuk-visually-hidden">{{ caseField.label }} {{ i + 1 }}</th>
       <td>
         <ccd-field-read
           [caseField]="{

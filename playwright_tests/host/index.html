@@ -7,5 +7,8 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body><toolkit-test-host></toolkit-test-host></body>
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+    <toolkit-test-host></toolkit-test-host>
+  </body>
 </html>

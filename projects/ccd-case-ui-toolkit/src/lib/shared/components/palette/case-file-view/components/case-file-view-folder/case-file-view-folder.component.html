@@ -1,12 +1,12 @@
 <div class="document-filter-container" role="search">
-  <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
+  <div class="govuk-form-group document-filter" [formGroup]="documentFilterFormGroup">
     <label
       class="govuk-visually-hidden"
       for="document-search">
       Search by document name
     </label>
     <input
-      class="form-control document-search"
+      class="govuk-input document-search"
       type="search"
       id="document-search"
       name="documentSearchFormControl"
@@ -50,7 +50,6 @@
         <button
           type="button"
           class="node case-file__node"
-          [attr.aria-label]="node.name"
           (click)="selectedNodeItem = node; clickedDocument.emit(node)"
           [class.node--selected]="selectedNodeItem?.name === node.name">
           <div class="node__icon" disabled aria-hidden="true">
@@ -85,8 +84,7 @@
           type="button"
           class="node"
           cdkTreeNodeToggle
-          [attr.aria-expanded]="nestedTreeControl.isExpanded(node)"
-          [attr.aria-label]="node.name + ' folder, ' + node.childDocumentCount + ' documents'">
+          [attr.aria-expanded]="nestedTreeControl.isExpanded(node)">
           <div class="node__icon" aria-hidden="true">
             <img class="node__iconImg"
                 [src]="nestedTreeControl.isExpanded(node)
@@ -98,6 +96,8 @@
             <span class="node__count">{{ node.childDocumentCount }}</span>
           </div>
           <span class="node__name node__name--folder">{{ node.name }}</span>
+          <!-- Name comes from the visible text so it contains what sighted users see (WCAG 2.5.3) -->
+          <span class="govuk-visually-hidden"> folder, {{ node.childDocumentCount }} documents</span>
         </button>
         <div
           role="group"

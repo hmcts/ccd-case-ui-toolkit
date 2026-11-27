@@ -11,7 +11,7 @@
       </h2>
 
       <ng-container *ngIf="displayError">
-        <p class="govuk-error-message">
+        <p id="qualifyingQuestionOption-error" class="govuk-error-message">
           <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{
           qualifyingQuestionsErrorMessage.SELECT_AN_OPTION | rpxTranslate }}
         </p>
@@ -26,8 +26,9 @@
             <input class="govuk-radios__input" 
               id="{{qualifyingQuestion.name}}" 
               name="qualifyingQuestionOption"
-              type="radio" [formControl]="qualifyingQuestionsControl" 
+              type="radio" [formControl]="qualifyingQuestionsControl"
               [value]="qualifyingQuestion"
+              [attr.aria-describedby]="displayError ? 'qualifyingQuestionOption-error' : null"
               (change)="onSelectionChange(qualifyingQuestion)">
             <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name |
               rpxTranslate }}</label>

@@ -13,7 +13,7 @@
     </ul>
   </div>
 </div>
-<div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
+<div *ngIf="!isDisplayContextParameterUpdate" class="govuk-form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
       <ccd-select-flag-location 
@@ -67,7 +67,7 @@
     </ng-container>
   </div>
 </div>
-<div *ngIf="isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
+<div *ngIf="isDisplayContextParameterUpdate" class="govuk-form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS">
       <ccd-manage-case-flags 

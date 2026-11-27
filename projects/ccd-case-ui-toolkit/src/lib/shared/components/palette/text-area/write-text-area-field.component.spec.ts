@@ -27,7 +27,7 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteTextAreaFieldComponent', () => {
-  const $INPUT = By.css('.form-group textarea');
+  const $INPUT = By.css('.govuk-form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
   const textareaComponentMock: any = MockComponent({

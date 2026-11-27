@@ -30,7 +30,7 @@ test.describe('Mandatory fields', () => {
   test('accepts a UK phone number', async ({ page }) => {
     const input = page.getByRole('textbox', { name: 'Phone field' });
     await input.fill('020 7946 0000');
-    await expect(input.locator('..')).not.toHaveClass(/form-group-error/);
+    await expect(input.locator('..')).not.toHaveClass(/govuk-form-group--error/);
     await expect(page.getByTestId('mandatory-values')).toContainText('"mandatory-phone": "020 7946 0000"');
   });
 
